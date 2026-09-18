@@ -1,0 +1,687 @@
+# Parking frozen-statement manifest.
+#
+# One entry per frozen declaration.  The bytes between the FROZEN-STATEMENT
+# markers are the contract: a proof attempt may fill in the proof after the end
+# marker, never touch the statement.  `frozen_sha256` is the SHA-256 of exactly
+# those bytes.
+#
+# States: DRAFT_SORRY (statement frozen, proof is a registered `sorry`),
+#         FROZEN (a statement with no proof obligation here, such as a cited
+#           result taken as a hypothesis),
+#         SEALED (a proof exists and its axiom closure is clean).
+
+version: 1
+source_pin:
+  file: paper/parking.tex
+  sha256: e07f0dcaa77f1d78012aa6869204ef4495d0c43da2b10fd0b1867e28d8d0e016
+nodes:
+  - id: ext-sandpile-growth
+    version: 2
+    kind: definition
+    source: parking.tex:919-932 (label thm:BP, quoted from the divisible sandpile paper)
+    file: Parking/External/SandpileGrowth.lean
+    export: Parking.External.SandpileGrowth
+    state: FROZEN
+    frozen_sha256: 5da4842ff6efad045d5c9e52c5ff681587bf78ddf57089ad6bd3b5af18f8399e
+    provider: Parking.External.SandpileGrowth
+    approved: "2026-09-06"
+
+  - id: ext-u-concentration
+    version: 1
+    kind: definition
+    source: parking.tex:1387-1400 (label lem:u-concentration, quoted from BP Remark 3.4)
+    file: Parking/External/UConcentration.lean
+    export: Parking.External.UConcentration
+    state: FROZEN
+    frozen_sha256: 5b1071a90d89856ab33c4f505bcc34394fa15920f73c276c18094599c6aa3d43
+    provider: Parking.External.UConcentration
+    approved: "2026-09-06"
+
+  - id: ext-bernstein
+    version: 2
+    kind: definition
+    source: parking.tex:1165-1178 (label lem:bernstein, quoted from Pinelis Theorems 4.1 and 3.3)
+    file: Parking/External/Bernstein.lean
+    export: Parking.External.Bernstein
+    state: FROZEN
+    frozen_sha256: a9f5c773eee067ca4efa58e6d38eb54afb420510ab6c4b028ae5928011a535bb
+    provider: Parking.External.Bernstein
+    approved: "2026-09-06"
+
+  - id: lem-tagged-monotonicity
+    version: 2
+    kind: theorem
+    source: parking.tex:712-717 (label lem:tagged-monotonicity)
+    file: Parking/Frozen/TaggedMonotonicity.lean
+    export: Parking.Frozen.tagged_monotonicity
+    state: SEALED
+    frozen_sha256: 839cf2a4b0fc1915fc56d25140603a39b1d22678e474c7fad4fe7ebbb7813fb3
+    provider: Parking.Frozen.tagged_monotonicity
+    approved: "2026-09-06"
+
+  - id: lem-parallel
+    version: 3
+    kind: theorem
+    source: parking.tex:647-653 (label lem:parallel)
+    file: Parking/Frozen/Parallel.lean
+    export: Parking.Frozen.parallel
+    state: SEALED
+    frozen_sha256: ee000c2b7ec706b4f32ff4a5059cdd6e38438d920f437f4cd092312cf1bd44ec
+    provider: Parking.Frozen.parallel
+    approved: "2026-09-06"
+
+  - id: lem-one-particle
+    version: 2
+    kind: theorem
+    source: parking.tex:682-690 (label lem:one-particle)
+    file: Parking/Frozen/OneParticle.lean
+    export: Parking.Frozen.one_particle
+    state: SEALED
+    frozen_sha256: bdcb454c0bcecd8cf2864cdd618aa51d43b0dd162dc862fd834ec9882d88aaff
+    provider: Parking.Frozen.one_particle
+    approved: "2026-09-06"
+
+  - id: lem-pathwise-comparison
+    version: 2
+    kind: theorem
+    source: parking.tex:966-975 (label lem:pathwise-comparison)
+    file: Parking/Frozen/PathwiseComparison.lean
+    export: Parking.Frozen.pathwise_comparison
+    state: SEALED
+    frozen_sha256: 915149f5d65bc6b8d1fa9861b133ea97fab7889ca86689141bdaf6cf6455c266
+    provider: Parking.Frozen.pathwise_comparison
+    approved: "2026-09-06"
+
+  - id: ext-stopping
+    version: 2
+    kind: definition
+    source: parking.tex:866-874 (label lem:stopping, quoted from BPRS Theorem 3.2, proved in the shared library)
+    file: Parking/External/Stopping.lean
+    export: Parking.External.Stopping
+    state: SEALED
+    frozen_sha256: 6ba333d59e5f37993fb576c66dab3f8c71fb5d8d3aa31ba9ff9375ee9b7cd731
+    provider: Parking.External.Stopping
+    approved: "2026-09-06"
+
+  - id: lem-deferred
+    version: 4
+    kind: theorem
+    source: parking.tex:659-667 (label lem:deferred)
+    file: Parking/Frozen/Deferred.lean
+    export: Parking.Frozen.deferred
+    state: SEALED
+    frozen_sha256: e4984c1e6330387bca5665fe675d68516549cabec6d207182e59213c7af18240
+    provider: Parking.Frozen.deferred
+    approved: "2026-09-06"
+
+  - id: thm-comparison
+    version: 2
+    kind: theorem
+    source: parking.tex:879-885 (label thm:comparison)
+    file: Parking/Frozen/Comparison.lean
+    export: Parking.Frozen.comparison
+    state: SEALED
+    frozen_sha256: cba4b60e269bfc28ea466b7f369ce531a36d99ea5e3a103a6e41f11c86db499d
+    provider: Parking.Frozen.comparison
+    approved: "2026-09-06"
+
+  - id: lem-activity-holes
+    version: 2
+    kind: theorem
+    source: parking.tex:768-774 (label lem:activity-holes)
+    file: Parking/Frozen/ActivityHoles.lean
+    export: Parking.Frozen.activity_holes
+    state: SEALED
+    frozen_sha256: 365a9628b28180cb58ed3d8828bbf94e377d2dd0362c8fe0b155ff7e09954052
+    provider: Parking.Frozen.activity_holes
+    approved: "2026-09-06"
+
+  - id: lem-shift
+    version: 2
+    kind: theorem
+    source: parking.tex:3032-3037 (label lem:shift)
+    file: Parking/Frozen/Shift.lean
+    export: Parking.Frozen.shift
+    state: SEALED
+    frozen_sha256: 2d8951806eb077073b6f182baa74013a1992982ea62fd5a7b2e6f72f02b6d951
+    provider: Parking.Frozen.shift
+    approved: "2026-09-06"
+
+  - id: lem-nearest-close-pair
+    version: 2
+    kind: theorem
+    source: parking.tex:2184-2189 (label lem:nearest-close-pair)
+    file: Parking/Frozen/NearestClosePair.lean
+    export: Parking.Frozen.nearest_close_pair
+    state: SEALED
+    frozen_sha256: 1a2588c5c66410e9fd0aff6c7f477c8c46eaa4ef8fe49970fa209d7504007288
+    provider: Parking.Frozen.nearest_close_pair
+    approved: "2026-09-06"
+
+  - id: lem-gamma-sum
+    version: 2
+    kind: theorem
+    source: parking.tex:1047-1052 (label lem:gamma-sum)
+    file: Parking/Frozen/GammaSum.lean
+    export: Parking.Frozen.gamma_sum
+    state: SEALED
+    frozen_sha256: 692c19d009a8409875839f82436d7074482d48dd1e17c3a87163c889dc36c5a5
+    provider: Parking.Frozen.gamma_sum
+    approved: "2026-09-06"
+
+  - id: ext-green-gradient
+    version: 2
+    kind: definition
+    source: parking.tex:1019-1030 (label eq:green-gradient, proved in the shared library)
+    file: Parking/External/GreenGradient.lean
+    export: Parking.External.GreenGradient
+    state: SEALED
+    frozen_sha256: 41340ef1abd269fe9cda495a1b59c3c1392c591cc1c704da479a0349f700028f
+    provider: Parking.External.GreenGradient
+    approved: "2026-09-06"
+
+  - id: lem-exposure
+    version: 2
+    kind: theorem
+    source: parking.tex:1097-1105 (label lem:exposure)
+    file: Parking/Frozen/Exposure.lean
+    export: Parking.Frozen.exposure
+    state: SEALED
+    frozen_sha256: deba2db53944b19ca4eed91c4d6f789a208153d286b29ce83b1a602a23d5aed3
+    provider: Parking.Frozen.exposure
+    approved: "2026-09-06"
+
+  - id: lem-density-compare
+    version: 3
+    kind: theorem
+    source: parking.tex:803-813 (label lem:density-compare)
+    file: Parking/Frozen/DensityCompare.lean
+    export: Parking.Frozen.density_compare
+    state: SEALED
+    frozen_sha256: 3bafe868c95ca2cc78df469dad40bc17036ae2e6e2052e98e5e3ce7ac4e9cc96
+    provider: Parking.Frozen.density_compare
+    approved: "2026-09-07"
+
+  - id: lem-transport
+    version: 3
+    kind: theorem
+    source: parking.tex:739-751 (label lem:transport)
+    file: Parking/Frozen/Transport.lean
+    export: Parking.Frozen.transport
+    state: SEALED
+    frozen_sha256: d87638fae420f9e5fc99c76f576675788433806d8409d291fafc0bbfe023c10a
+    provider: Parking.Frozen.transport
+    approved: "2026-09-07"
+
+  - id: lem-range-lower
+    version: 3
+    kind: theorem
+    source: parking.tex:2280-2288 (label lem:range-lower)
+    file: Parking/Frozen/RangeLower.lean
+    export: Parking.Frozen.range_lower
+    state: SEALED
+    frozen_sha256: 9cfd7baa9db0461bf36d698689dfa67ac0f9cbe6a1bb11c60571325f6d119983
+    provider: Parking.Frozen.range_lower
+    approved: "2026-09-07"
+
+  - id: lem-w-martingale
+    version: 3
+    kind: theorem
+    source: parking.tex:1125-1138 (label lem:w-martingale)
+    file: Parking/Frozen/WMartingale.lean
+    export: Parking.Frozen.w_martingale
+    state: SEALED
+    frozen_sha256: 19085718db23e23209170003e6e975ce7af8f9eb04d9057db68fd5d2bc608082
+    provider: Parking.Frozen.w_martingale
+    approved: "2026-09-07"
+
+  - id: ext-green-norms
+    version: 1
+    kind: definition
+    source: parking.tex:1366-1386 (label eq:green-norms, quoted from the Green estimates of Bou-Rabee-Panagiotis Section 3.1)
+    file: Parking/External/GreenNorms.lean
+    export: Parking.External.GreenNorms
+    state: FROZEN
+    frozen_sha256: ff6de521140040f863e8fa68d91bf0a415084104d2010d8698c7828252dde79f
+    provider: Parking.External.GreenNorms
+    approved: "2026-09-07"
+
+  - id: thm-upper
+    version: 4
+    kind: theorem
+    source: parking.tex:1403-1416 (label thm:upper)
+    file: Parking/Frozen/Upper.lean
+    export: Parking.Frozen.upper
+    state: SEALED
+    frozen_sha256: 266a77831d6afafe4d85c31f7a7d43ba258300631bb7692f7689a488cd077d71
+    provider: Parking.Frozen.upper
+    approved: "2026-09-07"
+
+  - id: lem-critical-density
+    version: 3
+    kind: theorem
+    source: parking.tex:1240-1248 (label lem:critical-density)
+    file: Parking/Frozen/CriticalDensity.lean
+    export: Parking.Frozen.critical_density
+    state: SEALED
+    frozen_sha256: 4fd9afa48921b4bf2018aa051fdba74b19897b07946ee002ba036e2530d140da
+    provider: Parking.Frozen.critical_density
+    approved: "2026-09-08"
+
+  - id: cor-critical
+    version: 2
+    kind: theorem
+    source: parking.tex:1339-1346 (label cor:critical)
+    file: Parking/Frozen/CorCritical.lean
+    export: Parking.Frozen.cor_critical
+    state: SEALED
+    frozen_sha256: b6c5c668802bd803f4141f55904e91d8f932d2802fc84be4710e46e88d342fd5
+    provider: Parking.Frozen.cor_critical
+    approved: "2026-09-08"
+
+  - id: thm-master
+    version: 5
+    kind: theorem
+    source: parking.tex:159-168 (label thm:master)
+    file: Parking/Frozen/Master.lean
+    export: Parking.Frozen.master
+    state: SEALED
+    frozen_sha256: 1c0a3b3948fb78bf764d1fe24ea3e3942404292f49fd5568e9a94e0b1e653149
+    provider: Parking.Frozen.master
+    approved: "2026-09-08"
+
+  - id: cor-growth
+    version: 4
+    kind: theorem
+    source: parking.tex:174-188 (label cor:growth)
+    file: Parking/Frozen/Growth.lean
+    export: Parking.Frozen.growth
+    state: SEALED
+    frozen_sha256: fd3249279dba69766750a98af54676a9ea17f128b4cb82309e2c29d155f21920
+    provider: Parking.Frozen.growth
+    approved: "2026-09-08"
+
+  - id: prop-discrepancy
+    version: 3
+    kind: theorem
+    source: parking.tex:1551-1568 (label prop:discrepancy)
+    file: Parking/Frozen/Discrepancy.lean
+    export: Parking.Frozen.discrepancy
+    state: SEALED
+    frozen_sha256: ff750d2dde61391c3ad33612cef50873a07352e5847b42d5ecab66d41d636913
+    provider: Parking.Frozen.discrepancy
+    approved: "2026-09-08"
+
+  - id: thm-four-sparse
+    version: 3
+    kind: theorem
+    source: parking.tex:1586-1595 (label thm:four-sparse)
+    file: Parking/Frozen/FourSparse.lean
+    export: Parking.Frozen.four_sparse
+    state: SEALED
+    frozen_sha256: 9a2e26a6ed6aa94be415e6a2f6b8fb52e15e6cf462dfcc8f4cb1c3d6f52e2a48
+    provider: Parking.Frozen.four_sparse
+    approved: "2026-09-08"
+
+  - id: thm-trichotomy
+    version: 4
+    kind: theorem
+    source: parking.tex:207-238 (label thm:trichotomy)
+    file: Parking/Frozen/Trichotomy.lean
+    export: Parking.Frozen.trichotomy
+    state: SEALED
+    frozen_sha256: 808192a6a2be0fe725f93b15a8023908e6e3b120606c16a219da88224c369ef3
+    provider: Parking.Frozen.trichotomy
+    approved: "2026-09-08"
+
+  - id: lem-nearest-one-point
+    version: 4
+    kind: theorem
+    source: parking.tex:1867-1876 (label lem:nearest-one-point)
+    file: Parking/Frozen/NearestOnePoint.lean
+    export: Parking.Frozen.nearest_one_point
+    state: SEALED
+    frozen_sha256: ad47a2d8c2e972a16d012a10af516cdc05393b88fe5a1cd72714c7822425d071
+    provider: Parking.Frozen.nearest_one_point
+    approved: "2026-09-08"
+
+  - id: prop-nearest-two-hole
+    version: 3
+    kind: theorem
+    source: parking.tex:2010-2017 (label prop:nearest-two-hole)
+    file: Parking/Frozen/NearestTwoHole.lean
+    export: Parking.Frozen.nearest_two_hole
+    state: SEALED
+    frozen_sha256: 151a6b9ac7eb06f8a517fd8ea192a9a8180a30e32fde1ac9f58df2a1ddbcda5c
+    provider: Parking.Frozen.nearest_two_hole
+    approved: "2026-09-08"
+
+  - id: thm-nearest-counterexample
+    version: 3
+    kind: theorem
+    source: parking.tex:289-302 (label thm:nearest-counterexample)
+    file: Parking/Frozen/NearestCounterexample.lean
+    export: Parking.Frozen.nearest_counterexample
+    state: SEALED
+    frozen_sha256: 4edb5724164ff3f61a2e6f33ddd93e1e1879dd7a37253d163a2e568c74a78987
+    provider: Parking.Frozen.nearest_counterexample
+    approved: "2026-09-08"
+
+  - id: ext-donsker-varadhan
+    version: 1
+    kind: definition
+    source: parking.tex:117-121 (Theorem 1 of Donsker-Varadhan 1979, cited for eq:sharpness and used at parking.tex:2499-2502)
+    file: Parking/External/DonskerVaradhan.lean
+    export: Parking.External.DonskerVaradhanRange
+    state: FROZEN
+    frozen_sha256: 4ed9aad3375d1c450cc8b21702c87a9459763c06cc9cacfb692f906b754af423
+    provider: Parking.External.DonskerVaradhanRange
+    approved: "2026-09-10"
+
+  - id: prop-everyone-settles
+    version: 3
+    kind: theorem
+    source: parking.tex:1486-1494 (label prop:everyone-settles)
+    file: Parking/Frozen/EveryoneSettles.lean
+    export: Parking.Frozen.everyone_settles
+    state: SEALED
+    frozen_sha256: 155ed0f5956e4e41cf1f483694a05ee18026ca13b3a0d394f193e01934e625f4
+    provider: Parking.Frozen.everyone_settles
+    approved: "2026-09-10"
+
+  - id: prop-resolvent
+    version: 2
+    kind: theorem
+    source: parking.tex:2628-2648 (label prop:resolvent)
+    file: Parking/Frozen/Resolvent.lean
+    export: Parking.Frozen.resolvent
+    state: SEALED
+    frozen_sha256: 904a892b5eb0c60d3b5f46918ea0554afefae252290a309362a97d3333a5363b
+    provider: Parking.Frozen.resolvent
+    approved: "2026-09-10"
+
+  - id: lem-mean-horizon
+    version: 5
+    kind: theorem
+    source: parking.tex:2764-2770 (label lem:mean-horizon)
+    file: Parking/Frozen/MeanHorizon.lean
+    export: Parking.Frozen.mean_horizon
+    state: SEALED
+    frozen_sha256: ff77bffc1b6a532022e60fd88e11c35b7d0b0db647107d3d811ecc568b776793
+    provider: Parking.Frozen.mean_horizon
+    approved: "2026-09-11"
+
+  - id: prop-near-divisible
+    version: 3
+    kind: theorem
+    source: parking.tex:2829-2845 (label prop:near-divisible)
+    file: Parking/Frozen/NearDivisible.lean
+    export: Parking.Frozen.near_divisible
+    state: SEALED
+    frozen_sha256: 3c26224d8a3df73cae313d9a5711cdd957b8391a2e03d052a0e9ed7a4ddbb1ad
+    provider: Parking.Frozen.near_divisible
+    approved: "2026-09-11"
+
+  - id: ext-oriented-stopping-stability
+    version: 1
+    kind: definition
+    source: parking.tex:3199-3203 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling)
+    file: Parking/External/OrientedStoppingStability.lean
+    export: Parking.External.OrientedStoppingStability
+    state: FROZEN
+    frozen_sha256: bac0f1959b886a007e5176f5f14105612dac9c04dcd1c5a14d82dce556396c31
+    provider: Parking.External.OrientedStoppingStability
+    approved: "2026-09-11"
+
+  - id: lem-product
+    version: 5
+    kind: theorem
+    source: parking.tex:2321-2332 (label lem:product)
+    file: Parking/Frozen/Product.lean
+    export: Parking.Frozen.product
+    state: SEALED
+    frozen_sha256: 392b048bfd4663cfadbe590a17abefc0c755213a60698da1d2bbbb452a08f12a
+    provider: Parking.Frozen.product
+    approved: "2026-09-11"
+
+  - id: thm-subcritical
+    version: 3
+    kind: theorem
+    source: parking.tex:2419-2432 (label thm:subcritical)
+    file: Parking/Frozen/Subcritical.lean
+    export: Parking.Frozen.subcritical
+    state: SEALED
+    frozen_sha256: 4c7507c1091e653f1b747a06d1904f33f5e82f4c7365bcec0c8931fc390be950
+    provider: Parking.Frozen.subcritical
+    approved: "2026-09-12"
+
+  - id: thm-subcritical-tail
+    version: 3
+    kind: theorem
+    source: parking.tex:123-135 (label thm:subcritical-tail)
+    file: Parking/Frozen/SubcriticalTail.lean
+    export: Parking.Frozen.subcritical_tail
+    state: SEALED
+    frozen_sha256: e712ea0a1a96aa7a7a17e8ef1442bf6d1032ead517a7d344b8834c997dae4138
+    provider: Parking.Frozen.subcritical_tail
+    approved: "2026-09-12"
+
+  - id: lem-near-tilt
+    version: 3
+    kind: theorem
+    source: parking.tex:2584-2589 (label lem:near-tilt)
+    file: Parking/Frozen/NearTilt.lean
+    export: Parking.Frozen.near_tilt
+    state: SEALED
+    frozen_sha256: 53b268f22492b9a63b9dedbc45dd7e2be3fc2e8a9945e0036053d022279f372c
+    provider: Parking.Frozen.near_tilt
+    approved: "2026-09-12"
+
+  - id: thm-near
+    version: 3
+    kind: theorem
+    source: parking.tex:314-335 (label thm:near)
+    file: Parking/Frozen/Near.lean
+    export: Parking.Frozen.near
+    state: SEALED
+    frozen_sha256: c2f041afd976980d6472b7f8529a399b61d074e0e97a80a0f2aa8133c6967e60
+    provider: Parking.Frozen.near
+    approved: "2026-09-12"
+
+  - id: ext-variance-scale
+    version: 1
+    kind: definition
+    source: parking.tex:1807-1833 (critical_toppling input, sandpile.tex:1117-1240)
+    file: Parking/External/VarianceScale.lean
+    export: Parking.External.VarianceScale
+    state: FROZEN
+    frozen_sha256: 5049e0e1c4f9b1dddcdee9a7ffc419f31bf8da345e3355f756080fa7a4b99a2b
+    provider: Parking.External.VarianceScale
+    approved: "2026-09-12"
+
+  - id: ext-multivariate-berry-esseen
+    version: 1
+    kind: definition
+    source: parking.tex:1807-1833 (critical_toppling input, sandpile.tex:1770-1782, quoted from Raic Theorem 1.1)
+    file: Parking/External/MultivariateBerryEsseen.lean
+    export: Parking.External.MultivariateBerryEsseen
+    state: FROZEN
+    frozen_sha256: 0150875b4230a2e9015871008ac2973a8b1934043ce89615212dc6878b690c57
+    provider: Parking.External.MultivariateBerryEsseen
+    approved: "2026-09-12"
+
+  - id: ext-binomial-local-clt
+    version: 1
+    kind: definition
+    source: parking.tex:3192-3203 (the binomial local central limit theorem cited in step 1 of the proof of prop:oriented-scaling)
+    file: Parking/External/BinomialLocalCLT.lean
+    export: Parking.External.BinomialLocalCLT
+    state: FROZEN
+    frozen_sha256: 34f736bb4c80023fb00d17dd8c0b32139868564380136a06ba25dfed33d9ce72
+    provider: Parking.External.BinomialLocalCLT
+    approved: "2026-09-14"
+
+  - id: prop-oriented-scaling
+    version: 5
+    kind: theorem
+    source: parking.tex:3151-3159 (label prop:oriented-scaling)
+    file: Parking/Frozen/OrientedScaling.lean
+    export: Parking.Frozen.oriented_scaling
+    state: SEALED
+    frozen_sha256: 8640809566a2e471c41586277f48d0470f03ce06e8d803dc410db9f7e53c9709
+    provider: Parking.Frozen.oriented_scaling
+    approved: "2026-09-17"
+
+  - id: thm-oriented-walk
+    version: 4
+    kind: theorem
+    source: parking.tex:363-380 (label thm:oriented-walk)
+    file: Parking/Frozen/OrientedWalk.lean
+    export: Parking.Frozen.oriented_walk
+    state: SEALED
+    frozen_sha256: ba5f8346d321824c7f9f668af9e53f0bb8924e85db77ee8dc42a8d8ec2004dba
+    provider: Parking.Frozen.oriented_walk
+    approved: "2026-09-14"
+
+  - id: ext-spatial-fixed-time-tightness
+    version: 2
+    kind: definition
+    source: parking.tex:1741-1752 (prop:spatial-scaling, quoted from BP Theorem 1.3(i)(b))
+    file: Parking/External/SpatialFixedTimeTightness.lean
+    export: Parking.External.SpatialFixedTimeTightness
+    state: FROZEN
+    frozen_sha256: 16c23b1d88788d1a4e519822b6cbfa09cd4e7c571581cd12da5cd24bcc0fb457
+    provider: Parking.External.SpatialFixedTimeTightness
+    approved: "2026-09-16"
+
+  - id: ext-spatial-stopping-stability
+    version: 1
+    kind: definition
+    source: parking.tex:1741-1752 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling)
+    file: Parking/External/SpatialStoppingStability.lean
+    export: Parking.External.SpatialStoppingStability
+    state: FROZEN
+    frozen_sha256: 2e15c8eeec632c1b26edd313c52454b180c1d5fc5b59ec7956ca3806696d9655
+    provider: Parking.External.SpatialStoppingStability
+    approved: "2026-09-16"
+
+  - id: ext-srw-local-clt
+    version: 1
+    kind: definition
+    source: parking.tex:1741-1752 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8))
+    file: Parking/External/SRWLocalCLT.lean
+    export: Parking.External.SRWLocalCLT
+    state: FROZEN
+    frozen_sha256: c0403f3aa225870e4847661d64d602257204f493b4fca00454b443591652b222
+    provider: Parking.External.SRWLocalCLT
+    approved: "2026-09-17"
+
+  - id: thm-oriented
+    version: 4
+    kind: theorem
+    source: parking.tex:3057-3070 (label thm:oriented)
+    file: Parking/Frozen/Oriented.lean
+    export: Parking.Frozen.oriented
+    state: SEALED
+    frozen_sha256: 8ae751db70d9861676a438b36775eb8ac512779db25209095fc10934e6eae2f2
+    provider: Parking.Frozen.oriented
+    approved: "2026-09-17"
+
+  - id: prop-w-moment
+    version: 5
+    kind: theorem
+    source: parking.tex:1187-1200 (label prop:w-moment)
+    file: Parking/Frozen/WMoment.lean
+    export: Parking.Frozen.w_moment
+    state: SEALED
+    frozen_sha256: ddde27a9a9b8ee94a38ac0fe2bfa7103ced6eba69b883f493f20e12fb1cbb535
+    provider: Parking.Frozen.w_moment
+
+  - id: ext-heat-compactness
+    version: 1
+    kind: definition
+    source: parking.tex:1785-1805 (prop:spatial-scaling, Step 3, classical parabolic compactness)
+    file: Parking/External/HeatCompactness.lean
+    export: Parking.External.HeatCompactness
+    state: FROZEN
+    frozen_sha256: 188b69ff31897da03ba049ee836e527e4f57f952020c6949e86f2ca4bb82e9db
+    provider: Parking.External.HeatCompactness
+    approved: "2026-09-17"
+
+  - id: ext-spatial-odometer-scaling
+    version: 3
+    kind: definition
+    source: parking.tex:1741-1752 (prop:spatial-scaling, quoted from BP Theorem 1.3(i)(b), sandpile.tex:206-235)
+    file: Parking/External/SpatialOdometerScaling.lean
+    export: Parking.External.SpatialOdometerScaling
+    state: FROZEN
+    frozen_sha256: c41ec84a03c393a76287d51f5b48740d05dc3e02d47f74da143545096125f626
+    provider: Parking.External.SpatialOdometerScaling
+    approved: "2026-09-18"
+
+  - id: prop-spatial-scaling
+    version: 9
+    kind: theorem
+    source: parking.tex:1679-1737 (label prop:spatial-scaling)
+    file: Parking/Frozen/SpatialScaling.lean
+    export: Parking.Frozen.spatial_scaling
+    state: SEALED
+    frozen_sha256: f862435f1cc961c12d0aa9aa65aa1ae3416458da3e9f06c8b103e5ee2088c154
+    provider: Parking.Frozen.spatial_scaling
+    approved: "2026-09-18"
+
+  - id: thm-nearest
+    version: 9
+    kind: theorem
+    source: parking.tex:266-275 (label thm:nearest)
+    file: Parking/Frozen/Nearest.lean
+    export: Parking.Frozen.nearest
+    state: SEALED
+    frozen_sha256: 0c3d615347c6b2acf441cb11472edc82dff340ec4759e8c035a37e312b1c77bf
+    provider: Parking.Frozen.nearest
+    approved: "2026-09-18"
+
+  - id: ext-linear-field-scaling
+    version: 6
+    kind: definition
+    source: parking.tex:1741-1752 (prop:spatial-scaling, BP Proposition 4.3, page 27)
+    file: Parking/External/LinearFieldScaling.lean
+    export: Parking.External.LinearFieldScaling
+    state: FROZEN
+    frozen_sha256: f50bd2fb7ca4f3a7967b93a87e20ccb05e0035a96904892a0fd7d273cd7fd587
+    provider: Parking.External.LinearFieldScaling
+    approved: "2026-09-18"
+
+  - id: ext-heat-strong-minimum
+    version: 2
+    kind: definition
+    source: parking.tex:1785-1805 (prop:spatial-scaling, Step 4, strong minimum principle)
+    file: Parking/External/HeatStrongMinimum.lean
+    export: Parking.External.HeatStrongMinimum
+    state: FROZEN
+    frozen_sha256: 3a1eacdb6b1a70ccf395d2a7374a712b7aae5eaa4583bfc1bca12fb09a6f4f94
+    provider: Parking.External.HeatStrongMinimum
+    approved: "2026-09-18"
+
+  - id: ext-heat-interior-regularity
+    version: 4
+    kind: definition
+    source: parking.tex:1785-1805 (prop:spatial-scaling, Step 3, hypoelliptic interior regularity)
+    file: Parking/External/HeatInteriorRegularity.lean
+    export: Parking.External.HeatInteriorRegularity
+    state: FROZEN
+    frozen_sha256: 357b628c312fbdc4bef74cced2dbb042195f74121ff0d836ca530a467fb95d9e
+    provider: Parking.External.HeatInteriorRegularity
+    approved: "2026-09-18"
+
+  - id: ext-critical-scale-lower-tail
+    version: 2
+    kind: definition
+    source: parking.tex:1807-1833 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720)
+    file: Parking/External/CriticalScaleLowerTail.lean
+    export: Parking.External.CriticalScaleLowerTail
+    state: FROZEN
+    frozen_sha256: 516e5f91882bba56b51c214a6788f05ef0d7d4aa0362dda51c21ffdaa137af96
+    provider: Parking.External.CriticalScaleLowerTail
+    approved: "2026-09-18"
+
