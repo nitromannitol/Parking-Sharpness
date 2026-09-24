@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Audit.Master.Challenge",
+  "solution_module": "Audit.Master.Solution",
+  "theorem_names": [
+    "ParkingAudit.master"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}

@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use this formalization, please cite it as below."
+title: "Parking-Sharpness: a Lean 4 formalization of Sharpness and critical scaling of parking"
+abstract: >-
+  A machine-checked Lean 4 / mathlib formalization of the paper "Sharpness and
+  critical scaling of parking" (Bou-Rabee and Panagiotis, arXiv:2609.02820): at
+  the critical density the expected particle odometer of the parking process is
+  comparable to the expected divisible sandpile odometer plus log n (Theorem
+  1.2), hence of order n^((4-d)/4) for d <= 3 and log n for d >= 4 (Corollary
+  1.3); below the critical density the settling time has a stretched-exponential
+  tail with exponent d/(d+2) (Theorem 1.1); together with the quenched odometer
+  comparison, the nearest hole and particle, near criticality and the oriented
+  walk (Theorems 1.4 to 1.8) and every lemma and proposition behind them.
+  Eighteen results the paper quotes from the literature are taken as explicit
+  hypotheses.  The development contains no sorry and no custom axiom.
+type: software
+authors:
+  - family-names: Bou-Rabee
+    given-names: Ahmed
+keywords:
+  - Lean
+  - mathlib
+  - formal verification
+  - parking
+  - particle-hole process
+  - divisible sandpile
+  - random walk
+license: Apache-2.0
+# Add a Zenodo DOI here once an archived release is minted.
+repository-code: "https://github.com/nitromannitol/Parking-Sharpness"
+references:
+  - type: article
+    title: "Sharpness and critical scaling of parking"
+    authors:
+      - family-names: Bou-Rabee
+        given-names: Ahmed
+      - family-names: Panagiotis
+        given-names: Christoforos
+    year: 2026
+    identifiers:
+      - type: other
+        value: "arXiv:2609.02820"
+    url: "https://arxiv.org/abs/2609.02820"
+    notes: "The paper formalized by this repository."

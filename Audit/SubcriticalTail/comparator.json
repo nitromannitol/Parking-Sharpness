@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Audit.SubcriticalTail.Challenge",
+  "solution_module": "Audit.SubcriticalTail.Solution",
+  "theorem_names": [
+    "ParkingAudit.subcritical_tail"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}

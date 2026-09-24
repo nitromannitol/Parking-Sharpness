@@ -1,0 +1,245 @@
+\begin{thebibliography}{99}
+
+\bibitem[Ahn, Junge, Lyu, Reeves, Richey and Sivakoff(2025)]{AJLRS}
+Sungwon Ahn, Matthew Junge, Hanbaek Lyu, Lily Reeves, Jacob Richey, and David Sivakoff,
+\emph{Diffusion-limited annihilating-coalescing systems},
+Electron. J. Probab. \textbf{30} (2025);
+\href{https://doi.org/10.1214/25-EJP1286}{doi:10.1214/25-EJP1286};
+\href{https://arxiv.org/abs/2305.19333}{arXiv:2305.19333}.
+
+
+\bibitem[Aldous, Contat, Curien and H\'enard(2023)]{ACCH}
+David Aldous, Alice Contat, Nicolas Curien, and Olivier H\'enard,
+\emph{Parking on the infinite binary tree},
+Probab. Theory Related Fields \textbf{187} (2023), 481--504;
+\href{https://doi.org/10.1007/s00440-023-01189-6}{doi:10.1007/s00440-023-01189-6};
+\href{https://arxiv.org/abs/2205.15932}{arXiv:2205.15932}.
+
+\bibitem[Athreya, Drewitz and Sun(2019)]{ADS}
+Siva Athreya, Alexander Drewitz, and Rongfeng Sun,
+\emph{Random walk among mobile/immobile traps: a short review},
+Sojourns in Probability Theory and Statistical Physics III,
+Springer Proc. Math. Stat. \textbf{300} (2019);
+\href{https://doi.org/10.1007/978-981-15-0302-3_1}{doi:10.1007/978-981-15-0302-3\_1};
+\href{https://arxiv.org/abs/1703.06617}{arXiv:1703.06617}.
+
+
+\bibitem[Bahl, Barnet, Johnson and Junge(2022)]{BBJJ}
+Riti Bahl, Philip Barnet, Tobias Johnson, and Matthew Junge,
+\emph{Diffusion-limited annihilating systems and the increasing convex order},
+Electron. J. Probab. \textbf{27} (2022), no.~84, 1--19;
+\href{https://doi.org/10.1214/22-EJP808}{doi:10.1214/22-EJP808};
+\href{https://arxiv.org/abs/2104.12797}{arXiv:2104.12797}.
+
+\bibitem[Bahl, Barnet and Junge(2021)]{BBJ}
+Riti Bahl, Philip Barnet, and Matthew Junge,
+\emph{Parking on supercritical Galton-Watson trees},
+ALEA Lat. Am. J. Probab. Math. Stat. \textbf{18} (2021), 1801--1815;
+\href{https://doi.org/10.30757/alea.v18-67}{doi:10.30757/alea.v18-67};
+\href{https://arxiv.org/abs/1912.13062}{arXiv:1912.13062}.
+
+
+\bibitem[Bou-Rabee and Panagiotis(2026)]{BP}
+Ahmed Bou-Rabee and Christoforos Panagiotis,
+\emph{Quantitative explosion and percolation of the divisible sandpile},
+preprint, 2026.
+
+\bibitem[Bou-Rabee, Peres and Sava-Huss(2026)]{BPRS}
+Ahmed Bou-Rabee, Yuval Peres, and Ecaterina Sava-Huss,
+\emph{Divisible sandpiles via random walks in random scenery},
+\href{https://arxiv.org/abs/2604.13968}{arXiv:2604.13968}.
+
+\bibitem[Bramson and Lebowitz(1991)]{BL}
+Maury Bramson and Joel L. Lebowitz,
+\emph{Asymptotic behavior of densities for two-particle annihilating random walks},
+J. Statist. Phys. \textbf{62} (1991), 297--372;
+\href{https://doi.org/10.1007/BF01020872}{doi:10.1007/BF01020872}.
+
+\bibitem[Cabezas, Rolla and Sidoravicius(2014)]{CRS14}
+Manuel Cabezas, Leonardo T. Rolla, and Vladas Sidoravicius,
+\emph{Non-equilibrium phase transitions: activated random walks at criticality},
+J. Stat. Phys. \textbf{155} (2014), no.~6, 1112--1125;
+\href{https://doi.org/10.1007/s10955-013-0909-3}{doi:10.1007/s10955-013-0909-3};
+\href{https://arxiv.org/abs/1307.4450}{arXiv:1307.4450}.
+
+\bibitem[Cabezas, Rolla and Sidoravicius(2018)]{CRS}
+Manuel Cabezas, Leonardo T. Rolla, and Vladas Sidoravicius,
+\emph{Recurrence and density decay for diffusion-limited annihilating systems},
+Probab. Theory Related Fields \textbf{170} (2018), 587--615;
+\href{https://doi.org/10.1007/s00440-017-0763-3}{doi:10.1007/s00440-017-0763-3};
+\href{https://arxiv.org/abs/1309.4387}{arXiv:1309.4387}.
+
+\bibitem[Damron, Gravner, Junge, Lyu and Sivakoff(2019)]{DGJLS}
+Michael Damron, Janko Gravner, Matthew Junge, Hanbaek Lyu, and David Sivakoff,
+\emph{Parking on transitive unimodular graphs},
+Ann. Appl. Probab. \textbf{29} (2019), 2089--2113;
+\href{https://doi.org/10.1214/18-AAP1443}{doi:10.1214/18-AAP1443};
+\href{https://arxiv.org/abs/1710.10529}{arXiv:1710.10529}.
+
+\bibitem[Damron, Lyu and Sivakoff(2021)]{DLS}
+Michael Damron, Hanbaek Lyu, and David Sivakoff,
+\emph{Stretched exponential decay for subcritical parking times on $\Z^d$},
+Random Structures \& Algorithms \textbf{59} (2021), no.~2, 143--154;
+\href{https://doi.org/10.1002/rsa.21001}{doi:10.1002/rsa.21001};
+\href{https://arxiv.org/abs/2008.05072}{arXiv:2008.05072}.
+
+\bibitem[Diaconis and Fulton(1991)]{DiaconisFulton}
+Persi Diaconis and William Fulton,
+\emph{A growth model, a game, an algebra, Lagrange inversion, and characteristic classes},
+Rend. Sem. Mat. Univ. Politec. Torino \textbf{49} (1991), no.~1, 95--119.
+
+\bibitem[Donsker and Varadhan(1979)]{DonskerVaradhan}
+Monroe D. Donsker and S. R. Srinivasa Varadhan,
+\emph{On the number of distinct sites visited by a random walk},
+Comm. Pure Appl. Math. \textbf{32} (1979), 721--747;
+\href{https://doi.org/10.1002/cpa.3160320602}{doi:10.1002/cpa.3160320602}.
+
+\bibitem[Johnson and Richey(2025)]{JR}
+Tobias Johnson and Jacob Richey,
+\emph{The odometer in subcritical activated random walk},
+\href{https://arxiv.org/abs/2510.05514}{arXiv:2510.05514}.
+
+\bibitem[Johnson, Junge, Lyu and Sivakoff(2023)]{JJLS}
+Tobias Johnson, Matthew Junge, Hanbaek Lyu, and David Sivakoff,
+\emph{Particle density in diffusion-limited annihilating systems},
+Ann. Probab. \textbf{51} (2023), no.~6, 2301--2344;
+\href{https://doi.org/10.1214/23-AOP1653}{doi:10.1214/23-AOP1653};
+\href{https://arxiv.org/abs/2005.06018}{arXiv:2005.06018}.
+
+\bibitem[Lawler and Limic(2010)]{LawlerLimic}
+Gregory F. Lawler and Vlada Limic,
+\emph{Random walk: a modern introduction},
+Cambridge University Press, Cambridge, 2010;
+\href{https://doi.org/10.1017/CBO9780511750854}{doi:10.1017/CBO9780511750854}.
+
+\bibitem[Levine, Murugan, Peres and Ugurcan(2016)]{LMPU}
+Lionel Levine, Mathav Murugan, Yuval Peres, and Baris Evren Ugurcan,
+\emph{The divisible sandpile at critical density},
+Ann. Henri Poincar\'e \textbf{17} (2016), 1677--1711;
+\href{https://doi.org/10.1007/s00023-015-0433-x}{doi:10.1007/s00023-015-0433-x};
+\href{https://arxiv.org/abs/1501.07258}{arXiv:1501.07258}.
+
+
+\bibitem[Cipriani, Hazra and Ruszel(2018a)]{CHR}
+Alessandra Cipriani, Rajat Subhra Hazra, and Wioletta M. Ruszel,
+\emph{Scaling limit of the odometer in divisible sandpiles},
+Probab. Theory Related Fields \textbf{172} (2018), 829--868;
+\href{https://doi.org/10.1007/s00440-017-0821-x}{doi:10.1007/s00440-017-0821-x};
+\href{https://arxiv.org/abs/1604.03754}{arXiv:1604.03754}.
+
+\bibitem[Cipriani, Hazra and Ruszel(2018b)]{CHR2}
+Alessandra Cipriani, Rajat Subhra Hazra, and Wioletta M. Ruszel,
+\emph{The divisible sandpile with heavy-tailed variables},
+Stochastic Process. Appl. \textbf{128} (2018), 3054--3081;
+\href{https://doi.org/10.1016/j.spa.2017.10.013}{doi:10.1016/j.spa.2017.10.013};
+\href{https://arxiv.org/abs/1610.09863}{arXiv:1610.09863}.
+
+\bibitem[Contat(2022)]{Contat}
+Alice Contat,
+\emph{Sharpness of the phase transition for parking on random trees},
+Random Structures Algorithms \textbf{61} (2022), 84--100;
+\href{https://doi.org/10.1002/rsa.21061}{doi:10.1002/rsa.21061};
+\href{https://arxiv.org/abs/2012.00607}{arXiv:2012.00607}.
+
+\bibitem[Curien and H\'enard(2022)]{CH}
+Nicolas Curien and Olivier H\'enard,
+\emph{The phase transition for parking on Galton-Watson trees},
+Discrete Anal. (2022), paper no.~1;
+\href{https://doi.org/10.19086/da.33167}{doi:10.19086/da.33167};
+\href{https://arxiv.org/abs/1912.06012}{arXiv:1912.06012}.
+
+\bibitem[Goldschmidt and Przykucki(2019)]{GP}
+Christina Goldschmidt and Micha{\l} Przykucki,
+\emph{Parking on a random tree},
+Combin. Probab. Comput. \textbf{28} (2019), 23--45;
+\href{https://doi.org/10.1017/S0963548318000457}{doi:10.1017/S0963548318000457}.
+
+\bibitem[Kaufman and Meisel(2025)]{KM}
+Harley Kaufman and Josh Meisel,
+\emph{Asymptotic behavior of the critical density of activated random walk},
+\href{https://arxiv.org/abs/2512.00720}{arXiv:2512.00720}.
+
+\bibitem[Levine and Peres(2010)]{LP10}
+Lionel Levine and Yuval Peres,
+\emph{Scaling limits for internal aggregation models with multiple sources},
+J. Anal. Math. \textbf{111} (2010), 151--219;
+\href{https://doi.org/10.1007/s11854-010-0015-2}{doi:10.1007/s11854-010-0015-2};
+\href{https://arxiv.org/abs/0712.3378}{arXiv:0712.3378}.
+
+\bibitem[Levine and Silvestri(2024)]{LS}
+Lionel Levine and Vittoria Silvestri,
+\emph{Universality conjectures for activated random walk},
+Probab. Surv. \textbf{21} (2024), 1--27;
+\href{https://doi.org/10.1214/24-PS25}{doi:10.1214/24-PS25};
+\href{https://arxiv.org/abs/2306.01698}{arXiv:2306.01698}.
+
+\bibitem[Arratia(1983)]{Arratia}
+Richard Arratia,
+\emph{Site recurrence for annihilating random walks on $\Z_d$},
+Ann. Probab. \textbf{11} (1983), 706--713;
+\href{https://doi.org/10.1214/aop/1176993515}{doi:10.1214/aop/1176993515}.
+
+\bibitem[Balagurov and Vaks(1974)]{BV}
+B. Ya. Balagurov and V. G. Vaks,
+\emph{Random walks of a particle on lattices with traps},
+Soviet Phys. JETP \textbf{38} (1974), 968;
+Russian original Zh. Eksp. Teor. Fiz. \textbf{65} (1973), 1939.
+
+\bibitem[Bramson and Lebowitz(2001)]{BL01}
+Maury Bramson and Joel L. Lebowitz,
+\emph{Spatial structure in low dimensions for diffusion limited two-particle reactions},
+Ann. Appl. Probab. \textbf{11} (2001), 121--181;
+\href{https://doi.org/10.1214/aoap/998926989}{doi:10.1214/aoap/998926989}.
+
+\bibitem[Kang and Redner(1984)]{KR}
+Kyungsik Kang and Sidney Redner,
+\emph{Scaling approach for the kinetics of recombination processes},
+Phys. Rev. Lett. \textbf{52} (1984), 955--958;
+\href{https://doi.org/10.1103/PhysRevLett.52.955}{doi:10.1103/PhysRevLett.52.955}.
+
+\bibitem[Ovchinnikov and Zeldovich(1978)]{OZ}
+Alexander A. Ovchinnikov and Yakov B. Zeldovich,
+\emph{Role of density fluctuations in bimolecular reaction kinetics},
+Chem. Phys. \textbf{28} (1978), 215--218;
+\href{https://doi.org/10.1016/0301-0104(78)85052-6}{doi:10.1016/0301-0104(78)85052-6}.
+
+\bibitem[Toussaint and Wilczek(1983)]{TW}
+Doug Toussaint and Frank Wilczek,
+\emph{Particle-antiparticle annihilation in diffusive motion},
+J. Chem. Phys. \textbf{78} (1983), 2642--2647;
+\href{https://doi.org/10.1063/1.445022}{doi:10.1063/1.445022}.
+
+\bibitem[Levine and Peres(2009)]{LevinePeres09}
+Lionel Levine and Yuval Peres,
+\emph{Strong spherical asymptotics for rotor-router aggregation and the divisible sandpile},
+Potential Anal. \textbf{30} (2009), no.~1, 1--27;
+\href{https://doi.org/10.1007/s11118-008-9104-6}{doi:10.1007/s11118-008-9104-6};
+\href{https://arxiv.org/abs/0704.0688}{arXiv:0704.0688}.
+
+\bibitem[Peskir and Shiryaev(2006)]{PeskirShiryaev}
+Goran Peskir and Albert N. Shiryaev,
+\emph{Optimal stopping and free-boundary problems},
+Lectures in Mathematics ETH Z\"urich, Birkh\"auser, Basel, 2006;
+\href{https://doi.org/10.1007/978-3-7643-7390-0}{doi:10.1007/978-3-7643-7390-0}.
+
+\bibitem[Pinelis(1994)]{Pinelis}
+Iosif Pinelis,
+\emph{Optimum bounds for the distributions of martingales in Banach spaces},
+Ann. Probab. \textbf{22} (1994), no.~4, 1679--1706;
+\href{https://doi.org/10.1214/aop/1176988477}{doi:10.1214/aop/1176988477}.
+
+\bibitem[Przykucki, Roberts and Scott(2023)]{PRS}
+Micha\l{} Przykucki, Alexander Roberts, and Alex Scott,
+\emph{Parking on the integers},
+Ann. Appl. Probab. \textbf{33} (2023), no.~2, 1076--1101;
+\href{https://doi.org/10.1214/22-AAP1836}{doi:10.1214/22-AAP1836};
+\href{https://arxiv.org/abs/1907.09437}{arXiv:1907.09437}.
+
+\bibitem[Rolla(2020)]{Rolla}
+Leonardo T. Rolla,
+\emph{Activated random walks on $\Z^d$},
+Probab. Surv. \textbf{17} (2020), 478--544;
+\href{https://doi.org/10.1214/19-PS339}{doi:10.1214/19-PS339};
+\href{https://arxiv.org/abs/1906.05037}{arXiv:1906.05037}.
+
+\end{thebibliography}

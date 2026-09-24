@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Audit.Nearest.Challenge",
+  "solution_module": "Audit.Nearest.Solution",
+  "theorem_names": [
+    "ParkingAudit.nearest"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}
