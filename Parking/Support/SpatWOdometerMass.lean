@@ -73,7 +73,7 @@ theorem integral_local_barOdometer_eq (hd : 1 ≤ d) (ν : Measure ℤ)
 /-- The growth theorem bounds the expected local rescaled mass uniformly in large scales. -/
 theorem exists_integral_local_barOdometer_le (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hGrowth : External.SandpileGrowth) (hBernstein : External.Bernstein)
-    (hConcentration : External.UConcentration) (hGreenNorms : External.GreenNorms)
+    (_hConcentration : External.UConcentration) (_hGreenNorms : External.GreenNorms)
     (ν : Measure ℤ) (hν : CriticalLaw ν)
     (K : Set (Fin d → ℝ)) (hK : IsCompact K) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 2 ≤ R →
@@ -81,7 +81,7 @@ theorem exists_integral_local_barOdometer_le (hd : 1 ≤ d) (hd3 : d ≤ 3)
         (∫ w, (∫ x in K, barOdometer w R 1 x) ∂law d ν) ≤ C := by
   haveI := hν.prob
   obtain ⟨c, C, hc, hcC, hmean, _⟩ :=
-    (Frozen.growth hGrowth hBernstein hConcentration hGreenNorms d hd ν hν).1 hd3
+    (Frozen.growth hGrowth hBernstein d hd ν hν).1 hd3
   have hC : 0 ≤ C := hc.le.trans hcC
   refine ⟨volume.real K * C, mul_nonneg ENNReal.toReal_nonneg hC, fun R hR => ?_⟩
   have hRpos : 0 < R := by linarith

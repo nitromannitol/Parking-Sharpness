@@ -1,18 +1,24 @@
-/-
+import Parking.Support.Kernel
+
+/-!
+# The U-concentration estimate
+
 External input: the concentration estimate for the solution of
 `v_{n+1} = (η + K v_n)⁺` that the paper quotes (`parking.tex:1402-1415`, label
 `lem:u-concentration`) from Bou-Rabee and Panagiotis, Remark 3.4 there.  The
 paper states the lemma and then says that it follows from that remark, so no
 proof of it is given in `parking.tex` and it enters here as a hypothesis.
 
-Assumed here.  It enters only as an explicit hypothesis of the results whose
-proofs use it.
+No longer assumed: proved as `Parking.External.uConcentration` in
+`Parking/External/UConcentrationProved.lean`, from the coordinate-Lipschitz
+bound on `v_n(0)` (the influence of `η(z)` is controlled by the Green function
+`kGreen r K n z`) together with this repository's `L^q`-moment form
+`Parking.weighted_exp_conc_Lq` of the shared library's weighted exponential
+concentration `LatticeProb.weighted_exp_conc_tail`.
 -/
-import Parking.Support.Kernel
 
 open MeasureTheory
 
--- FROZEN-STATEMENT-BEGIN
 /-- "Let $K$ be a finite-range, translation-invariant transition kernel on
 $\Z^d$.  Let $g_n^K(z)\coloneqq\sum_{j<n}K^j(0,z)$, and let $v_0=0$ and
 $v_{n+1}=(\eta+Kv_n)^+$ for i.i.d. $\eta(x)$ satisfying
@@ -30,4 +36,3 @@ def Parking.External.UConcentration : Prop :=
           ∂(LatticeProb.iidLaw d ν)) ^ (1 / q)
         ≤ C * (Real.sqrt q * Parking.l2Norm (Parking.kGreen r K n)
             + q * Parking.supAbs (Parking.kGreen r K n))
--- FROZEN-STATEMENT-END

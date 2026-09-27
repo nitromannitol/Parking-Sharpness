@@ -63,23 +63,19 @@ theorem Parking.subcritical_tail
 `Parking.Frozen.master`. -/
 theorem Parking.master (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hprob : IsProbabilityMeasure ν)
     (hnonconst : ∀ k : ℤ, ν {k} ≠ 1) (hmean : ∫ k, (k : ℝ) ∂ν = 0)
     (θ : ℝ) (hθ : 0 < θ) (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) :
     ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
       c * (Parking.meanu (Parking.law d ν) n + Real.log n) ≤ Parking.meanU (Parking.law d ν) n ∧
         Parking.meanU (Parking.law d ν) n ≤ C * (Parking.meanu (Parking.law d ν) n + Real.log n) := by
-  exact Parking.Frozen.master hGrowth hBernstein hConcentration hGreenNorms d hd ν hprob hnonconst
+  exact Parking.Frozen.master hGrowth hBernstein d hd ν hprob hnonconst
     hmean θ hθ hexp
 
 /-- **Corollary 1.3** (`cor:growth`).  The certified statement is
 `Parking.Frozen.growth`. -/
 theorem Parking.growth (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     (d ≤ 3 → ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧
       (∀ n : ℕ, 2 ≤ n →
@@ -95,14 +91,13 @@ theorem Parking.growth (hGrowth : Parking.External.SandpileGrowth)
       (∀ t : ℕ,
         c / ((t : ℝ) + 1) ≤ Parking.S (Parking.law d ν) t ∧
           Parking.S (Parking.law d ν) t ≤ C * Real.log ((t : ℝ) + 2) / ((t : ℝ) + 1))) := by
-  exact Parking.Frozen.growth hGrowth hBernstein hConcentration hGreenNorms d hd ν hν
+  exact Parking.Frozen.growth hGrowth hBernstein d hd ν hν
 
 /-- **Theorem 1.4** (`thm:trichotomy`).  The certified statement is
 `Parking.Frozen.trichotomy`; the stopping representation is discharged. -/
 theorem Parking.trichotomy (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms) (d : ℕ) (hd : 1 ≤ d) :
+    (d : ℕ) (hd : 1 ≤ d) :
     (d ≤ 3 → ∀ (ν : Measure ℤ), Parking.CriticalLaw ν →
       (∀ᵐ ω ∂(Parking.law d ν),
         Tendsto (fun n : ℕ => ((Parking.U ω n 0 : ℝ) - Parking.uOf ω n 0) /
@@ -131,28 +126,23 @@ theorem Parking.trichotomy (hGrowth : Parking.External.SandpileGrowth)
           ∫ ω, |(Parking.U ω n 0 : ℝ) - Parking.uOf ω n 0| ∂(Parking.law d ν) ≤ C * Real.log n) ∧
       Tendsto (fun n : ℕ => Parking.meanU (Parking.law d ν) n /
         Parking.meanu (Parking.law d ν) n) atTop atTop) := by
-  exact Parking.Frozen.trichotomy hGrowth hBernstein hConcentration hGreenNorms
+  exact Parking.Frozen.trichotomy hGrowth hBernstein
     Parking.External.stopping d hd
 
 /-- **Theorem 1.5** (`thm:nearest`).  The certified statement is
 `Parking.Frozen.nearest`. -/
 theorem Parking.nearest (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (hOdometer : Parking.External.SpatialOdometerScaling)
     (hInterior : Parking.External.HeatInteriorRegularity)
-    (hMinimum : Parking.External.HeatStrongMinimum)
     (hCompact : Parking.External.HeatCompactness)
-    (hLower : Parking.External.CriticalScaleLowerTail)
-    (hVar : Parking.External.VarianceScale)
     (hBerry : Parking.External.MultivariateBerryEsseen)
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ)
     (hν : Parking.CriticalLaw ν) :
     Tendsto (fun t : ℕ => ((Parking.law d ν) {ω | Parking.HoleCloser ω t}).toReal)
       atTop (𝓝 0) := by
-  exact Parking.Frozen.nearest hGrowth hBernstein hConcentration hGreenNorms hOdometer hInterior
-    hMinimum hCompact hLower hVar hBerry d hd hd3 ν hν
+  exact Parking.Frozen.nearest hGrowth hBernstein hOdometer hInterior
+    hCompact hBerry d hd hd3 ν hν
 
 /-- **Theorem 1.6** (`thm:nearest-counterexample`).  The certified statement is
 `Parking.Frozen.nearest_counterexample`. -/
@@ -166,8 +156,7 @@ theorem Parking.nearest_counterexample (hBernstein : Parking.External.Bernstein)
 /-- **Theorem 1.7** (`thm:near`).  The certified statement is
 `Parking.Frozen.near`; the stopping representation is discharged. -/
 theorem Parking.near (hGrowth : Parking.External.SandpileGrowth)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreen : Parking.External.GreenNorms) (hBernstein : Parking.External.Bernstein)
+    (hBernstein : Parking.External.Bernstein)
     (d : ℕ) (hd : 1 ≤ d) (δ₀ : ℝ) (hδ₀ : 0 < δ₀) (ν : ℝ → Measure ℤ)
     (hprob : ∀ δ ∈ Set.Icc 0 δ₀, IsProbabilityMeasure (ν δ))
     (hmean : ∀ δ ∈ Set.Icc 0 δ₀, ∫ k, (k : ℝ) ∂(ν δ) = -δ)
@@ -181,15 +170,13 @@ theorem Parking.near (hGrowth : Parking.External.SandpileGrowth)
     ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∃ δ₁ : ℝ, 0 < δ₁ ∧ ∀ δ ∈ Set.Ioc 0 δ₁,
       ENNReal.ofReal (c * Parking.nearRate d δ) ≤ Parking.meanUlimit (Parking.law d (ν δ)) ∧
         Parking.meanUlimit (Parking.law d (ν δ)) ≤ ENNReal.ofReal (C * Parking.nearRate d δ) := by
-  exact Parking.Frozen.near hGrowth Parking.External.stopping hConcentration hGreen hBernstein d hd
+  exact Parking.Frozen.near hGrowth Parking.External.stopping hBernstein d hd
     δ₀ hδ₀ ν hprob hmean hnonconst θ M hθ hexp K hcouple
 
 /-- **Theorem 1.8** (`thm:oriented-walk`).  The certified statement is
 `Parking.Frozen.oriented_walk`. -/
 theorem Parking.oriented_walk (hBern : Parking.External.Bernstein)
-    (hConc : Parking.External.UConcentration)
     (hStability : Parking.External.OrientedStoppingStability)
-    (hBinomial : Parking.External.BinomialLocalCLT)
     (d : ℕ) (hd : 2 ≤ d) (ν : Measure ℤ)
     (hν : Parking.CriticalLaw ν) :
     (d = 2 → ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
@@ -206,4 +193,4 @@ theorem Parking.oriented_walk (hBern : Parking.External.Bernstein)
           (μ * (n : ℝ) ^ ((1 : ℝ) / 4))) atTop (𝓝 1) ∧
         Tendsto (fun t : ℕ => Parking.S (Parking.orientedLaw d ν) t /
           (μ / 4 * (t : ℝ) ^ (-(3 : ℝ) / 4))) atTop (𝓝 1)) := by
-  exact Parking.Frozen.oriented_walk hBern hConc hStability hBinomial d hd ν hν
+  exact Parking.Frozen.oriented_walk hBern hStability d hd ν hν

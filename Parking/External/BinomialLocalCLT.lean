@@ -26,7 +26,10 @@ import Parking.Support.Oriented
 
 open MeasureTheory
 
--- FROZEN-STATEMENT-BEGIN
+-- Formerly wrapped in FROZEN-STATEMENT markers; this Prop is now discharged
+-- by `Parking.External.binomialLocalCLT` in `BinomialLocalCLTProved.lean`,
+-- which owns the sealed node in `ledger/manifest.yaml`.  The `def` body below
+-- is byte-for-byte the statement that was frozen.
 /-- The local central limit theorem for the simple symmetric walk on `ℤ`, with
 the error `C/m` uniform in the endpoint, in the form cited at
 `parking.tex:3207-3218`. -/
@@ -35,4 +38,3 @@ def Parking.External.BinomialLocalCLT : Prop :=
     |Real.sqrt (m : ℝ) * Parking.binomLaw m ((j + (m : ℤ)) / 2)
         - 2 * (Real.exp (-((j : ℝ) / Real.sqrt (m : ℝ)) ^ 2 / 2) /
             Real.sqrt (2 * Real.pi))| ≤ C / (m : ℝ)
--- FROZEN-STATEMENT-END

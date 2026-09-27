@@ -22,7 +22,8 @@ among them.
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.Frozen.CorCritical
 import Parking.Support.MasterChain
 
@@ -31,8 +32,6 @@ open MeasureTheory ProbabilityTheory
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.master (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hprob : IsProbabilityMeasure ν)
     (hnonconst : ∀ k : ℤ, ν {k} ≠ 1) (hmean : ∫ k, (k : ℝ) ∂ν = 0)
     (θ : ℝ) (hθ : 0 < θ) (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) :
@@ -41,5 +40,7 @@ theorem Parking.Frozen.master (hGrowth : Parking.External.SandpileGrowth)
         Parking.meanU (Parking.law d ν) n ≤ C * (Parking.meanu (Parking.law d ν) n + Real.log n)
 -- FROZEN-STATEMENT-END
 := by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   exact Parking.master_of_cor_critical Parking.Frozen.cor_critical
     hGrowth hBernstein hConcentration hGreenNorms d hd ν hprob hnonconst hmean θ hθ hexp

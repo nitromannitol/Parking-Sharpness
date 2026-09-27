@@ -1,4 +1,11 @@
-/-
+import Parking.Support.Continuum
+import Parking.External.OrientedStoppingStability
+import Parking.External.BinomialLocalCLTProved
+import Parking.Support.TightHappFinal
+
+/-!
+# Proposition 12.3: oriented scaling
+
 Proposition 12.3 of parking.tex, frozen.  `parking.tex:3166-3174` (label
 `prop:oriented-scaling`):
 
@@ -21,22 +28,18 @@ integrability of `U(1)` together with the positivity of its mean.
 
 Step 1 of the paper's proof (`parking.tex:3207-3218`) rests on two results cited from outside
 the paper, the cutoff and stability estimates of the parabolic scaling limit and the binomial
-local central limit theorem that converges the convolved potentials, so the node carries
+local central limit theorem that converges the convolved potentials, so the node carried
 `Parking.External.OrientedStoppingStability` and
-`Parking.External.BinomialLocalCLT` as explicit hypotheses and nothing more.  Step 2 is the paper's own and uses only results of the
-repository.
+`Parking.External.BinomialLocalCLT` as explicit hypotheses; the latter is now discharged by
+`Parking.External.binomialLocalCLT` (`BinomialLocalCLTProved.lean`) and obtained internally.
+Step 2 is the paper's own and uses only results of the repository.
 -/
-import Parking.Support.Continuum
-import Parking.External.OrientedStoppingStability
-import Parking.External.BinomialLocalCLT
-import Parking.Support.TightHappFinal
 
 open MeasureTheory Filter Topology
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.oriented_scaling
     (hStability : Parking.External.OrientedStoppingStability)
-    (hBinomial : Parking.External.BinomialLocalCLT)
     (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (Q : Measure Ω) (_ : IsProbabilityMeasure Q)
       (Uc : ℝ → Ω → ℝ) (μ : ℝ),
@@ -50,4 +53,4 @@ theorem Parking.Frozen.oriented_scaling
       Tendsto (fun n : ℕ => (n : ℝ) ^ (-(1 : ℝ) / 4) *
         Parking.meanuOriented (Parking.orientedLaw 2 ν) n) atTop (𝓝 μ)
 -- FROZEN-STATEMENT-END
-:= Parking.oriented_scaling_assembled hStability hBinomial ν hν
+:= Parking.oriented_scaling_assembled hStability Parking.External.binomialLocalCLT ν hν

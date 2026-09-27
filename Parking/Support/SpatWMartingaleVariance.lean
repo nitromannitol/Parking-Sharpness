@@ -1233,7 +1233,7 @@ own bound). Exponent bookkeeping: `R^{-d}·(box' size, O(R^d))·(L_φ/R)²·mean
 O(R^{(4-d)/2}))` collapses the `R^{-d}`/`R^d` factors and leaves `R^{-2+(4-d)/2}=R^{-d/2}`. -/
 theorem integral_signedM_sq_le (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hGrowth : Parking.External.SandpileGrowth) (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration) (hGreenNorms : Parking.External.GreenNorms)
+    (_hConcentration : Parking.External.UConcentration) (_hGreenNorms : Parking.External.GreenNorms)
     (ν : Measure ℤ) (hν : CriticalLaw ν) {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) :
     ∃ Cφ : ℝ, 0 ≤ Cφ ∧ ∀ R : ℝ, 1 ≤ R → 2 ≤ ⌊R ^ 2⌋₊ →
       ∫ ω, (signedM ω R φ) ^ 2 ∂(law d ν) ≤ Cφ * R ^ (-(d : ℝ) / 2) := by
@@ -1242,7 +1242,7 @@ theorem integral_signedM_sq_le (hd : 1 ≤ d) (hd3 : d ≤ 3)
   obtain ⟨B, hB, hbound⟩ := exists_norm_bound_of_hasCompactSupport hφ.2
   obtain ⟨L, hL0, hLbound⟩ := testFun_nbr_diff_le hφ
   obtain ⟨c, C, hc, hcC, hmean, _⟩ :=
-    (Parking.Frozen.growth hGrowth hBernstein hConcentration hGreenNorms d hd ν hν).1 hd3
+    (Parking.Frozen.growth hGrowth hBernstein d hd ν hν).1 hd3
   have hC0 : (0:ℝ) ≤ C := hc.le.trans hcC
   refine ⟨(2 * B + 5) ^ d * L ^ 2 * C, by positivity, fun R hR ht2 => ?_⟩
   have hR0 : 0 < R := lt_of_lt_of_le one_pos hR

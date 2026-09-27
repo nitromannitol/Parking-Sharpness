@@ -1,4 +1,10 @@
-/-
+import Parking.Support.OrientedActivity
+import Parking.Frozen.OrientedScaling
+import Parking.External.UConcentrationProved
+
+/-!
+# Theorem 1.8: the oriented walk
+
 Theorem 1.8 of parking.tex, frozen.  `parking.tex:363-380` (label `thm:oriented-walk`):
 
   "Let $\eta$ have i.i.d. integer-valued coordinates, nonconstant, of mean zero,
@@ -13,20 +19,17 @@ Theorem 1.8 of parking.tex, frozen.  `parking.tex:363-380` (label `thm:oriented-
 The proof is Steps 1 to 5 of `parking.tex:3253-3400` together with
 `prop:oriented-scaling`.  Step 1 rests on the directed Bernstein inequality and the
 directed concentration estimate, and `prop:oriented-scaling` rests on the cutoff and
-stability estimates of the parabolic scaling limit, all three cited from outside the
-paper, so the node carries them as explicit hypotheses and nothing
-more.
+stability estimates of the parabolic scaling limit, cited from outside the
+paper, so the node carries them as explicit hypotheses; the binomial local central
+limit theorem `prop:oriented-scaling` also used is now discharged by
+`Parking.External.binomialLocalCLT` and no longer an explicit hypothesis here.
 -/
-import Parking.Support.OrientedActivity
-import Parking.Frozen.OrientedScaling
 
 open MeasureTheory Filter Topology
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.oriented_walk (hBern : Parking.External.Bernstein)
-    (hConc : Parking.External.UConcentration)
     (hStability : Parking.External.OrientedStoppingStability)
-    (hBinomial : Parking.External.BinomialLocalCLT)
     (d : ℕ) (hd : 2 ≤ d) (ν : Measure ℤ)
     (hν : Parking.CriticalLaw ν) :
     (d = 2 → ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
@@ -45,8 +48,9 @@ theorem Parking.Frozen.oriented_walk (hBern : Parking.External.Bernstein)
           (μ / 4 * (t : ℝ) ^ (-(3 : ℝ) / 4))) atTop (𝓝 1))
 -- FROZEN-STATEMENT-END
 := by
+  have hConc : Parking.External.UConcentration := Parking.External.uConcentration
   obtain ⟨Ω, _, Q, _, Uc, μ, _hmeas, _hweak, _hself, _hint, _hμeq, hμpos, hlim⟩ :=
-    Parking.Frozen.oriented_scaling hStability hBinomial ν hν
+    Parking.Frozen.oriented_scaling hStability ν hν
   have hμlim : Tendsto (fun n : ℕ => Parking.meanuOriented (Parking.orientedLaw 2 ν) n /
       ((n : ℝ) ^ ((1 : ℝ) / 4))) atTop (𝓝 μ) := by
     refine hlim.congr' ?_

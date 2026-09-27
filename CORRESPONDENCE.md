@@ -63,8 +63,8 @@ states, up to the notation below.
 ## Cited inputs and formulation choices, node by node
 
 - `prop-oriented-scaling`: Step 1 of the proof (`parking.tex:3207-3218`) rests
-  on two results cited from outside the paper.  The node carries them as
-  explicit hypotheses and nothing more.
+  on two results cited from outside the paper.  The node carries the first as
+  an explicit hypothesis; the second is now discharged internally.
 
   The first is `Parking.External.OrientedStoppingStability`, the cutoff and
   stability estimates of the parabolic scaling limit.  It is the STABILITY
@@ -88,23 +88,35 @@ states, up to the notation below.
   error `C/m` is the one the argument consumes, because the convolved potentials
   sum the kernel error over the layers; the parity constraint is part of the
   statement, since without it the left-hand side vanishes at every second
-  integer.  `thm-oriented-walk` carries it too, because its proof applies this
-  node.
+  integer.  It is no longer an explicit hypothesis of `prop-oriented-scaling`
+  or of `thm-oriented-walk`: both now obtain it internally from
+  `Parking.External.binomialLocalCLT` (`BinomialLocalCLTProved.lean`), which
+  discharges it from the shared library's binomial local CLT
+  (`LatticeProb.BinomialLCLT.exists_binomPMF_localCLT`), bridging the index
+  identity `binomLaw m ((j+m)/2) = binomPMF m j` and an elementary Gaussian
+  tail estimate outside `|j| ≤ m`.
 
 - `thm-nearest`: the proof at `parking.tex:1822-1848` applies
   `prop-spatial-scaling`, whose own cited inputs are the sandpile growth
-  estimate, the Bernstein inequality and the odometer concentration estimate,
-  and it opens with the sentence "the parabolic scaling limit and critical-scale
-  lower-tail estimate of BP imply that `U(1,0) > 0` almost surely", whose inputs
-  are the critical-scale lower tail with its variance-scale and multivariate
-  Berry-Esseen hypotheses.  The node carries those six propositions as
-  explicit hypotheses and nothing more.
+  estimate, the Bernstein inequality, the parabolic scaling limit of the
+  divisible odometer and two classical facts about the heat equation, and it
+  opens with the sentence "the parabolic scaling limit and critical-scale
+  lower-tail estimate of BP imply that `U(1,0) > 0` almost surely", whose
+  remaining input is the multivariate Berry-Esseen comparison (the
+  critical-scale lower tail estimate, with its own variance-scale input, is
+  proved in the repository).  The node carries those six propositions,
+  `SandpileGrowth`, `Bernstein`, `SpatialOdometerScaling`,
+  `HeatInteriorRegularity`, `HeatCompactness` and `MultivariateBerryEsseen`,
+  as explicit hypotheses and nothing more.
 
-- `prop-everyone-settles`: the collected Green estimates `eq:green-norms` are an
-  explicit hypothesis, as `Parking.External.GreenNorms`.  The proof of the
-  proposition quotes `cor:growth` for the decay of `S_t`, and the proof of
-  `cor:growth` uses those estimates, so the node carries the input its own
-  citation chain uses, exactly as `thm-trichotomy` and `cor-growth` do.
+- `prop-everyone-settles`: the proof quotes `cor:growth` for the decay of
+  `S_t`.  The collected Green estimates `eq:green-norms` and the
+  concentration estimate `eq:u-concentration` are not explicit hypotheses of
+  this or any node below: `ext-green-norms` and `ext-u-concentration` are
+  each proved (`Parking.External.greenNorms`,
+  `Parking/External/GreenNormsProved.lean`; `Parking.External.uConcentration`,
+  `Parking/External/UConcentrationProved.lean`), so every node below obtains
+  each internally instead.
 
 - `lem-product`: `Parking.RelabelInvariant` is the pair of clauses the paper
   puts on `F` and on `Z` at `parking.tex:2336-2347`, "functions of the counts,
@@ -202,19 +214,20 @@ states, up to the notation below.
   `activeDistance` measure the graph distance `Parking.graphNorm`, as
   `parking.tex:588-601` fixes it.  `Parking.supNorm` measures the range of a
   kernel.
-- `thm-master`, `cor-growth` and `thm-trichotomy` carry `ext-green-norms`.  The
-  upper bound of `thm:master` IS the first display of `thm:upper`, which quotes
-  the collected Green estimates; `cor:growth` inserts `thm:BP` into that bound,
-  and parts (i) and (iii) of `thm:trichotomy` read the growth of the mean
-  odometers off `cor:growth`.  `thm-four-sparse` does NOT carry it: its proof
-  quotes `thm:BP`, the optimal stopping representation and `eq:q-lower-log`, and
-  never `thm:upper`.  The three nodes also carry the martingale moment
-  inequality and the concentration estimate, and `thm-trichotomy` the optimal
-  stopping representation, which its part (ii) reaches through
-  `thm:four-sparse`.
-- `prop-discrepancy` carries `ext-green-norms`: its proof at
-  `parking.tex:1586-1591` uses `eq:green-norms` in the logarithmic moment
-  optimization.
+- `thm-master` and `cor-growth` carry, beyond the sandpile growth estimate,
+  only the martingale moment inequality (`ext-bernstein`) as an explicit
+  hypothesis; `thm-trichotomy` also carries the optimal stopping
+  representation, which its part (ii) reaches through `thm:four-sparse`.  The
+  upper bound of `thm:master` IS the first display of `thm:upper`, which
+  quotes the collected Green estimates and the concentration estimate, but
+  `ext-green-norms` and `ext-u-concentration` are each proved
+  (`Parking.External.greenNorms`, `Parking.External.uConcentration`) and
+  obtained internally instead.  `cor:growth` inserts `thm:BP` into that
+  bound, and parts (i) and (iii) of `thm:trichotomy` read the growth of the
+  mean odometers off `cor:growth`.
+- `prop-discrepancy`: its proof at `parking.tex:1586-1591` uses
+  `eq:green-norms` in the logarithmic moment optimization, obtained internally
+  from `Parking.External.greenNorms` rather than as an explicit hypothesis.
 - `thm-nearest-counterexample` carries `ext-bernstein` through
   `lem-nearest-one-point` and `prop-nearest-two-hole`, used in its proof at
   `parking.tex:2215-2270`.  The probability sequence is bounded by one, which
@@ -240,14 +253,14 @@ states, up to the notation below.
 - `prop-near-divisible`: Step 1 of the proof applies `lem:mean-horizon`, whose
   own Step 1 cites `eq:green-norms` at `parking.tex:2805`, and Step 3 repeats
   that step at a bounded reference law, where the two Green rates are read
-  again.  So `Parking.External.GreenNorms` is a fourth explicit hypothesis,
-  bound alongside the other three and before every parameter of the statement,
-  exactly as for `lem-mean-horizon`.
+  again.  `Parking.External.GreenNorms` is proved and obtained internally
+  here, not carried as an explicit hypothesis, exactly as for
+  `lem-mean-horizon`.
 - `lem-mean-horizon`: Step 1 of the proof cites `eq:green-norms` at
   `parking.tex:2805` to read the concentration term
-  `\sqrt r\|g_m\|_2+r\max_xg_m(x)` as a multiple of the scale `\phi_d(m)`, so
-  `Parking.External.GreenNorms` is a fourth explicit hypothesis, bound
-  alongside the other three and before every parameter of the statement.
+  `\sqrt r\|g_m\|_2+r\max_xg_m(x)` as a multiple of the scale `\phi_d(m)`,
+  obtained internally from `Parking.External.greenNorms` rather than as an
+  explicit hypothesis.
 - `ext-stopping` and `lem-mean-horizon`: the supremum of `eq:stopping` and the
   stopping rule of `lem:mean-horizon` are stated in the shared library's
   vocabulary, `LatticeProb.IsWalkStopping` on trajectories against
@@ -307,13 +320,16 @@ states, up to the notation below.
   optimal-stopping value of the exhibited noise; `ext-spatial-odometer-scaling`
   specifies the Green field through the continuous linear L² extension of the
   test-function noise, with the variance-scaled isometry.
-- `prop-spatial-scaling` and `thm-nearest` carry the three classical parabolic
-  inputs `HeatInteriorRegularity`, `HeatStrongMinimum`, and `HeatCompactness`.
-  Steps 3–4 of `parking.tex:1800-1820` use interior regularity, compactness of
-  nonnegative caloric functions with bounded local integrals, and backward
-  propagation of a zero minimum.  The local integral bound for the time
-  quotients is proved by telescoping; the compactness input supplies a smooth
-  classical subsequential limit.
+- `prop-spatial-scaling` and `thm-nearest` carry the two classical parabolic
+  inputs `HeatInteriorRegularity` and `HeatCompactness`.  Steps 3–4 of
+  `parking.tex:1800-1820` also use backward propagation of a zero minimum,
+  the strong minimum principle `HeatStrongMinimum`; it is proved in the
+  repository (`Parking.External.heatStrongMinimum`, from Nirenberg 1953,
+  Theorem 1) rather than carried as a hypothesis.  Steps 3–4 use interior
+  regularity and compactness of nonnegative caloric functions with bounded
+  local integrals.  The local integral bound for the time quotients is
+  proved by telescoping; the compactness input supplies a smooth classical
+  subsequential limit.
 
 ### The two constructions, and where the equality of their laws is used
 
@@ -390,20 +406,20 @@ comparison are sealed under their registered external hypotheses.
 The main results are additionally exposed, stated in full, in
 [`Parking/MainTheorems.lean`](Parking/MainTheorems.lean), each proved by `exact` of its
 certified statement, and all eight are restated over a Mathlib-only vocabulary for the
-comparator (see [`Audit/`](Audit/)).  The certified statements of `thm-trichotomy` and
+comparator (see [`ParkingAudit/`](ParkingAudit/)).  The certified statements of `thm-trichotomy` and
 `thm-near` carry `ext-stopping` as a hypothesis; it is proved (`Parking.External.stopping`), so
 the two main theorems discharge it.
 
 | Source | Main theorem | Certified statement | Comparator |
 |---|---|---|---|
-| Theorem 1.1, `thm:subcritical-tail` | `Parking.subcritical_tail` | `Parking.Frozen.subcritical_tail` | `Audit/SubcriticalTail/` |
-| Theorem 1.2, `thm:master` | `Parking.master` | `Parking.Frozen.master` | `Audit/Master/` |
-| Corollary 1.3, `cor:growth` | `Parking.growth` | `Parking.Frozen.growth` | `Audit/Growth/` |
-| Theorem 1.4, `thm:trichotomy` | `Parking.trichotomy` | `Parking.Frozen.trichotomy` | `Audit/Trichotomy/` |
-| Theorem 1.5, `thm:nearest` | `Parking.nearest` | `Parking.Frozen.nearest` | `Audit/Nearest/` |
-| Theorem 1.6, `thm:nearest-counterexample` | `Parking.nearest_counterexample` | `Parking.Frozen.nearest_counterexample` | `Audit/NearestCounterexample/` |
-| Theorem 1.7, `thm:near` | `Parking.near` | `Parking.Frozen.near` | `Audit/Near/` |
-| Theorem 1.8, `thm:oriented-walk` | `Parking.oriented_walk` | `Parking.Frozen.oriented_walk` | `Audit/OrientedWalk/` |
+| Theorem 1.1, `thm:subcritical-tail` | `Parking.subcritical_tail` | `Parking.Frozen.subcritical_tail` | `ParkingAudit/SubcriticalTail/` |
+| Theorem 1.2, `thm:master` | `Parking.master` | `Parking.Frozen.master` | `ParkingAudit/Master/` |
+| Corollary 1.3, `cor:growth` | `Parking.growth` | `Parking.Frozen.growth` | `ParkingAudit/Growth/` |
+| Theorem 1.4, `thm:trichotomy` | `Parking.trichotomy` | `Parking.Frozen.trichotomy` | `ParkingAudit/Trichotomy/` |
+| Theorem 1.5, `thm:nearest` | `Parking.nearest` | `Parking.Frozen.nearest` | `ParkingAudit/Nearest/` |
+| Theorem 1.6, `thm:nearest-counterexample` | `Parking.nearest_counterexample` | `Parking.Frozen.nearest_counterexample` | `ParkingAudit/NearestCounterexample/` |
+| Theorem 1.7, `thm:near` | `Parking.near` | `Parking.Frozen.near` | `ParkingAudit/Near/` |
+| Theorem 1.8, `thm:oriented-walk` | `Parking.oriented_walk` | `Parking.Frozen.oriented_walk` | `ParkingAudit/OrientedWalk/` |
 
 ## Frozen surface
 
@@ -411,8 +427,6 @@ the two main theorems discharge it.
 
 | id | Lean | paper | state |
 |---|---|---|---|
-| `ext-sandpile-growth` | `Parking.External.SandpileGrowth` | `parking.tex:929-943`, `thm:BP` | FROZEN |
-| `ext-u-concentration` | `Parking.External.UConcentration` | `parking.tex:1402-1413`, `lem:u-concentration` | FROZEN |
 | `ext-bernstein` | `Parking.External.Bernstein` | `parking.tex:1175-1188`, `lem:bernstein` | FROZEN |
 | `lem-tagged-monotonicity` | `Parking.Frozen.tagged_monotonicity` | `parking.tex:714-719`, `lem:tagged-monotonicity` | SEALED |
 | `lem-parallel` | `Parking.Frozen.parallel` | `parking.tex:647-653`, `lem:parallel` | SEALED |
@@ -431,47 +445,49 @@ the two main theorems discharge it.
 | `lem-transport` | `Parking.Frozen.transport` | `parking.tex:741-753`, `lem:transport` | SEALED |
 | `lem-range-lower` | `Parking.Frozen.range_lower` | `parking.tex:2295-2303`, `lem:range-lower` | SEALED |
 | `lem-w-martingale` | `Parking.Frozen.w_martingale` | `parking.tex:1135-1148`, `lem:w-martingale` | SEALED |
-| `ext-green-norms` | `Parking.External.GreenNorms` | `parking.tex:1383-1400`, `eq:green-norms` | FROZEN |
-| `thm-upper` | `Parking.Frozen.upper` | `parking.tex:1418-1431`, `thm:upper` | SEALED |
 | `lem-critical-density` | `Parking.Frozen.critical_density` | `parking.tex:1255-1263`, `lem:critical-density` | SEALED |
 | `cor-critical` | `Parking.Frozen.cor_critical` | `parking.tex:1354-1361`, `cor:critical` | SEALED |
-| `thm-master` | `Parking.Frozen.master` | `parking.tex:159-168`, `thm:master` | SEALED |
-| `cor-growth` | `Parking.Frozen.growth` | `parking.tex:174-188`, `cor:growth` | SEALED |
-| `prop-discrepancy` | `Parking.Frozen.discrepancy` | `parking.tex:1566-1583`, `prop:discrepancy` | SEALED |
 | `thm-four-sparse` | `Parking.Frozen.four_sparse` | `parking.tex:1601-1610`, `thm:four-sparse` | SEALED |
-| `thm-trichotomy` | `Parking.Frozen.trichotomy` | `parking.tex:207-238`, `thm:trichotomy` | SEALED |
 | `lem-nearest-one-point` | `Parking.Frozen.nearest_one_point` | `parking.tex:1882-1891`, `lem:nearest-one-point` | SEALED |
 | `prop-nearest-two-hole` | `Parking.Frozen.nearest_two_hole` | `parking.tex:2025-2032`, `prop:nearest-two-hole` | SEALED |
 | `thm-nearest-counterexample` | `Parking.Frozen.nearest_counterexample` | `parking.tex:289-302`, `thm:nearest-counterexample` | SEALED |
 | `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | parking.tex:117-121 (Theorem 1 of Donsker-Varadhan 1979, cited for eq:sharpness and used at parking.tex:2514-2517) | FROZEN |
-| `prop-everyone-settles` | `Parking.Frozen.everyone_settles` | `parking.tex:1501-1509`, `prop:everyone-settles` | SEALED |
 | `prop-resolvent` | `Parking.Frozen.resolvent` | `parking.tex:2643-2663`, `prop:resolvent` | SEALED |
-| `lem-mean-horizon` | `Parking.Frozen.mean_horizon` | `parking.tex:2779-2785`, `lem:mean-horizon` | SEALED |
-| `prop-near-divisible` | `Parking.Frozen.near_divisible` | `parking.tex:2844-2860`, `prop:near-divisible` | SEALED |
 | `ext-oriented-stopping-stability` | `Parking.External.OrientedStoppingStability` | parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling) | FROZEN |
 | `lem-product` | `Parking.Frozen.product` | `parking.tex:2336-2347`, `lem:product` | SEALED |
 | `thm-subcritical` | `Parking.Frozen.subcritical` | `parking.tex:2434-2447`, `thm:subcritical` | SEALED |
 | `thm-subcritical-tail` | `Parking.Frozen.subcritical_tail` | `parking.tex:123-135`, `thm:subcritical-tail` | SEALED |
 | `lem-near-tilt` | `Parking.Frozen.near_tilt` | `parking.tex:2599-2604`, `lem:near-tilt` | SEALED |
-| `thm-near` | `Parking.Frozen.near` | `parking.tex:314-335`, `thm:near` | SEALED |
-| `ext-variance-scale` | `Parking.External.VarianceScale` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240) | FROZEN |
+| `ext-variance-scale` | `Parking.External.varianceScale` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240); cited result, now proved here from the shared library Lattice-Probability (LatticeProb.Walk.VarianceScale, LatticeProb.Walk.Correlation, LatticeProb.Walk.WindowD4) | SEALED |
 | `ext-multivariate-berry-esseen` | `Parking.External.MultivariateBerryEsseen` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1770-1782, quoted from Raic Theorem 1.1) | FROZEN |
-| `ext-binomial-local-clt` | `Parking.External.BinomialLocalCLT` | parking.tex:3207-3218 (the binomial local central limit theorem cited in step 1 of the proof of prop:oriented-scaling) | FROZEN |
-| `prop-oriented-scaling` | `Parking.Frozen.oriented_scaling` | `parking.tex:3166-3174`, `prop:oriented-scaling` | SEALED |
-| `thm-oriented-walk` | `Parking.Frozen.oriented_walk` | `parking.tex:363-380`, `thm:oriented-walk` | SEALED |
 | `ext-spatial-fixed-time-tightness` | `Parking.External.SpatialFixedTimeTightness` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP Theorem 1.3(i)(b)) | FROZEN |
 | `ext-spatial-stopping-stability` | `Parking.External.SpatialStoppingStability` | parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling) | FROZEN |
-| `ext-srw-local-clt` | `Parking.External.SRWLocalCLT` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8)) | FROZEN |
 | `thm-oriented` | `Parking.Frozen.oriented` | `parking.tex:3072-3085`, `thm:oriented` | SEALED |
 | `prop-w-moment` | `Parking.Frozen.w_moment` | `parking.tex:1202-1215`, `prop:w-moment` | SEALED |
 | `ext-heat-compactness` | `Parking.External.HeatCompactness` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, classical parabolic compactness) | FROZEN |
 | `ext-spatial-odometer-scaling` | `Parking.External.SpatialOdometerScaling` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP Theorem 1.3(i)(b), sandpile.tex:206-235) | FROZEN |
+| `ext-linear-field-scaling` | `Parking.External.LinearFieldScaling` | parking.tex:1756-1767 (prop:spatial-scaling, BP Proposition 4.3, page 27) | FROZEN |
+| `ext-heat-interior-regularity` | `Parking.External.HeatInteriorRegularity` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, hypoelliptic interior regularity) | FROZEN |
+| `ext-sandpile-growth` | `Parking.External.SandpileGrowth` | `parking.tex:929-943`, `thm:BP` | FROZEN |
+| `ext-sandpile-growth-proved` | `Parking.External.sandpileGrowth` | `parking.tex:929-943`, `thm:BP` | SEALED |
+| `ext-binomial-local-clt` | `Parking.External.binomialLocalCLT` | parking.tex:3207-3218 (discharged from LatticeProb.BinomialLCLT.exists_binomPMF_localCLT) | SEALED |
+| `prop-oriented-scaling` | `Parking.Frozen.oriented_scaling` | `parking.tex:3166-3174`, `prop:oriented-scaling` | SEALED |
+| `ext-green-norms` | `Parking.External.greenNorms` | `parking.tex:1383-1400`, `eq:green-norms` | SEALED |
+| `ext-critical-scale-lower-tail` | `Parking.External.criticalScaleLowerTail` | parking.tex:1822-1848 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720); proved outright from the statement's own VarianceScale and MultivariateBerryEsseen hypotheses, no longer assumed | SEALED |
+| `ext-srw-local-clt` | `Parking.External.srwLocalCLT` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8)); proved from the sibling repository's local central limit theorem via the heat-kernel identification, no longer assumed | SEALED |
+| `ext-u-concentration` | `Parking.External.uConcentration` | `parking.tex:1402-1413`, `lem:u-concentration` | SEALED |
+| `ext-heat-strong-minimum` | `Parking.External.heatStrongMinimum` | parking.tex:1800-1820 (prop:spatial-scaling, Step 4, strong minimum principle); proved from the shared library strong minimum principle of Nirenberg 1953 Theorem 1, no longer assumed | SEALED |
+| `thm-master` | `Parking.Frozen.master` | `parking.tex:159-168`, `thm:master` | SEALED |
+| `cor-growth` | `Parking.Frozen.growth` | `parking.tex:174-188`, `cor:growth` | SEALED |
+| `prop-discrepancy` | `Parking.Frozen.discrepancy` | `parking.tex:1566-1583`, `prop:discrepancy` | SEALED |
+| `thm-trichotomy` | `Parking.Frozen.trichotomy` | `parking.tex:207-238`, `thm:trichotomy` | SEALED |
+| `prop-everyone-settles` | `Parking.Frozen.everyone_settles` | `parking.tex:1501-1509`, `prop:everyone-settles` | SEALED |
+| `lem-mean-horizon` | `Parking.Frozen.mean_horizon` | `parking.tex:2779-2785`, `lem:mean-horizon` | SEALED |
+| `prop-near-divisible` | `Parking.Frozen.near_divisible` | `parking.tex:2844-2860`, `prop:near-divisible` | SEALED |
+| `thm-near` | `Parking.Frozen.near` | `parking.tex:314-335`, `thm:near` | SEALED |
+| `thm-upper` | `Parking.Frozen.upper` | `parking.tex:1418-1431`, `thm:upper` | SEALED |
+| `thm-oriented-walk` | `Parking.Frozen.oriented_walk` | `parking.tex:363-380`, `thm:oriented-walk` | SEALED |
 | `prop-spatial-scaling` | `Parking.Frozen.spatial_scaling` | `parking.tex:1694-1752`, `prop:spatial-scaling` | SEALED |
 | `thm-nearest` | `Parking.Frozen.nearest` | `parking.tex:266-275`, `thm:nearest` | SEALED |
-| `ext-linear-field-scaling` | `Parking.External.LinearFieldScaling` | parking.tex:1756-1767 (prop:spatial-scaling, BP Proposition 4.3, page 27) | FROZEN |
-| `ext-heat-strong-minimum` | `Parking.External.HeatStrongMinimum` | parking.tex:1800-1820 (prop:spatial-scaling, Step 4, strong minimum principle) | FROZEN |
-| `ext-heat-interior-regularity` | `Parking.External.HeatInteriorRegularity` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, hypoelliptic interior regularity) | FROZEN |
-| `ext-critical-scale-lower-tail` | `Parking.External.CriticalScaleLowerTail` | parking.tex:1822-1848 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720) | FROZEN |
-| `ext-sandpile-growth-proved` | `Parking.External.sandpileGrowth` | `parking.tex:929-943`, `thm:BP` | SEALED |
 
 <!-- FROZEN-SURFACE-END -->

@@ -23,7 +23,8 @@ the two Green norms of `eq:green-norms`, which Steps 2 and 3 read.
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.Support.UpperTarget
 
 open MeasureTheory
@@ -31,8 +32,6 @@ open MeasureTheory
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.upper (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∃ C : ℝ, 0 < C ∧
       (∀ n : ℕ, 2 ≤ n → Integrable (fun ω => (Parking.U ω n 0 : ℝ)) (Parking.law d ν) ∧
@@ -47,6 +46,8 @@ theorem Parking.Frozen.upper (hGrowth : Parking.External.SandpileGrowth)
               + r * ((n : ℝ) + 1) ^ (2 / r) * Parking.kappa d n))
 -- FROZEN-STATEMENT-END
 := by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   haveI := hν.prob
   obtain ⟨Ct, hCt, ht⟩ :=
     Parking.exists_target hd hBernstein hConcentration hGrowth hGreenNorms ν hν

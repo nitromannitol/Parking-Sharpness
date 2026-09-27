@@ -145,7 +145,7 @@ theorem mesh_card_le (nMin : ℕ) (Cs R : ℝ) (hCs1 : 1 ≤ Cs) (hR1 : 1 ≤ R)
 union bound over a finite space-time mesh, transferring the sealed `prop:discrepancy`. -/
 theorem exists_spatial_vanishing_distance (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hGrowth : Parking.External.SandpileGrowth) (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration) (hGreenNorms : Parking.External.GreenNorms)
+    (_hConcentration : Parking.External.UConcentration) (_hGreenNorms : Parking.External.GreenNorms)
     (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∀ K : Set (ℝ × (Fin d → ℝ)), IsCompact K → (∀ p ∈ K, 0 < p.1) → ∀ ε : ℝ, 0 < ε →
       Tendsto (fun R : ℝ => ((Parking.law d ν) {w | ε < ⨆ p ∈ K,
@@ -167,7 +167,7 @@ theorem exists_spatial_vanishing_distance (hd : 1 ≤ d) (hd3 : d ≤ 3)
   set ε'' : ℝ := ε / (B * (Cs + 1) ^ ((4 - (d : ℝ)) / 4)) with hε''_def
   have hε''pos : 0 < ε'' := div_pos hε (mul_pos hB hexppos)
   obtain ⟨Cdisc, hCdiscpos, hmomdisc, htaildisc⟩ :=
-    Parking.Frozen.discrepancy hGrowth hBernstein hConcentration hGreenNorms d hd hd3 ν hν
+    Parking.Frozen.discrepancy hGrowth hBernstein d hd hd3 ν hν
   obtain ⟨c, hc, N, hdisc⟩ := htaildisc ε'' hε''pos
   set D1 : ℝ := (Cs + 2) * (2 * Cs + 5) ^ d with hD1_def
   have hD1pos : 0 < D1 := by positivity

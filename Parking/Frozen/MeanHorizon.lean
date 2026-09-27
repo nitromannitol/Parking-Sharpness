@@ -26,15 +26,15 @@ import Parking.Support.MeanHorizonProof
 import Parking.External.SandpileGrowth
 import Parking.External.Stopping
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 
 open MeasureTheory
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.mean_horizon (hGrowth : Parking.External.SandpileGrowth)
     (hStopping : Parking.External.Stopping)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreen : Parking.External.GreenNorms) (d : ℕ) (hd : 1 ≤ d) (δ₀ : ℝ) (ν : ℝ → Measure ℤ)
+    (d : ℕ) (hd : 1 ≤ d) (δ₀ : ℝ) (ν : ℝ → Measure ℤ)
     (θ M K : ℝ) (hfam : Parking.NearFamily δ₀ ν θ M K) :
     ∃ C : ℝ, 0 < C ∧ ∀ δ ∈ Set.Icc (0 : ℝ) δ₀, ∀ n : ℕ,
       ∀ σ : (Parking.Site d → ℤ) → (ℕ → Parking.Site d) → ℕ,
@@ -51,6 +51,8 @@ theorem Parking.Frozen.mean_horizon (hGrowth : Parking.External.SandpileGrowth)
               ≤ C * Parking.phi d Mσ
 -- FROZEN-STATEMENT-END
 := by
+  have hGreen : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   obtain ⟨C, hC, hbound⟩ :=
     Parking.exists_meanHorizon (d := d) hd hGrowth hStopping hConcentration hGreen hfam
   exact ⟨C, hC, hbound⟩

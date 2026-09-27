@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Kernel
+
+/-!
+# Norms of the truncated Green function
+
 External input: the asymptotics of the two norms of the truncated Green
 function of the simple random walk, as the paper quotes them
 (`parking.tex:1381-1401`, label `eq:green-norms`) from the Green estimates
@@ -6,10 +10,10 @@ collected in Bou-Rabee and Panagiotis, Section 3.1 there.  The paper states the
 display and attributes it to that section, so no proof of it is given in
 `parking.tex` and it enters here as a hypothesis.
 
-Assumed here.  It enters only as an explicit hypothesis of the results whose
-proofs use it.
+No longer assumed: proved as `Parking.External.greenNorms` in
+`Parking/External/GreenNormsProved.lean`, from the shared library's Green
+kernel estimates.
 -/
-import Parking.Support.Kernel
 
 open MeasureTheory
 
@@ -35,8 +39,10 @@ def greenMaxRate (d : ℕ) (n : ℕ) : ℝ :=
 
 end Parking.External
 
--- FROZEN-STATEMENT-BEGIN
-/-- "The Green estimates collected in \\citet[Section~3.1]{BP} give
+/-- No longer a cited hypothesis: proved as `Parking.External.greenNorms` in
+`Parking/External/GreenNormsProved.lean`.
+
+"The Green estimates collected in \\citet[Section~3.1]{BP} give
 $\\|g_n\\|_2\\asymp n^{3/4}\\ (d=1)$, $n^{1/2}\\ (d=2)$, $n^{1/4}\\ (d=3)$,
 $\\sqrt{\\log n}\\ (d=4)$, $1\\ (d\\geq5)$, and
 $\\max_xg_n(x)\\asymp n^{1/2}\\ (d=1)$, $\\log n\\ (d=2)$, $1\\ (d\\geq3)$."
@@ -53,6 +59,5 @@ def Parking.External.GreenNorms : Prop :=
     (∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
         c * Parking.External.greenMaxRate d n ≤ Parking.greenMax d n ∧
           Parking.greenMax d n ≤ C * Parking.External.greenMaxRate d n)
--- FROZEN-STATEMENT-END
 
 end

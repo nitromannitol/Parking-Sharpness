@@ -22,7 +22,8 @@ junk value.
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.Support.Error
 import Parking.Support.Settles
 import Parking.Support.AllInfinite
@@ -34,8 +35,6 @@ open scoped ENNReal
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.everyone_settles (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∀ᵐ ω ∂(Parking.law d ν),
       (∀ p : Parking.Label d, ∃ t₀ : ℕ, ∀ t : ℕ, t₀ ≤ t →
@@ -48,6 +47,8 @@ theorem Parking.Frozen.everyone_settles (hGrowth : Parking.External.SandpileGrow
       (∀ x : Parking.Site d, Parking.Ulimit ω x = ⊤)
 -- FROZEN-STATEMENT-END
 := by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   haveI := hν.prob
   haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance

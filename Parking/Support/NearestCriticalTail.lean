@@ -4,7 +4,7 @@ odometer. The source estimate has fixed positive constants after the law's
 variance and third moment are chosen. Its logarithmic error vanishes with the
 horizon; the remaining negative power of the threshold then tends to zero.
 -/
-import Parking.External.CriticalScaleLowerTail
+import Parking.External.CriticalScaleLowerTailProved
 import Parking.Support.NearestCriticalNormalization
 import Parking.Support.URealMoment
 import Parking.Support.Continuum
@@ -80,7 +80,6 @@ theorem Parking.CriticalScale.exists_moment_parameters (ν : Measure ℝ)
 
 /-- Choose the source theorem's constants for the given critical parking law. -/
 theorem Parking.exists_scaled_lower_tail_constants
-    (hLower : Parking.External.CriticalScaleLowerTail)
     (hVar : Parking.External.VarianceScale) (hBerry : Parking.External.MultivariateBerryEsseen)
     {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ L : ℝ, 2 ≤ L →
@@ -90,7 +89,8 @@ theorem Parking.exists_scaled_lower_tail_constants
   haveI := hν.prob
   obtain ⟨ν₀, M, hν₀, hv, hM⟩ := exists_moment_parameters (Parking.realLaw ν)
     (realLaw_variance_pos ν hν)
-  obtain ⟨c, C, hc, hC, hb⟩ := hLower hVar hBerry d hd hd3 ν₀ M hν₀ 1
+  obtain ⟨c, C, hc, hC, hb⟩ :=
+    Parking.External.criticalScaleLowerTail hVar hBerry d hd hd3 ν₀ M hν₀ 1
     zero_lt_one (exponent_one_admissible hd hd3)
   have hvar : ENNReal.ofReal (ν₀ ^ 2) ≤ evariance (id : ℝ → ℝ) (Parking.realLaw ν) := by
     rw [hv]
@@ -112,14 +112,13 @@ theorem Parking.exists_scaled_lower_tail_constants
 
 /-- The normalized odometer has uniformly small lower tails near zero. -/
 theorem Parking.scaled_lower_tails_small
-    (hLower : Parking.External.CriticalScaleLowerTail)
     (hVar : Parking.External.VarianceScale) (hBerry : Parking.External.MultivariateBerryEsseen)
     {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ t : ℕ in atTop,
       (Parking.law d ν) {ω | (t : ℝ) ^ (-((4 - (d : ℝ)) / 4)) * Parking.uOf ω t 0 ≤ δ}
         ≤ ENNReal.ofReal ε := by
   obtain ⟨c, C, hc, _hC, hb⟩ :=
-    Parking.exists_scaled_lower_tail_constants hLower hVar hBerry hd hd3 ν hν
+    Parking.exists_scaled_lower_tail_constants hVar hBerry hd hd3 ν hν
   intro ε hε
   have hε2 : 0 < ε / 2 := half_pos hε
   have hdec : Tendsto (fun L : ℝ => C * L ^ (-c)) atTop (𝓝 0) := by

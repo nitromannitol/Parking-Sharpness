@@ -31,7 +31,8 @@ import Parking.Support.NearEndgame
 import Parking.External.SandpileGrowth
 import Parking.External.Stopping
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.External.Bernstein
 
 open MeasureTheory
@@ -40,8 +41,7 @@ open scoped ENNReal
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.near (hGrowth : Parking.External.SandpileGrowth)
     (hStopping : Parking.External.Stopping)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreen : Parking.External.GreenNorms) (hBernstein : Parking.External.Bernstein)
+    (hBernstein : Parking.External.Bernstein)
     (d : ℕ) (hd : 1 ≤ d) (δ₀ : ℝ) (hδ₀ : 0 < δ₀) (ν : ℝ → Measure ℤ)
     (hprob : ∀ δ ∈ Set.Icc 0 δ₀, IsProbabilityMeasure (ν δ))
     (hmean : ∀ δ ∈ Set.Icc 0 δ₀, ∫ k, (k : ℝ) ∂(ν δ) = -δ)
@@ -57,6 +57,8 @@ theorem Parking.Frozen.near (hGrowth : Parking.External.SandpileGrowth)
         Parking.meanUlimit (Parking.law d (ν δ)) ≤ ENNReal.ofReal (C * Parking.nearRate d δ)
 -- FROZEN-STATEMENT-END
 := by
+  have hGreen : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   have hfam : Parking.NearFamily δ₀ ν θ M K :=
     ⟨hδ₀, hθ, hprob, hmean, hnonconst, hexp, hcouple⟩
   obtain ⟨c, δ₁, hc, hδ₁, -, hlow⟩ :=

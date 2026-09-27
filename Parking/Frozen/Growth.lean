@@ -20,7 +20,8 @@ among them.
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.Support.GrowthChain
 
 open MeasureTheory
@@ -28,8 +29,6 @@ open MeasureTheory
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.growth (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     (d ≤ 3 → ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧
       (∀ n : ℕ, 2 ≤ n →
@@ -47,4 +46,6 @@ theorem Parking.Frozen.growth (hGrowth : Parking.External.SandpileGrowth)
           Parking.S (Parking.law d ν) t ≤ C * Real.log ((t : ℝ) + 2) / ((t : ℝ) + 1)))
 -- FROZEN-STATEMENT-END
 := by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   exact Parking.growth_of_master hGrowth hBernstein hConcentration hGreenNorms d hd ν hν

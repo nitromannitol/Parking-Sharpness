@@ -51,13 +51,13 @@ theorem measurable_integral_potential {Ω : Type} [MeasurableSpace Ω]
 /-- **Theorem 1.5 of `parking.tex` from Proposition 8.3 and the cited inputs.** -/
 theorem nearest_of_spatial_scaling (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
+    (_hConcentration : Parking.External.UConcentration)
+    (_hGreenNorms : Parking.External.GreenNorms)
     (hOdometer : Parking.External.SpatialOdometerScaling)
     (hInterior : Parking.External.HeatInteriorRegularity)
-    (hMinimum : Parking.External.HeatStrongMinimum)
+    (_hMinimum : Parking.External.HeatStrongMinimum)
     (hCompact : Parking.External.HeatCompactness)
-    (hLower : Parking.External.CriticalScaleLowerTail)
+    (_hLower : Parking.External.CriticalScaleLowerTail)
     (hVar : Parking.External.VarianceScale)
     (hBerry : Parking.External.MultivariateBerryEsseen)
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
@@ -67,10 +67,10 @@ theorem nearest_of_spatial_scaling (hGrowth : Parking.External.SandpileGrowth)
   haveI := Parking.law_isProb hd ν
   obtain ⟨Ω, _, Q, _, W, Uc, v, _hwhite, hWmeas, hUm, _hvm, _hzero, hct, hmono,
     _hBrownian, hFDD, hclose, htight, hdisp1, hdisp2⟩ :=
-    Parking.Frozen.spatial_scaling hGrowth hBernstein hConcentration hGreenNorms
-      hOdometer hInterior hMinimum hCompact d hd hd3 ν hν
+    Parking.Frozen.spatial_scaling hGrowth hBernstein
+      hOdometer hInterior hCompact d hd hd3 ν hν
   have hpos0 : ∀ᵐ ω ∂Q, 0 < Uc ω 1 0 :=
-    Parking.ae_spatial_origin_pos hLower hVar hBerry hd hd3 ν hν Q W Uc hUm hFDD
+    Parking.ae_spatial_origin_pos hVar hBerry hd hd3 ν hν Q W Uc hUm hFDD
   have hWm : ∀ φ : (Fin d → ℝ) → ℝ, IsTestFun φ →
       Measurable fun ω => W φ ω + ∫ x, Uc ω 1 x * contOp d φ x := fun φ hφ =>
     (hWmeas φ hφ).add (measurable_integral_potential hUm hct (continuous_contOp hφ) 1)

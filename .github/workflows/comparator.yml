@@ -1,6 +1,6 @@
 name: Comparator audit
 
-# Runs the official leanprover/comparator on the eight Audit/<X> pairs: for each
+# Runs the official leanprover/comparator on the eight ParkingAudit/<X> pairs: for each
 # pair it checks that Solution proves a statement whose full dependency closure
 # matches Challenge's, uses only the permitted axioms, and is accepted by BOTH
 # the Lean kernel (replay) and the independent nanoda kernel (enable_nanoda is
@@ -64,7 +64,7 @@ jobs:
         run: lake exe cache get
 
       - name: Build the library and the audit surfaces
-        run: lake build Audit
+        run: lake build ParkingAudit
 
       - name: Cache verification tools
         id: tools-cache
@@ -116,7 +116,7 @@ jobs:
         # reproduction needs only three tools; CI exercises the stronger
         # two-kernel variant on its throwaway checkout.
         run: |
-          sed -i 's/"enable_nanoda": false/"enable_nanoda": true/' Audit/*/comparator.json
+          sed -i 's/"enable_nanoda": false/"enable_nanoda": true/' ParkingAudit/*/comparator.json
 
       - name: Run the comparator on all eight pairs
         env:
@@ -129,7 +129,7 @@ jobs:
           for X in SubcriticalTail Master Growth Trichotomy Nearest NearestCounterexample \
                    Near OrientedWalk; do
             echo "::group::$X"
-            if lake env ~/tools/comparator/.lake/build/bin/comparator "Audit/$X/comparator.json" \
+            if lake env ~/tools/comparator/.lake/build/bin/comparator "ParkingAudit/$X/comparator.json" \
                  | tee "/tmp/comparator-$X.log" \
                && grep -q "Your solution is okay!" "/tmp/comparator-$X.log"; then
               echo "$X: OK"

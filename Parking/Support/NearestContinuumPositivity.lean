@@ -102,7 +102,6 @@ theorem Parking.spatial_fdd_at_origin {d : ℕ} (ν : Measure ℤ)
   exact h
 
 theorem Parking.ae_pos_of_critical_scale_lower_tail
-    (hLower : Parking.External.CriticalScaleLowerTail)
     (hVar : Parking.External.VarianceScale) (hBerry : Parking.External.MultivariateBerryEsseen)
     {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν)
     {Ω : Type} [MeasurableSpace Ω] (Q : Measure Ω) [IsProbabilityMeasure Q]
@@ -126,11 +125,10 @@ theorem Parking.ae_pos_of_critical_scale_lower_tail
     filter_upwards [eventually_ge_atTop (1 : ℕ)] with t ht
     apply integral_congr_ae
     exact ae_of_all _ fun ω => congrArg F (barDivisible_sqrt ω t (by omega))
-  · exact Parking.scaled_lower_tails_small hLower hVar hBerry hd hd3 ν hν
+  · exact Parking.scaled_lower_tails_small hVar hBerry hd hd3 ν hν
 
 /-- The source lower tail and the exact spatial finite-dimensional clause imply positivity. -/
 theorem Parking.ae_spatial_origin_pos
-    (hLower : Parking.External.CriticalScaleLowerTail)
     (hVar : Parking.External.VarianceScale) (hBerry : Parking.External.MultivariateBerryEsseen)
     {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν)
     {Ω : Type} [MeasurableSpace Ω] (Q : Measure Ω) [IsProbabilityMeasure Q]
@@ -152,7 +150,7 @@ theorem Parking.ae_spatial_origin_pos
                 fun j => Uc ω (sp j).1 (sp j).2,
                 fun l => W (χ l) ω
                   + ∫ x, Uc ω 1 x * Parking.contOp d (χ l) x) ∂Q))) : ∀ᵐ ω ∂Q, 0 < Uc ω 1 0 := by
-  exact Parking.ae_pos_of_critical_scale_lower_tail hLower hVar hBerry hd hd3 ν hν Q Uc
+  exact Parking.ae_pos_of_critical_scale_lower_tail hVar hBerry hd hd3 ν hν Q Uc
     (hm 1 0) (Parking.spatial_fdd_at_origin ν Q W Uc hFDD)
 
 theorem Parking.exists_pos_l1_ball {d : ℕ} {f : (Fin d → ℝ) → ℝ}

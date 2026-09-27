@@ -22,27 +22,31 @@ equicontinuity clause itself and so also subsumes
 `prop:spatial-scaling`, the same hypothesis appears here.
 -/
 import Parking.Support.NearestFromSpatial
-import Parking.External.GreenNorms
+import Parking.External.GreenNormsProved
+import Parking.External.UConcentrationProved
+import Parking.External.HeatStrongMinimumProved
+import Parking.External.CriticalScaleLowerTailProved
 
 open MeasureTheory Filter Topology
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.nearest (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (hOdometer : Parking.External.SpatialOdometerScaling)
     (hInterior : Parking.External.HeatInteriorRegularity)
-    (hMinimum : Parking.External.HeatStrongMinimum)
     (hCompact : Parking.External.HeatCompactness)
-    (hLower : Parking.External.CriticalScaleLowerTail)
-    (hVar : Parking.External.VarianceScale)
     (hBerry : Parking.External.MultivariateBerryEsseen)
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ)
     (hν : Parking.CriticalLaw ν) :
     Tendsto (fun t : ℕ => ((Parking.law d ν) {ω | Parking.HoleCloser ω t}).toReal)
       atTop (𝓝 0)
 -- FROZEN-STATEMENT-END
-:=
-  Parking.nearest_of_spatial_scaling hGrowth hBernstein hConcentration hGreenNorms
+:= by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
+  have hMinimum : Parking.External.HeatStrongMinimum := Parking.External.heatStrongMinimum
+  have hLower : Parking.External.CriticalScaleLowerTail :=
+    Parking.External.criticalScaleLowerTail
+  have hVar : Parking.External.VarianceScale := Parking.External.varianceScale
+  exact Parking.nearest_of_spatial_scaling hGrowth hBernstein hConcentration hGreenNorms
     hOdometer hInterior hMinimum hCompact hLower hVar hBerry d hd hd3 ν hν

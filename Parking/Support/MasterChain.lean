@@ -146,8 +146,8 @@ theorem master_of_cor_critical
           ≤ Parking.meanU (Parking.law d ν) n)
     (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
+    (_hConcentration : Parking.External.UConcentration)
+    (_hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hprob : IsProbabilityMeasure ν)
     (hnonconst : ∀ k : ℤ, ν {k} ≠ 1) (hmean : ∫ k, (k : ℝ) ∂ν = 0)
     (θ : ℝ) (hθ : 0 < θ) (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) :
@@ -168,7 +168,7 @@ theorem master_of_cor_critical
     exact hb
   have hν : CriticalLaw ν := ⟨hprob, hnonconst, hmean, ⟨θ, hθ, hexp⟩⟩
   obtain ⟨Cu, hCu, hupper, -⟩ :=
-    Parking.Frozen.upper hGrowth hBernstein hConcentration hGreenNorms d hd ν hν
+    Parking.Frozen.upper hGrowth hBernstein d hd ν hν
   obtain ⟨c₀, hc₀, hall⟩ := hcc
   obtain ⟨C₀, hC₀, hmax⟩ := hall d hd ν hprob hnonconst hint hmean
   set m : ℝ := S (law d ν) 0 with hm

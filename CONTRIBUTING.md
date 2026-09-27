@@ -12,7 +12,7 @@ lake build           # compile the project
 
 The production build is required to emit no Lean or linter warnings
 (`python3 tools/check_warnings.py`).  The eight Mathlib-only files
-`Audit/*/Challenge.lean` are the sole exception: each contains one documented
+`ParkingAudit/*/Challenge.lean` are the sole exception: each contains one documented
 statement-level `sorry`, checked against its completed solution by
 `leanprover/comparator`.
 
@@ -41,4 +41,4 @@ A few practical notes for working with this development:
 
 - **The main results** are in `Parking/MainTheorems.lean`; the axiom audit is
   `lake build Parking.Meta.AxiomsAudit`, and the comparator surface is
-  `lake build Audit`.
+  `lake build ParkingAudit`.

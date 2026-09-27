@@ -20,7 +20,8 @@ uses the collected Green estimates, which enter as an explicit hypothesis.
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.Support.DiscrepancyTail
 
 open MeasureTheory
@@ -32,8 +33,6 @@ noncomputable def Parking.discrepancyExponent (n : ℕ) : ℝ :=
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.discrepancy (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∃ C : ℝ, 0 < C ∧
       (∀ n : ℕ, 1 ≤ n →
@@ -50,6 +49,8 @@ theorem Parking.Frozen.discrepancy (hGrowth : Parking.External.SandpileGrowth)
           ≤ Real.exp (-(c * Real.log n ^ 2))
 -- FROZEN-STATEMENT-END
 := by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   obtain ⟨C, hC, hm⟩ := Parking.exists_discrepancy_moment hd hd3
     hGrowth hBernstein hConcentration hGreenNorms ν hν
   refine ⟨C, hC, ?_, Parking.exists_discrepancy_tail hd hd3

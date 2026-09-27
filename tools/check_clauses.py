@@ -63,9 +63,11 @@ REVIEWED: dict[str, str] = {
         "shared pair 0 < c <= C (equivalent to the paper's separate constants, by taking min and "
         "max); c, C come after d and nu, so they depend on the dimension and the law only; the "
         "assumptions of thm:master are `CriticalLaw nu` (probability, nonconstant, mean zero, "
-        "exponential moment) and d >= 1; Lean also takes the four cited externals hGrowth, "
-        "hBernstein, hConcentration, hGreenNorms as hypotheses, which the paper's proof invokes "
-        "but its statement does not list; S_t is `Parking.S (law d nu) t`",
+        "exponential moment) and d >= 1; Lean also takes the two cited externals hGrowth, "
+        "hBernstein as hypotheses, which the paper's proof invokes but its statement does not "
+        "list; UConcentration and GreenNorms are proved internally (`Parking.External."
+        "uConcentration`, `Parking.External.greenNorms`) and are not among the hypotheses; "
+        "S_t is `Parking.S (law d nu) t`",
     "ext-bernstein":
         "cited input (Pinelis Thms 4.1 and 3.3), assumed as a hypothesis; the paper makes two "
         "assertions (bounded case; Bernstein-moment case), Lean has exactly two top-level "
@@ -90,10 +92,12 @@ REVIEWED: dict[str, str] = {
         "the rate C/m is the formalizers' quantitative choice, stronger than the paper's "
         "qualitative sentence",
     "ext-critical-scale-lower-tail":
-        "cited input, assumed and not proved; the paper's lines 1807-1833 (proof of thm:nearest) "
+        "cited input, proved rather than assumed (`Parking.External.criticalScaleLowerTail`), "
+        "discharged outright from the statement's own `VarianceScale` and `MultivariateBerryEsseen` "
+        "antecedents; the paper's lines 1807-1833 (proof of thm:nearest) "
         "only say BP's scaling limit and critical-scale lower-tail estimate give U(1,0)>0 a.s., "
-        "with no displayed estimate, so the Lean statement (the sibling repository's sealed "
-        "`critical_toppling`) cannot be checked clause by clause against the paper; Lean is an "
+        "with no displayed estimate, so the Lean statement (built on the sibling repository's "
+        "sealed `critical_toppling`) cannot be checked clause by clause against the paper; Lean is an "
         "implication with antecedents `VarianceScale` and `MultivariateBerryEsseen` (separate ext "
         "nodes), then forall 1<=d<=3, nu0>0, M, 0<a<4/(4-d), `exists c,C>0` (depending on d, nu0, "
         "M, a only, bound before nu, t, L) such that for every mean-zero probability nu on R with "
@@ -119,7 +123,8 @@ REVIEWED: dict[str, str] = {
         "Gamma_m bound is not in the node; the Prop has no `2 <= d` restriction despite the "
         "header comment (true for d = 1, vacuous for d = 0)",
     "ext-green-norms":
-        "cited input (Bou-Rabee-Panagiotis Section 3.1), assumed as a hypothesis, not proved; the "
+        "cited input (Bou-Rabee-Panagiotis Section 3.1), proved rather than assumed "
+        "(`Parking.External.greenNorms`, from the shared library's Green kernel estimates); the "
         "display holds two relations `asymp` and Lean has two conjuncts, each with its own "
         "`exists c C > 0`, inside `forall d >= 1` so the constants depend on d only, each valid "
         "for all `n >= 2` (the paper's 'throughout the range'); l2 rates n^{3/4}, n^{1/2}, "
@@ -145,7 +150,9 @@ REVIEWED: dict[str, str] = {
         "relative to the paper's distribution v (see MISMATCHES)",
     "ext-heat-strong-minimum":
         "cited input (classical strong minimum principle; the paper only invokes it in Step 4 at "
-        "parking.tex:1800-1820 and never states it); one implication in general form: for every "
+        "parking.tex:1800-1820 and never states it), proved rather than assumed "
+        "(`Parking.External.heatStrongMinimum`, from the shared library's Nirenberg 1953 strong "
+        "minimum principle); one implication in general form: for every "
         "d, open U in R x R^d, v that is C-infinity on U (`ContDiffOn ... (top : N-infinity)`), v "
         ">= 0 on U, and `HasDerivAt (s -> v(s,x)) (contOp d v(s,.) x) s` at every point of U "
         "(contOp = (2d)^{-1} Delta, i.e. the paper's L, so this is d_s v = L v), then for every "
@@ -282,7 +289,9 @@ REVIEWED: dict[str, str] = {
         "u is `Parking.u` (u_{n+1}=max 0 (eta+walkOp u_n), walkOp = simple random walk average); "
         "d>=1 is explicit",
     "ext-u-concentration":
-        "cited input (BP Remark 3.4), assumed as a hypothesis and not proved here; one assertion "
+        "cited input (BP Remark 3.4), proved rather than assumed (`Parking.External.uConcentration`, "
+        "from the coordinate-Lipschitz bound through the Green function combined with the shared "
+        "library's weighted exponential concentration); one assertion "
         "(existence of C plus the displayed moment bound eq:u-concentration), which is one Lean "
         "`exists C, 0 < C /\\ forall n >= 1, forall q >= 2, ...` with C outside n and q; the "
         "quantifiers d >= 1, kernel range r, K with `IsLatticeKernel r K` (nonneg, sup-range <= "
@@ -369,9 +378,9 @@ REVIEWED: dict[str, str] = {
         "`sigma eta` a walk stopping time, `sigma eta X <= n` for one n, and measurable in eta "
         "for each X; C may depend on d and the family but not on delta, n, sigma, M\u03c3; the paper's "
         "'sufficiently small delta' is not imposed, Lean covers all delta in [0,delta0] (a "
-        "stronger range); `phi d` is (s+1)^{(4-d)/4} for d<=3 and log(s+2) otherwise; four cited "
-        "inputs are hypotheses (`SandpileGrowth`, `Stopping`, `UConcentration`, `GreenNorms`), "
-        "absent from the paper's statement",
+        "stronger range); `phi d` is (s+1)^{(4-d)/4} for d<=3 and log(s+2) otherwise; two cited "
+        "inputs are hypotheses (`SandpileGrowth`, `Stopping`), absent from the paper's statement; "
+        "UConcentration and GreenNorms are proved internally and are not among the hypotheses",
     "lem-near-tilt":
         "one display S_t^delta <= C E_0 e^{-c delta^2 |R_t|}; Lean has `exists c C > 0, exists "
         "delta1 in (0, delta0], forall delta in (0, delta1], forall t`, with a conjunct asserting "
@@ -514,8 +523,8 @@ REVIEWED: dict[str, str] = {
         "u_n(0) < |U_n(0) - u_n(0)|) <= exp(-(c (log n)^2)), 'sufficiently large n' is an "
         "explicit N depending on eps; 'assumptions of thm:master' is `CriticalLaw nu` "
         "(probability, nonconstant, mean 0, E e^{theta |eta(0)|} < inf), with 1 <= d <= 3 as "
-        "hypotheses; the four cited inputs SandpileGrowth, Bernstein, UConcentration, GreenNorms "
-        "enter as explicit hypotheses",
+        "hypotheses; the two cited inputs SandpileGrowth, Bernstein enter as explicit hypotheses; "
+        "UConcentration and GreenNorms are proved internally and are not among the hypotheses",
     "prop-everyone-settles":
         "paper makes four assertions on one probability-one event (every particle settles in "
         "finite time; every hole is filled in finite time; infinitely many distinct particles "
@@ -526,11 +535,12 @@ REVIEWED: dict[str, str] = {
         "some t0 (equivalent, since each site has finitely many holes); 'leave x' = label p with "
         "some t such that p is active at x after round t and stands elsewhere after round t+1, "
         "and the set of such labels is `Set.Infinite`; U_infinity is `Ulimit` in N-infinity equal "
-        "to top; hypotheses are `CriticalLaw nu` and d >= 1, plus the four cited externals "
-        "hGrowth, hBernstein, hConcentration, hGreenNorms, which the paper's proof uses but its "
-        "statement does not list",
+        "to top; hypotheses are `CriticalLaw nu` and d >= 1, plus the two cited externals "
+        "hGrowth, hBernstein, which the paper's proof uses but its statement does not list; "
+        "UConcentration and GreenNorms are proved internally and are not among the hypotheses",
     "prop-near-divisible":
-        "four cited inputs as hypotheses (SandpileGrowth, Stopping, UConcentration, GreenNorms); "
+        "two cited inputs as hypotheses (SandpileGrowth, Stopping); UConcentration and GreenNorms "
+        "are proved internally and are not among the hypotheses; "
         "the assumptions of thm:near are `NearFamily delta0 nu theta M K` (mean -delta, "
         "nonconstant nu 0, exponential moment <= M, coupling with `E|eta_delta - eta_0| <= K "
         "delta`); four assertions as four conjuncts: (a) upper bound C*`nearRate` for all d "
@@ -559,8 +569,10 @@ REVIEWED: dict[str, str] = {
         "to exist and is not identified with the proof's construction; d=2 is fixed by "
         "`orientedLaw 2`, with orientedOp f x = (1/d) sum_i f(x-e_i), i.e. 1/2 each; hypothesis "
         "`CriticalLaw nu` = probability on Z (integer-valued, not in the proposition's own text), "
-        "nonconstant, mean 0, exp(theta|k|) integrable; carries EXTRA hypotheses `hStability` and "
-        "`hBinomial` (cited inputs from Step 1) not in the paper's statement",
+        "nonconstant, mean 0, exp(theta|k|) integrable; carries an EXTRA hypothesis `hStability` "
+        "(a cited input from Step 1) not in the paper's statement; the binomial local CLT Step 1 "
+        "also cites is no longer carried as a hypothesis, discharged internally from "
+        "`Parking.External.binomialLocalCLT`",
     "prop-resolvent":
         "two assertions (pointwise bound, then tail sum <= 1); Lean is `exists c C, 0 < c, 0 < C` "
         "after d (so c and C may depend on d) then two conjuncts: (A) forall a in (0,1], forall t "
@@ -597,9 +609,10 @@ REVIEWED: dict[str, str] = {
         "`barOdometer` are R^{d/2-2}(.)_{floor(sR^2)}(floor(Rx)), `scenePair` is <eta_R,phi>, "
         "`signedPair` is <nu_R,phi> with A-H at floor(R^2), R real to infinity, law `law d nu`, "
         "`nu : CriticalLaw` (probability, nonconstant, mean 0, exponential moment), `1<=d<=3`; "
-        "eight cited inputs enter as hypotheses (`SandpileGrowth`, `Bernstein`, `UConcentration`, "
-        "`GreenNorms`, `SpatialOdometerScaling`, `HeatInteriorRegularity`, `HeatStrongMinimum`, "
-        "`HeatCompactness`), absent from the paper's statement",
+        "five cited inputs enter as hypotheses (`SandpileGrowth`, `Bernstein`, "
+        "`SpatialOdometerScaling`, `HeatInteriorRegularity`, `HeatCompactness`), absent from the "
+        "paper's statement; `UConcentration`, `GreenNorms` and `HeatStrongMinimum` are proved "
+        "internally and are not among the hypotheses",
     "prop-w-moment":
         "two displays (max_{m<=n}(E|w_m(0)|^r)^{1/r} <= C(sqrt(r kappa_d(n)(E U_n(0)^r)^{1/r}) + "
         "r), and (E w*_n(0)^r)^{1/r} <= (n+1)^{1/r} max_{m<=n}(E|w_m(0)|^r)^{1/r}, no constant); "
@@ -635,9 +648,10 @@ REVIEWED: dict[str, str] = {
         "n); hypotheses as explicit binders: nu a probability measure on Z, nonconstant as "
         "`forall k, nu {k} <> 1`, mean 0, exists theta>0 (theta, h\u03b8, hexp) with E "
         "e^{theta|k|}<inf, 1<=d; E U_n(0), E u_n(0) are meanU, meanu under `law d nu`; hGrowth, "
-        "hBernstein, hConcentration, hGreenNorms are cited inputs the proof uses, not in the "
-        "paper's statement; the remark after the display (lower bound needs no exponential "
-        "moment) lies outside the source range and is not in Lean",
+        "hBernstein are cited inputs the proof uses, not in the paper's statement; UConcentration "
+        "and GreenNorms are proved internally and are not among the hypotheses; the remark after the display "
+        "(lower bound needs no exponential moment) lies outside the source range and is not in "
+        "Lean",
     "thm-near":
         "one asymptotic-equivalence display (four dimension cases), formalised as `exists c C, 0 "
         "< c <= C, exists delta1 > 0, forall delta in (0, delta1]`: ofReal(c * rate) <= E "
@@ -649,19 +663,22 @@ REVIEWED: dict[str, str] = {
         "Integrable e^{theta|k|} with integral <= M (explicit uniform bound M, integrability "
         "added as a junk-value guard), and for delta in (0, delta0] a coupling pi on Z x Z with "
         "marginals nu delta, nu 0 and integral of |p.1 - p.2| <= K delta; E U_inf^delta(0) is "
-        "`meanUlimit (law d (nu delta))`, a lintegral of the supremum in N-infinity; the five "
-        "cited inputs SandpileGrowth, Stopping, UConcentration, GreenNorms, Bernstein enter as "
-        "explicit hypotheses",
+        "`meanUlimit (law d (nu delta))`, a lintegral of the supremum in N-infinity; the three "
+        "cited inputs SandpileGrowth, Stopping, Bernstein enter as explicit hypotheses; "
+        "UConcentration and GreenNorms are proved internally and are not among the hypotheses",
     "thm-nearest":
         "one assertion: `Tendsto` of `(law d nu {HoleCloser omega t}).toReal` to 0 as t : N "
         "(rounds) -> infinity; `HoleCloser` is graph (l^1) distance to the nearest unfilled hole "
         "strictly less than that to the nearest active particle, both in `N\u221e` (inf over empty set "
         "is top, so holes present and no active particle counts as hole closer); hypotheses `1 <= "
         "d <= 3` and `CriticalLaw nu` (integer-valued, non-Dirac, mean zero, exponential moment); "
-        "the paper's statement is unconditional but Lean carries eleven cited inputs the proof "
-        "uses as explicit hypotheses (SandpileGrowth, Bernstein, UConcentration, GreenNorms, "
-        "SpatialOdometerScaling, HeatInteriorRegularity, HeatStrongMinimum, HeatCompactness, "
-        "CriticalScaleLowerTail, VarianceScale, MultivariateBerryEsseen); conclusion unchanged",
+        "the paper's statement is unconditional but Lean carries six cited inputs the proof "
+        "uses as explicit hypotheses (SandpileGrowth, Bernstein, SpatialOdometerScaling, "
+        "HeatInteriorRegularity, HeatCompactness, MultivariateBerryEsseen); UConcentration, "
+        "GreenNorms, HeatStrongMinimum, CriticalScaleLowerTail and VarianceScale are each proved "
+        "internally, discharged from Parking.External.uConcentration, greenNorms, "
+        "heatStrongMinimum, criticalScaleLowerTail and varianceScale respectively, and are not "
+        "among the hypotheses; conclusion unchanged",
     "thm-nearest-counterexample":
         "one display; d>=5 fixed first, then `exists p in (0,1/2)`, then `exists c>0`, then `c <= "
         "liminf_{t:N}` of the real probability (values in [0,1], so the liminf is genuine); law "
@@ -693,8 +710,11 @@ REVIEWED: dict[str, str] = {
         "d=2) and CriticalLaw nu (integer-valued probability law, nonconstant, mean 0, "
         "exponential moment); the walk is `orientedLaw` (steps +e_i with probability 1/d), u is "
         "`uOriented` with P f(x) = (1/d) sum_i f(x-e_i), meanU and meanuOriented are taken under "
-        "`orientedLaw d nu`; hBern, hConc, hStability, hBinomial are cited inputs, not in the "
-        "paper's statement",
+        "`orientedLaw d nu`; hBern, hStability are cited inputs, not in the "
+        "paper's statement; UConcentration and the binomial local CLT `prop:oriented-scaling` "
+        "also cites are each proved internally, discharged from "
+        "`Parking.External.uConcentration` and `Parking.External.binomialLocalCLT` respectively, "
+        "and are not among the hypotheses",
     "thm-subcritical":
         "three assertions, three top-level conjuncts: (i) `0 < a`; (ii) the displayed bound, for "
         "all k>=1 with `nu {k} != 0` (k in the support), all t:N and every prescribed walk w "
@@ -717,8 +737,9 @@ REVIEWED: dict[str, str] = {
         "(one-sided, no absolute value, as in the paper), 1<=d; S_t is `S (law d nu) t`; hDV "
         "(Donsker-Varadhan) is a cited input used in the proof, not in the paper's statement",
     "thm-trichotomy":
-        "five cited inputs as explicit hypotheses (SandpileGrowth, Bernstein, UConcentration, "
-        "GreenNorms, Stopping); `1 <= d` and three conjuncts by d (`d <= 3`, `d = 4`, `5 <= d`); "
+        "three cited inputs as explicit hypotheses (SandpileGrowth, Bernstein, Stopping); "
+        "UConcentration and GreenNorms are proved internally and are not among the hypotheses; `1 <= d` and "
+        "three conjuncts by d (`d <= 3`, `d = 4`, `5 <= d`); "
         "the theorem's hypotheses are `CriticalLaw nu` (probability, non-Dirac, mean zero, "
         "exponential moment for some theta) quantified inside each part; (i) four assertions: "
         "a.s. convergence of (U_n(0)-u_n(0))/E u_n(0) to 0; L^r convergence for every r >= 1 "
@@ -739,8 +760,9 @@ REVIEWED: dict[str, str] = {
         "||g_n||_2 + r max g_n + r(n+1)^{2/r} kappa_d(n)) (n-range widened from the paper's n>=2, "
         "same C for both displays); ||g_n||_2 = `l2Norm (green d n)`, max_x g_n = `greenMax`, E "
         "U_n(0) = `meanU`, E u_n(0) = `meanu`; hypotheses 'nonconstant, integer valued, mean "
-        "zero, exponential moment' = `CriticalLaw nu`; four extra hypotheses hGrowth, hBernstein, "
-        "hConcentration, hGreenNorms are the cited results the proof quotes",
+        "zero, exponential moment' = `CriticalLaw nu`; two extra hypotheses hGrowth, hBernstein "
+        "are the cited results the proof quotes; UConcentration and GreenNorms are proved "
+        "internally and are not among the hypotheses",
 }
 
 

@@ -226,7 +226,7 @@ private theorem meanOdometer_one_pos (d : ℕ) (ν : Measure ℝ)
     (hexp : Integrable (fun z => Real.exp (θ * |z|)) ν) :
     0 < Sandpile.meanOdometer (Sandpile.centeredMassLaw d ν) 1 := by
   have hint : Integrable (id : ℝ → ℝ) ν :=
-    Sandpile.integrable_id_of_exp_moment ν θ hθ hexp
+    LatticeProb.integrable_id_of_exp_moment ν θ hθ hexp
   have hpos : Integrable (fun z : ℝ => max z 0) ν := by
     exact hint.abs.mono' (measurable_id.max measurable_const).aestronglyMeasurable
       (Filter.Eventually.of_forall fun z => by
@@ -334,7 +334,7 @@ private theorem upper_power_of_bounded
     rw [measure_mono_null hsub hnull]
     exact bot_le
   obtain ⟨C, hC, hupper⟩ := Sandpile.Frozen.dgt4_height_upper_tail
-    Sandpile.External.greenBoundsHigh d hd ν hprob hmean hvar hvar' θ
+    d hd ν hprob hmean hvar hvar' θ
     (∫ z, Real.exp (θ * |z|) ∂ν) hθ hexp le_rfl γ hγ hγd 1 1 s₀
     one_pos one_pos hs₀ htail
   refine ⟨C, hC, ?_⟩
@@ -366,7 +366,7 @@ private theorem sandpileGrowth_proof
   haveI := hprob
   obtain ⟨θ, hθ, hexpint⟩ := hexp
   have hpos : Integrable (fun z : ℝ => max z 0) ν := by
-    exact (Sandpile.integrable_id_of_exp_moment ν θ hθ hexpint).abs.mono'
+    exact (LatticeProb.integrable_id_of_exp_moment ν θ hθ hexpint).abs.mono'
       (measurable_id.max measurable_const).aestronglyMeasurable
       (Filter.Eventually.of_forall fun z => by
         rw [Real.norm_eq_abs, abs_of_nonneg (le_max_right z 0)]
@@ -380,7 +380,7 @@ private theorem sandpileGrowth_proof
   constructor
   · intro hd3
     obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hLocalCLT hStab
-      Sandpile.External.varianceScale hOS d hd hd3 ν hprob hmean hvar hvar'
+      hOS d hd hd3 ν hprob hmean hvar hvar'
       θ hθ hexpint
     let p : ℝ := (4 - (d : ℝ)) / 4
     have hp : 0 < p := by
@@ -410,7 +410,7 @@ private theorem sandpileGrowth_proof
     · constructor
       · intro hd5
         obtain ⟨-, ⟨clow, hclow, heventlow⟩⟩ :=
-          Sandpile.Frozen.high_first_order Sandpile.External.greenBoundsHigh d hd5 ν hprob
+          Sandpile.Frozen.high_first_order d hd5 ν hprob
             hmean hvar hvar' θ hθ hexpint
         obtain ⟨clow', hclow', hlowall⟩ := all_lower_log_of_eventual
           (fun n : ℕ => Sandpile.meanOdometer (Sandpile.centeredMassLaw d ν) n)
@@ -430,7 +430,7 @@ private theorem sandpileGrowth_proof
       · constructor
         · intro hd5 hbounded
           obtain ⟨-, ⟨clow, hclow, heventlow⟩⟩ :=
-            Sandpile.Frozen.high_first_order Sandpile.External.greenBoundsHigh d hd5 ν hprob
+            Sandpile.Frozen.high_first_order d hd5 ν hprob
               hmean hvar hvar' θ hθ hexpint
           obtain ⟨clow', hclow', hlowall⟩ := all_lower_log_of_eventual
             (fun n : ℕ => Sandpile.meanOdometer (Sandpile.centeredMassLaw d ν) n)
@@ -443,7 +443,7 @@ private theorem sandpileGrowth_proof
           exact ⟨hlowall n hn, hupper n hn⟩
         · intro hd3
           obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hLocalCLT hStab
-            Sandpile.External.varianceScale hOS d hd hd3 ν hprob hmean hvar hvar'
+            hOS d hd hd3 ν hprob hmean hvar hvar'
             θ hθ hexpint
           refine ⟨L, hL, ?_⟩
           simpa only [Parking.meanSandpileReal_eq_sandpileMean d ν hd] using hlim

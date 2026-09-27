@@ -11,8 +11,8 @@ open MeasureTheory
 /-- The two mean growth regimes in the critical law. -/
 theorem meanU_growth (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
+    (_hConcentration : Parking.External.UConcentration)
+    (_hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) :
     (d ≤ 3 → ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       c * (n : ℝ) ^ ((4 - (d : ℝ)) / 4) ≤ meanU (law d ν) n ∧
@@ -23,7 +23,7 @@ theorem meanU_growth (hGrowth : Parking.External.SandpileGrowth)
   haveI := hν.prob
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
   obtain ⟨a, A, ha, haA, hM⟩ := Parking.Frozen.master hGrowth hBernstein
-    hConcentration hGreenNorms d hd ν hν.prob hν.nonconst hν.mean θ hθ hexp
+    d hd ν hν.prob hν.nonconst hν.mean θ hθ hexp
   have hA : 0 < A := ha.trans_le haA
   have hBP := hGrowth d hd (realLaw ν) (realLaw_isProbability ν) (realLaw_mean ν hν)
     (realLaw_evariance_pos ν hν) (realLaw_evariance_lt_top ν hν) (realLaw_expMoment ν hν)

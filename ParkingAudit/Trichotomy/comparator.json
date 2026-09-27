@@ -1,0 +1,13 @@
+{
+  "challenge_module": "ParkingAudit.Trichotomy.Challenge",
+  "solution_module": "ParkingAudit.Trichotomy.Solution",
+  "theorem_names": [
+    "ParkingAudit.trichotomy"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}

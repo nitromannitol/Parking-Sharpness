@@ -30,7 +30,8 @@ estimates among them.
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.External.Stopping
 
 import Parking.Support.LowMeanLimits
@@ -42,8 +43,6 @@ open MeasureTheory Filter Topology
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.trichotomy (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (hStopping : Parking.External.Stopping) (d : ℕ) (hd : 1 ≤ d) :
     (d ≤ 3 → ∀ (ν : Measure ℤ), Parking.CriticalLaw ν →
       (∀ᵐ ω ∂(Parking.law d ν),
@@ -75,6 +74,8 @@ theorem Parking.Frozen.trichotomy (hGrowth : Parking.External.SandpileGrowth)
         Parking.meanu (Parking.law d ν) n) atTop atTop)
 -- FROZEN-STATEMENT-END
 := by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   refine ⟨?_, ?_, ?_⟩
   · intro hd3 ν hν
     exact ⟨Parking.ae_discrepancy_tendsto_zero hd hd3 hGrowth hBernstein hConcentration

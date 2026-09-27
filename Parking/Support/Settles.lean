@@ -119,11 +119,11 @@ theorem ae_shiftData (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
 `C (t+1)^{-d/4}`, and in dimensions at least four by `C log(t+2)/(t+1)`. -/
 theorem S_tendsto_zero (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
+    (_hConcentration : Parking.External.UConcentration)
+    (_hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     Tendsto (Parking.S (Parking.law d ν)) atTop (𝓝 0) := by
-  have hg := Parking.Frozen.growth hGrowth hBernstein hConcentration hGreenNorms d hd ν hν
+  have hg := Parking.Frozen.growth hGrowth hBernstein d hd ν hν
   rcases le_or_gt d 3 with h3 | h4
   · obtain ⟨c, C, hc, hcC, -, hS⟩ := hg.1 h3
     refine squeeze_zero (fun t => S_nonneg _ t) (fun t => (hS t).2) ?_

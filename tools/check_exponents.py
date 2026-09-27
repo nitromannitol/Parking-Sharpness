@@ -94,6 +94,8 @@ EXPECTED_ABSENT: dict[str, dict[str, str]] = {
     },
     "ext-u-concentration": {
         "1/r": "notation: the paper's moment order r (real, r >= 2) is Lean's q : R with 2 <= q, so (E|v_n(0)-E v_n(0)|^r)^{1/r} is (integral of |kSol r K eta n 0 - integral of kSol r K eta' n 0 d(iidLaw d nu)| ^ q d(iidLaw d nu)) ^ (1 / q) with real powers; Lean's own r : N is a different variable, the range of the kernel in IsLatticeKernel r K; the paper makes one assertion (the displayed inequality) and Lean's conclusion is that one inequality, under exists C, 0 < C bound before n and q, so C depends only on d, the range r, K, nu and theta and not on n or q, as in the paper; definitions read in Parking/Support/Kernel.lean and matching: IsLatticeKernel r K = nonnegative, supported within sup-distance r, rows sum to 1 over boxFinset y r, invariant under all translations (the paper's finite-range translation-invariant transition kernel); kIter = K^j(0,.) by the recursion kIter (j+1) x = sum_y kIter j y * K y x; kGreen r K n = sum_{j<n} kIter j = g_n^K; kSol = v_0 = 0, v_{n+1} = max 0 (eta + K v_n) with (K f)(x) = sum_y K x y * f y; l2Norm = sqrt of the tsum of squares (finitely supported) and supAbs = iSup of |f x|; hypotheses in the Prop are d >= 1, IsLatticeKernel r K, nu a probability measure on R, and exp(theta*|z|) nu-integrable for a given theta > 0 (equivalent to 'for some theta > 0' since C is chosen after theta), n >= 1 and q >= 2 bound after C; the law of eta is LatticeProb.iidLaw d nu, the i.i.d. field with one-site law nu; Lean adds d >= 1 and the probability hypothesis and leaves out nothing of the paper's statement.",
+        "K": "notation: the paper's superscript in g_n^K(z) and K^j(0,z) names the transition kernel the truncated Green function and its iterate are built from ('the Green function of K'), not an exponentiation of K; this node is now sealed as the theorem `Parking.External.uConcentration` (`Parking/External/UConcentrationProved.lean`), proved outright from the coordinate-Lipschitz bound with the Green function as weights and the library's weighted exponential concentration; its short docstring ('Rosenthal-type L^q concentration for the lattice recursion, proved rather than assumed') no longer repeats the paper's LaTeX transcription of the quoted lemma, which is why the naive ^-scan of the frozen block no longer turns up the bare token K; the definition it proves, `Parking.External.UConcentration` (found by `with_definitions` and still unchanged in `Parking/External/UConcentration.lean`), reads the paper's g_n^K as the explicit function argument `Parking.kGreen r K n z` (K passed as an ordinary argument, never raised to a power), matching kIter/kGreen in `Parking/Support/Kernel.lean`.",
+        "r": "notation: the paper's bare superscript r in (E|v_n(0)-E v_n(0)|^r) is the same moment order that reappears, brace-wrapped, as 1/r immediately after (explained above: braces defeat the naive ^-scan regardless of which file backs the node); Lean spells that moment order q : R, 2 <= q, in `Parking.External.UConcentration`'s own `∀ q : ℝ, 2 ≤ q → ... ^ q ... ^ (1 / q)` (found by `with_definitions`, hence q and 1/q on the Lean side); the paper's symbol r is reused in the Lean statement for a different, unrelated quantity, the kernel's finite range in `IsLatticeKernel r K`, so a bare r legitimately names nothing in the moment-bound conclusion itself; the short docstring on the now-sealed theorem `Parking.External.uConcentration` (`Parking/External/UConcentrationProved.lean`) no longer repeats the paper's LaTeX transcription of the quoted lemma, which is why the naive ^-scan of the frozen block no longer turns up this token either; that transcription is still on `Parking.External.UConcentration` itself in `Parking/External/UConcentration.lean`, definitional but no longer the file the manifest points the exponent check at.",
     },
     "ext-variance-scale": {
         "1": "context: the only superscript 1 in the range is the ell^1-ball in the proof of Theorem nearest (line 1813), prose of a proof that cites [BP] for the critical-scale lower-tail estimate; it is not part of what `Parking.External.VarianceScale` states (the finite-time variance scale, the membrane correlation bound and the d=4 window bounds in Green-kernel form, transcribed from sandpile.tex:1117-1240 and carried as an antecedent of `ext-critical-scale-lower-tail`), and parking.tex:1822-1848 displays no relation that this node states",
@@ -175,23 +177,26 @@ DECL_START = re.compile(
 
 
 def definition_bodies() -> dict[str, str]:
-    """Every `def` in `Sandpile/`, by fully qualified name, with its body.
+    """Every `def` and `structure` in `Sandpile/`, by fully qualified name, with its body.
 
     An exponent of a paper statement often sits in a definition the statement
     names -- an exponent of the paper often lives in a definition -- so the text a
     statement is compared against is the frozen block together with the bodies
-    of the definitions it mentions.
+    of the definitions it mentions.  `structure ... : Prop where` bundles like
+    `Parking.CriticalLaw` carry standing hypotheses (an exponential-moment field,
+    say) the same way a `def` would, so they are indexed identically.
     """
     bodies: dict[str, str] = {}
     for path in sorted((ROOT / "Parking").rglob("*.lean")):
         lines = path.read_text(encoding="utf-8").splitlines()
         i = 0
         while i < len(lines):
-            m = re.match(r"^(noncomputable\s+)?def\s+([A-Za-z_][A-Za-z0-9_.']*)", lines[i])
+            m = re.match(
+                r"^(noncomputable\s+)?(def|structure)\s+([A-Za-z_][A-Za-z0-9_.']*)", lines[i])
             if not m:
                 i += 1
                 continue
-            name = m.group(2)
+            name = m.group(3)
             j = i + 1
             while j < len(lines) and not DECL_START.match(lines[j]):
                 j += 1
@@ -202,14 +207,33 @@ def definition_bodies() -> dict[str, str]:
 
 
 def with_definitions(blk: str, bodies: dict[str, str]) -> str:
-    """The frozen block plus the body of each definition it names."""
+    """The frozen block plus the body of every definition it names, transitively.
+
+    A statement that names a Prop by a bare identifier (the pattern a sealed
+    conditional witness uses, `theorem ... : Parking.External.Foo`) needs one
+    hop to reach `Foo`'s own body; a Prop whose body itself delegates its
+    numeric rates to named auxiliary definitions (`Parking.External.greenL2Rate`,
+    `greenMaxRate`) needs a second hop to reach the literal exponents.  This
+    closes the expansion under a fixed point instead of stopping after one
+    hop, so it only ever adds more Lean-side text to search -- it can fix a
+    false failure but cannot manufacture a false pass by hiding a real
+    exponent.
+    """
     out = [blk]
-    for name in sorted(set(re.findall(r"[A-Za-z_][A-Za-z0-9_.']*", blk))):
-        # a statement writes the qualified `Parking.nearRate`; the declaration
-        # inside `namespace Parking` writes the short name
-        body = bodies.get(name) or bodies.get(name.split(".")[-1])
-        if body is not None and body not in out:
-            out.append(body)
+    seen: set[str] = set()
+    frontier = [blk]
+    while frontier:
+        text = frontier.pop()
+        for name in sorted(set(re.findall(r"[A-Za-z_][A-Za-z0-9_.']*", text))):
+            # a statement writes the qualified `Parking.nearRate`; the declaration
+            # inside `namespace Parking` writes the short name
+            if name in seen:
+                continue
+            seen.add(name)
+            body = bodies.get(name) or bodies.get(name.split(".")[-1])
+            if body is not None and body not in out:
+                out.append(body)
+                frontier.append(body)
     return "\n".join(out)
 
 

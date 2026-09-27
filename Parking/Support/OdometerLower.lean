@@ -32,7 +32,7 @@ theorem exists_odometer_lower_prob (hGrowth : Parking.External.SandpileGrowth)
   haveI := law_isProb hd ν
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   obtain ⟨c₁, C₁, hc₁, hc₁C₁, hmaster⟩ :=
-    Parking.Frozen.master hGrowth hBernstein hConcentration hGreenNorms d hd ν
+    Parking.Frozen.master hGrowth hBernstein d hd ν
       inferInstance hν.nonconst hν.mean θ hθ hexpabs
   obtain ⟨C₂, hC₂, hsecond⟩ := exists_second_moment hd hBernstein hConcentration hGrowth
     hGreenNorms ν hν

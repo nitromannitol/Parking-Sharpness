@@ -1,4 +1,8 @@
-/-
+import Parking.Support.LinCovarianceGlue
+
+/-!
+# The multivariate local CLT for the simple random walk
+
 External input: the multivariate local central limit theorem for the simple random walk,
 in the exact uniform form Bou-Rabee and Panagiotis, *Quantitative explosion and percolation
 of the divisible sandpile* (BP, already cited by `Parking.External.SpatialFixedTimeTightness`
@@ -31,12 +35,13 @@ in this repository or the shared library (only two-sided ORDER-of-magnitude boun
 `Parking.External.GreenNorms`, and a one-sided Gaussian upper bound,
 `LatticeProb.srwHeat_gaussian`/`srwHeat_diag_le`, neither of which pins down a limit).
 
-Assumed here, exactly as BP state it (their equation (25), itself an unproved citation in
-BP), not proved in this repository. The Brownian heat kernel `contHeatKernel` transcribes
-BP's equation (14), `p_t^{BM}(x,y) := (4πt/(2d))^{-d/2} exp(-d|x-y|²/(2t))`, generator
-`(2d)^{-1}Δ` matching `parking.tex`'s own `L`.
+No longer assumed: proved as `Parking.External.srwLocalCLT` in
+`Parking/External/SRWLocalCLTBridge.lean`, from the sibling library's
+`Sandpile.External.localCLT` via the heat-kernel identification bridge
+`Parking.External.srwLocalCLT_of_localCLT`. The Brownian heat kernel `contHeatKernel`
+transcribes BP's equation (14), `p_t^{BM}(x,y) := (4πt/(2d))^{-d/2} exp(-d|x-y|²/(2t))`,
+generator `(2d)^{-1}Δ` matching `parking.tex`'s own `L`.
 -/
-import Parking.Support.LinCovarianceGlue
 
 open MeasureTheory LatticeProb
 
@@ -50,7 +55,6 @@ noncomputable def contHeatKernel (d : ℕ) (t : ℝ) (x y : Fin d → ℝ) : ℝ
 
 end Parking.External
 
--- FROZEN-STATEMENT-BEGIN
 /-- The multivariate local central limit theorem for the simple random walk on `Z^d`,
 uniform on the parabolic window `δR² ≤ ℓ ≤ TR²`, `|x-y| ≤ C₀R`, in the exact form
 Bou-Rabee-Panagiotis (2026) state and use it as their own equation (25), citing Lawler and
@@ -66,4 +70,3 @@ def Parking.External.SRWLocalCLT : Prop :=
               2 * (R ^ d)⁻¹ *
                 Parking.External.contHeatKernel d ((ℓ : ℝ) / R ^ 2)
                   (fun i => (x i : ℝ) / R) (fun i => (y i : ℝ) / R)| < ε
--- FROZEN-STATEMENT-END

@@ -52,7 +52,9 @@ import Parking.Support.Continuum
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.HeatStrongMinimumProved
+import Parking.External.GreenNormsProved
 import Parking.External.SpatialOdometerScaling
 import Parking.Support.UpperTarget
 import Parking.Support.SpatialDerivativeLimit
@@ -67,11 +69,8 @@ open scoped NNReal
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.spatial_scaling (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreenNorms : Parking.External.GreenNorms)
     (hOdometer : Parking.External.SpatialOdometerScaling)
     (hInterior : Parking.External.HeatInteriorRegularity)
-    (hMinimum : Parking.External.HeatStrongMinimum)
     (hCompact : Parking.External.HeatCompactness)
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∃ (Ω : Type) (_ : MeasurableSpace Ω) (Q : Measure Ω) (_ : IsProbabilityMeasure Q)
@@ -130,6 +129,9 @@ theorem Parking.Frozen.spatial_scaling (hGrowth : Parking.External.SandpileGrowt
         ∀ s x, 0 < Uc ω s x → 0 < v ω s x)
 -- FROZEN-STATEMENT-END
 := by
+  have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
+  have hMinimum : Parking.External.HeatStrongMinimum := Parking.External.heatStrongMinimum
   obtain ⟨Ω, mΩ, Q, hQ, W, Z, Uc, hW, hWmeas, hZeq, hZcont, hUc0, hUccont, hUcmono, hUcmeas,
       hsuprep, hjointFDD, hequicont⟩ := hOdometer d hd hd3 ν hν
   haveI := hν.prob

@@ -1,4 +1,9 @@
-/-
+import Parking.External.VarianceScale
+import Parking.External.MultivariateBerryEsseen
+
+/-!
+# The critical-scale lower tail estimate
+
 The critical-scale lower tail estimate of Bou-Rabee and Panagiotis,
 sandpile.tex:1696-1720, cited at parking.tex:1822-1848.
 
@@ -10,15 +15,13 @@ the dimension, variance lower bound, normalized third-moment bound and a are
 their only parameters. In particular every positivity, integrability and
 finite-variance hypothesis of the source theorem is retained.
 
-This is a cited input: it is assumed here and no proof of this Prop is
-asserted in this repository.
+No longer assumed: proved as `Parking.External.criticalScaleLowerTail` in
+`Parking/External/CriticalScaleLowerTailProved.lean`, outright from this
+statement's own `VarianceScale` and `MultivariateBerryEsseen` hypotheses.
 -/
-import Parking.External.VarianceScale
-import Parking.External.MultivariateBerryEsseen
 
 open MeasureTheory ProbabilityTheory Filter Topology
 
--- FROZEN-STATEMENT-BEGIN
 /-- The critical-scale lower tail estimate of Bou-Rabee and Panagiotis,
 `sandpile.tex:1696-1720`, cited at `parking.tex:1822-1848`. -/
 def Parking.External.CriticalScaleLowerTail : Prop :=
@@ -34,4 +37,3 @@ def Parking.External.CriticalScaleLowerTail : Prop :=
         Parking.CriticalScale.centeredMassLaw d ν
             {σ | Parking.CriticalScale.odometer σ t 0 ≤ (t : ℝ) ^ ((4 - (d : ℝ)) / 4) / L} ≤
           ENNReal.ofReal (C * L ^ (-c) + C * Parking.CriticalScale.lowerTailRemainder d t L a)
--- FROZEN-STATEMENT-END

@@ -24,7 +24,8 @@ import Parking.Support.NearBounded
 import Parking.External.SandpileGrowth
 import Parking.External.Stopping
 import Parking.External.UConcentration
-import Parking.External.GreenNorms
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
 import Parking.Support.Near
 
 open MeasureTheory
@@ -33,8 +34,7 @@ open scoped ENNReal
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.near_divisible (hGrowth : Parking.External.SandpileGrowth)
     (hStopping : Parking.External.Stopping)
-    (hConcentration : Parking.External.UConcentration)
-    (hGreen : Parking.External.GreenNorms) (d : ℕ) (hd : 1 ≤ d) (δ₀ : ℝ) (ν : ℝ → Measure ℤ)
+    (d : ℕ) (hd : 1 ≤ d) (δ₀ : ℝ) (ν : ℝ → Measure ℤ)
     (θ M K : ℝ) (hfam : Parking.NearFamily δ₀ ν θ M K) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∃ δ₁ : ℝ, 0 < δ₁ ∧ δ₁ ≤ δ₀ ∧
       ∀ δ ∈ Set.Ioc (0 : ℝ) δ₁,
@@ -51,6 +51,8 @@ theorem Parking.Frozen.near_divisible (hGrowth : Parking.External.SandpileGrowth
                 ≤ ENNReal.ofReal (C * Real.log (Real.exp 1 / δ) ^ ((2 : ℝ) / d)))
 -- FROZEN-STATEMENT-END
 := by
+  have hGreen : Parking.External.GreenNorms := Parking.External.greenNorms
+  have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
   classical
   obtain ⟨hδ₀, hθ, hprob, hmeanν, hnc, hexpm, hcoup⟩ := id hfam
   have hrateNonneg : ∀ δ : ℝ, 0 < δ → δ ≤ 1 → 0 ≤ Parking.nearRate d δ := by

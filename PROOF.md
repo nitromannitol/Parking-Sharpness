@@ -238,17 +238,15 @@ the kind of" Coquet-Toldo. `thm:oriented-walk`
 
 ### Registered nodes
 
-The manifest registers 53 declarations: 41 paper statements and 12 cited
-inputs. 37 of the statements are `SEALED`; two, `prop-spatial-scaling` and
-`prop-oriented-scaling`, are `DRAFT_SORRY`, meaning their statement is
-frozen and registered but no proof exists yet; two more,
-`thm-oriented-walk` and `thm-nearest`, are `CONDITIONAL`, meaning their own
-proof carries no `sorry` but applies one of the two draft nodes, so their
-axiom closure carries `sorryAx` until that node is sealed. Of the 12 cited
-inputs, ten are `FROZEN` propositions assumed without proof and two,
-`ext-stopping` and `ext-green-gradient`, are `SEALED`: proved inside this
-repository or the shared library rather than left as bare hypotheses.
-`CERTIFICATE.md` records the exact axiom closure of every node.
+The manifest registers 62 declarations: 41 paper statements, all `SEALED`,
+and 21 cited-input nodes. Of the cited inputs, 11 are `FROZEN` propositions
+assumed without proof and 10 are `SEALED`: proved inside this repository or
+the shared library rather than left as bare hypotheses (`ext-stopping`,
+`ext-green-gradient`, `ext-variance-scale`, `ext-sandpile-growth-proved`,
+`ext-binomial-local-clt`, `ext-srw-local-clt`, `ext-green-norms`,
+`ext-u-concentration`, `ext-heat-strong-minimum` and
+`ext-critical-scale-lower-tail`). `CERTIFICATE.md` records the exact axiom
+closure of every node.
 
 ### Shared infrastructure
 
@@ -324,10 +322,13 @@ in `Parking/Support/CouplingProof.lean`. `cor-critical` is proved by
 `Parking.cor_critical_of_critical_density` in
 `Parking/Support/CriticalChain.lean`. `ext-green-norms`
 (`Parking.External.GreenNorms`) and `ext-u-concentration`
-(`Parking.External.UConcentration`) enter here. `thm-upper` is proved by
+(`Parking.External.UConcentration`) enter here, both proved rather than
+assumed. `thm-upper` is proved by
 `Parking.exists_target` and `Parking.exists_critical_moment` in
-`Parking/Support/UpperTarget.lean`, carrying SandpileGrowth, Bernstein,
-UConcentration and GreenNorms. `thm-master` is proved by
+`Parking/Support/UpperTarget.lean`, carrying SandpileGrowth and Bernstein
+(UConcentration and GreenNorms are proved, `Parking.External.uConcentration`
+and `Parking.External.greenNorms`, and obtained internally rather than
+carried). `thm-master` is proved by
 `Parking.master_of_cor_critical` in `Parking/Support/MasterChain.lean`,
 reading the upper bound off `thm-upper`'s external inputs. `cor-growth` is
 proved by `Parking.growth_of_master` in `Parking/Support/GrowthChain.lean`.
@@ -344,7 +345,8 @@ distinctive modules of this step, beyond the shared infrastructure, are
 
 `prop-discrepancy` is proved by `Parking.exists_discrepancy_moment` and
 `Parking.exists_discrepancy_tail` in `Parking/Support/DiscrepancyTail.lean`,
-carrying GreenNorms alongside the externals `thm-upper` needs.
+reading UConcentration and GreenNorms internally alongside the externals
+`thm-upper` needs (SandpileGrowth, Bernstein).
 `thm-four-sparse` is proved by `Parking.four_sparse_of_growth` in
 `Parking/Support/FourSparseChain.lean`, using the sparse three-point law of
 `Parking/Support/ThreePointLaw.lean` and carrying SandpileGrowth and
@@ -375,19 +377,22 @@ proved by `Parking.close_pair` in `Parking/Support/ClosePair.lean`.
 `Parking/Support/NearestCounterexampleProof.lean`. These four carry only
 `ext-bernstein`.
 
-`prop-spatial-scaling` is `DRAFT_SORRY`: its statement, in
+`prop-spatial-scaling` is `SEALED`: its statement, in
 `Parking/Frozen/SpatialScaling.lean`, carries three convergence clauses
 (finite-dimensional convergence of `(η_R,ū_R,Ū_R)`; local uniform closeness
 in probability of the two discrete rescaled odometers; equicontinuity in
 probability of the rescaled divisible odometer on every compact subset of
 `(0,∞)×R^d`), assembled from `Parking/Support/Continuum.lean` and its
 family (`ContOpRegularity`, `ContOrientedLimit`, `ContOrientedNoise`,
-`ContOrientedValue`, `ContStopGeneral`). Its own proof file has no proof
-yet: this is the first of the two open nodes. `thm-nearest` is
-`CONDITIONAL`: its proof, `Parking.nearest_of_spatial_scaling` in
+`ContOrientedValue`, `ContStopGeneral`); its proof discharges GreenNorms,
+UConcentration and HeatStrongMinimum internally from
+`Parking.External.greenNorms`, `Parking.External.uConcentration` and
+`Parking.External.heatStrongMinimum`, so it carries only SandpileGrowth,
+Bernstein, SpatialOdometerScaling, HeatInteriorRegularity and
+HeatCompactness as explicit hypotheses. `thm-nearest` is also `SEALED`:
+its proof, `Parking.nearest_of_spatial_scaling` in
 `Parking/Support/NearestFromSpatial.lean`, has no `sorry` of its own and
-destructures `Parking.Frozen.spatial_scaling`, so the whole chain reduces to
-that one open node. The chain it assembles is otherwise complete and
+destructures `Parking.Frozen.spatial_scaling`. The chain it assembles is
 sorry-free: `Parking.ae_spatial_origin_pos` (almost-sure strict positivity
 of the limiting odometer at `(1,0)`) from the critical-scale lower tail and
 the finite-dimensional clause, `Parking.ae_exists_pos_l1_ball` (a positive
@@ -395,11 +400,15 @@ continuum ball, from the continuity clause), and
 `Parking.nearest_of_positive_test_events`/`Parking.PositiveTestEvent` (the
 discrete geometric and probability endgame), assembled through
 `Parking/Support/NearestPathwise.lean`, `NearestSigned.lean` and
-`NearestContinuumPositivity.lean`, from the positive-event estimate. The two
-cited inputs `ext-critical-scale-lower-tail`, `ext-variance-scale` and
-`ext-multivariate-berry-esseen` enter here, together with SandpileGrowth,
-Bernstein and UConcentration. Given a sealed `prop-spatial-scaling`,
-`thm-nearest` needs no further Lean work.
+`NearestContinuumPositivity.lean`, from the positive-event estimate. The
+cited input `ext-critical-scale-lower-tail` enters here; it is itself
+`SEALED`, discharged outright from its own `ext-variance-scale` and
+`ext-multivariate-berry-esseen` antecedents (only the latter remains
+`FROZEN`). `thm-nearest` carries SandpileGrowth, Bernstein,
+SpatialOdometerScaling, HeatInteriorRegularity, HeatCompactness and
+MultivariateBerryEsseen as its six explicit hypotheses; UConcentration,
+GreenNorms, HeatStrongMinimum, CriticalScaleLowerTail and VarianceScale are
+all discharged internally.
 
 The distinctive modules of this step, beyond `Continuum` and the `Nearest`
 family already named (`NearestBallEvent`, `NearestContinuumPositivity`,
@@ -464,14 +473,14 @@ step are the `Subcritical` family (`SubcriticalBound`,
 and `Parking.exists_resolvent_tail_high` in
 `Parking/Support/RangeResolvent.lean`. `lem-mean-horizon` is proved by
 `Parking.exists_meanHorizon` in `Parking/Support/MeanHorizonProof.lean` and
-`Parking/Support/MeanHorizonStep1.lean`, carrying SandpileGrowth, Stopping,
-UConcentration and GreenNorms. `prop-near-divisible` is proved in
-`Parking/Support/NearBounded.lean` and `Parking/Support/Near.lean`
+`Parking/Support/MeanHorizonStep1.lean`, carrying SandpileGrowth and
+Stopping (UConcentration and GreenNorms are read internally). `prop-near-divisible` is
+proved in `Parking/Support/NearBounded.lean` and `Parking/Support/Near.lean`
 (`Parking.exists_meanuLimit_upper`, `Parking.exists_meanuLimit_lower`,
-`Parking.exists_meanuLimit_psi_upper`), carrying the same four externals.
+`Parking.exists_meanuLimit_psi_upper`), carrying the same two externals.
 `thm-near` is proved by `Parking.exists_rate_le_meanUlimit` and
 `Parking.exists_meanUlimit_le_rate` in `Parking/Support/NearEndgame.lean`,
-adding Bernstein as a fifth external. The distinctive modules of this step
+adding Bernstein as a third external. The distinctive modules of this step
 are the `Near` family (`Near`, `NearBounded`, `NearBridge`, `NearCutoff`,
 `NearDensity`, `NearEndgame`, `NearEnv`, `NearHorizon`, `NearLower`,
 `NearLowerLog`, `NearMoment`, `NearOptimize`, `NearParticle`,
@@ -495,14 +504,15 @@ the library's `LatticeProb/Walk/BinomLaw.lean`. `thm-oriented` is proved by
 `Parking/Support/OrientedAllNorms.lean`; the registered node no longer
 carries `ext-stopping`, matching the paper's own statement of
 `thm:oriented`. `prop-oriented-scaling`
-is `DRAFT_SORRY`: its statement, in `Parking/Frozen/OrientedScaling.lean`,
+is `SEALED`: its statement, in `Parking/Frozen/OrientedScaling.lean`,
 asserts the existence and measurability of the self-similar limit `Uc` with
-the exponent `1/4`, and carries `ext-oriented-stopping-stability` and
-`ext-binomial-local-clt`. This is the second of the two open nodes.
-`thm-oriented-walk` is `CONDITIONAL`: its proof,
+the exponent `1/4`, and carries only `ext-oriented-stopping-stability`;
+`ext-binomial-local-clt` is discharged internally from
+`Parking.External.binomialLocalCLT`.
+`thm-oriented-walk` is also `SEALED`: its proof,
 `Parking.oriented_walk_of_mean` in `Parking/Support/OrientedActivity.lean`,
 has no `sorry` of its own and destructures `Parking.Frozen.oriented_scaling`,
-so the whole chain reduces to that one open node. The distinctive modules
+discharging `ext-u-concentration` the same way. The distinctive modules
 of this step are the `Oriented` family (over eighty modules, including
 `OrientedActivity`, `OrientedAllNorms`, `OrientedComparison`,
 `OrientedConcentration`, `OrientedGreenRates`, `OrientedKernel`,
@@ -580,16 +590,23 @@ the Bernstein tail bound of Pinelis, Theorem 3.3. It is consumed by `prop-w-mome
 `prop-spatial-scaling`, `thm-oriented-walk`, `thm-nearest`.
 
 `Parking.External.UConcentration` transcribes the same paper's Remark 3.4:
-the translation-invariant-kernel concentration estimate. It is consumed by `thm-upper`,
-`thm-master`, `cor-growth`, `prop-discrepancy`, `thm-trichotomy`,
+the translation-invariant-kernel concentration estimate. It is `SEALED`
+(`Parking.External.uConcentration`, `Parking/External/UConcentrationProved.lean`),
+proved from the coordinate-Lipschitz bound and the shared library's weighted
+exponential concentration rather than assumed, so it is read internally by
+`thm-upper`, `thm-master`, `cor-growth`, `prop-discrepancy`, `thm-trichotomy`,
 `prop-everyone-settles`, `lem-mean-horizon`, `prop-near-divisible`,
-`thm-near`, `prop-spatial-scaling`, `thm-oriented-walk`, `thm-nearest`.
+`thm-near`, `prop-spatial-scaling`, `thm-oriented-walk` and `thm-nearest`,
+none of which carries it as an explicit hypothesis any longer.
 
 `Parking.External.GreenNorms` transcribes the same paper's Section 3.1: the
-collected Green-function rates `‖g_n‖_2` and `max_x g_n(x)`. It is consumed
+collected Green-function rates `‖g_n‖_2` and `max_x g_n(x)`.  It is `SEALED`
+(`Parking.External.greenNorms`, `Parking/External/GreenNormsProved.lean`),
+proved from the shared library rather than assumed, so it is read internally
 by `thm-upper`, `thm-master`, `cor-growth`, `prop-discrepancy`,
-`thm-trichotomy`, `prop-everyone-settles`, `lem-mean-horizon`,
-`prop-near-divisible`, `thm-near`.
+`thm-trichotomy`, `prop-everyone-settles`, `lem-mean-horizon` and
+`prop-near-divisible`, `thm-near`, none of which carries it as an explicit
+hypothesis any longer.
 
 `Parking.External.Stopping` transcribes Theorem 3.2 of
 Bou-Rabee-Peres-Sava-Huss, *Divisible sandpiles via random walks in random
@@ -618,11 +635,18 @@ and Toldo, Theorem 3 and Corollary 4, and the binomial local central limit
 theorem, Lawler-Limic Theorem 2.1.1. They are consumed by
 `prop-oriented-scaling` and `thm-oriented-walk`.
 
-`Parking.External.VarianceScale`, `Parking.External.MultivariateBerryEsseen`
-and `Parking.External.CriticalScaleLowerTail` transcribe the variance-scale
-and multivariate Berry-Esseen hypotheses and the critical-scale lower-tail
-estimate of Bou-Rabee and Panagiotis, cited at `parking.tex:1822-1848`. They
-are consumed by `thm-nearest`.
+`Parking.External.MultivariateBerryEsseen` transcribes the multivariate
+Berry-Esseen hypothesis of Bou-Rabee and Panagiotis, cited at
+`parking.tex:1822-1848`. It is consumed by `thm-nearest`.
+
+`Parking.External.VarianceScale` and `Parking.External.CriticalScaleLowerTail`
+transcribe the variance-scale hypothesis and the critical-scale lower-tail
+estimate of the same citation. Both are `SEALED` (`Parking.External.varianceScale`;
+`Parking.External.criticalScaleLowerTail`, discharged outright from its own
+`VarianceScale` and `MultivariateBerryEsseen` antecedents), proved from the
+shared library rather than assumed, so they are read internally by
+`thm-nearest`, which carries `MultivariateBerryEsseen` alone among these
+three as an explicit hypothesis.
 
 What is deliberately not assumed: the paper's own theorems are not
 hypotheses of one another beyond the citation chain the paper itself
@@ -634,9 +658,9 @@ and `thm-four-sparse` build on `thm-master` and `cor-growth`;
 `lem-mean-horizon`, `lem-near-tilt` and `prop-resolvent`; `thm-oriented-walk`
 builds on `thm-oriented` and `prop-oriented-scaling`; `thm-nearest` builds
 on `prop-spatial-scaling` and the critical-scale lower tail. No statement
-assumes the conclusion of a later statement, and the two open nodes,
-`prop-spatial-scaling` and `prop-oriented-scaling`, are exactly the two
-places this chain is not yet closed.
+assumes the conclusion of a later statement, and `prop-spatial-scaling` and
+`prop-oriented-scaling` are each `SEALED`, so every node in this chain is
+closed.
 
 This description matches the Lean tree it accompanies; the registered
 declarations are checked against `ledger/manifest.yaml` by

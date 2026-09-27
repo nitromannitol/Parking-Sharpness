@@ -25,13 +25,13 @@ theorem integrable_spatialLocalMass {d : ℕ} (hd : 1 ≤ d) (ν : Measure ℤ) 
 /-- The growth theorem gives a uniform first moment for local rescaled odometer mass. -/
 theorem exists_integral_spatialLocalMass_le {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hGrowth : External.SandpileGrowth) (hBernstein : External.Bernstein)
-    (hConcentration : External.UConcentration) (hGreenNorms : External.GreenNorms)
+    (_hConcentration : External.UConcentration) (_hGreenNorms : External.GreenNorms)
     (ν : Measure ℤ) (hν : CriticalLaw ν) {B : ℝ} (hB : 0 < B) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 2 ≤ R →
       ∫ w, spatialLocalMass w R B ∂law d ν ≤ C := by
   haveI := hν.prob
   obtain ⟨c, C, hc, hcC, hmean, _⟩ :=
-    (Frozen.growth hGrowth hBernstein hConcentration hGreenNorms d hd ν hν).1 hd3
+    (Frozen.growth hGrowth hBernstein d hd ν hν).1 hd3
   have hC : 0 ≤ C := hc.le.trans hcC
   refine ⟨(2 * B + 5) ^ d * C, by positivity, fun R hR => ?_⟩
   have hRpos : 0 < R := by linarith

@@ -190,7 +190,7 @@ theorem exists_meanUlimit_le_rate (hd : 1 ≤ d) (hGrowth : Parking.External.San
   obtain ⟨A₁, hA₁, h₁⟩ := exists_prod_r (d := d) hC₀
   obtain ⟨CRt, hCRt, hrout⟩ := exists_routing_mean_uniform hd hBern
   obtain ⟨cD, CD, hcD, hCD, δd, hδd, hδdδ₀, hdiv⟩ :=
-    Parking.Frozen.near_divisible hGrowth hStopping hConc hGreen d hd δ₀ ν θ M K hfam
+    Parking.Frozen.near_divisible hGrowth hStopping d hd δ₀ ν θ M K hfam
   refine ⟨CRt * Real.exp 2 * (Real.sqrt B + A₁) + CD + Ct, min δc δd, by positivity,
     lt_min hδc hδd, le_trans (min_le_left _ _) hδcδ₀, fun δ hδ => ?_⟩
   have hδ0 : 0 < δ := hδ.1
@@ -257,7 +257,7 @@ theorem exists_meanUlimit_le_rate (hd : 1 ≤ d) (hGrowth : Parking.External.San
 /-- **The near-critical lower bound.**  `c R ≤ E U_∞^δ(0)` for all small `δ`. -/
 theorem exists_rate_le_meanUlimit (hd : 1 ≤ d)
     (hGrowth : Parking.External.SandpileGrowth) (hStopping : Parking.External.Stopping)
-    (hConc : Parking.External.UConcentration) (hGreen : Parking.External.GreenNorms)
+    (_hConc : Parking.External.UConcentration) (_hGreen : Parking.External.GreenNorms)
     {δ₀ : ℝ} {ν : ℝ → Measure ℤ} {θ M K : ℝ} (hfam : NearFamily δ₀ ν θ M K) :
     ∃ c δ₁ : ℝ, 0 < c ∧ 0 < δ₁ ∧ δ₁ ≤ δ₀ ∧ ∀ δ ∈ Set.Ioc (0 : ℝ) δ₁,
       ENNReal.ofReal (c * Parking.nearRate d δ)
@@ -272,7 +272,7 @@ theorem exists_rate_le_meanUlimit (hd : 1 ≤ d)
     rw [hR]
     exact hlow δ hδ
   · obtain ⟨c, C, hc, hC, δ₁, hδ₁, hδ₁δ₀, hdiv⟩ :=
-      Parking.Frozen.near_divisible hGrowth hStopping hConc hGreen d hd δ₀ ν θ M K hfam
+      Parking.Frozen.near_divisible hGrowth hStopping d hd δ₀ ν θ M K hfam
     refine ⟨c, δ₁, hc, hδ₁, hδ₁δ₀, fun δ hδ => ?_⟩
     have hlow := (hdiv δ hδ).2.1 (by omega : d ≤ 4)
     haveI := hprob δ ⟨hδ.1.le, le_trans hδ.2 hδ₁δ₀⟩
