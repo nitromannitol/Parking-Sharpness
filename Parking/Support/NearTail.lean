@@ -1,4 +1,15 @@
-/-
+import Parking.Support.NearTailSum
+import Parking.Support.NearLowerLog
+import Parking.Frozen.NearTilt
+import Parking.Frozen.Resolvent
+import Parking.Support.SubcriticalJointBound
+import Parking.Support.NearDensity
+import Parking.Support.Invariance
+import Parking.Support.NearTiltInterval
+
+/-!
+# Step 1 of the upper bounds of `thm:near`: the tail sum from the cutoff
+
 Step 1 of the upper bounds of `thm:near` (`parking.tex:2929-2944`).
 
 "Let `L = log(e/δ)`.  Take `N = ⌈C δ^{-4}L^3⌉` in dimension one,
@@ -13,14 +24,6 @@ is the first integer past that threshold, so no constant has to be chosen: every
 survivor count beyond it is bounded by the corresponding term of a series whose
 total is at most one.
 -/
-import Parking.Support.NearTailSum
-import Parking.Support.NearLowerLog
-import Parking.Frozen.NearTilt
-import Parking.Frozen.Resolvent
-import Parking.Support.SubcriticalJointBound
-import Parking.Support.NearDensity
-import Parking.Support.Invariance
-import Parking.Support.NearTiltInterval
 
 open MeasureTheory LatticeProb
 open scoped ENNReal
@@ -64,6 +67,8 @@ theorem exists_near_tail (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Measure ℤ}
 def nearCutoff (d : ℕ) (CR a δ : ℝ) : ℕ :=
   ⌈Parking.resolventThreshold d CR (a * δ ^ 2)⌉₊ + 1
 
+/-- `nearCutoff` strictly exceeds the threshold it is the ceiling-plus-one of, from
+`Nat.le_ceil`. -/
 theorem resolventThreshold_lt_nearCutoff (d : ℕ) (CR a δ : ℝ) :
     Parking.resolventThreshold d CR (a * δ ^ 2) < ((nearCutoff d CR a δ : ℕ) : ℝ) := by
   have h := Nat.le_ceil (Parking.resolventThreshold d CR (a * δ ^ 2))
@@ -71,6 +76,8 @@ theorem resolventThreshold_lt_nearCutoff (d : ℕ) (CR a δ : ℝ) :
   push_cast
   linarith
 
+/-- `nearCutoff` exceeds its threshold by at most `2`, from `Nat.ceil_lt_add_one` when
+the threshold is nonnegative. -/
 theorem nearCutoff_le (d : ℕ) (CR a δ : ℝ)
     (hT : 0 ≤ Parking.resolventThreshold d CR (a * δ ^ 2)) :
     ((nearCutoff d CR a δ : ℕ) : ℝ) ≤ Parking.resolventThreshold d CR (a * δ ^ 2) + 2 := by

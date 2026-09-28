@@ -1,13 +1,30 @@
-/- Bounded predictable products of successively revealed independent coordinates. -/
 import Parking.Support.CoordinateFiltration
 import Parking.Support.CoordinateConditional
 import Parking.Support.BernsteinRange
+
+/-!
+# Bounded predictable products of revealed coordinates
+
+This packages a finite sum `∑_j H_j(z) · g_j(z.2(q_j))`, where `H_j` is predictable for the
+`coordinateFiltration` revealing the coordinates `q_0, ..., q_{K-1}` one at a time and `g_j` is
+a bounded, mean-zero observable of the coordinate revealed at step `j`, as a martingale
+difference sequence, and reads off `exists_bernstein_range_bound`'s moment bound for it: the
+conditional-mean-zero and conditional-second-moment hypotheses follow from
+`condExp_mul_fresh_coordinate`, since each `g_j` is only read once its own coordinate `q_j` is
+freshly revealed.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory Finset
 open scoped Classical
 
+/-- A Bernstein-type moment bound `‖∑_j H_j g_j(z.2(q_j))‖_r ≤ C(√r ‖∑_j H_j² Var(g_j)‖_{r/2}^{1/2}
++ ra)` for a sum of bounded, `coordinateFiltration`-predictable factors `H_j` against bounded,
+mean-zero observables `g_j` of successively revealed independent coordinates `q_j`, obtained by
+applying the library's `exists_bernstein_range_bound` to the martingale difference sequence
+`ξ_j = H_j · g_j(z.2(q_j))`, whose conditional moments are computed via
+`condExp_mul_fresh_coordinate`. -/
 theorem exists_finite_coordinate_moment_bound (hBern : External.Bernstein) :
     ∃ C : ℝ, 0 < C ∧ ∀ (Ω ι : Type) (X : ι → Type)
       (_ : MeasurableSpace Ω) (_ : DecidableEq ι) (_ : ∀ i, MeasurableSpace (X i))
@@ -38,7 +55,8 @@ theorem exists_finite_coordinate_moment_bound (hBern : External.Bernstein) :
     rw [abs_mul]
     exact (mul_le_mul (hHb j z) (hgb j _) (abs_nonneg _) zero_le_one).trans_eq (one_mul a)
   have hAi (j : Fin K) : Integrable (A j) Q :=
-    Integrable.of_bound ((hAm j).mono (coordinateFiltration_le b q (j.val + 1)) le_rfl).aestronglyMeasurable a
+    Integrable.of_bound
+      ((hAm j).mono (coordinateFiltration_le b q (j.val + 1)) le_rfl).aestronglyMeasurable a
       (ae_of_all Q fun z => by simpa only [Real.norm_eq_abs] using hAb j z)
   have hAc (j : Fin K) : Q[A j | F j.val] =ᵐ[Q] 0 := by
     have h := condExp_mul_fresh_coordinate μ P (q j) (b (q j)) (F j.val)
@@ -54,7 +72,10 @@ theorem exists_finite_coordinate_moment_bound (hBern : External.Bernstein) :
     have h := pow_le_pow_left₀ (abs_nonneg (H j z)) (hHb j z) 2
     simpa only [one_pow] using h
   have hA2i (j : Fin K) : Integrable (fun z => A j z ^ 2) Q := by
-    apply Integrable.of_bound (((hAm j).mono (coordinateFiltration_le b q (j.val + 1)) le_rfl).pow_const 2).aestronglyMeasurable (a ^ 2)
+    apply Integrable.of_bound
+      (((hAm j).mono (coordinateFiltration_le b q (j.val + 1))
+        le_rfl).pow_const 2).aestronglyMeasurable
+      (a ^ 2)
     filter_upwards [] with z
     rw [Real.norm_eq_abs, abs_pow]
     exact pow_le_pow_left₀ (abs_nonneg (A j z)) (hAb j z) 2

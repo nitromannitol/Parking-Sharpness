@@ -13,6 +13,8 @@ namespace Parking
 open MeasureTheory LatticeProb Filter
 variable {d : ℕ}
 
+/-- The survivor count at a site is antitone in time: a survivor at time `t` was already active
+(hence a survivor) at every earlier time `s ≤ t`. -/
 theorem survivorsFrom_antitone (D : Driver d) (x : Site d) :
     Antitone (fun t => LatticeProb.survivorsFrom D t x) := by
   intro s t hst
@@ -21,6 +23,8 @@ theorem survivorsFrom_antitone (D : Driver d) (x : Site d) :
   obtain ⟨hr, ha⟩ := Finset.mem_filter.mp hi
   exact Finset.mem_filter.mpr ⟨hr, LatticeProb.active_of_le hst ha⟩
 
+/-- The mean survivor density `S` is antitone in time, by `survivorsFrom_antitone` and
+monotonicity of the integral against the transported law. -/
 theorem S_antitone (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) :
     Antitone (S (law d ν)) := by
@@ -29,6 +33,8 @@ theorem S_antitone (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     ((Parking.Frozen.transport d hd ν inferInstance hint).1 s).2.1
     (fun ω => Nat.cast_le.mpr (survivorsFrom_antitone (toDriver ω) 0 hst))
 
+/-- A critical law has a finite first moment, since its exponential moment bound dominates
+`|k|` via `rpow_le_const_mul_exp`. -/
 theorem CriticalLaw.integrable_abs {ν : Measure ℤ} (hν : CriticalLaw ν) :
     Integrable (fun k : ℤ => |(k : ℝ)|) ν := by
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment

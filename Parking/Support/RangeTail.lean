@@ -1,4 +1,10 @@
-/-
+import Parking.Support.RangeMean
+import LatticeProb.Prob.PaleyZygmund
+import LatticeProb.Prob.CountableMeasurable
+
+/-!
+# Paley-Zygmund for the range
+
 Paley-Zygmund for the range, Step 1 of `prop:resolvent`.
 
 `parking.tex:2686-2698` combines the second-moment bound
@@ -9,9 +15,6 @@ constant.  This file proves the probability bound at every horizon, in the form
 and of its mean, which is what turns that bound into a statement about the
 first horizon whose mean range exceeds `2m`.
 -/
-import Parking.Support.RangeMean
-import LatticeProb.Prob.PaleyZygmund
-import LatticeProb.Prob.CountableMeasurable
 
 noncomputable section
 

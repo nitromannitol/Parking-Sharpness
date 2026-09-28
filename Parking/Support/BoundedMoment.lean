@@ -3,12 +3,21 @@ import Parking.Support.Lp
 
 open LatticeProb.MomentNorm (rNorm)
 
+/-!
+# Moment norms of a bounded functional
+
+A bounded measurable functional has every nonnegative real moment integrable against a
+finite measure, and, under a probability law, its `LatticeProb.MomentNorm.rNorm` at every
+positive exponent is at most the bound itself.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory
 
 /-- Every nonnegative real moment of a bounded measurable functional is integrable. -/
-theorem integrable_abs_rpow_bounded {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+theorem integrable_abs_rpow_bounded {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsFiniteMeasure μ]
     (f : Ω → ℝ) (hf : Measurable f) (B : ℝ) (hB : ∀ ω, |f ω| ≤ B) {r : ℝ} (hr : 0 ≤ r) :
     Integrable (fun ω => |f ω| ^ r) μ := by
   apply Integrable.of_bound ((measurable_rpow_const hr).comp hf.abs).aestronglyMeasurable (B ^ r)

@@ -1,4 +1,10 @@
-/-
+import Parking.Support.SubcriticalInvariance
+import Parking.Support.HoleObsIntegrable
+import Parking.Support.TiltCov
+
+/-!
+# Step 2 of `thm:subcritical`
+
 Step 2 of `thm:subcritical` (`parking.tex:2479-2497`): the pair `(F, Z)` of
 `Support/SubcriticalPair.lean` satisfies every hypothesis of `lem:product`, so
 its covariance under the conditioned tilted law is at most three times the
@@ -9,9 +15,6 @@ derivative of `E_λ F` in the tilt.
 Lemma 4.6, `F` is nondecreasing when a particle is added; by Lemma 3.4, `Z` is
 nonincreasing and changes by at most one.  Thus Lemma 9.2 applies."
 -/
-import Parking.Support.SubcriticalInvariance
-import Parking.Support.HoleObsIntegrable
-import Parking.Support.TiltCov
 
 open MeasureTheory LatticeProb
 
@@ -76,6 +79,9 @@ theorem taggedRank_tagged (r : ℕ → ℝ) (v : LatticeProb.Label d × ℕ → 
     taggedRank r v (((0 : Site d), 0), s) = r s := by
   simp [taggedRank]
 
+/-- `taggedRank r v` is injective when `v` is injective, `r` is injective, and
+no value of `r` coincides with a value of `v`, by casing on whether each label
+is the tagged one. -/
 theorem injective_taggedRank {r : ℕ → ℝ} {v : LatticeProb.Label d × ℕ → ℝ}
     (hv : Function.Injective v) (hr : Function.Injective r)
     (hdisj : ∀ (s : ℕ) (q : LatticeProb.Label d × ℕ), r s ≠ v q) :

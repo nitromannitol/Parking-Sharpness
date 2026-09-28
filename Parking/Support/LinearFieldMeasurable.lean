@@ -1,6 +1,11 @@
-/-
-**Instantiation of `Parking.FieldMeasurability` for the linear field `Z` of
-`Parking.External.LinearFieldScaling`.**
+import Parking.Support.FieldMeasurability
+import Parking.External.LinearFieldScaling
+
+/-!
+# Instantiation of `FieldMeasurability` for the linear field
+
+Instantiation of `Parking.FieldMeasurability` for the linear field `Z` of
+`Parking.External.LinearFieldScaling`.
 
 `Parking.External.LinearFieldScaling`'s own clauses already give `Z` continuous paths
 (`hZcont`, its own bound variable) and measurable point evaluations (its fifth conjunct,
@@ -16,8 +21,6 @@ No `External` is consumed or registered by this module: it is stated for arbitra
 `hZcont`, `hZmeas` of the shape `LinearFieldScaling`'s existential supplies, so a caller who
 has already destructured that existential applies it directly to its own witnesses.
 -/
-import Parking.Support.FieldMeasurability
-import Parking.External.LinearFieldScaling
 
 noncomputable section
 

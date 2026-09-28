@@ -1,10 +1,13 @@
-/-
-Pairings of the rescaled divisible odometer converge jointly with a finite random block.
-The limit space and field are parameters, so every pairing uses the same continuum witness.
--/
 import Parking.Support.SpatWBarDivisibleJointMeasurable
 import Parking.Support.NearestBallEvent
 import LatticeProb.Prob.Scaling.FddBlockTightness
+
+/-!
+# Joint convergence of odometer pairings with a finite block
+
+Pairings of the rescaled divisible odometer converge jointly with a finite random block.
+The limit space and field are parameters, so every pairing uses the same continuum witness.
+-/
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open LatticeProb.Scaling.BoundedFunctionalLift

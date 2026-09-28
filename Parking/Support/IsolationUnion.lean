@@ -1,12 +1,25 @@
 import Parking.Support.IsolatedMeasurable
 import Parking.Support.IndicatorIntegral
 
+/-!
+# A unit hole is isolated or paired with another hole
+
+`measure_hole_le_isolated_add_pairs` bounds the probability of a unit hole at the
+origin by the probability that it is isolated, plus the sum over sites `z` in the
+`K`-box of the probability that `0` and `z` are simultaneously unit holes. The proof
+is a pointwise union bound `1_{H=1} ≤ 1_{IsolatedHole} + ∑_z 1_{H(0)=H(z)=1}`, since a
+non-isolated hole at the origin witnesses some other unit hole in its box.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 open scoped Classical
 variable {d : ℕ}
 
+/-- Union-bound decomposition of a unit hole: `1_{H=1} ≤ 1_{IsolatedHole} +
+∑_z 1_{H(0)=H(z)=1}`, since a non-isolated hole at `0` witnesses some other unit hole
+`z` in its `K`-box. -/
 theorem measure_hole_le_isolated_add_pairs (μ : Measure (Data d)) [IsFiniteMeasure μ] (t K : ℕ) :
     (μ {ω | H ω t 0 = 1}).toReal ≤ (μ {ω | IsolatedHole ω t K 0}).toReal +
       ∑ z ∈ (boxFinset (0 : Site d) K).erase 0, (μ {ω | H ω t 0 = 1 ∧ H ω t z = 1}).toReal := by
@@ -14,7 +27,8 @@ theorem measure_hole_le_isolated_add_pairs (μ : Measure (Data d)) [IsFiniteMeas
   let I := fun ω : Data d => if H ω t 0 = 1 then (1 : ℝ) else 0
   let J := fun ω : Data d => if IsolatedHole ω t K 0 then (1 : ℝ) else 0
   let F := fun (ω : Data d) (z : Site d) => if H ω t 0 = 1 ∧ H ω t z = 1 then (1 : ℝ) else 0
-  have hmI : MeasurableSet {ω : Data d | H ω t 0 = 1} := (measurable_H t 0) (measurableSet_singleton 1)
+  have hmI : MeasurableSet {ω : Data d | H ω t 0 = 1} :=
+      (measurable_H t 0) (measurableSet_singleton 1)
   have hmJ := measurableSet_IsolatedHole (d := d) t K 0
   have hmF (z : Site d) : MeasurableSet {ω : Data d | H ω t 0 = 1 ∧ H ω t z = 1} :=
     hmI.inter ((measurable_H t z) (measurableSet_singleton 1))
@@ -50,10 +64,12 @@ theorem measure_hole_le_isolated_add_pairs (μ : Measure (Data d)) [IsFiniteMeas
       exact add_nonneg hJn hn
   have h := integral_mono hiI (hiJ.add (integrable_finsetSum S (fun z _ => hiF z))) hp
   change (∫ ω, I ω ∂μ) ≤ ∫ ω, J ω + ∑ z ∈ S, F ω z ∂μ at h
-  rw [integral_add hiJ (integrable_finsetSum S (fun z _ => hiF z)), integral_finsetSum S (fun z _ => hiF z)] at h
+  rw [integral_add hiJ (integrable_finsetSum S (fun z _ => hiF z)),
+      integral_finsetSum S (fun z _ => hiF z)] at h
   have hI : (∫ ω, I ω ∂μ) = (μ {ω | H ω t 0 = 1}).toReal := integral_ite_one_zero μ _ hmI
   have hJ : (∫ ω, J ω ∂μ) = (μ {ω | IsolatedHole ω t K 0}).toReal := integral_ite_one_zero μ _ hmJ
-  have hF (z : Site d) : (∫ ω, F ω z ∂μ) = (μ {ω | H ω t 0 = 1 ∧ H ω t z = 1}).toReal := integral_ite_one_zero μ _ (hmF z)
+  have hF (z : Site d) : (∫ ω, F ω z ∂μ) = (μ {ω | H ω t 0 = 1 ∧ H ω t z = 1}).toReal :=
+      integral_ite_one_zero μ _ (hmF z)
   simpa only [hI, hJ, hF] using h
 
 end Parking

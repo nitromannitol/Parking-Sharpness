@@ -1,8 +1,15 @@
-/-
-The low-dimensional mean ratio and odometer scaling limit.
--/
 import Parking.Support.DiscrepancyLimits
 import Parking.Support.MeanPos
+
+/-!
+# Low-dimensional mean ratio and scaling limit
+
+The low-dimensional mean ratio and odometer scaling limit, for dimension `d ≤ 3`. The mean
+particle odometer `meanU` and mean sandpile odometer `meanu` have a ratio tending to one,
+using the discrepancy moment bound from `discrepancy_moment_tendsto_zero`. Combined with the
+sandpile's own scaling limit this transfers the same positive power-law limit
+`n ^ (-(4 - d) / 4) * meanU (law d ν) n → L` from `meanu` to `meanU`.
+-/
 
 noncomputable section
 namespace Parking

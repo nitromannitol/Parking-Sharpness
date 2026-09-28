@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Pathwise
+import Parking.Support.OrientedMaximum
+
+/-!
+# `eq:stopping`: the odometer as an optimal-stopping value
+
 `eq:stopping` (`parking.tex:876-884`) for the simple random walk: the divisible
 odometer `u_n` is the value of the bounded optimal stopping problem with
 reward `∑_{j<σ} η(X_j)` along the simple random walk.
@@ -15,8 +20,6 @@ the rule that stops at once exactly when the continuation value
 `η(x) + (Pu_n)(x)` is not positive, and otherwise takes one step and follows
 the attaining rule of the site it reaches, collects exactly that.
 -/
-import Parking.Support.Pathwise
-import Parking.Support.OrientedMaximum
 
 open MeasureTheory
 
@@ -34,6 +37,8 @@ theorem integral_stepLaw_walk (hd : 1 ≤ d) (f : Site d → ℝ) (x : Site d) :
     (∫ b : Fin d × Bool, f (x + stepVec b) ∂(stepLaw d)) = walkOp f x := by
   rw [integral_stepLaw hd, sum_stepVec, walkOp]
 
+/-- `stopReward` only depends on the path up to time `n`: if `σ` is a stopping time bounded
+by `n` and two paths agree before `n`, they give the same collected reward. -/
 theorem stopReward_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d)
     {p q : ℕ → Fin d × Bool} (h : ∀ i, i < n → p i = q i) :
@@ -47,17 +52,23 @@ theorem stopReward_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
   have hjlt : j < σ p := Finset.mem_range.mp hj
   rw [walkPath_congr x (fun i hi => hpq i (lt_trans hi hjlt))]
 
+/-- `stopReward η x σ` is integrable against `walkLaw d`, since by `stopReward_congr` it
+depends only on the first `n` coordinates of the path. -/
 theorem integrable_stopReward (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d) :
     Integrable (stopReward η x σ) (walkLaw d) :=
   integrable_of_finite_dependence hd n _ (fun _ _ h => stopReward_congr hσ η x h)
 
+/-- The rule that stops immediately is a valid stopping rule bounded by `n` and collects
+reward `0`, so `0` is always an attainable stopping value. -/
 theorem zero_mem_stopValues (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     (0 : ℝ) ∈ stopValues d η n x := by
   refine ⟨fun _ => 0, ⟨fun _ => Nat.zero_le _, fun _ _ _ => rfl⟩, ?_⟩
   unfold stopValue stopReward
   simp
 
+/-- Conditioning a stopping rule `σ`, bounded by `n + 1`, on its first step `u` gives a
+stopping rule bounded by `n`: `r ↦ σ (consNat u r) - 1`. -/
 theorem isStoppingTimeLE_shift' {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE (n + 1) σ) (u : Fin d × Bool) :
     IsStoppingTimeLE n (fun r => σ (consNat u r) - 1) := by
@@ -77,6 +88,9 @@ theorem isStoppingTimeLE_shift' {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
           exact hrr' k hk
     rw [hσ.2 (consNat u r) (consNat u r') hcons]
 
+/-- If `σ` never stops immediately, the reward collected along a path starting with step
+`u` splits as `η x` plus the reward the one-step-shifted rule `fun r' => σ (consNat u r') - 1`
+collects from the new position `x + stepVec u`. -/
 theorem stopReward_consNat {σ : (ℕ → Fin d × Bool) → ℕ}
     (hpos : ∀ p, 1 ≤ σ p) (η : Site d → ℝ) (x : Site d)
     (u : Fin d × Bool) (r : ℕ → Fin d × Bool) :
@@ -94,6 +108,10 @@ theorem stopReward_consNat {σ : (ℕ → Fin d × Bool) → ℕ}
   rw [add_comm]
   rfl
 
+/-- The one-step recursion for the expected reward: if `σ` never stops immediately,
+`stopValue η x σ` equals `η x` plus the average, over the first step `u`, of the value of
+the shifted rule from `x + stepVec u`, by integrating `stopReward_consNat` over
+`stepLaw d`. -/
 theorem stopValue_consNat (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE (n + 1) σ) (hpos : ∀ p, 1 ≤ σ p) (η : Site d → ℝ) (x : Site d) :
     stopValue η x σ
@@ -126,6 +144,7 @@ theorem stopValue_consNat (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool)
   rw [integral_add (hfin _) (hfin _), integral_const]
   simp
 
+/-- A stopping rule that always stops immediately collects reward `0`. -/
 theorem stopValue_of_zero {σ : (ℕ → Fin d × Bool) → ℕ}
     (h0 : ∀ p, σ p = 0) (η : Site d → ℝ) (x : Site d) :
     stopValue η x σ = 0 := by
@@ -241,6 +260,8 @@ theorem isLUB_stopValues (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Sit
   · intro b hb
     exact hb (u_mem_stopValues hd η n x)
 
+/-- The supremum of the set of attainable stopping values equals the odometer `u η n x`,
+the `Real.sSup` restatement of `isLUB_stopValues`. -/
 theorem csSup_stopValues (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     sSup (stopValues d η n x) = u η n x :=
   (isLUB_stopValues hd η n x).csSup_eq ⟨0, zero_mem_stopValues η n x⟩

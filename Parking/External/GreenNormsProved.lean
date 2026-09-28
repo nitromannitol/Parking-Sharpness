@@ -39,6 +39,8 @@ open Filter Topology
 
 /-! ### An elementary series lower bound: `√K ≤ ∑_{k=1}^K 1/√k`. -/
 
+/-- `√K ≤ ∑_{k=1}^K 1/√k`, by induction using the step bound
+`√(K+1) - √K ≤ 1/√(K+1)`. -/
 private theorem sum_inv_sqrt_ge (K : ℕ) :
     Real.sqrt (K : ℝ) ≤ ∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / Real.sqrt (k : ℝ) := by
   induction K with
@@ -70,6 +72,8 @@ private theorem sum_inv_sqrt_ge (K : ℕ) :
 
 /-! ### An elementary series lower bound: `log(K+1) ≤ ∑_{k=1}^K 1/k`. -/
 
+/-- `log(K+1) ≤ ∑_{k=1}^K 1/k`, by induction using
+`log((K+2)/(K+1)) ≤ (K+2)/(K+1) - 1` from `Real.log_le_sub_one_of_pos`. -/
 private theorem sum_inv_ge_log (K : ℕ) :
     Real.log ((K : ℝ) + 1) ≤ ∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / (k : ℝ) := by
   induction K with
@@ -95,6 +99,9 @@ private theorem sum_inv_ge_log (K : ℕ) :
 
 /-! ### Turning an eventual lower bound into one holding for all `n ≥ 2`. -/
 
+/-- Upgrades a lower bound on `Parking.greenMax d n` that holds only eventually (`n ≥ N`)
+against a positive monotone rate to one holding for every `n ≥ 2`, absorbing the finitely
+many smaller `n` using monotonicity of `greenMax` and its positivity at `n = 1`. -/
 private theorem exists_greenMax_lower_of_eventual (d : ℕ) (hd : 1 ≤ d)
     (rate : ℕ → ℝ) (hratemono : Monotone rate) (hrate2 : 0 < rate 2)
     (N : ℕ) (c : ℝ) (hc : 0 < c) (hev : ∀ n : ℕ, N ≤ n → c * rate n ≤ Parking.greenMax d n) :
@@ -143,6 +150,8 @@ private theorem exists_greenMax_lower_of_eventual (d : ℕ) (hd : 1 ≤ d)
 
 /-! ### The even-time sum sitting inside the truncated Green function at `0`. -/
 
+/-- The sum of the even-time heat values `heat d (2k) 0` over `1 ≤ k ≤ K` is at most
+`green d n 0` once `2K < n`, since those even times all lie in the range `green` sums over. -/
 private theorem sum_heat_two_mul_le_green (d n K : ℕ) (hK : 2 * K < n) :
     ∑ k ∈ Finset.Icc 1 K, Parking.heat d (2 * k) 0 ≤ Parking.green d n 0 := by
   have hinj : Set.InjOn (fun k : ℕ => 2 * k) (Finset.Icc 1 K : Finset ℕ) :=
@@ -158,6 +167,8 @@ private theorem sum_heat_two_mul_le_green (d n K : ℕ) (hK : 2 * K < n) :
   · intro j _ _
     exact Parking.heat_nonneg j 0
 
+/-- A uniform constant `c₀` with `c₀ ∑_{k=1}^K k^{-d/2} ≤ ∑_{k=1}^K heat d (2k) 0`, from the
+shared library's diagonal heat-kernel lower bound `LatticeProb.exists_srwHeat_diag_lower`. -/
 private theorem sum_heat_two_mul_ge (d : ℕ) (hd : 0 < d) :
     ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ K : ℕ,
       c₀ * ∑ k ∈ Finset.Icc 1 K, (1 : ℝ) / Real.sqrt (k : ℝ) ^ d
@@ -176,14 +187,20 @@ private theorem sum_heat_two_mul_ge (d : ℕ) (hd : 0 < d) :
 
 /-! ### The Nat arithmetic relating the horizon `n` to `K = ⌊(n-1)/2⌋`. -/
 
+/-- For `n ≥ 4`, `n ≤ 4 · ⌊(n-1)/2⌋`, the arithmetic fact relating the horizon `n` to
+`K = ⌊(n-1)/2⌋`. -/
 private theorem four_K_ge (n : ℕ) (hn : 4 ≤ n) : (n : ℝ) ≤ 4 * (((n - 1) / 2 : ℕ) : ℝ) := by
   have h : n ≤ 4 * ((n - 1) / 2) := by omega
   exact_mod_cast h
 
+/-- `2 · ⌊(n-1)/2⌋ < n` for `n ≥ 1`, so the even times up to `2K` all lie below `n`. -/
 private theorem two_K_lt (n : ℕ) (hn : 1 ≤ n) : 2 * ((n - 1) / 2) < n := by omega
 
 /-! ### The max-norm lower bound, dimension by dimension. -/
 
+/-- The max-norm lower bound in dimension `1`: `c · √n ≤ greenMax 1 n` for `n ≥ 2`, assembled
+from the even-time sum bound `sum_heat_two_mul_ge`, the series estimate `sum_inv_sqrt_ge`, and
+the eventual-to-all-`n` upgrade `exists_greenMax_lower_of_eventual`. -/
 private theorem exists_max_lower_one :
     ∃ c : ℝ, 0 < c ∧ ∀ n : ℕ, 2 ≤ n →
       c * Parking.External.greenMaxRate 1 n ≤ Parking.greenMax 1 n := by
@@ -228,6 +245,9 @@ private theorem exists_max_lower_one :
   exact exists_greenMax_lower_of_eventual 1 (le_refl 1)
     (fun n => Parking.External.greenMaxRate 1 n) hratemono hrate2 16 c₀ hc₀ hev
 
+/-- The max-norm lower bound in dimension `2`: `c · log n ≤ greenMax 2 n` for `n ≥ 2`, by the
+same even-time/series/upgrade route as `exists_max_lower_one` with the logarithmic series
+bound `sum_inv_ge_log` in place of `sum_inv_sqrt_ge`. -/
 private theorem exists_max_lower_two :
     ∃ c : ℝ, 0 < c ∧ ∀ n : ℕ, 2 ≤ n →
       c * Parking.External.greenMaxRate 2 n ≤ Parking.greenMax 2 n := by
@@ -297,6 +317,8 @@ private theorem exists_max_lower_two :
   exact exists_greenMax_lower_of_eventual 2 (by norm_num)
     (fun n => Parking.External.greenMaxRate 2 n) hratemono hrate2 16 c₀ hc₀ hev
 
+/-- The max-norm lower bound for `d ≥ 3`, where `greenMaxRate d n = 1`: directly
+`greenMax d n ≥ green d n 0 ≥ heat d 0 0 = 1`, with no horizon growth needed. -/
 private theorem exists_max_lower_high {d : ℕ} (hd3 : 3 ≤ d) :
     ∃ c : ℝ, 0 < c ∧ ∀ n : ℕ, 2 ≤ n →
       c * Parking.External.greenMaxRate d n ≤ Parking.greenMax d n := by
@@ -318,6 +340,9 @@ private theorem exists_max_lower_high {d : ℕ} (hd3 : 3 ≤ d) :
 
 /-! ### The max-norm upper bound, dimension by dimension. -/
 
+/-- The max-norm upper bound in dimension `1`, `greenMax 1 n ≤ C · √n`, from the shared
+library's `LatticeProb.srwGreen_one_dim_le` turned into multiplicative form using
+`√2 ≤ √n`. -/
 private theorem exists_max_upper_one :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       Parking.greenMax 1 n ≤ C * Parking.External.greenMaxRate 1 n := by
@@ -345,6 +370,8 @@ private theorem exists_max_upper_one :
   rw [hrateeq]
   nlinarith [hub, hle, hBnonneg, Real.sqrt_nonneg (n : ℝ)]
 
+/-- The max-norm upper bound in dimension `2`, `greenMax 2 n ≤ C · log n`, from
+`LatticeProb.srwGreen_two_dim_le` turned into multiplicative form using `log 2 ≤ log n`. -/
 private theorem exists_max_upper_two :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       Parking.greenMax 2 n ≤ C * Parking.External.greenMaxRate 2 n := by
@@ -373,6 +400,8 @@ private theorem exists_max_upper_two :
   rw [hrateeq]
   nlinarith [hub, hle, hBnonneg]
 
+/-- The max-norm upper bound for `d ≥ 3`, where `greenMaxRate d n = 1`: a single constant
+bound from `LatticeProb.srwGreen_high_dim_le`, with no horizon dependence. -/
 private theorem exists_max_upper_high {d : ℕ} (hd3 : 3 ≤ d) :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       Parking.greenMax d n ≤ C * Parking.External.greenMaxRate d n := by
@@ -395,6 +424,8 @@ private theorem exists_max_upper_high {d : ℕ} (hd3 : 3 ≤ d) :
 
 /-! ### The ℓ² clause, at every dimension simultaneously. -/
 
+/-- `Parking.l2Norm (Parking.green d n)` rewritten through `Parking.green_eq_srwGreen` as the
+ℓ²-norm of the shared library's `LatticeProb.srwGreen d n`. -/
 private theorem l2Norm_green_eq (d n : ℕ) :
     Parking.l2Norm (Parking.green d n)
       = Real.sqrt (∑' x : Parking.Site d, LatticeProb.srwGreen d n x ^ 2) := by
@@ -402,6 +433,8 @@ private theorem l2Norm_green_eq (d n : ℕ) :
   congr 1
   exact tsum_congr fun x => by rw [Parking.green_eq_srwGreen]
 
+/-- `Parking.External.greenL2Rate d n` equals `√(LatticeProb.varianceRate d n)`, unfolding
+both piecewise definitions case by case. -/
 private theorem greenL2Rate_eq (d n : ℕ) :
     Parking.External.greenL2Rate d n = Real.sqrt (LatticeProb.varianceRate d n) := by
   rw [Parking.External.greenL2Rate, LatticeProb.varianceRate]
@@ -416,6 +449,9 @@ private theorem greenL2Rate_eq (d n : ℕ) :
   · rfl
   · norm_num
 
+/-- The two-sided ℓ² bound at every dimension `d ≥ 1` at once: taking square roots of the
+shared library's two-sided bound on `∑ srwGreen²` (`LatticeProb.exists_tsum_srwGreen_sq_bounds`)
+and matching it to `greenL2Rate` via `greenL2Rate_eq`. -/
 private theorem exists_l2_bounds (d : ℕ) (hd : 1 ≤ d) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       c * Parking.External.greenL2Rate d n ≤ Parking.l2Norm (Parking.green d n) ∧
@@ -436,6 +472,9 @@ private theorem exists_l2_bounds (d : ℕ) (hd : 1 ≤ d) :
 
 /-! ### Assembly. -/
 
+/-- Assembles `Parking.External.GreenNorms`: the ℓ² clause from `exists_l2_bounds` at every
+dimension, and the max-norm clause by cases on `d = 1`, `d = 2` and `d ≥ 3` from the
+lower/upper pairs proved above. -/
 private theorem greenNorms_proof : Parking.External.GreenNorms := by
   intro d hd
   refine ⟨exists_l2_bounds d hd, ?_⟩

@@ -2,6 +2,15 @@ import Parking.Support.ProductLift
 
 open LatticeProb.MomentNorm (rNorm)
 
+/-!
+# Moment norms of centered bounded functionals on a product
+
+Moment-norm facts used to decompose a bounded functional on a product space against a
+retained coordinate: the norm of a constant, invariance of a bounded coordinate function's
+norm under an independent product factor, and the triangle-inequality decomposition of a
+centered bounded product observable into a centered retained part and its remaining noise.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory
@@ -36,7 +45,8 @@ theorem rNorm_bounded_centered_decomposition {Ω Ξ : Type} [MeasurableSpace Ω]
   have h := rNorm_bounded_add_le (μ.prod ν) hr (fun z => Y z.1 - b) (fun z => F z - Y z.1)
     ((hY.comp measurable_fst).sub_const b) (hF.sub (hY.comp measurable_fst))
     (D + |b|) (B + D) (fun z => hDb z.1) hdiff
-  have he : (fun z : Ω × Ξ => (Y z.1 - b) + (F z - Y z.1)) = (fun z => F z - b) := funext fun _ => by ring
+  have he : (fun z : Ω × Ξ => (Y z.1 - b) + (F z - Y z.1)) = (fun z => F z - b) :=
+    funext fun _ => by ring
   rw [he, rNorm_prod_fst_bounded μ ν (fun ω => Y ω - b) (hY.sub_const b) _ hDb (by linarith)] at h
   exact h
 end Parking

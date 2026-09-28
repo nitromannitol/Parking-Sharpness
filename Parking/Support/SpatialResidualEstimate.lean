@@ -1,8 +1,13 @@
-/- The weak residual is bounded by an arbitrarily small multiple of local mass. -/
 import Parking.Support.SpatialParabolicSupport
 import Parking.Support.SpatialSpaceTimeMass
 import Parking.Support.SpatialZeroIntegralTesting
 import LatticeProb.Prob.Scaling.CompactPairing
+
+/-!
+# The weak residual estimate
+
+The weak residual is bounded by an arbitrarily small multiple of local mass.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -11,18 +16,25 @@ noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- The map sending a space-time point `p` to its parabolic grid index, the pair of
+the discrete time floor `⌊p.1 * R ^ 2⌋₊` and the discrete site `latticePoint R p.2`,
+is measurable. -/
 theorem measurable_parabolicIndex (R : ℝ) :
     Measurable (fun p : ℝ × (Fin d → ℝ) => (⌊p.1 * R ^ 2⌋₊, latticePoint R p.2)) := by
   exact (Nat.measurable_floor.comp (measurable_fst.mul_const _)).prodMk
     (measurable_pi_lambda _ fun i => Int.measurable_floor.comp
       (measurable_const.mul ((measurable_pi_apply i).comp measurable_snd)))
 
+/-- The discrete time-difference test `parabolicTimeTest ψ R` is measurable, since it
+factors through the countable-valued `measurable_parabolicIndex R`. -/
 theorem measurable_parabolicTimeTest (ψ : ℝ × (Fin d → ℝ) → ℝ) (R : ℝ) :
     Measurable (parabolicTimeTest ψ R) := by
   exact (measurable_from_countable' (fun q : ℕ × Site d => R ^ 2 *
     (ψ ((q.1 : ℝ) / R ^ 2 + 1 / R ^ 2, fun i => (q.2 i : ℝ) / R) -
       ψ ((q.1 : ℝ) / R ^ 2, fun i => (q.2 i : ℝ) / R)))).comp (measurable_parabolicIndex R)
 
+/-- The discrete space-difference test `parabolicSpaceTest ψ R` is measurable, since it
+too factors through the countable-valued `measurable_parabolicIndex R`. -/
 theorem measurable_parabolicSpaceTest (ψ : ℝ × (Fin d → ℝ) → ℝ) (R : ℝ) :
     Measurable (parabolicSpaceTest ψ R) := by
   let f : ℕ × Site d → ℝ := fun q => R ^ 2 *
@@ -57,8 +69,10 @@ theorem barDivisible_tested_compact (w : Data d)
       ∫ p, barDivisible w R p.1 p.2 * parabolicSpaceTest ψ R p :=
     setIntegral_eq_integral_of_forall_compl_eq_zero fun p hp => by
       rw [show parabolicSpaceTest ψ R p = 0 by by_contra hn; exact hp (hK.2 hn), mul_zero]
-  rw [setIntegral_eq_integral_of_forall_compl_eq_zero (fun p hp => by rw [(hstrip p hp).1, mul_zero]),
-    setIntegral_eq_integral_of_forall_compl_eq_zero (fun p hp => by rw [(hstrip p hp).2, mul_zero])] at he
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero
+      (fun p hp => by rw [(hstrip p hp).1, mul_zero]),
+    setIntegral_eq_integral_of_forall_compl_eq_zero
+      (fun p hp => by rw [(hstrip p hp).2, mul_zero])] at he
   rwa [hKt, hKx]
 
 /-- Uniform coefficient consistency gives a pathwise residual bound on a fixed positive compact. -/
@@ -99,14 +113,19 @@ theorem eventually_abs_discreteResidual_le (hd : 1 ≤ d)
   have hspaceBound : ∀ p ∈ K, |parabolicSpaceTest ψ R p| ≤ ε / 2 + Mx := by
     intro p hp
     have := abs_sub_le (parabolicSpaceTest ψ R p) (contOp d (fun x => ψ (p.1, x)) p.2) 0
-    simpa only [sub_zero] using this.trans (add_le_add (hxerr p (hKt p hp)) (by simpa using hMx p hp))
+    simpa only [sub_zero] using
+      this.trans (add_le_add (hxerr p (hKt p hp)) (by simpa using hMx p hp))
   have hIt := LatticeProb.Scaling.CompactPairing.integrableOn_mul (μ := volume) hK.measurableSet
-    (measurable_spaceTime_barDivisible w R) (measurable_parabolicTimeTest ψ R) hu.choose_spec htimeBound
+    (measurable_spaceTime_barDivisible w R) (measurable_parabolicTimeTest ψ R)
+    hu.choose_spec htimeBound
   have hIx := LatticeProb.Scaling.CompactPairing.integrableOn_mul (μ := volume) hK.measurableSet
-    (measurable_spaceTime_barDivisible w R) (measurable_parabolicSpaceTest ψ R) hu.choose_spec hspaceBound
-  obtain ⟨Mc, hMc⟩ := hK.exists_bound_of_continuousOn (continuous_spaceTimeResidualTest hψ).continuousOn
+    (measurable_spaceTime_barDivisible w R) (measurable_parabolicSpaceTest ψ R)
+    hu.choose_spec hspaceBound
+  obtain ⟨Mc, hMc⟩ := hK.exists_bound_of_continuousOn
+    (continuous_spaceTimeResidualTest hψ).continuousOn
   have hIc := LatticeProb.Scaling.CompactPairing.integrableOn_mul (μ := volume) hK.measurableSet
-    (measurable_spaceTime_barDivisible w R) (continuous_spaceTimeResidualTest hψ).measurable hu.choose_spec hMc
+    (measurable_spaceTime_barDivisible w R) (continuous_spaceTimeResidualTest hψ).measurable
+    hu.choose_spec hMc
   have hf : ∀ x, ψ (((⌈T * R ^ 2⌉₊ : ℝ) / R ^ 2), x) = 0 := fun x =>
     hhigh _ x ((le_div_iff₀ (sq_pos_of_pos hRpos)).mpr (Nat.le_ceil _))
   have heq := barDivisible_tested_compact w hψ T hR (fun x => hlow 0 x (by linarith)) hf hpos

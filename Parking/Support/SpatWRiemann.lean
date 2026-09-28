@@ -1,11 +1,17 @@
-/- Riemann discretization controlled by local rescaled odometer mass. -/
 import Parking.Support.SpatWLocalMass
 import Parking.Support.SpatialVanishingDistance
 import LatticeProb.Walk.RiemannLattice
 import Parking.Support.Continuum
 import Parking.Support.Measurability
 
-open LatticeProb.Walk (abs_floor_mul_div_sub_le latticeCube latticeCube_measurableSet mem_latticeCube_iff volume_latticeCube)
+/-!
+# Riemann discretization via local rescaled odometer mass
+
+Riemann discretization controlled by local rescaled odometer mass.
+-/
+
+open LatticeProb.Walk (abs_floor_mul_div_sub_le latticeCube latticeCube_measurableSet
+  mem_latticeCube_iff volume_latticeCube)
 
 open MeasureTheory LatticeProb Filter Topology
 
@@ -14,6 +20,10 @@ namespace Parking
 
 variable {d : ℕ}
 
+/-- The pointwise product of the rescaled odometer and a function `g` supported in a ball of
+radius `B` decomposes as a finite sum, over lattice sites in a box around the origin, of the
+rescaled odometer value at each site times `g` restricted by the indicator of that site's
+lattice cube. -/
 theorem barOdometer_mul_eq_sum_indicator (w : Data d) {R B : ℝ} (hR : 0 < R)
     {g : (Fin d → ℝ) → ℝ} (hbound : ∀ x, g x ≠ 0 → ‖x‖ ≤ B) (x : Fin d → ℝ) :
     barOdometer w R 1 x * g x = ∑ y ∈ boxFinset (0 : Site d) (⌈B * R⌉₊ + 1),
@@ -46,6 +56,9 @@ theorem barOdometer_mul_eq_sum_indicator (w : Data d) {R B : ℝ} (hR : 0 < R)
         (norm_le_pi_norm x i).trans (hbound x hne))
     simp [hg]
 
+/-- Integrating the cell decomposition of `barOdometer_mul_eq_sum_indicator` termwise turns
+`∫ x, barOdometer w R 1 x * g x` into the finite sum of the rescaled odometer values against
+the integral of `g` over each lattice cube, using integrability of `g` on each cube. -/
 theorem integral_barOdometer_mul_eq_sum (w : Data d) {R B : ℝ} (hR : 0 < R)
     {g : (Fin d → ℝ) → ℝ} (hg : Integrable g)
     (hbound : ∀ x, g x ≠ 0 → ‖x‖ ≤ B) :
@@ -59,6 +72,10 @@ theorem integral_barOdometer_mul_eq_sum (w : Data d) {R B : ℝ} (hR : 0 < R)
   · intro y _
     exact (hg.indicator (latticeCube_measurableSet y R)).const_mul _
 
+/-- Replacing each cell integral of `g` in the Riemann sum of `integral_barOdometer_mul_eq_sum`
+by `g` evaluated at the lattice corner `y / R` introduces an error bounded by `ε` times the
+total local odometer mass `spatialLocalMass w R B`, given a modulus-of-continuity bound `hmod`
+for `g` at distance `1 / R`. -/
 theorem abs_barOdometer_riemann_error_le (w : Data d) {R B ε : ℝ} (hR : 0 < R)
     {g : (Fin d → ℝ) → ℝ} (hg : Integrable g)
     (hbound : ∀ x, g x ≠ 0 → ‖x‖ ≤ B)
@@ -88,7 +105,8 @@ theorem abs_barOdometer_riemann_error_le (w : Data d) {R B ε : ℝ} (hR : 0 < R
       rw [volume_latticeCube y hR]
       exact ENNReal.pow_lt_top ENNReal.ofReal_lt_top
     have heq : e y = ∫ x in latticeCube d y R, (g (fun i => (y i : ℝ) / R) - g x) := by
-      rw [integral_sub (integrableOn_const (C := g (fun i => (y i : ℝ) / R)) hfinite.ne) hg.integrableOn, setIntegral_const]
+      rw [integral_sub (integrableOn_const (C := g (fun i => (y i : ℝ) / R)) hfinite.ne)
+        hg.integrableOn, setIntegral_const]
       dsimp [e]
       rw [hvol y, mul_comm V]
     rw [heq]

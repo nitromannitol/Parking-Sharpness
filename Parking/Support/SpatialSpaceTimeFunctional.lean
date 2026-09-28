@@ -1,9 +1,14 @@
-/- Joint space-time functionals with the scenery retained on the same limit space. -/
 import Parking.Support.SpatialSpaceTimeMeasurable
 import Parking.Support.SpatWSceneryFdd
 import Parking.Support.NearestBallEvent
 import LatticeProb.Prob.Scaling.FddNiceFunctional
 import LatticeProb.Prob.Scaling.Slutsky
+
+/-!
+# Joint scenery and space-time functionals
+
+Joint space-time functionals with the scenery retained on the same limit space.
+-/
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open LatticeProb.Scaling.BoundedFunctionalLift

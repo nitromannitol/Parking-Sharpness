@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedStopping
+
+/-!
+# Rescaling of the directed lattice for the scaling limit
+
 The rescaling of the directed lattice used by the scaling limit
 (`parking.tex:3207-3211`).
 
@@ -19,7 +23,6 @@ why the rescaled spatial coordinate has variance `k/4` after `k` steps, which is
 the `Var(B_t) = t/4` of `parking.tex:3190`: one step changes `(z₂-z₁)/2` by
 `±1/2`.
 -/
-import Parking.Support.OrientedStopping
 
 noncomputable section
 

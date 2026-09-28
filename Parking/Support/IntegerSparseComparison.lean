@@ -1,16 +1,30 @@
-/- A centered integer law dominates a sufficiently sparse symmetric law in convex order. -/
 import LatticeProb.Prob.IntegerConvexMinorant
 import LatticeProb.Prob.ConvexProduct
 import Parking.Support.UConvex
 import Parking.Support.SparseLaw
 
-open LatticeProb.ConvexOrder (convex_integer_gap_nonneg convex_integer_minorant integrable_real_lipschitz)
+/-!
+# A sparse three-point law is a convex-order minorant
+
+A centered integer law dominates a sufficiently sparse symmetric three-point law in
+convex order: `threePoint_convex_integral_le` shows that any convex Lipschitz function
+has smaller expectation against `threePointLaw p` than against a centered integer law
+`ν` whose upper tail at `1` is at least `p`, using the affine-plus-gap convex minorant
+`LatticeProb.ConvexOrder.convex_integer_minorant`.
+-/
+
+open LatticeProb.ConvexOrder (convex_integer_gap_nonneg convex_integer_minorant
+  integrable_real_lipschitz)
 
 noncomputable section
 namespace Parking
 open MeasureTheory
 open scoped NNReal
 
+/-- A convex Lipschitz function has smaller expectation under the sparse three-point
+law at parameter `p` than under any centered integer law `ν` whose upper tail at `1`
+is at least `p`, by comparing both to the affine-plus-gap minorant of
+`convex_integer_minorant`. -/
 theorem threePoint_convex_integral_le (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
     (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0)

@@ -1,8 +1,11 @@
-/- The smooth limit of positive time quotients is the continuum time derivative. -/
 import Parking.External.HeatCompactness
 import LatticeProb.Prob.Scaling.TimeDifferenceLimit
 import Parking.Support.SpatialDifferenceQuotient
 import Parking.Support.SpatialMeasurableDerivative
+
+/-!
+# The smooth limit of positive time quotients is the continuum time derivative
+-/
 
 open MeasureTheory Filter Topology
 
@@ -36,7 +39,8 @@ theorem spatial_time_derivative_regular
   have hbound : ∀ K : Set (ℝ × (Fin d → ℝ)), IsCompact K → K ⊆ {p | 0 < u p} →
       ∃ C : ℝ, ∀ n, IntegrableOn (f n) K ∧ (∫ p in K, ‖f n p‖) ≤ C := by
     intro K hK hKO
-    obtain ⟨C, hC⟩ := LatticeProb.Scaling.TimeDifference.exists_integral_norm_difference_bound hu hmono hK
+    obtain ⟨C, hC⟩ :=
+      LatticeProb.Scaling.TimeDifference.exists_integral_norm_difference_bound hu hmono hK
     refine ⟨C, fun n => ?_⟩
     obtain ⟨hi, hb⟩ := hC (h n) (hh n) (hh1 n)
     have hae : (fun p => (u (p.1 + h n, p.2) - u p) / h n) =ᵐ[volume.restrict K] f n :=

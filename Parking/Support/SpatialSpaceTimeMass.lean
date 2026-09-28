@@ -1,13 +1,21 @@
-/- Uniform first moments of the divisible odometer on compact space-time sets. -/
 import Parking.Support.SpatialSpaceTimeMeasurable
 import Parking.Support.MeanuGrowthBounds
 import Parking.Support.UDivisibleShift
+
+/-!
+# Uniform first moments of the space-time field
+
+Uniform first moments of the divisible odometer on compact space-time sets.
+-/
 
 open MeasureTheory LatticeProb Set Filter Topology
 noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- The mean of `uOf w n x` at any fixed site `x`, over the random configuration `w`
+distributed as `law d ν`, equals `meanu (law d ν) n`, since shifting the configuration
+by `x` transports the law of `w.1` back to `ν` at every coordinate. -/
 theorem integral_uOf_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (x : Site d) :
     ∫ w, uOf w n x ∂law d ν = meanu (law d ν) n := by
@@ -18,10 +26,16 @@ theorem integral_uOf_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasu
   rw [hm] at hi
   simpa only [uOf_shiftData, zero_add, meanu] using hi.symm
 
+/-- The rescaled space-time field `barDivisible w R t x` is nonnegative, since it is a
+nonnegative power of `R` times the nonnegative divisible-sandpile odometer `uOf`. -/
 theorem barDivisible_nonneg (w : Data d) {R : ℝ} (hR : 0 ≤ R)
     (t : ℝ) (x : Fin d → ℝ) : 0 ≤ barDivisible w R t x := by
   exact mul_nonneg (Real.rpow_nonneg hR _) (by cases ⌊t * R ^ 2⌋₊ <;> simp [uOf, u])
 
+/-- The mean of `barDivisible w R t x` at a fixed space-time point equals
+`R ^ (d / 2 - 2)` times the discrete mean odometer at the corresponding rescaled
+horizon `⌊t * R ^ 2⌋₊`, by unfolding `barDivisible` and applying
+`integral_uOf_shift`. -/
 theorem integral_barDivisible_eq (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (R t : ℝ) (x : Fin d → ℝ) :
     ∫ w, barDivisible w R t x ∂law d ν =
@@ -88,16 +102,21 @@ theorem exists_integral_local_spaceTime_barDivisible_le (hd : 1 ≤ d) (hd3 : d 
   have hRpos : 0 < R := by linarith
   have hmeanmeas : Measurable (fun p : ℝ × (Fin d → ℝ) =>
       ∫ w, barDivisible w R p.1 p.2 ∂law d ν) :=
-    ((measurable_uncurry_spaceTime_barDivisible R).comp measurable_swap).stronglyMeasurable.integral_prod_right'.measurable
+    ((measurable_uncurry_spaceTime_barDivisible R).comp
+        measurable_swap).stronglyMeasurable.integral_prod_right'.measurable
   have hi : Integrable (fun p : Data d × (ℝ × (Fin d → ℝ)) =>
       barDivisible p.1 R p.2.1 p.2.2) ((law d ν).prod (volume.restrict K)) := by
-    apply (integrable_prod_iff' (measurable_uncurry_spaceTime_barDivisible R).aestronglyMeasurable).mpr
+    apply (integrable_prod_iff'
+      (measurable_uncurry_spaceTime_barDivisible R).aestronglyMeasurable).mpr
     constructor
-    · exact ae_of_all _ fun p => (integrable_uOf hd ν hν.integrable_abs ⌊p.1 * R ^ 2⌋₊ (latticePoint R p.2)).const_mul _
+    · exact ae_of_all _ fun p =>
+        (integrable_uOf hd ν hν.integrable_abs ⌊p.1 * R ^ 2⌋₊
+          (latticePoint R p.2)).const_mul _
     · simp_rw [Real.norm_eq_abs, abs_of_nonneg (barDivisible_nonneg _ hRpos.le _ _)]
       apply Integrable.of_bound hmeanmeas.aestronglyMeasurable C
       filter_upwards [ae_restrict_mem hK.measurableSet] with p hp
-      rw [Real.norm_eq_abs, abs_of_nonneg (integral_nonneg fun w => barDivisible_nonneg w hRpos.le _ _)]
+      rw [Real.norm_eq_abs,
+        abs_of_nonneg (integral_nonneg fun w => barDivisible_nonneg w hRpos.le _ _)]
       exact hbound R hR _ (htime p hp) _
   refine ⟨hi, hi.integral_prod_left, ?_⟩
   rw [integral_integral_swap hi]

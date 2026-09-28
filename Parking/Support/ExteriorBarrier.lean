@@ -2,12 +2,23 @@ import Parking.Support.SubharmonicMaximum
 import Parking.Support.NearestGreen
 import LatticeProb.Walk.ExteriorDirichlet
 
+/-!
+# Exterior barrier comparison
+
+A comparison principle for functions on `ℤ^d`, `d ≥ 3`, that are superharmonic away
+from the origin: any such function which equals a constant `m ≥ 0` outside a finite box
+and vanishes at the origin is bounded below by the Green-function barrier
+`m * (1 - srwGreenInf d y / srwGreenInf d 0)`. The proof runs `le_of_subharmonicOn` on the
+difference between the barrier and the given function.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
 variable {d : ℕ}
 
-/-- A superharmonic function that equals m outside a finite box and vanishes at the hole dominates the Green barrier. -/
+/-- A superharmonic function that equals `m` outside a finite box and vanishes at the
+hole dominates the Green barrier. -/
 theorem exterior_superharmonic_barrier (hd : 3 ≤ d) (f : Site d → ℝ) (m : ℝ) (hm : 0 ≤ m)
     (hzero : f 0 = 0) (hsub : ∀ y : Site d, y ≠ 0 → walkOp f y ≤ f y)
     (R : ℕ) (hfar : ∀ y : Site d, y ∉ boxFinset 0 R → f y = m) :
@@ -22,12 +33,14 @@ theorem exterior_superharmonic_barrier (hd : 3 ≤ d) (f : Site d → ℝ) (m : 
     dsimp only [b]
     have he : walkOp (fun y => m * (1 - srwGreenInf d y / srwGreenInf d 0)) y =
         m * walkOp (fun y => 1 - srwGreenInf d y / srwGreenInf d 0) y := by
-      simpa only [mul_comm] using walkOp_mul_const (fun y => 1 - srwGreenInf d y / srwGreenInf d 0) m y
+      simpa only [mul_comm] using walkOp_mul_const
+          (fun y => 1 - srwGreenInf d y / srwGreenInf d 0) m y
     rw [he, walkOp_sub, walkOp_const hd1, walkOp_div_const,
       walkOp_srwGreenInf_of_ne hd hy]
   have hlap (y : Site d) (hy : y ≠ 0) : 0 ≤ LatticeProb.Network.netLaplacian
       (lattice d) (LatticeProb.Network.unitCond (lattice d)) h y := by
-    rw [netLaplacian_lattice hd1, show walkOp h y = walkOp b y - walkOp f y from walkOp_sub b f y, hb y hy]
+    rw [netLaplacian_lattice hd1, show walkOp h y = walkOp b y - walkOp f y from walkOp_sub b f y,
+        hb y hy]
     apply mul_nonneg (by positivity)
     dsimp only [h]
     linarith [hsub y hy]

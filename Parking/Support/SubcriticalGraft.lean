@@ -1,4 +1,10 @@
-/-
+import Parking.Support.GraftOrigin
+import Parking.Support.SubcriticalInvariance
+import Parking.Support.SubcriticalStep2
+
+/-!
+# The subcritical pair with the origin prescribed
+
 The pair `(F, Z)` of `thm:subcritical` with the particles at the origin
 prescribed (`parking.tex:2449-2462`).
 
@@ -17,9 +23,6 @@ origin is held fixed, and they keep every other hypothesis of that lemma:
   observables do not move at all;
 - `FZ = 0` is the ungrafted identity read at the grafted realization.
 -/
-import Parking.Support.GraftOrigin
-import Parking.Support.SubcriticalInvariance
-import Parking.Support.SubcriticalStep2
 
 noncomputable section
 
@@ -34,6 +37,7 @@ random once its particles are prescribed. -/
 def puncturedBox (d : ℕ) (t : ℕ) : Finset (Site d) :=
   (subcriticalBox d t).erase (0 : Site d)
 
+/-- Any site of `subcriticalBox` other than the origin lies in `puncturedBox`. -/
 theorem mem_puncturedBox_of_ne {t : ℕ} {x : Site d} (hx : x ≠ (0 : Site d))
     (h : x ∈ subcriticalBox d t) : x ∈ puncturedBox d t :=
   Finset.mem_erase.mpr ⟨hx, h⟩
@@ -46,17 +50,25 @@ def graftSurvivalObs (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) (ω₁ : PDat
 def graftHoleObs (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ) : PData d → ℝ :=
   fun ω => holeObs w t (graftOrigin ω₁ ω)
 
+/-- `graftSurvivalObs` takes values in `[0, 1]`, inherited from `survivalObs_mem_Icc` at
+the grafted realization. -/
 theorem graftSurvivalObs_mem_Icc (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) (ω₁ : PData d)
     (t : ℕ) (ω : PData d) : graftSurvivalObs w r ω₁ t ω ∈ Set.Icc (0 : ℝ) 1 :=
   survivalObs_mem_Icc w r t _
 
+/-- `graftHoleObs` is nonnegative, inherited from `holeObs_nonneg` at the grafted
+realization. -/
 theorem graftHoleObs_nonneg (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ) (ω : PData d) :
     0 ≤ graftHoleObs w ω₁ t ω := holeObs_nonneg w t _
 
+/-- `graftSurvivalObs w r ω₁ t` is measurable, as `survivalObs` composed with the
+measurable map `graftOrigin ω₁`. -/
 theorem measurable_graftSurvivalObs (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) (ω₁ : PData d)
     (t : ℕ) : Measurable (graftSurvivalObs w r ω₁ t) :=
   (measurable_survivalObs w r t).comp (measurable_graftOrigin ω₁)
 
+/-- `graftHoleObs w ω₁ t` is measurable, as `holeObs` composed with the measurable map
+`graftOrigin ω₁`. -/
 theorem measurable_graftHoleObs (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ) :
     Measurable (graftHoleObs w ω₁ t) :=
   (measurable_holeObs w t).comp (measurable_graftOrigin ω₁)
@@ -86,12 +98,17 @@ theorem graftOrigin_agree {t : ℕ} {ω₁ ω ω' : PData d}
     · rw [graftOrigin_rank_of_ne h0, graftOrigin_rank_of_ne h0]
       exact hr q (mem_puncturedBox_of_ne h0 hq)
 
+/-- `graftSurvivalObs w r ω₁ t` depends only on the data at the sites of `puncturedBox d t`,
+the origin being fixed by the prescription `ω₁`: transferred from `dependsOn_survivalObs`
+via `graftOrigin_agree`. -/
 theorem dependsOn_graftSurvivalObs (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) (ω₁ : PData d)
     (t : ℕ) : DependsOn (puncturedBox d t) (graftSurvivalObs w r ω₁ t) := by
   intro ω ω' hc hm hr
   obtain ⟨h1, h2, h3⟩ := graftOrigin_agree (ω₁ := ω₁) hc hm hr
   exact dependsOn_survivalObs w r t _ _ h1 h2 h3
 
+/-- `graftHoleObs w ω₁ t` depends only on the data at the sites of `puncturedBox d t`,
+transferred from `dependsOn_holeObs` via `graftOrigin_agree`. -/
 theorem dependsOn_graftHoleObs (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ) :
     DependsOn (puncturedBox d t) (graftHoleObs w ω₁ t) := by
   intro ω ω' hc hm hr
@@ -187,12 +204,16 @@ theorem graftOrigin_present {ω₁ ω ω' : PData d} (hc : ω.1 = ω'.1)
       rw [graftOrigin_eta_of_ne h0] at hq
       exact hr q hq
 
+/-- `graftSurvivalObs` with the origin prescribed reads only the particles present,
+transferred from `survivalObs_congr_present` via `graftOrigin_present`. -/
 theorem readsParticles_graftSurvivalObs (w : ℕ → Fin d × Bool) (r : ℕ → ℝ)
     (ω₁ : PData d) (t : ℕ) : ReadsParticles (graftSurvivalObs (d := d) w r ω₁ t) := by
   intro ω ω' _ _ hc hm hr
   obtain ⟨h1, h2, h3⟩ := graftOrigin_present (ω₁ := ω₁) hc hm hr
   exact survivalObs_congr_present w r t h1 h2 h3
 
+/-- `graftHoleObs` with the origin prescribed reads only the particles present,
+transferred from `pHoleCount_reads` via `graftOrigin_present`. -/
 theorem readsParticles_graftHoleObs (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ) :
     ReadsParticles (graftHoleObs (d := d) w ω₁ t) := by
   intro ω ω' _ _ hc hm hr
@@ -202,14 +223,20 @@ theorem readsParticles_graftHoleObs (w : ℕ → Fin d × Bool) (ω₁ : PData d
   refine Finset.sum_congr rfl fun x _ => ?_
   exact_mod_cast congrArg (fun n : ℕ => (n : ℝ)) (pHoleCount_reads h1 h2 h3 t x)
 
+/-- `graftSurvivalObs` with the origin prescribed is relabel-invariant, combining
+`symmetricInParticles_graftSurvivalObs` and `readsParticles_graftSurvivalObs`. -/
 theorem relabelInvariant_graftSurvivalObs (w : ℕ → Fin d × Bool) (r : ℕ → ℝ)
     (ω₁ : PData d) (t : ℕ) : RelabelInvariant (graftSurvivalObs (d := d) w r ω₁ t) :=
   ⟨symmetricInParticles_graftSurvivalObs w r ω₁ t, readsParticles_graftSurvivalObs w r ω₁ t⟩
 
+/-- `graftHoleObs` with the origin prescribed is relabel-invariant, combining
+`symmetricInParticles_graftHoleObs` and `readsParticles_graftHoleObs`. -/
 theorem relabelInvariant_graftHoleObs (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ) :
     RelabelInvariant (graftHoleObs (d := d) w ω₁ t) :=
   ⟨symmetricInParticles_graftHoleObs w ω₁ t, readsParticles_graftHoleObs w ω₁ t⟩
 
+/-- `graftSurvivalObs` is monotone in an added particle at any site: at the origin the
+grafted realization does not move at all, and elsewhere this is `survivalObs_mono`. -/
 theorem graftSurvivalObs_mono (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (r : ℕ → ℝ)
     (ω₁ : PData d) (t : ℕ) (x₀ : Site d) (ω : PData d) :
     graftSurvivalObs w r ω₁ t ω ≤ graftSurvivalObs w r ω₁ t (addAt x₀ ω) := by
@@ -221,6 +248,8 @@ theorem graftSurvivalObs_mono (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (r : �
   · rw [graftOrigin_addAt hx₀]
     exact survivalObs_mono hd w r t x₀ (graftOrigin ω₁ ω)
 
+/-- `graftHoleObs` is antitone in an added particle at any site: at the origin the grafted
+realization does not move at all, and elsewhere this is `holeObs_anti`. -/
 theorem graftHoleObs_anti (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ)
     (x₀ : Site d) (ω : PData d) :
     graftHoleObs w ω₁ t (addAt x₀ ω) ≤ graftHoleObs w ω₁ t ω := by
@@ -231,6 +260,8 @@ theorem graftHoleObs_anti (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (ω₁ : PD
   · rw [graftOrigin_addAt hx₀]
     exact holeObs_anti hd w t x₀ (graftOrigin ω₁ ω)
 
+/-- Adding one particle at any site changes `graftHoleObs` by at most `1`: at the origin
+the grafted realization does not move, and elsewhere this is `holeObs_add_lip`. -/
 theorem graftHoleObs_add_lip (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ)
     (x₀ : Site d) (ω : PData d) :
     |graftHoleObs w ω₁ t (addAt x₀ ω) - graftHoleObs w ω₁ t ω| ≤ 1 := by
@@ -242,6 +273,8 @@ theorem graftHoleObs_add_lip (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (ω₁ :
   · rw [graftOrigin_addAt hx₀]
     exact holeObs_add_lip hd w t x₀ (graftOrigin ω₁ ω)
 
+/-- Removing one particle at any site changes `graftHoleObs` by at most `1`: at the origin
+the grafted realization does not move, and elsewhere this is `holeObs_del_lip`. -/
 theorem graftHoleObs_del_lip (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (ω₁ : PData d) (t : ℕ)
     (x₀ : Site d) (ω : PData d) :
     |graftHoleObs w ω₁ t (delAt x₀ ω) - graftHoleObs w ω₁ t ω| ≤ 1 := by

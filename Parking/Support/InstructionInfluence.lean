@@ -4,6 +4,18 @@ import Parking.Support.SingleMean
 
 open LatticeProb (measurable_from_countable')
 
+/-!
+# One instruction's centered influence on the future mean odometer
+
+`instruction_future_influence` sandwiches the change in the future mean odometer
+`matchedMeanU` caused by restoring one suppressed instruction between `0` and the
+full Green function `fullGreen d` of the instruction's destination, by rewriting
+`roundSigned` as `roundWithout` plus one added particle. Feeding this into
+`centered_influence_bounds` gives `instruction_future_centered_bounds`: the centered
+increment is bounded by `escapeConst d`, and its variance by the squared Green
+function averaged over the step law.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

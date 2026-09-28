@@ -1,18 +1,24 @@
-/-
-The finite-range sum of `Parking.levelIncFixed`'s per-level moments, from level `1` to level
-`R`, bounded by a constant TIMES `(R + 1) ^ 2` — polynomial in `R`, not exponential — via
-`LatticeProb.WeightedJensen.rpow_sum_range_le_geometric_weighted_sum` (`TightWeightedJensen.lean`), reused exactly
-as built (no Fatou or summability needed: the range is finite once `R` is fixed).  This
-completes `TightBoxSupBase.lean`'s route A: combined with `Parking.yfield_dtruncPi_dist_le_fixed`
-(the deterministic telescoping bound), it gives a moment bound on `|Yfield(dtruncPi R z) -
-Yfield(dtruncPi 0 z)|` uniform in the scale `n`, polynomial in `R`.
--/
 import Parking.Support.TightBoxSupBaseMoment
 import LatticeProb.WeightedJensen
 import Parking.Support.TightBoxSupTail
 import LatticeProb.Prob.Scaling.PolyGrowth
 
-open LatticeProb.WeightedJensen (jensenRatio jensenRatio_lt_one jensenRatio_pos jensenRatio_rpow_one_sub jensenRatio_rpow_one_sub_mul_lt_one rpow_sum_range_le_geometric_weighted_sum)
+/-!
+# Finite-range geometric-tail sum for the fixed-radius increment
+
+The finite-range sum of `Parking.levelIncFixed`'s per-level moments, from level `1` to level
+`R`, bounded by a constant TIMES `(R + 1) ^ 2` — polynomial in `R`, not exponential — via
+`LatticeProb.WeightedJensen.rpow_sum_range_le_geometric_weighted_sum`
+(`TightWeightedJensen.lean`), reused exactly as built (no Fatou or summability needed: the
+range is finite once `R` is fixed).  This
+completes `TightBoxSupBase.lean`'s route A: combined with `Parking.yfield_dtruncPi_dist_le_fixed`
+(the deterministic telescoping bound), it gives a moment bound on `|Yfield(dtruncPi R z) -
+Yfield(dtruncPi 0 z)|` uniform in the scale `n`, polynomial in `R`.
+-/
+
+open LatticeProb.WeightedJensen (jensenRatio jensenRatio_lt_one jensenRatio_pos
+    jensenRatio_rpow_one_sub jensenRatio_rpow_one_sub_mul_lt_one
+    rpow_sum_range_le_geometric_weighted_sum)
 
 open MeasureTheory LatticeProb Filter Topology LatticeProb.Scaling.PolyGrowth
 

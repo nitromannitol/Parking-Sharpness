@@ -1,4 +1,8 @@
-/-
+import LatticeProb.Prob.WeightedConc
+
+/-!
+# The `L^q`-moment form of a sub-Gaussian-on-a-range tail bound
+
 The `L^q`-moment form of a sub-Gaussian-on-a-range tail bound: the standard
 "exponential tilt, then optimize the tilt parameter" argument that turns
 `LatticeProb.SubGaussianOn X c s₀ μ` (a bounded moment generating function for
@@ -27,7 +31,6 @@ optimized over the tilt `λ` (capped at `s₀`), reproduces the classical
 sub-Gaussian/sub-exponential moment growth `√q` below the range and `q` beyond
 it.
 -/
-import LatticeProb.Prob.WeightedConc
 
 noncomputable section
 

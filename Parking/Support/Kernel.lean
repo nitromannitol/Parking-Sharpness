@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Walk
+import LatticeProb.Walk.LatticeKernel
+
+/-!
+# Lattice kernels
+
 A general finite-range translation-invariant transition kernel on `Z^d`, the
 recursion it drives, and its truncated Green function.  These are the objects
 of `lem:u-concentration` (`parking.tex:1402-1413`), which the paper states for
@@ -13,8 +18,6 @@ in Section 10, to the oriented kernel.
 library (`LatticeProb/Walk/LatticeKernel.lean`); the names the frozen statements
 use are exported into `Parking`.
 -/
-import Parking.Support.Walk
-import LatticeProb.Walk.LatticeKernel
 
 noncomputable section
 

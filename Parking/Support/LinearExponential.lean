@@ -1,11 +1,23 @@
-/- Exponential moments of finite independent linear combinations. -/
 import Parking.Support.OneSiteExponential
 import Mathlib.MeasureTheory.Integral.Pi
+
+/-!
+# Exponential moments of finite independent linear combinations
+
+A uniform one-site bound on the exponential moment generating function extends, via
+independence, to a bound on the moment generating function of any bounded linear combination
+of finitely many i.i.d. coordinates.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory Finset
 
+/-- Extends a uniform one-site exponential-moment bound at rate `τ` (`Integrable` and
+`∫ exp(t * z) ≤ exp(D * t ^ 2)` for `|t| ≤ τ`) to a bound on the linear combination
+`τ * ∑ a i * ξ i` over `N` independent coordinates with `|a i| ≤ 1`, by factoring the
+exponential as `∏ i, exp ((τ * a i) * ξ i)` and applying `Integrable.fintype_prod` and
+`integral_fintype_prod_eq_prod`. -/
 theorem linear_exponential_pi (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {τ D : ℝ} (hτ : 0 ≤ τ)
     (hb : ∀ t : ℝ, |t| ≤ τ →

@@ -1,7 +1,14 @@
-/-
-The pathwise discrepancy estimate combined with the martingale moment bound.
--/
 import Parking.Support.DiscrepancyRates
+
+/-!
+# The discrepancy moment norm
+
+The pathwise discrepancy estimate combined with the martingale moment bound: the `r`-norm of
+`U - u` is controlled by the `r`-th moment of `wStar`, and that in turn is combined with the
+martingale moment bound to give an explicit polynomial-and-square-root bound on the discrepancy
+norm, first at a general exponent `r` and then specialized to the logarithmic exponent `rHigh n`
+in dimension at most three.
+-/
 
 open LatticeProb.MomentNorm (rNorm rNorm_const_mul rNorm_mono)
 
@@ -109,7 +116,8 @@ theorem exists_diff_rHigh_low {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
             sqrt_r_mul_sqrt hr0 hK.le
       _ ≤ Real.sqrt K * (rConst ^ ((3 : ℝ) / 4) * Real.log ((n : ℝ) + 1) ^ ((3 : ℝ) / 4)) *
           Real.sqrt (kappa d n * (n : ℝ) ^ ((4 - (d : ℝ)) / 4)) :=
-            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hrq (Real.sqrt_nonneg K)) (Real.sqrt_nonneg _)
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hrq (Real.sqrt_nonneg K))
+                (Real.sqrt_nonneg _)
       _ = _ := by dsimp [B]; ring
   have he : ((n : ℝ) + 1) ^ (1 / rHigh n) ≤ Real.exp 2 := by
     refine (Real.rpow_le_rpow_of_exponent_le (by linarith : 1 ≤ (n : ℝ) + 1)

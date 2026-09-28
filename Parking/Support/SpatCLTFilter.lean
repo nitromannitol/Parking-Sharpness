@@ -1,16 +1,19 @@
-/-
-The real-parameter (filter) form of the scalar triangular-array characteristic-function CLT,
-`Parking.Support.SpatCLT.tendsto_charFun_weighted_scenery_sum`, needed because
-`prop:spatial-scaling`'s clauses (`parking.tex:1694-1752`) are all stated as `R → ∞` limits over
-a REAL parameter `R : ℝ`, not a sequence indexed by `ℕ`.  Nothing in the ℕ-indexed proof uses any
-property of `ℕ` beyond being an index set for a filter: every step is `Filter.Tendsto`,
-`Filter.Eventually`/`filter_upwards`, and `ge_of_tendsto'` (which needs only `[l.NeBot]` on the
-ambient filter, for any filter on any type).  This module transcribes that proof verbatim with
-the index type generalized from `(ℕ, Filter.atTop)` to an arbitrary `(ι, l)` with `[l.NeBot]`,
-so it applies directly with `ι := ℝ`, `l := Filter.atTop` to the scenery pairing's own rescaling
-parameter `R`.
--/
 import Parking.Support.SpatCLT
+
+/-!
+# Filter form of the triangular-array characteristic-function CLT
+
+The real-parameter (filter) form of the scalar triangular-array characteristic-function
+CLT, `Parking.Support.SpatCLT.tendsto_charFun_weighted_scenery_sum`, needed because
+`prop:spatial-scaling`'s clauses (`parking.tex:1694-1752`) are all stated as `R → ∞`
+limits over a REAL parameter `R : ℝ`, not a sequence indexed by `ℕ`. Nothing in the
+ℕ-indexed proof uses any property of `ℕ` beyond being an index set for a filter: every
+step is `Filter.Tendsto`, `Filter.Eventually`/`filter_upwards`, and `ge_of_tendsto'`
+(which needs only `[l.NeBot]` on the ambient filter, for any filter on any type). This
+module transcribes that proof verbatim with the index type generalized from
+`(ℕ, Filter.atTop)` to an arbitrary `(ι, l)` with `[l.NeBot]`, so it applies directly with
+`ι := ℝ`, `l := Filter.atTop` to the scenery pairing's own rescaling parameter `R`.
+-/
 
 open MeasureTheory LatticeProb ProbabilityTheory Filter Complex
 open scoped Topology RealInnerProductSpace InnerProductSpace
@@ -23,7 +26,8 @@ sums over `Site d`, indexed by an arbitrary filter, converges to the Gaussian on
 the weights' squares sum to a limit `V` and are uniformly negligible.  The real-parameter form of
 `Parking.Support.SpatCLT.tendsto_charFun_weighted_scenery_sum`, identical proof, generalized from
 `(ℕ, atTop)` to any `(ι, l)` with `[l.NeBot]`. -/
-theorem tendsto_charFun_weighted_scenery_sum_filter {ι : Type*} {l : Filter ι} [l.NeBot] {d : ℕ} (ν : Measure ℤ) (hν : CriticalLaw ν)
+theorem tendsto_charFun_weighted_scenery_sum_filter {ι : Type*} {l : Filter ι} [l.NeBot]
+    {d : ℕ} (ν : Measure ℤ) (hν : CriticalLaw ν)
     (S : ι → Finset (Site d)) (c : ι → Site d → ℝ) (t : ℝ) {V : ℝ}
     (hV : Tendsto (fun i => ∑ w ∈ S i, (c i w) ^ 2) l (𝓝 V))
     (M : ι → ℝ) (hM : Tendsto M l (𝓝 0)) (hMd : ∀ i, ∀ w ∈ S i, |c i w| ≤ M i) :

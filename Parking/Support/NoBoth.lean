@@ -1,16 +1,18 @@
-/-
-"Neither process has an active particle and an unfilled hole at the same site"
-(`parking.tex:1296-1298`), the fact that makes all the unmatched particles and
-holes created at one site carry the same sign in Step 1 of `lem:critical-density`.
-
-It holds for one process, at every time and every site.  Initially a site with an
-active particle has a positive count, so no hole.  After a round, a particle
-active at `x` arrived there and did not settle, which means that the arrivals of
-smaller rank than it already number at least the holes; that particle is itself
-an arrival and is not among them, so the arrivals outnumber the holes strictly
-and the holes are exhausted.
--/
 import Parking.Support.Reads
+
+/-!
+# No site carries both an active particle and an unfilled hole
+
+"Neither process has an active particle and an unfilled hole at the same site"
+(`parking.tex:1296-1298`), the fact that makes all the unmatched particles and holes
+created at one site carry the same sign in Step 1 of `lem:critical-density`.
+
+It holds for one process, at every time and every site. Initially a site with an active
+particle has a positive count, so no hole. After a round, a particle active at `x` arrived
+there and did not settle, which means that the arrivals of smaller rank than it already
+number at least the holes; that particle is itself an arrival and is not among them, so the
+arrivals outnumber the holes strictly and the holes are exhausted.
+-/
 
 noncomputable section
 

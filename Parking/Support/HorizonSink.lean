@@ -1,6 +1,19 @@
 import Parking.Support.MatchedUniform
 import Parking.Support.MatchedMonotone
 
+/-!
+# A finite sink that blocks influence within a fixed horizon
+
+`horizonSink` replaces the initial field at one site by a hole deep enough that it
+cannot run out before a prescribed horizon `T`, so it behaves as a permanent sink
+throughout the matched dynamics up to time `T`. The supporting bound
+`matchedArrivals_le_box` controls how many particles can reach a site from its
+finite initial propagation box, which is what makes a large enough capacity behave
+as a sink. `horizonSink_holes_pos`, `horizonSink_counts_zero` and `horizonSink_le`
+record that this sink stays nonempty, absorbs no departures and never exceeds the
+original sparse field, throughout the horizon.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
@@ -16,7 +29,8 @@ theorem matchedArrivals_le_box (η : Site d → ℤ) (K : ℕ) (hη : ∀ y, (η
     _ ≤ ∑ _y ∈ boxFinset x (t + 1), K := Finset.sum_le_sum fun y _ => hη y
     _ = _ := by simp [card_boxFinset]
 
-/-- Up to a fixed horizon, a hole can lose only the bounded number of possible arrivals per round. -/
+/-- Up to a fixed horizon, a hole can lose only the bounded number of possible arrivals
+per round. -/
 theorem matchedHoles_loss_le (η : Site d → ℤ) (K : ℕ) (hη : ∀ y, (η y).toNat ≤ K)
     (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (T t : ℕ) (ht : t ≤ T) (x : Site d) :
     (-η x).toNat ≤ (matchedState η ρ σ t).holes x + t * ((2 * T + 1) ^ d * K) := by
@@ -34,6 +48,8 @@ theorem matchedHoles_loss_le (η : Site d → ℤ) (K : ℕ) (hη : ∀ y, (η y
 def horizonSink (η : Site d → ℤ) (v : Site d) (T : ℕ) : Site d → ℤ :=
   Function.update η v (-((T * (2 * T + 1) ^ d + 1 : ℕ) : ℤ))
 
+/-- The sink still carries at most one particle at every site: at `v` it is a hole
+(so `toNat` vanishes there), and elsewhere it agrees with `η`. -/
 theorem horizonSink_particle_bound (η : Site d → ℤ) (v : Site d) (T : ℕ)
     (hη : ∀ y, (η y).toNat ≤ 1) : ∀ y, (horizonSink η v T y).toNat ≤ 1 := by
   classical

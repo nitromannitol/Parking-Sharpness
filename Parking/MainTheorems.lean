@@ -68,7 +68,8 @@ theorem Parking.master (hGrowth : Parking.External.SandpileGrowth)
     (θ : ℝ) (hθ : 0 < θ) (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) :
     ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
       c * (Parking.meanu (Parking.law d ν) n + Real.log n) ≤ Parking.meanU (Parking.law d ν) n ∧
-        Parking.meanU (Parking.law d ν) n ≤ C * (Parking.meanu (Parking.law d ν) n + Real.log n) := by
+        Parking.meanU (Parking.law d ν) n ≤
+            C * (Parking.meanu (Parking.law d ν) n + Real.log n) := by
   exact Parking.Frozen.master hGrowth hBernstein d hd ν hprob hnonconst
     hmean θ hθ hexp
 

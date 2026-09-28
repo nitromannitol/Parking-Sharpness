@@ -1,15 +1,25 @@
-/- The directed operator half of the one-layer noise average. -/
 import Parking.Support.OrientedRoute
 
 import Parking.Support.OrientedRoute
 import Parking.Support.OrientedParticleMoment
 import Parking.Support.OrientedRouting
 
+/-!
+# The directed operator half of the one-layer noise average
+
+The directed operator half of the one-layer noise average.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The directed averaging operator applied to a layer average of the (real-cast) directed
+odometer, integrated against a further layer of weight `orientedLayer d m`, equals the sum
+over sites `y` of `orientedLayer d (m + 1) y` times the number of departures counted by
+`orientedOdometer η σ k y`: reindexing the operator's `d`-fold average against the layer
+recursion `orientedLayer_succ` turns the double sum into the single sum at level `m + 1`. -/
 theorem orientedLayerAverage_op_eq (η : Site d → ℤ)
     (σ : Site d × ℕ → Site d) (k m : ℕ) :
     (∑' z : Site d, orientedLayer d m z *
@@ -24,7 +34,8 @@ theorem orientedLayerAverage_op_eq (η : Site d → ℤ)
   rw [tsum_congr hstep, tsum_div_const]
   have hsum : ∀ i : Fin d, Summable fun z : Site d =>
       orientedLayer d m z * (orientedOdometer η σ k (z - unit i) : ℝ) :=
-    fun i => (summable_orientedLayer_weight m (fun z => (orientedOdometer η σ k (z - unit i) : ℝ))).congr fun z => mul_comm _ _
+    fun i => (summable_orientedLayer_weight m
+      (fun z => (orientedOdometer η σ k (z - unit i) : ℝ))).congr fun z => mul_comm _ _
   rw [Summable.tsum_finsetSum (fun i _ => hsum i)]
   have hshift : ∀ i : Fin d, (∑' z : Site d,
       orientedLayer d m z * (orientedOdometer η σ k (z - unit i) : ℝ)) =

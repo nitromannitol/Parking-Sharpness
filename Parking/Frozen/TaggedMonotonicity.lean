@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Coupling
+
+/-!
+# Lemma 3.4: tagged monotonicity under coupling (frozen)
+
 Lemma 3.4 of parking.tex, frozen.  `parking.tex:714-719` (label
 `lem:tagged-monotonicity`):
 
@@ -11,7 +15,6 @@ particles present in both processes are exactly the labels active in the first
 one; a label active in the first process is a particle of both, so the
 quantifier over all labels states no more than the paper's.
 -/
-import Parking.Support.Coupling
 
 -- The dimension bound is part of the standing setting of the paper, not of the
 -- argument; the proof does not read it.

@@ -1,8 +1,11 @@
-/-
-A single added particle produces at most one persistent positive discrepancy.
--/
 import Parking.Support.DiscrepancyBalance
 import Parking.Support.DiscrepancyFresh
+
+/-!
+# A single added particle produces at most one persistent positive discrepancy
+
+A single added particle produces at most one persistent positive discrepancy.
+-/
 
 noncomputable section
 namespace Parking
@@ -13,6 +16,8 @@ variable {d : ℕ}
 def singleAdditionPair (η : Site d → ℤ) (v : Site d) : Site d → ℤ × ℤ :=
   fun y => (η y, addParticle v η y)
 
+/-- The discrepancy configuration of the single-addition coupling is `1` at `v` and `0`
+at every other site. -/
 theorem singleAddition_discrepancyConf (η : Site d → ℤ) (v y : Site d) :
     discrepancyConf (singleAdditionPair η v) y = if y = v then 1 else 0 := by
   classical
@@ -32,6 +37,8 @@ theorem singleAddition_active_label (η : Site d → ℤ) (v : Site d)
   simp only [hv, decide_eq_true_eq] at h
   exact Prod.ext hv (by omega)
 
+/-- The discrepancy label `(v, 0)` always has positive sign in the single-addition
+coupling. -/
 theorem singleAddition_sign (η : Site d → ℤ) (v : Site d) :
     discrepancySign (singleAdditionPair η v) (v, 0) = true := by
   simp [discrepancySign, singleAdditionPair, addParticle]

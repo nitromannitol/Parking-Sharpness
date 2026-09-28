@@ -1,7 +1,12 @@
-/- The instruction sum after truncating every departure stack at a fixed index. -/
 import Parking.Support.OrientedRoutingCoordinate
 import Parking.Support.CoordinateMartingale
 import Parking.Support.SortedEnumeration
+
+/-!
+# Oriented truncated routing
+
+The instruction sum after truncating every departure stack at a fixed index.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -11,15 +16,23 @@ open MeasureTheory LatticeProb Finset
 open scoped Classical
 variable {d : ℕ}
 
+/-- The instruction-routed sum over sites `y ∈ S`, counting only the first `M`
+departure-stack entries at each site and only those actually read by horizon `m y`,
+weighted by the route discrepancy `orientedRouteDisc (l y)`. -/
 def orientedTruncatedRoute (S : Finset (Site d)) (m l : Site d → ℕ) (M : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) : ℝ :=
   ∑ y ∈ S, ∑ j ∈ range M, if j < orientedOdometer z.1 z.2 (m y) y then
     orientedRouteDisc (l y) y (z.2 (y, j)) else 0
 
+/-- The predictable quadratic-variation charge matching `orientedTruncatedRoute`: at each
+site `y ∈ S` it counts `min M (orientedOdometer z (m y) y)` instructions, each contributing
+the per-instruction charge `orientedCharge d (l y) y`. -/
 def orientedTruncatedCharge (S : Finset (Site d)) (m l : Site d → ℕ) (M : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) : ℝ :=
   ∑ y ∈ S, (min M (orientedOdometer z.1 z.2 (m y) y) : ℕ) * orientedCharge d (l y) y
 
+/-- Summing the indicator of `j < N` over `j ∈ range M` counts exactly `min M N` values,
+since `{j ∈ range M | j < N} = range (min M N)`. -/
 theorem sum_range_lt_indicator (M N : ℕ) :
     (∑ j ∈ range M, if j < N then (1 : ℝ) else 0) = (min M N : ℕ) := by
   have he : (range M).filter (fun j => j < N) = range (min M N) := by
@@ -28,6 +41,12 @@ theorem sum_range_lt_indicator (M N : ℕ) :
   rw [← sum_filter, he]
   simp
 
+/-- **The Rosenthal-type moment bound for the truncated route.** There is a universal
+constant `C` such that for every finite set of sites `S`, truncation indices `m`, `l`,
+stack cutoff `M`, and `r ≥ 2`, the `r`-th moment norm of `orientedTruncatedRoute` is
+bounded by `C * (√r * (r/2-moment of orientedTruncatedCharge)^{1/r} + r)`; derived from
+`exists_finite_coordinate_moment_bound` applied to the sorted enumeration, by layer
+height, of the finite coordinate set `S ×ˢ range M`. -/
 theorem exists_oriented_truncated_route_moment (hBern : External.Bernstein) :
     ∃ C : ℝ, 0 < C ∧ ∀ (d : ℕ), 1 ≤ d → ∀ (ν : Measure ℤ) (_ : IsProbabilityMeasure ν)
       (S : Finset (Site d)) (m l : Site d → ℕ) (M : ℕ) (r : ℝ), 2 ≤ r →
@@ -53,7 +72,8 @@ theorem exists_oriented_truncated_route_moment (hBern : External.Bernstein) :
     dsimp only [H]
     split_ifs <;> norm_num
   have h := hb (Site d → ℤ) (Site d × ℕ) (fun _ => Site d) inferInstance inferInstance inferInstance
-    T.card (iidLaw d ν) inferInstance (fun c => orientedInstructionLaw c.1) inferInstance b q hq H g r 1
+    T.card (iidLaw d ν) inferInstance (fun c => orientedInstructionLaw c.1) inferInstance
+      b q hq H g r 1
     hH hHb (fun _ => Measurable.of_discrete) (fun j x => abs_orientedRouteDisc_le hd _ _ x)
     (fun j => integral_orientedRouteDisc hd _ _) hr zero_lt_one
   have hsum (z : (Site d → ℤ) × (Site d × ℕ → Site d)) :

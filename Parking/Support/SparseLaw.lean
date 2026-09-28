@@ -1,8 +1,11 @@
-/-
-Integrability and the critical-law hypotheses for the symmetric three-point law.
--/
 import Parking.Support.ClosePair
 import Parking.Support.CriticalLawReal
+
+/-!
+# Three-point law integrability and criticality
+
+Integrability and the critical-law hypotheses for the symmetric three-point law.
+-/
 
 noncomputable section
 namespace Parking
@@ -11,7 +14,8 @@ open MeasureTheory
 /-- Every function of the three-point count has a finite integral. -/
 theorem integrable_threePointLaw (p : ℝ) (f : ℤ → ℝ) : Integrable f (threePointLaw p) := by
   unfold threePointLaw
-  exact (((integrable_dirac (f := f) (by finiteness)).smul_measure ENNReal.ofReal_ne_top).add_measure
+  exact (((integrable_dirac (f := f) (by finiteness)).smul_measure
+    ENNReal.ofReal_ne_top).add_measure
     ((integrable_dirac (f := f) (by finiteness)).smul_measure ENNReal.ofReal_ne_top)).add_measure
       ((integrable_dirac (f := f) (by finiteness)).smul_measure ENNReal.ofReal_ne_top)
 

@@ -1,6 +1,17 @@
 import Parking.Support.WeightedOdometerBounds
 import Parking.Support.ProductLift
 
+/-!
+# Splitting the table moment norm across the field and the noise
+
+Uses the triangle inequality for `rNorm` (`rNorm_bounded_add_le`) to split the `L^r`
+moment norm of the departure count, viewed as a function of both the initial field `Φ`
+and the independent round noise, into the moment norm of its conditional mean
+`matchedMeanU` (a function of `Φ` alone) plus the moment norm of the remaining
+noise-driven fluctuation, using that both pieces are bounded by the box size
+`(T · (2T + 1)^d : ℝ)`.
+-/
+
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm)
 
@@ -24,7 +35,8 @@ theorem table_moment_decomposition (hd : 1 ≤ d) {Ω : Type} [MeasurableSpace �
   let ν := flatRoundNoiseLaw d
   let B : ℝ := ((T * (2 * T + 1) ^ d : ℕ) : ℝ)
   let M : Ω → ℝ := fun ω => matchedMeanU (Φ ω) ρ T x
-  let U' : Ω × FlatRoundNoise d → ℝ := fun z => ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x : ℝ)
+  let U' : Ω × FlatRoundNoise d → ℝ := fun z =>
+    ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x : ℝ)
   have hr0 : 0 < r := by linarith
   have hM : Measurable M := (measurable_matchedMeanU hd ρ T x).comp hΦ
   have hM0 (ω : Ω) : 0 ≤ M ω := matchedMeanU_nonneg _ _ _ _
@@ -37,7 +49,8 @@ theorem table_moment_decomposition (hd : 1 ≤ d) {Ω : Type} [MeasurableSpace �
   have hU : Measurable U' := (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (hS.2.2.2 x)
   have hUB (z : Ω × FlatRoundNoise d) : |U' z| ≤ B := by
     rw [abs_of_nonneg (Nat.cast_nonneg _)]
-    exact Nat.cast_le.mpr (by simpa only [mul_one] using matchedOdometer_le_box _ 1 (hΦb z.1) ρ _ T x)
+    exact Nat.cast_le.mpr
+      (by simpa only [mul_one] using matchedOdometer_le_box _ 1 (hΦb z.1) ρ _ T x)
   have hdiff (z : Ω × FlatRoundNoise d) : |U' z - M z.1| ≤ B + B := by
     calc
       _ ≤ |U' z| + |-M z.1| := abs_add_le _ _

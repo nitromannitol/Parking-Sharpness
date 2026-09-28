@@ -1,4 +1,9 @@
-/-
+import Parking.Support.CriticalQuadratic
+import LatticeProb.Prob.MapPi
+
+/-!
+# Step 1 of `lem:critical-density`: the resampled configuration
+
 Step 1 of the proof of `lem:critical-density` (`parking.tex:1265-1294`): the
 resampled configuration.
 
@@ -29,8 +34,6 @@ active particles at each site, the labels with priorities, and the freshness
 argument of Step 2.  `CriticalQuadratic.lean` records exactly what those owe the
 rest of the proof.
 -/
-import Parking.Support.CriticalQuadratic
-import LatticeProb.Prob.MapPi
 
 noncomputable section
 
@@ -52,12 +55,16 @@ def resampleOne (ν : Measure ℤ) (p : ℝ≥0∞) : Measure (ℤ × ℤ) :=
 `γ`. -/
 def gammaOf (ν : Measure ℤ) : ℝ := ∫ q : ℤ × ℤ, |(q.2 : ℝ) - (q.1 : ℝ)| ∂(ν.prod ν)
 
+/-- The diagonal embedding `k ↦ (k, k)` is measurable. -/
 theorem measurable_diagInt : Measurable (fun k : ℤ => (k, k)) :=
   measurable_id.prodMk measurable_id
 
+/-- The absolute difference of the two real-cast coordinates of a pair is measurable. -/
 theorem measurable_absDiff : Measurable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) := by
   fun_prop
 
+/-- `resampleOne ν p` is a probability measure whenever `ν` is one and `p ≤ 1`, since its
+two summands' total masses `1 - p` and `p` then add to `1`. -/
 theorem resampleOne_isProbability (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞}
     (hp : p ≤ 1) : IsProbabilityMeasure (resampleOne ν p) := by
   constructor
@@ -78,6 +85,8 @@ theorem resampleOne_map_snd (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : �
   have h2 : (ν.prod ν).map Prod.snd = ν := Measure.snd_prod
   rw [h1, h2, ← add_smul, tsub_add_cancel_of_le hp, one_smul]
 
+/-- The first coordinate of the coupled pair also has the law of the original, by the
+same computation as `resampleOne_map_snd` with `Prod.fst` in place of `Prod.snd`. -/
 theorem resampleOne_map_fst (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞}
     (hp : p ≤ 1) : (resampleOne ν p).map Prod.fst = ν := by
   rw [resampleOne, Measure.map_add _ _ measurable_fst, Measure.map_smul, Measure.map_smul]
@@ -100,6 +109,9 @@ theorem resampleOne_map_swap (ν : Measure ℤ) (p : ℝ≥0∞) :
 
 /-! ### The size of the change -/
 
+/-- If the absolute difference is integrable under `ν.prod ν`, it remains integrable
+under `resampleOne ν p`: the diagonal part contributes an integral of the zero
+function, and the independent part is a scalar submeasure of `ν.prod ν`. -/
 theorem integrable_absDiff_resampleOne (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞}
     (hp : p ≤ 1) (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν)) :
     Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (resampleOne ν p) := by

@@ -1,13 +1,16 @@
-/-
-Forward time differences of the continuum equation solve the homogeneous heat
- equation on the positive set. The spatial forcing cancels because translation
-preserves the time integral of every test function.
--/
 import Parking.Support.SpaceTimeContOp
 import LatticeProb.Prob.Scaling.TimeTranslation
 import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
 import LatticeProb.Prob.Scaling.HeatPositivity
 import Parking.External.HeatInteriorRegularity
+
+/-!
+# Forward time differences solve the homogeneous heat equation
+
+Forward time differences of the continuum equation solve the homogeneous heat
+equation on the positive set. The spatial forcing cancels because translation
+preserves the time integral of every test function.
+-/
 
 open MeasureTheory
 open LatticeProb.Scaling.TimeTest
@@ -51,8 +54,10 @@ theorem spatial_difference_quotient_weak
   rw [timeDeriv_timeShift, hnoise] at heqt
   change -(∫ p, u p * LatticeProb.Scaling.TimeTest.timeDeriv ψ p) = _ at heq
   change -(∫ p, ((u (p.1 + h, p.2) - u p) / h) * LatticeProb.Scaling.TimeTest.timeDeriv ψ p) = _
-  rw [integral_time_difference_quotient hu (LatticeProb.Scaling.TimeTest.contDiff_timeDeriv hψ.1).continuous
-    (LatticeProb.Scaling.TimeTest.hasCompactSupport_timeDeriv (hψ.1.differentiable (by simp)) hψ.2.1),
+  rw [integral_time_difference_quotient hu
+      (LatticeProb.Scaling.TimeTest.contDiff_timeDeriv hψ.1).continuous
+      (LatticeProb.Scaling.TimeTest.hasCompactSupport_timeDeriv
+        (hψ.1.differentiable (by simp)) hψ.2.1),
     integral_time_difference_quotient hu (contDiff_spaceTime_contOp hψ.1).continuous
       (hasCompactSupport_spaceTime_contOp hψ), ← neg_div]
   congr 1
@@ -81,7 +86,8 @@ theorem spatial_difference_quotient_regular
   obtain ⟨v, hv, heq, hheat⟩ := hInterior d {p | 0 < u p}
     (isOpen_lt continuous_const hu) (LatticeProb.Scaling.HeatPositivity.positive_time hzero hmono)
     (fun p => (u (p.1 + h, p.2) - u p) / h)
-    (continuous_time_difference_quotient hu h) (spatial_difference_quotient_weak u W hu hmono hpde hh)
+    (continuous_time_difference_quotient hu h)
+    (spatial_difference_quotient_weak u W hu hmono hpde hh)
   refine ⟨v, hv, heq, ?_, hheat⟩
   intro p hp
   rw [← heq p hp]

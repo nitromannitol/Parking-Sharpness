@@ -1,6 +1,13 @@
-/- Spatial tests obtained by integrating space-time tests in time. -/
 import Parking.Support.Continuum
 import LatticeProb.Prob.Scaling.CompactTimeIntegral
+
+/-!
+# Spatial tests from space-time tests
+
+Spatial tests obtained by integrating space-time tests in time. This file shows that
+integrating a space-time test function in time, and that restricting it to a fixed time
+slice, both produce a valid spatial test function `IsTestFun`.
+-/
 
 open MeasureTheory
 noncomputable section

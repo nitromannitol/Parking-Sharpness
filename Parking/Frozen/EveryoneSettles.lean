@@ -1,24 +1,3 @@
-/-
-Proposition 7.3 of parking.tex, frozen.  `parking.tex:1501-1509` (label
-`prop:everyone-settles`):
-
-  "Let $\eta=(\eta(x))_{x\in\Z^d}$ have i.i.d. integer-valued coordinates.
-   Suppose that $\eta(0)$ is nonconstant, $\E\eta(0)=0$, and
-   $\E e^{\theta|\eta(0)|}<\infty$ for some $\theta>0$.  Then the following
-   hold together on one event of probability one: every particle settles after
-   finitely many rounds; every hole is filled after finitely many rounds; and
-   infinitely many distinct particles leave every site, so that
-   $U_\infty(x)=\infty$ for every $x\in\Z^d$."
-
-"On one event of probability one" is the single almost-sure statement below.
-"After finitely many rounds" is a time past which the property holds at every
-later round.  A particle settles when its label stops being active; a hole at
-`x` is filled when `H_t(x)` reaches zero; a particle leaves `x` in round
-`t + 1` when it is active at `x` after round `t` and stands elsewhere after
-round `t + 1`.  The
-limiting odometer is read in `ℕ∞`, where "infinite" is the value `⊤` and not a
-junk value.
--/
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
@@ -28,6 +7,27 @@ import Parking.Support.Error
 import Parking.Support.Settles
 import Parking.Support.AllInfinite
 import Parking.Support.Departers
+
+/-!
+# Almost-sure termination of every particle and hole (frozen)
+
+Proposition 7.3 of parking.tex, frozen. `parking.tex:1501-1509` (label
+`prop:everyone-settles`):
+
+"Let $\eta=(\eta(x))_{x\in\Z^d}$ have i.i.d. integer-valued coordinates. Suppose that
+$\eta(0)$ is nonconstant, $\E\eta(0)=0$, and $\E e^{\theta|\eta(0)|}<\infty$ for some
+$\theta>0$. Then the following hold together on one event of probability one: every particle
+settles after finitely many rounds; every hole is filled after finitely many rounds; and
+infinitely many distinct particles leave every site, so that $U_\infty(x)=\infty$ for every
+$x\in\Z^d$."
+
+"On one event of probability one" is the single almost-sure statement below. "After finitely
+many rounds" is a time past which the property holds at every later round. A particle
+settles when its label stops being active; a hole at `x` is filled when `H_t(x)` reaches
+zero; a particle leaves `x` in round `t + 1` when it is active at `x` after round `t` and
+stands elsewhere after round `t + 1`. The limiting odometer is read in `ℕ∞`, where "infinite"
+is the value `⊤` and not a junk value.
+-/
 
 open MeasureTheory
 open scoped ENNReal

@@ -1,19 +1,23 @@
-/-
-The finite-dimensional characteristic function of the continuum noise field `LatticeProb.ContinuumStopping.contZ` at
-finitely many box points, matched against the discrete limit of `TightFdd.lean`
-(`parking.tex:3207-3218`, Stage 2 of the covariance-to-Gaussian step).
-
-`LatticeProb.ContinuumStopping.contZ v T s x` is `√v` times the white-noise integral of `LatticeProb.ContinuumStopping.contNoiseTest T s
-x`, so any finite linear combination `∑ t_l · contZ v T (u_l)` is `√v` times the white-noise
-integral of the combined test function `∑ t_l · contNoiseTest T (u_l)`, which is a genuine
-real-valued centred Gaussian by `LatticeProb.map_isoProc`.  Its variance is `v` times the
-squared `L²` norm of the combined test function, which is exactly the same quadratic form of
-`Parking.contOverlap` that `Parking.tendsto_charFun_orientedBoxReward_linearCombination`
-computes for the discrete side (`LatticeProb.map_isoProc`'s Gaussian, at the standardized
-variance `v = Var η(0)`), so the two characteristic-function limits agree termwise.
--/
 import Parking.Support.TightFdd
 import Parking.Support.ContOrientedLimit
+
+/-!
+# Finite-dimensional characteristic function of `contZ`
+
+The finite-dimensional characteristic function of the continuum noise field
+`LatticeProb.ContinuumStopping.contZ` at finitely many box points, matched against the discrete
+limit of `TightFdd.lean` (`parking.tex:3207-3218`, Stage 2 of the covariance-to-Gaussian step).
+
+`LatticeProb.ContinuumStopping.contZ v T s x` is `√v` times the white-noise integral of
+`LatticeProb.ContinuumStopping.contNoiseTest T s x`, so any finite linear combination
+`∑ t_l · contZ v T (u_l)` is `√v` times the white-noise integral of the combined test function
+`∑ t_l · contNoiseTest T (u_l)`, which is a genuine real-valued centred Gaussian by
+`LatticeProb.map_isoProc`.  Its variance is `v` times the squared `L²` norm of the combined test
+function, which is exactly the same quadratic form of `Parking.contOverlap` that
+`Parking.tendsto_charFun_orientedBoxReward_linearCombination` computes for the discrete side
+(`LatticeProb.map_isoProc`'s Gaussian, at the standardized variance `v = Var η(0)`), so the two
+characteristic-function limits agree termwise.
+-/
 
 open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseTest contZ memLp_contNoiseTest)
 
@@ -120,9 +124,10 @@ theorem integral_sq_sum_contNoiseTest {k : ℕ} (T : ℝ) (u : Fin k → Fin 2 �
   rw [← hueta (u l), ← hueta (u l')]
 
 /-- **The finite-dimensional characteristic function of the continuum noise field**: any
-weighted combination of `LatticeProb.ContinuumStopping.contZ` at finitely many box points is `√v` times a single
-white-noise integral, hence a real centred Gaussian, with the same variance quadratic form
-`Parking.tendsto_charFun_orientedBoxReward_linearCombination` computes on the discrete side. -/
+weighted combination of `LatticeProb.ContinuumStopping.contZ` at finitely many box points is
+`√v` times a single white-noise integral, hence a real centred Gaussian, with the same variance
+quadratic form `Parking.tendsto_charFun_orientedBoxReward_linearCombination` computes on the
+discrete side. -/
 theorem charFun_map_contZ_linearCombination (T : ℝ) {k : ℕ} (u : Fin k → Fin 2 → ℝ)
     (t : Fin k → ℝ) {σ2 : ℝ} (hσ2 : 0 ≤ σ2) :
     charFun (contNoiseLaw.map (fun ω => ∑ l, t l * contZ σ2 T (u l 0) (u l 1) ω)) 1 =

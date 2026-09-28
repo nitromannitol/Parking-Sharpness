@@ -1,5 +1,10 @@
-/-
-**The cutoff construction for the `d`-dimensional simple random walk's optimal-stopping value.**
+import Parking.Support.WalkMaximal
+import Parking.Support.ValueLipschitz
+
+/-!
+# The stopping-value cutoff construction
+
+The cutoff construction for the `d`-dimensional simple random walk's optimal-stopping value.
 (Distinct from `Parking.spatialCutoff`, `Parking/Support/SpatialCutoff.lean`'s own real-valued
 bump function for the ORIENTED node's rescaled potential field: this module's cutoff acts on the
 UNDIRECTED walk's stopping-problem REWARD, by `Parking.graphNorm`-radius, not on a real argument.)
@@ -23,8 +28,6 @@ each fixed `n` (via `Parking.measureReal_sup_walkPath_graphNorm_le'`), and stays
 `n, A → ∞` together provided `A` grows faster than `√n`, matching the usual parabolic cutoff
 scaling. This is unconditional: no External, no `sorry`.
 -/
-import Parking.Support.WalkMaximal
-import Parking.Support.ValueLipschitz
 
 open MeasureTheory
 
@@ -48,6 +51,8 @@ theorem cutoffReward_eq_of_le (F : ℕ → Site d → ℝ) (A : ℝ) (k : ℕ) (
     (hz : (graphNorm z : ℝ) ≤ A) : cutoffReward F A k z = F k z :=
   if_pos hz
 
+/-- The cutoff reward vanishes at every site outside the box of `Parking.graphNorm`-radius
+`A`, directly from the `if`-branch defining `cutoffReward`. -/
 theorem cutoffReward_eq_zero_of_lt (F : ℕ → Site d → ℝ) (A : ℝ) (k : ℕ) (z : Site d)
     (hz : ¬ (graphNorm z : ℝ) ≤ A) : cutoffReward F A k z = 0 :=
   if_neg hz

@@ -1,9 +1,15 @@
-/-
-The expected departures of a discrepancy label are bounded by the walk Green function.
--/
 import Parking.Support.GreenPotential
 import Parking.Support.LayerReward
 import Parking.Support.DiscrepancyFresh
+
+/-!
+# Green-function bound on label departures
+
+The expected number of departures from a fixed site `x` carried by one persistent discrepancy
+label is bounded by the walk Green function `fullGreen d`. The bound is proved by identifying
+each departure indicator with the one-step drop in the Green potential along the label's path,
+then summing via `layer_reward_sum_le`.
+-/
 
 open LatticeProb (measurable_from_countable')
 

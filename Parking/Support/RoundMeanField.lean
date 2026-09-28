@@ -1,6 +1,19 @@
 import Parking.Support.MatchedUniform
 import Parking.Support.MeanLocality
 
+/-!
+# Bounding and measuring the current-round signed field
+
+Arrivals at a site are bounded by the total possible departures from its neighbours
+(`countArrivals_le_sum`), which bounds the positive part of the next signed field
+`roundSigned` uniformly in the current table (`roundSigned_particle_bound`) and, through
+`matchedOdometer_le_box`, the expected future odometer uniformly over all current-round
+instructions (`roundMeanU_bound`). The remaining lemmas establish that `countArrivals`,
+`roundSigned`, and `roundWithout` are measurable in the underlying occupation and table
+data, and that the future mean depends only on the finitely many entries that could
+actually be used (`roundMeanU_agree_finite`).
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -41,7 +54,8 @@ theorem roundMeanU_bound (hd : 1 ≤ d) (A H : Site d → ℕ) (N : ℕ) (hA : �
   rw [abs_of_nonneg (matchedMeanU_nonneg _ _ _ _)]
   have h := integral_mono (integrable_matchedOdometer hd (roundSigned A H τ) ρ T x)
     (integrable_const ((T * ((2 * T + 1) ^ d * (2 * d * N)) : ℕ) : ℝ))
-    (fun σ => Nat.cast_le.mpr (matchedOdometer_le_box _ _ (roundSigned_particle_bound A H N hA τ) ρ σ T x))
+    (fun σ => Nat.cast_le.mpr
+      (matchedOdometer_le_box _ _ (roundSigned_particle_bound A H N hA τ) ρ σ T x))
   simpa only [matchedMeanU, integral_const, probReal_univ, one_smul] using h
 
 /-- Arrival slots vary measurably with the outgoing counts and current table. -/

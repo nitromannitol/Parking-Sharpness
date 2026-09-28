@@ -1,4 +1,9 @@
-/-
+import Parking.Support.NearEnv
+import Parking.Support.NearTail
+
+/-!
+# The cutoff `eq:near-cutoff` in the scale `env`
+
 The cutoff `eq:near-cutoff` in the scale `env` (`parking.tex:2933-2944`).
 
 "Let `L = log(e/δ)`.  Take `N = ⌈C δ^{-4}L^3⌉` in dimension one,
@@ -11,8 +16,6 @@ at most a constant multiple of `L`, so the threshold is at most a constant multi
 `δ^{-4}L^3`, `δ^{-2}L^3` and `δ^{-2}L^2` in the three cases, exactly the rates of
 `eq:near-cutoff`.
 -/
-import Parking.Support.NearEnv
-import Parking.Support.NearTail
 
 noncomputable section
 namespace Parking
@@ -22,6 +25,8 @@ variable {d : ℕ}
 def cutoffEnv (d : ℕ) (δ : ℝ) : ℝ :=
   if d = 1 then env 4 3 δ else if d = 2 then env 2 3 δ else env 2 2 δ
 
+/-- `cutoffEnv d δ ≥ 1` for `0 < δ ≤ 1`, unfolding the three cases of `cutoffEnv` and applying
+`one_le_env` in each. -/
 theorem one_le_cutoffEnv (d : ℕ) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) :
     1 ≤ cutoffEnv d δ := by
   rw [cutoffEnv]
@@ -30,11 +35,15 @@ theorem one_le_cutoffEnv (d : ℕ) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) 
   · exact one_le_env hδ0 hδ1 (by norm_num)
   · exact one_le_env hδ0 hδ1 (by norm_num)
 
+/-- `(a₀ δ²)⁻¹ = a₀⁻¹ δ^{-2}`, rewriting the inverse of a product and the negative integer
+power as an `rpow`. -/
 theorem inv_scaled {a₀ δ : ℝ} (hδ0 : 0 < δ) :
     (a₀ * δ ^ 2)⁻¹ = a₀⁻¹ * δ ^ (-(2 : ℝ)) := by
   rw [mul_inv, Real.rpow_neg hδ0.le, ← Real.rpow_natCast δ 2]
   norm_num
 
+/-- `(a₀ δ²)^{-2} = a₀^{-2} δ^{-4}`, splitting the `rpow` of a product and combining the
+`rpow` exponents on `δ`. -/
 theorem rpow_scaled {a₀ δ : ℝ} (ha₀ : 0 < a₀) (hδ0 : 0 < δ) :
     (a₀ * δ ^ 2) ^ (-(2 : ℝ)) = a₀ ^ (-(2 : ℝ)) * δ ^ (-(4 : ℝ)) := by
   rw [Real.mul_rpow ha₀.le (sq_nonneg δ), ← Real.rpow_natCast δ 2, ← Real.rpow_mul hδ0.le]
@@ -99,6 +108,8 @@ theorem exists_resolventThreshold_le (d : ℕ) {CR a₀ : ℝ} (hCR : 0 < CR) (h
           mul_le_mul_of_nonneg_left (key δ hδ0 hδ1 ha1).2 hpos
       _ = CR * a₀⁻¹ * CL ^ 2 * (δ ^ (-(2 : ℝ)) * Real.log (Real.exp 1 / δ) ^ 2) := by ring
 
+/-- `resolventThreshold d CR a ≥ 0` for `0 < a ≤ 1`, since `log(e/a) ≥ 1 ≥ 0` by `one_le_bigL`
+and each of the three defining branches is a product of nonnegative factors. -/
 theorem resolventThreshold_nonneg (d : ℕ) {CR a : ℝ} (hCR : 0 ≤ CR) (ha : 0 < a)
     (ha1 : a ≤ 1) : 0 ≤ Parking.resolventThreshold d CR a := by
   have hΛ : 1 ≤ Real.log (Real.exp 1 / a) := one_le_bigL ha ha1

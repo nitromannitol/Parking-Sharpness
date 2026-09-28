@@ -1,4 +1,15 @@
-/-
+import Parking.Support.ContOrientedLimit
+import Parking.Support.Pathwise
+import Parking.Support.OrientedScaling
+import Mathlib.MeasureTheory.Measure.LevyConvergence
+import Mathlib.Probability.Independence.InfinitePi
+import Mathlib.Probability.Independence.Integration
+import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
+import LatticeProb.Prob.Scaling.WalkCLT
+
+/-!
+# Finite-dimensional distributions of the rescaled oriented walk
+
 Finite-dimensional distributions of the rescaled oriented walk
 (`parking.tex:3190-3211`): this is the `hWalk` hypothesis of
 `Parking.tendsto_integral_orientedCutoffValue`.
@@ -19,15 +30,6 @@ cosine product of the symmetric ±1 steps,
 Gaussian limit through `HasGaussianLaw.charFun_map_eq`.
 -/
 
-import Parking.Support.ContOrientedLimit
-import Parking.Support.Pathwise
-import Parking.Support.OrientedScaling
-import Mathlib.MeasureTheory.Measure.LevyConvergence
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.Independence.Integration
-import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
-import LatticeProb.Prob.Scaling.WalkCLT
-
 open LatticeProb.Scaling.WalkCLT (sum_sq_indicator tendsto_nat_floor_div)
 
 open LatticeProb Finset MeasureTheory ProbabilityTheory Filter
@@ -41,6 +43,8 @@ namespace Parking
 the oriented walk subtracts `unit c`: `+1` for `c = 0` and `-1` for `c = 1`. -/
 def walkStepSign (c : Fin 2) : ℝ := if c = 0 then 1 else -1
 
+/-- `walkStepSign` agrees with the coordinate difference `unit c 0 - unit c 1` of the
+lattice step vector `Parking.unit c`. -/
 theorem walkStepSign_eq_unit_sub (c : Fin 2) :
     walkStepSign c
       = ((LatticeProb.unit c : Site 2) 0 : ℝ) - ((LatticeProb.unit c : Site 2) 1 : ℝ) := by
@@ -68,6 +72,8 @@ def walkFddVec (m : ℕ) (n : ℕ) (ts : Fin m → ℝ) (p : ℕ → Fin 2 × Bo
     EuclideanSpace ℝ (Fin m) :=
   WithLp.toLp 2 (fun i => orientedScaledSite n (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊))
 
+/-- `walkFddVec` is measurable, since each coordinate depends only on finitely many steps
+of the direction sequence. -/
 theorem measurable_walkFddVec (m n : ℕ) (ts : Fin m → ℝ) : Measurable (walkFddVec m n ts) := by
   have hv : Measurable (fun (p : ℕ → Fin 2 × Bool) (i : Fin m) =>
       orientedScaledSite n (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊)) :=

@@ -1,4 +1,15 @@
-/-
+import Parking.Support.SandpileBridge
+import Sandpile.External.VarianceScaleProved
+import Sandpile.External.GreenBoundsHighProved
+import Sandpile.Frozen.MeanGrowthLow
+import Sandpile.Frozen.MeanGrowthFour
+import Sandpile.Frozen.HighFirstOrder
+import Sandpile.Support.CrudeIncrement
+import Sandpile.Frozen.DGT4HeightUpperTail
+
+/-!
+# The sandpile growth input, discharged
+
 The flagship growth input for Parking, discharged from the sealed growth
 theorems in `Divisible-Sandpile-Percolation`.
 
@@ -17,19 +28,14 @@ and refined increment results.  The lower bounds supplied by
 `Sandpile.Frozen.high_first_order` are eventual; the elementary extension to
 all `n ≥ 2` is proved below using monotonicity and positivity at time one.
 -/
-import Parking.Support.SandpileBridge
-import Sandpile.External.VarianceScaleProved
-import Sandpile.External.GreenBoundsHighProved
-import Sandpile.Frozen.MeanGrowthLow
-import Sandpile.Frozen.MeanGrowthFour
-import Sandpile.Frozen.HighFirstOrder
-import Sandpile.Support.CrudeIncrement
-import Sandpile.Frozen.DGT4HeightUpperTail
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open scoped ENNReal
 
 
+/-- Upgrades an eventual two-sided bound `c * n ^ p ≤ M n ≤ C * n ^ p` (holding for `n`
+large) to a bound holding for every `n ≥ 2`, using monotonicity of `M` and positivity of
+`M 1` to absorb the finitely many remaining small `n`. -/
 private theorem all_bounds_of_eventual
     (M : ℕ → ℝ) (hmono : Monotone M) (hM1 : 0 < M 1)
     (p : ℝ) (hp : 0 < p)
@@ -101,6 +107,9 @@ private theorem all_bounds_of_eventual
         _ ≤ C' * (n : ℝ) ^ p :=
           mul_le_mul_of_nonneg_right (le_max_right _ _) hpow_n
 
+/-- From `n ^ (-p) * M n → L` with `L > 0`, extracts the eventual bounds `(L / 2) * n ^ p ≤ M n`
+and `M n ≤ (2 * L) * n ^ p`, using that the sequence eventually lands in the open interval
+`(L / 2, 2 * L)`. -/
 private theorem scaled_limit_eventual_bounds
     (M : ℕ → ℝ) (p L : ℝ) (hL : 0 < L)
     (hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ (-p) * M n)
@@ -135,6 +144,8 @@ private theorem scaled_limit_eventual_bounds
       _ ≤ (n : ℝ) ^ p * (2 * L) := mul_le_mul_of_nonneg_left hn.2.le hpow
       _ = (2 * L) * (n : ℝ) ^ p := by ring
 
+/-- The lower-bound half of `all_bounds_of_eventual`: upgrades an eventual bound
+`c * n ^ p ≤ M n` to one holding for every `n ≥ 2`. -/
 private theorem all_lower_of_eventual
     (M : ℕ → ℝ) (hmono : Monotone M) (hM1 : 0 < M 1)
     (p : ℝ) (hp : 0 < p) (c : ℝ) (hc : 0 < c)
@@ -171,6 +182,8 @@ private theorem all_lower_of_eventual
       _ = M 1 := by field_simp
       _ ≤ M n := hM1n
 
+/-- The logarithmic analogue of `all_lower_of_eventual`: upgrades an eventual bound
+`c * (Real.log n) ^ q ≤ M n` to one holding for every `n ≥ 2`. -/
 private theorem all_lower_log_of_eventual
     (M : ℕ → ℝ) (hmono : Monotone M) (hM1 : 0 < M 1)
     (q : ℝ) (hq : 0 < q) (c : ℝ) (hc : 0 < c)
@@ -219,6 +232,9 @@ private theorem all_lower_log_of_eventual
       _ = M 1 := by field_simp
       _ ≤ M n := hM1n
 
+/-- The mean sandpile odometer at time `1` is positive: it equals `∫ max(z, 0) ∂ν`, and
+positivity of the variance together with mean zero forces `ν (Set.Ioi 0) > 0`, giving a
+strictly positive integral of the positive part. -/
 private theorem meanOdometer_one_pos (d : ℕ) (ν : Measure ℝ)
     [IsProbabilityMeasure ν] (hd : 1 ≤ d) (hmean : ∫ z, z ∂ν = 0)
     (hvar : 0 < evariance id ν) (_hvar' : evariance id ν < ⊤)
@@ -270,6 +286,9 @@ private theorem meanOdometer_one_pos (d : ℕ) (ν : Measure ℝ)
       (by fun_prop)]
   simpa [Sandpile.odometerOf, Sandpile.avg] using hmax
 
+/-- For `d ≥ 5`, converts the crude upper bound `C * Real.log (n + 2)` supplied by
+`Sandpile.exists_crude_log_upper` into the bound `2 * C * Real.log (n + 1)` that
+`Parking.External.SandpileGrowth` needs, using `log (n + 2) ≤ 2 * log (n + 1)` for `n ≥ 2`. -/
 private theorem upper_log_of_crude
     (d : ℕ) (hd : 5 ≤ d) (ν : Measure ℝ) (hprob : IsProbabilityMeasure ν)
     (hmean : ∫ z, z ∂ν = 0) (hvar : 0 < evariance id ν)
@@ -299,6 +318,10 @@ private theorem upper_log_of_crude
       mul_le_mul_of_nonneg_left hlog hK.le
     _ = (2 * K) * Real.log ((n : ℝ) + 1) := by ring
 
+/-- For `d ≥ 5` and a scenery bounded below almost everywhere, derives the upper bound
+`C * (Real.log n) ^ (2 / d)` from `Sandpile.Frozen.dgt4_height_upper_tail` at the exponent
+`γ = d / 2 + 1`, using the a.e. lower bound on `ν` to produce the exponential tail estimate
+that `dgt4_height_upper_tail` requires. -/
 private theorem upper_power_of_bounded
     (d : ℕ) (hd : 5 ≤ d) (ν : Measure ℝ) (hprob : IsProbabilityMeasure ν)
     (hmean : ∫ z, z ∂ν = 0) (hvar : 0 < evariance id ν)
@@ -356,6 +379,10 @@ private theorem upper_power_of_bounded
     exact h
   exact hupper' n hn
 
+/-- Assembles `Parking.External.SandpileGrowth` from the sibling library's sealed growth
+theorems (`Sandpile.Frozen.mean_growth_le_three`, `mean_growth_four` and `high_first_order`)
+together with the helper lemmas above, given the three cited local-CLT and optimal-stopping
+hypotheses. -/
 private theorem sandpileGrowth_proof
     (hLocalCLT : Sandpile.External.LocalCLT)
     (hStab : Sandpile.External.ContinuumStoppingStability.{0})

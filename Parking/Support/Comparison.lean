@@ -1,25 +1,25 @@
-/-
-Theorem 4.1 of `parking.tex`: averaging the instructions while holding the
-configuration fixed bounds the divisible odometer above by the particle
-odometer.
-
-With the configuration fixed the particle odometer is bounded: the particles
-active at a site after `t` rounds are candidates for it, and there are at most
-`∑_{y} η(y)⁺` of those over the box of radius `t`.  So every average below is an
-average of a bounded function, and the sum over the instruction indices that
-turns `I_{y,x}(U_n(y))` into a sum of indicators is a finite sum, which is what
-lets `lem:deferred` be summed one index at a time:
-
-  `E[I_{y,x}(U_n(y)) | η] = P(y,x) E[U_n(y) | η]`.
-
-Summing that over the neighbours of `x` gives `(P v_n)(x)`, and the positive
-part in the parallel identity is convex, so averaging it can only raise it:
-`v_{n+1} ≥ (η + P v_n)⁺`.  Since `v ↦ (η + P v)⁺` is monotone and `u_0 = v_0`,
-induction finishes.
--/
 import Parking.Support.DeferredIntegral
 
 open LatticeProb (instructionLaw_isProbability measurable_from_countable' rankLaw_isProbability)
+
+/-!
+# The particle/divisible comparison (Theorem 4.1)
+
+Theorem 4.1 of `parking.tex`: averaging the instructions while holding the configuration
+fixed bounds the divisible odometer above by the particle odometer.
+
+With the configuration fixed the particle odometer is bounded: the particles active at a
+site after `t` rounds are candidates for it, and there are at most `∑_{y} η(y)⁺` of those
+over the box of radius `t`. So every average below is an average of a bounded function, and
+the sum over the instruction indices that turns `I_{y,x}(U_n(y))` into a sum of indicators is
+a finite sum, which is what lets `lem:deferred` be summed one index at a time:
+
+`E[I_{y,x}(U_n(y)) | η] = P(y,x) E[U_n(y) | η]`.
+
+Summing that over the neighbours of `x` gives `(P v_n)(x)`, and the positive part in the
+parallel identity is convex, so averaging it can only raise it: `v_{n+1} ≥ (η + P v_n)⁺`.
+Since `v ↦ (η + P v)⁺` is monotone and `u_0 = v_0`, induction finishes.
+-/
 
 noncomputable section
 
@@ -34,19 +34,26 @@ variable {d : ℕ}
 def uBound (η : Site d → ℤ) (n : ℕ) (x : Site d) : ℕ :=
   ∑ s ∈ Finset.range n, ∑ y ∈ boxFinset x s, (η y).toNat
 
+/-- The candidate count at a site is bounded by the box sum of the positive part of the
+configuration. -/
 theorem card_candidates_le (η : Site d → ℤ) (x : Site d) (r : ℕ) :
     (candidates η x r).card ≤ ∑ y ∈ boxFinset x r, (η y).toNat := by
   refine le_trans (Finset.card_biUnion_le) (Finset.sum_le_sum fun y _ => ?_)
   rw [Finset.card_map, Finset.card_range]
 
+/-- The active count at a site is bounded by the same box sum, via `card_candidates_le`. -/
 theorem activeCount_le (ω : Data d) (t : ℕ) (x : Site d) :
     A ω t x ≤ ∑ y ∈ boxFinset x t, (ω.1 y).toNat :=
   le_trans (Finset.card_le_card (Finset.filter_subset _ _)) (card_candidates_le _ _ _)
 
+/-- The particle odometer is bounded above by `uBound`, summing `activeCount_le` over the
+rounds. -/
 theorem U_le_uBound (ω : Data d) (n : ℕ) (x : Site d) : U ω n x ≤ uBound ω.1 n x := by
   rw [U_eq_sum_A]
   exact Finset.sum_le_sum fun s _ => activeCount_le ω s x
 
+/-- `arrivals` up to `m` is a finite sum of indicators over any `M ≥ m`, letting sums over the
+instruction index be truncated. -/
 theorem arrivals_eq_sum (σ : Site d × ℕ → Site d) (y x : Site d) (m M : ℕ) (hm : m ≤ M) :
     arrivals σ y x m = ∑ j ∈ Finset.range M, if j < m ∧ σ (y, j) = x then 1 else 0 := by
   classical
@@ -60,11 +67,14 @@ theorem arrivals_eq_sum (σ : Site d × ℕ → Site d) (y x : Site d) (m M : �
   · intro j _ hj
     rw [if_neg (fun hc => hj (Finset.mem_range.mpr hc.1))]
 
+/-- `U` at a fixed configuration is measurable in the randomness alone. -/
 theorem measurable_Ugiven (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     Measurable fun s : Randomness d => (U ((η, s) : Data d) n x : ℝ) :=
   (measurable_from_countable' fun m : ℕ => (m : ℝ)).comp
     ((measurable_U n x).comp (measurable_const.prodMk measurable_id))
 
+/-- `U` at a fixed configuration is integrable, dominated by the constant `uBound η n x`
+(`U_le_uBound`). -/
 theorem integrable_Ugiven (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     Integrable (fun s : Randomness d => (U ((η, s) : Data d) n x : ℝ)) (stackRankLaw d) := by
   haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
@@ -78,6 +88,8 @@ theorem integrable_Ugiven (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Si
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   exact_mod_cast this
 
+/-- The indicator of a measurable event of the data, at a fixed configuration, is integrable
+in the randomness. -/
 theorem integrable_indicator_U (hd : 1 ≤ d) (η : Site d → ℤ)
     (E : Set (Data d)) (hE : MeasurableSet E) :
     Integrable (fun s : Randomness d =>
@@ -95,6 +107,7 @@ theorem integrable_indicator_U (hd : 1 ≤ d) (η : Site d → ℤ)
   · simp [Set.indicator_of_mem hs]
   · simp [Set.indicator_of_notMem hs]
 
+/-- `{U ω n y ≥ j + 1}` is measurable, as a preimage of a countable set under `U`. -/
 theorem measurableSet_U_ge (n : ℕ) (y : Site d) (j : ℕ) :
     MeasurableSet {ω : Data d | j + 1 ≤ U ω n y} := by
   have : {ω : Data d | j + 1 ≤ U ω n y} = (fun ω : Data d => U ω n y) ⁻¹' {m : ℕ | j + 1 ≤ m} :=
@@ -102,6 +115,8 @@ theorem measurableSet_U_ge (n : ℕ) (y : Site d) (j : ℕ) :
   rw [this]
   exact (measurable_U n y) (Set.to_countable _).measurableSet
 
+/-- The joint event `{U ω n y ≥ j + 1} ∩ {the instruction at index j for y is x}` is
+measurable, an intersection of measurable sets. -/
 theorem measurableSet_U_ge_and (n : ℕ) (y x : Site d) (j : ℕ) :
     MeasurableSet {ω : Data d | j + 1 ≤ U ω n y ∧ ω.2.1 (y, j) = x} := by
   have hsplit : {ω : Data d | j + 1 ≤ U ω n y ∧ ω.2.1 (y, j) = x}
@@ -112,6 +127,9 @@ theorem measurableSet_U_ge_and (n : ℕ) (y x : Site d) (j : ℕ) :
     (((measurable_pi_apply (y, j)).comp (measurable_fst.comp measurable_snd))
       (measurableSet_singleton x))
 
+/-- The number of arrivals at `x` from `y` by round `n`, at a fixed configuration, is a finite
+sum of indicators of the joint events `measurableSet_U_ge_and`, letting `lem:deferred` be
+applied one instruction index at a time. -/
 theorem arrivals_indicator_sum (η : Site d → ℤ) (n : ℕ) (y x : Site d)
     (s : Randomness d) : (arrivals s.1 y x (U ((η, s) : Data d) n y) : ℝ)
       = ∑ j ∈ Finset.range (uBound η n y),
@@ -183,6 +201,8 @@ theorem meanUgiven_arrivals (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (y x 
     integrable_indicator_U hd η _ (measurableSet_U_ge n y j)]
   exact integral_congr_ae (Filter.Eventually.of_forall hsum)
 
+/-- The arrivals from `y` to `x` by round `n`, at a fixed configuration, are integrable, as a
+finite sum of integrable indicators (`arrivals_indicator_sum`). -/
 theorem integrable_arrivals (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (y x : Site d) :
     Integrable (fun s : Randomness d => (arrivals s.1 y x (U ((η, s) : Data d) n y) : ℝ))
       (stackRankLaw d) := by
@@ -192,6 +212,8 @@ theorem integrable_arrivals (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (y x 
         {ω : Data d | j + 1 ≤ U ω n y ∧ ω.2.1 (y, j) = x} (measurableSet_U_ge_and n y x j)) ?_
   exact Filter.Eventually.of_forall fun s => (arrivals_indicator_sum η n y x s).symm
 
+/-- Summing the kernel-weighted average odometer over the neighbours of `x` gives `walkOp`
+applied to the averaged odometer. -/
 theorem sum_kern_nbr (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     ∑ y ∈ nbrFinset x, kern d y x * meanUgiven d η n y
       = walkOp (fun y => meanUgiven d η n y) x := by

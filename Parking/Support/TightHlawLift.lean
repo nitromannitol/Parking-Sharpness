@@ -1,4 +1,12 @@
-/-
+import Parking.Support.TightEquicont
+import Parking.Support.TightFddAssembly
+import Parking.Support.TightContBoxLimit
+import LatticeProb.Prob.FddTight
+import LatticeProb.Prob.Scaling.BoundedFunctionalLift
+
+/-!
+# `boxToFin` distances and the unit-capped sup distance `capDist`
+
 `Parking.boxToFin` is an isometry from `rewardBox T A` (the product of two real intervals) to
 `Fin 2 → ℝ` (the sup metric): both metrics are the max of the same two coordinate distances.
 This lets `Parking.orientedBoxReward_modulusInProbability`'s equicontinuity-in-probability
@@ -6,11 +14,6 @@ bound, stated on `Fin 2 → ℝ`, be read directly as the `htight` hypothesis of
 `LatticeProb.tendsto_integral_of_fdd_of_equicontinuous'` on the compact metric space
 `rewardBox T A` itself.
 -/
-import Parking.Support.TightEquicont
-import Parking.Support.TightFddAssembly
-import Parking.Support.TightContBoxLimit
-import LatticeProb.Prob.FddTight
-import LatticeProb.Prob.Scaling.BoundedFunctionalLift
 
 open LatticeProb.BoxClamp (rewardBox)
 open LatticeProb.Scaling.BoundedFunctionalLift (min_one_add_le)
@@ -43,8 +46,8 @@ whereas a test functional `Φ0` of `hlaw` is defined only on `C(rewardBox T A, �
 lift (`Φ0` where the restriction is continuous, `0` elsewhere) fails: the junk value is unrelated
 to nearby continuous values, so no modulus bound can hold globally.  The fix, for Lipschitz `Φ0`,
 is a genuine (McShane) Lipschitz extension, built here directly as an infimal convolution against
-the UNIT-CAPPED distance `Parking.capDist`, rather than through a registered `PseudoMetricSpace`
-instance on the whole function space. -/
+the UNIT-CAPPED distance `Parking.capDist`, rather than through a registered
+`PseudoMetricSpace` instance on the whole function space. -/
 
 variable {T A : ℝ}
 
@@ -53,23 +56,33 @@ well-defined (via `Real.iSup`) for functions of any size, unlike the plain sup d
 def capDist [Nonempty (rewardBox T A)] (v w : rewardBox T A → ℝ) : ℝ :=
   ⨆ p : rewardBox T A, min 1 |v p - w p|
 
+/-- **The pointwise unit-capped distances are bounded above by `1`**, which is what makes
+`Parking.capDist`'s defining `iSup` well-posed. -/
 theorem bddAbove_capDist_range [Nonempty (rewardBox T A)] (v w : rewardBox T A → ℝ) :
     BddAbove (Set.range fun p : rewardBox T A => min 1 |v p - w p|) :=
   ⟨1, by rintro _ ⟨p, rfl⟩; exact min_le_left _ _⟩
 
+/-- **`Parking.capDist` dominates the unit-capped distance at every single point**, by the
+defining property of `le_ciSup` against the bound `Parking.bddAbove_capDist_range`. -/
 theorem le_capDist [Nonempty (rewardBox T A)] (v w : rewardBox T A → ℝ) (p : rewardBox T A) :
     min 1 |v p - w p| ≤ capDist v w :=
   le_ciSup (bddAbove_capDist_range v w) p
 
+/-- **`Parking.capDist` is nonnegative**, from `Parking.le_capDist` at an arbitrary point of the
+(nonempty) box. -/
 theorem capDist_nonneg [Nonempty (rewardBox T A)] (v w : rewardBox T A → ℝ) :
     0 ≤ capDist v w :=
   le_trans (le_min zero_le_one (abs_nonneg _))
     (le_capDist v w (Classical.arbitrary (α := rewardBox T A)))
 
+/-- **`Parking.capDist` is at most `1`**, since every term of its defining supremum is capped
+at `1`. -/
 theorem capDist_le_one [Nonempty (rewardBox T A)] (v w : rewardBox T A → ℝ) :
     capDist v w ≤ 1 :=
   ciSup_le fun _ => min_le_left _ _
 
+/-- **`Parking.capDist` is symmetric in its two arguments**, since `|v p - w p| = |w p - v p|`
+at every point `p`. -/
 theorem capDist_comm [Nonempty (rewardBox T A)] (v w : rewardBox T A → ℝ) :
     capDist v w = capDist w v := by
   unfold capDist; simp_rw [abs_sub_comm]

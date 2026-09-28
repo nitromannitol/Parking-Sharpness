@@ -1,6 +1,16 @@
 import Parking.Support.HoleSinkLaw
 import Parking.Support.HolePositive
 
+/-!
+# Monotonicity and boundedness of the surviving-hole probability
+
+Basic bounds on the common-table hole process: at a fixed site, the count `matchedHoles`
+of unmatched holes can only decrease as rounds proceed, since a match is never undone.
+Consequently, at the sparse three-point law, the surviving-hole probability `holeProb`
+is antitone in the horizon, and is always at most the hole probability `p` of the law,
+since a hole can survive to time `T` only if the site started as a hole.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -42,5 +52,6 @@ theorem holeProb_le_p (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) 
   haveI := flatRoundNoiseLaw_isProbability hd
   rw [holeProb_eq_mul_sink_noArrival hd hp hp4 T]
   apply mul_le_of_le_one_right hp.le
-  exact (ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono (Set.subset_univ _))).trans_eq (by simp)
+  exact (ENNReal.toReal_mono (measure_ne_top _ _)
+    (measure_mono (Set.subset_univ _))).trans_eq (by simp)
 end Parking

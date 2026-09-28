@@ -22,11 +22,15 @@ open MeasureTheory ProbabilityTheory Filter Topology
 
 /-! The floor-free evolution used in the deterministic part of the source proof. -/
 
+/-- The floor-free linear evolution `η + P(cslt_linear η n)`: the odometer recursion
+`Parking.u` with the `max 0` truncation removed. -/
 def Parking.External.cslt_linear {d : ℕ} (η : Parking.Site d → ℝ) :
     ℕ → Parking.Site d → ℝ
   | 0 => fun _ => 0
   | n + 1 => fun x => η x + Parking.walkOp (cslt_linear η n) x
 
+/-- The floor-free evolution never exceeds the true odometer, `cslt_linear η n x ≤
+Parking.u η n x`, by induction using monotonicity of `walkOp` and `a ≤ max 0 a`. -/
 theorem Parking.External.cslt_linear_le_u {d : ℕ} (hd : 1 ≤ d)
     (η : Parking.Site d → ℝ) (n : ℕ) (x : Parking.Site d) :
     cslt_linear η n x ≤ Parking.u η n x := by
@@ -41,6 +45,9 @@ theorem Parking.External.cslt_linear_le_u {d : ℕ} (hd : 1 ≤ d)
         _ ≤ max 0 (η x + Parking.walkOp (Parking.u η n) x) :=
           le_max_right _ _
 
+/-- For `n ≤ t`, the small-value event for the true odometer at time `t` is contained in the
+corresponding event for the floor-free evolution at time `n`, via `cslt_linear_le_u` and the
+monotonicity of `Parking.u` in time. -/
 theorem Parking.External.cslt_lower_tail_subset {d : ℕ} (hd : 1 ≤ d)
     {n t : ℕ} (hnt : n ≤ t) {h : ℝ} :
     {η : Parking.Site d → ℝ | Parking.u η t 0 ≤ h} ⊆
@@ -49,6 +56,8 @@ theorem Parking.External.cslt_lower_tail_subset {d : ℕ} (hd : 1 ≤ d)
   exact (cslt_linear_le_u hd η n 0).trans
     ((Parking.u_monotone_time hd η 0 hnt).trans hη)
 
+/-- `walkOp` commutes with an infinite sum `∑' y, F y ·` when only the finitely many `y ∈ s`
+contribute a nonzero value at either neighbor of `x` in each direction. -/
 theorem Parking.External.cslt_walkOp_tsum {d : ℕ} (s : Finset (Parking.Site d))
     (F : Parking.Site d → Parking.Site d → ℝ)
     (x : Parking.Site d)
@@ -86,6 +95,8 @@ theorem Parking.External.cslt_walkOp_tsum {d : ℕ} (s : Finset (Parking.Site d)
   · exact Finset.sum_comm
   · exact Finset.sum_comm
 
+/-- The `n`-step heat kernel vanishes off the box `LatticeProb.boxFinset x n`: the finite
+propagation of the simple random walk in `n` steps. -/
 theorem Parking.External.cslt_heat_zero_of_not_mem {d n : ℕ}
     {x y : Parking.Site d} (hy : y ∉ LatticeProb.boxFinset x n) :
     Parking.CriticalScale.heatKernel d n x y = 0 := by
@@ -99,6 +110,9 @@ theorem Parking.External.cslt_heat_zero_of_not_mem {d n : ℕ}
   have hi := hxy i
   simpa [sub_zero, abs_sub_comm] using hi
 
+/-- The truncated Green function `greenTime d n x ·` vanishes off `LatticeProb.boxFinset x n`,
+since every summand `heatKernel d k x ·` with `k ≤ n` already vanishes there by
+`cslt_heat_zero_of_not_mem`. -/
 theorem Parking.External.cslt_green_zero_of_not_mem {d n : ℕ}
     {x y : Parking.Site d} (hy : y ∉ LatticeProb.boxFinset x n) :
     Parking.CriticalScale.greenTime d n x y = 0 := by
@@ -112,6 +126,8 @@ theorem Parking.External.cslt_green_zero_of_not_mem {d n : ℕ}
     exact hy (LatticeProb.boxFinset_mono hkn hyk)
   exact cslt_heat_zero_of_not_mem hyk
 
+/-- The Green function's one-step recursion, `greenTime d (n + 1) x y = greenTime d n x y +
+heatKernel d n x y`, splitting off the last term of the defining sum. -/
 theorem Parking.External.cslt_green_succ (d n : ℕ) (x y : Parking.Site d) :
     Parking.CriticalScale.greenTime d (n + 1) x y =
       Parking.CriticalScale.greenTime d n x y +
@@ -121,6 +137,9 @@ theorem Parking.External.cslt_green_succ (d n : ℕ) (x y : Parking.Site d) :
       LatticeProb.LocalCLT.heatKernel d n x y
   rw [Finset.sum_range_succ]
 
+/-- The Green function's own transport identity, `walkOp (greenTime d n · y) x =
+greenTime d (n + 1) x y - heatKernel d 0 x y`, from re-indexing its defining sum against an
+eventually-zero kernel. -/
 theorem Parking.External.cslt_green_walk {d n : ℕ} (x y : Parking.Site d) :
     Parking.walkOp (fun z => Parking.CriticalScale.greenTime d n z y) x =
       Parking.CriticalScale.greenTime d (n + 1) x y -
@@ -178,6 +197,9 @@ theorem Parking.External.cslt_green_walk {d n : ℕ} (x y : Parking.Site d) :
   rw [Finset.sum_range_succ']
   ring
 
+/-- The Green-function representation of the floor-free evolution,
+`cslt_linear η n x = ∑' y, greenTime d n x y * η y`, by induction using `cslt_green_walk`
+and the vanishing of the truncated kernel off a finite box. -/
 theorem Parking.External.cslt_linear_green {d : ℕ} (η : Parking.Site d → ℝ)
     (n : ℕ) (x : Parking.Site d) :
     cslt_linear η n x =
@@ -271,6 +293,8 @@ theorem Parking.External.cslt_linear_green {d : ℕ} (η : Parking.Site d → �
           rw [hnext.tsum_sub hzero, hzero_sum]
           ring
 
+/-- The finite-sum form of `cslt_linear_green`, restricting the sum to
+`LatticeProb.boxFinset x n`, outside which the truncated Green kernel vanishes. -/
 theorem Parking.External.cslt_linear_green_finset {d : ℕ}
     (η : Parking.Site d → ℝ) (n : ℕ) (x : Parking.Site d) :
     cslt_linear η n x =

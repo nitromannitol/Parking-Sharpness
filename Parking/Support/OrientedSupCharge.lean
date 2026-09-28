@@ -1,4 +1,10 @@
-/- The quadratic variation of the directed martingale when every instruction is
+import Parking.Support.OrientedChargeMoment
+import Parking.Support.OrientedTelescope
+
+/-!
+# Oriented sup-charge
+
+The quadratic variation of the directed martingale when every instruction is
 read at its own horizon.
 
 Regrouped by instruction, the directed error field of `parking.tex:3255-3265`
@@ -10,8 +16,6 @@ sum to at most one over any box, by the telescoping identity of
 one round bounds this one: the weighted average of the odometer moments over the
 box is below the odometer moment at the origin.
 -/
-import Parking.Support.OrientedChargeMoment
-import Parking.Support.OrientedTelescope
 
 open LatticeProb (measurable_from_countable')
 
@@ -27,6 +31,9 @@ def orientedSupCharge (d : ℕ) (N n : ℕ) (z : (Site d → ℤ) × (Site d × 
   ∑ y ∈ boxFinset (0 : Site d) N,
     (⨆ m : ℕ, orientedGamma d m y) * (orientedOdometer z.1 z.2 n y : ℝ)
 
+/-- `orientedSupCharge` is nonnegative: it sums the nonnegative supremal layer
+variance `orientedGammaSup` against the odometer value, itself a nonnegative
+cast from `ℕ`. -/
 theorem orientedSupCharge_nonneg (hd : 1 ≤ d) (N n : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) : 0 ≤ orientedSupCharge d N n z :=
   sum_nonneg fun y _ => mul_nonneg (orientedGammaSup_nonneg hd y) (Nat.cast_nonneg _)

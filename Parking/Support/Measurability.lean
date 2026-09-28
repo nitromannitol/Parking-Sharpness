@@ -1,26 +1,28 @@
-/-
-Measurability from a countable partition.
-
-Every measurability question about the particle-hole process has the same
-shape: the answer at time `t` is a function of finitely many coordinates, but
-which coordinates depends on the configuration.  Splitting on the value of a
-countable-valued observable reduces it to countably many questions with a fixed
-finite dependence, which is what `measurable_of_countable_partition` does, and
-the induction on the rounds is then mechanical: every field of the state is a
-countable-valued function of finitely many coordinates once the candidate set
-at the site is fixed, and the candidate set is a function of the configuration
-on a box.
-
-The last two results are the other half of what the law supplies: the
-instructions of the model are neighbours of the site carrying them almost
-surely, which is the hypothesis the pathwise lemmas of `lem:parallel`,
-`lem:deferred` and `lem:pathwise-comparison` carry.
--/
 import Parking.Support.Transport
 import LatticeProb.Invariance
 import LatticeProb.Prob.CountableMeasurable
 
-open LatticeProb (instructionLaw_isProbability measurable_decide measurable_eval_var measurable_from_countable' measurable_of_countable_partition)
+/-!
+# Measurability from a countable partition
+
+Measurability from a countable partition.
+
+Every measurability question about the particle-hole process has the same shape: the answer
+at time `t` is a function of finitely many coordinates, but which coordinates depends on the
+configuration.  Splitting on the value of a countable-valued observable reduces it to
+countably many questions with a fixed finite dependence, which is what
+`measurable_of_countable_partition` does, and the induction on the rounds is then mechanical:
+every field of the state is a countable-valued function of finitely many coordinates once the
+candidate set at the site is fixed, and the candidate set is a function of the configuration
+on a box.
+
+The last two results are the other half of what the law supplies: the instructions of the
+model are neighbours of the site carrying them almost surely, which is the hypothesis the
+pathwise lemmas of `lem:parallel`, `lem:deferred` and `lem:pathwise-comparison` carry.
+-/
+
+open LatticeProb (instructionLaw_isProbability measurable_decide measurable_eval_var
+    measurable_from_countable' measurable_of_countable_partition)
 
 noncomputable section
 
@@ -45,6 +47,7 @@ instance instMeasurableSingletonPi (s : Finset (Site d)) :
   rw [this]
   exact MeasurableSet.iInter fun x => measurableSet_eq_fun (measurable_pi_apply x) measurable_const
 
+/-- Restricting the initial field to a finite set of sites is a measurable operation. -/
 theorem measurable_restrict_eta (s : Finset (Site d)) :
     Measurable fun ω : Data d => (fun x : s => ω.1 (x : Site d)) :=
   measurable_pi_lambda _ fun x => (measurable_pi_apply (x : Site d)).comp measurable_fst
@@ -56,6 +59,8 @@ def candidatesOf (z : Site d) (r : ℕ) (c : ↥(boxFinset z r) → ℤ) :
     (Finset.range (c x).toNat).map ⟨fun i => ((x : Site d), i), by
       intro a b h; simpa using h⟩
 
+/-- The candidate set at a site is the same whether it is read off the full field `η` or its
+restriction to the box, since `candidatesOf` only uses the restricted coordinates. -/
 theorem candidates_eq_candidatesOf (η : Site d → ℤ) (z : Site d) (r : ℕ) :
     candidates η z r = candidatesOf z r (fun x => η (x : Site d)) := by
   ext p
@@ -128,7 +133,8 @@ theorem measurable_state (t : ℕ) :
       -- the active particles at a site, filtered by a measurable predicate
       have hActFilter : ∀ (y : Site d) (R : Label d → Bool),
           Measurable fun ω : Data d =>
-            ((activeAt (toDriver ω) (state (toDriver ω) t) t y).filter fun q => R q = true).card := by
+            ((activeAt (toDriver ω) (state (toDriver ω) t) t y).filter
+                fun q => R q = true).card := by
         intro y R
         have hrw : ∀ ω : Data d,
             ((activeAt (toDriver ω) (state (toDriver ω) t) t y).filter fun q => R q = true).card
@@ -274,6 +280,8 @@ theorem measurable_state (t : ℕ) :
       · exact (measurable_from_countable' fun z : ℕ × ℕ => z.1 + z.2).comp
           ((hdep x).prodMk (hActCard x))
 
+/-- The number of active labels at a site after `t` rounds is measurable, by unfolding
+to a filtered candidate-set cardinality and applying `measurable_card_filter_candidates`. -/
 theorem measurable_activeAt_card (t : ℕ) (y : Site d) :
     Measurable fun ω : Data d => (activeAt (toDriver ω) (state (toDriver ω) t) t y).card := by
   classical
@@ -293,18 +301,25 @@ theorem measurable_activeAt_card (t : ℕ) (y : Site d) :
     ((hact q).prodMk
       ((measurable_from_countable' fun z : Site d => decide (z = y)).comp (hpos q)))
 
+/-- The particle-driven odometer is measurable, as the departures field of
+`measurable_state`. -/
 theorem measurable_particleOdometer (t : ℕ) (x : Site d) :
     Measurable fun ω : Data d => particleOdometer (toDriver ω) t x :=
   (measurable_state (d := d) t).2.2.2 x
 
+/-- The particle-driven hole count is measurable, as the holes field of `measurable_state`. -/
 theorem measurable_holeCount (t : ℕ) (x : Site d) :
     Measurable fun ω : Data d => holeCount (toDriver ω) t x :=
   (measurable_state (d := d) t).2.2.1 x
 
+/-- The particle-driven active count is measurable, by `measurable_activeAt_card`. -/
 theorem measurable_activeCount (t : ℕ) (x : Site d) :
     Measurable fun ω : Data d => activeCount (toDriver ω) t x :=
   measurable_activeAt_card t x
 
+/-- The number of survivors from a site by round `t` is measurable, via the countable
+partition on the initial hole count `(ω.1 y).toNat` and a filtered-cardinality sum over the
+labels active there. -/
 theorem measurable_survivorsFrom (t : ℕ) (y : Site d) :
     Measurable fun ω : Data d => survivorsFrom (toDriver ω) t y := by
   classical
@@ -326,24 +341,31 @@ theorem measurable_survivorsFrom (t : ℕ) (y : Site d) :
 theorem measurable_U (t : ℕ) (x : Site d) : Measurable fun ω : Data d => U ω t x :=
   measurable_particleOdometer t x
 
+/-- `Parking.Basic`'s `A` (the active count) is measurable, by `measurable_activeCount`. -/
 theorem measurable_A (t : ℕ) (x : Site d) : Measurable fun ω : Data d => A ω t x :=
   measurable_activeCount t x
 
+/-- `Parking.Basic`'s `H` (the hole count) is measurable, by `measurable_holeCount`. -/
 theorem measurable_H (t : ℕ) (x : Site d) : Measurable fun ω : Data d => H ω t x :=
   measurable_holeCount t x
 
 /-! ### The instructions of the model are neighbours -/
 
+/-- The forward neighbour `y + unit i` lies in `nbrFinset y`. -/
 theorem mem_nbrFinset_add (y : Site d) (i : Fin d) : y + unit i ∈ nbrFinset y := by
   simp only [nbrFinset, Finset.mem_biUnion, Finset.mem_univ, true_and, Finset.mem_insert,
     Finset.mem_singleton]
   exact ⟨i, Or.inl rfl⟩
 
+/-- The backward neighbour `y - unit i` lies in `nbrFinset y`. -/
 theorem mem_nbrFinset_sub (y : Site d) (i : Fin d) : y - unit i ∈ nbrFinset y := by
   simp only [nbrFinset, Finset.mem_biUnion, Finset.mem_univ, true_and, Finset.mem_insert,
     Finset.mem_singleton]
   exact ⟨i, Or.inr rfl⟩
 
+/-- The instruction law at a site puts zero mass on the complement of its neighbour set,
+since both Dirac summands `y + unit i` and `y - unit i` lie inside `nbrFinset y`
+(`mem_nbrFinset_add`, `mem_nbrFinset_sub`). -/
 theorem instructionLaw_compl_nbr (y : Site d) :
     instructionLaw y (((nbrFinset y : Finset (Site d)) : Set (Site d))ᶜ) = 0 := by
   simp only [instructionLaw, Measure.smul_apply, Measure.coe_finsetSum, Finset.sum_apply,
@@ -360,6 +382,9 @@ theorem instructionLaw_compl_nbr (y : Site d) :
   rw [Finset.sum_congr rfl fun i _ => hzero i]
   simp
 
+/-- Almost surely under the stack law, every instruction `σ q` points to a neighbour of its
+site `q.1`, by pushing `instructionLaw_compl_nbr` forward along the coordinate evaluation
+map. -/
 theorem stackLaw_ae_nbr (hd : 1 ≤ d) :
     ∀ᵐ σ ∂(stackLaw d), ∀ q : Site d × ℕ, σ q ∈ nbrFinset q.1 := by
   haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=

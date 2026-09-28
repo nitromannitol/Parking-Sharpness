@@ -1,10 +1,13 @@
-/-
-The coupling input law is translation invariant: both configurations, all
-priorities and each fresh table layer have invariant product laws.
--/
 import Parking.Support.MatchedShift
 import Parking.Support.CoupledLaw
 import Parking.Support.Invariance
+
+/-!
+# Translation invariance of the coupling input
+
+The coupling input law is translation invariant: both configurations, all
+priorities and each fresh table layer have invariant product laws.
+-/
 
 noncomputable section
 
@@ -17,6 +20,7 @@ variable {d : ℕ}
 def Parking.shiftCoupledData (v : Site d) (ω : Parking.CoupledData d) : Parking.CoupledData d :=
   ((fun x => ω.1.1 (x + v), LatticeProb.shiftRank v ω.1.2), Parking.shiftRoundNoise v ω.2)
 
+/-- Shifting the round-table noise by `v` is measurable. -/
 theorem Parking.measurable_shiftRoundNoise (v : Site d) :
     Measurable (Parking.shiftRoundNoise v) := by
   apply measurable_pi_lambda
@@ -25,6 +29,8 @@ theorem Parking.measurable_shiftRoundNoise (v : Site d) :
   intro q
   exact (measurable_pi_apply (Parking.shiftRoundSlot v q)).comp (measurable_pi_apply t)
 
+/-- The round-table noise law is invariant under shifting by `v`, since shifting
+permutes the i.i.d. layers of step instructions via the injective `shiftRoundSlot`. -/
 theorem Parking.roundNoiseLaw_map_shift (hd : 1 ≤ d) (v : Site d) :
     (Parking.roundNoiseLaw d).map (Parking.shiftRoundNoise v) = Parking.roundNoiseLaw d := by
   haveI := Parking.stepLaw_isProbability hd
@@ -36,14 +42,19 @@ theorem Parking.roundNoiseLaw_map_shift (hd : 1 ≤ d) (v : Site d) :
     (f := fun (_ : ℕ) (τ : Parking.RoundSlot d → Fin d × Bool) (q : Parking.RoundSlot d) =>
       τ (Parking.shiftRoundSlot v q))
     (fun _ => measurable_pi_lambda _ fun q => measurable_pi_apply (Parking.shiftRoundSlot v q))
-  simpa only [Parking.roundNoiseLaw, LatticeProb.infinitePi_map_comp' (Parking.stepLaw d) (Parking.shiftRoundSlot v)
+  simpa only [Parking.roundNoiseLaw,
+    LatticeProb.infinitePi_map_comp' (Parking.stepLaw d) (Parking.shiftRoundSlot v)
     (Parking.shiftRoundSlot_injective v)] using h
 
+/-- Shifting the coupled data (both configurations, priorities and round tables)
+by `v` is measurable, being built from `measurable_shiftRoundNoise` and the
+measurability of shifting a configuration and of `LatticeProb.shiftRank`. -/
 theorem Parking.measurable_shiftCoupledData (v : Site d) :
     Measurable (Parking.shiftCoupledData v) := by
   have hc : Measurable (fun c : Site d → ℤ × ℤ => fun x => c (x + v)) :=
     measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)
-  exact (hc.prodMap (LatticeProb.measurable_shiftRank v)).prodMap (Parking.measurable_shiftRoundNoise v)
+  exact (hc.prodMap (LatticeProb.measurable_shiftRank v)).prodMap
+    (Parking.measurable_shiftRoundNoise v)
 
 /-- The full coupling law is translation invariant. -/
 theorem Parking.coupledLaw_map_shift (hd : 1 ≤ d) (ν : Measure ℤ)

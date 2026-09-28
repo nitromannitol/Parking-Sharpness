@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightCov
+
+/-!
+# Covariance limit of the interpolated box reward field
+
 The covariance limit of the interpolated (continuous) box reward field, upgraded from the
 grid-point covariance limit of `Parking.Support.TightCov` via the cell-corner moment bound of
 `Parking.Support.TightKolmogorov` (`parking.tex:3207-3218`).
@@ -11,7 +15,6 @@ squared `L²` distance between the box reward and its nearest grid value vanishe
 so by Cauchy-Schwarz the three extra cross terms of the bilinear expansion
 `(G + Δ)(G' + Δ') = GG' + GΔ' + ΔG' + ΔΔ'` vanish and only the grid covariance limit survives.
 -/
-import Parking.Support.TightCov
 
 open MeasureTheory Filter Topology LatticeProb
 

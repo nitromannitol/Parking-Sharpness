@@ -4,6 +4,17 @@ import Parking.Support.DeficitFactor
 
 open LatticeProb (measurable_from_countable')
 
+/-!
+# The multiplicative hole factor between two sites
+
+`integral_hole_factor` bounds the joint average of two direction-dependent survival
+factors `f, g` by their individual averages times an exponential correction in the
+`holeKernel` of the two sites, using `integral_mul_factor_of_deficits` once the two
+integrals are shown to dominate a common deficit. `instruction_partial_hole_factor`
+transports this bound to the future mean odometer `matchedMeanH` after averaging every
+unrevealed instruction, via the relative bounds of `instruction_partial_hole_relative`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -31,18 +42,24 @@ theorem integral_hole_factor (hd : 3 ≤ d) (x z v : Site d)
       δ * A ≤ (∫ a, escapePotential d x (v + stepVec a) ∂(stepLaw d)) * A :=
         mul_le_mul_of_nonneg_right (integral_step_escapePotential_gap hd x v) hA
       _ = ∫ a, escapePotential d x (v + stepVec a) * A ∂(stepLaw d) := (integral_mul_const _ _).symm
-      _ ≤ ∫ a, f a ∂(stepLaw d) := integral_mono (integrable_step_fun hd1 _) (integrable_step_fun hd1 _) (fun a => (hf a).1)
+      _ ≤ ∫ a, f a ∂(stepLaw d) :=
+          integral_mono (integrable_step_fun hd1 _) (integrable_step_fun hd1 _)
+          (fun a => (hf a).1)
   have hMG : δ * B ≤ ∫ a, g a ∂(stepLaw d) := by
     calc
       δ * B ≤ (∫ a, escapePotential d z (v + stepVec a) ∂(stepLaw d)) * B :=
         mul_le_mul_of_nonneg_right (integral_step_escapePotential_gap hd z v) hB
       _ = ∫ a, escapePotential d z (v + stepVec a) * B ∂(stepLaw d) := (integral_mul_const _ _).symm
-      _ ≤ ∫ a, g a ∂(stepLaw d) := integral_mono (integrable_step_fun hd1 _) (integrable_step_fun hd1 _) (fun a => (hg a).1)
-  apply integral_mul_factor_of_deficits (stepLaw d) f g (measurable_from_countable' _) (measurable_from_countable' _)
+      _ ≤ ∫ a, g a ∂(stepLaw d) :=
+          integral_mono (integrable_step_fun hd1 _) (integrable_step_fun hd1 _)
+          (fun a => (hg a).1)
+  apply integral_mul_factor_of_deficits (stepLaw d) f g
+    (measurable_from_countable' _) (measurable_from_countable' _)
     A B δ (holeKernel d x z v) hA hB hδ (holeKernel_nonneg hd x z v)
     (fun a => ⟨hfn a, (hf a).2⟩) (fun a => ⟨hgn a, (hg a).2⟩) hMF hMG
   have hp (a : Fin d × Bool) : (A - f a) * (B - g a) ≤
-      ((1 - escapePotential d x (v + stepVec a)) * (1 - escapePotential d z (v + stepVec a))) * (A * B) := by
+      ((1 - escapePotential d x (v + stepVec a)) *
+          (1 - escapePotential d z (v + stepVec a))) * (A * B) := by
     have ha : A - f a ≤ (1 - escapePotential d x (v + stepVec a)) * A := by linarith [(hf a).1]
     have hb : B - g a ≤ (1 - escapePotential d z (v + stepVec a)) * B := by linarith [(hg a).1]
     exact (mul_le_mul ha hb (sub_nonneg.mpr (hg a).2)

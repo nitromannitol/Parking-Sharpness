@@ -1,13 +1,16 @@
-/-
-Approximation of the signed density by the scenery and the rescaled divisible-odometer pairing.
-Taylor expansion, exact lattice-cell integration, the growth bound, and the vanishing distance
-between odometers control the middle term. The martingale estimate supplies the final correction.
--/
 import Parking.Support.SpatWMiddleApproximation
 import Parking.Support.SpatWOdometerMass
 import LatticeProb.Prob.Scaling.VanishingMass
 import Parking.Support.SpatWPairingTransfer
 import Parking.Support.SpatWMartingaleVariance
+
+/-!
+# Signed density versus the scenery and divisible-odometer pairing
+
+Approximation of the signed density by the scenery and the rescaled divisible-odometer pairing.
+Taylor expansion, exact lattice-cell integration, the growth bound, and the vanishing distance
+between odometers control the middle term. The martingale estimate supplies the final correction.
+-/
 
 open LatticeProb.WhiteNoise (continuous_contOp hasCompactSupport_contOp)
 
@@ -52,15 +55,17 @@ theorem tendsto_signedMiddle_sub_barDivisible_pairing_zero
       ∫ x, barDivisible w R 1 x * contOp d φ x|}).toReal) atTop (𝓝 0) := by
   haveI := hν.prob
   haveI := law_isProb hd ν
-  have h1 := fun a ha => tendsto_signedMiddle_sub_barOdometer_pairing_zero_of_walk_approximation hd hd3
-    hGrowth hBernstein hConcentration hGreenNorms ν hν hφ (a := a) ha
+  have h1 := fun a ha =>
+    tendsto_signedMiddle_sub_barOdometer_pairing_zero_of_walk_approximation hd hd3
+      hGrowth hBernstein hConcentration hGreenNorms ν hν hφ (a := a) ha
   have h2 := fun a ha => tendsto_barOdometer_pairing_sub_barDivisible_pairing_zero hd hd3
     hGrowth hBernstein hConcentration hGreenNorms ν hν 1 zero_lt_one
     (continuous_contOp hφ) (hasCompactSupport_contOp hφ) (a := a) ha
   have h := LatticeProb.Scaling.VanishingMass.tendsto_measure_add_gt_zero h1 h2 ha
   simpa only [sub_add_sub_cancel] using h
 
-/-- The signed density equals scenery plus the divisible-odometer pairing up to a vanishing error. -/
+/-- The signed density equals scenery plus the divisible-odometer pairing up to a vanishing
+error. -/
 theorem tendsto_signedPair_sub_scenePair_sub_barDivisible_pairing_zero
     (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hGrowth : External.SandpileGrowth) (hBernstein : External.Bernstein)

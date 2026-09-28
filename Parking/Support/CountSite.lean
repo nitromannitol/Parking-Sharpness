@@ -1,4 +1,10 @@
-/-
+import Parking.Support.CountStep
+import Parking.Support.ParticleStep
+import Parking.Support.SceneryHole
+
+/-!
+# Step 2 at a tilted site
+
 Step 2 of `lem:product` at one of the tilted sites.
 
 With the counts at the other sites held fixed, the count at a site is a single
@@ -8,9 +14,6 @@ site is then the one-site bound of the paper, and `Support/CountStep.lean`
 compares its mean with `Cov(f(Y), Y)`.  Extracting one coordinate of the
 i.i.d. field is `LatticeProb.measurePreserving_update_infinitePi`.
 -/
-import Parking.Support.CountStep
-import Parking.Support.ParticleStep
-import Parking.Support.SceneryHole
 
 open MeasureTheory
 
@@ -26,9 +29,13 @@ def meanF {d : ℕ} (F : PData d → ℝ) (a : Site d → ℤ) : ℝ :=
 def delC {d : ℕ} (x : Site d) (a : Site d → ℤ) : Site d → ℤ :=
   fun y => if y = x then a y - 1 else a y
 
+/-- Deleting a particle at `x` from the full data acts on the counts by `delC`,
+leaving the noise untouched. -/
 theorem delAt_eq_delC {d : ℕ} (x : Site d) (a : Site d → ℤ) (b : PNoise d) :
     delAt x ((a, b) : PData d) = ((delC x a, b) : PData d) := rfl
 
+/-- `meanF` at the deleted counts unfolds to the mean of `F` after deleting one
+particle at `x`, by `delAt_eq_delC`. -/
 theorem meanF_delC {d : ℕ} (F : PData d → ℝ) (x : Site d) (a : Site d → ℤ) :
     meanF F (delC x a) = ∫ b, F (delAt x ((a, b) : PData d)) ∂(noiseLaw d) := rfl
 

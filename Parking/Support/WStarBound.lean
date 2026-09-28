@@ -1,19 +1,21 @@
-/-
-The maximal average `w^\star` as a function of the data: it is measurable, it is
-bounded pathwise by the configuration over a box, and its `r`-th moment is at
-most `n+1` times the largest `r`-th moment of the error at the origin.
-
-The last is the second display of `prop:w-moment`, and its proof is the paper's:
-Jensen's inequality for the walk average, the bound of a maximum over `n+1`
-times by the sum of the `r`-th powers, and translation invariance.  The exchange
-of the two integrals that the paper's "`\E\,\E_0`" hides is not Fubini here but
-a finite decomposition: the walk after `j` steps lies in the box of radius `j`,
-so the average over the walk of a function of its position is a finite
-combination of the values of that function, and the outer integral passes
-through the combination one term at a time.
--/
 import Parking.Support.Lp
 import Parking.Support.Pathwise
+
+/-!
+# The maximal average `w^\star` is measurable and bounded
+
+The maximal average `w^\star` as a function of the data: it is measurable, it is bounded
+pathwise by the configuration over a box, and its `r`-th moment is at most `n+1` times the
+largest `r`-th moment of the error at the origin.
+
+The last is the second display of `prop:w-moment`, and its proof is the paper's: Jensen's
+inequality for the walk average, the bound of a maximum over `n+1` times by the sum of the
+`r`-th powers, and translation invariance. The exchange of the two integrals that the
+paper's "`\E\,\E_0`" hides is not Fubini here but a finite decomposition: the walk after `j`
+steps lies in the box of radius `j`, so the average over the walk of a function of its
+position is a finite combination of the values of that function, and the outer integral
+passes through the combination one term at a time.
+-/
 
 open LatticeProb (measurable_eval_var measurable_from_countable')
 
@@ -27,6 +29,8 @@ variable {d : ℕ}
 
 /-! ### The maximum along the walk as a finite supremum -/
 
+/-- **`wMax` equals a finite `sup'`** over `j ≤ n`, rewriting its defining supremum over all
+`j : ℕ` as a supremum over the finite range `n + 1` on which it is attained. -/
 theorem wMax_eq_sup' (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool) :
     wMax ω n x p = (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
       (fun j => |wErr ω (n - j) (walkPath x p j)|) := by
@@ -45,6 +49,8 @@ theorem wMax_eq_sup' (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × 
 
 /-! ### Measurability in the data -/
 
+/-- `wMax` is jointly measurable in the data and the walk path, being a finite `sup'` of
+measurable terms by `wMax_eq_sup'`. -/
 theorem measurable_wMax_prod (n : ℕ) (x : Site d) :
     Measurable fun a : Data d × (ℕ → Fin d × Bool) => wMax a.1 n x a.2 := by
   have hterm : ∀ j : ℕ, Measurable fun a : Data d × (ℕ → Fin d × Bool) =>
@@ -68,6 +74,8 @@ theorem measurable_wMax_prod (n : ℕ) (x : Site d) :
   rw [hfun]
   exact hsup
 
+/-- `wStar` is measurable in the data, being the integral over the walk law of the jointly
+measurable `wMax`. -/
 theorem measurable_wStar (hd : 1 ≤ d) (n : ℕ) (x : Site d) :
     Measurable fun ω : Data d => wStar ω n x := by
   haveI := stepLaw_isProbability hd
@@ -77,6 +85,9 @@ theorem measurable_wStar (hd : 1 ≤ d) (n : ℕ) (x : Site d) :
 
 /-! ### The pathwise bound -/
 
+/-- **`wMax` is bounded pathwise** by `wCoef d n` times the configuration count over the box
+of radius `3n`, from the pointwise bound `abs_wErr_le` on each term of the finite
+supremum. -/
 theorem wMax_le_conf (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d)
     (p : ℕ → Fin d × Bool) :
     wMax ω n x p ≤ wCoef d n * confBox ω x (3 * n) := by
@@ -93,6 +104,8 @@ theorem wMax_le_conf (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d)
         refine le_trans (confBox_le_of_mem ω (walkPath_mem_box x p hjn) (2 * (n - j))) ?_
         exact confBox_mono ω x (by omega)
 
+/-- **`wStar` is bounded pathwise** by the same bound as `wMax_le_conf`, integrated over the
+walk law. -/
 theorem wStar_le_conf (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     wStar ω n x ≤ wCoef d n * confBox ω x (3 * n) := by
   haveI := stepLaw_isProbability hd
@@ -104,11 +117,14 @@ theorem wStar_le_conf (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     _ = wCoef d n * confBox ω x (3 * n) := by
         rw [integral_const, probReal_univ, one_smul]
 
+/-- `wStar` is nonnegative, `wMax` itself being nonnegative. -/
 theorem wStar_nonneg (ω : Data d) (n : ℕ) (x : Site d) : 0 ≤ wStar ω n x :=
   integral_nonneg fun p => wMax_nonneg ω n x p
 
 /-! ### Moments -/
 
+/-- `|wErr ω m x| ^ r` is integrable, being measurable and dominated by the `r`-th power of
+the confBox bound of `abs_wErr_le`. -/
 theorem integrable_abs_wErr_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -125,6 +141,8 @@ theorem integrable_abs_wErr_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilit
     ← Real.mul_rpow (wCoef_nonneg d m) (confBox_nonneg ω x (2 * m))]
   exact Real.rpow_le_rpow (abs_nonneg _) (abs_wErr_le hd ω m x) (le_trans zero_le_one hr)
 
+/-- `wStar ω n x ^ r` is integrable, being measurable and dominated by the `r`-th power of
+`wStar_le_conf`. -/
 theorem integrable_wStar_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -142,6 +160,8 @@ theorem integrable_wStar_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
   exact Real.rpow_le_rpow (wStar_nonneg ω n x) (wStar_le_conf hd ω n x)
     (le_trans zero_le_one hr)
 
+/-- `((U ω n x : ℕ) : ℝ) ^ r` is integrable, being measurable and dominated by the `r`-th
+power of the trivial bound `U_le_confBox`. -/
 theorem integrable_U_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -161,6 +181,8 @@ theorem integrable_U_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
 
 /-! ### Translation invariance of the moments -/
 
+/-- **The `r`-th moment of `wErr` at any site equals its moment at the origin**, by
+translation invariance of the i.i.d. field and the shift identity `wErr_shiftData`. -/
 theorem integral_abs_wErr_rpow_shift (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)

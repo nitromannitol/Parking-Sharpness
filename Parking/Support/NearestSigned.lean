@@ -1,4 +1,9 @@
-/-
+import Parking.Support.NearestSpatialAssembly
+import Parking.Support.NearestTestFun
+
+/-!
+# `thm:nearest` from one pathwise statement
+
 `thm:nearest` from the clauses of `prop:spatial-scaling` and ONE PATHWISE
 statement.
 
@@ -15,8 +20,6 @@ sample-by-sample identity of `parking.tex:1828-1829`:
 which the paper obtains from the distributional equation on `O` by mollifying in
 time on the RIGHT of `s = 1` and using the monotonicity of `U` in `s`.
 -/
-import Parking.Support.NearestSpatialAssembly
-import Parking.Support.NearestTestFun
 
 noncomputable section
 namespace Parking

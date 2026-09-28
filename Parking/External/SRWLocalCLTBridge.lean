@@ -52,6 +52,10 @@ theorem heatKernelBM_scaledSite_eq_contHeatKernel {d : ℕ} (R t : ℝ) (x y : S
     norm_num
   simp only [Sandpile.Continuum.heatKernelBM, Parking.External.contHeatKernel, hnorm]
 
+/-- Discharges `Parking.External.SRWLocalCLT` from the sibling library's
+`Sandpile.External.LocalCLT`, converting the rescaled-lattice-point form of the bound into
+Parking's raw-coordinate form via `heatKernelBM_scaledSite_eq_contHeatKernel` and identifying
+`Sandpile.heatKernel` with `LatticeProb.srwHeat`. -/
 theorem srwLocalCLT_of_localCLT (hL : Sandpile.External.LocalCLT) :
     Parking.External.SRWLocalCLT := by
   intro d hd δ T C₀ hδ hδT hC₀nonneg ε hε

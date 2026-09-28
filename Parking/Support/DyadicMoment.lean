@@ -1,6 +1,14 @@
-/- Moment control of a finite dyadic envelope. -/
 import Parking.Support.DyadicEnvelope
 import Parking.Support.DyadicFactor
+
+/-!
+# Moment control of the dyadic envelope
+
+Moment control of a finite dyadic envelope: if every increment `F k - F j` over `j ≤ k ≤ 2 ^ L`
+has `r`-norm at most `C * (k - j) ^ a`, then the whole dyadic envelope `dyadicEnvelope r F L` is
+`r`-integrable with `r`-norm at most `C * dyadicFactor (2 ^ a) (2 ^ (1/r)) L`, by induction on
+`L` combining the even subsequence with the top-level increments through Minkowski's inequality.
+-/
 
 open LatticeProb.MomentNorm (rNorm rNorm_add_le)
 
@@ -9,6 +17,10 @@ namespace Parking
 open MeasureTheory Finset
 variable {Ω : Type} [MeasurableSpace Ω]
 
+/-- If every increment `F k - F j` over `j ≤ k ≤ 2 ^ L` has `r`-norm at most `C * (k - j) ^ a`,
+then `dyadicEnvelope r (fun i => F i ω) L` is `r`-integrable with `rNorm` at most `C *
+dyadicFactor (2 ^ a) (2 ^ (1/r)) L`, by induction on `L`, using `rNorm_add_le` (Minkowski) to
+combine the even subsequence with the top-level increments. -/
 theorem dyadicEnvelope_moment (μ : Measure Ω) {r : ℝ} (hr : 1 ≤ r)
     (a : ℝ) (L : ℕ) (F : ℕ → Ω → ℝ) (hm : ∀ i, Measurable (F i))
     {C : ℝ} (hC : 0 ≤ C)
@@ -48,7 +60,8 @@ theorem dyadicEnvelope_moment (μ : Measure Ω) {r : ℝ} (hr : 1 ≤ r)
       hinc i (i + 1) (by omega) (by have := mem_range.mp hi; omega)
     obtain ⟨hhi, hhb⟩ := finitePowerNorm_moment μ hr0 (range (2 ^ (L + 1)))
       (fun i ω => F (i + 1) ω - F i ω) (fun i hi => (hfi i hi).1) hC (fun i hi => by
-        simpa only [Nat.add_sub_cancel_left, Nat.cast_one, Real.one_rpow, mul_one] using (hfi i hi).2)
+        simpa only [Nat.add_sub_cancel_left, Nat.cast_one, Real.one_rpow, mul_one]
+            using (hfi i hi).2)
     have hcm := measurable_dyadicEnvelope r G (fun i => hm _) L
     have hsum := integrable_rpow_add μ hr hcm hhm hci hhi
     have hmink := rNorm_add_le μ hr hcm.aestronglyMeasurable hhm.aestronglyMeasurable hci hhi hsum

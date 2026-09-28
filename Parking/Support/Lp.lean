@@ -1,23 +1,25 @@
-/-
-Three general facts about integrals that the proof of `prop:w-moment` uses and
-that are not about parking at all.
-
-- Cauchy-Schwarz against the constant one, in the form the paper needs when it
-  writes `(E U_n(0)^{r/2})^{2/r} ≤ (E U_n(0)^r)^{1/r}`: on a probability space
-  the square of a mean is at most the mean of the square.
-- Fatou's lemma, in the form the paper needs when it applies the martingale
-  moment inequality to the first `k` increments and lets `k` grow: the number of
-  nonzero increments is finite for every realization but unbounded over them, so
-  no single `k` works and the bound passes to the limit through the integral.
-- The power of a weighted sum against the weighted sum of the powers, which is
-  the convexity that turns Minkowski's inequality of the paper's proof into a
-  statement about one site: with the weights `Γ`, the lattice sum of the
-  quadratic variation is bounded by the total weight times the moment at the
-  origin.
--/
 import Parking.Support.ConfMoments
 import Mathlib.Probability.Moments.Variance
 import Mathlib.Analysis.MeanInequalitiesPow
+
+/-!
+# General `L^p` facts used by the moment bound
+
+Three general facts about integrals that the proof of `prop:w-moment` uses and that are
+not about parking at all.
+
+- Cauchy-Schwarz against the constant one, in the form the paper needs when it writes
+  `(E U_n(0)^{r/2})^{2/r} ≤ (E U_n(0)^r)^{1/r}`: on a probability space the square of a
+  mean is at most the mean of the square.
+- Fatou's lemma, in the form the paper needs when it applies the martingale moment
+  inequality to the first `k` increments and lets `k` grow: the number of nonzero
+  increments is finite for every realization but unbounded over them, so no single `k`
+  works and the bound passes to the limit through the integral.
+- The power of a weighted sum against the weighted sum of the powers, which is the
+  convexity that turns Minkowski's inequality of the paper's proof into a statement about
+  one site: with the weights `Γ`, the lattice sum of the quadratic variation is bounded by
+  the total weight times the moment at the origin.
+-/
 
 noncomputable section
 
@@ -27,6 +29,8 @@ open MeasureTheory Finset
 
 /-! ### A fixed power is a measurable function -/
 
+/-- `x ↦ x ^ r` is measurable for `0 ≤ r`, since `Real.rpow` is continuous at that
+exponent. -/
 theorem measurable_rpow_const {r : ℝ} (hr : 0 ≤ r) : Measurable fun x : ℝ => x ^ r :=
   (Real.continuous_rpow_const hr).measurable
 

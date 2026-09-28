@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Matched
+import Parking.Support.SubcriticalPair
+
+/-!
+# Measurability of the pair `(F, Z)`
+
 Measurability of the pair `(F, Z)` of the proof of `thm:subcritical`.
 
 `lem:product` asks that both observables be measurable, which is what
@@ -9,8 +14,6 @@ construction is a measurable function of its driving data
 set where a measurable family of uniform variables is injective, a countable
 intersection of the complements of the sets where two of them agree.
 -/
-import Parking.Support.Matched
-import Parking.Support.SubcriticalPair
 
 open MeasureTheory
 

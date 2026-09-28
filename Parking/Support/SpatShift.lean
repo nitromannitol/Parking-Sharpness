@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Invariance
+
+/-!
+# Shift invariance of the scenery integral
+
 The translation invariance of the i.i.d. scenery law, read as an invariance of
 the integral: for a measurable `g`, integrating `g` against the pushforward of
 the law by a spatial shift equals integrating `g` directly.
@@ -7,7 +11,6 @@ This is the integral form of `Parking.iidLaw_map_shiftConf`
 (`Parking/Support/Invariance.lean`), the input the Kolmogorov route to the
 equicontinuity clause of `prop:spatial-scaling` needs at every site.
 -/
-import Parking.Support.Invariance
 
 noncomputable section
 namespace Parking

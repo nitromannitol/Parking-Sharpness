@@ -2,12 +2,25 @@ import Parking.Support.SingleHoleWeight
 import Parking.Support.SingleHoleTerminal
 import Parking.Support.LayerSubmartingale
 
+/-!
+# Sandwiching the effect of adding one particle on the expected hole count
+
+Adding a single particle at `v` to the initial field `η` only ever decreases the expected
+remaining hole count `matchedMeanH` at another site `x`, and it decreases it by at most the
+escape probability `escapePotential d x v` of a walk from `x` to `v`, times the original mean.
+The upper sandwich is monotonicity of the count under adding a particle; the lower sandwich
+runs the layer submartingale comparison `layer_submartingale_integral_le` on the single-hole
+weight process `singleHoleWeight`, whose value at time `0` is exactly that scaled product and
+whose value at the terminal time is controlled by `singleAddition_hole_escape_terminal`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
-/-- Adding one particle reduces a site's expected hole count by at most its hitting probability. -/
+/-- Adding one particle reduces a site's expected hole count by at most its hitting
+probability. -/
 theorem matchedMeanH_addParticle_relative (hd : 3 ≤ d) (η : Site d → ℤ) (v x : Site d)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) :
     escapePotential d x v * matchedMeanH η ρ T x ≤ matchedMeanH (addParticle v η) ρ T x ∧
@@ -16,16 +29,20 @@ theorem matchedMeanH_addParticle_relative (hd : 3 ≤ d) (η : Site d → ℤ) (
   haveI := stepLaw_isProbability hd1
   haveI := roundNoiseLaw_isProbability hd1
   have hwm (s : ℕ) := measurable_singleHoleWeight hd η v ρ T s x
-  have hwb (σ : RoundNoise d) (s : ℕ) : ‖singleHoleWeight η v ρ σ T s x‖ ≤ ((-η x).toNat : ℝ) := by
+  have hwb (σ : RoundNoise d) (s : ℕ) :
+      ‖singleHoleWeight η v ρ σ T s x‖ ≤ ((-η x).toNat : ℝ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg (singleHoleWeight_bounds hd η v ρ σ T s x).1]
     exact (singleHoleWeight_bounds hd η v ρ σ T s x).2
-  have hstep := layer_submartingale_integral_le (Measure.infinitePi fun _ : RoundSlot d => stepLaw d)
+  have hstep := layer_submartingale_integral_le
+    (Measure.infinitePi fun _ : RoundSlot d => stepLaw d)
     (fun σ s => singleHoleWeight η v ρ σ T s x) hwm _ hwb T
     (fun s hs σ => singleHoleWeight_section_ge hd η v ρ σ T s hs x)
-  have hzero (σ : RoundNoise d) : singleHoleWeight η v ρ σ T 0 x = matchedMeanH η ρ T x * escapePotential d x v := by
+  have hzero (σ : RoundNoise d) : singleHoleWeight η v ρ σ T 0 x =
+      matchedMeanH η ρ T x * escapePotential d x v := by
     rw [singleHoleWeight, futureHoleValue_zero]
     rfl
-  have ht := integral_mono (Integrable.of_bound (hwm T).aestronglyMeasurable _ (ae_of_all _ fun σ => hwb σ T))
+  have ht := integral_mono (Integrable.of_bound (hwm T).aestronglyMeasurable _
+    (ae_of_all _ fun σ => hwb σ T))
     (integrable_matchedHoles hd1 (addParticle v η) ρ T x (roundNoiseLaw d))
     (fun σ => by
       change singleHoleWeight η v ρ σ T T x ≤ _

@@ -1,7 +1,12 @@
-/- Two-sided directed layer norms from the ordinary walk's diagonal bounds. -/
 import Parking.Support.OrientedCollision
 import Parking.Support.BinomialNorm
 import LatticeProb.Walk.SRWDiag
+
+/-!
+# Two-sided directed layer norms
+
+Two-sided directed layer norms from the ordinary walk's diagonal bounds.
+-/
 
 open LatticeProb.Walk (conv conv_nonneg)
 
@@ -10,6 +15,10 @@ namespace Parking
 open LatticeProb
 variable {d : ℕ}
 
+/-- The squared `ℓ²`-norm of the `n`-th directed layer is sandwiched between constant
+multiples of `n ^ (-(d - 1) / 2)`, transferred from `exists_srwHeat_diag_bounds` for the
+ordinary walk via the collision identity `orientedLayer_collision_identity` and the
+comparison `s ≤ t ≤ 2 * s` between `√n` and `√(n + 1)`. -/
 theorem exists_orientedLayer_sq_bounds (hd : 1 ≤ d) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
       c / Real.sqrt n ^ (d - 1) ≤ ∑' x : Site d, orientedLayer d n x ^ 2 ∧

@@ -1,7 +1,10 @@
-/- Cellwise consistency of the space-time test coefficients. -/
 import Parking.Support.SpatialSpaceTimeTaylor
 import Parking.Support.SpatialRescaledEquation
 import LatticeProb.Prob.Scaling.TimeTestApproximation
+
+/-!
+# Cellwise consistency of the space-time test coefficients
+-/
 
 open LatticeProb.Walk (abs_floor_mul_div_sub_le)
 
@@ -25,6 +28,9 @@ def parabolicSpaceTest (ψ : ℝ × (Fin d → ℝ) → ℝ) (R : ℝ)
     (p : ℝ × (Fin d → ℝ)) : ℝ :=
   scaledWalkTest (fun x => ψ (parabolicTime R p.1 + 1 / R ^ 2, x)) R p.2
 
+/-- The rounding error `|parabolicTime R s - s|` is at most the mesh width `1 / R ^ 2`,
+since the natural-number floor `⌊s * R ^ 2⌋₊` differs from `s * R ^ 2` by less than
+one. -/
 theorem abs_parabolicTime_sub_le {R s : ℝ} (hR : 0 < R) (hs : 0 ≤ s) :
     |parabolicTime R s - s| ≤ 1 / R ^ 2 := by
   have hR2 : 0 < R ^ 2 := sq_pos_of_pos hR
@@ -37,6 +43,10 @@ theorem abs_parabolicTime_sub_le {R s : ℝ} (hR : 0 < R) (hs : 0 ≤ s) :
   rw [he]
   linarith
 
+/-- The nearest space-time grid point `(parabolicTime R p.1, latticePoint R p.2 / R)` lies
+within `max (1 / R ^ 2) (1 / R)` of `p`, combining the time rounding bound
+`abs_parabolicTime_sub_le` with the coordinatewise lattice rounding bound
+`abs_floor_mul_div_sub_le`. -/
 theorem dist_parabolicGrid_le {R : ℝ} (hR : 0 < R)
     (p : ℝ × (Fin d → ℝ)) (hp : 0 ≤ p.1) :
     dist (parabolicTime R p.1, fun i => ((latticePoint R p.2) i : ℝ) / R) p ≤

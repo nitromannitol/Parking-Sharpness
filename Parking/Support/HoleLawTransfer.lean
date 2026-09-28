@@ -1,4 +1,8 @@
-/-
+import Parking.Support.CoupledLaw
+
+/-!
+# Transferring the hole-count law between the two constructions
+
 The hole counts of the two constructions have the same law, jointly with the
 initial configuration.
 
@@ -7,7 +11,6 @@ initial configuration.
 the two have the same law, and this is that statement for the single observable
 Step 1 needs.
 -/
-import Parking.Support.CoupledLaw
 
 open LatticeProb (measurable_from_countable')
 

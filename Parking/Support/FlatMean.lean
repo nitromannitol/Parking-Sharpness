@@ -1,6 +1,16 @@
 import Parking.Support.FlatNoise
 import Parking.Support.MeanLaw
 
+/-!
+# Flattening the round noise preserves the odometer mean
+
+The independent per-round, per-slot instruction tables (`RoundNoise d`) and their single flat
+product space (`FlatRoundNoise d`) give the same conditional odometer mean once departures
+are read through `matchedState`: `curryRoundNoise` pushes `flatRoundNoiseLaw d` forward to
+`roundNoiseLaw d`, so integrating the departure count against either law computes
+`matchedMeanU`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -17,7 +27,8 @@ theorem integral_flat_matchedOdometer (hd : 1 ≤ d) (η : Site d → ℤ) (ρ :
     measurable_const measurable_const measurable_id T
   have hm : Measurable (fun σ : RoundNoise d => ((matchedState η ρ σ T).departures x : ℝ)) :=
     (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (hS.2.2.2 x)
-  have he := integral_map (μ := flatRoundNoiseLaw d) measurable_curryRoundNoise.aemeasurable hm.aestronglyMeasurable
+  have he := integral_map (μ := flatRoundNoiseLaw d) measurable_curryRoundNoise.aemeasurable
+    hm.aestronglyMeasurable
   rw [map_curryRoundNoise hd] at he
   exact he.symm
 end Parking

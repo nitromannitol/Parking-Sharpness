@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedCutoffValue
+
+/-!
+# Cutoff optimal-stopping value with the potential at the origin
+
 The cutoff optimal-stopping value TOGETHER WITH the potential at the origin
 (`parking.tex:3201-3205`): `Parking.uOriented_eq_potential_add_stoppingSup` writes the
 oriented odometer as `Φ_n(x) + sup_σ E_x[-Φ_{n-σ}(X_σ)]`, the discrete mirror of
@@ -15,10 +19,10 @@ the extended continuous mapping theorem applies to it exactly as it does to the 
 cutoff value in `Parking.OrientedCutoffValue`, with the same sole cited input
 `Parking.External.OrientedStoppingStability`.
 -/
-import Parking.Support.OrientedCutoffValue
 
 open LatticeProb.BoxClamp (abs_rewardOfBox_sub_le boxPoint rewardBox rewardOfBox)
-open LatticeProb.ExtendedMapping (locallyUniform_of_lipschitz_const tendsto_integral_comp_of_locally_uniform)
+open LatticeProb.ExtendedMapping (locallyUniform_of_lipschitz_const
+  tendsto_integral_comp_of_locally_uniform)
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal
@@ -27,8 +31,12 @@ noncomputable section
 
 namespace Parking
 
+/-- The Borel `σ`-algebra on `C(rewardBox T A, ℝ)`, used locally so the measurability
+statements below type-check. -/
 local instance instMeasurableSpaceRewardBoxOrientedCutoffValuePot (T A : ℝ) :
     MeasurableSpace C(rewardBox T A, ℝ) := borel _
+/-- `C(rewardBox T A, ℝ)` with its Borel `σ`-algebra is a `BorelSpace`, trivially since
+that `σ`-algebra is defined to be `borel _`. -/
 local instance instBorelSpaceRewardBoxOrientedCutoffValuePot (T A : ℝ) :
     BorelSpace C(rewardBox T A, ℝ) := ⟨rfl⟩
 
@@ -74,7 +82,8 @@ theorem orientedCutoffValue_zero {T A : ℝ} (hT : 0 ≤ T) (hA : 0 ≤ A) (n : 
   rw [hF0]
   apply le_antisymm
   · exact orientedStoppingSup_le (by norm_num) _ _ _ le_rfl (fun _ _ => le_refl 0)
-  · have hmem : (0 : ℝ) ∈ orientedTerminalValues 2 (fun _ _ => (0 : ℝ)) ⌊(n : ℝ) * T⌋₊ (0 : Site 2) :=
+  · have hmem : (0 : ℝ) ∈
+        orientedTerminalValues 2 (fun _ _ => (0 : ℝ)) ⌊(n : ℝ) * T⌋₊ (0 : Site 2) :=
       ⟨fun _ => 0, ⟨fun _ => Nat.zero_le _, fun _ _ _ => rfl⟩, by simp [orientedTerminalValue]⟩
     exact le_csSup (bddAbove_orientedTerminalValues (M := 0) (by norm_num) _ _ _
       (fun _ _ => by simp)) hmem

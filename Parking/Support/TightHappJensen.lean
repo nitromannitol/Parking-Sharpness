@@ -1,4 +1,12 @@
-/-
+import Parking.Support.TightHappHolder
+import Parking.Support.OrientedMaxMoment
+import Parking.Support.CriticalLawReal
+import Parking.Support.TightMoment
+import LatticeProb.Prob.Scaling.ProductMoment
+
+/-!
+# Jensen's inequality for the scenery-average of the `L^8` norm
+
 The other half of the odometer-side Hölder combination: bounding the scenery-average of
 `rNorm (walkLaw 2) 8 (orientedMax (orientedPotential η) n 0)` by the JOINT `L^8` norm
 `Parking.exists_orientedMax_moment` controls.  The underlying inequality (a Fubini swap
@@ -7,11 +15,6 @@ concave map `t ↦ t^{1/r}`) is the GENERIC fact `LatticeProb.Scaling.ProductMom
 integral_rpow_root_le_prod_rpow_root`; this file only instantiates it at `μ := walkLaw 2`,
 `ν := iidLaw 2 (realLaw ν)`, `F p η := orientedMax (orientedPotential η) n 0 p`, `r := 8`.
 -/
-import Parking.Support.TightHappHolder
-import Parking.Support.OrientedMaxMoment
-import Parking.Support.CriticalLawReal
-import Parking.Support.TightMoment
-import LatticeProb.Prob.Scaling.ProductMoment
 
 open LatticeProb.MomentNorm (rNorm)
 
@@ -46,12 +49,14 @@ theorem exists_integral_rNorm_orientedMax_le (ν : Measure ℤ) (hν : CriticalL
       ((walkLaw 2).prod (iidLaw 2 (realLaw ν))) := by
     refine hgi_joint.congr (Filter.Eventually.of_forall fun ω => ?_)
     exact congrArg (· ^ (8:ℝ)) (abs_of_nonneg (hF0 ω.1 ω.2))
-  obtain ⟨hjensen_int, hjensen_bound⟩ := LatticeProb.Scaling.ProductMoment.integral_rpow_root_le_prod_rpow_root
-    (walkLaw 2) (iidLaw 2 (realLaw ν)) F hF0 (r := 8) (by norm_num) hFi
+  obtain ⟨hjensen_int, hjensen_bound⟩ :=
+    LatticeProb.Scaling.ProductMoment.integral_rpow_root_le_prod_rpow_root
+      (walkLaw 2) (iidLaw 2 (realLaw ν)) F hF0 (r := 8) (by norm_num) hFi
   have heqlhs : (fun η => (∫ p, F p η ^ (8:ℝ) ∂(walkLaw 2)) ^ ((1:ℝ)/8))
       = fun η => rNorm (walkLaw 2) 8 (orientedMax (orientedPotential η) n 0) := by
     funext η
-    have heq : (fun p => F p η ^ (8:ℝ)) = fun p => |orientedMax (orientedPotential η) n 0 p| ^ (8:ℝ) := by
+    have heq : (fun p => F p η ^ (8:ℝ))
+        = fun p => |orientedMax (orientedPotential η) n 0 p| ^ (8:ℝ) := by
       funext p
       rw [abs_of_nonneg (orientedMax_nonneg (orientedPotential η) n 0 p)]
     unfold rNorm

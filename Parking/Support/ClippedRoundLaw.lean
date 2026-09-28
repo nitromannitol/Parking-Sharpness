@@ -3,36 +3,66 @@ import Parking.Support.SceneryHole
 
 open LatticeProb (measurable_from_countable')
 
+/-!
+# The clipped-field round-based table description
+
+The round-based table description (`tableHistory`) evaluated at a clipped initial field, so
+that every hole count is at most one and every odometer is bounded by the box volume. Its
+count history, and every measurable function of it, has the same law as the corresponding
+unclipped particle-hole process whenever the one-site law agrees with its clipping
+(`clipSparse k = k` almost surely).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
 /-- Bounded initial counts and common rounds determine the whole count history. -/
-def clippedRoundHistory (ω : (Site d → ℤ) × RoundNoise d) : CountHistory d := tableHistory (clippedField ω.1, ω.2)
+def clippedRoundHistory (ω : (Site d → ℤ) × RoundNoise d) : CountHistory d :=
+  tableHistory (clippedField ω.1, ω.2)
 
+/-- The number of unfilled holes at `x` after round `T` in the clipped-field table
+description. -/
 def clippedRoundH (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × RoundNoise d) : ℕ :=
   (matchedState (clippedField ω.1) 0 ω.2 T).holes x
 
+/-- The particle odometer at `x` after round `T` in the clipped-field table description. -/
 def clippedRoundU (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × RoundNoise d) : ℝ :=
   ((matchedState (clippedField ω.1) 0 ω.2 T).departures x : ℝ)
 
-theorem measurable_clippedRoundHistory (hd : 1 ≤ d) : Measurable (clippedRoundHistory (d := d)) :=
-  (measurable_tableHistory hd).comp ((measurable_clippedField.comp measurable_fst).prodMk measurable_snd)
+/-- `clippedRoundHistory` is measurable, composing `measurable_tableHistory` with the
+measurable clipping of the initial field. -/
+theorem measurable_clippedRoundHistory (hd : 1 ≤ d) :
+    Measurable (clippedRoundHistory (d := d)) :=
+  (measurable_tableHistory hd).comp
+    ((measurable_clippedField.comp measurable_fst).prodMk measurable_snd)
 
-theorem measurable_clippedRoundH (hd : 1 ≤ d) (T : ℕ) (x : Site d) : Measurable (clippedRoundH T x) :=
-  ((measurable_pi_apply (T, x)).comp (measurable_snd.comp measurable_snd)).comp (measurable_clippedRoundHistory hd)
+/-- `clippedRoundH T x` is measurable, reading off the hole-count coordinate of
+`clippedRoundHistory`. -/
+theorem measurable_clippedRoundH (hd : 1 ≤ d) (T : ℕ) (x : Site d) :
+    Measurable (clippedRoundH T x) :=
+  ((measurable_pi_apply (T, x)).comp (measurable_snd.comp measurable_snd)).comp
+    (measurable_clippedRoundHistory hd)
 
-theorem measurable_clippedRoundU (hd : 1 ≤ d) (T : ℕ) (x : Site d) : Measurable (clippedRoundU T x) :=
+/-- `clippedRoundU T x` is measurable, reading off the departure-count coordinate of
+`clippedRoundHistory` through the countable cast to `ℝ`. -/
+theorem measurable_clippedRoundU (hd : 1 ≤ d) (T : ℕ) (x : Site d) :
+    Measurable (clippedRoundU T x) :=
   (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp
     (((measurable_pi_apply (T, x)).comp measurable_fst).comp (measurable_clippedRoundHistory hd))
 
-theorem clippedRoundH_le_one (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × RoundNoise d) : clippedRoundH T x ω ≤ 1 := by
+/-- The clipped hole count at any site is at most one, since the clipped field is bounded
+below by `-1` (`clipSparse_bounds`). -/
+theorem clippedRoundH_le_one (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × RoundNoise d) :
+    clippedRoundH T x ω ≤ 1 := by
   have h := matchedHoles_le_initial (clippedField ω.1) 0 ω.2 T x
   have hb : -1 ≤ clippedField ω.1 x := (clipSparse_bounds (ω.1 x)).1
   change (matchedState (clippedField ω.1) 0 ω.2 T).holes x ≤ 1
   omega
 
+/-- The clipped odometer is nonnegative and at most the box volume `T * (2T + 1) ^ d`, from
+`matchedOdometer_le_box` applied to the unit particle bound of the clipped field. -/
 theorem clippedRoundU_bounds (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × RoundNoise d) :
     0 ≤ clippedRoundU T x ω ∧ clippedRoundU T x ω ≤ ((T * (2 * T + 1) ^ d : ℕ) : ℝ) := by
   refine ⟨Nat.cast_nonneg _, ?_⟩
@@ -62,7 +92,8 @@ theorem integral_clippedRoundHistory (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbab
       ∫ ω, F (countHistory (Parking.stackObservables ω)) ∂(law d ν) := by
   rw [← integral_map (measurable_clippedRoundHistory hd).aemeasurable hF.aestronglyMeasurable,
     map_clippedRoundHistory hd ν hclip]
-  exact integral_map (measurable_countHistory.comp Parking.measurable_stackObservables).aemeasurable hF.aestronglyMeasurable
+  exact integral_map (measurable_countHistory.comp Parking.measurable_stackObservables).aemeasurable
+    hF.aestronglyMeasurable
 
 /-- Every measurable event of the count history has its original probability. -/
 theorem measure_clippedRoundHistory (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]

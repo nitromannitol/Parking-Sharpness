@@ -1,4 +1,9 @@
-/-
+import Mathlib
+import LatticeProb.Prob.SpliceAvg
+
+/-!
+# Splicing a pair of independent fields
+
 Splicing a PAIR of independent fields.
 
 The randomness of the particle-driven construction is a pair: the walks of the
@@ -10,8 +15,6 @@ copies of the first field and the two copies of the second is measure preserving
 for the four-fold product; the shuffle is checked on the measurable rectangles of
 the target, where it is the product of two slice computations.
 -/
-import Mathlib
-import LatticeProb.Prob.SpliceAvg
 
 open MeasureTheory
 

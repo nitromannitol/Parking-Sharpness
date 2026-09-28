@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SpatGreenShiftLowDim
+
+/-!
+# The sharp dimension-one space-direction `l2Norm` rate
+
 **Sharpens the dimension-one space-direction `l2Norm` two-point comparison** of
 `Parking.Support.SpatGreenShiftLowDim` from the crude rate `spatialStepRate 1 n = √(2n+3)`
 (`O(n^{1/2})`) to the SHARP rate `O(n^{1/4}) = √κ_1(n)`.  The `d = 1` route of that module
@@ -43,7 +47,6 @@ The bound proved here is an independent, additive, strictly SHARPER alternative 
 rate `spatialStepRate`) for `d = 1` alone, under new names throughout (`_sharp` suffix), so
 nothing that already consumes the existing (weaker) bound is affected.
 -/
-import Parking.Support.SpatGreenShiftLowDim
 
 open LatticeProb (sum_min_le_sqrt)
 
@@ -103,10 +106,13 @@ theorem sq_green_one_step_le_sharp (n : ℕ) (c : ℤ) :
 /-- The summand, named once. -/
 def maxOneTerm (n : ℕ) (c : ℤ) : ℝ := (min 1 ((n : ℝ) / ((max c.natAbs 1 : ℕ) : ℝ) ^ 2)) ^ 2
 
+/-- The summand `maxOneTerm n c` is nonnegative, being a square. -/
 theorem maxOneTerm_nonneg (n : ℕ) (c : ℤ) : 0 ≤ maxOneTerm n c := by
   unfold maxOneTerm
   positivity
 
+/-- The summand `maxOneTerm n c` is at most `1`, since the inner `min` with `1` bounds
+its base by `1` and squaring a value in `[0,1]` cannot increase it. -/
 theorem maxOneTerm_le_one (n : ℕ) (c : ℤ) : maxOneTerm n c ≤ 1 := by
   unfold maxOneTerm
   have h1 : min 1 ((n : ℝ) / ((max c.natAbs 1 : ℕ) : ℝ) ^ 2) ≤ 1 := min_le_left _ _
@@ -114,6 +120,7 @@ theorem maxOneTerm_le_one (n : ℕ) (c : ℤ) : maxOneTerm n c ≤ 1 := by
     le_min (by norm_num) (by positivity)
   nlinarith
 
+/-- `maxOneTerm n` is even in `c`, since `Int.natAbs` is invariant under negation. -/
 theorem maxOneTerm_neg (n : ℕ) (c : ℤ) : maxOneTerm n (-c) = maxOneTerm n c := by
   unfold maxOneTerm
   rw [Int.natAbs_neg]
@@ -195,14 +202,16 @@ theorem sum_maxOneTerm_box_le (n : ℕ) (hn : 1 ≤ n) :
       ext c
       simp only [Finset.mem_Icc, Finset.mem_union]
       omega
-    have hdisj : Disjoint (Finset.Icc (-(n : ℤ) - 1) (-1 : ℤ)) (Finset.Icc (0 : ℤ) ((n : ℤ) + 1)) := by
+    have hdisj : Disjoint (Finset.Icc (-(n : ℤ) - 1) (-1 : ℤ))
+        (Finset.Icc (0 : ℤ) ((n : ℤ) + 1)) := by
       rw [Finset.disjoint_left]
       intro c hc1 hc2
       simp only [Finset.mem_Icc] at hc1 hc2
       omega
     rw [hunion, Finset.sum_union hdisj]
   rw [hsplit]
-  have hposSplit : Finset.Icc (0 : ℤ) ((n : ℤ) + 1) = insert (0 : ℤ) (Finset.Icc (1 : ℤ) ((n : ℤ) + 1)) := by
+  have hposSplit : Finset.Icc (0 : ℤ) ((n : ℤ) + 1)
+      = insert (0 : ℤ) (Finset.Icc (1 : ℤ) ((n : ℤ) + 1)) := by
     ext c
     simp only [Finset.mem_Icc, Finset.mem_insert]
     omega

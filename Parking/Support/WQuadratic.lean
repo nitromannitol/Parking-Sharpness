@@ -1,14 +1,15 @@
-/-
-The quadratic variation of the martingale of `lem:w-martingale`.
-
-Conditionally on what the exploration has revealed by step `i`, the increment
-there is the discrepancy of the truncated Green function at a known site under a
-fresh instruction, so the conditional mean of its square is `Γ` at that site.
-Summing over the steps groups the pairs into their rounds, and inside a round
-into the sites, where the number of pairs at a site is exactly the number of
-particles that stood there, so the sum is the lattice sum of `A_{s-1}Γ_{n-s}`.
--/
 import Parking.Support.WCondExp
+
+/-!
+# The quadratic variation of the martingale
+
+The quadratic variation of the martingale of `lem:w-martingale`. Conditionally on what the
+exploration has revealed by step `i`, the increment there is the discrepancy of the
+truncated Green function at a known site under a fresh instruction, so the conditional mean
+of its square is `Γ` at that site. Summing over the steps groups the pairs into their
+rounds, and inside a round into the sites, where the number of pairs at a site is exactly
+the number of particles that stood there, so the sum is the lattice sum of `A_{s-1}Γ_{n-s}`.
+-/
 
 open LatticeProb (mem_boxFinset_zero_iff rankLaw_isProbability supNorm_le_graphNorm)
 
@@ -25,6 +26,8 @@ variable {d : ℕ}
 
 /-! ### `Γ` as a walk average -/
 
+/-- The walk average is `(2d)⁻¹` times the plain sum over the neighbours, unwinding
+`nbrSum`. -/
 theorem walkOp_eq_inv_sum (u : Site d → ℝ) (y : Site d) :
     walkOp u y = (2 * (d : ℝ))⁻¹ * ∑ z ∈ nbrFinset y, u z := by
   rw [walkOp, nbrSum, ← sum_nbrFinset_eq y u, div_eq_inv_mul]
@@ -41,6 +44,8 @@ theorem gamma_eq_walkOp (m : ℕ) (y : Site d) :
   rw [gamma, Finset.sum_congr rfl hval, ← Finset.mul_sum,
     walkOp_eq_inv_sum (fun z => (green d m z - walkOp (green d m) y) ^ 2) y]
 
+/-- `Γ_m(y)` is at most `m²`, since every squared discrepancy under a neighbour instruction
+is at most `m²` and the kernel weights sum to one. -/
 theorem gamma_le (hd : 1 ≤ d) (m : ℕ) (y : Site d) : gamma d m y ≤ (m : ℝ) ^ 2 := by
   classical
   have hterm : ∀ z ∈ nbrFinset y,
@@ -76,6 +81,8 @@ theorem integral_wDisc_sq (i₀ : Fin d) (n : ℕ) (q : Site d × ℕ) (s : ℕ)
 def wGamma (i₀ : Fin d) (n i : ℕ) (ω : Data d) : ℝ :=
   gamma d (n - wRound i₀ n i ω) (wPair i₀ n i ω).1
 
+/-- `Γ` at the pair read at step `i` is measurable, being determined by the round and the
+pair read there. -/
 theorem measurable_wGamma (i₀ : Fin d) (n i : ℕ) : Measurable (wGamma i₀ n i) :=
   measurable_of_determined (fun ω => (wRound i₀ n i ω, wPair i₀ n i ω))
     ((measurable_wRound i₀ n i).prodMk (measurable_wPair i₀ n i)) _
@@ -84,10 +91,14 @@ theorem measurable_wGamma (i₀ : Fin d) (n i : ℕ) : Measurable (wGamma i₀ n
       have h2 : wPair i₀ n i ω = wPair i₀ n i ω' := congrArg Prod.snd h
       rw [wGamma, wGamma, h1, h2]
 
+/-- `Γ` at the pair read at step `i` is unchanged by erasing the instructions not yet read
+by step `i`, since it factors through the round and the pair, both of which are. -/
 theorem wGamma_wTrunc (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
     wGamma i₀ n i (wTrunc i₀ n i ω) = wGamma i₀ n i ω := by
   rw [wGamma, wGamma, wRound_wTrunc, wPair_wTrunc_self]
 
+/-- `Γ` at the pair read at step `i` is measurable for the sigma-algebra of what the
+exploration has revealed by step `i`. -/
 theorem measurable_wGamma_wFiltration (i₀ : Fin d) (n i : ℕ) :
     Measurable[wFiltration i₀ n i] (wGamma i₀ n i) := by
   have hself : Measurable[wFiltration i₀ n i,
@@ -98,9 +109,11 @@ theorem measurable_wGamma_wFiltration (i₀ : Fin d) (n i : ℕ) :
     (measurable_wGamma i₀ n i).comp hself
   simpa only [wGamma_wTrunc] using hcomp
 
+/-- `wGamma` is nonnegative, `Γ` itself being nonnegative. -/
 theorem wGamma_nonneg (i₀ : Fin d) (n i : ℕ) (ω : Data d) : 0 ≤ wGamma i₀ n i ω :=
   gamma_nonneg _ _ _
 
+/-- `wGamma` at step `i` is at most `n²`, from `gamma_le` and the round being at most `n`. -/
 theorem wGamma_le (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
     wGamma i₀ n i ω ≤ (n : ℝ) ^ 2 := by
   refine le_trans (gamma_le hd _ _) ?_
@@ -109,6 +122,7 @@ theorem wGamma_le (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
   have h0 : (0 : ℝ) ≤ ((n - wRound i₀ n i ω : ℕ) : ℝ) := Nat.cast_nonneg _
   nlinarith
 
+/-- `wGamma` is integrable: it is measurable and bounded by the constant `n²`. -/
 theorem integrable_wGamma (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n i : ℕ) : Integrable (wGamma i₀ n i) (law d ν) := by
   haveI := stackLaw_isProbability (d := d) hd
@@ -122,6 +136,8 @@ theorem integrable_wGamma (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsPr
   rw [Real.norm_eq_abs, abs_of_nonneg (wGamma_nonneg i₀ n i ω)]
   exact wGamma_le hd i₀ n i ω
 
+/-- The square of the increment is integrable: it is measurable and bounded by the square of
+the increment bound. -/
 theorem integrable_wXi_sq (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (hn : 1 ≤ n) (i : ℕ) :
     Integrable (fun ω => wXi i₀ n i ω ^ 2) (law d ν) := by
@@ -223,12 +239,16 @@ theorem condExp_wXi_sq (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProba
 
 /-! ### The sum of the conditional variances -/
 
+/-- `Γ_m` vanishes outside the box of radius `m`, since it vanishes once the graph norm
+exceeds `m`. -/
 theorem gamma_eq_zero_of_notMem_box {m : ℕ} {y : Site d}
     (h : y ∉ boxFinset (0 : Site d) m) : gamma d m y = 0 := by
   refine gamma_eq_zero_of_lt (lt_of_lt_of_le ?_ (supNorm_le_graphNorm y))
   by_contra hc
   exact h (mem_boxFinset_zero_iff.mpr (by omega))
 
+/-- `Γ_n` vanishes at the parking site, which lies outside every box the block of round `n`
+can see. -/
 theorem gamma_padSite (hd : 1 ≤ d) (n : ℕ) : gamma d n (padSite d n) = 0 := by
   refine gamma_eq_zero_of_notMem_box (padSite_notMem_box hd n n ?_)
   have h : n - 1 ≤ n := Nat.sub_le n 1
@@ -254,6 +274,8 @@ theorem sum_blockAt_site (ω : Data d) (R s : ℕ) (f : Site d → ℝ) :
     obtain ⟨j', _, h⟩ := hq'
     exact hyy' (congrArg Prod.fst h).symm
 
+/-- The increase of the odometer over round `s` is the departure count of round `s - 1`,
+from the successor identity `U_succ`. -/
 theorem U_sub_eq_A (ω : Data d) {s : ℕ} (hs : 1 ≤ s) (y : Site d) :
     U ω s y - U ω (s - 1) y = A ω (s - 1) y := by
   have h := U_succ ω (s - 1) y
@@ -276,6 +298,8 @@ theorem sum_blockAt_gamma (ω : Data d) {n s : ℕ} (hs : 1 ≤ s) :
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [U_sub_eq_A ω hs y]
 
+/-- The lattice sum `∑ A(s-1)(y) Γ_{n-s}(y)` is summable, since `Γ_{n-s}` vanishes outside
+the box of radius `n - s`. -/
 theorem summable_A_gamma (ω : Data d) (n s : ℕ) :
     Summable fun y : Site d => (A ω (s - 1) y : ℝ) * gamma d (n - s) y := by
   classical
@@ -336,6 +360,8 @@ theorem tsum_wGamma_eq (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (ω : Data d)
         exact sum_blockAt_gamma ω (Finset.mem_Icc.mp hs).1
 
 
+/-- `wGamma` vanishes at step `i` once the list the exploration reads is exhausted, since the
+pair read there is then the parking site. -/
 theorem wGamma_eq_zero_of_le (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (ω : Data d)
     (h : (blockPrefix (wProj i₀ ω) n (n - 1)).length ≤ i) : wGamma i₀ n i ω = 0 := by
   have hround : wRound i₀ n i ω = 0 := by rw [wRound, if_neg (by omega)]
@@ -344,6 +370,8 @@ theorem wGamma_eq_zero_of_le (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (ω : Dat
     rw [List.getD_eq_default _ _ h]
   rw [wGamma, hround, hpad, Nat.sub_zero, gamma_padSite hd n]
 
+/-- The sequence `wGamma i₀ n · ω` is summable, being eventually zero past the length of the
+list the exploration reads. -/
 theorem summable_wGamma (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (ω : Data d) :
     Summable fun i => wGamma i₀ n i ω :=
   summable_of_ne_finset_zero
@@ -354,6 +382,8 @@ theorem summable_wGamma (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (ω : Data d) :
 
 /-! ### The predictable quadratic variation against the odometer -/
 
+/-- The sum of the departure counts of the rounds `1` to `k` telescopes to the odometer
+after round `k`. -/
 theorem sum_A_Icc (ω : Data d) (k : ℕ) (y : Site d) :
     ∑ s ∈ Finset.Icc 1 k, A ω (s - 1) y = U ω k y := by
   induction k with
@@ -384,6 +414,8 @@ theorem le_iSup_gamma_Iic (hd : 1 ≤ d) {n m : ℕ} (hm : m ∈ Set.Iic n) (y :
         (ciSup_pos (f := fun _ : m ∈ Set.Iic n => gamma d m y) hm).symm
     _ ≤ ⨆ j : ℕ, ⨆ _ : j ∈ Set.Iic n, gamma d j y := le_ciSup hb m
 
+/-- The supremum of `Γ_j(y)` over `j ≤ n` of `lem:gamma-sum` is nonnegative, `Γ_0(y)` itself
+being a term of it. -/
 theorem iSup_gamma_Iic_nonneg (hd : 1 ≤ d) (n : ℕ) (y : Site d) :
     0 ≤ ⨆ j ∈ Set.Iic n, gamma d j y :=
   le_trans (gamma_nonneg d 0 y) (le_iSup_gamma_Iic hd (Set.mem_Iic.mpr (Nat.zero_le n)) y)

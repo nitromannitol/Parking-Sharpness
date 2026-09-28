@@ -1,6 +1,11 @@
-/- The directed no-arrival probability and its exponential lower bound. -/
 import Parking.Support.OrientedNoArrivalLaw
 import Parking.Support.OrientedArrivalJoint
+
+/-!
+# The joint no-arrival probability and its exponential lower bound
+
+The directed no-arrival probability and its exponential lower bound.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -10,6 +15,10 @@ open MeasureTheory LatticeProb Finset
 open scoped Classical
 variable {d : ℕ}
 
+/-- The joint version of `oriented_noArrival_probability_given`: the no-arrival
+probability under `(iidLaw d ν).prod (orientedStackLaw d)` equals the integral of `(1 -
+1/d) ^ (∑ i, odometer at the predecessors)`, obtained by Fubini and integrating the
+given-scenery identity `oriented_noArrival_probability_given` over `η`. -/
 theorem oriented_noArrival_probability_joint (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (x : Site d) :
     ((iidLaw d ν).prod (orientedStackLaw d)).real
@@ -22,7 +31,8 @@ theorem oriented_noArrival_probability_joint (hd : 1 ≤ d) (ν : Measure ℤ) [
   let E : Set ((Site d → ℤ) × (Site d × ℕ → Site d)) :=
     {z | orientedArrivalCount z.1 z.2 n x = 0}
   have hE : MeasurableSet E :=
-    (measurable_orientedArrivalCount _ _ measurable_fst measurable_snd n x) (measurableSet_singleton 0)
+    (measurable_orientedArrivalCount _ _ measurable_fst measurable_snd n x)
+      (measurableSet_singleton 0)
   let F : (Site d → ℤ) × (Site d × ℕ → Site d) → ℝ := fun z =>
     (1 - (d : ℝ)⁻¹) ^ (∑ i : Fin d, orientedOdometer z.1 z.2 n (x - unit i))
   have hF : Measurable F := (measurable_from_countable' fun m : ℕ => (1 - (d : ℝ)⁻¹) ^ m).comp
@@ -43,7 +53,8 @@ theorem oriented_noArrival_probability_joint (hd : 1 ≤ d) (ν : Measure ℤ) [
   apply integral_congr_ae
   exact Filter.Eventually.of_forall fun η => by
     have hm : MeasurableSet {σ : Site d × ℕ → Site d | orientedArrivalCount η σ n x = 0} :=
-      (measurable_orientedArrivalCount _ _ measurable_const measurable_id n x) (measurableSet_singleton 0)
+      (measurable_orientedArrivalCount _ _ measurable_const measurable_id n x)
+        (measurableSet_singleton 0)
     have he : (fun σ : Site d × ℕ → Site d => Set.indicator E (fun _ => (1 : ℝ)) (η, σ)) =
         Set.indicator {σ : Site d × ℕ → Site d | orientedArrivalCount η σ n x = 0}
           (fun _ => (1 : ℝ)) := by
@@ -54,6 +65,9 @@ theorem oriented_noArrival_probability_joint (hd : 1 ≤ d) (ν : Measure ℤ) [
     exact (integral_indicator_one (μ := orientedStackLaw d) hm).trans
       (oriented_noArrival_probability_given hd η n x)
 
+/-- The joint version of `oriented_noArrival_exp_given`: the exponential of `log(1 - 1/d)
+* d * meanU (orientedLaw d ν) n` is a lower bound for the joint no-arrival probability,
+by Jensen's inequality applied to `oriented_noArrival_probability_joint`. -/
 theorem oriented_noArrival_exp_joint (hd : 2 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) :
     Real.exp (Real.log (1 - (d : ℝ)⁻¹) * (d : ℝ) * meanU (orientedLaw d ν) n) ≤

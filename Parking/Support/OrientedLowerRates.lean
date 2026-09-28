@@ -1,12 +1,20 @@
-/- Lower rates already determined by the directed Green norm. -/
 import Parking.Support.OrientedLowerNorm
 import Parking.Support.OrientedNormPositive
 import Parking.Support.OrientedTwoMean
+
+/-!
+# Lower rates determined by the directed Green norm
+
+Lower rates already determined by the directed Green norm.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 
+/-- In dimension `2`, the directed divisible mean is at least `c * n ^ (1/4)`, obtained by
+combining `exists_meanuOriented_lower_norm` with the two-sided `ℓ²`-norm bound
+`orientedGreen_two_l2_bounds` at `d = 2`. -/
 theorem exists_meanuOriented_two_lower (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hnc : ∀ k : ℤ, ν {k} ≠ 1) (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
     (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0) :
@@ -19,6 +27,9 @@ theorem exists_meanuOriented_two_lower (ν : Measure ℤ) [IsProbabilityMeasure 
       ≤ c * l2Norm (orientedGreen 2 n) := by simpa only [mul_assoc] using h
     _ ≤ _ := hb 2 (by norm_num) n
 
+/-- In every dimension `d ≥ 1`, the directed divisible mean is bounded below by a constant
+`c` uniform in `n ≥ 1`, obtained by combining `exists_meanuOriented_lower_norm` with the
+Green-norm lower bound `one_le_orientedGreen_l2`. -/
 theorem exists_meanuOriented_uniform_lower (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hnc : ∀ k : ℤ, ν {k} ≠ 1) (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
     (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0) :
@@ -30,6 +41,9 @@ theorem exists_meanuOriented_uniform_lower (ν : Measure ℤ) [IsProbabilityMeas
   calc c ≤ c * l2Norm (orientedGreen d n) := by simpa only [mul_one] using h
     _ ≤ _ := hb d hd n
 
+/-- In dimension `2`, given a moment of order `r > 4`, the directed divisible mean is
+sandwiched between constant multiples of `n ^ (1/4)`, by pairing the lower bound
+`exists_meanuOriented_two_lower` with the upper bound `exists_meanuOriented_two_upper`. -/
 theorem exists_meanuOriented_two_bounds (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hnc : ∀ k : ℤ, ν {k} ≠ 1) (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
     (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0) (r : ℝ) (hr : 4 < r)

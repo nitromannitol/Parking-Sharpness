@@ -1,7 +1,12 @@
-/- The temporal quadrature in the tested recursion preserves the limiting scenery source. -/
 import Parking.Support.SpatialSceneryL1
 import Parking.Support.SpaceTimeProjection
 import LatticeProb.Prob.Scaling.TimeTestQuadrature
+
+/-!
+# Temporal quadrature of the scenery source
+
+The temporal quadrature in the tested recursion preserves the limiting scenery source.
+-/
 
 open MeasureTheory Filter Topology
 noncomputable section
@@ -24,8 +29,9 @@ theorem exists_tendsto_scenePair_time_quadrature_with_support (hd : 1 ≤ d) (hd
       Tendsto (fun R : ℝ => ∫ w,
         |scenePair w R (fun x => sampledTimeIntegral ψ T R x - ∫ s : ℝ, ψ (s, x))|
           ∂law d ν) atTop (𝓝 0) := by
-  obtain ⟨T, C, hT, hC, hsupport, hquad⟩ := LatticeProb.Scaling.TimeTest.exists_positive_time_quadrature_bound_with_support
-    hψ.1 hψ.2.1 hψ.2.2
+  obtain ⟨T, C, hT, hC, hsupport, hquad⟩ :=
+    LatticeProb.Scaling.TimeTest.exists_positive_time_quadrature_bound_with_support
+      hψ.1 hψ.2.1 hψ.2.2
   have hmesh : ∀ R : ℝ, 1 ≤ R → 0 < 1 / R ^ 2 ∧ 1 / R ^ 2 ≤ 1 := by
     intro R hR
     have hRpos : 0 < R := lt_of_lt_of_le one_pos hR

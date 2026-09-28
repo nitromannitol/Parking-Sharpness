@@ -1,4 +1,14 @@
-/-
+import Parking.Support.UMoment
+import LatticeProb.Prob.ConvexOrder
+import LatticeProb.Prob.Laplace
+import LatticeProb.Prob.ExpTail
+import Parking.Support.CriticalLawReal
+import LatticeProb.Prob.ConvexProduct
+import Parking.Support.UConvex
+
+/-!
+# Moments of the odometer at a real one-site law
+
 Moments of the sandpile odometer at a REAL one-site law.
 
 `Parking/Support/UBound.lean` proves the a priori bound and the integrability of
@@ -16,13 +26,6 @@ a single coordinate, whose law is the one-site law
 (`Measure.infinitePi_map_eval`).  A finite exponential moment gives every
 polynomial moment through `x^r/r! ≤ e^x`.
 -/
-import Parking.Support.UMoment
-import LatticeProb.Prob.ConvexOrder
-import LatticeProb.Prob.Laplace
-import LatticeProb.Prob.ExpTail
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
 
 noncomputable section
 
@@ -32,6 +35,9 @@ open MeasureTheory LatticeProb
 
 variable {d : ℕ}
 
+/-- The odometer at horizon `n` is at most `n` times the sum of the positive parts of the
+field over the box of radius `n` around `x`, obtained from `u_le_mul_of_le` applied to the
+field cut off to that box via `u_eq_of_eqOn_box`. -/
 theorem u_le_mul_posBox (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     u η n x ≤ (n : ℝ) * ∑ z ∈ boxFinset x n, max (η z) 0 := by
   classical
@@ -51,6 +57,9 @@ theorem u_le_mul_posBox (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Site
   rw [h1]
   exact u_le_mul_of_le hd hB h2 n x
 
+/-- A finite exponential moment `∫ exp(θ|z|) dν < ∞` bounds every polynomial moment
+`∫ |z|^r dν`, via the elementary inequality `|z|^r ≤ (r! / θ^r) exp(θ|z|)` coming from
+`Real.pow_div_factorial_le_exp`. -/
 theorem integrable_abs_pow_of_exp_moment (ν : Measure ℝ) [IsProbabilityMeasure ν] {θ : ℝ}
     (hθ : 0 < θ) (hexp : Integrable (fun z : ℝ => Real.exp (θ * |z|)) ν) (r : ℕ) :
     Integrable (fun z : ℝ => |z| ^ r) ν := by
@@ -69,6 +78,10 @@ theorem integrable_abs_pow_of_exp_moment (ν : Measure ℝ) [IsProbabilityMeasur
   rw [Real.norm_eq_abs, abs_of_nonneg (pow_nonneg (abs_nonneg z) r)]
   exact hbound z
 
+/-- If `t ↦ max(t, 0)^r` is `ν`-integrable, then evaluation at a fixed site `z` of an
+i.i.d. field with one-site law `ν` is integrable after the same transformation, since the
+pushforward of the i.i.d. law under evaluation at `z` is `ν` itself
+(`Measure.infinitePi_map_eval`). -/
 theorem integrable_maxPow_eval (ν : Measure ℝ) [IsProbabilityMeasure ν] (r : ℕ)
     (h : Integrable (fun t : ℝ => max t 0 ^ r) ν) (z : Site d) :
     Integrable (fun η : Site d → ℝ => max (η z) 0 ^ r) (LatticeProb.iidLaw d ν) := by

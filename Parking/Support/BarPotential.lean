@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Continuum
+import Parking.Support.Terminal
+import Parking.Support.UConcBridge
+
+/-!
+# The linear-potential summand of the rescaled odometer
+
 `Parking.barPotential`: the FIRST summand of the Dynkin decomposition
 (`Parking.u_eq_potential_add_stoppingSup`, `Parking/Support/Terminal.lean`) of the rescaled
 divisible odometer `Parking.barDivisible`, at the SAME rescaling convention
@@ -6,9 +12,6 @@ divisible odometer `Parking.barDivisible`, at the SAME rescaling convention
 replaced by the linear potential `V = linPotential`). Its point-evaluation convergence is what
 Step 1 of the proof of `prop:spatial-scaling` needs for this summand.
 -/
-import Parking.Support.Continuum
-import Parking.Support.Terminal
-import Parking.Support.UConcBridge
 
 noncomputable section
 

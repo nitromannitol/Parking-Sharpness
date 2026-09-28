@@ -1,11 +1,13 @@
-/-
-Lemma 9.3 of parking.tex, frozen.  `parking.tex:2199-2204` (label
-`lem:nearest-close-pair`), in the setting of `parking.tex:1850-1881`:
-
-  "For every $t\geq0$ and distinct $x,z\in\Z^d$,
-   $\P(H_t(x)=H_t(z)=1)\leq2p\,h_t$."
--/
 import Parking.Support.ClosePair
+
+/-!
+# The two-hole close-pair bound (frozen)
+
+Lemma 9.3 of parking.tex, frozen. `parking.tex:2199-2204` (label `lem:nearest-close-pair`),
+in the setting of `parking.tex:1850-1881`:
+
+"For every $t\geq0$ and distinct $x,z\in\Z^d$, $\P(H_t(x)=H_t(z)=1)\leq2p\,h_t$."
+-/
 
 open MeasureTheory
 

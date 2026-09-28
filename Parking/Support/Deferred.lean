@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Parallel
+
+/-!
+# Lemma 3.2, first clause
+
 Lemma 3.2 of `parking.tex`, first clause: the event that the odometer at `y`
 has reached `j + 1` does not depend on the instruction of index `j` at `y`.
 
@@ -16,7 +20,6 @@ The clause follows: if the odometer at `y` never reaches `j + 1`, then no
 instruction of index `j` at `y` is ever read, the two states agree, and the
 odometers agree.
 -/
-import Parking.Support.Parallel
 
 noncomputable section
 
@@ -26,15 +29,21 @@ open LatticeProb Finset
 
 variable {d : ℕ}
 
+/-- `activeAt` depends on the driver only through its configuration `D.eta`. -/
 theorem activeAt_congr {D D' : Driver d} (heta : D.eta = D'.eta) (S : State d) (t : ℕ)
     (z : Site d) : activeAt D S t z = activeAt D' S t z := by
   unfold activeAt; rw [heta]
 
+/-- `instructionIndex` depends on the driver only through its configuration
+`D.eta`, via `activeAt_congr`. -/
 theorem instructionIndex_congr {D D' : Driver d} (heta : D.eta = D'.eta) (S : State d)
     (t : ℕ) (p : Label d) :
     instructionIndex D S t p = instructionIndex D' S t p := by
   unfold instructionIndex; rw [activeAt_congr heta]
 
+/-- An active label reads an instruction index below the odometer at its site
+after the round, because its own label is one of the labels the round counts
+there. -/
 theorem instructionIndex_lt {D : Driver d} (hs : StepsToNeighbour D) (t : ℕ) (p : Label d)
     (hact : (state D t).active p = true) :
     instructionIndex D (state D t) t p
@@ -87,6 +96,10 @@ theorem state_congr {D D' : Driver d} (hs : StepsToNeighbour D)
       · funext x; rw [harr x]
       · funext z; rw [activeAt_congr heta]
 
+/-- If two drivers agree on the configuration, the priorities, and every
+instruction except possibly the one at `(y, j)`, and the odometer at `y` under
+`D` never reaches `j + 1`, then it agrees with the odometer under `D'`, by
+`state_congr`. -/
 theorem odometer_transfer {D D' : Driver d} (hs : StepsToNeighbour D)
     (heta : D.eta = D'.eta) (hrank : D.rank = D'.rank) (y : Site d) (j n : ℕ)
     (hne : ∀ q : Site d × ℕ, q ≠ (y, j) → D.stack q = D'.stack q)

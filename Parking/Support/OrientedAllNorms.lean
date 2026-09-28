@@ -1,13 +1,21 @@
-/- The complete directed Green norm profile. -/
 import Parking.Support.OrientedGreenRates
 import Parking.Support.OrientedLowerNorm
 import Parking.Support.VarianceNonconstant
+
+/-!
+# The complete directed Green norm profile
+
+The complete directed Green norm profile.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory LatticeProb
 variable {d : ℕ}
 
+/-- For every dimension `d ≥ 2` there are `c, C > 0` such that the sum of squared directed
+Green function values at horizon `n` lies between `c` and `C` times `orientedKappa d n`,
+by cases on `d = 2`, `d = 3` and `d ≥ 4`. -/
 theorem exists_orientedGreen_sq_rates (hd : 2 ≤ d) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
       c * orientedKappa d n ≤ ∑' x : Site d, orientedGreen d n x ^ 2 ∧
@@ -26,12 +34,17 @@ theorem exists_orientedGreen_sq_rates (hd : 2 ≤ d) :
       simp only [orientedKappa, if_neg hd2, if_neg hd3, mul_one]
       exact ⟨one_le_orientedGreen_sq n hn, hb n hn⟩
 
+/-- For a centered, nonconstant, absolutely integrable law `ν` with positive variance,
+the mean directed odometer at the origin is bounded below by a constant multiple of
+`Real.sqrt (orientedKappa d n)`, combining the lower Green norm bound with
+`exists_orientedGreen_sq_rates`. -/
 theorem exists_meanuOriented_variance_lower (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0)
     (hv : 0 < evariance (fun k : ℤ => (k : ℝ)) ν) (hd : 2 ≤ d) :
     ∃ c : ℝ, 0 < c ∧ ∀ n : ℕ, 1 ≤ n →
       c * Real.sqrt (orientedKappa d n) ≤ meanuOriented (orientedLaw d ν) n := by
-  obtain ⟨a, ha, hlo⟩ := exists_meanuOriented_lower_norm ν (nonconstant_of_evariance_pos ν hv) hint hmean
+  obtain ⟨a, ha, hlo⟩ := exists_meanuOriented_lower_norm ν (nonconstant_of_evariance_pos ν hv)
+    hint hmean
   obtain ⟨c, C, hc, _hC, hb⟩ := exists_orientedGreen_sq_rates hd
   refine ⟨a * Real.sqrt c, by positivity, fun n hn => ?_⟩
   have h := Real.sqrt_le_sqrt (hb n hn).1

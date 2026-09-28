@@ -1,9 +1,14 @@
-/- Step 2 of the oriented walk theorem: the dimension-two upper bound on the
-directed particle mean, from the eighth moment and Young's inequality. -/
 import Parking.Support.OrientedMeanBound
 import Parking.Support.OrientedYoung
 import Parking.Support.OrientedMoments
 import Parking.Support.UpperTarget
+
+/-!
+# Oriented walk, step 2, upper half
+
+Step 2 of the oriented walk theorem: the dimension-two upper bound on the
+directed particle mean, from the eighth moment and Young's inequality.
+-/
 
 noncomputable section
 namespace Parking
@@ -30,7 +35,8 @@ theorem meanU_oriented_two_upper_of_moment (ν : Measure ℤ) (hν : CriticalLaw
   have hI0 : 0 ≤ ∫ ω : Data 2, (U ω n 0 : ℝ) ^ (8 : ℝ) ∂(orientedLaw 2 ν) :=
     integral_nonneg fun ω => Real.rpow_nonneg (Nat.cast_nonneg _) _
   have hX0 : 0 ≤ X := Real.rpow_nonneg hI0 _
-  have hstep : X ≤ C * (n : ℝ) ^ ((1 : ℝ) / 4) + C * (n : ℝ) ^ ((1 : ℝ) / 8) * (Real.sqrt X + 1) := by
+  have hstep : X ≤ C * (n : ℝ) ^ ((1 : ℝ) / 4) +
+      C * (n : ℝ) ^ ((1 : ℝ) / 8) * (Real.sqrt X + 1) := by
     have h1 := h n hn
     rw [hXdef]
     rw [rpow_sixteenth_eq_sqrt_eighth hI0] at h1
@@ -38,7 +44,8 @@ theorem meanU_oriented_two_upper_of_moment (ν : Measure ℤ) (hν : CriticalLaw
   have habs := oriented_two_absorb hX0 hC hn hstep
   have hle : meanU (orientedLaw 2 ν) n ≤ X := by
     rw [meanU]
-    have h1 := integral_le_rNorm (μ := orientedLaw 2 ν) (r := (8 : ℝ)) (f := fun ω : Data 2 => (U ω n 0 : ℝ))
+    have h1 := integral_le_rNorm (μ := orientedLaw 2 ν) (r := (8 : ℝ))
+      (f := fun ω : Data 2 => (U ω n 0 : ℝ))
       (fun ω => Nat.cast_nonneg _) (integrable_oriented_U (d := 2) (by norm_num) ν hν n 0)
       (by norm_num) (integrable_oriented_U_rpow (d := 2) (by norm_num) ν hθ
         (integrable_expMax_of_expAbs hθ he) (by norm_num) n 0)

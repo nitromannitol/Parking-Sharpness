@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Range
+
+/-!
+# Relabeling at a site
+
 The relabeling of the particles at a site: the group law of `relabelAt` and the
 transpositions that a site with `k` particles admits.
 
@@ -8,7 +12,6 @@ uses a permutation that fixes every index at or above the count at `x₀`, so at
 site with `k` particles the admissible permutations are exactly the permutations
 of `{0, …, k-1}`, and the transposition of two particles is admissible.
 -/
-import Parking.Support.Range
 
 noncomputable section
 

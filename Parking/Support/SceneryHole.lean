@@ -1,6 +1,16 @@
 import Parking.Support.HoleRelative
 import Parking.Support.ClippedTable
 
+/-!
+# The clipped future hole mean at one updated coordinate
+
+This file transports the one-particle relative comparison of `Parking.matchedMeanH` (the
+conditional future hole mean) across two successive additions, giving the three-point
+relative comparison of `matchedMeanH` when one coordinate of the field is set to `-1`,
+`0` or `1`. It also records that clipping commutes with a coordinate update and that the
+clipped conditional future hole mean always lies in `[0, 1]`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -19,7 +29,8 @@ theorem matchedMeanH_sparse_update_relative (hd : 3 ≤ d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (k : ℤ) (hk : -1 ≤ k ∧ k ≤ 1) :
     escapePotential d x v ^ 2 * matchedMeanH (Function.update η v (-1)) ρ T x ≤
         matchedMeanH (Function.update η v k) ρ T x ∧
-      matchedMeanH (Function.update η v k) ρ T x ≤ matchedMeanH (Function.update η v (-1)) ρ T x := by
+      matchedMeanH (Function.update η v k) ρ T x ≤
+        matchedMeanH (Function.update η v (-1)) ρ T x := by
   let e := escapePotential d x v
   let a := matchedMeanH (Function.update η v (-1)) ρ T x
   let b := matchedMeanH (Function.update η v 0) ρ T x

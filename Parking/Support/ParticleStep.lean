@@ -1,5 +1,10 @@
-/-
-One step of the particle filtration of Step 2.
+import Parking.Support.PrefixLabel
+import Parking.Support.DeleteCompare
+import Parking.Support.SpliceAvg
+import Parking.Support.Cov
+
+/-!
+# One step of the particle filtration of Step 2
 
 Step 2 of `lem:product` (`parking.tex:2382-2409`) reveals the particles of the
 tilted sites one at a time and compares the observable at each step with its
@@ -16,10 +21,6 @@ with the deleted-particle functionals of `Support/DeleteCompare.lean`:
 Summing over the particles present weights each site by its count, which is the
 line `|Cov(F,Z | Y = k)| ≤ 2k (f(k) - f(k-1))` of the paper.
 -/
-import Parking.Support.PrefixLabel
-import Parking.Support.DeleteCompare
-import Parking.Support.SpliceAvg
-import Parking.Support.Cov
 
 open LatticeProb (spInt spInt_of_snd)
 

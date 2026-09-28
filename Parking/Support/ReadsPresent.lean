@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Particle
+
+/-!
+# Reading only the particles present
+
 The particle-driven construction reads the particles PRESENT and nothing else.
 
 A site with count `k` carries the `k` particles labelled `0, …, k-1`.  A label
@@ -10,7 +14,6 @@ attached to such a label changes no state of the process.
 This is the second clause of `Parking.RelabelInvariant`, `Parking.ReadsParticles`,
 for every observable built from the states of the process.
 -/
-import Parking.Support.Particle
 
 noncomputable section
 

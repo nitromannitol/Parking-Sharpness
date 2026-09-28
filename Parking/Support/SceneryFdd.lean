@@ -1,4 +1,14 @@
-/-
+import Parking.Support.SpatCLTFilter
+import LatticeProb.Prob.Scaling.CramerWoldFilter
+import LatticeProb.Walk.RiemannLattice
+import Parking.Support.Continuum
+import Parking.Support.Measurability
+import Parking.Support.ScalWhiteNoise
+import Parking.Support.UConcBridge
+
+/-!
+# Finite-dimensional convergence of the rescaled scenery pairings
+
 **The finite-dimensional convergence in law of the rescaled scenery pairings to the canonical
 spatial white noise**: for finitely many test functions `φ_1,...,φ_m`,
 `(Parking.scenePair w R (φ i))_i` converges in law, as `R → ∞` over the REAL parameter `atTop`,
@@ -13,22 +23,15 @@ support, `LatticeProb.Walk.RiemannLattice`); the scalar triangular-array CLT
 characteristic-function limit of any single linear combination `∑ₖ tₖ·scenePair w R (φ k)` (itself
 one weighted sum, at the combined test function `ψ := ∑ₖ tₖ·φ k`), with limiting variance
 `variance ν · ∫ψ²` identified by the real-parameter multi-dimensional Riemann sum
-(`LatticeProb.Walk.tendsto_latticeSum_mul_rpow`, `LatticeProb.Walk.RiemannLattice`) — exactly the covariance
-`Parking.contW`'s own Gaussian law has at `ψ` (`Parking.map_contW`).  The real-parameter
+(`LatticeProb.Walk.tendsto_latticeSum_mul_rpow`, `LatticeProb.Walk.RiemannLattice`) — exactly the
+covariance `Parking.contW`'s own Gaussian law has at `ψ` (`Parking.map_contW`).  The real-parameter
 Cramer-Wold theorem
 (`LatticeProb.Scaling.CramerWold.tendstoInDistribution_of_tendsto_charFun_linearCombination_filter`,
 `LatticeProb.Scaling.CramerWoldFilter`) assembles the finitely many scalar limits into the
 finite-dimensional convergence in law, and
-`LatticeProb.Scaling.CramerWold.tendsto_integral_of_tendstoInDistribution` reads it off against every
-bounded continuous test function, exactly the shape `prop:spatial-scaling`'s clause needs.
+`LatticeProb.Scaling.CramerWold.tendsto_integral_of_tendstoInDistribution` reads it off against
+every bounded continuous test function, exactly the shape `prop:spatial-scaling`'s clause needs.
 -/
-import Parking.Support.SpatCLTFilter
-import LatticeProb.Prob.Scaling.CramerWoldFilter
-import LatticeProb.Walk.RiemannLattice
-import Parking.Support.Continuum
-import Parking.Support.Measurability
-import Parking.Support.ScalWhiteNoise
-import Parking.Support.UConcBridge
 
 open LatticeProb.Walk (exists_norm_bound_of_hasCompactSupport mem_sceneryBox_of_ne_zero sceneryBox)
 
@@ -42,6 +45,9 @@ variable {d : ℕ}
 
 /-! ### A finite linear combination of test functions is a test function -/
 
+/-- A finite linear combination `∑ i, t i * φ i` of test functions is again a test function:
+smoothness is a finite sum of smooth terms, and compact support is a finite union of compact
+supports. -/
 theorem isTestFun_finset_sum {m : ℕ} {φ : Fin m → (Fin d → ℝ) → ℝ} (t : Fin m → ℝ)
     (hφ : ∀ i, IsTestFun (φ i)) :
     IsTestFun (fun x => ∑ i, t i * φ i x) := by
@@ -54,6 +60,9 @@ theorem isTestFun_finset_sum {m : ℕ} {φ : Fin m → (Fin d → ℝ) → ℝ} 
 
 /-! ### The one-site variance of `ν`, read as the second moment of `realLaw ν` -/
 
+/-- The variance of the real-cast coordinate under `ν` equals the second moment `∫x², ∂(realLaw
+ν)`, since `hν.mean` puts the mean at `0` and `realLaw_integral` transports the square to the
+pushforward law. -/
 theorem variance_eq_integral_sq_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν) :
     variance (fun k : ℤ => (k : ℝ)) ν = ∫ x : ℝ, x ^ 2 ∂(realLaw ν) := by
   haveI := hν.prob
@@ -64,6 +73,9 @@ theorem variance_eq_integral_sq_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν
 
 /-! ### A uniform sup-norm bound for finitely many test functions and their combination -/
 
+/-- There is a common bound `B` outside of which every one of the finitely many test
+functions `φ i` vanishes, obtained by summing the individual compact-support bounds given by
+`exists_norm_bound_of_hasCompactSupport`. -/
 theorem exists_uniform_norm_bound {m : ℕ} {φ : Fin m → (Fin d → ℝ) → ℝ}
     (hφ : ∀ i, IsTestFun (φ i)) :
     ∃ B : ℝ, 0 < B ∧ (∀ i x, φ i x ≠ 0 → ‖x‖ ≤ B) := by
@@ -76,6 +88,9 @@ theorem exists_uniform_norm_bound {m : ℕ} {φ : Fin m → (Fin d → ℝ) → 
 /-! ### The exact finite-sum identity: a linear combination of `scenePair` values is one
 weighted sum of the i.i.d. scenery -/
 
+/-- The linear combination `∑ i, t i * scenePair w R (φ i)` equals a single weighted finite
+sum of the i.i.d. scenery `confReal w`, at the combined test function `∑ i, t i * φ i` and
+weight `R^{-d/2}`, over the common support box `sceneryBox d B R`. -/
 theorem scenePair_linearCombination_eq_sum {m : ℕ} {φ : Fin m → (Fin d → ℝ) → ℝ}
     (t : Fin m → ℝ) {B : ℝ} (hB : 0 < B) (hbound : ∀ i x, φ i x ≠ 0 → ‖x‖ ≤ B)
     {R : ℝ} (hR : 1 ≤ R) (w : Data d) :
@@ -84,12 +99,14 @@ theorem scenePair_linearCombination_eq_sum {m : ℕ} {φ : Fin m → (Fin d → 
           (R ^ (-(d : ℝ) / 2) * (fun x => ∑ i, t i * φ i x) (fun j => (y j : ℝ) / R))
             * confReal w y := by
   have hstep1 : ∀ i, scenePair w R (φ i)
-      = ∑ y ∈ sceneryBox d B R, R ^ (-(d : ℝ) / 2) * (confReal w y * φ i (fun j => (y j : ℝ) / R)) := by
+      = ∑ y ∈ sceneryBox d B R,
+          R ^ (-(d : ℝ) / 2) * (confReal w y * φ i (fun j => (y j : ℝ) / R)) := by
     intro i
     have hs : scenePair w R (φ i)
         = R ^ (-(d : ℝ) / 2) * ∑ y ∈ sceneryBox d B R,
             confReal w y * φ i (fun j => (y j : ℝ) / R) := by
-      show R ^ (-(d : ℝ) / 2) * ∑' y : Site d, (w.1 y : ℝ) * φ i (fun j => (y j : ℝ) / R) = _
+      show R ^ (-(d : ℝ) / 2) * ∑' y : Site d, (w.1 y : ℝ) * φ i (fun j => (y j : ℝ) / R)
+        = _
       congr 1
       apply tsum_eq_sum
       intro y hy

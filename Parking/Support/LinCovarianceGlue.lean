@@ -1,5 +1,11 @@
-/-
-**The covariance of the linear membrane field, closed form.**
+import Parking.Support.LinCovariance
+import Parking.Support.LinPotentialSum
+import Parking.Support.LinTimeShift
+import Parking.Support.SpatGreenShift
+import LatticeProb.Walk.GreenPointwise
+
+/-!
+# The covariance of the linear membrane field, closed form
 
 Assembles `Parking.linPotential_eq_sum_of_boxFinset_subset`
 (`Parking/Support/LinPotentialSum.lean`), `Parking.integral_sum_mul_sum_pi`
@@ -16,11 +22,6 @@ mean-zero law with a finite second moment.  This is the deterministic finite-sum
 (`LatticeProb.Walk.GreenPointwise`), which gives
 `E[V_n(x) V_m(y)] = E[η(0)²] · Σ_{a<n}Σ_{b<m} P^{a+b}(y-x)`.
 -/
-import Parking.Support.LinCovariance
-import Parking.Support.LinPotentialSum
-import Parking.Support.LinTimeShift
-import Parking.Support.SpatGreenShift
-import LatticeProb.Walk.GreenPointwise
 
 open LatticeProb (supNorm supNorm_le_graphNorm)
 
@@ -96,7 +97,8 @@ theorem integral_linPotential_mul (ν0 : Measure ℝ) [IsProbabilityMeasure ν0]
   have hFint : Integrable F (Measure.pi fun _ : S => ν0) :=
     integrable_sum_mul_sum_pi (fun i : S => a (i : Site d)) (fun j : S => b (j : Site d))
       ν0 hint hsq
-  have hkey : ∫ η, F (S.restrict η) ∂(iidLaw d ν0) = ∫ ζ : S → ℝ, F ζ ∂(Measure.pi fun _ : S => ν0) :=
+  have hkey : ∫ η, F (S.restrict η) ∂(iidLaw d ν0) =
+      ∫ ζ : S → ℝ, F ζ ∂(Measure.pi fun _ : S => ν0) :=
     LatticeProb.integral_restrict d ν0 S F hFint
   have hval := integral_sum_mul_sum_pi (ι := S) (fun i : S => a (i : Site d))
     (fun j : S => b (j : Site d)) ν0 hmean hint hsq

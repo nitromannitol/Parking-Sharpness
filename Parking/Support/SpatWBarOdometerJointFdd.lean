@@ -1,4 +1,12 @@
-/-
+import Parking.External.SpatialOdometerScaling
+import Parking.Support.SpatialVanishingDistance
+import Parking.Support.NearestBallEvent
+import Parking.Support.SpatWSceneryFdd
+import LatticeProb.Prob.Scaling.Slutsky
+
+/-!
+# The three-block scenery/divisible/odometer joint convergence
+
 The `(scenePair,barDivisible,barOdometer)` three-block joint finite-dimensional convergence:
 `Parking.External.SpatialOdometerScaling`'s own `(scenePair,barDivisible)` joint clause,
 combined with the vanishing-distance transfer to `barOdometer`
@@ -8,11 +16,6 @@ of the big joint clause of `Parking.Frozen.spatial_scaling` (`parking.tex:1694-1
 `signedPair` block needs the separate middle-term Taylor/Riemann-sum identification of the
 paper's Step 2, which is not part of this module.
 -/
-import Parking.External.SpatialOdometerScaling
-import Parking.Support.SpatialVanishingDistance
-import Parking.Support.NearestBallEvent
-import Parking.Support.SpatWSceneryFdd
-import LatticeProb.Prob.Scaling.Slutsky
 
 open MeasureTheory ProbabilityTheory Filter Topology
 
@@ -59,7 +62,8 @@ theorem tendsto_scenePair_barDivisible_barOdometer_joint_fdd
       (fun p hp => by rw [Set.mem_singleton_iff] at hp; rw [hp]; exact hsp c) ε hε
     have hsup_eq : ∀ R w, (⨆ p ∈ ({sp c} : Set (ℝ × (Fin d → ℝ))),
           |Parking.barOdometer w R p.1 p.2 - Parking.barDivisible w R p.1 p.2|)
-        = |Parking.barOdometer w R (sp c).1 (sp c).2 - Parking.barDivisible w R (sp c).1 (sp c).2| := by
+        = |Parking.barOdometer w R (sp c).1 (sp c).2 -
+            Parking.barDivisible w R (sp c).1 (sp c).2| := by
       intro R w
       apply le_antisymm
       · exact Real.iSup_le (fun p => Real.iSup_le (fun hp => by
@@ -124,7 +128,8 @@ theorem tendsto_scenePair_barDivisible_barOdometer_joint_fdd
     funext ω
     show F (g ((fun i => W (φ i) ω, fun j => Uc ω (sp j).1 (sp j).2), (0 : Fin k → ℝ))) = _
     have hgeq : g ((fun i => W (φ i) ω, fun j => Uc ω (sp j).1 (sp j).2), (0 : Fin k → ℝ))
-        = (fun i => W (φ i) ω, fun j => Uc ω (sp j).1 (sp j).2, fun j => Uc ω (sp j).1 (sp j).2) := by
+        = (fun i => W (φ i) ω, fun j => Uc ω (sp j).1 (sp j).2,
+            fun j => Uc ω (sp j).1 (sp j).2) := by
       simp only [hgdef]
       refine Prod.ext rfl (Prod.ext rfl ?_)
       funext j

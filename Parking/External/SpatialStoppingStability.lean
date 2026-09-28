@@ -1,4 +1,10 @@
-/-
+import Parking.Support.ContSpatialValue
+import Parking.Support.Terminal
+import Parking.External.OrientedStoppingStability
+
+/-!
+# Spatial optimal-stopping stability (frozen)
+
 External input: the stability of optimal-stopping values under uniform convergence of
 uniformly bounded rewards, together with the invariance principle for the stopped simple
 random walk, in the form the paper's proof of `prop:spatial-scaling` cites at
@@ -14,10 +20,11 @@ in optimal stopping and convergence of optimal stopping times*, Electronic Journ
 Probability 12 (2007), 207-228, Theorem 3 and Corollary 4 — the SAME citation
 `Parking.External.OrientedStoppingStability` already uses for the oriented node, applied via
 BP's Lemma 2.5 (`u_t = V_t + sup_{τ≤t} E_x[-V_{t-τ}(X_τ)]`, transcribed for the simple random
-walk in `Parking/Support/Terminal.lean`'s `u_eq_potential_add_stoppingSup`).  Coquet-Toldo's
-theorem is a general fact about optimal-stopping values under convergence of the driving
-process and of the rewards; it is not specific to a one-dimensional state space, so this is
-the SAME cited theorem as `Parking.External.OrientedStoppingStability`, transcribed for a
+walk in `Parking/Support/Terminal.lean`'s `u_eq_potential_add_stoppingSup`).
+Coquet-Toldo's theorem is a general fact about optimal-stopping values under convergence
+of the driving process and of the rewards; it is not specific to a one-dimensional state
+space, so this is the SAME cited theorem as `Parking.External.OrientedStoppingStability`,
+transcribed for a
 `(Fin d → ℝ)`-valued driving process instead of a real-valued one, exactly as `Parking.
 External.OrientedStoppingStability`'s own docstring anticipates ("this is the boundary the
 design of this External was chosen to sit on").
@@ -85,9 +92,6 @@ Brownian hypothesis is not vacuous: `LatticeProb.exists_isBrownianSpace_cont` (c
 `d = 1, 2, 3`, the paper's own range) produces a witness.  The statement is therefore a genuine
 assertion about two suprema, not satisfiable through a junk value.
 -/
-import Parking.Support.ContSpatialValue
-import Parking.Support.Terminal
-import Parking.External.OrientedStoppingStability
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal

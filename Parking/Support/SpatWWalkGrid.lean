@@ -1,7 +1,12 @@
-/- Cell representation and uniform approximation of the signed-density test coefficient. -/
 import Parking.Support.SpatWWalkTaylor
 import Parking.Support.SpatWSignedDecomp
 import Parking.Support.NearestBallEvent
+
+/-!
+# Cell representation of the signed-density test coefficient
+
+Cell representation and uniform approximation of the signed-density test coefficient.
+-/
 
 open LatticeProb.WhiteNoise (continuous_contOp hasCompactSupport_contOp)
 

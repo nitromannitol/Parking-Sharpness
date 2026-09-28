@@ -4,6 +4,18 @@ import Parking.Support.NoArrivalJoint
 import Parking.Support.ClosePair
 import LatticeProb.Prob.Coordinate
 
+/-!
+# The sparse surviving-hole probability factors through the sink no-arrival probability
+
+Under the sparse three-point law, the surviving-hole probability at the origin factors as `p`
+(the probability the origin starts as a hole) times the probability of no entrance to the sink
+field `sparseSinkField`, which no longer depends on the origin's own coordinate. The proof
+transfers this factorization from `clippedHole_eq_one_iff_sink`, using that the coordinate at
+the origin is independent of the rest of the field (`integral_mul_indicator_eval_prod`) once
+the no-arrival event is rewritten through the sink field, which is insensitive to updating the
+origin's coordinate (`sparseSinkField_update`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -13,7 +25,8 @@ variable {d : ℕ}
 theorem holeProb_eq_mul_sink_noArrival (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) (T : ℕ) :
     holeProb d (threePointLaw p) T = p *
       (((iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d))
-        {z | noArrivalFlag (sparseSinkField T 0 z.1) 0 (curryRoundNoise z.2) T 0 = true}).toReal := by
+        {z | noArrivalFlag (sparseSinkField T 0 z.1) 0 (curryRoundNoise z.2)
+          T 0 = true}).toReal := by
   classical
   haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
   haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
@@ -41,7 +54,8 @@ theorem holeProb_eq_mul_sink_noArrival (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp
   have hfactor := integral_mul_indicator_eval_prod (μ := fun _ : Site d => threePointLaw p)
     (flatRoundNoiseLaw d) (0 : Site d) (0 : ℤ) F hF hiF hinv (measurableSet_singleton (-1 : ℤ))
   have hae : ∀ᵐ z ∂μ, clippedField z.1 = z.1 :=
-    measurePreserving_fst.quasiMeasurePreserving.ae (ae_clippedField (threePointLaw p) (ae_clipSparse_threePointLaw p))
+    measurePreserving_fst.quasiMeasurePreserving.ae (ae_clippedField (threePointLaw p)
+      (ae_clipSparse_threePointLaw p))
   have he : (∫ z, Hset.indicator (fun _ => (1 : ℝ)) z ∂μ) =
       ∫ z, F z * Set.indicator ({-1} : Set ℤ) (fun _ => (1 : ℝ)) (z.1 0) ∂μ := by
     apply integral_congr_ae

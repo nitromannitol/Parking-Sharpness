@@ -1,10 +1,22 @@
-/- Transport of a finite linear lower bound to an infinite independent field. -/
 import Parking.Support.LinearMoment
+
+/-!
+# Transport of a finite linear lower bound to an infinite field
+
+Transport of a finite linear lower bound to an infinite independent field: a lower bound
+`c * √(∑ a i ^ 2) ≤ E[|∑ a i * ξ i|]` holding uniformly for all finite `N` and coefficients `a`
+extends to any finite-support linear combination over an infinite independent family, by
+reindexing through the coordinates in the finite support.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 
+/-- Lifts a lower bound `hb` uniform over finite `N` and coefficients to a bound for a linear
+combination supported on the finite set `S` in the infinite product `Measure.infinitePi`, by
+reindexing through the coordinate-reading map `read : (ι → ℝ) → Fin S.card → ℝ` and the
+measure-preserving `hread`. -/
 theorem linear_abs_lower_infinitePi {ι : Type*} (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {c : ℝ} (hb : ∀ (N : ℕ) (a : Fin N → ℝ), c * Real.sqrt (∑ i, a i ^ 2) ≤
       ∫ ξ : Fin N → ℝ, |∑ i, a i * ξ i| ∂(Measure.pi fun _ : Fin N => μ))

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightCovHeat
+
+/-!
+# The continuum overlap kernel
+
 The continuum overlap kernel of the directed field (`parking.tex:3190-3218`).
 
 The covariance of the continuum directed field at two space-time points is,
@@ -21,9 +25,9 @@ near the diagonal `max s s' = T`.
 - `Parking.contOverlap_le`: the square-root bound.
 - `Parking.continuous_contOverlap`: joint continuity.
 -/
-import Parking.Support.TightCovHeat
 
-open LatticeProb.ContinuumStopping (contHeat contHeat_nonneg contNoiseTest integrableOn_inv_sqrt_pi_sub integral_inv_sqrt_pi_sub measurable_contHeat_uncurry)
+open LatticeProb.ContinuumStopping (contHeat contHeat_nonneg contNoiseTest
+  integrableOn_inv_sqrt_pi_sub integral_inv_sqrt_pi_sub measurable_contHeat_uncurry)
 
 open MeasureTheory ProbabilityTheory
 open scoped Topology

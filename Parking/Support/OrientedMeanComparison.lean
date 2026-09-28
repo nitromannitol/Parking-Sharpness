@@ -1,13 +1,22 @@
-/- The directed divisible mean is bounded by the actual particle mean. -/
 import Parking.Support.OrientedGivenComparison
 import Parking.Support.OrientedCountLaw
 import Parking.Support.OrientedFinite
+
+/-!
+# The divisible mean is bounded by the particle mean
+
+The directed divisible mean is bounded by the actual particle mean.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
+/-- The divisible mean `meanuOriented (orientedLaw d ν) n` is at most the particle mean
+`meanU (orientedLaw d ν) n`, obtained by transferring the pointwise comparison
+`uOriented_le_mean_orientedOdometer` from the given-scenery law to the joint law via
+`orientedLaw_map_conf` and `integral_orientedOdometer_given_mean`. -/
 theorem meanuOriented_le_meanU (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) (n : ℕ) :
     meanuOriented (orientedLaw d ν) n ≤ meanU (orientedLaw d ν) n := by
   haveI := hν.prob

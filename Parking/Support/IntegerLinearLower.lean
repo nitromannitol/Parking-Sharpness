@@ -1,11 +1,21 @@
-/- First-moment lower bounds for linear combinations of centered integer scenery. -/
 import Parking.Support.LinearFourthLower
 import LatticeProb.Prob.LinearConvex
 import LatticeProb.Prob.ConvexProduct
 import Parking.Support.UConvex
 import Parking.Support.SparseParameter
 
-open LatticeProb.ConvexOrder (convexOn_abs_linear_sum convex_lipschitz_integral_le_pi lipschitzWith_abs_linear_sum)
+/-!
+# First-moment lower bound for linear combinations
+
+First-moment lower bounds for linear combinations of centered integer scenery: the
+coefficient square norm controls the first absolute moment of a linear combination,
+by comparison with a sparse three-point law via the convex-order argument of
+`threePoint_convex_integral_le`, requiring no fourth-moment hypothesis on the
+original integer law.
+-/
+
+open LatticeProb.ConvexOrder (convexOn_abs_linear_sum convex_lipschitz_integral_le_pi
+  lipschitzWith_abs_linear_sum)
 
 noncomputable section
 namespace Parking
@@ -28,7 +38,8 @@ theorem exists_integer_linear_abs_lower (ν : Measure ℤ) [IsProbabilityMeasure
   have hμv : 0 < ∫ z : ℝ, z ^ 2 ∂(realLaw (threePointLaw p)) := by
     rw [realLaw_integral (threePointLaw p) (f := fun z : ℝ => z ^ 2) (by fun_prop),
       integral_threePointLaw hp.le hp2]
-    norm_num only [Int.cast_one, Int.cast_neg, Int.cast_zero, one_pow, neg_one_sq, zero_pow (by norm_num : (2 : ℕ) ≠ 0),
+    norm_num only [Int.cast_one, Int.cast_neg, Int.cast_zero, one_pow, neg_one_sq,
+        zero_pow (by norm_num : (2 : ℕ) ≠ 0),
       mul_one, mul_zero, add_zero]
     linarith
   obtain ⟨c, hc, hlo⟩ := exists_linear_abs_mean_lower (realLaw (threePointLaw p)) h4 hμm hμv

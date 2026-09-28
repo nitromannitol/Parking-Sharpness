@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightCovGreen
+import Parking.Support.TightOverlap
+import Parking.Support.TightWalk
+import Parking.External.BinomialLocalCLT
+
+/-!
+# The covariance limit of the rescaled grid reward field
+
 The covariance of the rescaled oriented grid reward converges to the continuum
 overlap kernel (`parking.tex:3207-3218`): the local-CLT Riemann sum.
 
@@ -53,10 +60,6 @@ the heat kernel over the common window, which converges to the overlap kernel
   `parking.tex:3207-3218` in full: the covariance of the grid reward field at any two real
   box points converges to `Var(η) · contOverlap T u u'`.
 -/
-import Parking.Support.TightCovGreen
-import Parking.Support.TightOverlap
-import Parking.Support.TightWalk
-import Parking.External.BinomialLocalCLT
 
 open LatticeProb.ContinuumStopping (contHeat contHeat_nonneg)
 open LatticeProb.Scaling.WalkCLT (tendsto_nat_floor_div)
@@ -288,10 +291,14 @@ theorem tendsto_nat_log_div_sqrt_atTop :
 noncomputable def heatApprox (a v : ℝ) : ℝ :=
   Real.sqrt (2 / Real.pi) * (Real.sqrt a)⁻¹ * Real.exp (-(v ^ 2 / (2 * a)))
 
+/-- `heatApprox` is nonnegative, being a product of nonnegative square-root factors and an
+exponential. -/
 theorem heatApprox_nonneg (a v : ℝ) : 0 ≤ heatApprox a v := by
   unfold heatApprox
   positivity
 
+/-- `heatApprox a v` is bounded above by its own value at `v = 0`, `√(2/π)·(√a)⁻¹`, since the
+exponential factor is at most `1`. -/
 theorem heatApprox_le (a v : ℝ) :
     heatApprox a v ≤ Real.sqrt (2 / Real.pi) * (Real.sqrt a)⁻¹ := by
   by_cases ha : a ≤ 0
@@ -307,10 +314,13 @@ theorem heatApprox_le (a v : ℝ) :
           mul_le_mul_of_nonneg_left hE (by positivity)
       _ = Real.sqrt (2 / Real.pi) * (Real.sqrt a)⁻¹ := mul_one _
 
+/-- `heatApprox` is even in its second argument, since it depends on `v` only through
+`v ^ 2`. -/
 theorem heatApprox_neg (a v : ℝ) : heatApprox a (-v) = heatApprox a v := by
   unfold heatApprox
   rw [neg_sq]
 
+/-- For `t ≥ 0`, `√t · exp(-t/2) ≤ 1`, from `√t ≤ 1 + t/2 ≤ exp(t/2)`. -/
 theorem sqrt_mul_exp_neg_le_one (t : ℝ) (ht : 0 ≤ t) :
     Real.sqrt t * Real.exp (-(t / 2)) ≤ 1 := by
   have h1 : Real.sqrt t ≤ 1 + t / 2 := by
@@ -321,6 +331,7 @@ theorem sqrt_mul_exp_neg_le_one (t : ℝ) (ht : 0 ≤ t) :
   rw [Real.exp_neg, ← div_eq_mul_inv, div_le_one (Real.exp_pos _)]
   exact le_trans h1 h2
 
+/-- `(t + 1) · exp(-t/2) ≤ 2` for every `t`, from `t + 1 ≤ 2 · exp(t/2)`. -/
 theorem one_add_mul_exp_neg_le_two (t : ℝ) :
     (t + 1) * Real.exp (-(t / 2)) ≤ 2 := by
   have h2 : t + 1 ≤ 2 * Real.exp (t / 2) := by
@@ -329,6 +340,9 @@ theorem one_add_mul_exp_neg_le_two (t : ℝ) :
   rw [Real.exp_neg, ← div_eq_mul_inv, div_le_iff₀ (Real.exp_pos _)]
   exact h2
 
+/-- The partial derivative of `heatApprox` in its second (spatial) argument `v`, computed via
+the chain rule through the exponential, with the degenerate `a = 0` case handled separately
+(where `heatApprox` is identically `0`). -/
 theorem hasDerivAt_heatApprox_snd (a v : ℝ) :
     HasDerivAt (fun w => heatApprox a w)
       (Real.sqrt (2 / Real.pi) * (Real.sqrt a)⁻¹ *
@@ -350,6 +364,9 @@ theorem hasDerivAt_heatApprox_snd (a v : ℝ) :
     have h5 := h4.const_mul (Real.sqrt (2 / Real.pi) * (Real.sqrt a)⁻¹)
     exact h5
 
+/-- The partial derivative of `heatApprox` in its first (scale) argument `a`, at `a > 0`,
+computed via the product and quotient rules through the inverse-square-root and exponential
+factors. -/
 theorem hasDerivAt_heatApprox_fst (a : ℝ) (ha : 0 < a) (v : ℝ) :
     HasDerivAt (fun b => heatApprox b v)
       (Real.sqrt (2 / Real.pi) * Real.exp (-(v ^ 2 / (2 * a))) * (v ^ 2 - a) /
@@ -380,6 +397,8 @@ theorem hasDerivAt_heatApprox_fst (a : ℝ) (ha : 0 < a) (v : ℝ) :
   rw [hder]
   exact hfull
 
+/-- The spatial derivative of `heatApprox` is bounded by `√(2/π)/a`, using
+`sqrt_mul_exp_neg_le_one` applied to `v ^ 2 / a`. -/
 theorem abs_deriv_heatApprox_snd_le (a : ℝ) (ha : 0 < a) (v : ℝ) :
     |Real.sqrt (2 / Real.pi) * (Real.sqrt a)⁻¹ *
         (Real.exp (-(v ^ 2 / (2 * a))) * (-(v / a)))| ≤ Real.sqrt (2 / Real.pi) / a := by
@@ -408,6 +427,9 @@ theorem abs_deriv_heatApprox_snd_le (a : ℝ) (ha : 0 < a) (v : ℝ) :
         mul_le_mul_of_nonneg_left hstep (div_nonneg (Real.sqrt_nonneg _) ha.le)
     _ = Real.sqrt (2 / Real.pi) / a := mul_one _
 
+/-- The scale derivative of `heatApprox` is bounded by `√(2/π)/(a√a)`, using
+`one_add_mul_exp_neg_le_two` applied to `v ^ 2 / a` to bound
+`exp(-v ^ 2 / (2a)) · (v ^ 2 + a)`. -/
 theorem abs_deriv_heatApprox_fst_le (a : ℝ) (ha : 0 < a) (v : ℝ) :
     |Real.sqrt (2 / Real.pi) * Real.exp (-(v ^ 2 / (2 * a))) * (v ^ 2 - a) /
         (2 * a ^ 2 * Real.sqrt a)| ≤ Real.sqrt (2 / Real.pi) / (a * Real.sqrt a) := by
@@ -446,6 +468,9 @@ theorem abs_deriv_heatApprox_fst_le (a : ℝ) (ha : 0 < a) (v : ℝ) :
     _ ≤ Real.sqrt (2 / Real.pi) * (2 * a) :=
         mul_le_mul_of_nonneg_left hstep (Real.sqrt_nonneg _)
 
+/-- `heatApprox a` is Lipschitz in its spatial argument, with constant `√(2/π)/a`, via the mean
+value inequality `Convex.norm_image_sub_le_of_norm_hasDerivWithin_le` applied to the derivative
+bound `abs_deriv_heatApprox_snd_le`. -/
 theorem abs_heatApprox_sub_snd (a : ℝ) (ha : 0 < a) (u v : ℝ) :
     |heatApprox a u - heatApprox a v| ≤ (Real.sqrt (2 / Real.pi) / a) * |u - v| := by
   have h := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le
@@ -462,6 +487,9 @@ theorem abs_heatApprox_sub_snd (a : ℝ) (ha : 0 < a) (u v : ℝ) :
   rw [abs_sub_comm (heatApprox a u) (heatApprox a v), abs_sub_comm u v]
   exact h
 
+/-- `heatApprox · v` is Lipschitz in its scale argument on `[1, ∞)`, with constant
+`√(2/π)/(min(a,b)·√(min(a,b)))`, via the mean value inequality applied to the derivative bound
+`abs_deriv_heatApprox_fst_le`. -/
 theorem abs_heatApprox_sub_fst {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) (v : ℝ) :
     |heatApprox a v - heatApprox b v| ≤
       (Real.sqrt (2 / Real.pi) / (min a b * Real.sqrt (min a b))) * |a - b| := by
@@ -491,6 +519,9 @@ theorem abs_heatApprox_sub_fst {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) (v : �
   rw [abs_sub_comm (heatApprox a v) (heatApprox b v), abs_sub_comm a b]
   exact h
 
+/-- The two-variable Lipschitz bound on `heatApprox`, combining `abs_heatApprox_sub_snd` and
+`abs_heatApprox_sub_fst` via the triangle inequality through the intermediate value
+`heatApprox a v`. -/
 theorem abs_heatApprox_sub {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) (u v : ℝ) :
     |heatApprox a u - heatApprox b v| ≤
       (Real.sqrt (2 / Real.pi) / a) * |u - v| +
@@ -505,6 +536,9 @@ theorem abs_heatApprox_sub {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) (u v : ℝ)
         add_le_add (abs_heatApprox_sub_snd a (by linarith) u v)
           (abs_heatApprox_sub_fst ha hb v)
 
+/-- The local-CLT error bound for `Parking.binomLaw`, obtained by specializing the raw
+hypothesis `hCbound` at the parity-matched point `j = 2K - D`, `m = 2i + D`, and identifying
+the resulting Gaussian expression algebraically with `heatApprox (2i+D) (2K-D)`. -/
 theorem abs_binomLaw_sub_heatApprox_le {C : ℝ} (hCbound : ∀ m : ℕ, 1 ≤ m → ∀ j : ℤ,
     (j - (m : ℤ)) % 2 = 0 →
     |Real.sqrt (m : ℝ) * binomLaw m ((j + (m : ℤ)) / 2) -
@@ -1197,7 +1231,8 @@ theorem tendsto_riemann_sum_Ioo_param_pos {δstar dstar a b : ℝ} (hδstar : 0 
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
     have hMnn : (0 : ℝ) ≤ (M n : ℝ) / n := by positivity
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (by positivity : (0:ℝ) ≤ Cn n)]
-    have hstep : (n : ℝ)⁻¹ * ∑ i ∈ Finset.range (M n), contHeat (2 * ((i : ℝ) / n) + δn n) 0 (dn n) -
+    have hstep :
+        (n : ℝ)⁻¹ * ∑ i ∈ Finset.range (M n), contHeat (2 * ((i : ℝ) / n) + δn n) 0 (dn n) -
         (n : ℝ)⁻¹ * ∑ i ∈ Finset.range (M n), contHeat (2 * ((i : ℝ) / n) + δstar) 0 dstar
         = (n : ℝ)⁻¹ * ∑ i ∈ Finset.range (M n),
             (contHeat (2 * ((i : ℝ) / n) + δn n) 0 (dn n) -
@@ -1508,7 +1543,8 @@ theorem tendsto_riemann_sum_Ioo_same_time {dstar a b : ℝ} (hdstar : dstar ≠ 
       intro i hi
       obtain ⟨hi1, hi2⟩ := Finset.mem_Ico.mp hi
       have hige : mfun n ≤ i := hlarge_idx i hi1 hi2
-      have hige' : (n : ℝ) * θ0 ≤ (i : ℝ) := (Nat.le_ceil ((n : ℝ) * θ0)).trans (by exact_mod_cast hige)
+      have hige' : (n : ℝ) * θ0 ≤ (i : ℝ) :=
+        (Nat.le_ceil ((n : ℝ) * θ0)).trans (by exact_mod_cast hige)
       have hthetage : θ0 ≤ (i : ℝ) / n := by
         rw [le_div_iff₀ hn0]; linarith [hige']
       have hbnd := abs_contHeat_two_mul_sub (δ := (0 : ℝ)) (δ' := (0 : ℝ)) (d := dn n)
@@ -1582,7 +1618,8 @@ theorem riemann_term_orientedCovSum {n : ℕ} (hn : 1 ≤ n) (D : ℕ) (K : ℤ)
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   have hsn : (0 : ℝ) < Real.sqrt n := Real.sqrt_pos.mpr hn0
   have hrw1 : (2 : ℝ) * ((i : ℝ) / n) = 2 * (i : ℝ) / n := by ring
-  have hstep := riemann_term n hn ((D : ℝ) / n) ((2 * (K : ℝ) - D) / (2 * Real.sqrt n)) (by positivity) i
+  have hstep :=
+    riemann_term n hn ((D : ℝ) / n) ((2 * (K : ℝ) - D) / (2 * Real.sqrt n)) (by positivity) i
   rw [hrw1, hstep]
   have hnδ : (n : ℝ) * ((D : ℝ) / n) = (D : ℝ) := by field_simp
   have hdd : (2 : ℝ) * Real.sqrt n * ((2 * (K : ℝ) - D) / (2 * Real.sqrt n)) = 2 * (K : ℝ) - D := by
@@ -1823,7 +1860,8 @@ theorem tendsto_orientedCovSum_of_eq (hBinomial : External.BinomialLocalCLT)
     have hcontEq : ∀ n : ℕ, 1 ≤ M n → (n : ℝ)⁻¹ * ∑ i ∈ Finset.range (M n),
         contHeat (2 * ((i : ℝ) / n)) 0 (K n / Real.sqrt n)
         = (n : ℝ)⁻¹ * contHeat 0 0 (K n / Real.sqrt n) +
-          (n : ℝ)⁻¹ * ∑ i ∈ Finset.Ico 1 (M n), contHeat (2 * ((i : ℝ) / n)) 0 (K n / Real.sqrt n) := by
+          (n : ℝ)⁻¹ * ∑ i ∈ Finset.Ico 1 (M n),
+            contHeat (2 * ((i : ℝ) / n)) 0 (K n / Real.sqrt n) := by
       intro n hn
       rw [← mul_add]
       congr 1
@@ -1908,7 +1946,8 @@ theorem tendsto_integral_orientedGridReward_mul_of_pos (ν : Measure ℤ) (hν :
         (2 * Real.sqrt n)) atTop (𝓝 dstar)) :
     Tendsto (fun n : ℕ => ∫ η : Site 2 → ℝ, orientedGridReward n (N n) η (m n) (j n) *
         orientedGridReward n (N n) η (m' n) (j' n) ∂(iidLaw 2 (realLaw ν))) atTop
-      (𝓝 ((∫ x : ℝ, x ^ 2 ∂(realLaw ν)) * ∫ θ in (0 : ℝ)..a, contHeat (2 * θ + δstar) 0 dstar)) := by
+      (𝓝 ((∫ x : ℝ, x ^ 2 ∂(realLaw ν)) *
+        ∫ θ in (0 : ℝ)..a, contHeat (2 * θ + δstar) 0 dstar)) := by
   have hpt : ∀ n : ℕ, (∫ η : Site 2 → ℝ, orientedGridReward n (N n) η (m n) (j n) *
         orientedGridReward n (N n) η (m' n) (j' n) ∂(iidLaw 2 (realLaw ν)))
       = (n : ℝ) ^ (-(1 : ℝ) / 2) * ((∫ x : ℝ, x ^ 2 ∂(realLaw ν)) *
@@ -2217,7 +2256,8 @@ theorem tendsto_integral_orientedGridReward_mul_box_of_le (ν : Measure ℤ) (h�
       (𝓝 ((∫ x : ℝ, x ^ 2 ∂(realLaw ν)) * contOverlap T u u')) := by
   rw [contOverlap_eq_intervalIntegral_of_le hle hu'T]
   by_cases hdeg : u' 0 = T
-  · have hval0 : (∫ θ in (0 : ℝ)..(T - u' 0), contHeat (2 * θ + (u' 0 - u 0)) 0 (u' 1 - u 1)) = 0 := by
+  · have hval0 :
+        (∫ θ in (0 : ℝ)..(T - u' 0), contHeat (2 * θ + (u' 0 - u 0)) 0 (u' 1 - u 1)) = 0 := by
       rw [hdeg, sub_self, intervalIntegral.integral_same]
     rw [hval0, mul_zero]
     have hzero : ∀ n : ℕ, (∫ η : Site 2 → ℝ,

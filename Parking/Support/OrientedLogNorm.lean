@@ -1,17 +1,30 @@
-/- A uniform logarithmic square-norm bound up to a directed horizon. -/
 import Parking.Support.OrientedGreenRates
+
+/-!
+# A uniform logarithmic bound on the Green square norm
+
+A uniform logarithmic square-norm bound up to a directed horizon.
+-/
 
 noncomputable section
 namespace Parking
 open LatticeProb Finset
 variable {d : ℕ}
 
+/-- The squared Green norm `∑' x, orientedGreen d m x ^ 2` is monotone in the horizon
+`m`, by extending the sum over layers `range m` to `range n` using
+`tsum_orientedGreen_sq`. -/
 theorem orientedGreen_sq_mono {m n : ℕ} (hmn : m ≤ n) :
     (∑' x : Site d, orientedGreen d m x ^ 2) ≤ ∑' x : Site d, orientedGreen d n x ^ 2 := by
   rw [tsum_orientedGreen_sq, tsum_orientedGreen_sq]
   exact sum_le_sum_of_subset_of_nonneg (range_mono hmn)
     (fun l _ _ => tsum_nonneg fun x => sq_nonneg _)
 
+/-- For `d ≥ 3`, the squared Green norm at any earlier horizon `m ≤ n` is at most
+`C * log (n + 1)`: at `d = 3` this comes directly from
+`exists_orientedGreen_three_sq_bounds`, and for `d > 3` from
+`exists_orientedGreen_high_sq_bound`, in both cases monotone in `m` by
+`orientedGreen_sq_mono` and absorbed into a `log (n + 1)` bound once `n ≥ 1`. -/
 theorem exists_orientedGreen_sq_log_bound (hd : 3 ≤ d) :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n → ∀ m : ℕ, m ≤ n →
       (∑' x : Site d, orientedGreen d m x ^ 2) ≤ C * Real.log ((n : ℝ) + 1) := by

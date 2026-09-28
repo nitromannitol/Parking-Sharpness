@@ -1,6 +1,11 @@
-/- Independence of directed odometers from every stack on and above a layer. -/
 import Parking.Support.OrientedFreshness
 import Parking.Support.CoordinateErasure
+
+/-!
+# Independence from upper-layer stacks and scenery
+
+Independence of directed odometers from every stack on and above a layer.
+-/
 
 noncomputable section
 namespace Parking
@@ -8,6 +13,10 @@ open MeasureTheory ProbabilityTheory LatticeProb Finset
 open scoped Classical
 variable {d : ℕ}
 
+/-- The odometer values `orientedOdometer η σ n (x i)` at sites `x i` of layer height at
+most `h` are independent of the instructions `σ q` with `h ≤ layerHeight q.1`, since
+`orientedOdometer_lower_layers` shows the former do not depend on the erased coordinates
+and `indepFun_of_erasure_invariant` upgrades that invariance to independence. -/
 theorem orientedOdometers_indep_upper_stacks {ι : Type*} (hd : 1 ≤ d) (η : Site d → ℤ)
     (n : ℕ) (x : ι → Site d) (h : ℤ) (hx : ∀ i, layerHeight (x i) ≤ h) :
     IndepFun (fun σ : Site d × ℕ → Site d => fun i => orientedOdometer η σ n (x i))
@@ -17,13 +26,18 @@ theorem orientedOdometers_indep_upper_stacks {ι : Type*} (hd : 1 ≤ d) (η : S
     fun q => orientedInstructionLaw_isProbability hd q.1
   apply indepFun_of_erasure_invariant (fun q : Site d × ℕ => orientedInstructionLaw q.1)
     {q : Site d × ℕ | h ≤ layerHeight q.1} (fun _ => (0 : Site d)) _
-    (measurable_pi_lambda _ fun i => measurable_orientedOdometer _ _ measurable_const measurable_id n (x i))
+    (measurable_pi_lambda _ fun i =>
+      measurable_orientedOdometer _ _ measurable_const measurable_id n (x i))
   intro σ
   funext i
   apply orientedOdometer_lower_layers n (x i) (fun _ _ => rfl)
   intro q hq
   exact if_neg (by change ¬h ≤ layerHeight q.1; have := hx i; omega)
 
+/-- The arrival count `orientedArrivalCount η σ n x` depends only on the scenery and stack
+coordinates below the layer of `x`, since it is built from `orientedOdometer` at the `d`
+predecessors `x - unit i` and from the instructions issued at those predecessors, and
+`orientedOdometer_lower_layers` already gives this invariance for the odometer. -/
 theorem orientedArrivalCount_lower_layers {η η' : Site d → ℤ} {σ σ' : Site d × ℕ → Site d}
     (n : ℕ) (x : Site d)
     (hη : ∀ y, layerHeight y < layerHeight x → η y = η' y)
@@ -44,6 +58,10 @@ theorem orientedArrivalCount_lower_layers {η η' : Site d → ℤ} {σ σ' : Si
   intro j _
   rw [hσ (x - unit i, j) (by change layerHeight (x - unit i) < layerHeight x; rw [hh]; omega)]
 
+/-- The arrival count `orientedArrivalCount η σ n x` is independent of the scenery values
+`η y` at sites `y` of layer height at least that of `x`, since
+`orientedArrivalCount_lower_layers` shows it does not depend on those coordinates and
+`indepFun_of_erasure_invariant` upgrades that invariance to independence. -/
 theorem orientedArrivals_indep_upper_conf (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (σ : Site d × ℕ → Site d) (n : ℕ) (x : Site d) :
     IndepFun (fun η : Site d → ℤ => orientedArrivalCount η σ n x)

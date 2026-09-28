@@ -1,6 +1,9 @@
-/- Exact integration over the cells of the parabolic lattice. -/
 import Parking.Support.SpatialTestedSum
 import LatticeProb.Prob.Scaling.TimeCell
+
+/-!
+# Exact integration over the cells of the parabolic lattice
+-/
 
 open LatticeProb.Walk (gridFn gridFn_eq_sum_indicator latticeCube_measurableSet volume_latticeCube)
 
@@ -9,6 +12,9 @@ noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- A grid function `gridFn φ R` built from a `φ` whose support has norm at most `B` is
+integrable: `gridFn_eq_sum_indicator` writes it as a finite sum of constant indicators of
+lattice cubes, each of finite measure. -/
 theorem integrable_gridFn_of_support_bound {φ : (Fin d → ℝ) → ℝ} {B R : ℝ}
     (hB : 0 < B) (hb : ∀ x, φ x ≠ 0 → ‖x‖ ≤ B) (hR : 1 ≤ R) :
     Integrable (gridFn φ R) := by
@@ -21,6 +27,9 @@ theorem integrable_gridFn_of_support_bound {φ : (Fin d → ℝ) → ℝ} {B R :
   rw [volume_latticeCube y (lt_of_lt_of_le one_pos hR)]
   exact ENNReal.pow_ne_top ENNReal.ofReal_ne_top
 
+/-- The product of the rescaled odometer `barDivisible w R s` with a grid function
+`gridFn φ R` is integrable: the product equals `gridFn f R` for `f := barDivisible w R s *
+φ`, which inherits `φ`'s support bound, reducing to `integrable_gridFn_of_support_bound`. -/
 theorem integrable_barDivisible_mul_gridFn (w : Data d) (s : ℝ)
     {φ : (Fin d → ℝ) → ℝ} {B R : ℝ} (hB : 0 < B)
     (hb : ∀ x, φ x ≠ 0 → ‖x‖ ≤ B) (hR : 1 ≤ R) :
@@ -36,6 +45,10 @@ theorem integrable_barDivisible_mul_gridFn (w : Data d) (s : ℝ)
   rw [← he]
   exact integrable_gridFn_of_support_bound hB hf hR
 
+/-- The product of `barDivisible w R s` with the shifted test `scaledWalkTest φ R` is
+integrable: `scaledWalkTest φ R` is its own grid function, and `φ`'s support bound `B`
+gives it the support bound `B + 2` via `scaledWalkTest_eq_zero_of_norm_gt`, reducing to
+`integrable_barDivisible_mul_gridFn`. -/
 theorem integrable_barDivisible_mul_scaledWalkTest (w : Data d) (s : ℝ)
     {φ : (Fin d → ℝ) → ℝ} {B R : ℝ} (hB : 0 < B)
     (hb : ∀ x, φ x ≠ 0 → ‖x‖ ≤ B) (hR : 1 ≤ R) :

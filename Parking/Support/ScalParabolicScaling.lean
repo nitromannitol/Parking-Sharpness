@@ -1,4 +1,9 @@
-/-
+import Parking.Support.ScalScalingDischarge
+import Parking.Support.UpperStep
+
+/-!
+# The parabolic rescaling identities of Step 2
+
 The parabolic rescaling identities of `prop:oriented-scaling`'s Step 2
 (`parking.tex:3220-3233`).
 
@@ -10,8 +15,6 @@ the two prefactors `⌊nT⌋^{-1/4}` and `(nT)^{-1/4}` tends to one, because
 
 The three identities here are the arithmetic of that step, and nothing else.
 -/
-import Parking.Support.ScalScalingDischarge
-import Parking.Support.UpperStep
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open scoped NNReal ENNReal
@@ -33,7 +36,8 @@ theorem rpow_neg_quarter_eq_mul (T : ℝ) (hT : 0 < T) (n : ℕ) (hn : 0 < n) :
 `T > 0` the ratio `⌊nT⌋/(nT)` tends to one. -/
 theorem tendsto_floor_mul_div (T : ℝ) (hT : 0 < T) :
     Tendsto (fun n : ℕ => ((⌊(n : ℝ) * T⌋₊ : ℝ) / ((n : ℝ) * T))) atTop (𝓝 1) := by
-  refine Filter.Tendsto.congr (fun n => ?_) (tendsto_nat_floor_div_atTop.comp (tendsto_natCast_atTop_atTop.const_mul_atTop hT))
+  refine Filter.Tendsto.congr (fun n => ?_)
+    (tendsto_nat_floor_div_atTop.comp (tendsto_natCast_atTop_atTop.const_mul_atTop hT))
   simp [Function.comp, mul_comm]
 
 /-- **The prefactor at the integer horizon is asymptotic to the prefactor at the
@@ -80,6 +84,9 @@ theorem mean_pos_of_tendsto_of_eventually_pos {f : ℕ → ℝ} {μ : ℝ}
   exact ge_of_tendsto h (hf.mono fun n hn => hn.le)
 
 
+/-- If the `r`-norm of `X n` is at most `C n^{1/4}` for every `n`, then the `r`-norm of
+the rescaled sequence `n^{-1/4} X n` is at most `C` for every `n ≥ 1`, since
+`n^{-1/4} · n^{1/4} = 1`. -/
 theorem rNorm_rescaled_le_of_rNorm_le {Ω : Type} [MeasurableSpace Ω] (Q : Measure Ω)
     (X : ℕ → Ω → ℝ) (r : ℝ) (hr : 0 < r) {C : ℝ} (_hC : 0 ≤ C)
     (hb : ∀ n, LatticeProb.MomentNorm.rNorm Q r (X n) ≤ C * (n : ℝ) ^ ((1 : ℝ) / 4)) :

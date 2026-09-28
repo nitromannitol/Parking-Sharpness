@@ -1,4 +1,12 @@
-/-
+import Parking.Frozen.WMoment
+import Parking.Frozen.PathwiseComparison
+import Parking.Support.UpperTarget
+import Parking.Support.NearTailSum
+import Parking.Support.NearTiltInterval
+
+/-!
+# The mean routing gap
+
 `eq:near-routing-mean` (`parking.tex:2953-2958`).
 
 "Theorem 4.1, Lemma 5.1 and Proposition 5.6 give, for `n ≥ 2` and `r ≥ 2`,
@@ -13,11 +21,6 @@ raises that mean to the `r`-th moment norm, and `prop:w-moment` bounds the norm 
 the one-site law, so the constant depends only on the dimension and on the exponential
 moment, and in particular is uniform over a family of laws with a common moment bound.
 -/
-import Parking.Frozen.WMoment
-import Parking.Frozen.PathwiseComparison
-import Parking.Support.UpperTarget
-import Parking.Support.NearTailSum
-import Parking.Support.NearTiltInterval
 
 open MeasureTheory LatticeProb
 

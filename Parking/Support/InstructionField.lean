@@ -1,12 +1,25 @@
 import Parking.Support.MatchedCounts
 
+/-!
+# The signed field of a round, with one instruction suppressed
+
+`roundSigned A H τ` is the field of arrival counts minus current holes produced by one
+round of the table `τ`. `roundWithout A H τ v j` is the same field computed with the
+instruction at `(v, j)` erased from the count, so it does not depend on that entry's
+direction. `roundSigned_eq_addParticle` expresses `roundSigned` as `roundWithout` plus
+one particle added at the destination the suppressed instruction actually points to,
+and `roundWithout_update` records that `roundWithout` is genuinely independent of the
+value written at `(v, j)`.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
 variable {d : ℕ}
 
 /-- Arriving table entries from an arbitrary active-count field. -/
-def countArrivals (A : Site d → ℕ) (τ : RoundSlot d → Fin d × Bool) (x : Site d) : Finset (RoundSlot d) :=
+def countArrivals (A : Site d → ℕ) (τ : RoundSlot d → Fin d × Bool) (x : Site d) :
+    Finset (RoundSlot d) :=
   (nbrFinset x).biUnion fun y =>
     ((Finset.range (A y)).filter fun j => y + stepVec (τ (Sum.inl (y, j))) = x).image
       fun j => Sum.inl (y, j)
@@ -16,7 +29,8 @@ theorem mem_countArrivals (A : Site d → ℕ) (τ : RoundSlot d → Fin d × Bo
     (x v : Site d) (j : ℕ) :
     Sum.inl (v, j) ∈ countArrivals A τ x ↔ j < A v ∧ v + stepVec (τ (Sum.inl (v, j))) = x := by
   classical
-  simp only [countArrivals, Finset.mem_biUnion, Finset.mem_image, Finset.mem_filter, Finset.mem_range]
+  simp only [countArrivals, Finset.mem_biUnion, Finset.mem_image, Finset.mem_filter,
+      Finset.mem_range]
   constructor
   · rintro ⟨y, _hy, k, ⟨hk, hx⟩, heq⟩
     cases Sum.inl_injective heq
@@ -38,11 +52,13 @@ def roundWithout (A H : Site d → ℕ) (τ : RoundSlot d → Fin d × Bool)
 /-- Reinserting the suppressed instruction adds exactly one particle at its destination. -/
 theorem roundSigned_eq_addParticle (A H : Site d → ℕ) (τ : RoundSlot d → Fin d × Bool)
     (v : Site d) (j : ℕ) (hj : j < A v) :
-    roundSigned A H τ = addParticle (v + stepVec (τ (Sum.inl (v, j)))) (roundWithout A H τ v j) := by
+    roundSigned A H τ =
+        addParticle (v + stepVec (τ (Sum.inl (v, j)))) (roundWithout A H τ v j) := by
   classical
   ext x
   by_cases hx : x = v + stepVec (τ (Sum.inl (v, j)))
-  · have hmem : Sum.inl (v, j) ∈ countArrivals A τ x := (mem_countArrivals _ _ _ _ _).mpr ⟨hj, hx.symm⟩
+  · have hmem : Sum.inl (v, j) ∈ countArrivals A τ x :=
+      (mem_countArrivals _ _ _ _ _).mpr ⟨hj, hx.symm⟩
     have hc := Finset.card_erase_add_one hmem
     simp only [roundSigned, roundWithout, addParticle, if_pos hx]
     omega

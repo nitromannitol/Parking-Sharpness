@@ -2,6 +2,18 @@ import Parking.Support.InstructionPartial
 
 open LatticeProb (measurable_from_countable')
 
+/-!
+# The centered influence of one entry after averaging the unrevealed table
+
+`instruction_partial_centered_bounds` combines `instruction_partial_influence` with
+`centered_influence_bounds` to show that, once every unrevealed instruction of the
+round is averaged, the future mean odometer at one used entry still has centered
+increment bounded by `escapeConst d` and variance bounded by the squared Green
+function, exactly as in `instruction_future_centered_bounds`. When the entry `(v, j)`
+is itself unused (`j ≥ A v`), both bounds hold trivially since the partial average
+does not depend on it.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

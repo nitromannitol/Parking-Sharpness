@@ -1,18 +1,19 @@
-/-
-The proof of `prop:w-moment`.
-
-The two displays are assembled here from the four pieces the paper's proof
-names: the martingale of `lem:w-martingale` with the increment bound
-`eq:increment`, the martingale moment inequality applied to the first `k`
-increments and passed to the limit by Fatou's lemma, the convexity that turns
-the lattice sum of the quadratic variation into the moment at the origin, and
-Jensen's inequality for the walk average.
--/
 import Parking.Support.WStarMoment
 import Parking.Support.GreenIncrement
 import Parking.Frozen.WMartingale
 import Parking.Frozen.GammaSum
 import Parking.External.Bernstein
+
+/-!
+# The proof of `prop:w-moment`
+
+The proof of `prop:w-moment`. The two displays are assembled here from the four pieces the
+paper's proof names: the martingale of `lem:w-martingale` with the increment bound
+`eq:increment`, the martingale moment inequality applied to the first `k` increments and
+passed to the limit by Fatou's lemma, the convexity that turns the lattice sum of the
+quadratic variation into the moment at the origin, and Jensen's inequality for the walk
+average.
+-/
 
 open LatticeProb (instructionLaw_isProbability measurable_from_countable' rankLaw_isProbability)
 
@@ -26,6 +27,8 @@ variable {d : ℕ}
 
 /-! ### A term of a bounded family is below its supremum over an initial segment -/
 
+/-- A term of a family bounded by `B` on `[0, n]` is at most the supremum of the family over
+that initial segment. -/
 theorem le_iSup_Iic {n : ℕ} {f : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (hbd : ∀ m ≤ n, f m ≤ B)
     {m : ℕ} (hm : m ≤ n) : f m ≤ ⨆ k ∈ Set.Iic n, f k := by
   have hbdd : BddAbove (Set.range fun k : ℕ => ⨆ _ : k ∈ Set.Iic n, f k) :=
@@ -36,6 +39,8 @@ theorem le_iSup_Iic {n : ℕ} {f : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (hbd : 
 
 /-! ### The moments of the error are bounded over an initial segment -/
 
+/-- **There is a uniform bound on the `r`-th moment of the error** over every horizon up to
+`n`, built from the pathwise bound `abs_wErr_le` and the constant `wCoef`. -/
 theorem exists_wErr_moment_bound (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -67,6 +72,9 @@ theorem exists_wErr_moment_bound (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilit
 
 /-! ### The second display of `prop:w-moment` -/
 
+/-- **The second display of `prop:w-moment`**, phrased in terms of the `r`-th moments of the
+error rather than `wStar` directly: it follows from `wStar_rpow_le_sum` summed over the
+`n + 1` horizons and bounded by the supremum. -/
 theorem wStar_moment_bound (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -122,13 +130,16 @@ theorem wStar_moment_bound (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasu
 predictable quadratic variation. -/
 def gammaSup (d n : ℕ) (y : Site d) : ℝ := ⨆ j ∈ Set.Iic n, gamma d j y
 
+/-- `gammaSup` is nonnegative, being a supremum of nonnegative terms. -/
 theorem gammaSup_nonneg (hd : 1 ≤ d) (n : ℕ) (y : Site d) : 0 ≤ gammaSup d n y :=
   iSup_gamma_Iic_nonneg hd n y
 
+/-- Every `Γ_m(y)` with `m ≤ n` is below `gammaSup d n y`. -/
 theorem gamma_le_gammaSup (hd : 1 ≤ d) {n m : ℕ} (hm : m ≤ n) (y : Site d) :
     gamma d m y ≤ gammaSup d n y :=
   le_iSup_gamma_Iic hd (Set.mem_Iic.mpr hm) y
 
+/-- `gammaSup d · y` is monotone in `n`. -/
 theorem gammaSup_mono (hd : 1 ≤ d) {m n : ℕ} (h : m ≤ n) (y : Site d) :
     gammaSup d m y ≤ gammaSup d n y :=
   iSup_Iic_le (gammaSup_nonneg hd n y) fun _j hj => gamma_le_gammaSup hd (le_trans hj h) y
@@ -136,6 +147,7 @@ theorem gammaSup_mono (hd : 1 ≤ d) {m n : ℕ} (h : m ≤ n) (y : Site d) :
 /-- The total weight over the box of radius `n`. -/
 def gammaTot (d n : ℕ) : ℝ := ∑ y ∈ boxFinset (0 : Site d) n, gammaSup d n y
 
+/-- `gammaTot` is nonnegative, being a sum of the nonnegative `gammaSup`. -/
 theorem gammaTot_nonneg (hd : 1 ≤ d) (n : ℕ) : 0 ≤ gammaTot d n :=
   Finset.sum_nonneg fun y _ => gammaSup_nonneg hd n y
 
@@ -146,9 +158,14 @@ every `Γ_j` with `j ≤ n` vanishes. -/
 def qvBound (d n : ℕ) (ω : Data d) : ℝ :=
   ∑ y ∈ boxFinset (0 : Site d) n, gammaSup d n y * ((U ω n y : ℕ) : ℝ)
 
+/-- `qvBound` is nonnegative, being a sum of products of the nonnegative `gammaSup` and the
+odometer. -/
 theorem qvBound_nonneg (hd : 1 ≤ d) (n : ℕ) (ω : Data d) : 0 ≤ qvBound d n ω :=
   Finset.sum_nonneg fun y _ => mul_nonneg (gammaSup_nonneg hd n y) (Nat.cast_nonneg _)
 
+/-- **The predictable quadratic variation over rounds `1` to `m - 1` is at most
+`qvBound d n`**, once `m ≤ n`, from the pointwise bound `qv_le_pointwise` and the
+monotonicity of `gammaSup` and the odometer. -/
 theorem qv_le_qvBound (hd : 1 ≤ d) {m n : ℕ} (hmn : m ≤ n) (ω : Data d) :
     ∑ s ∈ Finset.Icc 1 (m - 1), ∑' y : Site d,
         ((A ω (s - 1) y : ℕ) : ℝ) * gamma d (m - s) y
@@ -168,6 +185,8 @@ theorem qv_le_qvBound (hd : 1 ≤ d) {m n : ℕ} (hmn : m ≤ n) (ω : Data d) :
 
 /-! ### The moment of the bound -/
 
+/-- The `r`-th moment of the odometer at any site equals its moment at the origin, by
+translation invariance of the i.i.d. field. -/
 theorem integral_U_rpow_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -192,6 +211,9 @@ theorem integral_U_rpow_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
   simp only [hpt] at h
   exact h.symm
 
+/-- **The `p`-th moment of `qvBound` is at most `gammaTot ^ p` times the `p`-th moment of the
+odometer at the origin**, from the convex weighted-sum bound `rpow_weighted_sum_le` and
+translation invariance term by term. -/
 theorem integral_qvBound_rpow_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -244,6 +266,8 @@ theorem integral_qvBound_rpow_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilit
 
 /-! ### The error vanishes at the first two horizons -/
 
+/-- The error at the origin vanishes at horizons `0` and `1`, before any particle can have
+moved. -/
 theorem wErr_eq_zero_of_lt_two (ω : Data d) {m : ℕ} (hm : m < 2) (x : Site d) :
     wErr ω m x = 0 := by
   interval_cases m
@@ -268,6 +292,8 @@ theorem wErr_eq_zero_of_lt_two (ω : Data d) {m : ℕ} (hm : m < 2) (x : Site d)
 
 /-! ### Reindexing a sum over an interval -/
 
+/-- Reindexing a sum over `Finset.Icc 1 k` by subtracting one from the index gives the sum
+over `Finset.range k`. -/
 theorem sum_Icc_shift (g : ℕ → ℝ) (k : ℕ) :
     ∑ i ∈ Finset.Icc 1 k, g (i - 1) = ∑ j ∈ Finset.range k, g j := by
   induction k with
@@ -278,6 +304,7 @@ theorem sum_Icc_shift (g : ℕ → ℝ) (k : ℕ) :
 
 /-! ### Auxiliary facts for the first display -/
 
+/-- `kappa` is nonnegative in every branch of its case split. -/
 theorem kappa_nonneg (d n : ℕ) : 0 ≤ kappa d n := by
   rw [kappa]
   split_ifs with h1 h2
@@ -287,6 +314,8 @@ theorem kappa_nonneg (d n : ℕ) : 0 ≤ kappa d n := by
     linarith
   · norm_num
 
+/-- **`gammaTot d n` is at most `Cg * kappa d n`**, once `n ≥ 1`, from the summability and the
+bound of `lem:gamma-sum`. -/
 theorem gammaTot_le (hd : 1 ≤ d) {Cg : ℝ}
     (hg : ∀ n : ℕ, 1 ≤ n →
       Summable (fun y : Site d => ⨆ m ∈ Set.Iic n, gamma d m y) ∧
@@ -296,10 +325,14 @@ theorem gammaTot_le (hd : 1 ≤ d) {Cg : ℝ}
   refine le_trans ?_ hle
   exact hsum.sum_le_tsum (boxFinset (0 : Site d) n) (fun y _ => gammaSup_nonneg hd n y)
 
+/-- `qvBound` is measurable, being a finite sum of constant multiples of the measurable
+odometer. -/
 theorem measurable_qvBound (n : ℕ) : Measurable fun ω : Data d => qvBound d n ω :=
   Finset.measurable_sum _ fun y _ =>
     ((measurable_from_countable' fun k : ℕ => (k : ℝ)).comp (measurable_U n y)).const_mul _
 
+/-- `qvBound d n ω ^ p` is integrable, dominated by the convex weighted-sum bound in terms of
+the integrable `p`-th moment of the odometer. -/
 theorem integrable_qvBound_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)

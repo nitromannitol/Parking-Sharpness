@@ -1,5 +1,16 @@
 import Parking.Support.RoundArrivalMean
 
+/-!
+# Table entries that can send a particle to a site
+
+`incomingSlots` collects the table entries at neighbors of `x` that could in principle
+send a particle to `x` in one round, and `sum_incomingSlots` rewrites a sum over them
+as an iterated sum over the neighbor and its rank. `entryAvoids` is the indicator that
+one entry misses `x`, and `noArrivals_eq_prod` expresses the event that no entry
+arrives at `x` as the product of these per-entry avoidance indicators, which is the
+starting point for a second-moment computation over the table.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -9,6 +20,8 @@ variable {d : ℕ}
 def incomingSlots (A : Site d → ℕ) (x : Site d) : Finset (RoundSlot d) :=
   (nbrFinset x).biUnion fun y => (Finset.range (A y)).image fun j => Sum.inl (y, j)
 
+/-- An inl-slot `(y, j)` belongs to `incomingSlots A x` iff `y` is a neighbor of `x`
+and `j` is within the active count `A y`. -/
 theorem mem_incomingSlots (A : Site d → ℕ) (x y : Site d) (j : ℕ) :
     Sum.inl (y, j) ∈ incomingSlots A x ↔ y ∈ nbrFinset x ∧ j < A y := by
   classical
@@ -22,7 +35,8 @@ theorem mem_incomingSlots (A : Site d → ℕ) (x y : Site d) (j : ℕ) :
 
 /-- Summation over incoming entries first sums over the neighboring sources and their ranks. -/
 theorem sum_incomingSlots (A : Site d → ℕ) (x : Site d) (f : RoundSlot d → ℝ) :
-    ∑ q ∈ incomingSlots A x, f q = ∑ y ∈ nbrFinset x, ∑ j ∈ Finset.range (A y), f (Sum.inl (y, j)) := by
+    ∑ q ∈ incomingSlots A x, f q =
+        ∑ y ∈ nbrFinset x, ∑ j ∈ Finset.range (A y), f (Sum.inl (y, j)) := by
   classical
   unfold incomingSlots
   rw [Finset.sum_biUnion]

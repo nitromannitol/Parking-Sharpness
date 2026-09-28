@@ -1,18 +1,21 @@
-/-
-The geometric lower tail of the range, the last sentence of Step 1 of the proof
-of `prop:resolvent` (`parking.tex:2700-2706`):
-
-  "The ranges traced within successive blocks of `n` steps, translated to their
-   starting points, are independent.  If `|R_t| < m`, each block range has fewer
-   than `m` sites, so `P_0(|R_t| < m)` is at most `(1-c)^{⌊t/n⌋}`."
-
-The independence of the blocks is the Markov property of the walk at the
-deterministic times `n, 2n, …`, which is `LatticeProb.markov_fixed`; the
-identification of the law of a block with the law of the walk from the origin is
-the translation invariance of the event, which holds because the number of
-distinct sites a path visits does not change when the path is translated.
--/
 import Parking.Support.RangeTail
+
+/-!
+# The geometric lower tail of the range
+
+The geometric lower tail of the range, the last sentence of Step 1 of the proof of
+`prop:resolvent` (`parking.tex:2700-2706`):
+
+"The ranges traced within successive blocks of `n` steps, translated to their starting
+points, are independent. If `|R_t| < m`, each block range has fewer than `m` sites, so
+`P_0(|R_t| < m)` is at most `(1-c)^{⌊t/n⌋}`."
+
+The independence of the blocks is the Markov property of the walk at the deterministic times
+`n, 2n, …`, which is `LatticeProb.markov_fixed`; the identification of the law of a block
+with the law of the walk from the origin is the translation invariance of the event, which
+holds because the number of distinct sites a path visits does not change when the path is
+translated.
+-/
 
 open MeasureTheory
 

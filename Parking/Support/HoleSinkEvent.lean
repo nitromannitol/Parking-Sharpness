@@ -1,12 +1,25 @@
 import Parking.Support.HoleNoArrival
 import Parking.Support.SinkField
 
+/-!
+# The surviving-hole event as an initial atom and a sink no-arrival event
+
+Rewrites the event that a site `v` remains an unmatched hole to time `T`, under the clipped
+field `clippedField η`, as the conjunction of the initial atom `clippedField η v = -1` and the
+event `noArrivalFlag (sparseSinkField T v η) ρ σ T v = true` that no active site has yet
+entered `v`'s priority list under the sparsified field that turns every site but `v` in the
+causal box into a sink. The two no-arrival flags agree by
+`noArrivalFlag_same_nonpositive_origin`, since `clippedField η` and `sparseSinkField T v η`
+agree away from `v` and are both nonpositive at `v`.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
 variable {d : ℕ}
 
-/-- The surviving-hole event is the initial negative atom intersected with no entrance to the sink. -/
+/-- The surviving-hole event is the initial negative atom intersected with no entrance to the
+sink. -/
 theorem clippedHole_eq_one_iff_sink (η : Site d → ℤ) (v : Site d)
     (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (T : ℕ) :
     (matchedState (clippedField η) ρ σ T).holes v = 1 ↔

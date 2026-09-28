@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightMoment
+
+/-!
+# The remaining-horizon reward field
+
 The remaining-horizon reward field of the directed scaling limit
 (`parking.tex:3207-3218`).
 
@@ -15,7 +19,6 @@ function of the scenery: its measurability, its values on the lattice of
 rescaled grid points, and the `p`-th moment bound of its increments from the
 scenery moment bound of `Parking.exists_oriented_potential_scenery_bound`.
 -/
-import Parking.Support.TightMoment
 
 open MeasureTheory LatticeProb
 

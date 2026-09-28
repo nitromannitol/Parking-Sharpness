@@ -1,4 +1,8 @@
-/-
+import Parking.Frozen.Transport
+
+/-!
+# Step 3 of `lem:critical-density`, from the survivor bound
+
 Step 3 of the proof of `lem:critical-density` (`parking.tex:1335-1353`), the part
 that is deterministic once the coupling of Steps 1 and 2 has produced the
 survivor bound.
@@ -12,7 +16,6 @@ for the integral of `1/x`.
 What remains of the node after this file is exactly the survivor bound: a
 threshold past which `S_t ≥ 1/(16t)`.
 -/
-import Parking.Frozen.Transport
 
 noncomputable section
 
@@ -61,6 +64,7 @@ theorem log_sub_log_le_sum_inv {T : ℕ} (hT : 1 ≤ T) :
 
 /-! ### The two conclusions from the survivor bound -/
 
+/-- `S_t`, the mean active count at the origin, is nonnegative. -/
 theorem S_nonneg (P : Measure (Data d)) (t : ℕ) : 0 ≤ S P t :=
   integral_nonneg fun _ => Nat.cast_nonneg _
 

@@ -1,4 +1,11 @@
-/-
+import Parking.Support.ResamplePairs
+import Parking.Support.RangeHitting
+import Parking.Frozen.ActivityHoles
+import Parking.Support.CriticalChain
+
+/-!
+# What Steps 1 and 2 of `lem:critical-density` owe the proof
+
 What Steps 1 and 2 of `lem:critical-density` (`parking.tex:1265-1334`) owe the
 rest of the proof, and the reduction of the lemma to it.
 
@@ -23,10 +30,6 @@ holes of the two processes at the origin, of which there are `4 S_t` in the mean
 turns it into the quadratic bound, and `Parking.critical_density_of_coupling`
 turns the quadratic bound into both conclusions of the lemma with `c = 1/16`.
 -/
-import Parking.Support.ResamplePairs
-import Parking.Support.RangeHitting
-import Parking.Frozen.ActivityHoles
-import Parking.Support.CriticalChain
 
 open LatticeProb (measurable_from_countable')
 
@@ -47,9 +50,11 @@ variable {d : ℕ}
 def hitSum (d : ℕ) (t : ℕ) : ℝ≥0∞ :=
   ∑' z : Site d, (if z = 0 then 0 else (walkLaw d) {p | ∃ j ≤ t, walkPath z p j = 0})
 
+/-- The hitting sum over `t` steps is at most `t`. -/
 theorem hitSum_le (hd : 1 ≤ d) (t : ℕ) : hitSum d t ≤ (t : ℝ≥0∞) :=
   tsum_hitZero_le hd t
 
+/-- The hitting sum is finite, being bounded by `t`. -/
 theorem hitSum_ne_top (hd : 1 ≤ d) (t : ℕ) : hitSum d t ≠ ⊤ :=
   ne_top_of_le_ne_top (ENNReal.natCast_ne_top t) (hitSum_le hd t)
 
@@ -59,6 +64,7 @@ theorem hitSum_toReal_le (hd : 1 ≤ d) (t : ℕ) : (hitSum d t).toReal ≤ (t :
   have := ENNReal.toReal_mono (ENNReal.natCast_ne_top t) h
   simpa using this
 
+/-- The real-valued hitting sum is nonnegative. -/
 theorem hitSum_toReal_nonneg (t : ℕ) : 0 ≤ (hitSum d t).toReal := ENNReal.toReal_nonneg
 
 

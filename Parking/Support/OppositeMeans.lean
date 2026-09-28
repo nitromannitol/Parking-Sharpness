@@ -1,11 +1,14 @@
-/-
+import Parking.Support.CancellationCount
+import Parking.Support.CouplingTarget
+import Parking.Support.ConfMoments
+
+/-!
+# Opposite-pair and discrepancy label means
+
 Nonnegative expectations of initial discrepancy labels and opposite pairs.
 Distinct resampling sites are independent; each sign has half the mean
 absolute change, giving the required half-square pair mean.
 -/
-import Parking.Support.CancellationCount
-import Parking.Support.CouplingTarget
-import Parking.Support.ConfMoments
 
 noncomputable section
 
@@ -79,7 +82,8 @@ theorem Parking.lintegral_negNat_resampleOne (ν : Measure ℤ) [IsProbabilityMe
     (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν)) :
     ∫⁻ q : ℤ × ℤ, (((q.1 - q.2).toNat : ℕ) : ℝ≥0∞) ∂(Parking.resampleOne ν p) =
       ENNReal.ofReal (p.toReal * Parking.gammaOf ν / 2) := by
-  have hm : Measurable fun q : ℤ × ℤ => (((q.2 - q.1).toNat : ℕ) : ℝ≥0∞) := measurable_of_countable _
+  have hm : Measurable fun q : ℤ × ℤ => (((q.2 - q.1).toNat : ℕ) : ℝ≥0∞) :=
+    measurable_of_countable _
   have he := lintegral_map (μ := Parking.resampleOne ν p) hm measurable_swap
   rw [Parking.resampleOne_map_swap] at he
   exact he.symm.trans (Parking.lintegral_posNat_resampleOne ν hp hint)

@@ -1,6 +1,11 @@
-/- Linearity and measurable evaluation of the weak heat residual. -/
 import Parking.Support.SpatialZeroIntegralTesting
 import LatticeProb.Prob.Scaling.SpaceTimeDerivativeAlgebra
+
+/-!
+# Algebra of the weak heat residual
+
+Linearity and measurable evaluation of the weak heat residual.
+-/
 
 open MeasureTheory Set
 open LatticeProb.Scaling.SpaceTimeDerivatives
@@ -8,6 +13,9 @@ noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- The pointwise difference of two space-time test functions is again a space-time
+test function: smoothness, compact support, and zero residual outside the support
+are each preserved by subtraction. -/
 theorem isSpaceTimeTest_sub {ψ χ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : IsSpaceTimeTest ψ) (hχ : IsSpaceTimeTest χ) :
     IsSpaceTimeTest (fun p => ψ p - χ p) := by
@@ -17,6 +25,9 @@ theorem isSpaceTimeTest_sub {ψ χ : ℝ × (Fin d → ℝ) → ℝ}
   · exact hψ.2.2 p hp
   · exact hχ.2.2 p hp
 
+/-- The continuum spatial operator `contOp`, applied at frozen time `p.1` to a
+difference `ψ - χ`, splits as the difference of `contOp` applied to each summand,
+by linearity of the underlying `spaceDeriv`. -/
 theorem spaceTime_contOp_sub {ψ χ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) (hχ : ContDiff ℝ (⊤ : ℕ∞) χ)
     (p : ℝ × (Fin d → ℝ)) :
@@ -28,6 +39,9 @@ theorem spaceTime_contOp_sub {ψ χ : ℝ × (Fin d → ℝ) → ℝ}
     ((contDiff_spaceDeriv hχ _).differentiable (by simp))]
   rw [Finset.sum_sub_distrib, sub_div]
 
+/-- The space-time residual functional `spaceTimeResidualTest` is additive under
+subtraction of the test function, combining linearity of `timeDeriv` with
+`spaceTime_contOp_sub`. -/
 theorem spaceTimeResidualTest_sub {ψ χ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : IsSpaceTimeTest ψ) (hχ : IsSpaceTimeTest χ)
     (p : ℝ × (Fin d → ℝ)) :
@@ -40,6 +54,9 @@ theorem spaceTimeResidualTest_sub {ψ χ : ℝ × (Fin d → ℝ) → ℝ}
   simp only [spaceTimeResidualTest, ht, spaceTime_contOp_sub hψ.1 hχ.1]
   ring
 
+/-- For continuous `u` and a space-time test function `ψ`, the product
+`u * spaceTimeResidualTest ψ` is integrable, since it is continuous and its support
+sits inside the compact support of `ψ`. -/
 theorem integrable_mul_spaceTimeResidualTest {u ψ : ℝ × (Fin d → ℝ) → ℝ}
     (hu : Continuous u) (hψ : IsSpaceTimeTest ψ) :
     Integrable (fun p => u p * spaceTimeResidualTest ψ p) := by
@@ -48,6 +65,9 @@ theorem integrable_mul_spaceTimeResidualTest {u ψ : ℝ × (Fin d → ℝ) → 
   exact HasCompactSupport.intro hψ.2.1 fun p hp =>
     spaceTimeResidualTest_eq_zero_of_notMem hψ hp
 
+/-- The integral of `u * spaceTimeResidualTest` is additive under subtraction of the
+test function, by combining `spaceTimeResidualTest_sub` with linearity of the
+Bochner integral. -/
 theorem integral_mul_spaceTimeResidualTest_sub {u ψ χ : ℝ × (Fin d → ℝ) → ℝ}
     (hu : Continuous u) (hψ : IsSpaceTimeTest ψ) (hχ : IsSpaceTimeTest χ) :
     (∫ p, u p * spaceTimeResidualTest (fun q => ψ q - χ q) p) =
@@ -56,6 +76,10 @@ theorem integral_mul_spaceTimeResidualTest_sub {u ψ χ : ℝ × (Fin d → ℝ)
   exact integral_sub (integrable_mul_spaceTimeResidualTest hu hψ)
     (integrable_mul_spaceTimeResidualTest hu hχ)
 
+/-- If `u ω` is continuous for every `ω` and `u · p` is measurable in `ω` for every
+`p`, then `ω ↦ ∫ p, u ω p * spaceTimeResidualTest ψ p` is measurable, by treating `u`
+as a jointly measurable uncurried map and applying Fubini-type measurability of the
+partial integral. -/
 theorem measurable_integral_mul_spaceTimeResidualTest
     {Ω : Type*} [MeasurableSpace Ω] {u : Ω → ℝ × (Fin d → ℝ) → ℝ}
     (hu : ∀ ω, Continuous (u ω)) (hum : ∀ p, Measurable fun ω => u ω p)

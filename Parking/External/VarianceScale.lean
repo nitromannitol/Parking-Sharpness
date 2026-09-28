@@ -75,6 +75,9 @@ private theorem tsum_reflect {d : ℕ} (x : Parking.Site d) (f : Parking.Site d 
   rw [h2]
   exact LatticeProb.tsum_shift x f
 
+/-- The sum of squared `CriticalScale.greenTime` values from the origin equals the sum of
+squared `LatticeProb.srwGreen` values, by identifying `greenTime` with `srwGreen` at the
+negated argument and reindexing the sum by `y ↦ -y`. -/
 theorem green_sq_eq (d t : ℕ) :
     (∑' y : Parking.Site d, Parking.CriticalScale.greenTime d t 0 y ^ 2)
       = ∑' y : Parking.Site d, LatticeProb.srwGreen d t y ^ 2 := by

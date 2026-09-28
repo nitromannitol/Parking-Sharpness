@@ -3,6 +3,17 @@ import Parking.Support.MatchedUniform
 import Parking.Support.FlatNoise
 import Parking.Support.TableQuadratic
 
+/-!
+# Deterministic bounds on the weighted odometer
+
+Deterministic (pathwise) bounds on the matched and Green-weighted odometers: the average of
+the matched odometer over the round noise is bounded by the trivial count-times-box bound of
+`matchedOdometer_le_box`, that same bound transfers to the Green-square-weighted sum over a
+box once every particle count is at most `1`, and the Green-weighted odometer is measurable
+in the flattened table of round noise. Nothing here uses the walk operator or the sizes of
+the underlying kernels beyond what `matchedOdometer_le_box` already assumes.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -24,7 +35,8 @@ theorem matchedMeanU_le_box (hd : 1 ≤ d) (η : Site d → ℤ) (N : ℕ)
 theorem greenWeightedOdometer_le_box (η : Site d → ℤ) (hη : ∀ y, (η y).toNat ≤ 1)
     (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (T : ℕ) (x : Site d) (R : ℕ) :
     greenWeightedOdometer η ρ σ T x R ≤
-      (∑ v ∈ boxFinset x R, walkOp (fun y => fullGreen d (y - x) ^ 2) v) * ((T * (2 * T + 1) ^ d : ℕ) : ℝ) := by
+      (∑ v ∈ boxFinset x R, walkOp (fun y => fullGreen d (y - x) ^ 2) v) *
+        ((T * (2 * T + 1) ^ d : ℕ) : ℝ) := by
   unfold greenWeightedOdometer
   rw [Finset.sum_mul]
   apply Finset.sum_le_sum
@@ -35,7 +47,8 @@ theorem greenWeightedOdometer_le_box (η : Site d → ℤ) (hη : ∀ y, (η y).
 /-- The finite Green-weighted odometer is measurable in the flattened table. -/
 theorem measurable_greenWeightedOdometer (hd : 1 ≤ d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) (R : ℕ) :
-    Measurable (fun ω : FlatRoundNoise d => greenWeightedOdometer η ρ (curryRoundNoise ω) T x R) := by
+    Measurable (fun ω : FlatRoundNoise d =>
+      greenWeightedOdometer η ρ (curryRoundNoise ω) T x R) := by
   have hS := measurableState_matchedState ⟨0, hd⟩ (fun _ : FlatRoundNoise d => η)
     (fun _ => ρ) curryRoundNoise measurable_const measurable_const measurable_curryRoundNoise T
   exact Finset.measurable_sum _ fun v _ =>

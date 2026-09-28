@@ -1,9 +1,16 @@
-/-
-Bounded ratios for fixed dimension-four laws and no bound uniform over laws.
--/
 import Parking.Support.MeanPos
 import Parking.Support.GrowthMeans
 import Parking.Frozen.FourSparse
+
+/-!
+# Dimension-four mean ratios: bounded per law, unbounded uniformly
+
+For each fixed critical law in dimension four, the ratio of the particle to the divisible
+odometer mean is bounded above and below by constants depending on that law
+(`four_mean_ratio_bounds`), but no single bound works uniformly over all critical laws: a
+family of three-point laws pushes the liminf of the ratio past any prescribed constant
+(`exists_four_mean_ratio_large`).
+-/
 
 noncomputable section
 namespace Parking

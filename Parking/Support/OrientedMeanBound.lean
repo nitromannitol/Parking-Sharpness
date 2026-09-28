@@ -1,10 +1,13 @@
-/-
-The mean of the directed particle odometer is bounded by the directed divisible
-mean plus the two error terms (`parking.tex:3315-3327`).
--/
 import Parking.Support.OrientedComparison
 import Parking.Support.OrientedCountLaw
 import Parking.Support.OrientedOdometer
+
+/-!
+# The particle mean bounded by the divisible mean plus two errors
+
+The mean of the directed particle odometer is bounded by the directed divisible
+mean plus the two error terms (`parking.tex:3315-3327`).
+-/
 
 noncomputable section
 namespace Parking

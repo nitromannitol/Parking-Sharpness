@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightLiftPhi
+import Parking.Support.TightHlawFdd
+import Parking.Support.TightContBoxLimit
+import Mathlib.MeasureTheory.Measure.Portmanteau
+
+/-!
+# `hlaw`: weak convergence of the box-reward law
+
 `hlaw` (`parking.tex:3214-3218`): the discrete box-reward law converges weakly to the
 continuum box-reward law on `C(rewardBox T A, ℝ)`.
 
@@ -11,16 +18,12 @@ recovery `Parking.liftPhi_coe_eq` rewrites both sides of the conclusion back to 
 `Φ0`-integrals against `Parking.boxRewardLaw`/`Parking.contBoxRewardLaw` via `integral_map`.
 
 `Parking.hlaw_orientedBoxReward` bootstraps this to every bounded CONTINUOUS `Φ0`, exactly as
-`LatticeProb.WeakLimit.exists_weak_limit` (`LatticeProb.WeakLimit`) bootstraps the real-line case: weak
-convergence of probability measures is equivalent to convergence against every bounded
-Lipschitz function (`tendsto_iff_forall_lipschitz_integral_tendsto`), and then automatically
-holds against every bounded continuous function
+`LatticeProb.WeakLimit.exists_weak_limit` (`LatticeProb.WeakLimit`) bootstraps the real-line
+case: weak convergence of probability measures is equivalent to convergence against every
+bounded Lipschitz function (`tendsto_iff_forall_lipschitz_integral_tendsto`), and then
+automatically holds against every bounded continuous function
 (`ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`).
 -/
-import Parking.Support.TightLiftPhi
-import Parking.Support.TightHlawFdd
-import Parking.Support.TightContBoxLimit
-import Mathlib.MeasureTheory.Measure.Portmanteau
 
 open LatticeProb.BoxClamp (rewardBox)
 open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contZ)

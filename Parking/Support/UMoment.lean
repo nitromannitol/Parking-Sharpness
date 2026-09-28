@@ -1,22 +1,3 @@
-/-
-The convex comparison of `Parking/Support/UFinite.lean` extended from the odometer to
-every convex nondecreasing Lipschitz function of it, and in particular to the hinges
-`t ↦ (t - c)⁺`.
-
-Step 1 of `lem:mean-horizon` (`parking.tex:2795-2815`) needs the `r`-th moment of the
-odometer, not its mean, and `η ↦ u η n x ^ r` is convex but not Lipschitz, so
-`LatticeProb.ConvexOrder.convex_lipschitz_integral_le_finite_pi` does not apply to it.  The hinges do
-apply, and for a nonnegative quantity they carry the whole moment: for an integer
-`k ≥ 2`,
-
-    t ^ k = ∫_0^∞ k (k-1) c ^ (k-2) (t - c)⁺ dc    (t ≥ 0),
-
-so a comparison of `∫ (u - c)⁺` at every level `c` integrates to a comparison of
-`∫ u ^ k`.  The comparison at each level is `integral_hinge_u_iid_le`, the
-representation of the moment is `lintegral_pow_u_iid_eq`, and the two combine in
-`lintegral_pow_u_iid_le`, stated in `ℝ≥0∞` so that no integrability of the moment is
-assumed, with the Bochner form `integral_pow_u_iid_le` alongside it.
--/
 import Parking.Support.UFinite
 import LatticeProb.Prob.ConvexOrder
 import LatticeProb.Prob.Laplace
@@ -27,6 +8,28 @@ import Parking.Support.UConvex
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
+/-!
+# The convex comparison extended to hinges and moments
+
+The convex comparison of `Parking/Support/UFinite.lean` extended from the odometer to
+every convex nondecreasing Lipschitz function of it, and in particular to the hinges
+`t ↦ (t - c)⁺`.
+
+Step 1 of `lem:mean-horizon` (`parking.tex:2795-2815`) needs the `r`-th moment of the
+odometer, not its mean, and `η ↦ u η n x ^ r` is convex but not Lipschitz, so
+`LatticeProb.ConvexOrder.convex_lipschitz_integral_le_finite_pi` does not apply to it.
+The hinges do apply, and for a nonnegative quantity they carry the whole moment: for
+an integer `k ≥ 2`,
+
+    t ^ k = ∫_0^∞ k (k-1) c ^ (k-2) (t - c)⁺ dc    (t ≥ 0),
+
+so a comparison of `∫ (u - c)⁺` at every level `c` integrates to a comparison of
+`∫ u ^ k`.  The comparison at each level is `integral_hinge_u_iid_le`, the
+representation of the moment is `lintegral_pow_u_iid_eq`, and the two combine in
+`lintegral_pow_u_iid_le`, stated in `ℝ≥0∞` so that no integrability of the moment is
+assumed, with the Bochner form `integral_pow_u_iid_le` alongside it.
+-/
+
 open LatticeProb.ConvexOrder (convex_lipschitz_integral_le_finite_pi)
 
 noncomputable section
@@ -35,6 +38,8 @@ open MeasureTheory LatticeProb
 open scoped NNReal
 variable {d : ℕ}
 
+/-- The hinge function `t ↦ max (t - c) 0` is convex, proved directly from the
+convexity inequality by splitting the affine combination inside the `max`. -/
 theorem convexOn_hinge (c : ℝ) : ConvexOn ℝ Set.univ (fun t : ℝ => max (t - c) 0) := by
   refine ⟨convex_univ, fun x _ y _ a b ha hb hab => ?_⟩
   simp only [smul_eq_mul]
@@ -46,15 +51,21 @@ theorem convexOn_hinge (c : ℝ) : ConvexOn ℝ Set.univ (fun t : ℝ => max (t 
       (mul_le_mul_of_nonneg_left (le_max_left _ _) hb)
   · exact add_nonneg (mul_nonneg ha (le_max_right _ _)) (mul_nonneg hb (le_max_right _ _))
 
+/-- The hinge function `t ↦ max (t - c) 0` is monotone, since shifting by `-c` preserves
+order and `max` with `0` is monotone in its first argument. -/
 theorem monotone_hinge (c : ℝ) : Monotone (fun t : ℝ => max (t - c) 0) :=
   fun _ _ h => max_le_max (by linarith) le_rfl
 
+/-- The hinge function `t ↦ max (t - c) 0` is `1`-Lipschitz, from the bound
+`|max (a, 0) - max (b, 0)| ≤ |a - b|` applied to `a = x - c` and `b = y - c`. -/
 theorem lipschitzWith_hinge (c : ℝ) : LipschitzWith 1 (fun t : ℝ => max (t - c) 0) := by
   refine LipschitzWith.of_dist_le_mul fun x y => ?_
   simp only [NNReal.coe_one, one_mul, Real.dist_eq]
   have h := abs_max_sub_max_le_abs (x - c) (y - c) 0
   simpa only [sub_sub_sub_cancel_right] using h
 
+/-- The composite `Φ ∘ F` of a convex function `F` with a convex, monotone function `Φ`
+is convex, by applying `Φ`'s convexity inequality to the bound `F` supplies. -/
 theorem convexOn_comp_of_monotone {ι : Type*} {F : (ι → ℝ) → ℝ}
     (hF : ConvexOn ℝ Set.univ F) {Φ : ℝ → ℝ} (hΦ : ConvexOn ℝ Set.univ Φ) (hmono : Monotone Φ) :
     ConvexOn ℝ Set.univ (fun x => Φ (F x)) := by
@@ -115,6 +126,8 @@ theorem integral_hinge_u_iid_le (hd : 1 ≤ d) {μ ν : Measure ℝ}
 
 /-! ### The hinge representation of a power -/
 
+/-- The weighted power `(m+2)(m+1)c^m(t-c)` integrates over `[0, t]` to `t ^ (m + 2)`,
+by expanding the product and applying the elementary power-integral formula twice. -/
 theorem intervalIntegral_hinge_pow (m : ℕ) (t : ℝ) :
     ∫ c in (0:ℝ)..t, (((m : ℝ) + 2) * ((m : ℝ) + 1) * c ^ m) * (t - c) = t ^ (m + 2) := by
   have hc1 : IntervalIntegrable (fun c : ℝ => ((m : ℝ) + 2) * ((m : ℝ) + 1) * t * c ^ m)
@@ -142,6 +155,9 @@ theorem intervalIntegral_hinge_pow (m : ℕ) (t : ℝ) :
   ring
 
 
+/-- Restricting the integral to `(0, t]`, where `max (t - c) 0` agrees with `t - c` and
+past which the hinge vanishes, turns `intervalIntegral_hinge_pow` into the same
+identity over `Set.Ioi 0`. -/
 theorem setIntegral_hinge_pow (m : ℕ) {t : ℝ} (ht : 0 ≤ t) :
     ∫ c in Set.Ioi (0:ℝ), (((m : ℝ) + 2) * ((m : ℝ) + 1) * c ^ m) * max (t - c) 0
       = t ^ (m + 2) := by
@@ -169,6 +185,9 @@ theorem setIntegral_hinge_pow (m : ℕ) {t : ℝ} (ht : 0 ≤ t) :
 
 /-! ### The moment comparison -/
 
+/-- The hinge weight function is integrable on `Set.Ioi 0`, splitting into the
+continuous, hence integrable, piece on `(0, t]` and the a.e.-zero piece on `(t, ∞)`
+where the hinge vanishes. -/
 theorem integrableOn_hinge_weight (m : ℕ) {t : ℝ} (ht : 0 ≤ t) :
     IntegrableOn (fun c : ℝ => (((m : ℝ) + 2) * ((m : ℝ) + 1) * c ^ m) * max (t - c) 0)
       (Set.Ioi (0:ℝ)) := by
@@ -186,17 +205,24 @@ theorem integrableOn_hinge_weight (m : ℕ) {t : ℝ} (ht : 0 ≤ t) :
   rw [← Set.Ioc_union_Ioi_eq_Ioi ht]
   exact h1.union h2
 
+/-- The hinge weight `(m+2)(m+1)c^m * max (t - c) 0` is nonnegative for `c ≥ 0`, as a
+product of two nonnegative factors. -/
 theorem hinge_weight_nonneg (m : ℕ) {c t : ℝ} (hc : 0 ≤ c) :
     0 ≤ (((m : ℝ) + 2) * ((m : ℝ) + 1) * c ^ m) * max (t - c) 0 := by
   have h1 : 0 ≤ ((m : ℝ) + 2) * ((m : ℝ) + 1) * c ^ m := by positivity
   exact mul_nonneg h1 (le_max_right _ _)
 
 
+/-- The real-field sandpile odometer `u` is nonnegative at every time, immediate from
+its `max 0 (·)` recursion. -/
 theorem u_nonneg {d : ℕ} (η : Site d → ℝ) (n : ℕ) (x : Site d) : 0 ≤ u η n x := by
   cases n with
   | zero => exact le_refl 0
   | succ n => exact le_max_left 0 _
 
+/-- The hinge `η ↦ max (u η n x - c) 0` is integrable under the i.i.d. law, dominated
+by `|u η n x| + |c|` via the Lipschitz bound `lipschitzWith_hinge` and the
+integrability of `u` from `integrable_u_iid`. -/
 theorem integrable_hinge_u_iid {d : ℕ} (hd : 1 ≤ d) (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (hμ : Integrable (id : ℝ → ℝ) μ) (c : ℝ) (n : ℕ) (x : Site d) :
     Integrable (fun η => max (u η n x - c) 0) (LatticeProb.iidLaw d μ) := by

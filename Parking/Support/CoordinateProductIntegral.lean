@@ -1,6 +1,14 @@
 import Mathlib.Probability.Independence.Integration
 import Mathlib.Probability.Independence.InfinitePi
 
+/-!
+# Expectation of a finite product of coordinate functions
+
+Under the infinite product measure `Measure.infinitePi μ`, the coordinate projections are
+mutually independent (`iIndepFun_infinitePi`), so the expectation of a finite product of
+functions of distinct coordinates equals the product of the individual expectations.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory
@@ -26,7 +34,8 @@ theorem integral_finset_prod_coordinates {ι : Type*} {X : ι → Type*} [∀ i,
   apply Finset.prod_congr rfl
   intro i _
   have hmap := measurePreserving_eval_infinitePi μ i
-  have he := integral_map (μ := Measure.infinitePi μ) hmap.measurable.aemeasurable (hf i).aestronglyMeasurable
+  have he := integral_map (μ := Measure.infinitePi μ) hmap.measurable.aemeasurable
+    (hf i).aestronglyMeasurable
   rw [hmap.map_eq] at he
   exact he.symm
 end Parking

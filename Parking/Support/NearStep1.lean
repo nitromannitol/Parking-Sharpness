@@ -1,4 +1,11 @@
-/-
+import Parking.Support.NearLower
+import Parking.Support.MeanHorizonProof
+import Parking.Support.NearOptimize
+import Parking.External.Stopping
+
+/-!
+# Step 1 of `prop:near-divisible`: the optimal stopping representation
+
 Step 1 of `prop:near-divisible` (`parking.tex:2863-2874`).
 
 "For each `n`, let `σ_n` be the first `j ≤ n` for which `u^δ_{n-j}(X_j) = 0`.
@@ -6,7 +13,7 @@ Dynamic programming shows that `σ_n` attains the supremum in eq:stopping.  Let
 `M_n = E σ_n`.  Since `η_δ = ξ_δ - δ`, Lemma lem:mean-horizon gives
 `E u_n^δ(0) ≤ C φ_d(M_n) - δ M_n`.  Taking the supremum over `M ≥ 0` gives the
 upper bound.  The resulting bound is uniform in `n`, so the monotone convergence
-theorem applies."
+result applies."
 
 The dynamic programming step is the shared library's optimal stopping
 representation, `LatticeProb.Graph.Zd.sandpileOptimalStopping'`: the odometer is
@@ -20,13 +27,9 @@ set), and the third is the countability of the range together with the
 measurability of the odometer in the configuration.
 
 The optimization over `M ≥ 0` is `Parking.exists_phi_sub_le_nearRate` of
-`Parking/Support/NearOptimize.lean`, and "the monotone convergence theorem
+`Parking/Support/NearOptimize.lean`, and "the monotone convergence result
 applies" is the supremum defining `Parking.meanuLimit`.
 -/
-import Parking.Support.NearLower
-import Parking.Support.MeanHorizonProof
-import Parking.Support.NearOptimize
-import Parking.External.Stopping
 
 open LatticeProb.ConvexOrder (integrable_intCast_of_exp)
 
@@ -53,12 +56,16 @@ theorem zdOptimalStop_eq (hd : 1 ≤ d) (ζ : Site d → ℝ) (n : ℕ) (X : ℕ
   ext k
   simp only [Set.mem_setOf_eq, zdStoppingValue_eq_u hd]
 
+/-- The horizon `n` itself always lies in the set `zdOptimalStop` takes the infimum of,
+since `u ζ (n - n) (X n) = u ζ 0 (X n) = 0`. -/
 theorem zdOptimalStop_mem (_hd : 1 ≤ d) (ζ : Site d → ℝ) (n : ℕ) (X : ℕ → Site d) :
     n ∈ {k : ℕ | k ≤ n ∧ u ζ (n - k) (X k) = 0} := by
   refine ⟨le_rfl, ?_⟩
   rw [Nat.sub_self]
   rfl
 
+/-- The optimal rule is bounded by the horizon `n`, since `n` lies in the set it takes
+the infimum of, by `zdOptimalStop_mem`. -/
 theorem zdOptimalStop_le (hd : 1 ≤ d) (ζ : Site d → ℝ) (n : ℕ) (X : ℕ → Site d) :
     LatticeProb.Graph.Zd.zdOptimalStop ζ n X ≤ n := by
   rw [zdOptimalStop_eq hd]
@@ -103,13 +110,20 @@ theorem u_eq_integral_zdOptimalStop (hd : 1 ≤ d) (ζ : Site d → ℝ) (n : �
 def optStop (n : ℕ) (η : Site d → ℤ) (X : ℕ → Site d) : ℕ :=
   LatticeProb.Graph.Zd.zdOptimalStop (fun y => ((η y : ℤ) : ℝ)) n X
 
+/-- Casting an integer configuration to a real-valued one is measurable, coordinate by
+coordinate, via `measurable_intCastReal`. -/
 theorem measurable_intField : Measurable (fun η : Site d → ℤ => (fun y => ((η y : ℤ) : ℝ))) :=
   measurable_pi_lambda _ fun y => measurable_intCastReal.comp (measurable_pi_apply y)
 
+/-- The odometer of the real cast of an integer configuration is measurable in that
+configuration, by composing `measurable_u_eval` with `measurable_intField`. -/
 theorem measurable_u_intField (m : ℕ) (z : Site d) :
     Measurable fun η : Site d → ℤ => u (fun y => ((η y : ℤ) : ℝ)) m z :=
   (measurable_u_eval m z).comp measurable_intField
 
+/-- `optStop n · X` is measurable in the configuration: each fibre over a value `k` is
+cut out by finitely many conditions on `u`, each measurable by `measurable_u_intField`,
+so `measurable_to_countable'` applies. -/
 theorem measurable_optStop (hd : 1 ≤ d) (n : ℕ) (X : ℕ → Site d) :
     Measurable fun η : Site d → ℤ => optStop n η X := by
   classical
@@ -162,11 +176,15 @@ theorem measurable_optStop (hd : 1 ≤ d) (n : ℕ) (X : ℕ → Site d) :
       rw [hset]
       exact MeasurableSet.univ
 
+/-- `optStop n η` is measurable in the walk, as a stopping time bounded by `n`, via the
+shared library's `measurable_isWalkStopping`. -/
 theorem measurable_optStop_walk (hd : 1 ≤ d) (n : ℕ) (η : Site d → ℤ) :
     Measurable (optStop n η) :=
   LatticeProb.measurable_isWalkStopping (isWalkStopping_zdOptimalStop hd _ n)
     (fun X => zdOptimalStop_le hd _ n X)
 
+/-- `optStop n η` is integrable over the walk, being bounded by the constant `n` via
+`zdOptimalStop_le`. -/
 theorem integrable_optStop_walk (hd : 1 ≤ d) (n : ℕ) (η : Site d → ℤ) :
     Integrable (fun X => ((optStop n η X : ℕ) : ℝ)) (LatticeProb.siteWalkLaw d (0 : Site d)) := by
   haveI : NeZero d := ⟨by omega⟩
@@ -177,6 +195,9 @@ theorem integrable_optStop_walk (hd : 1 ≤ d) (n : ℕ) (η : Site d → ℤ) :
   rw [Real.norm_eq_abs, abs_of_nonneg (Nat.cast_nonneg _)]
   exact_mod_cast zdOptimalStop_le hd _ n X
 
+/-- The reward summed up to the (measurable) stopping time `optStop n η` is measurable
+in the walk: it is rewritten as a finite `if`-selected sum over `i ≤ n`, each branch
+measurable. -/
 theorem measurable_rewardSum_walk (hd : 1 ≤ d) (δ : ℝ) (n : ℕ) (η : Site d → ℤ) :
     Measurable (fun X : ℕ → Site d =>
       ∑ j ∈ Finset.range (optStop n η X), Parking.xi δ η (X j)) := by
@@ -196,6 +217,9 @@ theorem measurable_rewardSum_walk (hd : 1 ≤ d) (δ : ℝ) (n : ℕ) (η : Site
   refine Finset.measurable_sum _ fun j _ => ?_
   exact (measurable_of_countable (Parking.xi δ η)).comp (measurable_pi_apply j)
 
+/-- The reward summed up to `optStop n η` is integrable over the walk, dominated by
+`n` times the sum of `|Parking.xi δ η z|` over the box of radius `n`, since the sum has
+at most `n` terms each bounded by that box sum. -/
 theorem integrable_rewardSum_walk (hd : 1 ≤ d) (δ : ℝ) (n : ℕ) (η : Site d → ℤ) :
     Integrable (fun X => ∑ j ∈ Finset.range (optStop n η X), Parking.xi δ η (X j))
       (LatticeProb.siteWalkLaw d (0 : Site d)) := by
@@ -246,6 +270,10 @@ theorem u_eq_rewardAvg_sub (hd : 1 ≤ d) (δ : ℝ) (n : ℕ) (η : Site d → 
     integral_sub (integrable_rewardSum_walk hd δ n η)
       ((integrable_optStop_walk hd n η).const_mul δ), rewardAvg, integral_const_mul]
 
+/-- The mean of `optStop n · X` over the walk is integrable in the configuration,
+bounded by the constant `n`: the joint map is measurable via
+`measurable_uncurry_stopping`, giving strong measurability of the fibrewise integral by
+`StronglyMeasurable.integral_prod_right'`. -/
 theorem integrable_optStopAvg (hd : 1 ≤ d) (n : ℕ) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     Integrable (fun η : Site d → ℤ =>
         ∫ X, ((optStop n η X : ℕ) : ℝ) ∂(LatticeProb.siteWalkLaw d (0 : Site d)))

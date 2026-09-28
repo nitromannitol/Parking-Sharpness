@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SpatWSceneryFdd
+
+/-!
+# Deterministic decomposition of the signed pair
+
 The deterministic decomposition of the signed pair, `eq:signed-density-decomposition`
 (`parking.tex:1765-1773`), and the conditional convergence it feeds: the part of `signedPair`'s
 convergence that does NOT depend on the value side, plus the exact conditional statement that does.
@@ -38,7 +42,6 @@ proves `signedPair`'s own convergence (relative to `scenePair`'s, established un
 `Parking.tendsto_scenePair_fdd`, `Parking/Support/SpatWSceneryFdd.lean`) from those two hypotheses
 alone, by a standard convergence-in-probability-of-a-sum argument.
 -/
-import Parking.Support.SpatWSceneryFdd
 
 open LatticeProb (measurable_from_countable')
 
@@ -102,6 +105,8 @@ theorem arrivals_sum_eq_range (stack : Site d × ℕ → Site d) (y : Site d) (�
   rw [tsum_eq_single (stack (y, j)) (fun x hx => if_neg (fun h => hx h.symm))]
   simp
 
+/-- If a site `x` lies in the box of radius `B` around the origin, every neighbour of `x` lies
+in the box of radius `B + 1`, by combining `x`'s own box bound with `nbrFinset_subset_box`. -/
 theorem nbrFinset_subset_boxFinset_succ {B : ℕ} {x : Site d}
     (hx : x ∈ boxFinset (0 : Site d) B) :
     nbrFinset x ⊆ boxFinset (0 : Site d) (B + 1) := by
@@ -115,6 +120,9 @@ theorem nbrFinset_subset_boxFinset_succ {B : ℕ} {x : Site d}
   rw [abs_le] at h1 h2 ⊢
   omega
 
+/-- If the arrival count at `x` from `y` over the first `m` steps of `ω.2.1` is nonzero, then
+`y` is a neighbour of `x`: some step index `j < m` moves from `y` to `x`, `hstep` forces `x`
+to be a neighbour of `y`, and `nbrFinset_symm` then gives the reverse neighbour relation. -/
 theorem arrivals_ne_zero_imp_mem_nbrFinset {ω : Data d}
     (hstep : ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1) (y x : Site d) (m : ℕ)
     (h : arrivals ω.2.1 y x m ≠ 0) : y ∈ nbrFinset x := by
@@ -250,7 +258,8 @@ theorem signedPair_eq_decomposition {ω : Data d}
     unfold walkOp nbrSum
     have hterm : ∀ i : Fin d, φ (fun j => ((y + unit i) j : ℝ) / R) = 0
         ∧ φ (fun j => ((y - unit i) j : ℝ) / R) = 0 :=
-      fun i => ⟨hnbrvanish y hy _ (mem_nbrFinset_add y i), hnbrvanish y hy _ (mem_nbrFinset_sub y i)⟩
+      fun i => ⟨hnbrvanish y hy _ (mem_nbrFinset_add y i),
+        hnbrvanish y hy _ (mem_nbrFinset_sub y i)⟩
     have hsum0 : (∑ i : Fin d, (φ (fun j => ((y + unit i) j : ℝ) / R)
         + φ (fun j => ((y - unit i) j : ℝ) / R))) = 0 := by
       apply Finset.sum_eq_zero
@@ -340,7 +349,8 @@ theorem signedMiddle_eq_sceneryBox_sum {φ : (Fin d → ℝ) → ℝ} {B : ℝ} 
     unfold walkOp nbrSum
     have hterm : ∀ i : Fin d, φ (fun j => ((y + unit i) j : ℝ) / R) = 0
         ∧ φ (fun j => ((y - unit i) j : ℝ) / R) = 0 :=
-      fun i => ⟨hnbrvanish y hy _ (mem_nbrFinset_add y i), hnbrvanish y hy _ (mem_nbrFinset_sub y i)⟩
+      fun i => ⟨hnbrvanish y hy _ (mem_nbrFinset_add y i),
+        hnbrvanish y hy _ (mem_nbrFinset_sub y i)⟩
     have hsum0 : (∑ i : Fin d, (φ (fun j => ((y + unit i) j : ℝ) / R)
         + φ (fun j => ((y - unit i) j : ℝ) / R))) = 0 := by
       apply Finset.sum_eq_zero

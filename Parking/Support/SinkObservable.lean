@@ -1,6 +1,17 @@
 import Parking.Support.SinkMean
 import Parking.Support.FlatMean
 
+/-!
+# Real-valued observables of the sparse sink process
+
+This file packages the matched departures of the sparse sink field as a real-valued,
+measurable, uniformly bounded observable `sparseSinkTableU` of the joint instruction and
+noise data, records that its conditional mean over the field law recovers
+`matchedMeanU (sparseSinkField ...)`, and defines the predictable entrance compensator
+`sparseSinkLambda` as its neighbor average at the origin, whose expectation is the
+compensator mean `walkOp (sparseSinkMean p T) 0`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -12,18 +23,27 @@ variable {d : ℕ}
 def sparseSinkTableU (T : ℕ) (v x : Site d) (z : (Site d → ℤ) × FlatRoundNoise d) : ℝ :=
   ((matchedState (sparseSinkField T v z.1) 0 (curryRoundNoise z.2) T).departures x : ℝ)
 
+/-- The sink table odometer is nonnegative, being the cast of a `ℕ`-valued departure
+count. -/
 theorem sparseSinkTableU_nonneg (T : ℕ) (v x : Site d) (z : (Site d → ℤ) × FlatRoundNoise d) :
     0 ≤ sparseSinkTableU T v x z := Nat.cast_nonneg _
 
+/-- The sink table odometer never exceeds the clipped table odometer at the same site,
+by `sparseSink_odometer_le` applied to the curried instruction and noise data. -/
 theorem sparseSinkTableU_le (T : ℕ) (v x : Site d) (z : (Site d → ℤ) × FlatRoundNoise d) :
     sparseSinkTableU T v x z ≤ clippedTableU T x z :=
   Nat.cast_le.mpr (sparseSink_odometer_le T v z.1 0 (curryRoundNoise z.2) T x)
 
+/-- The sink table odometer is bounded by the box-counting bound `T * (2T + 1) ^ d`,
+inherited from the clipped table odometer via `sparseSinkTableU_le`. -/
 theorem sparseSinkTableU_bound (T : ℕ) (v x : Site d) (z : (Site d → ℤ) × FlatRoundNoise d) :
     |sparseSinkTableU T v x z| ≤ ((T * (2 * T + 1) ^ d : ℕ) : ℝ) := by
   rw [abs_of_nonneg (sparseSinkTableU_nonneg T v x z)]
   exact (sparseSinkTableU_le T v x z).trans ((le_abs_self _).trans (clippedTableU_bound T x z))
 
+/-- The sink table odometer is measurable in the joint instruction and noise data, since
+the underlying matched state is measurable and departures are a countable-valued
+coordinate of it. -/
 theorem measurable_sparseSinkTableU (hd : 1 ≤ d) (T : ℕ) (v x : Site d) :
     Measurable (sparseSinkTableU T v x) := by
   have hS := measurableState_matchedState ⟨0, hd⟩
@@ -50,17 +70,24 @@ theorem integral_sparseSinkTableU (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
 def sparseSinkLambda (T : ℕ) (z : (Site d → ℤ) × FlatRoundNoise d) : ℝ :=
   walkOp (fun x => sparseSinkTableU T 0 x z) 0
 
+/-- The entrance compensator is nonnegative, as a neighbor average of the nonnegative
+sink table odometer. -/
 theorem sparseSinkLambda_nonneg (T : ℕ) (z : (Site d → ℤ) × FlatRoundNoise d) :
     0 ≤ sparseSinkLambda T z := by
   unfold sparseSinkLambda
   rw [walkOp_eq_nbrFinset]
   exact div_nonneg (Finset.sum_nonneg fun x _ => sparseSinkTableU_nonneg T 0 x z) (by positivity)
 
-theorem measurable_sparseSinkLambda (hd : 1 ≤ d) (T : ℕ) : Measurable (sparseSinkLambda (d := d) T) := by
+/-- The entrance compensator is measurable, as a finite average of the measurable sink
+table odometers over the neighbors of the origin. -/
+theorem measurable_sparseSinkLambda (hd : 1 ≤ d) (T : ℕ) :
+    Measurable (sparseSinkLambda (d := d) T) := by
   change Measurable (fun z => sparseSinkLambda T z)
   simp only [sparseSinkLambda, walkOp_eq_nbrFinset]
   exact (Finset.measurable_sum _ fun x _ => measurable_sparseSinkTableU hd T 0 x).div_const _
 
+/-- The entrance compensator inherits the box-counting bound `T * (2T + 1) ^ d` from the
+sink table odometer at each neighbor. -/
 theorem sparseSinkLambda_bound (hd : 1 ≤ d) (T : ℕ) (z : (Site d → ℤ) × FlatRoundNoise d) :
     |sparseSinkLambda T z| ≤ ((T * (2 * T + 1) ^ d : ℕ) : ℝ) := by
   rw [abs_of_nonneg (sparseSinkLambda_nonneg T z)]
@@ -74,7 +101,8 @@ theorem integral_sparseSinkLambda (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p
   haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   haveI := flatRoundNoiseLaw_isProbability hd
   unfold sparseSinkLambda
-  rw [integral_walkOp _ _ _ (fun x _ => Integrable.of_bound (measurable_sparseSinkTableU hd T 0 x).aestronglyMeasurable _
+  rw [integral_walkOp _ _ _ (fun x _ => Integrable.of_bound
+    (measurable_sparseSinkTableU hd T 0 x).aestronglyMeasurable _
     (ae_of_all _ (sparseSinkTableU_bound T 0 x)))]
   congr 1
   funext x

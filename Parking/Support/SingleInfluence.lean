@@ -1,6 +1,18 @@
 import Parking.Support.SingleAddition
 import Parking.Support.LabelGreen
 
+/-!
+# Single-particle influence on the matched odometer
+
+This file isolates the effect of adding one initial particle at a site `v` on the
+coupled odometer of the matching dynamics. It shows the discrepancy created by
+`addParticle v η` is carried entirely by the single label `(v, 0)`
+(`singleAddition_count_difference`), sums this over rounds to express the odometer
+difference as a sum of `discrepancyDeparture` terms (`singleAddition_odometer_difference`),
+and bounds its expectation under the round-noise law by the full Green's function
+`fullGreen d (v - x)` when `d ≥ 3` (`integral_singleAddition_odometer_difference_le`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

@@ -1,12 +1,16 @@
-/-
-Mass transport for surviving discrepancy labels. Finite speed expresses sent
-and received mass as finite sums. Translation covariance and invariance of
-the full coupling law identify their nonnegative expectations.
--/
 import Parking.Support.DiscrepancyShift
 import Parking.Support.CoupledInvariance
 import Parking.Support.DiscrepancyMeas
 import Parking.Support.MassTransport
+
+/-!
+# Mass transport for surviving discrepancy labels
+
+Mass transport for surviving discrepancy labels. Finite speed expresses sent and received mass
+as finite sums, `discrepancySentTo` recording the mass carried from one site to another.
+Translation covariance and invariance of the full coupling law identify the nonnegative
+expectations of the mass received at and sent from a site.
+-/
 
 noncomputable section
 
@@ -28,6 +32,8 @@ def Parking.discrepancySentTo (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ �
     (Parking.discrepancyState c ρ σ t).active (a, i) ∧
       (Parking.discrepancyState c ρ σ t).pos (a, i) = b).card
 
+/-- The labels present at `b` are exactly those sent to `b` from some site within reach, so
+their count is `∑ a ∈ boxFinset b t, discrepancySentTo c ρ σ t a b`. -/
 theorem Parking.discrepancyAt_eq_sum_sentTo (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (b : Site d) :
     (Parking.discrepancyAt c (Parking.discrepancyState c ρ σ t) t b).card =
@@ -35,6 +41,8 @@ theorem Parking.discrepancyAt_eq_sum_sentTo (c : Site d → ℤ × ℤ)
   classical
   exact Parking.card_filter_candidates_eq_sum (Parking.discrepancyConf c) b t _
 
+/-- The survivors created at `a` partition by destination, so `discrepancySurvivors c ρ σ t a`
+equals `∑ b ∈ boxFinset a t, discrepancySentTo c ρ σ t a b`. -/
 theorem Parking.discrepancySurvivors_eq_sum_sentTo (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (a : Site d) :
     Parking.discrepancySurvivors c ρ σ t a =
@@ -50,6 +58,8 @@ theorem Parking.discrepancySurvivors_eq_sum_sentTo (c : Site d → ℤ × ℤ)
   intro b _
   rw [Parking.discrepancySentTo, Finset.filter_filter]
 
+/-- `discrepancySentTo` commutes with a simultaneous translation of the configuration, ranks,
+noise and both endpoints. -/
 theorem Parking.discrepancySentTo_shift (v : Site d) (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (a b : Site d) :
     Parking.discrepancySentTo (fun y => c (y + v)) (LatticeProb.shiftRank v ρ)
@@ -64,7 +74,8 @@ theorem Parking.discrepancySentTo_shift (v : Site d) (c : Site d → ℤ × ℤ)
 
 /-- Joint measurability of the label mass sent between two sites. -/
 theorem Parking.measurable_discrepancySentTo (hd : 1 ≤ d) (t : ℕ) (a b : Site d) :
-    Measurable fun ω : Parking.CoupledData d => Parking.discrepancySentTo ω.1.1 ω.1.2 ω.2 t a b := by
+    Measurable fun ω : Parking.CoupledData d =>
+      Parking.discrepancySentTo ω.1.1 ω.1.2 ω.2 t a b := by
   classical
   have hS := Parking.measurableState_discrepancyState (Ω := Parking.CoupledData d) ⟨0, hd⟩
     (fun ω => ω.1.1) (fun ω => ω.1.2) Prod.snd

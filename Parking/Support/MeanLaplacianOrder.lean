@@ -1,6 +1,16 @@
 import Parking.Support.MatchedMeanBalance
 import Parking.Support.MatchedMonotone
 
+/-!
+# Monotonicity of the mean odometer's Laplacian
+
+If two initial fields `η ≤ ζ` agree at a site `x` and are bounded by a common constant `K`,
+the mean odometer's discrete Laplacian `walkOp (matchedMeanU · ρ t) x - matchedMeanU · ρ t x`
+at `x` is monotone in the field, comparing `η` against `ζ`. The proof rewrites both sides via
+the signed balance identity `matchedMeanU_signed_balance` and compares the resulting
+particle- and hole-count integrals termwise using `matched_counts_mono`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

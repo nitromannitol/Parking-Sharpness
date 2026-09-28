@@ -1,4 +1,8 @@
-/-
+import Parking.Support.RangeResolvent
+
+/-!
+# Proposition 11.2: the range resolvent bound (frozen)
+
 Proposition 11.2 of parking.tex, frozen.  `parking.tex:2643-2663` (label
 `prop:resolvent`):
 
@@ -15,7 +19,6 @@ Summability of the tail sum is asserted alongside its bound, so that a
 divergent series cannot satisfy the statement through the junk value of a
 nonsummable `tsum`.
 -/
-import Parking.Support.RangeResolvent
 
 open MeasureTheory
 

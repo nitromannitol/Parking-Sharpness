@@ -1,23 +1,22 @@
-/-
-The conditional mean of the increments of `lem:w-martingale`.
-
-The increment at step `i` is the discrepancy, at the instruction the exploration
-reads there, between the truncated Green function at the site that instruction
-points to and its average over the neighbours of the site the instruction sits
-at.  Conditionally on what the exploration has revealed by step `i` the site is
-known and the instruction is not, so the mean of the increment is the mean of the
-discrepancy under the instruction law, which is zero by the definition of the
-walk operator.
-
-The argument is pathwise where it can be.  The pair the exploration reads at
-step `i` and the round that pair belongs to are unchanged when the instructions
-the exploration has not read are erased, so the events on which they take
-prescribed values lie in the sigma-algebra of step `i`; and on such an event the
-instruction at the prescribed pair has not been read, so overwriting it moves
-nothing, and the library's one-coordinate factorization applies.
--/
 import Parking.Support.WFiltration
 import LatticeProb.Prob.CoordIntegral
+
+/-!
+# The conditional mean of the increments vanishes
+
+The conditional mean of the increments of `lem:w-martingale`. The increment at step `i` is
+the discrepancy, at the instruction the exploration reads there, between the truncated Green
+function at the site that instruction points to and its average over the neighbours of the
+site the instruction sits at. Conditionally on what the exploration has revealed by step `i`
+the site is known and the instruction is not, so the mean of the increment is the mean of the
+discrepancy under the instruction law, which is zero by the definition of the walk operator.
+
+The argument is pathwise where it can be. The pair the exploration reads at step `i` and the
+round that pair belongs to are unchanged when the instructions the exploration has not read
+are erased, so the events on which they take prescribed values lie in the sigma-algebra of
+step `i`; and on such an event the instruction at the prescribed pair has not been read, so
+overwriting it moves nothing, and the library's one-coordinate factorization applies.
+-/
 
 open LatticeProb (instructionLaw_isProbability integral_mul_eval_prod rankLaw_isProbability)
 
@@ -160,6 +159,8 @@ theorem wRound_congr_of_reads (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d
       blockPrefix_congr (hblocks (n - 1) le_rfl hlen')
     rw [if_neg hi, if_neg (by rw [← heq]; exact hi)]
 
+/-- The round the exploration reads at step `i` is unchanged by erasing the instructions it
+has not read by step `i`: the case `k = i` of `wRound_congr_of_reads`. -/
 theorem wRound_wTrunc (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
     wRound i₀ n i (wTrunc i₀ n i ω) = wRound i₀ n i ω := by
   have hread : ∀ k, k < i →
@@ -170,6 +171,8 @@ theorem wRound_wTrunc (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
       (wTrunc_stack_of_read i₀ n i ω hk).symm⟩
   exact (wRound_congr_of_reads i₀ ω.1 ω.2.2 n i hread).symm
 
+/-- The pair the exploration reads at step `i` is unchanged by erasing the instructions it
+has not read by step `i`: the case `k = i` of `wPair_wTrunc`. -/
 theorem wPair_wTrunc_self (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
     wPair i₀ n i (wTrunc i₀ n i ω) = wPair i₀ n i ω :=
   wPair_wTrunc i₀ n i ω i le_rfl
@@ -177,6 +180,8 @@ theorem wPair_wTrunc_self (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
 
 /-! ### The pair and the round are measurable, and read only what is revealed -/
 
+/-- The round the exploration reads at step `i` is measurable, being determined by the
+odometers of every round inside the largest box together with the pair read there. -/
 theorem measurable_wRound (i₀ : Fin d) (n i : ℕ) : Measurable (wRound i₀ n i) := by
   classical
   refine measurable_of_determined (wIncObs i₀ n i) (measurable_wIncObs i₀ n i) _ ?_
@@ -210,6 +215,8 @@ theorem measurable_wRound (i₀ : Fin d) (n i : ℕ) : Measurable (wRound i₀ n
   · have hi' : ¬ i < (blockPrefix (wProj i₀ ω2) n (n - 1)).length := by rw [← hL]; exact hi
     rw [wRound, wRound, if_neg hi, if_neg hi']
 
+/-- The pair the exploration reads at step `i` is measurable for the sigma-algebra of what
+the exploration has revealed by step `i`. -/
 theorem measurable_wPair_wFiltration (i₀ : Fin d) (n i : ℕ) :
     Measurable[wFiltration i₀ n i] (wPair i₀ n i) := by
   have hself : Measurable[wFiltration i₀ n i,
@@ -220,6 +227,8 @@ theorem measurable_wPair_wFiltration (i₀ : Fin d) (n i : ℕ) :
     (measurable_wPair i₀ n i).comp hself
   simpa only [wPair_wTrunc_self] using hcomp
 
+/-- The round the exploration reads at step `i` is measurable for the sigma-algebra of what
+the exploration has revealed by step `i`. -/
 theorem measurable_wRound_wFiltration (i₀ : Fin d) (n i : ℕ) :
     Measurable[wFiltration i₀ n i] (wRound i₀ n i) := by
   have hself : Measurable[wFiltration i₀ n i,
@@ -269,6 +278,9 @@ round `s`. -/
 def wEvent (i₀ : Fin d) (n i : ℕ) (q : Site d × ℕ) (s : ℕ) : Set (Data d) :=
   {ω | wPair i₀ n i ω = q ∧ wRound i₀ n i ω = s}
 
+/-- The event `wEvent i₀ n i q s` is measurable for the sigma-algebra of what the
+exploration has revealed by step `i`, being the intersection of the fibres of the
+measurable pair and round it reads there. -/
 theorem measurableSet_wEvent (i₀ : Fin d) (n i : ℕ) (q : Site d × ℕ) (s : ℕ) :
     MeasurableSet[wFiltration i₀ n i] (wEvent i₀ n i q s) :=
   ((measurable_wPair_wFiltration i₀ n i) (measurableSet_singleton q)).inter
@@ -324,6 +336,8 @@ def wDisc (i₀ : Fin d) (n : ℕ) (q : Site d × ℕ) (s : ℕ) (z : Site d) : 
   green d (n - s) (if z ∈ nbrFinset q.1 then z else q.1 + unit i₀)
     - walkOp (green d (n - s)) q.1
 
+/-- The walk average is invariant under subtracting a constant off its argument, since the
+constant's own average over the neighbours is itself. -/
 theorem walkOp_sub_const (hd : 1 ≤ d) (u : Site d → ℝ) (C : ℝ) (y : Site d) :
     walkOp (fun z => u z - C) y = walkOp u y - C := by
   have hne : (2 * (d : ℝ)) ≠ 0 := by
@@ -345,6 +359,8 @@ theorem integral_wDisc (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (q : Site d × �
     - walkOp (green d (n - s)) q.1) q.1 = 0
   rw [walkOp_sub_const hd, walkOp_nbrProjVal i₀ (green d (n - s)) q.1, sub_self]
 
+/-- The discrepancy at a prescribed pair is measurable, being a function of the instruction
+on a countable space. -/
 theorem measurable_wDisc (i₀ : Fin d) (n : ℕ) (q : Site d × ℕ) (s : ℕ) :
     Measurable (wDisc i₀ n q s) := Measurable.of_discrete
 
@@ -360,6 +376,8 @@ theorem wXi_eq_wDisc (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (q : Site d × �
 
 /-! ### The integral of an increment over one piece of the filtration -/
 
+/-- The discrepancy `wDisc i₀ n q s z` is bounded in absolute value by `2n`, since the
+truncated Green function `green d (n - s)` it involves is bounded between `0` and `n - s`. -/
 theorem abs_wDisc_le (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (q : Site d × ℕ) (s : ℕ) (z : Site d) :
     |wDisc i₀ n q s z| ≤ 2 * n := by
   have h1 : 0 ≤ green d (n - s) (if z ∈ nbrFinset q.1 then z else q.1 + unit i₀) :=

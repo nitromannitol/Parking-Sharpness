@@ -1,11 +1,22 @@
-/- A positive sparse comparison parameter for every centered nonconstant integer law. -/
 import Parking.Support.IntegerSparseComparison
 import Parking.Support.MasterChain
+
+/-!
+# A sparse comparison parameter for centered nonconstant integer laws
+
+A positive sparse comparison parameter for every centered nonconstant integer law. This
+file shows every centered, nonconstant, integrable integer law puts positive mass on the
+positive integers, and extracts from this a positive `p ≤ 1/2` bounded above by that mass,
+serving as a sparse three-point comparison parameter.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 
+/-- Every centered, nonconstant, integrable integer law `ν` places positive mass on the
+positive integers, since otherwise the mean-zero condition would force the negative part
+of the identity to have zero integral as well. -/
 theorem measure_positive_integers_pos (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hnc : ∀ k : ℤ, ν {k} ≠ 1) (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
     (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0) : 0 < ν.real {k : ℤ | 1 ≤ k} := by
@@ -25,6 +36,9 @@ theorem measure_positive_integers_pos (ν : Measure ℤ) [IsProbabilityMeasure �
     exact (lt_irrefl 0) hpos
   exact ENNReal.toReal_pos hν (measure_ne_top _ _)
 
+/-- Every centered, nonconstant, integrable integer law `ν` admits a comparison parameter
+`p` with `0 < p`, `2p ≤ 1`, and `p` no greater than the mass `ν` places on the positive
+integers, obtained by halving that positive mass. -/
 theorem exists_sparse_comparison_parameter (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hnc : ∀ k : ℤ, ν {k} ≠ 1) (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
     (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0) :

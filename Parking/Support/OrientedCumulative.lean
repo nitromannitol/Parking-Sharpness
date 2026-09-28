@@ -1,4 +1,8 @@
-/- The cumulative routing discrepancy of one instruction.
+import Parking.Support.OrientedRoutingCoordinate
+import Parking.Support.OrientedInstructionIntegral
+
+/-!
+# Cumulative routing discrepancy of one instruction
 
 In the regrouping of the directed error field of `parking.tex:3255-3265` by
 INSTRUCTION rather than by round, the instruction `(y,j)` contributes, once and
@@ -11,8 +15,6 @@ centred, and its second moment is the truncated Green variance
 at one time only, so the cumulative variance is the sum of the one-step
 variances, which is `Parking.orientedGamma_eq_sum`.
 -/
-import Parking.Support.OrientedRoutingCoordinate
-import Parking.Support.OrientedInstructionIntegral
 
 noncomputable section
 namespace Parking
@@ -24,6 +26,8 @@ horizons `l < M`. -/
 def orientedCumDisc (M : ℕ) (y z : Site d) : ℝ :=
   ∑ l ∈ range M, orientedRouteDisc l y z
 
+/-- The cumulative discrepancy over zero horizons is zero, since it sums over the
+empty range. -/
 theorem orientedCumDisc_zero (y z : Site d) : orientedCumDisc 0 y z = 0 := by
   simp [orientedCumDisc]
 

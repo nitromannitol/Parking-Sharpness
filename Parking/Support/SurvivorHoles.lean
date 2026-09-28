@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Coupling
+
+/-!
+# No unfilled hole where a survivor has stood
+
 The first half of Step 1 of `thm:subcritical` (`parking.tex:2463-2470`).
 
 "On `{F = 1}`, particle 1 fills no hole... Every hole at a site it visits is
@@ -11,7 +15,6 @@ which shrink by the number of arrivals, are exhausted in that round; and hole
 counts never grow.  A particle still active at time `t` has settled in no round
 up to `t`, so every site it has visited carries no unfilled hole at time `t`.
 -/
-import Parking.Support.Coupling
 
 noncomputable section
 

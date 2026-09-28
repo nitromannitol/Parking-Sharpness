@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Exposure
+import Parking.Support.DeferredIntegral
+import LatticeProb.Prob.Exposure
+
+/-!
+# The exposure product rule
+
 The second clause of `lem:exposure`: conditionally on the exposure filtration,
 the instructions the odometer has not reached are independent with their own
 laws.
@@ -20,9 +26,6 @@ product then applies to the indicator of such a set, one coordinate at a time,
 and gives the identity of set integrals that characterizes the conditional
 expectation.
 -/
-import Parking.Support.Exposure
-import Parking.Support.DeferredIntegral
-import LatticeProb.Prob.Exposure
 
 open LatticeProb (instructionLaw_isProbability rankLaw_isProbability)
 
@@ -112,7 +115,8 @@ def UpdInvariant (d k : ℕ) (s : Finset (Site d × ℕ)) (c : Site d × ℕ →
       ((((η, σ, r) : Data d) ∈ A) ↔ (((η, Function.update σ q₀ (c q₀), r) : Data d) ∈ A))
 
 /-- Those sets form a σ-algebra. -/
-@[implicit_reducible] def updInvSpace (d k : ℕ) (s : Finset (Site d × ℕ)) (c : Site d × ℕ → Site d) :
+@[implicit_reducible] def updInvSpace (d k : ℕ) (s : Finset (Site d × ℕ))
+    (c : Site d × ℕ → Site d) :
     MeasurableSpace (Data d) where
   MeasurableSet' := UpdInvariant d k s c
   measurableSet_empty := by intro q₀ _ η σ r _ _; simp
@@ -177,6 +181,8 @@ rounds. -/
 def unreadSet (d k : ℕ) (s : Finset (Site d × ℕ)) : Set (Data d) :=
   {ω : Data d | ∀ q ∈ s, U ω k q.1 ≤ q.2}
 
+/-- `unreadSet d k s` is measurable, being the finite intersection over `q ∈ s` of
+the measurable events `{U ω k q.1 ≤ q.2}`. -/
 theorem measurableSet_unreadSet (k : ℕ) (s : Finset (Site d × ℕ)) :
     MeasurableSet (unreadSet d k s) := by
   have hrw : unreadSet d k s = ⋂ q ∈ s, {ω : Data d | U ω k q.1 ≤ q.2} := by
@@ -319,6 +325,8 @@ theorem exposure_core_given (hd : 1 ≤ d) (s : Finset (Site d × ℕ))
 
 /-! ### The product rule under the law -/
 
+/-- The `{0, 1}`-valued indicator of a measurable set is integrable under any finite
+measure, being dominated by the constant function `1`. -/
 theorem integrable_indicator_one {α : Type*} [MeasurableSpace α] {μ : Measure α}
     [IsFiniteMeasure μ] {S : Set α} (hS : MeasurableSet S) :
     Integrable (Set.indicator S (fun _ => (1 : ℝ))) μ := by
@@ -334,6 +342,8 @@ def prescribedSet (d : ℕ) (s : Finset (Site d × ℕ)) (f : Site d × ℕ → 
     Set (Data d) :=
   {ω : Data d | ∀ q ∈ s, ω.2.1 q ∈ ({f q} : Set (Site d))}
 
+/-- `prescribedSet d s f` is measurable, being the finite intersection over `q ∈ s` of
+the measurable events `{ω.2.1 q = f q}`. -/
 theorem measurableSet_prescribedSet (s : Finset (Site d × ℕ)) (f : Site d × ℕ → Site d) :
     MeasurableSet (prescribedSet d s f) := by
   have hrw : prescribedSet d s f = ⋂ q ∈ s, {ω : Data d | ω.2.1 q = f q} := by
@@ -344,6 +354,9 @@ theorem measurableSet_prescribedSet (s : Finset (Site d × ℕ)) (f : Site d × 
     (measurable_pi_apply q).comp (measurable_fst.comp measurable_snd)
   exact hm (measurableSet_singleton (f q))
 
+/-- The indicator of `W` times the product of the prescribed-value indicators over `s`
+equals the indicator of `prescribedSet d s f ∩ W`, via
+`LatticeProb.prod_indicator_eval_eq` and `Set.indicator_indicator`. -/
 theorem indicator_prescribed_mul (s : Finset (Site d × ℕ)) (f : Site d × ℕ → Site d)
     (W : Set (Data d)) :
     (fun ω : Data d => Set.indicator W (fun _ => (1 : ℝ)) ω
@@ -427,6 +440,8 @@ theorem exposure_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν
 
 /-! ### The conditional form -/
 
+/-- `unreadSet d k s` is `expFiltration d k`-measurable, being the finite intersection
+over `q ∈ s` of the generators `measurableSet_U_le_expFiltration`. -/
 theorem measurableSet_unreadSet_expFiltration (k : ℕ) (s : Finset (Site d × ℕ)) :
     MeasurableSet[expFiltration d k] (unreadSet d k s) := by
   have hrw : unreadSet d k s = ⋂ q ∈ s, {ω : Data d | U ω k q.1 ≤ q.2} := by

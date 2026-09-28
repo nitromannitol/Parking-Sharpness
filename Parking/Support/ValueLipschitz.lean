@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Terminal
+
+/-!
+# Lipschitz continuity of the stopping value in the reward
+
 The discrete optimal-stopping value of the SIMPLE RANDOM WALK (`Parking.stoppingSup`,
 `Parking/Support/Terminal.lean`) is `1`-Lipschitz in its terminal reward for the supremum
 norm.  Transposed from `Parking/Support/OrientedValueLipschitz.lean`, with
@@ -18,7 +22,6 @@ There is no junk value to worry about on the discrete side, exactly as for the o
 a bounded stopping rule reads finitely many directions, so its terminal reward is integrable
 whatever the reward field (`Parking.integrable_terminalReward`).
 -/
-import Parking.Support.Terminal
 
 open MeasureTheory
 

@@ -1,10 +1,3 @@
-/- The second display of the directed moment estimate.
-
-The `r`-th moment of the maximal directed error at the origin is at most
-`(n+1)^{1/r}` times the largest `r`-th moment of the error at the origin over the
-rounds up to `n`.  This is the second display of `prop:w-moment` for the directed
-kernel, used by Steps 2 to 4 of the proof of `thm:oriented-walk`.
--/
 import Parking.Support.OrientedInstructionSum
 import Parking.Support.OrientedMaxRpow
 import Parking.Support.OrientedMaxMeanRpow
@@ -13,6 +6,17 @@ import Parking.Support.OrientedPathBox
 import Parking.Support.OrientedFiniteRoute
 import Parking.Support.OrientedParticleMoment
 import Parking.Support.OrientedMeasurability
+
+/-!
+# The second display of the oriented moment estimate
+
+The second display of the directed moment estimate.
+
+The `r`-th moment of the maximal directed error at the origin is at most
+`(n+1)^{1/r}` times the largest `r`-th moment of the error at the origin over the
+rounds up to `n`.  This is the second display of `prop:w-moment` for the directed
+kernel, used by Steps 2 to 4 of the proof of `thm:oriented-walk`.
+-/
 
 open LatticeProb (measurable_eval_var measurable_from_countable')
 
@@ -40,6 +44,9 @@ theorem abs_wErrOriented_le_countSum (hd : 1 ≤ d) (η : Site d → ℤ) (σ : 
 
 /-! ### Integrability of the directed error -/
 
+/-- The `r`-th power of the box odometer sum is integrable under the directed law, `r ≥ 1`,
+pulled back along `orientedLaw_map_confStack` from the integrability of the same sum under
+the config-and-stack pushforward, `integrable_oriented_countSum_rpow`. -/
 theorem integrable_oriented_countSum_rpow_law (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (S : Finset (Site d)) (n : ℕ) {r : ℝ} (hr : 1 ≤ r) :
     Integrable (fun ω : Data d => (∑ y ∈ S, (orientedOdometer ω.1 ω.2.1 n y : ℝ)) ^ r)
@@ -57,6 +64,9 @@ theorem integrable_oriented_countSum_rpow_law (hd : 1 ≤ d) (ν : Measure ℤ) 
   rw [← orientedLaw_map_confStack hd ν] at h
   exact (integrable_map_measure hm.aestronglyMeasurable hmap).mp h
 
+/-- The `r`-th power of the directed error at the origin is integrable, `r ≥ 1`, dominated
+by the `r`-th power of the box-odometer sum (`abs_wErrOriented_le_countSum`), whose
+integrability is `integrable_oriented_countSum_rpow_law`. -/
 theorem integrable_abs_wErrOriented_rpow_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) :
     Integrable (fun ω : Data d => |wErrOriented ω.1 ω.2.1 n 0| ^ r) (orientedLaw d ν) := by
@@ -70,6 +80,9 @@ theorem integrable_abs_wErrOriented_rpow_zero (hd : 1 ≤ d) (ν : Measure ℤ) 
   exact Real.rpow_le_rpow (abs_nonneg _) (abs_wErrOriented_le_countSum hd ω.1 ω.2.1 hω n)
     (by linarith)
 
+/-- The `r`-th power of the directed error at any site `z` is integrable, `r ≥ 1`, by
+transporting `integrable_abs_wErrOriented_rpow_zero` along the shift invariance
+`orientedLaw_map_shiftData` and the translation identity `wErrOriented_shiftData`. -/
 theorem integrable_abs_wErrOriented_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (z : Site d) :
     Integrable (fun ω : Data d => |wErrOriented ω.1 ω.2.1 n z| ^ r) (orientedLaw d ν) := by
@@ -92,6 +105,9 @@ theorem integrable_abs_wErrOriented_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν 
 
 /-! ### The average over the directed walk -/
 
+/-- The step-`j` position of the oriented walk from the origin lands somewhere in the box of
+radius `j` with total probability `1`, the constant-function case of
+`integral_orientedPath_decomp`. -/
 theorem sum_orientedPath_prob (hd : 1 ≤ d) (j : ℕ) :
     ∑ z ∈ boxFinset (0 : Site d) j,
       (walkLaw d).real {p | orientedPath (0 : Site d) p j = z} = 1 := by
@@ -107,11 +123,17 @@ def orientedWalkMoment (r : ℝ) (m j : ℕ) (ω : Data d) : ℝ :=
   ∑ z ∈ boxFinset (0 : Site d) j,
     (walkLaw d).real {p | orientedPath (0 : Site d) p j = z} * |wErrOriented ω.1 ω.2.1 m z| ^ r
 
+/-- `orientedWalkMoment` is exactly the average over the walk of the `r`-th power of the
+error read at the position after `j` steps, the `integral_orientedPath_decomp` identity
+specialized to `z ↦ |wErrOriented ω.1 ω.2.1 m z| ^ r`. -/
 theorem orientedWalkMoment_eq (hd : 1 ≤ d) (r : ℝ) (m j : ℕ) (ω : Data d) :
     ∫ p, |wErrOriented ω.1 ω.2.1 m (orientedPath (0 : Site d) p j)| ^ r ∂(walkLaw d)
       = orientedWalkMoment (d := d) r m j ω :=
   integral_orientedPath_decomp hd j (fun z => |wErrOriented ω.1 ω.2.1 m z| ^ r)
 
+/-- `orientedWalkMoment r m j` is integrable under the directed law, as the finite sum, over
+`z` in a box, of constants times the integrable `r`-th powers
+`integrable_abs_wErrOriented_rpow`. -/
 theorem integrable_orientedWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (m j : ℕ) :
     Integrable (orientedWalkMoment (d := d) r m j) (orientedLaw d ν) := by
@@ -119,6 +141,10 @@ theorem integrable_orientedWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : C
   exact integrable_finsetSum _ fun z _ =>
     (integrable_abs_wErrOriented_rpow hd ν hν hr m z).const_mul _
 
+/-- The mean of `orientedWalkMoment r m j` under the directed law equals the plain `r`-th
+moment of the error at the origin: each term shifts back to `z = 0` via
+`integral_abs_wErrOriented_rpow_shift`, and the step-`j` position probabilities sum to `1`
+by `sum_orientedPath_prob`. -/
 theorem integral_orientedWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (m j : ℕ) :
     ∫ ω, orientedWalkMoment (d := d) r m j ω ∂(orientedLaw d ν)
@@ -139,6 +165,8 @@ theorem integral_orientedWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Cri
 
 /-! ### Measurability of the maximal directed average -/
 
+/-- The position after `j` steps of the walk from `x` depends only on the first `j`
+directions read, by induction on `j`. -/
 theorem orientedPath_congr (x : Site d) (j : ℕ) {p q : ℕ → Fin d × Bool}
     (h : ∀ i, i < j → p i = q i) : orientedPath x p j = orientedPath x q j := by
   induction j with
@@ -146,10 +174,15 @@ theorem orientedPath_congr (x : Site d) (j : ℕ) {p q : ℕ → Fin d × Bool}
   | succ j ih =>
     rw [orientedPath, orientedPath, ih fun i hi => h i (by omega), h j (by omega)]
 
+/-- `wStarOriented` is nonnegative, being the walk-average of the nonnegative maximal error
+`orientedMax_nonneg`. -/
 theorem wStarOriented_nonneg (η : Site d → ℤ) (σ : Site d × ℕ → Site d) (n : ℕ) (x : Site d) :
     0 ≤ wStarOriented η σ n x :=
   integral_nonneg fun p => orientedMax_nonneg _ n x p
 
+/-- `wStarOriented` is measurable in the data `ω`, by writing the maximal error
+`orientedMax` as the finite `sup'` over rounds `j ≤ n` of measurable terms
+(`orientedMax_eq_sup`) and integrating that jointly measurable function over the walk. -/
 theorem measurable_wStarOriented (hd : 1 ≤ d) (n : ℕ) (x : Site d) :
     Measurable fun ω : Data d => wStarOriented ω.1 ω.2.1 n x := by
   haveI := stepLaw_isProbability hd
@@ -180,6 +213,10 @@ theorem measurable_wStarOriented (hd : 1 ≤ d) (n : ℕ) (x : Site d) :
 
 /-! ### The second display -/
 
+/-- The `r`-th power of `wStarOriented` at the origin is bounded by the sum, over rounds
+`j ≤ n`, of the walk-average moments `orientedWalkMoment r (n - j) j`: apply Jensen's
+inequality (`orientedMaxMean_rpow_le`) to pass the power inside the walk average, then the
+pointwise bound `orientedMax_rpow_le_sum` on the maximum by a sum. -/
 theorem wStarOriented_rpow_le_sum (hd : 1 ≤ d) {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (ω : Data d) :
     wStarOriented ω.1 ω.2.1 n 0 ^ r
       ≤ ∑ j ∈ Finset.range (n + 1), orientedWalkMoment (d := d) r (n - j) j ω := by
@@ -211,6 +248,8 @@ theorem wStarOriented_rpow_le_sum (hd : 1 ≤ d) {r : ℝ} (hr : 1 ≤ r) (n : �
     _ = ∑ j ∈ Finset.range (n + 1), orientedWalkMoment (d := d) r (n - j) j ω :=
         Finset.sum_congr rfl fun j _ => orientedWalkMoment_eq hd r (n - j) j ω
 
+/-- `wStarOriented ω.1 ω.2.1 n 0 ^ r` is integrable under the directed law, dominated by the
+integrable sum `∑_{j ≤ n} orientedWalkMoment r (n - j) j` via `wStarOriented_rpow_le_sum`. -/
 theorem integrable_wStarOriented_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) :
     Integrable (fun ω : Data d => wStarOriented ω.1 ω.2.1 n 0 ^ r) (orientedLaw d ν) := by

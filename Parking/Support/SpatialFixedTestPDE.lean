@@ -1,8 +1,14 @@
-/- Fixed-test identification of the continuum heat equation from joint weak convergence. -/
 import Parking.Support.SpatialResidualCutoff
 import Parking.Support.SpatialSpaceTimeFunctional
 import Parking.Support.SpatialResidualAlgebra
 import Parking.Support.SpatialVanishingDistance
+
+/-!
+# Fixed-test identification of the continuum heat equation
+
+Identifies the continuum heat equation against a fixed test function from the joint weak
+convergence of the rescaled odometer and scene pairing.
+-/
 
 open MeasureTheory Set Filter Topology
 open LatticeProb.Scaling.PositiveCutoff LatticeProb.Scaling.LocalResidual
@@ -66,7 +72,8 @@ theorem spatial_fixed_test_residual_ae
     refine ⟨⟨?_, (hTsupp p hp).le.trans (by linarith)⟩, ?_⟩
     · exact (half_le_self hc.le).trans (hclow p hp)
     · have hx := (hB0 p hp).trans (le_max_left B0 1)
-      simpa only [Metric.mem_closedBall, dist_zero_right] using hx.trans (show B ≤ B + 2 by linarith)
+      simpa only [Metric.mem_closedBall, dist_zero_right] using
+        hx.trans (show B ≤ B + 2 by linarith)
   haveI : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
   let φ : (Fin d → ℝ) → ℝ := fun x => ∫ s : ℝ, ψ (s, x)
   have hφ : IsTestFun φ := isTestFun_timeIntegral hψ
@@ -85,7 +92,8 @@ theorem spatial_fixed_test_residual_ae
       (measurable_uncurry_of_continuous_of_measurable hUccont
         (fun p => hUcmeas p.1 p.2)).comp measurable_swap
     have hi : Measurable (fun ω => ∫ p in K, Uc ω p.1 p.2 * spaceTimeResidualTest ψ p) :=
-      (hj.mul (hAc.measurable.comp measurable_snd)).stronglyMeasurable.integral_prod_right'.measurable
+      (hj.mul
+        (hAc.measurable.comp measurable_snd)).stronglyMeasurable.integral_prod_right'.measurable
     exact hcm.mul (measurable_const.min ((hi.sub (hWmeas φ hφ)).abs))
   have hz : ∀ n : ℕ, (∫ ω, test volume K (tsupport ψ) (1 / ((n : ℝ) + 1))
       (spaceTimeResidualTest ψ) (W φ ω) (fun p => Uc ω p.1 p.2) ∂Q) = 0 := by
@@ -98,16 +106,20 @@ theorem spatial_fixed_test_residual_ae
       hjointFDD hequicont (fun _ : Fin 1 => φ) (fun _ => hφ) hK hKt
       (Φ := Φ) (Eventually.of_forall fun R => measurable_discreteResidualTest hψ K δ R)
       (M := 1) (C := 1 / δ + volume.real K * M) (D := 1)
-      (fun b u => by rw [abs_of_nonneg (test_nonneg _ _ _ _ _ _ _)]; exact test_le_one _ _ _ _ _ _ _)
+      (fun b u => by
+        rw [abs_of_nonneg (test_nonneg _ _ _ _ _ _ _)]; exact test_le_one _ _ _ _ _ _ _)
       (by positivity) zero_le_one
       (fun b u v hum hvm hub hvb => LatticeProb.Scaling.LocalResidual.abs_test_sub_le
         hK.measurableSet hSK hδ hAc.measurable hM hAb (b 0) hum hvm hub hvb)
       (fun b c u _ _ => by
-        have hh := abs_test_block_sub_le volume K (tsupport ψ) δ (spaceTimeResidualTest ψ) (b 0) (c 0) u
+        have hh := abs_test_block_sub_le volume K (tsupport ψ) δ
+          (spaceTimeResidualTest ψ) (b 0) (c 0) u
         exact hh.trans (by simpa only [Real.dist_eq, one_mul] using dist_le_pi_dist b c 0))
-    have ht0 := tendsto_integral_discreteResidualTest_zero hd hd3 hGrowth ν hν hψ ha hT hlow hhigh hb hsource hδ
+    have ht0 := tendsto_integral_discreteResidualTest_zero hd hd3 hGrowth ν hν hψ ha hT hlow
+      hhigh hb hsource hδ
     exact tendsto_nhds_unique ht ht0
-  have hall := LatticeProb.Scaling.LocalResidual.ae_pairing_eq_of_cutoff_integrals (μ := volume) (K := K)
+  have hall :=
+    LatticeProb.Scaling.LocalResidual.ae_pairing_eq_of_cutoff_integrals (μ := volume) (K := K)
     (S := tsupport ψ) Q hψ.2.1 (fun ω p => Uc ω p.1 p.2) (W φ) (spaceTimeResidualTest ψ)
     hUccont (fun n => hlimitmeas _) hz
   filter_upwards [hall] with ω hω hpos

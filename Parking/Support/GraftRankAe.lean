@@ -1,19 +1,18 @@
-/-
-The uniform variables of the tagged realization with the origin prescribed are
-almost surely pairwise distinct.
-
-`FZ = 0` (`parking.tex:2463-2467`) is proved at every realization whose tagged
-uniform variables are pairwise distinct (`Parking.survivalObs_mul_holeObs_of_injective`).
-With the origin prescribed those variables come from two sources: the
-prescription, which supplies the tagged particle's own family `r` and the
-uniform variables of the `k-1` particles put back at the origin, and the
-realization, which supplies everything else.  The prescribed family is a
-countable family of fixed reals, so for almost every realization its uniform
-variables are pairwise distinct and avoid the prescription; then the whole
-tagged family is pairwise distinct as soon as the prescribed part is.
--/
 import Parking.Support.SubcriticalGraftStep1
 import Parking.Support.TaggedRankAe
+
+/-!
+# Almost-sure distinctness of the tagged uniform variables with the origin prescribed
+
+`FZ = 0` (`parking.tex:2463-2467`) is proved at every realization whose tagged uniform
+variables are pairwise distinct (`Parking.survivalObs_mul_holeObs_of_injective`). With the
+origin prescribed those variables come from two sources: the prescription, which supplies the
+tagged particle's own family `r` and the uniform variables of the `k-1` particles put back at
+the origin, and the realization, which supplies everything else. The prescribed family is a
+countable family of fixed reals, so for almost every realization its uniform variables are
+pairwise distinct and avoid the prescription; then the whole tagged family is pairwise
+distinct as soon as the prescribed part is.
+-/
 
 open MeasureTheory
 
@@ -25,6 +24,8 @@ open LatticeProb
 
 variable {d : ℕ}
 
+/-- At the origin, the graft reads a particle's uniform variable from the prescription
+`ω₁`. -/
 theorem graftOrigin_rank_zero {q : Label d × ℕ} (hq : q.1.1 = (0 : Site d)) (ω₁ ω : PData d) :
     (graftOrigin ω₁ ω).2.2 q = ω₁.2.2 q := by
   simp [graftOrigin, hq]
@@ -34,6 +35,9 @@ family at the bottom label, and the prescription's at the labels above it. -/
 def originRank (r : ℕ → ℝ) (ω₁ : PData d) : ℕ × ℕ → ℝ :=
   fun p => if p.1 = 0 then r p.2 else ω₁.2.2 (((0 : Site d), p.1 - 1), p.2)
 
+/-- The tagged uniform variable of a graft label at the origin unfolds to `originRank`: the
+tagged particle's own family at index `0`, and the prescription's family shifted by one at
+higher indices. -/
 theorem taggedRank_graft_origin (r : ℕ → ℝ) (ω₁ ω : PData d) (i s : ℕ) :
     taggedRank r (graftOrigin ω₁ ω).2.2 (((0 : Site d), i), s) = originRank r ω₁ (i, s) := by
   rw [taggedRank_apply]
@@ -42,6 +46,8 @@ theorem taggedRank_graft_origin (r : ℕ → ℝ) (ω₁ ω : PData d) (i s : �
   · simp [hi]
   · simp [hi, graftOrigin]
 
+/-- Off the origin, the tagged uniform variable of the grafted realization is read from `ω`,
+unaffected by the tagging. -/
 theorem taggedRank_graft_of_ne (r : ℕ → ℝ) (ω₁ ω : PData d) {q : Label d × ℕ}
     (hq : q.1.1 ≠ (0 : Site d)) : taggedRank r (graftOrigin ω₁ ω).2.2 q = ω.2.2 q := by
   rw [taggedRank_apply, if_neg hq]

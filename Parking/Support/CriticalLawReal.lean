@@ -1,4 +1,9 @@
-/-
+import Parking.Support.UConcBridge
+import Parking.External.SandpileGrowth
+
+/-!
+# The critical-density hypotheses for the real one-site law
+
 The standing hypotheses of the critical density, read for the real one-site law.
 
 `Parking.CriticalLaw ν` is a hypothesis on a measure on `ℤ`, while
@@ -10,8 +15,6 @@ Positivity of the variance is where "nonconstant" is used: a vanishing variance
 makes the coordinate almost surely equal to its mean, which is zero, and then
 `ν {0} = 1`.
 -/
-import Parking.Support.UConcBridge
-import Parking.External.SandpileGrowth
 
 open LatticeProb (measurable_from_countable')
 
@@ -26,22 +29,28 @@ variable {d : ℕ}
 /-- The one-site law read in the reals. -/
 def realLaw (ν : Measure ℤ) : Measure ℝ := ν.map (fun k : ℤ => (k : ℝ))
 
+/-- The pushforward of a probability measure along `Int.cast` is a probability
+measure. -/
 instance realLaw_isProbability (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (realLaw ν) := by
   rw [realLaw]
   exact Measure.isProbabilityMeasure_map measurable_intCastReal.aemeasurable
 
+/-- Integrability transports across the pushforward `realLaw ν = ν.map Int.cast`. -/
 theorem realLaw_integrable_iff (ν : Measure ℤ) [IsProbabilityMeasure ν] {f : ℝ → ℝ}
     (hf : Measurable f) :
     Integrable f (realLaw ν) ↔ Integrable (fun k : ℤ => f (k : ℝ)) ν := by
   rw [realLaw]
   exact integrable_map_measure hf.aestronglyMeasurable measurable_intCastReal.aemeasurable
 
+/-- An integral against `realLaw ν` reduces to the corresponding integral against `ν`. -/
 theorem realLaw_integral (ν : Measure ℤ) [IsProbabilityMeasure ν] {f : ℝ → ℝ}
     (hf : Measurable f) :
     ∫ z, f z ∂(realLaw ν) = ∫ k, f (k : ℝ) ∂ν := by
   rw [realLaw, integral_map measurable_intCastReal.aemeasurable hf.aestronglyMeasurable]
 
+/-- The mean of the identity under `realLaw ν` is the mean of the coordinate under
+`ν`, so it vanishes under `CriticalLaw ν`. -/
 theorem realLaw_mean (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∫ z, z ∂(realLaw ν) = 0 := by
   haveI := hν.prob
@@ -81,11 +90,16 @@ theorem realLaw_memLp_two (ν : Measure ℤ) (hν : CriticalLaw ν) :
     realLaw_integrable_iff ν (f := fun z : ℝ => z ^ 2) (measurable_id.pow_const 2)]
   exact hsq
 
+/-- The extended variance of the identity under `realLaw ν` is finite, since the
+coordinate is in `L²` by `realLaw_memLp_two`. -/
 theorem realLaw_evariance_lt_top (ν : Measure ℤ) (hν : CriticalLaw ν) :
     evariance (id : ℝ → ℝ) (realLaw ν) < ⊤ := by
   haveI := hν.prob
   exact evariance_lt_top (realLaw_memLp_two ν hν)
 
+/-- The extended variance of the identity under `realLaw ν` is positive: were it
+zero, the coordinate would be almost surely its mean `0`, forcing `ν {0} = 1`,
+contradicting the nonconstancy hypothesis of `CriticalLaw`. -/
 theorem realLaw_evariance_pos (ν : Measure ℤ) (hν : CriticalLaw ν) :
     0 < evariance (id : ℝ → ℝ) (realLaw ν) := by
   haveI := hν.prob
@@ -118,6 +132,8 @@ theorem realLaw_evariance_pos (ν : Measure ℤ) (hν : CriticalLaw ν) :
 
 /-! ### The mean sandpile odometer of the parking law -/
 
+/-- The mean sandpile odometer of the particle law equals `meanSandpileReal` for
+the pushforward configuration `confReal`, whose law is `realLaw ν`. -/
 theorem meanu_eq_meanSandpileReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) :
     meanu (law d ν) n = Parking.External.meanSandpileReal d (realLaw ν) n := by

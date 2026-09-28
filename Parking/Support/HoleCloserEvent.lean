@@ -1,6 +1,16 @@
 import Parking.Support.Measurability
 import LatticeProb.Walk.SRW
 
+/-!
+# The hole-closer event as a measurable set
+
+Rewrites the `HoleCloser` event, originally defined via an infimum of extended-natural-number
+distances `holeDistance`/`activeDistance`, as the elementary comparison `CloserAt ω t 0`:
+some hole at time `t` is strictly closer (in the graph norm) to the site `0` than every
+active site. This comparison form is then shown to define a measurable set in `ω`, for any
+site and time, using that `H` and `A` are measurable.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory
@@ -11,6 +21,8 @@ def CloserAt (ω : Data d) (t : ℕ) (w : Site d) : Prop :=
   ∃ y : Site d, 0 < H ω t y ∧ ∀ a : Site d, 0 < A ω t a →
     graphNorm (w - y) < graphNorm (w - a)
 
+/-- `HoleCloser`, defined by comparing infima of extended-natural-number distances, agrees
+with the elementary comparison `CloserAt` at the site `0`. -/
 theorem HoleCloser_iff (ω : Data d) (t : ℕ) : HoleCloser ω t ↔ CloserAt ω t 0 := by
   unfold HoleCloser holeDistance activeDistance CloserAt
   constructor
@@ -36,6 +48,9 @@ theorem HoleCloser_iff (ω : Data d) (t : ℕ) : HoleCloser ω t ↔ CloserAt ω
     apply lt_of_lt_of_le _ hle
     exact_mod_cast (Nat.lt_succ_self (graphNorm y))
 
+/-- `CloserAt` defines a measurable set of configurations, since it unfolds to a countable
+union over hole sites `y` of an intersection of measurable comparisons `H ω t y` positive and
+`A ω t a` not exceeding `y` in graph norm. -/
 theorem measurableSet_CloserAt (t : ℕ) (w : Site d) :
     MeasurableSet {ω : Data d | CloserAt ω t w} := by
   simp only [CloserAt, Set.setOf_exists, Set.setOf_and, Set.setOf_forall]
@@ -50,6 +65,8 @@ theorem measurableSet_CloserAt (t : ℕ) (w : Site d) :
   · simp only [h, imp_false]
     exact (measurableSet_lt measurable_const (measurable_A t a)).compl
 
+/-- The hole-closer event is measurable, by transporting `measurableSet_CloserAt` through the
+equivalence `HoleCloser_iff`. -/
 theorem measurableSet_HoleCloser (t : ℕ) :
     MeasurableSet {ω : Data d | HoleCloser ω t} := by
   simp only [HoleCloser_iff]

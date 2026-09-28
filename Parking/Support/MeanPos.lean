@@ -1,14 +1,22 @@
-/-
-Positive mean odometers at every positive horizon.
--/
 import Parking.Support.MasterChain
 import Parking.Support.DensitySequence
+
+/-!
+# Positivity of the mean odometer
+
+Positive mean odometers at every positive horizon. The divisible odometer `u` is nonnegative
+and monotone increasing in the time horizon, its value at horizon `1` agrees with the
+survivor count `S` at the origin, and under a critical law with a nonconstant, integrable
+initial law the mean odometer `meanu` is strictly positive at every horizon `n ≥ 1`.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
+/-- The divisible odometer `u η n x` is nonnegative: it is `0` by definition at `n = 0`, and
+for `n + 1` the `max 0` truncation forces nonnegativity. -/
 theorem u_real_nonneg (η : Site d → ℝ) (n : ℕ) (x : Site d) : 0 ≤ u η n x := by
   cases n with
   | zero => exact le_rfl
@@ -38,6 +46,9 @@ theorem meanu_one_eq_S_zero (ν : Measure ℤ) : meanu (law d ν) 1 = S (law d �
   change u (fun y => (ω.1 y : ℝ)) 1 0 = ((ω.1 0).toNat : ℝ)
   simp [u, walkOp, nbrSum, toNat_cast_eq_max, max_comm]
 
+/-- The real-valued mean odometer `meanU` at horizon `1` equals the survivor mean `S` at
+time `0`, for any integrable law, via the frozen transport identity
+`Parking.Frozen.transport`. -/
 theorem meanU_one_eq_S_zero (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hi : Integrable (fun k : ℤ => |(k : ℝ)|) ν) :
     meanU (law d ν) 1 = S (law d ν) 0 := by

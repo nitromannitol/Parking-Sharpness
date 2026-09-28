@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TiltCov
+
+/-!
+# Lemma 10.2: the tilted-law product/covariance bound (frozen)
+
 Lemma 10.2 of parking.tex, frozen.  `parking.tex:2336-2347` (label
 `lem:product`), in the setting of `parking.tex:2318-2335` (the tilted law
 $\P_\lambda(\eta(0)=j)=e^{\lambda j}\P(\eta(0)=j)/\E e^{\lambda\eta(0)}$ with
@@ -31,7 +35,6 @@ not a bound on a covariance of random variables, and the deletion and addition
 comparisons the proof makes at configurations of another count cannot be read
 off an almost sure class.
 -/
-import Parking.Support.TiltCov
 
 open MeasureTheory
 

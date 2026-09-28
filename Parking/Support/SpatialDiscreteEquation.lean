@@ -1,6 +1,9 @@
-/- Testing the divisible recursion on its positive set. -/
 import Parking.Basic
 import LatticeProb.Prob.Scaling.DiscreteTesting
+
+/-!
+# Testing the divisible recursion on its positive set
+-/
 
 open LatticeProb
 

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Parallel
+
+/-!
+# Lemma 3.1: the parallel update identity (frozen)
+
 Lemma 3.1 of parking.tex, frozen.  `parking.tex:647-653` (label `lem:parallel`):
 
   "Let $U_n(x)$ be the number of steps taken from $x$ during the first $n$
@@ -14,7 +18,6 @@ sides, since the arrivals at `x` in a round come from the neighbours of `x`
 and a particle that has moved `t` times is within distance `t` of where it
 started.  So the hypothesis `hstep` is part of what "realization" means here.
 -/
-import Parking.Support.Parallel
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.parallel {d : ℕ} (ω : Parking.Data d)

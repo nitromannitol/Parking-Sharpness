@@ -1,12 +1,15 @@
-/-
-Freshness and the pair cancellation estimate. The state, motion decisions and
-selected entries are unchanged by replacing the current fresh table. Distinct
-labels select distinct entries. The two-position difference therefore satisfies
-the walk hitting comparison, uniformly for fixed configurations and priorities.
-Every disappearing label is cancelled against a unique opposite partner.
--/
 import Parking.Support.DiscrepancyMeas
 import Parking.Support.RoundHitting
+
+/-!
+# Discrepancy freshness and pair cancellation
+
+Freshness and the pair cancellation estimate. The state, motion decisions and selected entries
+are unchanged by replacing the current fresh table. Distinct labels select distinct entries. The
+two-position difference therefore satisfies the walk hitting comparison, uniformly for fixed
+configurations and priorities. Every disappearing label is cancelled against a unique opposite
+partner.
+-/
 
 noncomputable section
 
@@ -14,6 +17,8 @@ open MeasureTheory LatticeProb
 
 variable {d : ℕ}
 
+/-- Replacing the table at a current or future round `n ≥ t` leaves `matchedCount` at the
+earlier round `t` unchanged, by `matchedState_update`. -/
 theorem Parking.matchedCount_update (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (n t : ℕ) (τ : Parking.RoundSlot d → Fin d × Bool)
     (ht : t ≤ n) : Parking.matchedCount η ρ (Function.update σ n τ) t =
@@ -41,13 +46,19 @@ def Parking.discrepancyIndex (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ �
   Parking.discrepancySlot c ρ (Parking.matchedCount (Parking.coupledConf false c) ρ σ t)
     (Parking.matchedCount (Parking.coupledConf true c) ρ σ t) (Parking.discrepancyState c ρ σ t) t p
 
+/-- Whether a label moves in a round, as the decidable `Bool` reflection of
+`discrepancyMoving`. -/
 def Parking.discrepancyDoesMove (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (t : ℕ) (p : Label d) : Bool := by
   classical
   exact decide (Parking.discrepancyMoving c ρ
     (Parking.matchedCount (Parking.coupledConf false c) ρ σ t)
-    (Parking.matchedCount (Parking.coupledConf true c) ρ σ t) (Parking.discrepancyState c ρ σ t) t p)
+    (Parking.matchedCount (Parking.coupledConf true c) ρ σ t)
+      (Parking.discrepancyState c ρ σ t) t p)
 
+/-- The freshness fact for `discrepancyIndex`: it is unchanged by replacing a current or
+future table entry, since it depends only on `matchedCount` and `discrepancyState` at
+`t ≤ n`. -/
 theorem Parking.discrepancyIndex_update (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (n t : ℕ) (τ : Parking.RoundSlot d → Fin d × Bool)
     (ht : t ≤ n) : Parking.discrepancyIndex c ρ (Function.update σ n τ) t =
@@ -57,6 +68,7 @@ theorem Parking.discrepancyIndex_update (c : Site d → ℤ × ℤ) (ρ : Label 
   rw [Parking.matchedCount_update _ ρ σ n t τ ht,
     Parking.matchedCount_update _ ρ σ n t τ ht, Parking.discrepancyState_update c ρ σ n t τ ht]
 
+/-- The analogue of `discrepancyIndex_update` for `discrepancyDoesMove`. -/
 theorem Parking.discrepancyDoesMove_update (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (n t : ℕ) (τ : Parking.RoundSlot d → Fin d × Bool)
     (ht : t ≤ n) : Parking.discrepancyDoesMove c ρ (Function.update σ n τ) t =
@@ -149,10 +161,14 @@ def Parking.discrepancyCancelledAt (c : Site d → ℤ × ℤ) (ρ : Label d × 
       ((Parking.discrepancyState c ρ σ (t + 1)).pos p) (!Parking.discrepancySign c p))
     (Parking.matchKey ρ 0) p q
 
+/-- `p` and `q` are cancelled against each other at some round strictly before `T`. -/
 def Parking.discrepancyCancelledBy (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (T : ℕ) (p q : Label d) : Prop :=
   ∃ t < T, Parking.discrepancyCancelledAt c ρ σ t p q
 
+/-- A cancelled pair shares its destination: they arrive at the same position at time
+`t + 1`, since `discrepancyCancelledAt` requires them to be filtered from the same
+arrival list. -/
 theorem Parking.discrepancyCancelledAt_positions (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (p q : Label d)
     (hpq : Parking.discrepancyCancelledAt c ρ σ t p q) :
@@ -161,12 +177,17 @@ theorem Parking.discrepancyCancelledAt_positions (c : Site d → ℤ × ℤ)
   have hArr := (Finset.mem_filter.mp hpq.2.1).1
   exact (Finset.mem_filter.mp hArr).2.2.symm
 
+/-- A cancelled pair has opposite signs, since `discrepancyCancelledAt` pairs an arrival of
+`p`'s sign against one of the opposite sign. -/
 theorem Parking.discrepancyCancelledAt_sign (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (p q : Label d)
     (hpq : Parking.discrepancyCancelledAt c ρ σ t p q) :
     Parking.discrepancySign c q = !Parking.discrepancySign c p :=
   (Finset.mem_filter.mp hpq.2.1).2
 
+/-- Cancellation is symmetric in the pair, by `rankPair_symm` after rewriting the shared
+position and opposite sign from `discrepancyCancelledAt_positions` and
+`discrepancyCancelledAt_sign`. -/
 theorem Parking.discrepancyCancelledAt_symm (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (p q : Label d)
     (hpq : Parking.discrepancyCancelledAt c ρ σ t p q) :
@@ -177,6 +198,8 @@ theorem Parking.discrepancyCancelledAt_symm (c : Site d → ℤ × ℤ)
   rw [← hpos, hsign, Bool.not_not]
   exact Parking.rankPair_symm hpq
 
+/-- A cancelled label is inactive after the round, since cancellation excludes it from the
+rank survivors. -/
 theorem Parking.discrepancyCancelledAt_dead (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (p q : Label d)
     (hpq : Parking.discrepancyCancelledAt c ρ σ t p q) :
@@ -194,7 +217,8 @@ theorem Parking.existsUnique_discrepancyCancelledAt (c : Site d → ℤ × ℤ)
   · apply Finset.mem_filter.mpr
     refine ⟨Finset.mem_filter.mpr ⟨?_, ha, rfl⟩, rfl⟩
     have hidx : p.2 < (Parking.discrepancyConf c p.1).toNat := by
-      simpa [Parking.discrepancyState, initial] using Parking.discrepancyState_active_le c ρ σ p t ha
+      simpa [Parking.discrepancyState, initial] using
+        Parking.discrepancyState_active_le c ρ σ p t ha
     exact mem_candidates (fun i => by
       have h := Parking.abs_discrepancyPos_sub_start_le c ρ σ (t + 1) p i
       rwa [abs_sub_comm] at h) hidx

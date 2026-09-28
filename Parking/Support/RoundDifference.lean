@@ -2,6 +2,21 @@ import Parking.Support.InstructionPartialCentered
 import Parking.Support.RoundPartialMeas
 import Parking.Support.RevealPrefix
 
+/-!
+# The current-round reveal difference
+
+`roundDiff` is the increment in the current-round partial mean `matchedMeanU
+(roundSigned A H ·) ρ T x` produced by revealing one more table entry, in an
+enumeration `slotEnumeration e` of site-rank pairs as common table slots. Updating the
+newly revealed entry turns `roundDiff` into a function of that entry alone, centered at
+its own mean over `stepLaw d` (`roundDiff_update_eq_centered`); from this centering the
+increment is bounded and its fresh-coordinate second moment is controlled
+(`roundDiff_section_bounds`), its fresh-coordinate mean vanishes
+(`roundDiff_section_zero`), it is measurable in the underlying data
+(`measurable_roundDiff`), and it depends only on the revealed prefix through the new
+entry (`roundDiff_congr`).
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -39,10 +54,12 @@ theorem roundDiff_update_eq_centered (hd : 1 ≤ d) (e : Fin K ↪ Site d × ℕ
   simp only [revealPrefix_succ]
   apply partialInt_reveal_eq_centered _ _ _ (notMem_revealPrefix (slotEnumeration e) j)
     _ ((measurable_matchedMeanU hd ρ T x).comp
-      (measurable_roundSigned (fun _ => A) (fun _ => H) id measurable_const measurable_const measurable_id))
+      (measurable_roundSigned (fun _ => A) (fun _ => H) id measurable_const measurable_const
+        measurable_id))
     _ (roundMeanU_bound hd A H N hA ρ T x)
 
-/-- Every current-round increment is bounded, and its fresh-coordinate variance is at most PG² when used. -/
+/-- Every current-round increment is bounded, and its fresh-coordinate variance is at
+most PG² when used. -/
 theorem roundDiff_section_bounds (hd : 3 ≤ d) (e : Fin K ↪ Site d × ℕ)
     (A H : Site d → ℕ) (N : ℕ) (hA : ∀ y, A y ≤ N)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) (j : Fin K)

@@ -1,4 +1,8 @@
-/-
+import Parking.Basic
+
+/-!
+# The mean sandpile odometer growth input (frozen)
+
 External input: the growth of the mean divisible sandpile odometer, as the
 paper quotes it (`parking.tex:929-943`, `thm:BP`), from Bou-Rabee and
 Panagiotis, *Quantitative explosion and percolation of the divisible sandpile*
@@ -8,7 +12,6 @@ by `2d` to match the normalization used here.
 Assumed here.  It enters only as an explicit hypothesis of the theorems that
 use it; the companion formalization of that paper proves it.
 -/
-import Parking.Basic
 
 open MeasureTheory ProbabilityTheory Filter Topology
 

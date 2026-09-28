@@ -1,10 +1,21 @@
-/- Enumerating a finite set in increasing order of an integer-valued level. -/
 import Mathlib
+
+/-!
+# Sorted enumeration of a finite set
+
+This file enumerates a finite set in increasing order of an integer-valued level
+function, using `List.mergeSort` on the underlying list to produce a monotone bijection
+from `Fin S.card` to `S`, and records that summing a function over this enumeration
+recovers the sum over `S`.
+-/
 
 noncomputable section
 namespace Parking
 open scoped Classical
 
+/-- A finite set `S` admits an injective enumeration `q : Fin S.card → ι` that hits every
+element of `S` and is monotone with respect to an integer-valued level `h`, obtained by
+merge-sorting `S.toList` on the total preorder induced by `h`. -/
 theorem exists_sorted_enumeration {ι : Type*} (S : Finset ι) (h : ι → ℤ) :
     ∃ q : Fin S.card → ι, Function.Injective q ∧ (∀ x, x ∈ S ↔ ∃ j, q j = x) ∧
       Monotone (fun j => h (q j)) := by
@@ -33,6 +44,9 @@ theorem exists_sorted_enumeration {ι : Type*} (S : Finset ι) (h : ι → ℤ) 
   · intro i j hij
     exact hsorted.rel_get_of_le hij
 
+/-- Summing a function over an injective enumeration `q : Fin K → ι` that covers a finite
+set `S` gives the same value as summing directly over `S`, by reindexing along the
+bijection between `Fin K` and `S` that `q` and `hcov` exhibit. -/
 theorem sum_enumeration {ι α : Type*} [AddCommMonoid α] {K : ℕ}
     (S : Finset ι) (q : Fin K → ι) (hq : Function.Injective q)
     (hcov : ∀ x, x ∈ S ↔ ∃ j, q j = x) (f : ι → α) :

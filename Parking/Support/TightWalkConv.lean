@@ -1,26 +1,31 @@
-/-
+import Parking.Support.TightWalk
+import LatticeProb.ContinuumQuarterBrownian
+import Parking.Support.ContOrientedLimit
+import LatticeProb.Prob.Scaling.CramerWold
+import Mathlib.MeasureTheory.Measure.Portmanteau
+
+/-!
+# `hWalk` via Cramér-Wold
+
 `hWalk`: the finite-dimensional convergence in law of the rescaled oriented walk to a quarter-
 Brownian motion (`parking.tex:3190-3211`), the second of the three ingredients
 `Parking.tendsto_integral_orientedCutoffValue` consumes.
 
-The route is Cramer-Wold (`LatticeProb.Scaling.CramerWold.tendstoInDistribution_of_tendsto_charFun_linearCombination`,
+The route is Cramer-Wold
+(`LatticeProb.Scaling.CramerWold.tendstoInDistribution_of_tendsto_charFun_linearCombination`,
 `TightCramerWold.lean`): it reduces `TendstoInDistribution` of the rescaled walk vectors to
 scalar characteristic-function convergence of every fixed linear combination
 `∑ₖ tₖ · (rescaled walk at time tsₖ)`.  The discrete side of that scalar statement is read off
 `Parking.tendsto_charFun_walkFddLaw` (`TightWalk.lean`) through the general identity
 `Parking.charFun_map_linearCombination_eq` (the scalar characteristic function of a linear
 combination is the vector characteristic function at the same point, via the inner product on
-`EuclideanSpace`); the continuum side is `LatticeProb.ContinuumStopping.charFun_quarterBrownian_linearCombination`
+`EuclideanSpace`); the continuum side is
+`LatticeProb.ContinuumStopping.charFun_quarterBrownian_linearCombination`
 (`TightQuarterBrownian.lean`).  The two limits agree termwise (`Real.coe_toNNReal`,
 `NNReal.coe_min`), so Cramer-Wold gives `TendstoInDistribution`, and Portmanteau
 (`ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`) unwinds it into the bounded-
 continuous-function-tested form `hWalk` is stated in.
 -/
-import Parking.Support.TightWalk
-import LatticeProb.ContinuumQuarterBrownian
-import Parking.Support.ContOrientedLimit
-import LatticeProb.Prob.Scaling.CramerWold
-import Mathlib.MeasureTheory.Measure.Portmanteau
 
 open LatticeProb.ContinuumStopping (charFun_quarterBrownian_linearCombination)
 open LatticeProb.Scaling.CramerWold (tendstoInDistribution_of_tendsto_charFun_linearCombination)
@@ -40,7 +45,8 @@ theorem charFun_map_linearCombination_eq {Ω : Type*} [MeasurableSpace Ω]
       = charFun (μ.map (fun ω => (WithLp.toLp 2 (X ω) : EuclideanSpace ℝ (Fin m))))
           (WithLp.toLp 2 t : EuclideanSpace ℝ (Fin m)) := by
   have hf1 : Measurable (fun ω => ∑ k, t k * X ω k) :=
-    Finset.measurable_sum Finset.univ fun k _ => measurable_const.mul ((measurable_pi_apply k).comp hXm)
+    Finset.measurable_sum Finset.univ fun k _ =>
+      measurable_const.mul ((measurable_pi_apply k).comp hXm)
   have hf2 : Measurable (fun ω => (WithLp.toLp 2 (X ω) : EuclideanSpace ℝ (Fin m))) :=
     (PiLp.continuous_toLp 2 _).measurable.comp hXm
   rw [charFun_apply, charFun_apply,

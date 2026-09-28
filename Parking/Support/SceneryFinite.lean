@@ -2,6 +2,15 @@ import Parking.Support.SceneryField
 import Parking.Support.ProductFinite
 import Parking.Support.SubgaussianMoment
 
+/-!
+# A uniform subgaussian bound for finite sceneries
+
+This file upgrades the bounded-difference estimate for `matchedMeanU` on a finite,
+sparse-valued field to a uniform subgaussian bound for the fluctuation of `matchedMeanU`
+about its mean, over every finite subset of coordinates and every choice of round noise,
+prior scenery law and horizon. It does not treat the infinite-field or sparse-law limits.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section

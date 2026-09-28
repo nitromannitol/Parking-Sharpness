@@ -11,7 +11,8 @@ measurability is not derived from any general descriptive-set-theoretic fact abo
 σ-algebra of `C(K, ℝ)`: instead, `Parking.contBoxRewardMap` assembles, through the SAME
 `Parking.boxFieldAssemble` used for the discrete field, a hat-interpolation of `Y` sampled on a
 grid of mesh `1/n` in time and `1/√n` in space (`Parking.contGridPoint`, clamped into the box by
-`LatticeProb.BoxClamp.boxPoint` exactly as `Parking.OrientedCutoffValue.rewardOfBox` clamps).  Since `Y(·,ω)`
+`LatticeProb.BoxClamp.boxPoint` exactly as `Parking.OrientedCutoffValue.rewardOfBox` clamps).  Since
+`Y(·,ω)`
 is continuous on the compact box for EVERY `ω`, hence uniformly continuous, the interpolation
 converges to it UNIFORMLY on the box as `n → ∞`, i.e. in the metric of `C(rewardBox T A, ℝ)`
 (`Parking.tendsto_contBoxRewardMap`); a pointwise (in `ω`) limit of measurable maps into a metric
@@ -111,6 +112,8 @@ def contZGrid (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A) (Y : (Fin 2 → 
     (n : ℕ) (m j : ℤ) (ω : contNoiseSpace) : ℝ :=
   Y (contBoxGridArg T hT A hA n m j) ω
 
+/-- The grid table `contZGrid` is measurable in `ω`, since it is `Y` read at the fixed
+(clamped) grid point `contBoxGridArg T hT A hA n m j`. -/
 theorem measurable_contZGrid (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A)
     (Y : (Fin 2 → ℝ) → contNoiseSpace → ℝ) (hYmeas : ∀ z, Measurable (Y z)) (n : ℕ) (m j : ℤ) :
     Measurable (contZGrid T hT A hA Y n m j) := hYmeas _
@@ -123,6 +126,8 @@ def contBoxRewardMap (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A)
     C(rewardBox T A, ℝ) :=
   boxFieldAssemble T hT A hA n (fun m j => contZGrid T hT A hA Y n m j ω)
 
+/-- **`contBoxRewardMap` is measurable in `ω`**: it is `boxFieldAssemble`, continuous in its
+table argument, composed with the measurable grid table `contZGrid`. -/
 theorem measurable_contBoxRewardMap (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A)
     (Y : (Fin 2 → ℝ) → contNoiseSpace → ℝ) (hYmeas : ∀ z, Measurable (Y z)) (n : ℕ) :
     Measurable (contBoxRewardMap T hT A hA Y n) :=

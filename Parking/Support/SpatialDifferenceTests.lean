@@ -131,8 +131,9 @@ theorem weak_heat_forwardDifference_of_hpde
   have hshift := hpde (fun p => ψ (p.1 - h, p.2)) htest hsupport
   have hderiv (t : ℝ) (x : Fin d → ℝ) :
       deriv (fun s => ψ (s - h, x)) t = deriv (fun s => ψ (s, x)) (t - h) := by
-    simpa [Function.comp_def] using (((contDiff_timeSlice hψ.1 x).differentiable (by simp) (t - h)).hasDerivAt.comp t
-      ((hasDerivAt_id t).sub_const h)).deriv
+    simpa [Function.comp_def] using
+      (((contDiff_timeSlice hψ.1 x).differentiable (by simp) (t - h)).hasDerivAt.comp t
+        ((hasDerivAt_id t).sub_const h)).deriv
   simp_rw [hderiv] at hshift
   have hnoise : (fun x => ∫ s : ℝ, ψ (s - h, x)) = fun x => ∫ s : ℝ, ψ (s, x) := by
     funext x
@@ -185,7 +186,8 @@ theorem contDiffOn_forwardDifference_of_hpde
     ∀ p : ℝ × (Fin d → ℝ), 0 ≤ (Uc ω (p.1 + h) p.2 - Uc ω p.1 p.2) / h := by
   have hquot : Continuous (fun p : ℝ × (Fin d → ℝ) =>
       (Uc ω (p.1 + h) p.2 - Uc ω p.1 p.2) / h) :=
-    ((hcont.comp ((continuous_fst.add continuous_const).prodMk continuous_snd)).sub hcont).div_const h
+    ((hcont.comp ((continuous_fst.add continuous_const).prodMk continuous_snd)).sub
+      hcont).div_const h
   obtain ⟨v, hv, heq, _⟩ := hregular d {p | 0 < Uc ω p.1 p.2}
     (isOpen_lt continuous_const hcont)
     (LatticeProb.Scaling.BackwardPositivity.positive_set_subset_positive_time hzero hmono)

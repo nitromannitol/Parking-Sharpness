@@ -1,4 +1,13 @@
-/-
+import Parking.Support.NearProducts
+import Parking.Support.NearBridge
+import Parking.Support.NearRouting
+import Parking.Support.NearLowerLog
+import Parking.Support.NearParticle
+import Parking.Frozen.NearDivisible
+
+/-!
+# The arithmetic endgame of the near-critical upper bounds
+
 The arithmetic endgame of the near-critical upper bounds (`parking.tex:2959-2993`).
 
 Step 3 at the near-critical law is Step 1 of `thm:upper`, whose constant is a function
@@ -11,12 +20,6 @@ multiple of the rate itself.  The divisible mean is bounded by the rate by
 `prop:near-divisible`, and Step 1 of the upper bounds carries the bound from the cutoff
 to the limit.
 -/
-import Parking.Support.NearProducts
-import Parking.Support.NearBridge
-import Parking.Support.NearRouting
-import Parking.Support.NearLowerLog
-import Parking.Support.NearParticle
-import Parking.Frozen.NearDivisible
 
 open MeasureTheory
 

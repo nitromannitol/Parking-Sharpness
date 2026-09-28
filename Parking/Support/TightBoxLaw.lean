@@ -1,4 +1,10 @@
-/-
+import Parking.Support.TightKolmogorov
+import Parking.Support.OrientedCutoffValue
+import Parking.Support.CriticalLawReal
+
+/-!
+# Law of the rescaled box-reward field
+
 The law of the rescaled oriented box-reward field on `C(K)`
 (`parking.tex:3207-3218`).
 
@@ -22,9 +28,6 @@ of the scenery and takes its law:
   i.i.d. scenery law along the box-reward map, a probability measure on
   `C(rewardBox T A, ℝ)`.
 -/
-import Parking.Support.TightKolmogorov
-import Parking.Support.OrientedCutoffValue
-import Parking.Support.CriticalLawReal
 
 open LatticeProb.BoxClamp (rewardBox)
 

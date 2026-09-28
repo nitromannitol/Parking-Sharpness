@@ -1,8 +1,11 @@
-/-
-Raising the configuration in the particle-driven construction.
+import Parking.Support.Agree
+import Parking.Support.Coupling
+
+/-!
+# Raising the configuration in the particle-driven construction
 
 `Parking.tagged_invariant` compares a configuration with the same one raised by
-one at a single site.  What `lem:density-compare` needs is the comparison of
+one at a single site. What `lem:density-compare` needs is the comparison of
 two configurations that differ everywhere, which the paper obtains by applying
 the one-site coupling successively; in the particle-driven construction the
 comparison is a single induction, because every particle carries its own
@@ -11,11 +14,9 @@ processes.
 
 The invariant is that a particle active in the lower process is active in the
 higher one and stands where it stands there, and that the higher process has no
-more unfilled holes anywhere.  The two halves feed each other exactly as in the
+more unfilled holes anywhere. The two halves feed each other exactly as in the
 one-site coupling: more arrivals and fewer holes both make settling harder.
 -/
-import Parking.Support.Agree
-import Parking.Support.Coupling
 
 noncomputable section
 
@@ -27,23 +28,33 @@ open LatticeProb Finset
 
 variable {d : ℕ}
 
+/-- `Parking.pState`'s one-step recursion for `active`: a particle is active at time `t + 1`
+iff it was active at `t` and did not settle at step `t` (`Parking.pSettles`). -/
 theorem pState_succ_active (D : LatticeProb.PDriver d) (t : ℕ) (p : Label d) :
     (LatticeProb.pState D (t + 1)).active p
       = ((LatticeProb.pState D t).active p
         && !LatticeProb.pSettles D (LatticeProb.pState D t) t p) := by
   simp [LatticeProb.pState, LatticeProb.pStep]
 
+/-- `Parking.pState`'s one-step recursion for `pos`: a particle's position at time `t + 1` is
+its next position `Parking.pNextPos` computed from the state at `t`, by definitional unfolding. -/
 theorem pState_succ_pos (D : LatticeProb.PDriver d) (t : ℕ) (p : Label d) :
     (LatticeProb.pState D (t + 1)).pos p
       = LatticeProb.pNextPos D (LatticeProb.pState D t) t p := by
   rfl
 
+/-- `Parking.pState`'s one-step recursion for `holes`: the hole count at site `x` at time
+`t + 1` is the count at `t` minus the number of particles arriving at `x` at step `t`
+(`Parking.pArrivalsAt`). -/
 theorem pState_succ_holes (D : LatticeProb.PDriver d) (t : ℕ) (x : Site d) :
     (LatticeProb.pState D (t + 1)).holes x
       = (LatticeProb.pState D t).holes x
         - (LatticeProb.pArrivalsAt D (LatticeProb.pState D t) t x).card := by
   rfl
 
+/-- Unfolds `Parking.pSettles`: a particle `p` settles at step `t` iff it is active and the
+number of rank-ranked arrivals it must yield to at its next position is below the number of
+holes there. -/
 theorem pSettles_eq_true_iff (D : LatticeProb.PDriver d) (S : State d) (t : ℕ)
     (p : Label d) :
     LatticeProb.pSettles D S t p = true ↔

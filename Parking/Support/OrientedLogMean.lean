@@ -1,13 +1,22 @@
-/- The logarithmic divisible mean bound under the oriented parking law. -/
 import Parking.Support.OrientedMaxLog
 import Parking.Support.OrientedFirstMoment
 import Parking.Support.OrientedLaw
+
+/-!
+# The logarithmic divisible mean bound under the oriented law
+
+The logarithmic divisible mean bound under the oriented parking law.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
+/-- For `d ≥ 3` and a centered scenery law `μ` with an exponential absolute moment, the
+divisible mean `∫ uOriented η n 0` is at most `C * log (n + 1)`, obtained by doubling the
+logarithmic bound `exists_orientedMax_log_mean` on the auxiliary maximal walk average via
+`uOriented_le_potential_add_max`. -/
 theorem exists_uOriented_log_mean (hd : 3 ≤ d)
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (hi : Integrable (id : ℝ → ℝ) μ) (hm : ∫ z : ℝ, z ∂μ = 0)
@@ -37,6 +46,9 @@ theorem exists_uOriented_log_mean (hd : 3 ≤ d)
   have hmul := mul_le_mul_of_nonneg_left hMb (by norm_num : (0 : ℝ) ≤ 2)
   exact hraw.trans (by simpa only [mul_assoc] using hmul)
 
+/-- For `d ≥ 3` and a critical integer law `ν` with an exponential moment, the divisible
+mean `meanuOriented (orientedLaw d ν) n` is at most `C * log (n + 1)`, transferred from
+`exists_uOriented_log_mean` on `realLaw ν` via `integral_oriented_confReal`. -/
 theorem exists_meanuOriented_log_upper (hd : 3 ≤ d)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)

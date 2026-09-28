@@ -1,4 +1,10 @@
-/-
+import Parking.Support.OneParticle
+import Parking.Support.Error
+import LatticeProb.Prob.InfinitePiSplit
+
+/-!
+# Lemma 5.1: the corrected odometer stays within `w^\star`
+
 Lemma 5.1 of `parking.tex`: the odometer, corrected by the error field, stays
 within `w^\star` of the divisible odometer.
 
@@ -18,9 +24,6 @@ site the first step reaches.  The integrands are measurable because they read
 only finitely many directions, and bounded because a walk of `n` steps from `x`
 stays in the box of radius `n`.
 -/
-import Parking.Support.OneParticle
-import Parking.Support.Error
-import LatticeProb.Prob.InfinitePiSplit
 
 noncomputable section
 
@@ -33,6 +36,8 @@ variable {d : ℕ}
 
 /-! ### The walk law is a probability measure -/
 
+/-- The uniform direction law `stepLaw d` gives total mass one to the universe, since it
+is `(2d)⁻¹` times a sum of `2d` Dirac masses. -/
 theorem stepLaw_univ (hd : 1 ≤ d) : stepLaw d Set.univ = 1 := by
   have hcard : (Finset.univ : Finset (Fin d × Bool)).card = 2 * d := by
     simp [Finset.card_univ, Nat.mul_comm]
@@ -47,11 +52,15 @@ theorem stepLaw_univ (hd : 1 ≤ d) : stepLaw d Set.univ = 1 := by
   rw [show ((2 * d : ℕ) : ℝ≥0∞) = 2 * (d : ℝ≥0∞) by push_cast; ring]
   exact ENNReal.inv_mul_cancel h2d h2d'
 
+/-- `stepLaw d` is a probability measure, from `stepLaw_univ`. -/
 theorem stepLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (stepLaw d) :=
   ⟨stepLaw_univ hd⟩
 
 /-! ### The neighbour sum -/
 
+/-- The sum of `f` over the `2d` lattice neighbours of `x` splits as the sum, over each
+coordinate direction `i`, of `f` at the forward and backward neighbours along that
+axis. -/
 theorem nbrFinset_sum (f : Site d → ℝ) (x : Site d) :
     ∑ y ∈ nbrFinset x, f y = ∑ i : Fin d, (f (x + unit i) + f (x - unit i)) := by
   classical
@@ -78,12 +87,16 @@ theorem nbrFinset_sum (f : Site d → ℝ) (x : Site d) :
     · exact key i j (-1) 1 (by norm_num) one_ne_zero (by simpa [sub_eq_add_neg] using h)
     · exact key i j (-1) (-1) (by norm_num) (by norm_num) (by simpa [sub_eq_add_neg] using h)
 
+/-- The Markov averaging operator `walkOp f x` is the mean of `f` over the neighbours of
+`x`, i.e. the neighbour sum `nbrSum f x` divided by `2d`. -/
 theorem walkOp_eq_nbrFinset (f : Site d → ℝ) (x : Site d) :
     walkOp f x = (∑ y ∈ nbrFinset x, f y) / (2 * d) := by
   rw [walkOp, nbrSum, nbrFinset_sum]
 
 /-! ### The maximal error along the walk -/
 
+/-- The position `walkPath x p j` of the walk from `x` after `j` steps is a measurable
+function of the direction sequence `p`, by induction on `j`. -/
 theorem measurable_walkPath (x : Site d) (j : ℕ) :
     Measurable fun p : ℕ → Fin d × Bool => walkPath x p j := by
   induction j with
@@ -93,6 +106,9 @@ theorem measurable_walkPath (x : Site d) (j : ℕ) :
         (Measurable.of_discrete : Measurable (stepVec (d := d))).comp (measurable_pi_apply j)
       exact ih.add h2
 
+/-- Prepending one direction `u` to the sequence `p` and taking `j + 1` steps from `x`
+agrees with taking `j` steps of `p` from the site `x + stepVec u` the first step
+reaches. -/
 theorem walkPath_consNat (x : Site d) (u : Fin d × Bool) (p : ℕ → Fin d × Bool) (j : ℕ) :
     walkPath x (consNat u p) (j + 1) = walkPath (x + stepVec u) p j := by
   induction j with
@@ -103,6 +119,7 @@ theorem walkPath_consNat (x : Site d) (u : Fin d × Bool) (p : ℕ → Fin d × 
 def wMax (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool) : ℝ :=
   ⨆ j ∈ Finset.range (n + 1), |wErr ω (n - j) (walkPath x p j)|
 
+/-- `wStar` unfolds to its defining integral of `wMax` against the walk law. -/
 theorem wStar_eq (ω : Data d) (n : ℕ) (x : Site d) :
     wStar ω n x = ∫ p, wMax ω n x p ∂(walkLaw d) := rfl
 
@@ -110,9 +127,12 @@ theorem wStar_eq (ω : Data d) (n : ℕ) (x : Site d) :
 def wBound (ω : Data d) (n : ℕ) (x : Site d) : ℝ :=
   ∑ m ∈ Finset.range (n + 1), ∑ z ∈ boxFinset x n, |wErr ω m z|
 
+/-- The crude bound `wBound` is nonnegative, being a sum of absolute values. -/
 theorem wBound_nonneg (ω : Data d) (n : ℕ) (x : Site d) : 0 ≤ wBound ω n x :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
 
+/-- The walk from `x` stays inside the box of radius `n` for its first `n` steps, since
+each step changes each coordinate by at most one. -/
 theorem walkPath_mem_box (x : Site d) (p : ℕ → Fin d × Bool) {j n : ℕ} (hj : j ≤ n) :
     walkPath x p j ∈ boxFinset x n := by
   rw [mem_boxFinset_iff]
@@ -134,6 +154,8 @@ theorem walkPath_mem_box (x : Site d) (p : ℕ → Fin d × Bool) {j n : ℕ} (h
           _ = ((k + 1 : ℕ) : ℤ) := by push_cast; ring
   exact le_trans (this j) (by exact_mod_cast hj)
 
+/-- Each term of the supremum defining `wMax` is bounded by the crude bound `wBound`,
+since the walk stays in the box that `wBound` sums over. -/
 theorem term_le_wBound (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool)
     {j : ℕ} (hj : j ≤ n) : |wErr ω (n - j) (walkPath x p j)| ≤ wBound ω n x := by
   have h1 : |wErr ω (n - j) (walkPath x p j)| ≤ ∑ z ∈ boxFinset x n, |wErr ω (n - j) z| :=
@@ -145,6 +167,8 @@ theorem term_le_wBound (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d �
       (Finset.mem_range.mpr (by omega))
   exact h1.trans h2
 
+/-- The family of terms whose supremum defines `wMax` is bounded above by `wBound`, so
+that supremum exists. -/
 theorem wMax_bdd (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool) :
     BddAbove (Set.range fun j : ℕ => ⨆ _ : j ∈ Finset.range (n + 1),
       |wErr ω (n - j) (walkPath x p j)|) := by
@@ -157,6 +181,8 @@ theorem wMax_bdd (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool
   · rw [ciSup_neg hj, Real.sSup_empty]
     exact wBound_nonneg ω n x
 
+/-- `wMax` is bounded above by the crude bound `wBound`, from `term_le_wBound` applied to
+every term of its defining supremum. -/
 theorem wMax_le (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool) :
     wMax ω n x p ≤ wBound ω n x := by
   refine ciSup_le fun j => ?_
@@ -166,6 +192,8 @@ theorem wMax_le (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool)
   · rw [ciSup_neg hj, Real.sSup_empty]
     exact wBound_nonneg ω n x
 
+/-- `wMax` is nonnegative: the term of its supremum at `j = 0` is `|wErr ω n x|`, which is
+itself nonnegative. -/
 theorem wMax_nonneg (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × Bool) :
     0 ≤ wMax ω n x p := by
   refine le_ciSup_of_le ⟨wBound ω n x, ?_⟩ 0 ?_
@@ -179,6 +207,8 @@ theorem wMax_nonneg (ω : Data d) (n : ℕ) (x : Site d) (p : ℕ → Fin d × B
   · rw [ciSup_pos (Finset.mem_range.mpr (Nat.succ_pos n))]
     exact abs_nonneg _
 
+/-- The walk's position after `j` steps depends only on the first `j` directions of the
+sequence driving it. -/
 theorem walkPath_congr (x : Site d) {p q : ℕ → Fin d × Bool} {j : ℕ}
     (h : ∀ i, i < j → p i = q i) : walkPath x p j = walkPath x q j := by
   induction j with
@@ -186,6 +216,8 @@ theorem walkPath_congr (x : Site d) {p q : ℕ → Fin d × Bool} {j : ℕ}
   | succ j ih =>
       rw [walkPath, walkPath, ih (fun i hi => h i (by omega)), h j (by omega)]
 
+/-- `wMax` depends only on the first `n` directions of the sequence, via
+`walkPath_congr`. -/
 theorem wMax_congr (ω : Data d) (n : ℕ) (x : Site d) {p q : ℕ → Fin d × Bool}
     (h : ∀ i, i < n → p i = q i) : wMax ω n x p = wMax ω n x q := by
   unfold wMax
@@ -211,10 +243,14 @@ theorem measurable_of_finite_dependence (hd : 1 ≤ d) (n : ℕ)
   rw [hfac]
   exact Measurable.of_discrete.comp (measurable_pi_lambda _ fun i => measurable_pi_apply _)
 
+/-- `wMax ω n x` is measurable, by `measurable_of_finite_dependence` applied to its
+finite dependence on the first `n` directions (`wMax_congr`). -/
 theorem measurable_wMax (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     Measurable (wMax ω n x) :=
   measurable_of_finite_dependence hd n _ fun _ _ hpq => wMax_congr ω n x hpq
 
+/-- `wMax ω n x` is integrable under the walk law, being measurable and bounded by the
+constant `wBound ω n x`. -/
 theorem integrable_wMax (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     Integrable (wMax ω n x) (walkLaw d) := by
   haveI := stepLaw_isProbability hd
@@ -225,6 +261,9 @@ theorem integrable_wMax (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
   rw [Real.norm_eq_abs, abs_of_nonneg (wMax_nonneg ω n x p)]
   exact wMax_le ω n x p
 
+/-- The error field is dominated by `wStar`: `|wErr ω n x|` is itself one of the terms of
+the supremum defining `wMax ω n x p` for any direction sequence `p`, so it is at most the
+mean of `wMax` over the walk law, which is `wStar`. -/
 theorem abs_wErr_le_wStar (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     |wErr ω n x| ≤ wStar ω n x := by
   haveI := stepLaw_isProbability hd
@@ -247,6 +286,8 @@ theorem abs_wErr_le_wStar (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
         integral_mono (integrable_const _) (integrable_wMax hd ω n x) hpt
     _ = wStar ω n x := rfl
 
+/-- `wStar` vanishes at horizon `0`, since the only term of `wMax ω 0 x p` is
+`|wErr ω 0 x| = 0`. -/
 theorem wStar_zero (ω : Data d) (x : Site d) : wStar ω 0 x = 0 := by
   have hmax : ∀ p, wMax ω 0 x p = 0 := by
     intro p
@@ -272,6 +313,8 @@ theorem wStar_zero (ω : Data d) (x : Site d) : wStar ω 0 x = 0 := by
 
 /-! ### The Markov step -/
 
+/-- The expectation of `g` under the uniform direction law is the average of `g` over all
+`2d` directions. -/
 theorem integral_stepLaw (hd : 1 ≤ d) (g : Fin d × Bool → ℝ) :
     ∫ u, g u ∂(stepLaw d) = (∑ b : Fin d × Bool, g b) / (2 * d) := by
   haveI := stepLaw_isProbability hd
@@ -287,6 +330,8 @@ theorem integral_stepLaw (hd : 1 ≤ d) (g : Fin d × Bool → ℝ) :
     ENNReal.toReal_natCast]
   rw [div_eq_inv_mul]
 
+/-- Summing `g` over each of the `2d` translates of `x` by a signed direction equals the
+neighbour sum `nbrSum g x`. -/
 theorem sum_stepVec (g : Site d → ℝ) (x : Site d) :
     (∑ b : Fin d × Bool, g (x + stepVec b)) = nbrSum g x := by
   rw [nbrSum, Fintype.sum_prod_type]
@@ -294,6 +339,11 @@ theorem sum_stepVec (g : Site d → ℝ) (x : Site d) :
   rw [Fintype.sum_bool]
   simp [stepVec, sub_eq_add_neg]
 
+/-- One application of the Markov averaging operator to `wStar` at horizon `k` is
+dominated by `wStar` at horizon `k + 1`: by the Markov property of the walk at time one
+(`integral_infinitePi_nat_head_tail`), the walk from `x` splits as one step followed by an
+independent copy of itself, so the mean of `wMax` after that first step is one of the
+terms of the supremum defining `wMax` at the longer horizon. -/
 theorem walkOp_wStar_le (hd : 1 ≤ d) (ω : Data d) (k : ℕ) (x : Site d) :
     walkOp (wStar ω k) x ≤ wStar ω (k + 1) x := by
   haveI := stepLaw_isProbability hd
@@ -353,6 +403,8 @@ theorem walkOp_wStar_le (hd : 1 ≤ d) (ω : Data d) (k : ℕ) (x : Site d) :
 
 /-! ### The Bellman comparison -/
 
+/-- Two maxima of pairs differ by at most the larger of the differences of their
+respective arguments. -/
 theorem abs_max_sub_max_le (a₁ a₂ b₁ b₂ : ℝ) :
     |max a₁ a₂ - max b₁ b₂| ≤ max |a₁ - b₁| |a₂ - b₂| := by
   have h1 : max a₁ a₂ ≤ max b₁ b₂ + max |a₁ - b₁| |a₂ - b₂| := by
@@ -375,6 +427,8 @@ theorem abs_max_sub_max_le (a₁ a₂ b₁ b₂ : ℝ) :
               ((neg_le_abs (a₂ - b₂)).trans' (by linarith) |>.trans (le_max_right _ _))
   exact abs_sub_le_iff.mpr ⟨by linarith, by linarith⟩
 
+/-- The Markov averaging operator is additive: it commutes with pointwise
+subtraction. -/
 theorem walkOp_sub (f g : Site d → ℝ) (x : Site d) :
     walkOp (fun y => f y - g y) x = walkOp f x - walkOp g x := by
   rw [walkOp, walkOp, walkOp, nbrSum, nbrSum, nbrSum, ← sub_div]
@@ -382,12 +436,15 @@ theorem walkOp_sub (f g : Site d → ℝ) (x : Site d) :
   rw [← Finset.sum_sub_distrib]
   exact Finset.sum_congr rfl fun i _ => by ring
 
+/-- The Markov averaging operator is monotone in its argument. -/
 theorem walkOp_mono (hd : 1 ≤ d) {f g : Site d → ℝ} (hfg : ∀ y, f y ≤ g y) (x : Site d) :
     walkOp f x ≤ walkOp g x := by
   have h2d : (0 : ℝ) < 2 * d := by positivity
   rw [walkOp, walkOp, div_le_div_iff_of_pos_right h2d, nbrSum, nbrSum]
   exact Finset.sum_le_sum fun i _ => add_le_add (hfg _) (hfg _)
 
+/-- The Markov averaging operator does not increase absolute value: `|walkOp f x|` is at
+most the average of `|f|` over the neighbours of `x`. -/
 theorem abs_walkOp_le (hd : 1 ≤ d) (f : Site d → ℝ) (x : Site d) :
     |walkOp f x| ≤ walkOp (fun y => |f y|) x := by
   have h2d : (0 : ℝ) < 2 * d := by positivity
@@ -435,6 +492,10 @@ theorem V_succ {ω : Data d} (hstep : ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFin
   · ring
   · ring
 
+/-- The corrected integer odometer stays within `wStar` of the divisible odometer, for a
+realization whose instructions are neighbours of the site carrying them: the induction
+step is the Bellman comparison `V_succ` together with `abs_max_sub_max_le`,
+`abs_wErr_le_wStar`, and the monotone bound `walkOp_wStar_le`. -/
 theorem pathwise_of_labelOrder (hd : 1 ≤ d) {ω : Data d}
     (hstep : ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1) (n : ℕ) :
     ∀ x : Site d, |(U ω n x : ℝ) - wErr ω n x - uOf ω n x| ≤ wStar ω n x := by

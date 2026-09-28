@@ -1,4 +1,10 @@
-/-
+import LatticeProb.WhiteNoise
+import Parking.Support.Continuum
+import Parking.Support.NearestMollifier
+
+/-!
+# The mollification identity
+
 The mollification identity of `parking.tex:1828-1829`: the continuum signed pair
 of `thm:nearest` is positive at every nonnegative test function supported where
 the limit field is positive.
@@ -21,9 +27,6 @@ its minimum `c` there bounds `∫∫ v ψ_h ≥ c ∫ φ` uniformly in `h ≤ 1`
 is continuous at `1`, choosing `h` so that `|∫ ρ_h F - F(1)| ≤ c ∫φ / 2` gives
 `⟨W,φ⟩ + F(1) ≥ c ∫φ / 2 > 0`, with no limit taken anywhere.
 -/
-import LatticeProb.WhiteNoise
-import Parking.Support.Continuum
-import Parking.Support.NearestMollifier
 
 open LatticeProb.WhiteNoise (contOp_const_mul continuous_contOp hasCompactSupport_contOp)
 

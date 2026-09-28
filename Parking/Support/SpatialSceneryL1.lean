@@ -1,6 +1,11 @@
-/- First-moment control of a scenery pairing with a uniformly small coefficient. -/
 import Parking.Support.SpatWSceneryFdd
 import Parking.Support.SpatWMartingaleVariance
+
+/-!
+# First-moment control of the scenery pairing
+
+First-moment control of a scenery pairing with a uniformly small coefficient.
+-/
 
 open LatticeProb.Walk (sceneryBox)
 
@@ -40,7 +45,10 @@ theorem integral_abs_scenePair_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
     funext fun w => scenePair_eq_sceneryBox_sum hB hsupp hR w
   have hsi : Integrable (fun w => scenePair w R φ) (law d ν) := by
     rw [hscene]
-    exact integrable_finsetSum _ fun y _ => ((integrable_norm_iff ((measurable_pi_apply y).comp measurable_confReal).aestronglyMeasurable).mp (hi y) |>.mul_const _).const_mul _
+    exact integrable_finsetSum _ fun y _ =>
+      ((integrable_norm_iff
+        ((measurable_pi_apply y).comp measurable_confReal).aestronglyMeasurable).mp
+        (hi y) |>.mul_const _).const_mul _
   refine ⟨hsi, ?_⟩
   have hupper : ∀ w : Data d, |scenePair w R φ| ≤
       ∑ y ∈ S, R ^ (-(d : ℝ) / 2) * (|confReal w y| * ε) := by

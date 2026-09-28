@@ -1,22 +1,24 @@
-/-
+import Parking.Support.Range
+import LatticeProb.Prob.NearFamily
+
+/-!
+# Near-critical hypotheses and rate quantities
+
 The standing hypotheses and the quantities of Section 9 of `parking.tex`.
 
-`NearFamily d δ₀ ν θ M K` is the hypothesis block of `thm:near`
-(`parking.tex:314-335`), transcribed exactly as `Parking/Frozen/Near.lean`
-transcribes it (the definition is the library's
-`LatticeProb.ConvexOrder.NearFamily`, exported into `Parking`): probability laws of mean `-δ`, a nonconstant law at `δ = 0`,
-exponential moments finite and bounded uniformly in `δ`, and a coupling of
-`η_δ(0)` with `η_0(0)` of expected absolute difference at most `K δ`.  The
-integrability is part of the bound on the exponential moments; without it the
-Bochner integral of a nonintegrable function is zero and every family, however
-heavy tailed, would satisfy the hypothesis.
+`NearFamily d δ₀ ν θ M K` is the hypothesis block of `thm:near` (`parking.tex:314-335`),
+transcribed exactly as `Parking/Frozen/Near.lean` transcribes it (the definition is the
+library's `LatticeProb.ConvexOrder.NearFamily`, exported into `Parking`): probability laws of
+mean `-δ`, a nonconstant law at `δ = 0`, exponential moments finite and bounded uniformly in
+`δ`, and a coupling of `η_δ(0)` with `η_0(0)` of expected absolute difference at most `K δ`.
+The integrability is part of the bound on the exponential moments; without it the Bochner
+integral of a nonintegrable function is zero and every family, however heavy tailed, would
+satisfy the hypothesis.
 
 `rangeExp d a t` is `E_0 e^{-a|R_t|}`, `resolventThreshold d C a` is the
 threshold `T` of `eq:range-threshold`, and `xi δ η` is the recentred scenery
 `ξ_δ = η_δ + δ` of `parking.tex:2744-2747`.
 -/
-import Parking.Support.Range
-import LatticeProb.Prob.NearFamily
 
 open MeasureTheory
 open scoped ENNReal

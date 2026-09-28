@@ -1,4 +1,8 @@
-/-
+import Parking.Support.PsiRate
+
+/-!
+# Step 3 of `prop:near-divisible`: the bounded upper bound above dimension four
+
 Step 3 of `prop:near-divisible` (`parking.tex:2896-2911`), the matching upper bound
 for a uniformly bounded family above dimension four.
 
@@ -22,9 +26,11 @@ only helps.  Above it the horizon exceeds `(e/δ)^2`, so the drift is at least
 `e^2/δ`, while `ψ_d(M) ≤ log(M+2) ≤ δ(M+2)/(2c₀) + log(2c₀/δ) - 1` and
 `log(1/δ) ≤ 2\sqrt{1/δ}`, which the drift absorbs once `δ` is small.
 -/
-import Parking.Support.PsiRate
 
-open LatticeProb.ConvexOrder (ae_neg_le_twoPointLaw evariance_twoPointLaw_lt_top evariance_twoPointLaw_pos integrable_id_shiftLaw integrable_intCast_of_exp integrable_twoPointLaw integral_shiftLaw_id integral_twoPointLaw_id measurable_intShift shiftLaw twoPointLaw)
+open LatticeProb.ConvexOrder (ae_neg_le_twoPointLaw evariance_twoPointLaw_lt_top
+    evariance_twoPointLaw_pos integrable_id_shiftLaw integrable_intCast_of_exp
+    integrable_twoPointLaw integral_shiftLaw_id integral_twoPointLaw_id measurable_intShift
+    shiftLaw twoPointLaw)
 
 open MeasureTheory ProbabilityTheory LatticeProb
 open scoped ENNReal NNReal
@@ -95,14 +101,20 @@ theorem integral_pow_u_xi_le_twoPoint (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ →
   rw [← hmapped]
   exact integral_pow_u_iid_le hd hμid hζid hcomp k m 0 hIζ
 
+/-- `psi d s` is strictly positive for `s ≥ 0`, since `s + 2 ≥ 2` makes `log(s + 2) ≥ log 2 > 0`
+and a positive real raised to a real power stays positive. -/
 theorem psi_pos (d : ℕ) {s : ℝ} (hs : 0 ≤ s) : 0 < psi d s :=
   Real.rpow_pos_of_pos (lt_of_lt_of_le (Real.log_pos (by norm_num))
     (log_two_le_log_add_two hs)) _
 
+/-- The floor `[log 2]^{2/d} ≤ ψ_d(s)` for `s ≥ 0`, from monotonicity of `x ↦ x^{2/d}` applied to
+`log 2 ≤ log(s + 2)`. -/
 theorem log_two_rpow_le_psi (d : ℕ) {s : ℝ} (hs : 0 ≤ s) :
     Real.log 2 ^ ((2:ℝ) / d) ≤ psi d s :=
   Real.rpow_le_rpow (Real.log_nonneg (by norm_num)) (log_two_le_log_add_two hs) (by positivity)
 
+/-- `[log m]^{2/d} ≤ ψ_d(m)` for a natural `m ≥ 1`, since `log m ≤ log(m + 2)` and `x ↦ x^{2/d}`
+is monotone on the nonnegatives. -/
 theorem log_rpow_le_psi (d : ℕ) {m : ℕ} (hm : 1 ≤ m) :
     Real.log m ^ ((2:ℝ) / d) ≤ psi d m := by
   have hm1 : (1:ℝ) ≤ (m:ℝ) := by exact_mod_cast hm

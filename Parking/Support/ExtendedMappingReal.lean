@@ -1,5 +1,7 @@
-/-
-**The extended continuous mapping theorem, real parameter.**
+import LatticeProb.ExtendedMapping
+
+/-!
+# The extended continuous mapping theorem, real parameter
 
 `LatticeProb.ExtendedMapping.extended_continuous_mapping` and
 `tendsto_integral_comp_of_locally_uniform` are stated for a SEQUENCE of laws and maps,
@@ -18,9 +20,9 @@ repository needs (optimal-stopping values are `1`-Lipschitz in the reward,
 already recorded this design), so it is the form proved here; the general local-uniform
 form transfers by the identical argument if a future application needs it.
 -/
-import LatticeProb.ExtendedMapping
 
-open LatticeProb.ExtendedMapping (locallyUniform_of_lipschitz tendsto_integral_comp_of_locally_uniform)
+open LatticeProb.ExtendedMapping (locallyUniform_of_lipschitz
+    tendsto_integral_comp_of_locally_uniform)
 
 open MeasureTheory Filter Topology
 

@@ -1,5 +1,14 @@
 import Parking.Support.ProductConditioning
 
+/-!
+# Partial integration over a retained coordinate set
+
+Basic properties of `partialInt`, the average of a functional over the coordinates
+outside a retained set `S`: it fixes any functional that already depends only on `S`, it
+reduces to an integral over a single fresh coordinate `j` when `F` depends only on `S`
+and `j`, and it inherits any uniform bound on `F`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -15,7 +24,8 @@ theorem partialInt_eq_self (μ : ∀ i, Measure (X i)) [∀ i, IsProbabilityMeas
     hF _ _ (fun i hi => comb_apply_of_mem hi)
   simp only [he, integral_const, probReal_univ, one_smul]
 
-/-- A functional of the retained coordinates and one fresh coordinate is averaged in that coordinate alone. -/
+/-- A functional of the retained coordinates and one fresh coordinate is averaged in
+that coordinate alone. -/
 theorem partialInt_single_coordinate [DecidableEq ι]
     (μ : ∀ i, Measure (X i)) [∀ i, IsProbabilityMeasure (μ i)]
     (S : Set ι) [DecidablePred (· ∈ S)] (j : ι) (hj : j ∉ S)

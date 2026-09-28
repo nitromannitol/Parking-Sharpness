@@ -1,4 +1,8 @@
-/-
+import Parking.Support.MeanHorizonStep1
+
+/-!
+# The centered moment bound at every exponent
+
 `eq:near-centered-moment` (`parking.tex:2812-2816`), at every exponent.
 
 "Replacing the finitely many relevant coordinates one at a time by independent
@@ -14,9 +18,9 @@ applied once, at that law alone.  The two Green quantities are left as they stan
 rather than replaced by their rates, because the horizon at which they will be read
 depends on `δ`.
 -/
-import Parking.Support.MeanHorizonStep1
 
-open LatticeProb.ConvexOrder (evariance_refLaw_lt_top evariance_refLaw_pos integrable_exp_abs_refLaw integral_refLaw_id)
+open LatticeProb.ConvexOrder (evariance_refLaw_lt_top evariance_refLaw_pos
+    integrable_exp_abs_refLaw integral_refLaw_id)
 
 open MeasureTheory LatticeProb ProbabilityTheory
 
@@ -53,7 +57,8 @@ theorem exists_zeta_norm (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGrow
 comparison replaces the recentred scenery by the fixed reference law at every even
 enough exponent, and the reference bound is uniform in `δ`. -/
 theorem exists_near_centered (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGrowth)
-    (hConc : Parking.External.UConcentration) {δ₀ : ℝ} {ν : ℝ → Measure ℤ} {θ M K : ℝ} (hfam : NearFamily δ₀ ν θ M K) :
+    (hConc : Parking.External.UConcentration) {δ₀ : ℝ} {ν : ℝ → Measure ℤ} {θ M K : ℝ}
+        (hfam : NearFamily δ₀ ν θ M K) :
     ∃ C : ℝ, 0 < C ∧ ∀ δ ∈ Set.Icc (0 : ℝ) δ₀, ∀ m : ℕ, 2 ≤ m → ∀ j : ℕ,
       (∫ η, u (Parking.xi δ η) m 0 ^ (j + 2) ∂(LatticeProb.iidLaw d (ν δ)))
             ^ (1 / ((j : ℝ) + 2))

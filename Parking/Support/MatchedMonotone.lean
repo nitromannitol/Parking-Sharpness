@@ -1,5 +1,15 @@
 import Parking.Support.InstructionField
 
+/-!
+# Monotonicity of the common-table process in the initial field
+
+The common-table (`matched`) construction is monotone: increasing the outgoing count at
+every site only adds arrival slots (`countArrivals_mono`), and consequently raising the
+initial signed field `η ≤ ζ` pointwise increases the per-round count and the departure
+odometer while decreasing the number of holes, by induction on the round number using
+`countArrivals_mono`.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb

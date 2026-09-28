@@ -1,6 +1,11 @@
-/- Higher moments and monotonicity of the directed count recursion. -/
 import Parking.Support.OrientedCountLaw
 import Parking.Support.Monotone
+
+/-!
+# Directed odometer moments
+
+Higher moments and monotonicity of the directed count recursion.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -9,6 +14,8 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The directed odometer `orientedOdometer η σ n x` is monotone in the horizon `n`, by
+induction using that `arrivals` is monotone in the number of departures offered to it. -/
 theorem orientedOdometer_mono_time (η : Site d → ℤ) (σ : Site d × ℕ → Site d) (x : Site d) :
     Monotone (fun n => orientedOdometer η σ n x) := by
   apply monotone_nat_of_le_succ
@@ -24,6 +31,10 @@ theorem orientedOdometer_mono_time (η : Site d → ℤ) (σ : Site d × ℕ →
     apply add_le_add le_rfl
     exact sum_le_sum fun i _ => by exact_mod_cast arrivals_mono σ _ _ (ih (x - unit i))
 
+/-- The `r`-th power of the directed odometer, taken over the joint law of the scenery
+and the departure stacks, is integrable whenever `r ≥ 1`, by transporting the same fact
+for `U` (the confluent-stack odometer) along the a.e. equality `orientedOdometer_ae_eq_U`
+and the pushforward identity `orientedLaw_map_confStack`. -/
 theorem integrable_orientedOdometer_joint_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (x : Site d) :
     Integrable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
@@ -37,8 +48,12 @@ theorem integrable_orientedOdometer_joint_rpow (hd : 1 ≤ d) (ν : Measure ℤ)
   rw [← orientedLaw_map_confStack hd ν]
   apply (integrable_map_measure hm.aestronglyMeasurable (by fun_prop)).mpr
   exact (integrable_oriented_U_rpow hd ν hθ (integrable_expMax_of_expAbs hθ he) hr n x).congr
-    ((orientedOdometer_ae_eq_U hd ν n x).mono fun ω hω => congrArg (fun k : ℕ => (k : ℝ) ^ r) hω.symm)
+    ((orientedOdometer_ae_eq_U hd ν n x).mono
+      fun ω hω => congrArg (fun k : ℕ => (k : ℝ) ^ r) hω.symm)
 
+/-- The `r`-th moment of `U ω n x` under `orientedLaw` does not depend on the site `x`, by
+transporting the integral along the shift `shiftData (-x)`, under which `orientedLaw` is
+invariant and `U` translates by `x`. -/
 theorem integral_oriented_U_rpow_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (r : ℝ) (n : ℕ) (x : Site d) :
     (∫ ω : Data d, (U ω n x : ℝ) ^ r ∂(orientedLaw d ν)) =
@@ -46,10 +61,16 @@ theorem integral_oriented_U_rpow_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProb
   have hm : Measurable (fun ω : Data d => (U ω n x : ℝ) ^ r) :=
     (measurable_from_countable' fun m : ℕ => (m : ℝ) ^ r).comp (measurable_U n x)
   have h := integral_map (μ := orientedLaw d ν) (φ := shiftData (-x))
-    (f := fun ω : Data d => (U ω n x : ℝ) ^ r) (measurable_shiftData _).aemeasurable hm.aestronglyMeasurable
+    (f := fun ω : Data d => (U ω n x : ℝ) ^ r) (measurable_shiftData _).aemeasurable
+    hm.aestronglyMeasurable
   rw [orientedLaw_map_shiftData hd ν (-x)] at h
   simpa only [U_shiftData, add_neg_cancel] using h
 
+/-- The `r`-th moment of the directed odometer at `x`, taken over the joint law of the
+scenery and the departure stacks, equals the `r`-th moment of `U ω n 0` at the origin
+under `orientedLaw`: first pass to `orientedLaw` via `integral_oriented_confStack`, then
+replace `orientedOdometer` by `U` along the a.e. equality, then shift to the origin by
+`integral_oriented_U_rpow_shift`. -/
 theorem integral_orientedOdometer_joint_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (r : ℝ) (n : ℕ) (x : Site d) :
     (∫ z : (Site d → ℤ) × (Site d × ℕ → Site d), (orientedOdometer z.1 z.2 n x : ℝ) ^ r

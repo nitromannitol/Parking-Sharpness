@@ -1,9 +1,16 @@
-/- An exponentially decreasing increment bound forces logarithmic growth. -/
 import Mathlib
+
+/-!
+# Logarithmic growth from an exponential increment bound
+
+An exponentially decreasing increment bound forces logarithmic growth.
+-/
 
 noncomputable section
 namespace Parking
 
+/-- `min 1 b * log (n + 1) ≤ log (1 + b * n)`, proved via the concavity bound
+`rpow_one_add_le_one_add_mul_self` applied to the exponent `p = min 1 b`. -/
 theorem log_one_add_mul_lower {b : ℝ} (hb : 0 < b) (n : ℕ) :
     min 1 b * Real.log ((n : ℝ) + 1) ≤ Real.log (1 + b * n) := by
   let p : ℝ := min 1 b
@@ -19,6 +26,10 @@ theorem log_one_add_mul_lower {b : ℝ} (hb : 0 < b) (n : ℕ) :
   rw [Real.log_rpow (by positivity)] at hlog
   simpa only [add_comm (1 : ℝ) (n : ℝ), p] using hlog
 
+/-- If `a 0 = 0` and each increment satisfies `c * exp (-L * a n) ≤ a (n + 1) - a n`
+for constants `c, L > 0`, then `a n ≥ k * log (n + 1)` for some `k > 0`. The proof
+first shows `1 + c * L * n ≤ exp (L * a n)` by induction, then applies
+`log_one_add_mul_lower`. -/
 theorem logarithmic_growth_of_exp_increment (a : ℕ → ℝ) (ha0 : a 0 = 0)
     {c L : ℝ} (hc : 0 < c) (hL : 0 < L)
     (hstep : ∀ n, c * Real.exp (-L * a n) ≤ a (n + 1) - a n) :

@@ -1,6 +1,11 @@
-/- The directed layer collision probability from an ordinary return probability. -/
 import Parking.Support.OrientedOperators
 import Parking.Support.Oriented
+
+/-!
+# Directed layer collision probability
+
+The directed layer collision probability from an ordinary return probability.
+-/
 
 open LatticeProb.Walk (conv conv_zero_eq)
 
@@ -9,6 +14,9 @@ namespace Parking
 open LatticeProb Finset
 variable {d : ℕ}
 
+/-- Iterating the "move right" half-step operator `signedAverage d false` `n` times
+against a test function `f` computes the `n`-step directed layer average of `f`,
+proved by induction using `orientedLayerAverage_succ`. -/
 theorem signedAverage_false_pow (n : ℕ) (f : Site d → ℝ) :
     (signedAverage d false ^ n) f = orientedLayerAverage f n := by
   induction n with
@@ -20,6 +28,10 @@ theorem signedAverage_false_pow (n : ℕ) (f : Site d → ℝ) :
     funext x
     rw [signedAverage_false, orientedLayerAverage_succ]
 
+/-- Applying `k` steps of `signedAverage d true` and `l` steps of `signedAverage d false`
+to the point mass at `0` and evaluating at `0` equals `∑' x, orientedLayer d l x *
+orientedLayer d k x`, obtained by commuting the two half-step operators and unfolding
+`signedAverage_true_pow_delta` and `signedAverage_false_pow`. -/
 theorem signedAverage_mixed_delta (k l : ℕ) :
     (signedAverage d true ^ k * signedAverage d false ^ l)
       (fun x : Site d => if x = 0 then 1 else 0) 0 =
@@ -28,6 +40,8 @@ theorem signedAverage_mixed_delta (k l : ℕ) :
     Module.End.mul_apply, signedAverage_true_pow_delta, signedAverage_false_pow]
   simp only [orientedLayerAverage, zero_add]
 
+/-- The central binomial probability `(1 / 2) ^ (2 * n) * choose (2 * n) n` equals the
+simple random walk's `2 * n`-step return probability `conv n 0`. -/
 theorem central_binomial_coefficient (n : ℕ) :
     (1 / 2 : ℝ) ^ (2 * n) * (Nat.choose (2 * n) n : ℝ) = conv n 0 := by
   rw [pow_mul, conv_zero_eq, Nat.centralBinom]

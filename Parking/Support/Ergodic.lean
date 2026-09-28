@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Invariance
+import LatticeProb.Prob.PiSum
+import LatticeProb.Prob.Translation
+
+/-!
+# Ergodicity of translations on the driving data
+
 Translations of the lattice act ergodically on the law of the driving data.
 
 The law of the data is a product of three infinite products over three
@@ -20,11 +26,9 @@ coordinate shift along an injective reindexing whose iterates push finite sets
 off themselves is `LatticeProb.ergodic_coordShift_infinitePi`, and ergodicity
 passes to the image of a measure preserving intertwining map.
 -/
-import Parking.Support.Invariance
-import LatticeProb.Prob.PiSum
-import LatticeProb.Prob.Translation
 
-open LatticeProb (instructionLaw_isProbability shiftLabel shiftLabel_injective uniformUnit_isProbability)
+open LatticeProb (instructionLaw_isProbability shiftLabel shiftLabel_injective
+    uniformUnit_isProbability)
 
 noncomputable section
 
@@ -89,12 +93,15 @@ def cellSite : Cell d → Site d := Sum.elim (fun _ => 0) (Sum.elim id fun _ => 
 /-- The uniform variable read off a cell. -/
 def cellReal : Cell d → ℝ := Sum.elim (fun _ => 0) (Sum.elim (fun _ => 0) id)
 
+/-- `cellInt` is measurable, as a case split on the sum type `Cell d`. -/
 theorem measurable_cellInt : Measurable (cellInt (d := d)) :=
   Measurable.sumElim measurable_id measurable_const
 
+/-- `cellSite` is measurable, as a nested case split on the sum type `Cell d`. -/
 theorem measurable_cellSite : Measurable (cellSite (d := d)) :=
   Measurable.sumElim measurable_const (Measurable.sumElim measurable_id measurable_const)
 
+/-- `cellReal` is measurable, as a nested case split on the sum type `Cell d`. -/
 theorem measurable_cellReal : Measurable (cellReal (d := d)) :=
   Measurable.sumElim measurable_const (Measurable.sumElim measurable_const measurable_id)
 
@@ -118,6 +125,8 @@ def unflatten (ω : Slot d → Cell d) : Data d :=
     fun q => cellSite (ω (Sum.inr (Sum.inl q))) + q.1,
     fun p => cellReal (ω (Sum.inr (Sum.inr p))))
 
+/-- `unflatten` is measurable, since each of its three output coordinates is a measurable
+projection composed with the measurable `cellInt`, `cellSite` or `cellReal`. -/
 theorem measurable_unflatten : Measurable (unflatten (d := d)) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
   · exact measurable_pi_lambda _ fun x => measurable_cellInt.comp (measurable_pi_apply _)
@@ -126,6 +135,8 @@ theorem measurable_unflatten : Measurable (unflatten (d := d)) := by
         (measurable_pi_apply (Sum.inr (Sum.inl q) : Slot d))).add_const q.1
   · exact measurable_pi_lambda _ fun p => measurable_cellReal.comp (measurable_pi_apply _)
 
+/-- `slotShift v` is injective, by cases on the three summands of `Slot d`, using
+`shiftLabel_injective` on the label summand. -/
 theorem slotShift_injective (v : Site d) : Function.Injective (slotShift (d := d) v) := by
   rintro (x | q | p) (y | r | s) h <;>
     simp only [slotShift, Sum.elim_inl, Sum.elim_inr, Sum.inl.injEq, Sum.inr.injEq,
@@ -134,6 +145,8 @@ theorem slotShift_injective (v : Site d) : Function.Injective (slotShift (d := d
   · exact Prod.ext (add_right_cancel h.1) h.2
   · exact Prod.ext (shiftLabel_injective v h.1) h.2
 
+/-- The law of a coordinate is unchanged by `slotShift`, since `slotShift` only translates the
+base site or label, not the summand a coordinate belongs to. -/
 theorem cellLaw_slotShift (ν : Measure ℤ) (v : Site d) (i : Slot d) :
     cellLaw (d := d) ν (slotShift v i) = cellLaw ν i := by
   rcases i with x | q | p <;> rfl
@@ -142,10 +155,14 @@ theorem cellLaw_slotShift (ν : Measure ℤ) (v : Site d) (i : Slot d) :
 def slotBase : Slot d → Site d :=
   Sum.elim id (Sum.elim (fun q : Site d × ℕ => q.1) fun p : Label d × ℕ => p.1.1)
 
+/-- `slotShift v` translates the base site of a coordinate by `v`, by cases on the three
+summands of `Slot d`. -/
 theorem slotBase_slotShift (v : Site d) (i : Slot d) :
     slotBase (slotShift v i) = slotBase i + v := by
   rcases i with x | q | p <;> rfl
 
+/-- Iterating `slotShift v` translates the base site by `n • v`, by induction on `n` using
+`slotBase_slotShift`. -/
 theorem slotBase_slotShift_iterate (v : Site d) (n : ℕ) (i : Slot d) :
     slotBase ((slotShift (d := d) v)^[n] i) = slotBase i + n • v := by
   induction n generalizing i with
@@ -154,6 +171,9 @@ theorem slotBase_slotShift_iterate (v : Site d) (n : ℕ) (i : Slot d) :
       rw [Function.iterate_succ_apply, ih, slotBase_slotShift, succ_nsmul]
       abel
 
+/-- For a nonzero `v`, some iterate of `slotShift v` pushes every coordinate of a finite set
+`s` off `s`, obtained from `LatticeProb.exists_add_nsmul_notMem` applied to the base sites of
+`s` via `slotBase_slotShift_iterate`. -/
 theorem exists_slotShift_iterate_notMem {v : Site d} (hv : v ≠ 0) (s : Finset (Slot d)) :
     ∃ n : ℕ, ∀ i ∈ s, (slotShift (d := d) v)^[n] i ∉ s := by
   classical
@@ -181,14 +201,18 @@ def gatherCells
     (c : (Site d → Cell d) × ((Site d × ℕ → Cell d) × (Label d × ℕ → Cell d))) : Data d :=
   (fun x => cellInt (c.1 x), fun q => cellSite (c.2.1 q) + q.1, fun p => cellReal (c.2.2 p))
 
+/-- `unflatten` factors as `gatherCells` after `splitSlots`. -/
 theorem unflatten_eq_comp : unflatten (d := d) = gatherCells ∘ splitSlots := rfl
 
+/-- `splitSlots` is measurable, as each of its three outputs is a coordinate projection. -/
 theorem measurable_splitSlots : Measurable (splitSlots (d := d)) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
   · exact measurable_pi_lambda _ fun x => measurable_pi_apply (Sum.inl x : Slot d)
   · exact measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inr (Sum.inl q) : Slot d)
   · exact measurable_pi_lambda _ fun p => measurable_pi_apply (Sum.inr (Sum.inr p) : Slot d)
 
+/-- `gatherCells` is measurable, as each of its three outputs composes a coordinate projection
+with the measurable `cellInt`, `cellSite` or `cellReal`. -/
 theorem measurable_gatherCells : Measurable (gatherCells (d := d)) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
   · exact measurable_pi_lambda _ fun x =>
@@ -205,9 +229,12 @@ section
 
 variable [hd1 : Fact (1 ≤ d)]
 
+/-- The instruction law at the origin is a probability measure. -/
 instance instructionLaw_zero_isProb : IsProbabilityMeasure (instructionLaw (0 : Site d)) :=
   instructionLaw_isProbability hd1.out 0
 
+/-- Each coordinate law `cellLaw ν i` is a probability measure, by cases on which of the three
+summands `i` belongs to. -/
 instance cellLaw_isProb (ν : Measure ℤ) [IsProbabilityMeasure ν] (i : Slot d) :
     IsProbabilityMeasure (cellLaw ν i) := by
   haveI := uniformUnit_isProbability
@@ -221,10 +248,15 @@ def flatLaw (d : ℕ) [Fact (1 ≤ d)] (ν : Measure ℤ) [IsProbabilityMeasure 
     Measure (Slot d → Cell d) :=
   Measure.infinitePi (cellLaw (d := d) ν)
 
+/-- `flatLaw d ν` is a probability measure, as an infinite product of the probability measures
+`cellLaw ν i`. -/
 instance flatLaw_isProb (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (flatLaw d ν) :=
   inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi (cellLaw (d := d) ν)))
 
+/-- Pushing `flatLaw d ν` forward along `splitSlots` gives the product of the three
+infinite-product laws of its site, stack and rank coordinates, by iterating
+`LatticeProb.infinitePi_sum`. -/
 theorem flatLaw_map_splitSlots (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     (flatLaw d ν).map splitSlots
       = (Measure.infinitePi fun x : Site d => cellLaw (d := d) ν (Sum.inl x)).prod
@@ -253,6 +285,9 @@ theorem flatLaw_map_splitSlots (ν : Measure ℤ) [IsProbabilityMeasure ν] :
   rw [hstep, flatLaw, h1, ← Measure.map_prod_map _ _ (measurable_id (α := Site d → Cell d)) hm2,
     Measure.map_id, h2]
 
+/-- Pushing the product of the three coordinate laws forward along `gatherCells` recovers
+`law d ν`, by identifying each factor's image under `cellInt`, `cellSite + q.1` or `cellReal`
+with `iidLaw`, `stackLaw` or `rankLaw` respectively. -/
 theorem prodCellLaw_map_gatherCells (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     ((Measure.infinitePi fun x : Site d => cellLaw (d := d) ν (Sum.inl x)).prod
         ((Measure.infinitePi fun q : Site d × ℕ => cellLaw (d := d) ν (Sum.inr (Sum.inl q))).prod
@@ -270,7 +305,8 @@ theorem prodCellLaw_map_gatherCells (ν : Measure ℤ) [IsProbabilityMeasure ν]
       exact Measure.map_id
     simp only [hone]
     rfl
-  have hg3 : (Measure.infinitePi fun p : Label d × ℕ => cellLaw (d := d) ν (Sum.inr (Sum.inr p))).map
+  have hg3 : (Measure.infinitePi fun p : Label d × ℕ =>
+      cellLaw (d := d) ν (Sum.inr (Sum.inr p))).map
       (fun c : Label d × ℕ → Cell d => fun p : Label d × ℕ => cellReal (c p))
       = LatticeProb.rankLaw d := by
     rw [Measure.infinitePi_map_pi _ fun _ : Label d × ℕ => measurable_cellReal]
@@ -318,11 +354,16 @@ theorem prodCellLaw_map_gatherCells (ν : Measure ℤ) [IsProbabilityMeasure ν]
     ← Measure.map_prod_map _ _ hgm2 hgm3, hg1, hg2, hg3]
   rfl
 
+/-- Pushing `flatLaw d ν` forward along `unflatten` recovers `law d ν`, combining
+`flatLaw_map_splitSlots` and `prodCellLaw_map_gatherCells` through `unflatten_eq_comp`. -/
 theorem flatLaw_map_unflatten (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     (flatLaw d ν).map unflatten = law d ν := by
   rw [unflatten_eq_comp, ← Measure.map_map measurable_gatherCells measurable_splitSlots,
     flatLaw_map_splitSlots, prodCellLaw_map_gatherCells]
 
+/-- The coordinate shift along `slotShift v` is ergodic for `flatLaw d ν` when `v ≠ 0`, by
+`LatticeProb.ergodic_coordShift_infinitePi` applied to the injective reindexing
+`slotShift v`. -/
 theorem ergodic_coordShift_flatLaw (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {v : Site d} (hv : v ≠ 0) :
     Ergodic (LatticeProb.coordShift (X := Cell d) (slotShift v)) (flatLaw d ν) :=

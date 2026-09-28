@@ -1,5 +1,7 @@
-/-
-The spatial cutoff `χ_A` of the scaling limit.
+import Mathlib
+
+/-!
+# Spatial cutoff `χ_A` for the scaling limit
 
 The cited stability estimates need UNIFORMLY BOUNDED rewards, while the
 rescaled potential field is only in `L^r`.  The paper's remedy, and the one the
@@ -12,7 +14,6 @@ harmless as `A → ∞`.
 `|y|/A ≤ 1` and zero exactly where `|y|/A ≥ 2`, and it is continuous for
 `A > 0`.
 -/
-import Mathlib
 
 noncomputable section
 
@@ -22,6 +23,8 @@ namespace Parking
 values in `[0,1]`. -/
 def spatialCutoff (A y : ℝ) : ℝ := max 0 (min 1 (2 - |y| / A))
 
+/-- `spatialCutoff A` is continuous, being built from `max`, `min`, and the continuous
+map `y ↦ 2 - |y| / A`. -/
 theorem continuous_spatialCutoff (A : ℝ) : Continuous (spatialCutoff A) := by
   unfold spatialCutoff
   exact continuous_const.max (continuous_const.min (continuous_const.sub
@@ -43,8 +46,11 @@ theorem spatialCutoff_eq_zero {A y : ℝ} (hA : 0 < A) (h : 2 * A ≤ |y|) :
   unfold spatialCutoff
   rw [min_eq_right (by linarith), max_eq_left h1]
 
+/-- `spatialCutoff A y` is nonnegative, since it is defined as an outer `max` with `0`. -/
 theorem spatialCutoff_nonneg (A y : ℝ) : 0 ≤ spatialCutoff A y := le_max_left _ _
 
+/-- `spatialCutoff A y` is at most `1`, since the inner `min` caps it at `1` and the
+outer `max` with `0` cannot raise it above that cap. -/
 theorem spatialCutoff_le_one (A y : ℝ) : spatialCutoff A y ≤ 1 :=
   max_le zero_le_one (min_le_left _ _)
 

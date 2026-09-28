@@ -1,4 +1,10 @@
-/-
+import Parking.Support.SecondMoment
+import Parking.Frozen.Master
+import LatticeProb.Prob.PaleyZygmund
+
+/-!
+# The Paley-Zygmund odometer lower bound
+
 The Paley-Zygmund lower bound of Step 2 of `prop:everyone-settles`
 (`parking.tex:1525-1537`).
 
@@ -8,9 +14,6 @@ The Paley-Zygmund lower bound of Step 2 of `prop:everyone-settles`
 probability bounded away from zero, uniformly in `n`, that the odometer at the
 origin exceeds a fixed multiple of `E u_n(0) + log n`.
 -/
-import Parking.Support.SecondMoment
-import Parking.Frozen.Master
-import LatticeProb.Prob.PaleyZygmund
 
 open LatticeProb (measurable_from_countable')
 
@@ -20,6 +23,10 @@ open MeasureTheory LatticeProb Filter
 
 variable {d : ℕ}
 
+/-- With `c₁` from `Parking.Frozen.master` and `C₂` from `exists_second_moment`, the event
+that the odometer at the origin exceeds `min (c₁ / 2) 1` times `E u_n(0) + log n` has
+probability at least `c₁ ^ 2 / (4 * C₂)` for every `n ≥ 2`, by Paley-Zygmund at `θ = 1/2`
+applied to `U_n(0)`. -/
 theorem exists_odometer_lower_prob (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
     (hConcentration : Parking.External.UConcentration)

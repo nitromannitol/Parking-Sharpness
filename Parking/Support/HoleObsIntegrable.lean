@@ -1,4 +1,11 @@
-/-
+import Parking.Support.HoleObsBound
+import Parking.Support.SubcriticalMeasurable
+import Parking.Support.CountFiltration
+import Parking.Support.RestrictLaw
+
+/-!
+# Integrability of the hole observable
+
 The integrability of the hole count of the range, the last hypothesis
 `lem:product` puts on `Z` (`parking.tex:2336-2347`).
 
@@ -9,10 +16,6 @@ the counts at finitely many sites has the same integrability under `restrictLaw`
 and under the full product law, where the counts are the first of three
 independent fields.
 -/
-import Parking.Support.HoleObsBound
-import Parking.Support.SubcriticalMeasurable
-import Parking.Support.CountFiltration
-import Parking.Support.RestrictLaw
 
 open MeasureTheory
 
@@ -22,6 +25,8 @@ namespace Parking
 
 variable {d : ℕ}
 
+/-- A single coordinate's negative part `(-(a y)).toNat` is integrable under the i.i.d. law,
+dominated by `|a y|` via `Integrable.mono'`. -/
 theorem integrable_negPart_coord {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (y : Site d) :
     Integrable (fun a : Site d → ℤ => (((-(a y)).toNat : ℕ) : ℝ)) (LatticeProb.iidLaw d ν) := by
@@ -41,6 +46,9 @@ theorem integrable_negPart_coord {ν : Measure ℤ} [IsProbabilityMeasure ν]
     have h2 : (((-(a y)).toNat : ℕ) : ℝ) ≤ ((|a y| : ℤ) : ℝ) := by exact_mod_cast h1
     rwa [Int.cast_abs] at h2
 
+/-- A functional `G` of the initial configuration that is integrable under the i.i.d. law
+`iidLaw` remains integrable when transported to the joint law `pDataLaw`, since the initial
+coordinate `Prod.fst` is measure-preserving between the two. -/
 theorem integrable_pDataLaw_of_counts (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     {G : (Site d → ℤ) → ℝ} (hG : Integrable G (LatticeProb.iidLaw d ν)) :
     Integrable (fun ω : PData d => G ω.1) (pDataLaw d ν) := by

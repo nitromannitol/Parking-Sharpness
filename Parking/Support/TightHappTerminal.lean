@@ -1,11 +1,14 @@
-/-
+import Parking.Support.TightHappBound
+
+/-!
+# The per-`σ` terminal-reward bound
+
 The per-`σ` bound on the two terminal-reward values, continuing the reduction:
 integrating `Parking.abs_Ftrue_sub_Fcut_orientedPath_le` over the walk's own randomness gives a
 bound on `|Parking.orientedTerminalValue Ftrue 0 σ - Parking.orientedTerminalValue Fcut 0 σ|`,
 the SAME for every admissible stopping rule `σ` (the bound does not mention `σ` at all), which
 is exactly `Parking.abs_orientedStoppingSup_sub_le_of_terminal`'s hypothesis.
 -/
-import Parking.Support.TightHappBound
 
 open LatticeProb.BoxClamp (rewardOfBox)
 
@@ -28,11 +31,15 @@ def FcutReward {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) : ℕ �
   fun k z => rewardOfBox (zero_le_one) hA (boxRewardMap 1 (zero_le_one) A hA n η)
     ((k : ℝ) / n) (orientedScaledSite n z)
 
+/-- Unfolds `FtrueScaled` as `n ^ (-1/4)` times the unscaled reward `FtrueReward`,
+definitionally. -/
 theorem FtrueScaled_eq_const_mul (η : Site 2 → ℝ) (n : ℕ) :
     FtrueScaled η n = fun k z => (n : ℝ) ^ (-(1 : ℝ) / 4) * FtrueReward η n k z := rfl
 
 /-! ### Integrability of the bad-event bound -/
 
+/-- The bad-event bound `happBadBound` is integrable under `walkLaw 2`, being a constant
+multiple of the integrable maximal functional `Parking.orientedMax` plus a constant. -/
 theorem integrable_happBadBound {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) :
     Integrable (happBadBound hA n η) (walkLaw 2) := by
   haveI := stepLaw_isProbability (d := 2) (by norm_num)
@@ -41,6 +48,8 @@ theorem integrable_happBadBound {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 
   exact (integrable_orientedMax (by norm_num) (orientedPotential η) n 0).const_mul _
     |>.add (integrable_const _)
 
+/-- Restricting the integrable bad-event bound to the measurable bad event `Parking.walkBad`
+via its indicator preserves integrability. -/
 theorem integrable_indicator_happBadBound {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) :
     Integrable (Set.indicator (walkBad n A) (happBadBound hA n η)) (walkLaw 2) := by
   haveI := stepLaw_isProbability (d := 2) (by norm_num)

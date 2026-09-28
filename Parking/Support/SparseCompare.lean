@@ -1,6 +1,3 @@
-/-
-The sparse-law convex comparison and the uniform dimension-four sandpile bound.
--/
 import LatticeProb.Prob.Laplace
 import LatticeProb.Prob.ExpTail
 import Parking.Support.CriticalLawReal
@@ -10,7 +7,19 @@ import Parking.Support.UConvex
 import Parking.Support.UFinite
 import LatticeProb.Prob.MapPi
 
-open LatticeProb.ConvexOrder (convex_exp_tail_le integrable_id_expMeasure_one integrable_real_lipschitz integral_laplaceLaw laplaceLaw laplaceLaw_evariance_lt_top laplaceLaw_evariance_pos laplaceLaw_expMoment laplaceLaw_integrable_id laplaceLaw_mean)
+/-!
+# Sparse-law convex comparison and the dimension-four sandpile bound
+
+The sparse-law convex comparison and the uniform dimension-four sandpile bound. This file
+dominates the sparse symmetric three-point law in convex order by a scaled Laplace law,
+transfers this domination through the odometer's convexity to bound the sparse mean
+odometer by a scaled reference sandpile mean, and specializes to dimension four to get a
+uniform logarithmic upper bound on the sparse odometer mean.
+-/
+
+open LatticeProb.ConvexOrder (convex_exp_tail_le integrable_id_expMeasure_one
+  integrable_real_lipschitz integral_laplaceLaw laplaceLaw laplaceLaw_evariance_lt_top
+  laplaceLaw_evariance_pos laplaceLaw_expMoment laplaceLaw_integrable_id laplaceLaw_mean)
 
 noncomputable section
 namespace Parking
@@ -26,9 +35,13 @@ theorem lipschitzWith_mul_real (b : ℝ) : LipschitzWith ‖b‖₊ (fun x : ℝ
 /-- The Laplace reference law at a chosen scale. -/
 def scaledLaplaceLaw (b : ℝ) : Measure ℝ := laplaceLaw.map (fun x : ℝ => b * x)
 
+/-- The scaled Laplace law is a probability measure, as the pushforward of the
+probability measure `laplaceLaw` along the measurable scaling map. -/
 instance scaledLaplaceLaw_isProbability (b : ℝ) : IsProbabilityMeasure (scaledLaplaceLaw b) :=
   Measure.isProbabilityMeasure_map (by fun_prop : Measurable (fun x : ℝ => b * x)).aemeasurable
 
+/-- The identity function is integrable under the scaled Laplace law, since it is a
+constant multiple of the identity under the unscaled `laplaceLaw`. -/
 theorem scaledLaplaceLaw_integrable_id (b : ℝ) :
     Integrable (id : ℝ → ℝ) (scaledLaplaceLaw b) := by
   rw [scaledLaplaceLaw]

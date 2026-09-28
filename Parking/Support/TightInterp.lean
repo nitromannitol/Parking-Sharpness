@@ -1,4 +1,14 @@
-/-
+import Mathlib.Algebra.BigOperators.Finprod
+import Mathlib.Topology.MetricSpace.Lipschitz
+import Mathlib.Topology.Algebra.Monoid
+import Mathlib.Topology.Algebra.Ring.Real
+import Mathlib.Algebra.Order.Floor.Ring
+import Mathlib.Order.Interval.Finset.Basic
+import Mathlib.Data.Int.Interval
+
+/-!
+# The piecewise bilinear interpolation of a grid field
+
 The piecewise bilinear interpolation of a grid field on `ℤ × ℤ`
 (`parking.tex:3207-3218`).
 
@@ -11,13 +21,6 @@ hat function `hat1 t = max 0 (1 - |t|)`, the bilinear interpolation
 have finite support), its continuity, its finite corner-set decompositions,
 and the partition-of-unity identity of the hat weights.
 -/
-import Mathlib.Algebra.BigOperators.Finprod
-import Mathlib.Topology.MetricSpace.Lipschitz
-import Mathlib.Topology.Algebra.Monoid
-import Mathlib.Topology.Algebra.Ring.Real
-import Mathlib.Algebra.Order.Floor.Ring
-import Mathlib.Order.Interval.Finset.Basic
-import Mathlib.Data.Int.Interval
 
 noncomputable section
 namespace Parking

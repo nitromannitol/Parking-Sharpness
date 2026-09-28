@@ -1,4 +1,11 @@
-/-
+import Parking.Support.SpatMoment
+import Parking.Support.UConcBridge
+import Parking.Support.NearBridge
+import Parking.Support.CriticalLawReal
+
+/-!
+# Site-uniform moment norm of the data-law odometer
+
 The `r`-th moment norm of the divisible odometer `uOf` at an arbitrary site,
 under the full data law, from the scenery-only bound at the same site.
 
@@ -13,10 +20,6 @@ consumes: the rescaled divisible odometer is `uOf` read at the lattice points
 of a compact set, and the Kolmogorov condition needs the moment norm at every
 site of that set with one constant.
 -/
-import Parking.Support.SpatMoment
-import Parking.Support.UConcBridge
-import Parking.Support.NearBridge
-import Parking.Support.CriticalLawReal
 
 noncomputable section
 namespace Parking

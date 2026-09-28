@@ -1,5 +1,10 @@
-/- Moments of the coefficient bound along a directed time interval. -/
 import Parking.Support.OrientedCountMoment
+
+/-!
+# Directed count load moments
+
+Moments of the coefficient bound along a directed time interval.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -7,6 +12,9 @@ noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 
+/-- If `I ^ (2 / p) ≤ B` for `I ≥ 0` and `p > 0`, then `I ≤ B ^ (p / 2)`, obtained by
+raising both sides to the power `p / 2` and simplifying the exponent product
+`(2 / p) * (p / 2) = 1`. -/
 theorem le_rpow_of_rpow_two_div_le {I B p : ℝ} (hI : 0 ≤ I) (hp : 0 < p)
     (h : I ^ (2 / p) ≤ B) : I ≤ B ^ (p / 2) := by
   have hb := Real.rpow_le_rpow (Real.rpow_nonneg hI _) h (by positivity : (0 : ℝ) ≤ p / 2)
@@ -14,12 +22,16 @@ theorem le_rpow_of_rpow_two_div_le {I B p : ℝ} (hI : 0 ≤ I) (hp : 0 < p)
     Real.rpow_one] at hb
   exact hb
 
+/-- `orientedFirstCount ω j h` depends only on the values of `ω` on the interval
+`[j, j + h)`, so two sequences agreeing there give the same count. -/
 theorem orientedFirstCount_congr {ω τ : ℕ → Fin 2 × Bool} (j h : ℕ)
     (he : ∀ i, i < j + h → ω i = τ i) : orientedFirstCount ω j h = orientedFirstCount τ j h := by
   apply sum_congr rfl
   intro i hi
   rw [he i (mem_Ico.mp hi).2]
 
+/-- `orientedFirstCount` is measurable, as a finite sum over `i < j + h` of the
+measurable indicator of the `i`-th coordinate landing in the first `Fin 2` value. -/
 theorem measurable_orientedFirstCount (j h : ℕ) :
     Measurable fun ω : ℕ → Fin 2 × Bool => orientedFirstCount ω j h := by
   unfold orientedFirstCount
@@ -51,10 +63,11 @@ theorem exists_orientedCount_load_moment (q : ℝ) (hq : 2 ≤ q) :
   have hdB := le_rpow_of_rpow_two_div_le
     (integral_nonneg fun ω => Real.rpow_nonneg (abs_nonneg _) q) hq0 hdb
   rw [Real.mul_rpow hC.le (Nat.cast_nonneg h)] at hdB
-  have hdom := integral_mono hi (((integrable_const (Real.sqrt (h : ℝ) ^ q)).add hdi).const_mul (2 ^ q))
+  have hdom := integral_mono hi
+    (((integrable_const (Real.sqrt (h : ℝ) ^ q)).add hdi).const_mul (2 ^ q))
     (fun ω => rpow_add_le_two (by linarith) (Real.sqrt_nonneg (h : ℝ)) (abs_nonneg _))
-  simp only [Pi.add_apply, integral_const_mul, integral_add (integrable_const _) hdi, integral_const,
-    probReal_univ, smul_eq_mul, one_mul] at hdom
+  simp only [Pi.add_apply, integral_const_mul, integral_add (integrable_const _) hdi,
+    integral_const, probReal_univ, smul_eq_mul, one_mul] at hdom
   have he : Real.sqrt (h : ℝ) ^ q = (h : ℝ) ^ (q / 2) := by
     rw [Real.sqrt_eq_rpow, ← Real.rpow_mul (Nat.cast_nonneg h)]
     congr 1

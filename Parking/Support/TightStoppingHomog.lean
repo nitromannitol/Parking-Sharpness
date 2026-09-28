@@ -1,4 +1,9 @@
-/-
+import Parking.Support.OrientedTerminal
+import LatticeProb.Prob.Scaling.OptimalStopping
+
+/-!
+# Homogeneity of the stopping value
+
 Homogeneity of the discrete optimal-stopping value: scaling the terminal reward by a
 nonnegative constant scales the value by the same constant.  This is the missing step in
 `Parking.uOriented_eq_potential_add_stoppingSup`'s own Dynkin decomposition needed to turn
@@ -9,8 +14,6 @@ The underlying fact (`sSup`/`BddAbove` under a nonnegative-scalar image) is gene
 in `LatticeProb.Scaling.OptimalStopping`; this file only instantiates it at `Parking.
 orientedTerminalValues`/`Parking.orientedStoppingSup`.
 -/
-import Parking.Support.OrientedTerminal
-import LatticeProb.Prob.Scaling.OptimalStopping
 
 open MeasureTheory
 
@@ -29,7 +32,8 @@ theorem orientedStoppingSup_const_mul {c : ℝ} (hc : 0 ≤ c) (F : ℕ → Site
     orientedStoppingSup d (fun k y => c * F k y) n x = c * orientedStoppingSup d F n x := by
   unfold orientedStoppingSup
   rw [orientedTerminalValues_const_mul]
-  exact LatticeProb.Scaling.OptimalStopping.sSup_const_mul_image_of_nonneg (orientedTerminalValues d F n x) hc
+  exact LatticeProb.Scaling.OptimalStopping.sSup_const_mul_image_of_nonneg
+    (orientedTerminalValues d F n x) hc
 
 /-- **`BddAbove` of the terminal values of a nonnegatively-scaled reward.** -/
 theorem bddAbove_orientedTerminalValues_const_mul {c : ℝ} (hc : 0 ≤ c) (F : ℕ → Site d → ℝ)

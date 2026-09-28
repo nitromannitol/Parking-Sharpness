@@ -1,11 +1,21 @@
-/- A square-function estimate for finite centered linear combinations. -/
 import LatticeProb.Prob.LpSmooth
 import LatticeProb.Prob.FiniteMarginal
+
+/-!
+# A square-function estimate for finite centered linear combinations
+
+A square-function estimate for finite centered linear combinations: the `L^p` norm squared of
+a finite linear combination of i.i.d. mean-zero coordinates is bounded by a constant times the
+sum of squared coefficients, uniformly in the number of coordinates, using the shared library's
+Lipschitz square-function machinery.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 
+/-- Changing one coordinate `ξ i` of a finite linear combination to `y` changes the sum by
+exactly `a i * (ξ i - y)`, isolating the `i`-th term via `sum_eq_single`. -/
 theorem linear_sum_update {ι : Type*} [Fintype ι] [DecidableEq ι]
     (a ξ : ι → ℝ) (i : ι) (y : ℝ) :
     (∑ j, a j * ξ j) - (∑ j, a j * Function.update ξ i y j) = a i * (ξ i - y) := by
@@ -44,7 +54,8 @@ theorem exists_linear_moment_bound (μ : Measure ℝ) [IsProbabilityMeasure μ]
       (fun i => |a i|) (fun i => abs_nonneg _) hLip
   have hid : Integrable (fun z : ℝ => z) μ := integrable_abs_of_rpow μ (by linarith)
     _ measurable_id.aestronglyMeasurable hmom
-  have hcoord : ∀ i : Fin N, Integrable (fun ξ : Fin N → ℝ => ξ i) (Measure.pi fun _ : Fin N => μ) := by
+  have hcoord : ∀ i : Fin N, Integrable (fun ξ : Fin N → ℝ => ξ i)
+      (Measure.pi fun _ : Fin N => μ) := by
     intro i
     exact integrable_comp_mp (measurePreserving_eval (fun _ : Fin N => μ) i)
       (fun z : ℝ => z) measurable_id.aestronglyMeasurable hid

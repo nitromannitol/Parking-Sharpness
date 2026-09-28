@@ -1,6 +1,16 @@
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
+/-!
+# Discount split
+
+`measure_event_le_discount_tail` splits the probability of an event `E`, on which a discounted
+quantity `D` agrees with `Real.exp (-c * W)` for some cost `W`, into a term controlled by the
+mean of `D` (via the exponential discount at level `a`) and a tail term for the event that `W`
+exceeds `a`. The split is by comparing the indicator of `E` pointwise against the sum of a
+rescaled `D` and the indicator of the tail event, then integrating.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory

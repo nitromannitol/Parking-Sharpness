@@ -1,4 +1,9 @@
-/-
+import Parking.Support.LinPotential
+import Parking.Support.UFinite
+
+/-!
+# Locality and finite-dimensional regularity of `V`
+
 Locality and finite-dimensional regularity of the linear membrane field `V`
 (`Parking.linPotential`), needed to apply the shared library's weighted
 exponential concentration (`LatticeProb.weighted_exp_conc_tail`) to a
@@ -15,8 +20,6 @@ identifies updating a finite field with updating its zero-extension, so that
 `Parking.linPotential_update`'s EXACT one-coordinate response transports to
 the finite-dimensional field with no loss.
 -/
-import Parking.Support.LinPotential
-import Parking.Support.UFinite
 
 noncomputable section
 

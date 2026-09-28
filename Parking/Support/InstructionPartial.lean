@@ -2,6 +2,17 @@ import Parking.Support.RoundMeanField
 import Parking.Support.ProductReveal
 import Parking.Support.InstructionUnused
 
+/-!
+# Averaging the unrevealed entries preserves the Green influence
+
+`instruction_partial_influence` shows that after averaging every unrevealed
+instruction of a round except one used entry `(v, j)`, the future mean odometer
+`matchedMeanU` still sits within `fullGreen d (v + stepVec a - x)` of a common
+background `m`, exactly as `instruction_future_influence` does before any
+averaging. The proof integrates the pointwise bound over the product measure
+`Measure.infinitePi`, using the boundedness of `roundMeanU_bound` for integrability.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -15,7 +26,8 @@ theorem instruction_partial_influence (hd : 3 ≤ d) (A H : Site d → ℕ)
     (τ : RoundSlot d → Fin d × Bool) :
     ∃ m : ℝ, ∀ a : Fin d × Bool,
       0 ≤ partialInt (fun _ : RoundSlot d => stepLaw d) (insert (Sum.inl (v, j)) S)
-        (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a) - m ∧
+        (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a)
+            - m ∧
       partialInt (fun _ : RoundSlot d => stepLaw d) (insert (Sum.inl (v, j)) S)
         (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a) - m
           ≤ fullGreen d (v + stepVec a - x) := by

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Cov
+
+/-!
+# The conditional covariance identity
+
 The conditional covariance identity of `lem:product` (`parking.tex:2369-2372`):
 "The conditional covariance identity splits `Cov(F,Z)` into `Cov(f(Y), z(Y))` and
 `E[Cov(F,Z | Y)]`."
@@ -14,7 +18,6 @@ the product splits as
 and subtracting the product of the two means, which are `∫ f dμ` and `∫ z dμ`,
 leaves the two terms of the statement.
 -/
-import Parking.Support.Cov
 
 noncomputable section
 

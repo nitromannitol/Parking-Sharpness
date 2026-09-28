@@ -2,6 +2,17 @@ import Parking.Support.SceneryHolePartial
 import Parking.Support.EscapeGap
 import Parking.Support.SquareDeficit
 
+/-!
+# The two-target scenery correlation factor
+
+This file bounds the correlation of the conditional future hole means at two distinct
+sites `x` and `z`, in terms of a dimension-only exponential factor `Real.exp
+(sceneryHoleCost d x z v)` at the reveal site `v`, first for two abstract relative
+random variables and then for the partial-reveal hole means themselves. The exponent
+`sceneryHoleCost` is a fixed, nonnegative multiple of the product of the two escape-
+potential deficits at `v`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -13,16 +24,24 @@ variable {d : ℕ}
 def holeSceneryConst (d : ℕ) : ℝ :=
   max (4 / (1 / (2 * escapeConst d)) ^ 4) (2 / (1 / (2 * escapeConst d)) ^ 2)
 
+/-- The exponent of the two-target scenery factor at `x` and `z` relative to a common
+reveal site `v`: the dimension-only constant times the product of the two escape-
+potential deficits. -/
 def sceneryHoleCost (d : ℕ) (x z v : Site d) : ℝ :=
   holeSceneryConst d * (1 - escapePotential d x v) * (1 - escapePotential d z v)
 
+/-- `holeSceneryConst d` is positive in dimension at least three, from the positivity of
+`escapeConst d`. -/
 theorem holeSceneryConst_pos (hd : 3 ≤ d) : 0 < holeSceneryConst d := by
   have hg : 0 < escapeConst d := zero_lt_one.trans_le (one_le_escapeConst hd)
   apply lt_of_lt_of_le _ (le_max_left _ _)
   positivity
 
+/-- `sceneryHoleCost` is nonnegative, as a product of the positive constant
+`holeSceneryConst` and two nonnegative escape-potential deficits. -/
 theorem sceneryHoleCost_nonneg (hd : 3 ≤ d) (x z v : Site d) : 0 ≤ sceneryHoleCost d x z v :=
-  mul_nonneg (mul_nonneg (holeSceneryConst_pos hd).le (sub_nonneg.mpr (escapePotential_bounds hd x v).2))
+  mul_nonneg (mul_nonneg (holeSceneryConst_pos hd).le
+    (sub_nonneg.mpr (escapePotential_bounds hd x v).2))
     (sub_nonneg.mpr (escapePotential_bounds hd z v).2)
 
 /-- The two-target scenery factor, including reveals at either target. -/
@@ -42,7 +61,8 @@ theorem integral_hole_scenery_factor {Ω : Type*} [MeasurableSpace Ω]
   have hgn (ω) := (square_relative_deficit (escapePotential d z v) B (G ω) hB (hg ω).1).1
   have hxq : 0 ≤ 1 - escapePotential d x v := sub_nonneg.mpr (escapePotential_bounds hd x v).2
   have hzq : 0 ≤ 1 - escapePotential d z v := sub_nonneg.mpr (escapePotential_bounds hd z v).2
-  have hM : 0 ≤ (∫ ω, F ω ∂μ) * ∫ ω, G ω ∂μ := mul_nonneg (integral_nonneg hfn) (integral_nonneg hgn)
+  have hM : 0 ≤ (∫ ω, F ω ∂μ) * ∫ ω, G ω ∂μ :=
+    mul_nonneg (integral_nonneg hfn) (integral_nonneg hgn)
   have htrans (a : ℝ) (ha : a ≤ sceneryHoleCost d x z v)
       (hb : (∫ ω, F ω * G ω ∂μ) ≤ Real.exp a * ((∫ ω, F ω ∂μ) * ∫ ω, G ω ∂μ)) :=
     hb.trans (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr ha) hM)
@@ -52,17 +72,21 @@ theorem integral_hole_scenery_factor {Ω : Type*} [MeasurableSpace Ω]
       ⟨hgap, (escapePotential_bounds hd z v).2⟩ (fun ω => ⟨hfn ω, (hf ω).2⟩) hg
     apply htrans _ _ h
     have hc := mul_le_mul_of_nonneg_right (le_max_right (4 / δ ^ 4) (2 / δ ^ 2)) hzq
-    simpa only [sceneryHoleCost, hvx, escapePotential_self hd, sub_zero, mul_one, holeSceneryConst, δ] using hc
+    simpa only [sceneryHoleCost, hvx, escapePotential_self hd, sub_zero, mul_one,
+      holeSceneryConst, δ] using hc
   · by_cases hvz : v = z
     · have hgap : δ ≤ escapePotential d x v := escapePotential_gap hd hvx
-      have h := integral_square_relative_one_sided μ G F hG hF B A (escapePotential d x v) δ hB hA hδ
+      have h := integral_square_relative_one_sided μ G F hG hF B A
+        (escapePotential d x v) δ hB hA hδ
         ⟨hgap, (escapePotential_bounds hd x v).2⟩ (fun ω => ⟨hgn ω, (hg ω).2⟩) hf
       have h' : (∫ ω, F ω * G ω ∂μ) ≤ Real.exp ((2 / δ ^ 2) * (1 - escapePotential d x v)) *
           ((∫ ω, F ω ∂μ) * ∫ ω, G ω ∂μ) := by simpa only [mul_comm] using h
       apply htrans _ _ h'
       have hc := mul_le_mul_of_nonneg_right (le_max_right (4 / δ ^ 4) (2 / δ ^ 2)) hxq
-      simpa only [sceneryHoleCost, hvz, escapePotential_self hd, sub_zero, mul_one, holeSceneryConst, δ] using hc
-    · have h := integral_square_relative_factor μ F G hF hG A B (escapePotential d x v) (escapePotential d z v) δ
+      simpa only [sceneryHoleCost, hvz, escapePotential_self hd, sub_zero, mul_one,
+        holeSceneryConst, δ] using hc
+    · have h := integral_square_relative_factor μ F G hF hG A B
+        (escapePotential d x v) (escapePotential d z v) δ
         hA hB hδ ⟨escapePotential_gap hd hvx, (escapePotential_bounds hd x v).2⟩
         ⟨escapePotential_gap hd hvz, (escapePotential_bounds hd z v).2⟩ hf hg
       apply htrans _ _ h
@@ -80,6 +104,6 @@ theorem scenery_partial_hole_factor (hd : 3 ≤ d) (ν : Measure ℤ) [IsProbabi
     (∫ k, f k * g k ∂ν) ≤ Real.exp (sceneryHoleCost d x z v) * ((∫ k, f k ∂ν) * ∫ k, g k ∂ν) := by
   obtain ⟨A, hA, hf⟩ := scenery_partial_hole_relative hd ν ρ T x v S η
   obtain ⟨B, hB, hg⟩ := scenery_partial_hole_relative hd ν ρ T z v S η
-  exact integral_hole_scenery_factor hd ν x z v hxz _ _ (measurable_from_countable' _) (measurable_from_countable' _)
-    A B hA hB hf hg
+  exact integral_hole_scenery_factor hd ν x z v hxz _ _ (measurable_from_countable' _)
+    (measurable_from_countable' _) A B hA hB hf hg
 end Parking

@@ -1,8 +1,11 @@
-/-
-Convexity and positive homogeneity of the divisible sandpile odometer.
--/
 import Parking.Support.UBound
 import Mathlib.Analysis.Convex.Function
+
+/-!
+# Convexity of the divisible sandpile odometer
+
+Convexity and positive homogeneity of the divisible sandpile odometer.
+-/
 
 noncomputable section
 namespace Parking
@@ -10,8 +13,8 @@ open LatticeProb
 variable {d : ℕ}
 
 /-- Positive combinations of initial fields bound the corresponding odometer. -/
-theorem u_positive_combination_le (hd : 1 ≤ d) (η ξ : Site d → ℝ) {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (n : ℕ) (x : Site d) :
+theorem u_positive_combination_le (hd : 1 ≤ d) (η ξ : Site d → ℝ) {a b : ℝ} (ha : 0 ≤ a)
+    (hb : 0 ≤ b) (n : ℕ) (x : Site d) :
     u (fun y => a * η y + b * ξ y) n x ≤ a * u η n x + b * u ξ n x := by
   induction n generalizing x with
   | zero => simp [u]

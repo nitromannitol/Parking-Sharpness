@@ -1,6 +1,11 @@
-/- The error field of the directed particle recursion and its maximal walk average. -/
 import Parking.Support.OrientedMaximum
 import Parking.Support.OrientedOdometer
+
+/-!
+# Directed particle error field
+
+The error field of the directed particle recursion and its maximal walk average.
+-/
 
 noncomputable section
 namespace Parking
@@ -19,6 +24,7 @@ def wErrOriented (η : Site d → ℤ) (σ : Site d × ℕ → Site d) : ℕ →
 def wStarOriented (η : Site d → ℤ) (σ : Site d × ℕ → Site d) (n : ℕ) (x : Site d) : ℝ :=
   orientedMaxMean (wErrOriented η σ) n x
 
+/-- The error field vanishes at time `0`, by the defining recursion's base case. -/
 theorem wErrOriented_zero (η : Site d → ℤ) (σ : Site d × ℕ → Site d) (x : Site d) :
     wErrOriented η σ 0 x = 0 := rfl
 
@@ -34,7 +40,8 @@ theorem orientedOdometer_succ_real (η : Site d → ℤ) (σ : Site d × ℕ →
     (k : ℕ) (x : Site d) :
     ((orientedOdometer η σ (k + 1) x : ℕ) : ℝ) =
       max 0 ((η x : ℝ) +
-        ∑ i : Fin d, ((arrivals σ (x - unit i) x (orientedOdometer η σ k (x - unit i)) : ℕ) : ℝ)) := by
+        ∑ i : Fin d,
+          ((arrivals σ (x - unit i) x (orientedOdometer η σ k (x - unit i)) : ℕ) : ℝ)) := by
   simp only [orientedOdometer, cast_toNat_max]
   push_cast
   ring

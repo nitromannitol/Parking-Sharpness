@@ -1,6 +1,11 @@
-/- Two-sided square-norm estimates from the binomial recurrence. -/
 import Parking.Support.Oriented
 import LatticeProb.Walk.Series
+
+/-!
+# Two-sided norm estimates for the central binomial term
+
+Two-sided square-norm estimates from the binomial recurrence.
+-/
 
 open LatticeProb.Walk (conv conv_nonneg conv_zero_eq conv_zero_index conv_zero_sq_le conv_zero_succ)
 
@@ -8,6 +13,8 @@ noncomputable section
 namespace Parking
 open Finset
 
+/-- The rescaled square `n * conv n 0 ^ 2` is monotone in `n`, from the recursion
+`conv_zero_succ` for the central value `conv n 0`. -/
 theorem conv_scaled_sq_mono : Monotone fun n : ℕ => (n : ℝ) * conv n 0 ^ 2 := by
   apply monotone_nat_of_le_succ
   intro n
@@ -24,6 +31,8 @@ theorem conv_scaled_sq_mono : Monotone fun n : ℕ => (n : ℝ) * conv n 0 ^ 2 :
         rw [← hsq]
         ring
 
+/-- The lower bound `1/4 ≤ (n + 1) * conv n 0 ^ 2`, from the monotonicity
+`conv_scaled_sq_mono` starting at the base case `n = 1`. -/
 theorem conv_zero_sq_lower (n : ℕ) : (1 / 4 : ℝ) ≤ ((n : ℝ) + 1) * conv n 0 ^ 2 := by
   by_cases hn : n = 0
   · norm_num [hn, conv_zero_index]
@@ -32,6 +41,7 @@ theorem conv_zero_sq_lower (n : ℕ) : (1 / 4 : ℝ) ≤ ((n : ℝ) + 1) * conv 
     norm_num [he] at h
     nlinarith [sq_nonneg (conv n 0)]
 
+/-- **Upper bound.** `conv n 0 ≤ 1 / √(n + 1)`, from the square bound `conv_zero_sq_le`. -/
 theorem conv_zero_upper (n : ℕ) : conv n 0 ≤ 1 / Real.sqrt ((n : ℝ) + 1) := by
   have hpos : 0 < Real.sqrt ((n : ℝ) + 1) := by positivity
   apply (le_div_iff₀ hpos).mpr
@@ -40,6 +50,8 @@ theorem conv_zero_upper (n : ℕ) : conv n 0 ≤ 1 / Real.sqrt ((n : ℝ) + 1) :
     ring
   nlinarith [conv_zero_sq_le n]
 
+/-- **Lower bound.** `1/2 / √(n + 1) ≤ conv n 0`, from the square bound
+`conv_zero_sq_lower`. -/
 theorem conv_zero_lower (n : ℕ) : (1 / 2 : ℝ) / Real.sqrt ((n : ℝ) + 1) ≤ conv n 0 := by
   have hpos : 0 < Real.sqrt ((n : ℝ) + 1) := by positivity
   apply (div_le_iff₀ hpos).mpr
@@ -49,10 +61,14 @@ theorem conv_zero_lower (n : ℕ) : (1 / 2 : ℝ) / Real.sqrt ((n : ℝ) + 1) �
   have hn := mul_nonneg (conv_nonneg n 0) hpos.le
   nlinarith [conv_zero_sq_lower n]
 
+/-- Summing the upper bound `conv_zero_upper` over `l < n` against the harmonic-square
+estimate `LatticeProb.sum_inv_sqrt_le`. -/
 theorem sum_conv_zero_upper (n : ℕ) :
     (∑ l ∈ range n, conv l 0) ≤ 2 * Real.sqrt n := by
   exact (sum_le_sum fun l _ => conv_zero_upper l).trans (LatticeProb.sum_inv_sqrt_le n)
 
+/-- The matching lower bound `n * (1/2) / √n ≤ ∑_{l<n} conv l 0`, from the pointwise bound
+`conv_zero_lower` applied at the largest index `n`. -/
 theorem sum_conv_zero_lower (n : ℕ) :
     (1 / 2 : ℝ) * Real.sqrt n ≤ ∑ l ∈ range n, conv l 0 := by
   by_cases hn : n = 0

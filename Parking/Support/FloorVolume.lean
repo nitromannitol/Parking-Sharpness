@@ -1,5 +1,13 @@
 import Mathlib
 
+/-!
+# A lattice radius comparable to a target volume
+
+Given a target box volume `b` and a cell volume `h ≤ b`, produces an integer radius `R` whose
+box volume `h * (R + 1)^d` is at least `b`, and whose dilate by a factor `8d` still has volume
+at most a dimensional constant times `b`. The radius is the floor of `(b / h)^{1/d}`.
+-/
+
 noncomputable section
 namespace Parking
 
@@ -10,7 +18,8 @@ theorem exists_radius_volume (d : ℕ) (hd : 1 ≤ d) {b h : ℝ} (hb : 0 < b)
       h * ((8 * d * R + 1 : ℕ) : ℝ) ^ d ≤ ((8 * d + 1 : ℕ) : ℝ) ^ d * b := by
   let S : ℝ := (b / h) ^ ((d : ℝ)⁻¹)
   have hS0 : 0 < S := Real.rpow_pos_of_pos (div_pos hb hh) _
-  have hS1 : 1 ≤ S := Real.one_le_rpow (by apply (le_div_iff₀ hh).mpr; simpa using hhb) (by positivity)
+  have hS1 : 1 ≤ S :=
+    Real.one_le_rpow (by apply (le_div_iff₀ hh).mpr; simpa using hhb) (by positivity)
   have hSd : S ^ d = b / h := Real.rpow_inv_natCast_pow (div_pos hb hh).le (by omega)
   let R := Nat.floor S
   have hR : (R : ℝ) ≤ S := Nat.floor_le hS0.le

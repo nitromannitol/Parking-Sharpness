@@ -1,8 +1,13 @@
-/-
-The relative discrepancy norm gains a positive power of time.
--/
 import Parking.Support.DiscrepancyMoment
 import Parking.Support.MomentTail
+
+/-!
+# The relative discrepancy norm
+
+The relative discrepancy norm, the moment norm of `U - u` divided by `ε` times the mean odometer,
+gains a positive power of time: it is eventually at most `n ^ (-1/16)`, obtained by combining the
+discrepancy moment bound with the growth rate of the mean odometer.
+-/
 
 open LatticeProb.MomentNorm (rNorm)
 
@@ -57,7 +62,8 @@ theorem eventually_discrepancy_relative_norm {d : ℕ} (hd : 1 ≤ d) (hd3 : d �
           ((ε * b) * (n : ℝ) ^ ((1 : ℝ) / 16)) := mul_le_mul_of_nonneg_left hL hrate0
       _ = (ε * (b * (n : ℝ) ^ ((4 - (d : ℝ)) / 4))) * (n : ℝ) ^ (-((1 : ℝ) / 16)) := by
         calc (n : ℝ) ^ ((4 - (d : ℝ)) / 4 - (1 : ℝ) / 8) * ((ε * b) * (n : ℝ) ^ ((1 : ℝ) / 16))
-            = (ε * b) * ((n : ℝ) ^ ((4 - (d : ℝ)) / 4 - (1 : ℝ) / 8) * (n : ℝ) ^ ((1 : ℝ) / 16)) := by ring
+            = (ε * b) * ((n : ℝ) ^ ((4 - (d : ℝ)) / 4 - (1 : ℝ) / 8) *
+                (n : ℝ) ^ ((1 : ℝ) / 16)) := by ring
           _ = _ := by rw [hpow]; ring
       _ ≤ (ε * meanu (law d ν) n) * (n : ℝ) ^ (-((1 : ℝ) / 16)) :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hsp hε.le) (Real.rpow_nonneg hn0.le _)

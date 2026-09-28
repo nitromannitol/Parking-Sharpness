@@ -1,6 +1,17 @@
 import Parking.Support.BoundedProduct
 import Parking.Support.DiscrepancyNorm
 
+/-!
+# Sub-Gaussian moment norms
+
+Converts a sub-Gaussian moment generating function bound (`HasSubgaussianMGF`) into
+an explicit bound on the `r`-th moment norm `rNorm` for every real `r ≥ 2`, by
+optimizing the elementary tilt inequality `x^r ≤ (r/θ)^r · exp(θx)` at `θ = √r`. The
+resulting bound `rNorm μ r X ≤ 2 exp(V/2) · √r` recovers the classical square-root
+growth of sub-Gaussian moments and needs nothing beyond the two-sided exponential
+moment bound `HasSubgaussianMGF X V μ` already supplies.
+-/
+
 open LatticeProb.MomentNorm (rNorm)
 
 noncomputable section
@@ -46,7 +57,8 @@ theorem subgaussian_rNorm_le {Ω : Type} [MeasurableSpace Ω]
   have hE : ∫ ω, Real.exp (θ * |X ω|) ∂μ ≤ 2 * Real.exp ((V : ℝ) * r / 2) := by
     calc
       _ ≤ ∫ ω, Real.exp (θ * X ω) + Real.exp (-θ * X ω) ∂μ :=
-        integral_mono hei ((hX.integrable_exp_mul θ).add (hX.integrable_exp_mul (-θ))) (fun ω => he (X ω))
+        integral_mono hei ((hX.integrable_exp_mul θ).add (hX.integrable_exp_mul (-θ)))
+          (fun ω => he (X ω))
       _ = (∫ ω, Real.exp (θ * X ω) ∂μ) + ∫ ω, Real.exp (-θ * X ω) ∂μ :=
         integral_add (hX.integrable_exp_mul θ) (hX.integrable_exp_mul (-θ))
       _ ≤ _ := by
@@ -69,7 +81,8 @@ theorem subgaussian_rNorm_le {Ω : Type} [MeasurableSpace Ω]
       _ = θ ^ r * ∫ ω, Real.exp (θ * |X ω|) ∂μ := integral_const_mul _ _
       _ ≤ _ := mul_le_mul_of_nonneg_left hE (Real.rpow_nonneg hθ.le _)
   unfold rNorm
-  apply (Real.rpow_le_rpow (integral_nonneg fun ω => Real.rpow_nonneg (abs_nonneg _) _) hI (by positivity : 0 ≤ 1 / r)).trans
+  apply (Real.rpow_le_rpow (integral_nonneg fun ω => Real.rpow_nonneg (abs_nonneg _) _) hI
+    (by positivity : 0 ≤ 1 / r)).trans
   rw [Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_mul hθ.le,
     show r * (1 / r) = 1 by field_simp, Real.rpow_one,
     Real.mul_rpow (by norm_num) (Real.exp_pos _).le, ← Real.exp_mul]

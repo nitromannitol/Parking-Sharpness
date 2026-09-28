@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Walk
+
+/-!
+# The particle-driven construction
+
 The particle-driven construction of the process, in which every particle
 carries its own walk and its own uniform variables.  This is the construction
 `parking.tex` couples in `lem:one-particle` and `lem:tagged-monotonicity`,
@@ -18,7 +22,6 @@ label `(x₀, η(x₀)⁺)` when `η(x₀) ≥ 0`, and removes one hole at `x₀
 Either way the labels of the particles already present, and their moves and
 uniform variables, are untouched, which is the coupling of `lem:one-particle`.
 -/
-import Parking.Support.Walk
 
 noncomputable section
 

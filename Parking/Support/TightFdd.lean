@@ -1,4 +1,9 @@
-/-
+import Parking.Support.TightLinear
+import Parking.Support.TightBoxCov
+
+/-!
+# The finite-dimensional characteristic-function limit of the box reward field
+
 The finite-dimensional characteristic-function limit of the rescaled box reward field at
 finitely many box points (`parking.tex:3207-3218`, Stage 2 of the covariance-to-Gaussian
 step).
@@ -10,8 +15,6 @@ single scalar statement: for any finite weighted combination of finitely many bo
 characteristic function of the combination converges to the Gaussian one with variance the
 corresponding quadratic form of `Parking.contOverlap`.
 -/
-import Parking.Support.TightLinear
-import Parking.Support.TightBoxCov
 
 open MeasureTheory LatticeProb Filter Topology Finset
 
@@ -84,7 +87,8 @@ theorem abs_orientedBoxRewardCoeff_le (T : ℝ) (n : ℕ) (u : Fin 2 → ℝ) (z
       calc (n : ℝ) ^ (-(1 : ℝ) / 4) *
             |orientedGreen 2 (⌊(n : ℝ) * T⌋₊ - c.1.toNat) (z - orientedLayerPoint c.1.toNat c.2)|
           = (n : ℝ) ^ (-(1 : ℝ) / 4) *
-              orientedGreen 2 (⌊(n : ℝ) * T⌋₊ - c.1.toNat) (z - orientedLayerPoint c.1.toNat c.2) := by
+              orientedGreen 2 (⌊(n : ℝ) * T⌋₊ - c.1.toNat)
+                (z - orientedLayerPoint c.1.toNat c.2) := by
             rw [abs_of_nonneg (orientedGreen_nonneg _ _)]
         _ ≤ (n : ℝ) ^ (-(1 : ℝ) / 4) * 1 :=
             mul_le_mul_of_nonneg_left (orientedGreen_le_one (by norm_num) _ _)

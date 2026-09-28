@@ -1,6 +1,11 @@
-/- Taylor control of the signed-density middle term by the local odometer mass. -/
 import Parking.Support.SpatWTaylor
 import Parking.Support.SpatWSignedDecomp
+
+/-!
+# Taylor remainder for the signed-density middle term
+
+Taylor control of the signed-density middle term by the local odometer mass.
+-/
 
 open MeasureTheory LatticeProb Filter Topology
 

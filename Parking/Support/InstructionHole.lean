@@ -1,6 +1,18 @@
 import Parking.Support.HoleRelative
 import Parking.Support.InstructionPartial
 
+/-!
+# The hole-relative influence of one instruction
+
+`roundMeanH_bound` and `roundWithoutMeanH_bound` bound the future mean hole count
+`matchedMeanH` of a signed field by its initial hole count, with or without one
+instruction suppressed. `instruction_hole_relative` sandwiches the effect of
+restoring a suppressed instruction between the escape-potential-weighted and the
+unweighted future mean, and `instruction_partial_hole_relative` transports that
+sandwich to the average over every unrevealed entry of the round, by an
+integrability argument over the product measure `Measure.infinitePi`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -16,6 +28,8 @@ theorem roundMeanH_bound (hd : 1 ≤ d) (A H : Site d → ℕ) (ρ : Label d × 
   unfold roundSigned
   omega
 
+/-- The same bound as `roundMeanH_bound`, with the instruction at `(v, j)` suppressed
+from the signed field. -/
 theorem roundWithoutMeanH_bound (hd : 1 ≤ d) (A H : Site d → ℕ) (ρ : Label d × ℕ → ℝ)
     (T : ℕ) (x v : Site d) (j : ℕ) (τ : RoundSlot d → Fin d × Bool) :
     |matchedMeanH (roundWithout A H τ v j) ρ T x| ≤ (H x : ℝ) := by
@@ -25,7 +39,8 @@ theorem roundWithoutMeanH_bound (hd : 1 ≤ d) (A H : Site d → ℕ) (ρ : Labe
   unfold roundWithout
   omega
 
-/-- Restoring one suppressed instruction reduces each hole probability only by its hitting factor. -/
+/-- Restoring one suppressed instruction reduces each hole probability only by its
+hitting factor. -/
 theorem instruction_hole_relative (hd : 3 ≤ d) (A H : Site d → ℕ)
     (τ : RoundSlot d → Fin d × Bool) (v : Site d) (j : ℕ) (hj : j < A v)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) (a : Fin d × Bool) :
@@ -45,7 +60,8 @@ theorem instruction_partial_hole_relative (hd : 3 ≤ d) (A H : Site d → ℕ)
         partialInt (fun _ : RoundSlot d => stepLaw d) (insert (Sum.inl (v, j)) S)
           (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a) ∧
       partialInt (fun _ : RoundSlot d => stepLaw d) (insert (Sum.inl (v, j)) S)
-          (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a) ≤ b := by
+          (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a)
+              ≤ b := by
   classical
   have hd1 : 1 ≤ d := by omega
   haveI := stepLaw_isProbability hd1
@@ -76,12 +92,16 @@ theorem instruction_partial_hole_relative (hd : 3 ≤ d) (A H : Site d → ℕ)
     · subst q; simp [comb]
     · simp [comb, hq]
   have havg : partialInt (fun _ : RoundSlot d => stepLaw d) (insert (Sum.inl (v, j)) S)
-      (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a) = ∫ ζ, f ζ ∂Q := by
+      (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (v, j)) a)
+          = ∫ ζ, f ζ ∂Q := by
     unfold partialInt
-    exact integral_congr_ae (ae_of_all _ fun ζ => congrArg (fun ξ => matchedMeanH (roundSigned A H ξ) ρ T x) (he ζ))
+    exact integral_congr_ae (ae_of_all _ fun ζ =>
+        congrArg (fun ξ => matchedMeanH (roundSigned A H ξ) ρ T x) (he ζ))
   rw [havg]
   constructor
   · rw [← integral_const_mul]
-    exact integral_mono (hgi.const_mul _) hfi (fun ζ => (instruction_hole_relative hd A H (comb S τ ζ) v j hj ρ T x a).1)
-  · exact integral_mono hfi hgi (fun ζ => (instruction_hole_relative hd A H (comb S τ ζ) v j hj ρ T x a).2)
+    exact integral_mono (hgi.const_mul _) hfi
+        (fun ζ => (instruction_hole_relative hd A H (comb S τ ζ) v j hj ρ T x a).1)
+  · exact integral_mono hfi hgi
+      (fun ζ => (instruction_hole_relative hd A H (comb S τ ζ) v j hj ρ T x a).2)
 end Parking

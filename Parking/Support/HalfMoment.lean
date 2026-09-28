@@ -1,5 +1,15 @@
 import Parking.Support.ProductLift
 
+/-!
+# A half-moment root bound
+
+Bounds a quantity controlled by the `r / 2`-th moment of a nonnegative random
+variable, in `r`-th-root form, by the square root of the product of a weight
+and the full `r`-th moment norm `rNorm`. The proof rewrites the half moment as
+an `r / 2`-th power of `rNorm μ (r / 2) X`, compares exponents via
+`rNorm_mono_exponent`, and takes the `1 / r`-th root.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 
 noncomputable section

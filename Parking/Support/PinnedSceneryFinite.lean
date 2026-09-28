@@ -2,6 +2,17 @@ import Parking.Support.PinnedSceneryField
 import Parking.Support.ProductFinite
 import Parking.Support.SubgaussianMoment
 
+/-!
+# A uniform subgaussian bound for the pinned box field
+
+This file proves that the centred `matchedMeanU` functional of `pinnedSparseBoxField`
+has a subgaussian moment generating function whose variance proxy `V` does not depend on
+the finite hole capacity `S`, the pinned site `v`, the pinned value `a`, the horizon `T`,
+or the observation point `x`. The proof combines the finite-difference bound
+`mgf_bounded_differences_finite` with the summable Green's function bound
+`fullGreen_bubble_bound`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -13,7 +24,8 @@ variable {d : ℕ}
 /-- The initial-field Gaussian bound is uniform in an arbitrarily large prescribed hole capacity. -/
 theorem exists_pinnedSparseBoxField_subgaussian (hd : 5 ≤ d) :
     ∃ V : ℝ≥0, 0 < V ∧ ∀ (ν : Measure ℤ) [IsProbabilityMeasure ν]
-      (S : Finset (Site d)) (v : Site d) (a : ℤ), a ≤ 0 → ∀ (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d),
+      (S : Finset (Site d)) (v : Site d) (a : ℤ), a ≤ 0 →
+      ∀ (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d),
       HasSubgaussianMGF (fun ξ : S → ℤ => matchedMeanU (pinnedSparseBoxField S v a ξ) ρ T x -
         ∫ ζ, matchedMeanU (pinnedSparseBoxField S v a ζ) ρ T x ∂(Measure.pi (fun _ : S => ν))) V
           (Measure.pi (fun _ : S => ν)) := by

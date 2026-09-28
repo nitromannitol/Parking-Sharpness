@@ -1,5 +1,13 @@
 import Mathlib.Probability.Moments.Variance
 
+/-!
+# A bounded influence controls its centered increment and variance
+
+A random variable `f` sandwiched between a shift `m` and a bound `G` with `0 ≤ f - m ≤ G ≤ B`
+has centered increment `|f - E f| ≤ B` everywhere, and its variance is at most `E[G ^ 2]`,
+obtained by comparing the centered variable `g := f - m` to `G` termwise.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory

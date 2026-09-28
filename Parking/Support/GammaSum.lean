@@ -1,15 +1,3 @@
-/-
-The sum of `lem:gamma-sum`: what `Γ_m` contributes site by site, and why the
-sum over the lattice is finite in every dimension.
-
-Three facts organize it.  The truncated Green function vanishes at distance
-`m` from the origin, so `Γ_m` vanishes outside the ball of radius `m` and the
-whole sum is a finite sum over the ball of radius `n`.  Inside the ball the
-size of `Γ_m(y)` is the square of the gradient of `g_m` across `y`, which is
-`C(1+|y|)^{1-d}` in dimension two and above and is computed exactly in
-dimension one.  Summing the resulting radial bound against the number of sites
-in a shell is what produces `κ_d(n)`.
--/
 import Parking.Support.HeatMoments
 import Parking.Support.Odometer
 import LatticeProb.Graph.Zd
@@ -17,7 +5,22 @@ import LatticeProb.Walk.Shells
 import Parking.Support.Walk
 import Parking.External.GreenGradient
 
-open LatticeProb (mem_boxFinset_zero_iff shellCard shellCard_le sum_box_radial sum_inv_sq_succ_le_one sum_inv_succ_le_log sum_min_le_sqrt supNorm supNorm_le_graphNorm)
+/-!
+# The sum of `lem:gamma-sum`
+
+What `Γ_m` contributes site by site, and why the sum over the lattice is finite in every
+dimension.
+
+Three facts organize it. The truncated Green function vanishes at distance `m` from the
+origin, so `Γ_m` vanishes outside the ball of radius `m` and the whole sum is a finite sum
+over the ball of radius `n`. Inside the ball the size of `Γ_m(y)` is the square of the
+gradient of `g_m` across `y`, which is `C(1+|y|)^{1-d}` in dimension two and above and is
+computed exactly in dimension one. Summing the resulting radial bound against the number of
+sites in a shell is what produces `κ_d(n)`.
+-/
+
+open LatticeProb (mem_boxFinset_zero_iff shellCard shellCard_le sum_box_radial
+  sum_inv_sq_succ_le_one sum_inv_succ_le_log sum_min_le_sqrt supNorm supNorm_le_graphNorm)
 
 noncomputable section
 
@@ -29,6 +32,8 @@ variable {d : ℕ}
 
 /-! ### The supremum over a bounded set of times -/
 
+/-- The one-point conditional supremum `⨆ _ : m ∈ Set.Iic n, f m` is at most `B`: it equals
+`f m ≤ B` when `m ≤ n`, and the empty supremum `0 ≤ B` otherwise. -/
 theorem iSup_mem_le {n : ℕ} {f : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (h : ∀ m ≤ n, f m ≤ B) (m : ℕ) :
     (⨆ _ : m ∈ Set.Iic n, f m) ≤ B := by
   by_cases hm : m ∈ Set.Iic n
@@ -37,10 +42,15 @@ theorem iSup_mem_le {n : ℕ} {f : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (h : �
   · rw [ciSup_neg hm, Real.sSup_empty]
     exact hB
 
+/-- Taking the supremum over `m ∈ Set.Iic n` of a family bounded by `B` on that range stays
+at most `B`, by `iSup_mem_le` at each `m`. -/
 theorem iSup_Iic_le {n : ℕ} {f : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (h : ∀ m ≤ n, f m ≤ B) :
     (⨆ m ∈ Set.Iic n, f m) ≤ B :=
   ciSup_le fun m => iSup_mem_le hB h m
 
+/-- `⨆ m ∈ Set.Iic n, f m` is nonnegative: the vacuous term at `m = n + 1`, outside
+`Set.Iic n`, evaluates to the empty supremum `0` and is itself bounded above by the whole
+supremum. -/
 theorem iSup_Iic_nonneg {n : ℕ} {f : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (h : ∀ m ≤ n, f m ≤ B) :
     0 ≤ ⨆ m ∈ Set.Iic n, f m := by
   have hbdd : BddAbove (Set.range fun m : ℕ => ⨆ _ : m ∈ Set.Iic n, f m) := by
@@ -54,8 +64,12 @@ theorem iSup_Iic_nonneg {n : ℕ} {f : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (h 
 
 /-! ### Where the truncated Green function lives -/
 
+/-- The local `graphNorm` notation agrees with `LatticeProb.graphNorm`, by `rfl`. -/
 theorem graphNorm_eq_srw (x : Site d) : graphNorm x = LatticeProb.graphNorm x := rfl
 
+/-- The truncated Green function vanishes at times `m` not exceeding the graph distance from
+the origin, since every term `srwHeat` in the defining sum has not yet reached distance
+`graphNorm x`. -/
 theorem green_eq_zero_of_le {m : ℕ} {x : Site d} (h : m ≤ graphNorm x) : green d m x = 0 := by
   rw [green_eq_srwGreen, LatticeProb.srwGreen]
   refine Finset.sum_eq_zero fun j hj => ?_
@@ -64,6 +78,8 @@ theorem green_eq_zero_of_le {m : ℕ} {x : Site d} (h : m ≤ graphNorm x) : gre
   rw [← graphNorm_eq_srw]
   omega
 
+/-- `gamma d m y` is nonnegative, as a sum over neighbours of nonnegative `kern` weights
+times squares. -/
 theorem gamma_nonneg (d m : ℕ) (y : Site d) : 0 ≤ gamma d m y := by
   unfold gamma
   refine Finset.sum_nonneg fun z hz => ?_
@@ -72,6 +88,9 @@ theorem gamma_nonneg (d m : ℕ) (y : Site d) : 0 ≤ gamma d m y := by
     split <;> positivity
   positivity
 
+/-- `gamma d m y` vanishes once `m` is strictly below `graphNorm y`: every neighbour of `y`
+is then still beyond the truncated Green function's reach, so both `green d m` and its
+walk-operator average at `y` are zero. -/
 theorem gamma_eq_zero_of_lt {m : ℕ} {y : Site d} (h : m < graphNorm y) : gamma d m y = 0 := by
   have hz : ∀ z ∈ nbrFinset y, green d m z = 0 := by
     intro z hz
@@ -101,6 +120,10 @@ theorem gamma_eq_zero_of_lt {m : ℕ} {y : Site d} (h : m < graphNorm y) : gamma
 
 /-! ### The sum is a finite sum over the ball, read shell by shell -/
 
+/-- Given a radial bound `b` on `gamma d m y` for `m ≤ n` inside the ball of radius `n`, the
+running-maximum sum `∑' y, ⨆ m ≤ n, gamma d m y` is summable, since it vanishes outside the
+ball by `gamma_eq_zero_of_lt`, and is bounded by the radial sum of `b` over the ball,
+`sum_box_radial`. -/
 theorem sum_gamma_le (n : ℕ) (b : ℕ → ℝ) (hbnn : ∀ k, 0 ≤ b k)
     (hb : ∀ y : Site d, supNorm y ≤ n → ∀ m ≤ n, gamma d m y ≤ b (supNorm y)) :
     Summable (fun y : Site d => ⨆ m ∈ Set.Iic n, gamma d m y) ∧
@@ -128,6 +151,8 @@ theorem sum_gamma_le (n : ℕ) (b : ℕ → ℝ) (hbnn : ∀ k, 0 ≤ b k)
 
 /-! ### The pointwise bound from the gradient, in dimension two and above -/
 
+/-- The neighbour kernel `kern d y ·` sums to `1` over `nbrFinset y`, since each of the `2d`
+neighbours carries equal weight `(2d)⁻¹`. -/
 theorem sum_kern_eq_one (hd : 1 ≤ d) (y : Site d) :
     ∑ z ∈ nbrFinset y, kern d y z = 1 := by
   have hval : ∀ z ∈ nbrFinset y, kern d y z = (2 * (d : ℝ))⁻¹ := by
@@ -139,6 +164,10 @@ theorem sum_kern_eq_one (hd : 1 ≤ d) (y : Site d) :
   push_cast
   field_simp
 
+/-- Bounds `gamma d m y ≤ 4C^2(1+graphNorm y)^{2(1-d)}` from a uniform gradient bound
+`|green d m y - green d m z| ≤ C(1+graphNorm y)^{1-d}` at every neighbour `z`: the averaging
+identity for `walkOp` puts `green d m z - walkOp (green d m) y` within `2C(\dots)` by the
+triangle inequality, and `kern` sums to `1`. -/
 theorem gamma_le_of_gradient (hd : 1 ≤ d) {C : ℝ} (hC : 0 < C) {m : ℕ} {y : Site d}
     (hgrad : ∀ z : Site d, z ∈ nbrFinset y →
       |green d m y - green d m z| ≤ C * (1 + (graphNorm y : ℝ)) ^ (1 - (d : ℝ))) :
@@ -236,9 +265,11 @@ theorem gamma_le_of_gradient (hd : 1 ≤ d) {C : ℝ} (hC : 0 < C) {m : ℕ} {y 
 
 /-! ### Dimension one: the gradient is the tail of the kernel -/
 
+/-- The truncated Green function at time `0` is identically zero, by definition. -/
 theorem green_zero (d : ℕ) (x : Site d) : green d 0 x = 0 := by
   simp [green]
 
+/-- `gamma d 0 y` vanishes, since `green d 0` is identically zero. -/
 theorem gamma_zero (d : ℕ) (y : Site d) : gamma d 0 y = 0 := by
   have hw : LatticeProb.walkOp (green d 0) y = 0 := by
     unfold LatticeProb.walkOp LatticeProb.nbrSum
@@ -248,26 +279,35 @@ theorem gamma_zero (d : ℕ) (y : Site d) : gamma d 0 y = 0 := by
   rw [green_zero, hw]
   ring
 
+/-- A one-dimensional site is exactly the singleton vector of its coordinate `y 0`. -/
 theorem site_one_eq (y : Site 1) : y = ![y 0] := by
   funext i
   fin_cases i
   rfl
 
+/-- The sup-norm of a one-dimensional site `![c]` is `c.natAbs`, the coordinate's absolute
+value. -/
 theorem supNorm_one (c : ℤ) : supNorm (![c] : Site 1) = c.natAbs := by
   unfold supNorm
   rw [show (Finset.univ : Finset (Fin 1)) = {0} from rfl]
   simp
 
+/-- Adding the unit vector at the only coordinate shifts a one-dimensional site by `+1`. -/
 theorem site_one_add_unit (c : ℤ) : (![c] : Site 1) + unit 0 = ![c + 1] := by
   funext i
   fin_cases i
   simp [LatticeProb.unit]
 
+/-- Subtracting the unit vector at the only coordinate shifts a one-dimensional site
+by `-1`. -/
 theorem site_one_sub_unit (c : ℤ) : (![c] : Site 1) - unit 0 = ![c - 1] := by
   funext i
   fin_cases i
   simp [LatticeProb.unit, sub_eq_add_neg]
 
+/-- In dimension one, the truncated Green function's drop across one step,
+`green 1 m ![c] - green 1 m ![c+1]`, equals twice the simple random walk's tail
+`srwTail m c`, via `srwGreen_one_sub`. -/
 theorem green_one_sub' (m : ℕ) {c : ℤ} (hc : 0 ≤ c) :
     green 1 m ![c] - green 1 m ![c + 1] = 2 * LatticeProb.srwTail m c := by
   rw [green_eq_srwGreen, green_eq_srwGreen]
@@ -359,6 +399,8 @@ theorem gamma_one_le {m n : ℕ} (hm : m ≤ n) (c : ℤ) :
 
 /-! ### The radial bound is antitone, and the shell arithmetic -/
 
+/-- The radial profile `(1+r)^{1-d}` is antitone in `r` for `d ≥ 1`: a larger radius `g ≥ s`
+gives a smaller value. -/
 theorem rpow_radial_antitone (hd : 1 ≤ d) {s g : ℕ} (h : s ≤ g) :
     (1 + (g : ℝ)) ^ (1 - (d : ℝ)) ≤ (1 + (s : ℝ)) ^ (1 - (d : ℝ)) := by
   have hs : (0 : ℝ) < 1 + (s : ℝ) := by positivity
@@ -377,6 +419,8 @@ theorem rpow_radial_antitone (hd : 1 ≤ d) {s g : ℕ} (h : s ≤ g) :
   rw [hneg _ hg, hneg _ hs]
   exact inv_anti₀ (Real.rpow_pos_of_pos hs _) hpow
 
+/-- Combines the shell-count growth rate `(1+k)^{d-1}` with the squared radial profile
+`((1+k)^{1-d})^2` back down to a single power `(1+k)^{1-d}`, by adding exponents. -/
 theorem rpow_shell_combine (hd : 1 ≤ d) (k : ℕ) :
     ((1 + (k : ℝ)) ^ (d - 1)) * (((1 + (k : ℝ)) ^ (1 - (d : ℝ))) ^ 2)
       = (1 + (k : ℝ)) ^ (1 - (d : ℝ)) := by
@@ -397,6 +441,7 @@ theorem rpow_shell_combine (hd : 1 ≤ d) (k : ℕ) :
   congr 1
   ring
 
+/-- In dimension one, every nonempty shell has exactly `2` sites, `+k` and `-k`. -/
 theorem shellCard_one (k : ℕ) (hk : 1 ≤ k) : shellCard 1 k = 2 := by
   rw [shellCard]
   simp only [pow_one]
@@ -404,6 +449,11 @@ theorem shellCard_one (k : ℕ) (hk : 1 ≤ k) : shellCard 1 k = 2 := by
 
 /-! ### The lemma -/
 
+/-- **`lem:gamma-sum`: the running-maximum sum `∑' y, ⨆ m ≤ n, gamma d m y` is summable and
+bounded by `C * kappa d n`.** Proved by radial comparison: in dimension one from the exact
+tail formula `gamma_one_le`, and in dimension two and above from the external gradient bound
+`Parking.External.GreenGradient` via `gamma_le_of_gradient`, summed shell by shell against
+`kappa d n` (a logarithm in dimension two, a constant in dimension three and above). -/
 theorem gamma_sum_of_gradient (d : ℕ) (hd : 1 ≤ d)
     (hgrad : 2 ≤ d → Parking.External.GreenGradient d) :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n →

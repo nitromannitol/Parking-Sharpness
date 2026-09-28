@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Pathwise
+import LatticeProb.Invariance
+
+/-!
+# Almost-sure distinctness of the uniform variables
+
 The uniform variables are almost surely pairwise distinct.
 
 The arrivals at a site fill the holes there in increasing order of their uniform
@@ -8,8 +13,6 @@ clause is never consulted, and the set carries the whole mass: the coordinates
 are independent and their common law is atomless, so a countable union of null
 sets covers the complement.
 -/
-import Parking.Support.Pathwise
-import LatticeProb.Invariance
 
 noncomputable section
 
@@ -20,16 +23,21 @@ open MeasureTheory ProbabilityTheory
 /-- The one-coordinate law of the uniform variables. -/
 def unitLaw : Measure ℝ := volume.restrict (Set.Icc (0 : ℝ) 1)
 
+/-- `unitLaw` is a probability measure, since `Set.Icc (0 : ℝ) 1` has volume `1`. -/
 instance : IsProbabilityMeasure unitLaw := by
   constructor
   rw [unitLaw, Measure.restrict_apply_univ, Real.volume_Icc]
   norm_num
 
+/-- `unitLaw` gives every singleton mass zero, since it is bounded by Lebesgue measure and
+Lebesgue measure has no atoms. -/
 theorem unitLaw_singleton (x : ℝ) : unitLaw {x} = 0 := by
   have h : unitLaw {x} ≤ volume {x} := Measure.restrict_le_self {x}
   rw [Real.volume_singleton] at h
   exact nonpos_iff_eq_zero.mp h
 
+/-- `LatticeProb.rankLaw` unfolds to the infinite product of `unitLaw` over each
+`(site, index)` coordinate. -/
 theorem rankLaw_eq_infinitePi (d : ℕ) :
     LatticeProb.rankLaw d = Measure.infinitePi fun _ : LatticeProb.Label d × ℕ => unitLaw := rfl
 

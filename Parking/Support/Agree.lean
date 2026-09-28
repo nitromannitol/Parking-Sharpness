@@ -1,4 +1,11 @@
-/-
+import LatticeProb.ParticleDriven
+import Parking.Support.Reads
+import Parking.Support.DeferredIntegral
+import Parking.Support.ParticleMeasurability
+
+/-!
+# The two constructions have the same law
+
 The stack construction and the particle-driven construction have the same law.
 
 `parking.tex:645-646` states it.  What makes it true is that the
@@ -23,10 +30,6 @@ Three things have to be arranged before the exploration lemma applies.
   either unread by the light cone (`LatticeProb.state_agree_box`) or too far to
   have influenced `p`.
 -/
-import LatticeProb.ParticleDriven
-import Parking.Support.Reads
-import Parking.Support.DeferredIntegral
-import Parking.Support.ParticleMeasurability
 
 open LatticeProb (measurable_from_countable' measurable_of_countable_partition)
 
@@ -41,6 +44,8 @@ open LatticeProb Finset
 
 variable {d : ℕ}
 
+/-- A sum type inherits `MeasurableSingletonClass` from its two summands, by checking each
+singleton's preimage under `Sum.inl` and `Sum.inr` directly. -/
 instance instMeasurableSingletonSum {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
     [MeasurableSingletonClass α] [MeasurableSingletonClass β] :
     MeasurableSingletonClass (α ⊕ β) := by
@@ -86,6 +91,8 @@ def expStack (i₀ : Fin d) (ω : RIdx d → Site d) : Site d × ℕ → Site d 
 def expDriver (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (ω : RIdx d → Site d) : Driver d := ⟨η, expStack i₀ ω, ρ⟩
 
+/-- The driver built from the enlarged family always steps to a neighbour, since its
+stack comes from `nbrProj`. -/
 theorem expDriver_steps (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (ω : RIdx d → Site d) : StepsToNeighbour (expDriver i₀ η ρ ω) :=
   stepsToNeighbour_of_mem fun q => nbrProj_mem i₀ (fun r => ω (Sum.inl r)) q
@@ -117,6 +124,8 @@ def expLaw (d : ℕ) : RIdx d → Measure (Site d) :=
 
 /-! ### The exploration hypotheses -/
 
+/-- `expIdxOf` is measurable in the driver's data, branching on the measurable activity
+predicate and composing with the measurable read index. -/
 theorem measurable_expIdxOf (a : Label d × ℕ) :
     Measurable fun v : Data d => expIdxOf (toDriver v) a := by
   classical
@@ -125,6 +134,8 @@ theorem measurable_expIdxOf (a : Label d × ℕ) :
   · exact hact a.1 (measurableSet_singleton true)
   · exact measurable_inl.comp (measurable_readIndex a.2 a.1)
 
+/-- `expIdx` is measurable in the enlarged family `ω`, composing `measurable_expIdxOf` with
+the measurable embedding into `expDriver`. -/
 theorem expIdx_measurable (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (a : Label d × ℕ) : Measurable (expIdx i₀ η ρ a) := by
   classical
@@ -135,6 +146,9 @@ theorem expIdx_measurable (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × 
         measurable_const)
   exact (measurable_expIdxOf a).comp hemb
 
+/-- Distinct pairs `a ≠ b` read distinct coordinates of the enlarged family, using
+`readIndex_injective` on the `Sum.inl` branch and injectivity of the two `Sum` summands
+elsewhere. -/
 theorem expIdx_fresh (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (a b : Label d × ℕ) (ω : RIdx d → Site d) (hab : a ≠ b) :
     expIdx i₀ η ρ a ω ≠ expIdx i₀ η ρ b ω := by
@@ -149,6 +163,8 @@ theorem expIdx_fresh (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ �
   · exact fun hcon => absurd hcon (by simp)
   · exact fun hcon => hab (Sum.inr_injective hcon)
 
+/-- The dependency relation `expDep` is well-founded, since it strictly decreases the round
+coordinate. -/
 theorem expDep_wf (η : Site d → ℤ) :
     WellFounded fun b a : Label d × ℕ => b ∈ expDep η a := by
   have hlt : ∀ a b : Label d × ℕ, b ∈ expDep η a → b.2 < a.2 := by
@@ -268,6 +284,9 @@ theorem expIdx_pred (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ �
           rw [hpos, hii]
         rw [hri, hact]
 
+/-- **The exploration hypotheses hold.** `expIdx` together with the dependency set `expDep`
+is a `IsDagExploration`, packaging `expIdx_measurable`, `expDep_wf`, `expIdx_fresh`, and
+`expIdx_pred`. -/
 theorem expIdx_isDagExploration (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) :
     IsDagExploration (X := fun _ : RIdx d => Site d) (expIdx i₀ η ρ) (expDep η) where
   meas := expIdx_measurable i₀ η ρ
@@ -282,6 +301,8 @@ def expMove (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (ω : RIdx d → Site d) : Label d × ℕ → Site d :=
   revealedDag (expIdx i₀ η ρ) (expG i₀) ω
 
+/-- When the particle `a.1` is active at round `a.2`, the revealed displacement is the
+recorded stack entry minus its current position. -/
 theorem expMove_active (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (ω : RIdx d → Site d) (a : Label d × ℕ)
     (ha : (state (expDriver i₀ η ρ ω) a.2).active a.1 = true) :
@@ -367,15 +388,21 @@ theorem pState_expMove (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ
 
 /-! ### The law of the revealed displacements -/
 
+/-- `expG i₀ i` is measurable, being defined by cases on a countable index. -/
 theorem measurable_expG (i₀ : Fin d) (i : RIdx d) : Measurable (expG i₀ i) :=
   measurable_from_countable' _
 
+/-- Each coordinate of the enlarged family's law `expLaw` is a probability measure, since it
+is one of the `instructionLaw` measures. -/
 theorem expLaw_isProbability (hd : 1 ≤ d) (i : RIdx d) :
     IsProbabilityMeasure (expLaw d i) := by
   cases i with
   | inl q => exact LatticeProb.instructionLaw_isProbability hd q.1
   | inr _ => exact LatticeProb.instructionLaw_isProbability hd 0
 
+/-- Each coordinate's revealing map `expG i₀ i` pushes `expLaw d i` forward to the
+displacement law, at a stack coordinate via `instructionLaw_map_sub_self` and at an
+auxiliary coordinate by the identity map. -/
 theorem expLaw_map_expG (i₀ : Fin d) (i : RIdx d) :
     (expLaw d i).map (expG i₀ i) = LatticeProb.displacementLaw d := by
   cases i with
@@ -499,8 +526,10 @@ theorem stackObservables_eq_pObservables (i₀ : Fin d) (η : Site d → ℤ)
         = (LatticeProb.pState ⟨η, expMove i₀ η ρ ω, ρ⟩ ti.1).active ti.2
     rw [hst ti.1]
 
-/-- **The stack construction and the particle-driven construction have the same
-law**, as `parking.tex:645-646` states. -/
+/-- **The two constructions have the same law, at a fixed configuration law `μ`.** Assembled
+from the stack and revealed-move pushforwards `map_expStack`, `map_expMove` through the
+exploration `expIdx_isDagExploration`, reshuffled into the two data laws with
+`map_reshuffle`. -/
 theorem constructionsAgree_conf (d : ℕ) (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
     [IsProbabilityMeasure μ] :
     (μ.prod ((LatticeProb.stackLaw d).prod (LatticeProb.rankLaw d))).map

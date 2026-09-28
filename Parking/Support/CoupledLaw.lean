@@ -1,10 +1,13 @@
-/-
+import Parking.Support.MatchedLaw
+import Parking.Support.Resample
+
+/-!
+# The common-table coupling law
+
 Both resampled configurations run with the same instruction tables. Each
 marginal has the original joint law of all count observables, at all sites and
 times. The shared directions do not alter either marginal's evolution law.
 -/
-import Parking.Support.MatchedLaw
-import Parking.Support.Resample
 
 open LatticeProb (measurable_from_countable')
 
@@ -19,6 +22,9 @@ variable {d : ℕ}
 abbrev Parking.ProcessObservables (d : ℕ) :=
   (ℕ × Site d → ℕ) × (ℕ × Site d → ℕ) × (ℕ × Site d → ℕ) × (ℕ × Label d → Bool)
 
+/-- The joint odometer, active count, hole count and activity indicators of the
+resampled evolution run by `matchedState` from the configuration `η`, priorities
+`ρ` and round tables `σ`. -/
 def Parking.matchedObservables (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) : Parking.ProcessObservables d :=
   (fun tx => (Parking.matchedState η ρ σ tx.1).departures tx.2,
@@ -26,12 +32,17 @@ def Parking.matchedObservables (η : Site d → ℤ) (ρ : Label d × ℕ → �
    fun tx => (Parking.matchedState η ρ σ tx.1).holes tx.2,
    fun ti => (Parking.matchedState η ρ σ ti.1).active ti.2)
 
+/-- The joint odometer, active count, hole count and activity indicators of the
+particle process driven by `ω`, read off `pState (toPDriver ω)`. -/
 def Parking.particleObservables (ω : Parking.PData d) : Parking.ProcessObservables d :=
   (fun tx => Parking.pOdometer (Parking.toPDriver ω) tx.1 tx.2,
    fun tx => Parking.pActiveCount (Parking.toPDriver ω) tx.1 tx.2,
    fun tx => Parking.pHoleCount (Parking.toPDriver ω) tx.1 tx.2,
    fun ti => (Parking.pState (Parking.toPDriver ω) ti.1).active ti.2)
 
+/-- `matchedObservables η ρ σ` agrees with `particleObservables` applied to the
+particle data built from the matched moves, since `pState_matchedMoves` identifies
+the two state recursions. -/
 theorem Parking.matchedObservables_eq (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) :
     Parking.matchedObservables η ρ σ =
@@ -41,6 +52,8 @@ theorem Parking.matchedObservables_eq (η : Site d → ℤ) (ρ : Label d × ℕ
   simp only [Parking.pState_matchedMoves]
   rfl
 
+/-- `particleObservables` is measurable, each of its four coordinates being read
+off the measurable state recursion `pState`. -/
 theorem Parking.measurable_particleObservables :
     Measurable (Parking.particleObservables (d := d)) := by
   have hS := Parking.measurableState_pState (d := d)
@@ -53,6 +66,8 @@ theorem Parking.measurable_particleObservables :
   exact (measurable_from_countable' (Finset.card (α := Label d))).comp
     (Parking.measurable_matchActive Prod.fst _ measurable_fst (hS tx.1) tx.1 tx.2)
 
+/-- `matchedObservables` is jointly measurable in its configuration, priority and
+round-table arguments, via `matchedObservables_eq` and `measurable_matchedMoves`. -/
 theorem Parking.measurable_matchedObservables {Ω : Type*} [MeasurableSpace Ω]
     (i₀ : Fin d) (e : Ω → Site d → ℤ) (r : Ω → Label d × ℕ → ℝ)
     (σ : Ω → Parking.RoundNoise d) (he : Measurable e) (hr : Measurable r)
@@ -95,17 +110,24 @@ theorem Parking.map_matchedObservables (hd : 1 ≤ d) (ν : Measure ℤ)
 abbrev Parking.CoupledData (d : ℕ) :=
   ((Site d → ℤ × ℤ) × (Label d × ℕ → ℝ)) × Parking.RoundNoise d
 
+/-- The `b`-th coordinate configuration out of a pair, `false` selecting the
+first configuration and `true` the second. -/
 def Parking.coupledConf (b : Bool) (η : Site d → ℤ × ℤ) : Site d → ℤ :=
   fun x => if b then (η x).2 else (η x).1
 
+/-- `coupledConf b` is measurable, by cases on `b`. -/
 theorem Parking.measurable_coupledConf (b : Bool) :
     Measurable (Parking.coupledConf (d := d) b) := by
   cases b <;> fun_prop [Parking.coupledConf]
 
+/-- The law of the coupling input: the resampled pair of configurations, the
+shared priorities, and the shared round-table noise, as a product measure. -/
 def Parking.coupledLaw (d : ℕ) (ν : Measure ℤ) (p : ℝ≥0∞) :
     Measure (Parking.CoupledData d) :=
   ((Parking.resampleLaw d ν p).prod (LatticeProb.rankLaw d)).prod (Parking.roundNoiseLaw d)
 
+/-- `coupledLaw d ν p` is a probability measure, being a product of probability
+measures. -/
 theorem Parking.coupledLaw_isProbability (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1) :
     IsProbabilityMeasure (Parking.coupledLaw d ν p) := by
@@ -115,15 +137,22 @@ theorem Parking.coupledLaw_isProbability (hd : 1 ≤ d) (ν : Measure ℤ)
   unfold Parking.coupledLaw Parking.resampleLaw LatticeProb.iidLaw
   infer_instance
 
+/-- Projecting the coupled data onto marginal `b`'s own configuration, keeping
+the shared priorities and round tables and discarding the other configuration. -/
 def Parking.coupledProjection (b : Bool) (ω : Parking.CoupledData d) :
     ((Site d → ℤ) × (Label d × ℕ → ℝ)) × Parking.RoundNoise d :=
   ((Parking.coupledConf b ω.1.1, ω.1.2), ω.2)
 
+/-- `coupledProjection b` is measurable. -/
 theorem Parking.measurable_coupledProjection (b : Bool) :
     Measurable (Parking.coupledProjection (d := d) b) :=
   (((Parking.measurable_coupledConf b).comp (measurable_fst.comp measurable_fst)).prodMk
     (measurable_snd.comp measurable_fst)).prodMk measurable_snd
 
+/-- The pushforward of `coupledLaw d ν p` under `coupledProjection b` is the
+ordinary product law of an i.i.d. configuration, priorities and round-table
+noise, since resampling one marginal alone reproduces the original law
+(`resampleLaw_map_fst`/`resampleLaw_map_snd`). -/
 theorem Parking.map_coupledProjection (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1) (b : Bool) :
     (Parking.coupledLaw d ν p).map (Parking.coupledProjection b) =
@@ -147,6 +176,9 @@ theorem Parking.map_coupledProjection (hd : 1 ≤ d) (ν : Measure ℤ)
     ← Measure.map_prod_map _ _ (Parking.measurable_coupledConf b) measurable_id,
     Measure.map_id, hconf]
 
+/-- The state sequence of marginal `b` of the coupled data, run by
+`matchedState` on its own configuration with the shared priorities and round
+tables. -/
 def Parking.coupledState (ω : Parking.CoupledData d) (b : Bool) : ℕ → State d :=
   Parking.matchedState (Parking.coupledConf b ω.1.1) ω.1.2 ω.2
 
@@ -155,6 +187,8 @@ def Parking.coupledParticleData (b : Bool) (ω : Parking.CoupledData d) : Parkin
   (Parking.coupledConf b ω.1.1,
     Parking.matchedMoves (Parking.coupledConf b ω.1.1) ω.1.2 ω.2, ω.1.2)
 
+/-- The particle-driver state of `coupledParticleData b ω` agrees with
+`coupledState ω b`, by `pState_matchedMoves`. -/
 theorem Parking.pState_coupledParticleData (b : Bool) (ω : Parking.CoupledData d) (t : ℕ) :
     Parking.pState (Parking.toPDriver (Parking.coupledParticleData b ω)) t =
       Parking.coupledState ω b t :=
@@ -183,6 +217,8 @@ theorem Parking.map_coupledParticleData (hd : 1 ≤ d) (ν : Measure ℤ)
     Parking.map_coupledProjection hd ν hp b]
   exact Parking.map_matchedData hd (LatticeProb.iidLaw d ν)
 
+/-- The process observables of marginal `b`: `matchedObservables` evaluated at
+its own configuration with the shared priorities and round tables. -/
 def Parking.coupledObservables (b : Bool) (ω : Parking.CoupledData d) :
     Parking.ProcessObservables d :=
   Parking.matchedObservables (Parking.coupledConf b ω.1.1) ω.1.2 ω.2

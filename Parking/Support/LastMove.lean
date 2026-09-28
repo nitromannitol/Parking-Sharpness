@@ -1,8 +1,11 @@
-/-
-The exact effect of changing one particle direction in the final relevant round.
--/
 import Parking.Support.Matched
 import Parking.Support.RangeLower
+
+/-!
+# The last-move surgery
+
+The exact effect of changing one particle direction in the final relevant round.
+-/
 
 noncomputable section
 namespace Parking

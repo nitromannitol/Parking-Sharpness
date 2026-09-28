@@ -1,6 +1,11 @@
-/- The total directed variance charge and its particle moment bound. -/
 import Parking.Support.OrientedFiniteRoute
 import Parking.Support.OrientedNorm
+
+/-!
+# The total directed charge and its particle moment bound
+
+The total directed variance charge and its particle moment bound.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -9,6 +14,8 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- For any finite set of sites `S` and any choice of horizons `l`, the sum of the
+directed charge weights `orientedCharge d (l y) y` is at most one. -/
 theorem sum_orientedCharge_horizons_le_one (hd : 1 ≤ d) (S : Finset (Site d)) (l : Site d → ℕ) :
     ∑ y ∈ S, orientedCharge d (l y) y ≤ 1 := by
   have hc (y : Site d) : orientedCharge d (l y) y ≤ orientedGamma d (l y + 1) y := by
@@ -18,18 +25,25 @@ theorem sum_orientedCharge_horizons_le_one (hd : 1 ≤ d) (S : Finset (Site d)) 
     (sum_orientedGamma_horizons_le_one hd (S.sup (fun y => l y + 1)) S (fun y => l y + 1)
       (fun y hy => le_sup (f := fun y => l y + 1) hy))
 
+/-- The total directed charge at horizon `n`: the sum over `S` of the charge weight
+`orientedCharge d (l y) y` times the directed odometer at `y`. -/
 def orientedTotalCharge (S : Finset (Site d)) (l : Site d → ℕ) (n : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) : ℝ :=
   ∑ y ∈ S, orientedCharge d (l y) y * (orientedOdometer z.1 z.2 n y : ℝ)
 
+/-- The total directed charge is nonnegative. -/
 theorem orientedTotalCharge_nonneg (S : Finset (Site d)) (l : Site d → ℕ) (n : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) : 0 ≤ orientedTotalCharge S l n z :=
   sum_nonneg fun _ _ => mul_nonneg (orientedCharge_nonneg _ _) (Nat.cast_nonneg _)
 
+/-- The truncated directed charge is nonnegative. -/
 theorem orientedTruncatedCharge_nonneg (S : Finset (Site d)) (m l : Site d → ℕ) (M : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) : 0 ≤ orientedTruncatedCharge S m l M z :=
   sum_nonneg fun _ _ => mul_nonneg (Nat.cast_nonneg _) (orientedCharge_nonneg _ _)
 
+/-- The truncated directed charge at horizons `m ≤ n` is bounded by the total directed
+charge at horizon `n`, since truncating and the monotonicity of the odometer in time can
+only lower each term. -/
 theorem orientedTruncatedCharge_le_total (S : Finset (Site d)) (m l : Site d → ℕ) (M n : ℕ)
     (hm : ∀ y ∈ S, m y ≤ n) (z : (Site d → ℤ) × (Site d × ℕ → Site d)) :
     orientedTruncatedCharge S m l M z ≤ orientedTotalCharge S l n z := by
@@ -40,6 +54,10 @@ theorem orientedTruncatedCharge_le_total (S : Finset (Site d)) (m l : Site d →
   exact_mod_cast (min_le_right M (orientedOdometer z.1 z.2 (m y) y)).trans
     (orientedOdometer_mono_time z.1 z.2 y (hm y hy))
 
+/-- For `p ≥ 1`, the `p`-th power of the total directed charge is integrable jointly over
+the field and the routing instructions, and its integral is at most the `p`-th moment of
+the directed odometer at the origin and horizon `n`: the charge weights sum to at most
+one, and each term's moment is controlled by `integral_orientedOdometer_joint_rpow`. -/
 theorem orientedTotalCharge_moment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (S : Finset (Site d)) (l : Site d → ℕ) (n : ℕ) {p : ℝ} (hp : 1 ≤ p) :
     Integrable (fun z => orientedTotalCharge S l n z ^ p) ((iidLaw d ν).prod (orientedStackLaw d)) ∧
@@ -62,6 +80,9 @@ theorem orientedTotalCharge_moment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Crit
       (by linarith : 0 ≤ p)
   exact mul_le_of_le_one_left (integral_nonneg fun _ => Real.rpow_nonneg (Nat.cast_nonneg _) p) hw
 
+/-- Under the same hypotheses, the `p`-th moment of the truncated directed charge is
+also bounded by the `p`-th moment of `U_n(0)`, via `orientedTruncatedCharge_le_total`
+and monotonicity of the integral. -/
 theorem integral_orientedTruncatedCharge_rpow_le (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (S : Finset (Site d)) (m l : Site d → ℕ) (M n : ℕ) (hm : ∀ y ∈ S, m y ≤ n)
     {p : ℝ} (hp : 1 ≤ p) :

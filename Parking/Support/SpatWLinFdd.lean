@@ -1,4 +1,10 @@
-/-
+import Parking.Support.NearestMollifier
+import Parking.Support.NearestTestFun
+import Parking.External.LinearFieldScaling
+
+/-!
+# Field-only finite-dimensional convergence
+
 Finite-dimensional convergence in law of the linear field alone, the field-only part of the
 joint law of the scenery coordinates with the linear field's coordinates
 (`Parking.tendsto_scenePair_fdd` and `Parking.External.LinearFieldScaling`, with the white noise
@@ -31,9 +37,6 @@ extension of BP's PROOF, not of BP's stated theorems.  It therefore enters only 
 scenery-retained joint clause of `Parking.External.LinearFieldScaling`, which
 `Parking/Support/SpatWJointLaw.lean` uses to state the joint convergence with `scenePair`.
 -/
-import Parking.Support.NearestMollifier
-import Parking.Support.NearestTestFun
-import Parking.External.LinearFieldScaling
 
 open MeasureTheory ProbabilityTheory Filter Topology
 
@@ -92,7 +95,8 @@ theorem exists_timeBump_eqOn_finite (p : ℕ) (times : Fin p → ℝ) (hpos : �
     set c : ℝ := (m + M) / 2 with hcdef
     set rIn : ℝ := (M - m) / 2 + m / 3 with hrIndef
     set rOut : ℝ := (M - m) / 2 + 2 * m / 3 with hrOutdef
-    let f : ContDiffBump c := ⟨rIn, rOut, by rw [hrIndef]; linarith, by rw [hrIndef, hrOutdef]; linarith⟩
+    let f : ContDiffBump c := ⟨rIn, rOut, by rw [hrIndef]; linarith,
+      by rw [hrIndef, hrOutdef]; linarith⟩
     have htsupp : tsupport (fun s => f s) = Metric.closedBall c f.rOut := f.tsupport_eq
     refine ⟨fun s => f s, f.contDiff, f.hasCompactSupport, fun s hs => ?_, fun j => ?_⟩
     · rw [htsupp] at hs
@@ -124,6 +128,8 @@ theorem exists_spaceTimeTest_eqOn_finite (d p : ℕ) (sp : Fin p → ℝ × (Fin
 
 /-! ### `cutoffBC` reads off the uncut field where the cutoff is `1` -/
 
+/-- `cutoffBC χ f` evaluates at any point `p` to `χ p * f p`, unfolding directly from its
+definition regardless of the continuity and compact-support hypotheses it also carries. -/
 theorem cutoffBC_apply {χ f : ℝ × (Fin d → ℝ) → ℝ} (hχ : Continuous χ)
     (hχc : HasCompactSupport χ) (hf : Continuous f) (p : ℝ × (Fin d → ℝ)) :
     cutoffBC χ f hχ hχc hf p = χ p * f p := rfl

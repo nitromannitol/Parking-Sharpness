@@ -1,5 +1,7 @@
-/-
-Counting the particles of a finite set of sites.
+import Parking.Support.ParticleFiltration
+
+/-!
+# Counting the particles of a finite set of sites
 
 Step 2 of `lem:product` (`parking.tex:2382-2409`) sums a bound over the
 particles present at a site and reads the result as `k` times the bound, `k`
@@ -9,7 +11,6 @@ identities needed are that a sum over the enumeration is a sum over the set and
 that a sum of a function of the SITE over those labels weights each site by its
 count.
 -/
-import Parking.Support.ParticleFiltration
 
 noncomputable section
 

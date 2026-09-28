@@ -1,4 +1,10 @@
-/-
+import Parking.Support.GreenIncrement
+import Parking.Support.ActivityHoles
+import Parking.Support.Comparison
+
+/-!
+# Measurability and a pathwise bound on the error field
+
 Two things the moment bound of `prop:w-moment` needs of the error field and
 that no earlier module has: the error is a measurable function of the data and
 its law is translation invariant, and it is bounded pathwise by a function of
@@ -17,9 +23,6 @@ site the bound is
 
 and the same for `w^\star`, where the walk has moved the site by at most `n`.
 -/
-import Parking.Support.GreenIncrement
-import Parking.Support.ActivityHoles
-import Parking.Support.Comparison
 
 open LatticeProb (measurable_from_countable')
 
@@ -33,6 +36,8 @@ variable {d : ℕ}
 
 /-! ### The neighbours of a translated site -/
 
+/-- The neighbour set of the translated site `x + v` is the image of the neighbour set of
+`x` under translation by `v`. -/
 theorem nbrFinset_add (x v : Site d) :
     nbrFinset (x + v) = (nbrFinset x).image (fun y => y + v) := by
   classical
@@ -62,6 +67,8 @@ theorem mem_boxFinset_one_of_nbr {x y : Site d} (h : y ∈ nbrFinset x) :
   · simp only [Pi.sub_apply, sub_sub_cancel_left, unit, Pi.single_apply, abs_neg]
     split <;> norm_num
 
+/-- The walk operator commutes with translation: applying `walkOp` to `f` shifted by `v` at
+`x` equals applying `walkOp` to `f` at `x + v`. -/
 theorem walkOp_shift (v : Site d) (f : Site d → ℝ) (x : Site d) :
     walkOp (fun z => f (z + v)) x = walkOp f (x + v) := by
   rw [walkOp, walkOp, nbrSum, nbrSum]
@@ -98,6 +105,9 @@ theorem wErr_shiftData (v : Site d) (ω : Data d) (k : ℕ) (x : Site d) :
 
 /-! ### The error field is measurable -/
 
+/-- **The error field is a measurable function of the data.**  Induction on the round `k`,
+using that the arrivals and odometer counts are measurable functions of countably many
+values and that `walkOp` of a measurable field stays measurable. -/
 theorem measurable_wErr (k : ℕ) (x : Site d) :
     Measurable fun ω : Data d => wErr ω k x := by
   classical
@@ -117,7 +127,8 @@ theorem measurable_wErr (k : ℕ) (x : Site d) :
               (∑ i : Fin d, (wErr ω k (x + unit i) + wErr ω k (x - unit i))) / (2 * (d : ℝ)) :=
           rfl
         rw [this]
-        exact (Finset.measurable_sum _ fun i _ => (ih (x + unit i)).add (ih (x - unit i))).div_const _
+        exact (Finset.measurable_sum _ fun i _ =>
+          (ih (x + unit i)).add (ih (x - unit i))).div_const _
       have hsum : Measurable fun ω : Data d =>
           ∑ y ∈ nbrFinset x,
             ((arrivals ω.2.1 y x (U ω k y) : ℝ) - (U ω k y : ℝ) / (2 * (d : ℝ))) :=
@@ -130,14 +141,20 @@ theorem measurable_wErr (k : ℕ) (x : Site d) :
 def confBox (ω : Data d) (x : Site d) (r : ℕ) : ℝ :=
   ((∑ z ∈ boxFinset x r, (ω.1 z).toNat : ℕ) : ℝ)
 
+/-- `confBox` is nonnegative, being a cast of a sum of natural numbers. -/
 theorem confBox_nonneg (ω : Data d) (x : Site d) (r : ℕ) : 0 ≤ confBox ω x r :=
   Nat.cast_nonneg _
 
+/-- `confBox` is monotone in its radius, since `boxFinset x r ⊆ boxFinset x r'` for
+`r ≤ r'` and the summand `(ω.1 z).toNat` is nonnegative. -/
 theorem confBox_mono (ω : Data d) (x : Site d) {r r' : ℕ} (h : r ≤ r') :
     confBox ω x r ≤ confBox ω x r' := by
   refine Nat.cast_le.mpr (Finset.sum_le_sum_of_subset ?_)
   exact boxFinset_mono h
 
+/-- If `c` lies in the box of radius `a` around `x`, then the box of radius `b` around `c`
+sits inside the box of radius `a + b` around `x`, so `confBox` at `c` with radius `b` is
+bounded by `confBox` at `x` with radius `a + b`. -/
 theorem confBox_le_of_mem (ω : Data d) {x c : Site d} {a : ℕ} (hc : c ∈ boxFinset x a) (b : ℕ) :
     confBox ω c b ≤ confBox ω x (a + b) := by
   refine Nat.cast_le.mpr (Finset.sum_le_sum_of_subset fun w hw => ?_)
@@ -166,9 +183,11 @@ theorem U_le_confBox (ω : Data d) (k : ℕ) (y : Site d) :
 /-- The coefficient of the pathwise bound: `2dk²`. -/
 def wCoef (d : ℕ) (k : ℕ) : ℝ := 2 * (d : ℝ) * (k : ℝ) ^ 2
 
+/-- `wCoef d k = 2dk²` is nonnegative for every `d, k`. -/
 theorem wCoef_nonneg (d k : ℕ) : 0 ≤ wCoef d k := by
   rw [wCoef]; positivity
 
+/-- `wCoef d` is monotone in `k`, since `k ↦ 2dk²` is monotone for `k ≥ 0`. -/
 theorem wCoef_mono (d : ℕ) {k k' : ℕ} (h : k ≤ k') : wCoef d k ≤ wCoef d k' := by
   rw [wCoef, wCoef]
   have hk : (k : ℝ) ≤ (k' : ℝ) := by exact_mod_cast h

@@ -1,17 +1,19 @@
-/-
-The expected range of the walk from below, Step 1 of `prop:resolvent`.
-
-`parking.tex:2675-2685` bounds `E_0|R_t|` from below by `(t+1)^2 / E_0 ∑_x L_t(x)^2`,
-which the library's `div_le_integral_rangeCard` states in the equivalent form
-`E_0|R_t| ≥ (t+1) / G_t(0,0)` for the truncated Green function
-`G_t(0,0) = ∑_{j ≤ t} p_j(0,0)`.  The Green function grows like the paper's
-scale: `√(t+1)` in dimension one, `log(t+2)` in dimension two, and boundedly
-above.  That is what this file proves, from the on-diagonal heat kernel bound
-`p_{2n}(0,0) ≤ C n^{-d/2}` and the parity of the walk.
--/
 import Parking.Support.Near
 import LatticeProb.Walk.SRWDiag
 import LatticeProb.Walk.RangeSecond
+
+/-!
+# The expected range of the walk from below
+
+The expected range of the walk from below, Step 1 of `prop:resolvent`.
+`parking.tex:2675-2685` bounds `E_0|R_t|` from below by `(t+1)^2 / E_0 ∑_x L_t(x)^2`,
+which the library's `div_le_integral_rangeCard` states in the equivalent form
+`E_0|R_t| ≥ (t+1) / G_t(0,0)` for the truncated Green function
+`G_t(0,0) = ∑_{j ≤ t} p_j(0,0)`. The Green function grows like the paper's scale:
+`√(t+1)` in dimension one, `log(t+2)` in dimension two, and boundedly above. That is what
+this file proves, from the on-diagonal heat kernel bound `p_{2n}(0,0) ≤ C n^{-d/2}` and
+the parity of the walk.
+-/
 
 noncomputable section
 
@@ -25,6 +27,8 @@ variable {d : ℕ}
 
 /-! ### Three elementary sums -/
 
+/-- The partial sum `∑_{k=0}^t 1/√(k+1)` is at most `2√(t+1)`, by induction comparing
+consecutive terms via the mean value bound for `√`. -/
 theorem sum_inv_sqrt_le (t : ℕ) :
     ∑ k ∈ Finset.range (t + 1), (1 : ℝ) / Real.sqrt ((k : ℝ) + 1)
       ≤ 2 * Real.sqrt ((t : ℝ) + 1) := by
@@ -47,6 +51,8 @@ theorem sum_inv_sqrt_le (t : ℕ) :
       push_cast
       linarith [ih, key]
 
+/-- The partial sum `∑_{k=0}^t 1/(k+1)` is at most `1 + log(t+1)`, by induction using
+`log(1 + x) ≤ x` on the ratio of consecutive terms. -/
 theorem sum_inv_le_log (t : ℕ) :
     ∑ k ∈ Finset.range (t + 1), (1 : ℝ) / ((k : ℝ) + 1) ≤ 1 + Real.log ((t : ℝ) + 1) := by
   induction t with
@@ -71,6 +77,8 @@ theorem sum_inv_le_log (t : ℕ) :
       push_cast
       linarith [ih, hstep]
 
+/-- For an exponent `p > 1`, the partial sums `∑_{k=0}^t (k+1)^{-p}` are bounded uniformly
+in `t`, by comparison with the convergent series `∑_n 1/n^p`. -/
 theorem exists_sum_rpow_le {p : ℝ} (hp : 1 < p) :
     ∃ C : ℝ, 0 < C ∧ ∀ t : ℕ,
       ∑ k ∈ Finset.range (t + 1), ((k : ℝ) + 1) ^ (-p) ≤ C := by
@@ -90,6 +98,8 @@ theorem exists_sum_rpow_le {p : ℝ} (hp : 1 < p) :
 
 /-! ### The Green function on the diagonal -/
 
+/-- The simple random walk heat kernel vanishes on the diagonal at odd times, since an odd
+number of unit steps cannot return the walk's graph norm to `0` mod `2`. -/
 theorem srwHeat_odd_zero (n : ℕ) : LatticeProb.srwHeat d (2 * n + 1) 0 = 0 := by
   refine LatticeProb.srwHeat_eq_zero_of_parity ?_
   have h1 : ((2 * n + 1 : ℕ) : ZMod 2) = 1 := by
@@ -99,6 +109,9 @@ theorem srwHeat_odd_zero (n : ℕ) : LatticeProb.srwHeat d (2 * n + 1) 0 = 0 := 
   rw [LatticeProb.graphNorm_zero, h1, Nat.cast_zero]
   decide
 
+/-- The truncated Green function at an even time `2t + 2` collapses, using
+`srwHeat_odd_zero` to drop every odd term, to the sum of the even-time heat kernel values
+alone. -/
 theorem srwGreen_even_eq (t : ℕ) :
     LatticeProb.srwGreen d (2 * t + 2) 0
       = ∑ n ∈ Finset.range (t + 1), LatticeProb.srwHeat d (2 * n) 0 := by
@@ -128,6 +141,8 @@ dimension one, `log(t+2)` in dimension two, and bounded above. -/
 def greenScale (d : ℕ) (t : ℕ) : ℝ :=
   if d = 1 then Real.sqrt ((t : ℝ) + 1) else if d = 2 then Real.log ((t : ℝ) + 2) else 1
 
+/-- The rewriting `(k+1)^{-3/2} = 1/√(k+1)^3` used to compare the heat-kernel tail to a
+`3/2`-power series. -/
 theorem rpow_three_halves_eq (k : ℕ) :
     ((k : ℝ) + 1) ^ (-(3 : ℝ) / 2) = 1 / Real.sqrt ((k : ℝ) + 1) ^ 3 := by
   have hpos : (0 : ℝ) < (k : ℝ) + 1 := by positivity
@@ -135,6 +150,8 @@ theorem rpow_three_halves_eq (k : ℕ) :
     ← Real.rpow_mul hpos.le, one_div, ← Real.rpow_neg hpos.le]
   norm_num
 
+/-- The truncated Green function is bounded by its `n = 0` term plus a tail sum controlled
+by the on-diagonal heat kernel upper bound `LatticeProb.srwHeat_diag_upper`. -/
 theorem srwGreen_le_head_tail (hd : 1 ≤ d) (t : ℕ) :
     LatticeProb.srwGreen d (t + 1) 0
       ≤ 1 + ∑ n ∈ Finset.range t,
@@ -159,6 +176,8 @@ theorem srwGreen_le_head_tail (hd : 1 ≤ d) (t : ℕ) :
     rwa [hc] at h
   linarith [Finset.sum_le_sum hterm]
 
+/-- The constant `3^d · LatticeProb.greenConst d + 1` appearing in the tail bound of
+`srwGreen_le_head_tail` is positive. -/
 theorem greenConst_pos (d : ℕ) : 0 < 3 ^ d * LatticeProb.greenConst d + 1 := by
   have h := LatticeProb.greenConst_nonneg d
   have h3 : (0 : ℝ) ≤ 3 ^ d := by positivity
@@ -258,6 +277,8 @@ theorem exists_srwGreen_diag_le (hd : 1 ≤ d) :
       linarith [hhead t, hsum]
 
 
+/-- `greenScale d t` is positive in every case of its definition: a square root, a
+logarithm of an argument exceeding `1`, or the constant `1`. -/
 theorem greenScale_pos (d : ℕ) (t : ℕ) : 0 < greenScale d t := by
   unfold greenScale
   split_ifs with h1 h2

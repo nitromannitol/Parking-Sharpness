@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Walk
+import LatticeProb.Graph.ZdRepresentation
+
+/-!
+# The optimal-stopping representation of the odometer
+
 The optimal stopping representation of the divisible sandpile odometer, which
 `parking.tex` quotes at `parking.tex:876-884` (label `lem:stopping`) from
 Bou-Rabee, Panagiotis, Rossignol and Sun, Theorem 3.2 there, multiplied by `2d`
@@ -16,8 +21,6 @@ positions up to time `k`.  The reward `∑_{j<σ} η(X_j)` is
 asserted as a least upper bound, so that no junk value of an unattained or
 unbounded supremum can satisfy it.
 -/
-import Parking.Support.Walk
-import LatticeProb.Graph.ZdRepresentation
 
 open MeasureTheory
 

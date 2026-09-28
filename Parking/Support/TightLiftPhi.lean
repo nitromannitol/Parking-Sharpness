@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightHlawLift
+
+/-!
+# The McShane lift `liftPhi` of a bounded Lipschitz functional
+
 The McShane lift of a bounded Lipschitz test functional off `C(rewardBox T A, ℝ)` to a
 globally-defined, bounded, `capDist`-Lipschitz functional on raw functions
 `rewardBox T A → ℝ`, built as an infimal convolution against the unit-capped distance
@@ -12,7 +16,6 @@ is `L0`-Lipschitz for `capDist` (`Parking.abs_liftPhi_sub_le`), bounded by `M0 +
 regime `dist H G > 1` needs, where boundedness alone (not the Lipschitz bound) controls the
 gap once the unit cap saturates.
 -/
-import Parking.Support.TightHlawLift
 
 open LatticeProb.BoxClamp (rewardBox)
 
@@ -30,10 +33,13 @@ variable {T A : ℝ} [Nonempty (rewardBox T A)]
 def liftPhiSet (Φ0 : C(rewardBox T A, ℝ) → ℝ) (L0 : ℝ) (v : rewardBox T A → ℝ) : Set ℝ :=
   {y : ℝ | ∃ G : C(rewardBox T A, ℝ), y = Φ0 G + L0 * capDist v (⇑G)}
 
+/-- **`Parking.liftPhiSet` is nonempty**, witnessed by the constant map `G = 0`. -/
 theorem liftPhiSet_nonempty (Φ0 : C(rewardBox T A, ℝ) → ℝ) (L0 : ℝ) (v : rewardBox T A → ℝ) :
     (liftPhiSet Φ0 L0 v).Nonempty :=
   ⟨Φ0 0 + L0 * capDist v (⇑(0 : C(rewardBox T A, ℝ))), 0, rfl⟩
 
+/-- **`Parking.liftPhiSet` is bounded below by `-M0`**, since `Φ0` is bounded by `M0` and the
+`L0 * capDist v G` term is nonnegative for `L0 ≥ 0`. -/
 theorem bddBelow_liftPhiSet {Φ0 : C(rewardBox T A, ℝ) → ℝ} {M0 : ℝ} (hΦ0 : ∀ G, |Φ0 G| ≤ M0)
     {L0 : ℝ} (hL0 : 0 ≤ L0) (v : rewardBox T A → ℝ) : BddBelow (liftPhiSet Φ0 L0 v) := by
   refine ⟨-M0, ?_⟩
@@ -47,11 +53,15 @@ distance. -/
 noncomputable def liftPhi (Φ0 : C(rewardBox T A, ℝ) → ℝ) (L0 : ℝ) (v : rewardBox T A → ℝ) : ℝ :=
   sInf (liftPhiSet Φ0 L0 v)
 
+/-- **`Parking.liftPhi` is at most any single element of `Parking.liftPhiSet`**, since it is
+defined as the infimum of that set. -/
 theorem liftPhi_le {Φ0 : C(rewardBox T A, ℝ) → ℝ} {M0 L0 : ℝ} (hΦ0 : ∀ G, |Φ0 G| ≤ M0)
     (hL0 : 0 ≤ L0) (v : rewardBox T A → ℝ) (G : C(rewardBox T A, ℝ)) :
     liftPhi Φ0 L0 v ≤ Φ0 G + L0 * capDist v (⇑G) :=
   csInf_le (bddBelow_liftPhiSet hΦ0 hL0 v) ⟨G, rfl⟩
 
+/-- **The infimum defining `Parking.liftPhi` is approached within any `ε > 0`**: there is a
+continuous `G` whose `Parking.liftPhiSet` value lies below `liftPhi Φ0 L0 v + ε`. -/
 theorem exists_liftPhi_near (Φ0 : C(rewardBox T A, ℝ) → ℝ) (L0 : ℝ) (v : rewardBox T A → ℝ)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ G : C(rewardBox T A, ℝ), Φ0 G + L0 * capDist v (⇑G) < liftPhi Φ0 L0 v + ε := by
@@ -62,6 +72,9 @@ theorem exists_liftPhi_near (Φ0 : C(rewardBox T A, ℝ) → ℝ) (L0 : ℝ) (v 
 
 /-! ### The lift is `L0`-Lipschitz for `capDist` -/
 
+/-- **One-sided near-triangle inequality for `Parking.liftPhi`**: combining
+`Parking.exists_liftPhi_near` at `w` with `Parking.capDist_le_add` bounds `liftPhi Φ0 L0 v` by
+`liftPhi Φ0 L0 w` plus `L0 * capDist v w`. -/
 theorem liftPhi_le_add {Φ0 : C(rewardBox T A, ℝ) → ℝ} {M0 L0 : ℝ} (hΦ0 : ∀ G, |Φ0 G| ≤ M0)
     (hL0 : 0 ≤ L0) (v w : rewardBox T A → ℝ) :
     liftPhi Φ0 L0 v ≤ liftPhi Φ0 L0 w + L0 * capDist v w := by

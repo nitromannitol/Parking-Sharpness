@@ -1,4 +1,9 @@
-/-
+import Parking.Support.NearStep1
+import Parking.Support.NearOptimize
+
+/-!
+# Optimizing over the horizon
+
 The optimization over the horizon in Step 2 of `prop:near-divisible`
 (`parking.tex:2887-2894`): "taking expectations and optimizing over `m` gives the
 matching lower bounds for `d ≤ 4` and the stated lower bound for `d ≥ 5`".
@@ -17,8 +22,6 @@ is absorbed the same way.
 `Parking.nearLowerTarget` is the target: the four rates of
 `eq:near-divisible-upper` below dimension five, and `[log(e/δ)]^{2/d}` above.
 -/
-import Parking.Support.NearStep1
-import Parking.Support.NearOptimize
 
 open MeasureTheory
 noncomputable section
@@ -29,12 +32,15 @@ namespace Parking
 def nearLowerTarget (d : ℕ) (δ : ℝ) : ℝ :=
   if d ≤ 4 then Parking.nearRate d δ else Real.log (Real.exp 1 / δ) ^ ((2:ℝ) / d)
 
+/-- `max 2 ⌈s⌉₊` is at least `2`, trivially. -/
 theorem two_le_maxCeil (s : ℝ) : 2 ≤ max 2 ⌈s⌉₊ := le_max_left _ _
 
+/-- `s ≤ max 2 ⌈s⌉₊` cast to `ℝ`, since `s ≤ ⌈s⌉₊ ≤ max 2 ⌈s⌉₊`. -/
 theorem le_maxCeil (s : ℝ) : s ≤ ((max 2 ⌈s⌉₊ : ℕ) : ℝ) := by
   refine le_trans (Nat.le_ceil s) ?_
   exact_mod_cast Nat.cast_le.mpr (le_max_right 2 ⌈s⌉₊)
 
+/-- For `s ≥ 0`, `max 2 ⌈s⌉₊ ≤ s + 3`, since `⌈s⌉₊ < s + 1` and `2 ≤ s + 3`. -/
 theorem maxCeil_le {s : ℝ} (hs : 0 ≤ s) : ((max 2 ⌈s⌉₊ : ℕ) : ℝ) ≤ s + 3 := by
   have h1 : ((⌈s⌉₊ : ℕ) : ℝ) ≤ s + 1 := le_of_lt (Nat.ceil_lt_add_one hs)
   have h2 : ((max 2 ⌈s⌉₊ : ℕ) : ℝ) = max 2 ((⌈s⌉₊ : ℕ) : ℝ) := by

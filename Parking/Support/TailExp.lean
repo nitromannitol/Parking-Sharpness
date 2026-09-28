@@ -1,9 +1,14 @@
-/- Analysis support for the tail theorems downstream of `thm:subcritical`:
-the exponential bounds extracted from a log-asymptotic, and the comparison of
-`rangeExp` with the range-lower power integral.  `parking.tex:2514-2517`. -/
 import Mathlib
 import Parking.Support.Near
 import Parking.Support.RangeLower
+
+/-!
+# Tail analysis downstream of `thm:subcritical`
+
+Analysis support for the tail theorems downstream of `thm:subcritical`: the
+exponential bounds extracted from a log-asymptotic, and the comparison of `rangeExp`
+with the range-lower power integral.  `parking.tex:2514-2517`.
+-/
 
 open MeasureTheory Filter Topology Set
 
@@ -120,6 +125,11 @@ theorem exp_bounds_of_log_tendsto {F : ℕ → ℝ} (hF : ∀ t, 0 < F t)
               exact mul_le_mul_of_nonneg_right (le_max_right _ _) (hF t).le
       exact h5
 
+/-- Bounds `rangeExp d a t` by the range-lower power integral, via the pointwise
+inequality `exp(-a · rangeCard) ≤ exp(-a)^(rangeCard - 1)`: since `rangeCard ≥ 1`
+always (`one_le_rangeCard`) and `exp(-a) ≤ 1` for `a > 0`, splitting off one factor of
+`exp(-a)` from the left side and comparing it to `1` gives the bound, which
+`integral_mono` promotes to the two integrals over `walkLaw d`. -/
 theorem rangeExp_le_rangePow {d : ℕ} (hd : 1 ≤ d) {a : ℝ} (ha : 0 < a) (t : ℕ) :
     rangeExp d a t
       ≤ ∫ p, (Real.exp (-(a * (1 : ℝ)))) ^ (rangeCard (0 : Site d) p t - 1)
@@ -155,12 +165,16 @@ theorem rangeExp_le_rangePow {d : ℕ} (hd : 1 ≤ d) {a : ℝ} (ha : 0 < a) (t 
     exact (Measurable.of_discrete (β := ℝ)
       (f := fun n : ℕ => (Real.exp (-(a * (1 : ℝ)))) ^ (n - 1))).comp
       (measurable_rangeCard (0 : Site d) t)
-  have hintL : Integrable (fun p => Real.exp (-(a * ((rangeCard (0 : Site d) p t : ℝ))))) (walkLaw d) := by
+  have hintL :
+      Integrable (fun p => Real.exp (-(a * ((rangeCard (0 : Site d) p t : ℝ))))) (walkLaw d) := by
     refine (integrable_const (1 : ℝ)).mono' hmeasL.aestronglyMeasurable
       (Filter.Eventually.of_forall fun p => ?_)
     rw [Real.norm_eq_abs, abs_of_nonneg (Real.exp_nonneg _)]
-    exact Real.exp_le_one_iff.2 (by nlinarith [show (0:ℝ) ≤ (rangeCard (0 : Site d) p t : ℝ) from Nat.cast_nonneg _, ha])
-  have hintR : Integrable (fun p => (Real.exp (-(a * (1 : ℝ)))) ^ (rangeCard (0 : Site d) p t - 1)) (walkLaw d) := by
+    exact Real.exp_le_one_iff.2 (by
+      nlinarith [show (0:ℝ) ≤ (rangeCard (0 : Site d) p t : ℝ) from Nat.cast_nonneg _, ha])
+  have hintR :
+      Integrable (fun p => (Real.exp (-(a * (1 : ℝ)))) ^ (rangeCard (0 : Site d) p t - 1))
+        (walkLaw d) := by
     refine (integrable_const (1 : ℝ)).mono' hmeasR.aestronglyMeasurable
       (Filter.Eventually.of_forall fun p => ?_)
     rw [Real.norm_eq_abs, abs_of_nonneg (pow_nonneg hq0 _)]

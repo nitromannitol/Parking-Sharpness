@@ -1,6 +1,18 @@
 import Parking.Support.InstructionInfluence
 import Parking.Support.MeanLocality
 
+/-!
+# Unused instructions and instructions far from the origin
+
+`roundSigned_update_unused` shows that overwriting an instruction entry beyond the
+active count `A v` does not change the round's signed field, since it is never read
+by `countArrivals`. `stepVec_notMem_box_of_far` records that a site far enough
+outside the future propagation box cannot step into it, and
+`instruction_future_of_far` combines the two: a current instruction outside the
+`(T + 1)`-box has no effect on the future mean odometer at `x` over horizon `T`,
+whether it is used or unused.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
@@ -42,7 +54,8 @@ theorem instruction_future_of_far (A H : Site d → ℕ) (τ : RoundSlot d → F
       matchedMeanU (roundSigned A H τ) ρ T x := by
   by_cases hj : j < A v
   · rw [roundSigned_eq_addParticle _ _ _ _ _ hj, Function.update_self,
-      roundWithout_update, matchedMeanU_addParticle_of_far _ _ _ _ _ (stepVec_notMem_box_of_far x v T hv b),
+      roundWithout_update,
+          matchedMeanU_addParticle_of_far _ _ _ _ _ (stepVec_notMem_box_of_far x v T hv b),
       roundSigned_eq_addParticle _ _ _ _ _ hj,
       matchedMeanU_addParticle_of_far _ _ _ _ _ (stepVec_notMem_box_of_far x v T hv _)]
   · rw [roundSigned_update_unused _ _ _ _ _ (Nat.le_of_not_gt hj)]

@@ -1,22 +1,25 @@
-/-
-Lemma 9.3 of `parking.tex`: two unfilled holes at distinct sites are rare.
-
-The argument is a weight-changing injection on the configuration.  On the event
-that `z` still carries an unfilled hole after round `t`, no particle has reached
-`z`, so the hole there has taken no part in the evolution: erasing it, that is
-raising `η(z)` from `-1` to `0`, changes nothing except the hole count at `z`
-itself.  That is the pathwise half, `state_eraseAt` below, and it needs the
-neighbour hypothesis, which holds almost surely under the law.
-
-The measure half is the observation that the resulting event does not read the
-configuration at `z` at all, so it is independent of `η(z)`.  Comparing the two
-values `-1` and `0` of `η(z)`, whose probabilities are `p` and `1 - 2p`, turns
-the two-hole probability into `p/(1-2p)` times the one-hole probability, which
-is at most `2p` times it once `p ≤ 1/4`.
--/
 import Parking.Support.MassTransport
 import Parking.Support.Range
 import Parking.Support.ThreePointLaw
+
+/-!
+# Two unfilled holes at distinct sites are rare
+
+Lemma 9.3 of `parking.tex`: two unfilled holes at distinct sites are rare.
+
+The argument is a weight-changing injection on the configuration. On the event that `z`
+still carries an unfilled hole after round `t`, no particle has reached `z`, so the hole
+there has taken no part in the evolution: erasing it, that is raising `η(z)` from `-1` to
+`0`, changes nothing except the hole count at `z` itself. That is the pathwise half,
+`state_eraseAt` below, and it needs the neighbour hypothesis, which holds almost surely
+under the law.
+
+The measure half is the observation that the resulting event does not read the
+configuration at `z` at all, so it is independent of `η(z)`. Comparing the two values `-1`
+and `0` of `η(z)`, whose probabilities are `p` and `1 - 2p`, turns the two-hole probability
+into `p/(1-2p)` times the one-hole probability, which is at most `2p` times it once
+`p ≤ 1/4`.
+-/
 
 noncomputable section
 
@@ -48,6 +51,9 @@ structure SameOffZ (z : Site d) (S' S : State d) : Prop where
 
 variable {z : Site d} {D' D : Driver d}
 
+/-- `candidates D.eta y r` agrees for two drivers related by `UpdateAt z`, since only the
+configuration at `z` can differ and `UpdateAt.etaz`/`etaz'` both force zero particles
+there. -/
 theorem candidates_updateAt (h : UpdateAt z D' D) (y : Site d) (r : ℕ) :
     candidates D'.eta y r = candidates D.eta y r := by
   ext p
@@ -56,6 +62,8 @@ theorem candidates_updateAt (h : UpdateAt z D' D) (y : Site d) (r : ℕ) :
   · rw [hp, h.etaz', h.etaz]
   · rw [h.eta p.1 hp]
 
+/-- `activeAt` agrees for two evolutions related by `UpdateAt` and `SameOffZ`, from
+`candidates_updateAt` and the shared active/position coordinates. -/
 theorem activeAt_updateAt (h : UpdateAt z D' D) {S' S : State d} (hS : SameOffZ z S' S)
     (t : ℕ) (y : Site d) : activeAt D' S' t y = activeAt D S t y := by
   unfold activeAt
@@ -63,17 +71,23 @@ theorem activeAt_updateAt (h : UpdateAt z D' D) {S' S : State d} (hS : SameOffZ 
   refine Finset.filter_congr fun p _ => ?_
   rw [hS.active p, hS.pos p]
 
+/-- `instructionIndex` agrees for two evolutions related by `UpdateAt` and `SameOffZ`, from
+`activeAt_updateAt` and the shared position/departure coordinates. -/
 theorem instructionIndex_updateAt (h : UpdateAt z D' D) {S' S : State d}
     (hS : SameOffZ z S' S) (t : ℕ) (p : Label d) :
     instructionIndex D' S' t p = instructionIndex D S t p := by
   unfold instructionIndex
   rw [hS.pos p, hS.departures, activeAt_updateAt h hS]
 
+/-- `nextPos` agrees for two evolutions related by `UpdateAt` and `SameOffZ`, from
+`instructionIndex_updateAt` and the shared instruction stack. -/
 theorem nextPos_updateAt (h : UpdateAt z D' D) {S' S : State d} (hS : SameOffZ z S' S)
     (t : ℕ) (p : Label d) : nextPos D' S' t p = nextPos D S t p := by
   unfold nextPos
   rw [hS.active p, hS.pos p, instructionIndex_updateAt h hS, h.stack]
 
+/-- `arrivalsAt` agrees for two evolutions related by `UpdateAt` and `SameOffZ`, from
+`candidates_updateAt` and `nextPos_updateAt`. -/
 theorem arrivalsAt_updateAt (h : UpdateAt z D' D) {S' S : State d} (hS : SameOffZ z S' S)
     (t : ℕ) (x : Site d) : arrivalsAt D' S' t x = arrivalsAt D S t x := by
   unfold arrivalsAt
@@ -132,6 +146,8 @@ theorem state_eraseAt (h : UpdateAt z D' D) (hstep : StepsToNeighbour D) :
 
 /-! ### The three-point law -/
 
+/-- The three-point law is a probability measure: its three atoms `p`, `p` and `1 - 2p` sum
+to one. -/
 theorem threePointLaw_univ {p : ℝ} (hp : 0 ≤ p) (hp2 : 2 * p ≤ 1) :
     threePointLaw p Set.univ = 1 := by
   simp only [threePointLaw, Measure.coe_add, Measure.coe_smul, Pi.add_apply, Pi.smul_apply,
@@ -139,22 +155,27 @@ theorem threePointLaw_univ {p : ℝ} (hp : 0 ≤ p) (hp2 : 2 * p ≤ 1) :
   rw [← ENNReal.ofReal_add hp hp, ← ENNReal.ofReal_add (by linarith) (by linarith)]
   rw [show p + p + (1 - 2 * p) = 1 by ring, ENNReal.ofReal_one]
 
+/-- `threePointLaw p` is a probability measure for `0 ≤ p` and `2p ≤ 1`, from
+`threePointLaw_univ`. -/
 theorem threePointLaw_isProbability {p : ℝ} (hp : 0 ≤ p) (hp2 : 2 * p ≤ 1) :
     IsProbabilityMeasure (threePointLaw p) :=
   ⟨threePointLaw_univ hp hp2⟩
 
+/-- `threePointLaw p {-1} = ENNReal.ofReal p`, unfolding the atomic measure. -/
 theorem threePointLaw_singleton_neg {p : ℝ} :
     threePointLaw p {(-1 : ℤ)} = ENNReal.ofReal p := by
   simp only [threePointLaw, Measure.coe_add, Measure.coe_smul, Pi.add_apply, Pi.smul_apply,
     smul_eq_mul, Measure.dirac_apply' _ (measurableSet_singleton (-1 : ℤ))]
   norm_num
 
+/-- `threePointLaw p {0} = ENNReal.ofReal (1 - 2p)`, unfolding the atomic measure. -/
 theorem threePointLaw_singleton_zero {p : ℝ} :
     threePointLaw p {(0 : ℤ)} = ENNReal.ofReal (1 - 2 * p) := by
   simp only [threePointLaw, Measure.coe_add, Measure.coe_smul, Pi.add_apply, Pi.smul_apply,
     smul_eq_mul, Measure.dirac_apply' _ (measurableSet_singleton (0 : ℤ))]
   norm_num
 
+/-- The three-point law puts no mass below `-1`. -/
 theorem threePointLaw_le_neg_two {p : ℝ} : threePointLaw p {k : ℤ | k ≤ -2} = 0 := by
   have hmeas : MeasurableSet {k : ℤ | k ≤ -2} := measurableSet_le measurable_id measurable_const
   simp only [threePointLaw, Measure.coe_add, Measure.coe_smul, Pi.add_apply, Pi.smul_apply,
@@ -166,6 +187,8 @@ theorem threePointLaw_le_neg_two {p : ℝ} : threePointLaw p {k : ℤ | k ≤ -2
 /-- The realization with the configuration at `z` set to zero. -/
 def eraseAt (z : Site d) (ω : Data d) : Data d := (Function.update ω.1 z 0, ω.2)
 
+/-- `eraseAt z` is measurable, updating one coordinate of the configuration by cases on
+whether it is `z`. -/
 theorem measurable_eraseAt (z : Site d) : Measurable (eraseAt (d := d) z) := by
   refine Measurable.prodMk ?_ measurable_snd
   refine measurable_pi_lambda _ fun y => ?_
@@ -176,9 +199,11 @@ theorem measurable_eraseAt (z : Site d) : Measurable (eraseAt (d := d) z) := by
   · simp only [hy, if_false]
     exact (measurable_pi_apply y).comp measurable_fst
 
+/-- Erasing the configuration at `z` twice is the same as erasing it once. -/
 theorem eraseAt_idem (z : Site d) (ω : Data d) : eraseAt z (eraseAt z ω) = eraseAt z ω := by
   simp [eraseAt, Function.update_idem]
 
+/-- Erasing the configuration at `z` does nothing when it is already zero there. -/
 theorem eraseAt_of_zero {z : Site d} {ω : Data d} (h : ω.1 z = 0) : eraseAt z ω = ω := by
   simp [eraseAt, ← h]
 
@@ -210,7 +235,8 @@ theorem H_eraseAt {ω : Data d} {z : Site d} {t : ℕ}
     omega
   have hempty : ∀ s, s < t → arrivalsAt (toDriver ω) (state (toDriver ω) s) s z = ∅ := by
     intro s hs
-    have hsum : ∑ u ∈ Finset.range t, (arrivalsAt (toDriver ω) (state (toDriver ω) u) u z).card = 0 :=
+    have hsum :
+        ∑ u ∈ Finset.range t, (arrivalsAt (toDriver ω) (state (toDriver ω) u) u z).card = 0 :=
       htot
     have := (Finset.sum_eq_zero_iff.mp hsum) s (Finset.mem_range.mpr hs)
     exact Finset.card_eq_zero.mp this
@@ -220,6 +246,10 @@ theorem H_eraseAt {ω : Data d} {z : Site d} {t : ℕ}
 
 variable (d)
 
+/-- If a measurable event `G` is invariant under resetting the configuration at `z` to zero,
+then its intersection with `{ω.1 z ∈ s}` has measure the product of `G`'s measure and `ν s`,
+by conditioning on the independent coordinate `z` via
+`LatticeProb.integral_mul_indicator_eval_prod`. -/
 theorem measure_inter_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {G : Set (Data d)} (hGm : MeasurableSet G) (z : Site d)
     (hinv : ∀ (η : Site d → ℤ) (y : Randomness d),

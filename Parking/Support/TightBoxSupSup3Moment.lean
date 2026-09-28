@@ -1,4 +1,10 @@
-/-
+import Parking.Support.TightBoxSupAssemble
+import Parking.Support.TightBoxSupTailAntitone
+import LatticeProb.Prob.Scaling.PolyGrowth
+
+/-!
+# Moment bound for the assembled three-piece box supremum
+
 The `p`-th moment of `Parking.yfieldSup3` (`TightBoxSupAssemble.lean`), bounded by a constant
 (depending only on `p`) TIMES `(R + 1) ^ 2` — completing route A's target `E[sup_{box(A)}
 |Yfield|^p] ≤ poly(A)` (task item (c) up to the final Lyapunov step).  Combines the three
@@ -7,9 +13,6 @@ exists_levelIncFixed_sum_moment`, `Parking.exists_dtail_moment_uniform`) via TWO
 applications of `Parking.rpow_add_le_two`, the unweighted two-term power-mean bound (transported
 from `NNReal.rpow_add_le_mul_rpow_add_rpow`, already in Mathlib).
 -/
-import Parking.Support.TightBoxSupAssemble
-import Parking.Support.TightBoxSupTailAntitone
-import LatticeProb.Prob.Scaling.PolyGrowth
 
 open MeasureTheory LatticeProb Filter Topology LatticeProb.Scaling.PolyGrowth
 open scoped NNReal

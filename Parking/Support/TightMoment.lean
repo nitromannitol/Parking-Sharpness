@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightField
+import Parking.Support.OrientedSceneryMoment
+import Parking.Support.CriticalLawReal
+import Parking.Support.ConfMoments
+
+/-!
+# Increment moments of the rescaled potential
+
 The increment moments of the rescaled convolved potential of the directed
 scaling limit (`parking.tex:3207-3218`).
 
@@ -7,10 +14,6 @@ i.i.d. scenery, so its `p`-th moment is bounded by the scenery moment bound of
 `Parking.exists_oriented_potential_scenery_bound`; the exponential moment of the
 scenery supplies the finiteness of that bound at every `p ≥ 0`.
 -/
-import Parking.Support.TightField
-import Parking.Support.OrientedSceneryMoment
-import Parking.Support.CriticalLawReal
-import Parking.Support.ConfMoments
 
 noncomputable section
 namespace Parking

@@ -1,4 +1,9 @@
-/-
+import Parking.Support.StoppingShift
+import Parking.Support.ValueLipschitz
+
+/-!
+# Spatial oscillation of the odometer via the linear field
+
 **The spatial oscillation of the divisible odometer reduces, pathwise, to the spatial
 oscillation of the linear membrane field alone.**
 
@@ -32,8 +37,6 @@ locally.  Here this global control enters only through the hypotheses `hVb` and 
 obtaining it with high probability takes a cutoff together with a tail bound on how far the
 walk can travel (`Parking/Support/WalkMaximal.lean`).
 -/
-import Parking.Support.StoppingShift
-import Parking.Support.ValueLipschitz
 
 noncomputable section
 

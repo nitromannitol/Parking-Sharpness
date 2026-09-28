@@ -1,5 +1,16 @@
 import Parking.Support.DeficitFactor
 
+/-!
+# Squared relative deficits
+
+This file converts a pointwise squared relative lower bound `e ^ 2 * A ≤ F ω` into an
+additive deficit bound `A - F ω ≤ 2 * (1 - e) * A`, and integrates that deficit bound over
+a probability measure to get a multiplicative correlation factor for the product `F * G`
+of two such envelopes via `integral_mul_factor_of_deficits`. It also records the one-sided
+case where only one of `F`, `G` carries a squared relative envelope. It does not assume
+independence of `F` and `G`; the whole gain comes from the two deficit bounds.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory
@@ -21,7 +32,8 @@ theorem integral_square_relative_lower (μ : Measure Ω) [IsProbabilityMeasure �
   simp only [integral_const, probReal_univ, one_smul] at h
   exact (mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hδ he 2) hA).trans h
 
-/-- Two squared relative envelopes give a product factor with the product of their hitting deficits. -/
+/-- Two squared relative envelopes give a product factor with the product of their hitting
+deficits. -/
 theorem integral_square_relative_factor (μ : Measure Ω) [IsProbabilityMeasure μ]
     (F G : Ω → ℝ) (hF : Measurable F) (hG : Measurable G)
     (A B e f δ : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B) (hδ : 0 < δ)
@@ -39,9 +51,11 @@ theorem integral_square_relative_factor (μ : Measure Ω) [IsProbabilityMeasure 
   have hMF := integral_square_relative_lower μ F hFi A e δ hA hδ.le he.1 (fun ω => (hFA ω).1)
   have hMG := integral_square_relative_lower μ G hGi B f δ hB hδ.le hf.1 (fun ω => (hGB ω).1)
   have hdefi : Integrable (fun ω => (A - F ω) * (B - G ω)) μ :=
-    Integrable.of_bound ((measurable_const.sub hF).mul (measurable_const.sub hG)).aestronglyMeasurable (A * B)
+    Integrable.of_bound
+      ((measurable_const.sub hF).mul (measurable_const.sub hG)).aestronglyMeasurable (A * B)
       (ae_of_all _ fun ω => by
-        rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sub_nonneg.mpr (hFA ω).2) (sub_nonneg.mpr (hGB ω).2))]
+        rw [Real.norm_eq_abs,
+          abs_of_nonneg (mul_nonneg (sub_nonneg.mpr (hFA ω).2) (sub_nonneg.mpr (hGB ω).2))]
         exact mul_le_mul (by linarith [hFn ω]) (by linarith [hGn ω]) (sub_nonneg.mpr (hGB ω).2) hA)
   have hdef : (∫ ω, (A - F ω) * (B - G ω) ∂μ) ≤ (4 * (1 - e) * (1 - f)) * (A * B) := by
     have hp (ω : Ω) : (A - F ω) * (B - G ω) ≤ (4 * (1 - e) * (1 - f)) * (A * B) := by
@@ -49,9 +63,12 @@ theorem integral_square_relative_factor (μ : Measure Ω) [IsProbabilityMeasure 
       have hb := (square_relative_deficit f B (G ω) hB (hGB ω).1).2
       exact (mul_le_mul ha hb (sub_nonneg.mpr (hGB ω).2)
         (mul_nonneg (mul_nonneg (by norm_num) (sub_nonneg.mpr he.2)) hA)).trans_eq (by ring)
-    simpa only [integral_const, probReal_univ, one_smul] using integral_mono hdefi (integrable_const _) hp
+    simpa only [integral_const, probReal_univ, one_smul] using
+      integral_mono hdefi (integrable_const _) hp
   have h := integral_mul_factor_of_deficits μ F G hF hG A B (δ ^ 2) (4 * (1 - e) * (1 - f))
-    hA hB (sq_pos_of_pos hδ) (mul_nonneg (mul_nonneg (by norm_num) (sub_nonneg.mpr he.2)) (sub_nonneg.mpr hf.2)) (fun ω => ⟨hFn ω, (hFA ω).2⟩)
+    hA hB (sq_pos_of_pos hδ)
+    (mul_nonneg (mul_nonneg (by norm_num) (sub_nonneg.mpr he.2)) (sub_nonneg.mpr hf.2))
+    (fun ω => ⟨hFn ω, (hFA ω).2⟩)
     (fun ω => ⟨hGn ω, (hGB ω).2⟩) hMF hMG hdef
   have heq : (4 * (1 - e) * (1 - f)) / (δ ^ 2) ^ 2 = (4 / δ ^ 4) * (1 - e) * (1 - f) := by ring
   rwa [heq] at h
@@ -73,7 +90,8 @@ theorem integral_square_relative_one_sided (μ : Measure Ω) [IsProbabilityMeasu
       (fun ω => by linarith [(square_relative_deficit e B (G ω) hB (hGB ω).1).2])
     simp only [integral_const, probReal_univ, one_smul] at h
     linarith
-  have h := integral_mul_factor_one_sided μ F G hF hG A B (δ ^ 2) (2 * (1 - e)) hA (sq_pos_of_pos hδ)
+  have h := integral_mul_factor_one_sided μ F G hF hG A B (δ ^ 2) (2 * (1 - e)) hA
+    (sq_pos_of_pos hδ)
     (mul_nonneg (by norm_num) (sub_nonneg.mpr he.2)) hFA (fun ω => ⟨hGn ω, (hGB ω).2⟩) hMG hdef
   have heq : (2 * (1 - e)) / δ ^ 2 = (2 / δ ^ 2) * (1 - e) := by ring
   rwa [heq] at h

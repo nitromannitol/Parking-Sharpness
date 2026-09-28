@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SurvivorExpansion
+
+/-!
+# Lemma 3.5: mass transport for survivors (frozen)
+
 Lemma 3.5 of parking.tex, frozen.  `parking.tex:741-753` (label `lem:transport`):
 
   "For every $t\geq0$ and every $n\geq0$,
@@ -19,7 +23,6 @@ integrability and summability the proof establishes are asserted alongside the
 identities, so that no undefined integral or divergent series can satisfy them
 through a junk value.
 -/
-import Parking.Support.SurvivorExpansion
 
 open MeasureTheory
 

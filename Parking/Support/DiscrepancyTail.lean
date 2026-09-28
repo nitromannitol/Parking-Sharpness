@@ -1,7 +1,13 @@
-/-
-The discrepancy tail obtained from the logarithmic moment exponent.
--/
 import Parking.Support.DiscrepancyRelative
+
+/-!
+# The discrepancy tail
+
+The discrepancy tail obtained from the logarithmic moment exponent: for every fixed positive
+fraction of the mean sandpile odometer, the probability the discrepancy exceeds it decays like
+`exp(-c (log n)^2)`, combining the relative discrepancy norm bound with the exponential
+Chebyshev estimate at the logarithmic moment exponent `rHigh`.
+-/
 
 noncomputable section
 namespace Parking

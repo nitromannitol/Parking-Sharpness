@@ -1,10 +1,13 @@
-/-
+import Parking.Support.Continuum
+import LatticeProb.Prob.Scaling.TimeTest
+
+/-!
+# Time differentiation cancels the time-independent noise term
+
 Time differentiation removes the time-independent noise from the continuum weak
 equation. The time derivative of a test function has the same support restriction
 and integrates to zero on every spatial slice.
 -/
-import Parking.Support.Continuum
-import LatticeProb.Prob.Scaling.TimeTest
 
 open MeasureTheory
 
@@ -26,7 +29,8 @@ theorem IsSpatialWhiteNoise.ae_zero {d : ℕ} {a : ℝ} {Ω : Type} [MeasurableS
 theorem IsSpaceTimeTest.timeDeriv {d : ℕ} {ψ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : IsSpaceTimeTest ψ) : IsSpaceTimeTest (LatticeProb.Scaling.TimeTest.timeDeriv ψ) := by
   refine ⟨LatticeProb.Scaling.TimeTest.contDiff_timeDeriv hψ.1,
-    LatticeProb.Scaling.TimeTest.hasCompactSupport_timeDeriv (hψ.1.differentiable (by simp)) hψ.2.1, ?_⟩
+    LatticeProb.Scaling.TimeTest.hasCompactSupport_timeDeriv
+      (hψ.1.differentiable (by simp)) hψ.2.1, ?_⟩
   intro p hp
   exact hψ.2.2 p (LatticeProb.Scaling.TimeTest.tsupport_timeDeriv_subset
     (hψ.1.differentiable (by simp)) hp)
@@ -51,7 +55,8 @@ theorem spatial_pde_test_time_derivative {d : ℕ} {a : ℝ}
   filter_upwards [hpde, IsSpatialWhiteNoise.ae_zero hW] with ω hω hzero
   intro ψ hψ hsupp
   have heq := hω (LatticeProb.Scaling.TimeTest.timeDeriv ψ) (IsSpaceTimeTest.timeDeriv hψ)
-    ((LatticeProb.Scaling.TimeTest.tsupport_timeDeriv_subset (hψ.1.differentiable (by simp))).trans hsupp)
+    ((LatticeProb.Scaling.TimeTest.tsupport_timeDeriv_subset
+      (hψ.1.differentiable (by simp))).trans hsupp)
   have hz : (fun x => ∫ s : ℝ, LatticeProb.Scaling.TimeTest.timeDeriv ψ (s, x)) = fun _ => 0 := by
     funext x
     exact LatticeProb.Scaling.TimeTest.integral_timeDeriv_eq_zero hψ.1 hψ.2.1 x

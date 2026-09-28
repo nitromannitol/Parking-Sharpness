@@ -1,4 +1,8 @@
-/-
+import Parking.Support.BlockAverages
+
+/-!
+# Step 2 of the mean-horizon lemma on the joint space
+
 Step 2 of `lem:mean-horizon` on the joint space of the configuration and the walk.
 
 The paper's Step 2 averages `1{σ>s_k} u_{ℓ_k}(X_{s_k};ξ_δ)` over BOTH the
@@ -17,7 +21,6 @@ The fifth moment on the joint space is computed once and for all in
 stationarity of `Parking/Support/BlockMoments.lean`, and it is finite because the
 one-site law of the recentred scenery has every polynomial moment.
 -/
-import Parking.Support.BlockAverages
 
 noncomputable section
 
@@ -32,6 +35,8 @@ variable {d : ℕ}
 def jointLaw (d : ℕ) (ν : Measure ℤ) : Measure ((Site d → ℤ) × (ℕ → Site d)) :=
   (LatticeProb.iidLaw d ν).prod (LatticeProb.siteWalkLaw d (0 : Site d))
 
+/-- `jointLaw d ν` is a probability measure, as the product of two probability
+measures: the i.i.d. field law and the site walk law. -/
 theorem jointLaw_isProbability (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (jointLaw d ν) := by
   haveI : NeZero d := ⟨by omega⟩
@@ -48,14 +53,18 @@ def blockEvent (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (s : ℕ) :
     Set ((Site d → ℤ) × (ℕ → Site d)) :=
   {p | s < σ p.1 p.2}
 
+/-- `uPair` is nonnegative, since the odometer `u` is. -/
 theorem uPair_nonneg (δ : ℝ) (ℓ s : ℕ) (p : (Site d → ℤ) × (ℕ → Site d)) :
     0 ≤ uPair δ ℓ s p := u_nonneg _ _ _
 
+/-- `uPair δ ℓ s` is measurable on the joint space, via `measurable_u_xi_pair`. -/
 theorem measurable_uPair (δ : ℝ) (ℓ s : ℕ) :
     Measurable (uPair (d := d) δ ℓ s) :=
   (measurable_u_xi_pair (d := d) δ ℓ).fun_comp
     (measurable_fst.prodMk ((measurable_pi_apply s).comp measurable_snd))
 
+/-- `blockEvent σ s` is measurable, as the preimage of `Set.Ioi s` under the jointly
+measurable uncurried stopping time `σ`. -/
 theorem measurableSet_blockEvent {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ}
     (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η)) {n : ℕ} (hσn : ∀ η X, σ η X ≤ n)
     (hm : ∀ X, Measurable fun η => σ η X) (s : ℕ) :
@@ -80,6 +89,8 @@ def blockPair (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (N
   Set.indicator (blockEvent σ (blockBound N k))
     (uPair δ (blockBound N (k + 1) - blockBound N k) (blockBound N k))
 
+/-- Unfolds `blockPair` to its defining if-then-else on whether the stopping time
+has passed the block's start. -/
 theorem blockPair_apply (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (N k : ℕ)
     (η : Site d → ℤ) (X : ℕ → Site d) :
     blockPair δ σ N k (η, X)
@@ -93,6 +104,8 @@ theorem blockPair_apply (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) �
     rfl
   · rw [if_neg (show (η, X) ∉ blockEvent σ (blockBound N k) from h), if_neg h]
 
+/-- `blockPair` is nonnegative, as the indicator of the nonnegative function
+`uPair`. -/
 theorem blockPair_nonneg (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (N k : ℕ)
     (p : (Site d → ℤ) × (ℕ → Site d)) : 0 ≤ blockPair δ σ N k p := by
   rw [blockPair]
@@ -100,6 +113,8 @@ theorem blockPair_nonneg (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) 
 
 /-! ### Integrability on the joint space -/
 
+/-- `blockPair δ σ N k` is measurable on the joint space, rewriting it as the
+if-then-else form of `blockPair_apply` and applying `measurable_blockTerm`. -/
 theorem measurable_blockPair {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ}
     (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η)) {n : ℕ} (hσn : ∀ η X, σ η X ≤ n)
     (hm : ∀ X, Measurable fun η => σ η X) (δ : ℝ) (N k : ℕ) :
@@ -114,6 +129,9 @@ theorem measurable_blockPair {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ
   rw [heq]
   exact h
 
+/-- For each fixed configuration `η`, `blockPair δ σ N k (η, ·)` is integrable on the
+walk's law, bounded by the a priori block-term bound `blockTerm_bound` on the a.e.
+box of the walk. -/
 theorem integrable_blockPair_slice (hd : 1 ≤ d) (δ : ℝ)
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (N k : ℕ) (η : Site d → ℤ) :
@@ -139,6 +157,10 @@ theorem integrable_blockPair_slice (hd : 1 ≤ d) (δ : ℝ)
     blockPair_apply]
   exact blockTerm_bound hd δ η (hσn η) k hX
 
+/-- `blockPair δ σ N k` is integrable on the joint space, by Fubini's
+`integrable_prod_iff`: integrable in the walk for each configuration
+(`integrable_blockPair_slice`), and its walk-integral matches the integrable block
+average `blockAvg`. -/
 theorem integrable_blockPair (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν)
@@ -159,6 +181,9 @@ theorem integrable_blockPair (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
       else 0) = ‖blockPair δ σ N k (η, X)‖
     rw [Real.norm_eq_abs, abs_of_nonneg (blockPair_nonneg δ σ N k (η, X)), blockPair_apply]
 
+/-- The joint integral of `blockPair` equals the iterated integral of the block
+average `blockAvg`, by Fubini's `integral_prod` applied to the independent joint
+law. -/
 theorem integral_blockPair_eq (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν)
@@ -180,11 +205,17 @@ theorem integral_blockPair_eq (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
 
 /-! ### The fifth moment on the joint space -/
 
+/-- The `5`th absolute power of `uPair` equals its `5`th natural power, since
+`uPair` is nonnegative. -/
 theorem uPair_pow_abs (δ : ℝ) (ℓ s : ℕ) (p : (Site d → ℤ) × (ℕ → Site d)) :
     |uPair δ ℓ s p| ^ (5:ℝ) = uPair δ ℓ s p ^ (5:ℕ) := by
   rw [abs_of_nonneg (uPair_nonneg δ ℓ s p), show (5:ℝ) = ((5:ℕ):ℝ) by norm_num,
     Real.rpow_natCast]
 
+/-- The lower integral of `|uPair δ ℓ s| ^ 5` over the joint law equals the fifth
+moment of the odometer `u (Parking.xi δ ·) ℓ` AT THE ORIGIN under the configuration
+law alone, independent of the walk's position `s`, via `lintegral_prod_u_xi`'s
+stationarity. -/
 theorem lintegral_uPair_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) (ℓ s : ℕ) :
@@ -201,6 +232,8 @@ theorem lintegral_uPair_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     ← ofReal_integral_eq_lintegral_ofReal hIA
       (Filter.Eventually.of_forall fun η => pow_nonneg (u_nonneg _ _ _) 5)]
 
+/-- `|uPair δ ℓ s| ^ 5` is integrable on the joint space, since its lower integral
+(computed by `lintegral_uPair_pow`) is finite. -/
 theorem integrable_uPair_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) (ℓ s : ℕ) :
@@ -211,6 +244,9 @@ theorem integrable_uPair_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     lintegral_uPair_pow hd hθ ν hexp ℓ s]
   exact ENNReal.ofReal_lt_top
 
+/-- The joint integral of `|uPair δ ℓ s| ^ 5` equals the fifth moment of the
+odometer at the origin under the configuration law, the real-valued form of
+`lintegral_uPair_pow`. -/
 theorem integral_uPair_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) (ℓ s : ℕ) :
@@ -225,6 +261,8 @@ theorem integral_uPair_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
 
 /-! ### The chance that the stopping time reaches a block -/
 
+/-- The stopping time `σ`, viewed as a real-valued function on the joint space, is
+integrable, bounded by the constant `n`. -/
 theorem integrable_sigma_prod (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) :
@@ -239,6 +277,8 @@ theorem integrable_sigma_prod (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
   rw [Real.norm_eq_abs, abs_of_nonneg (Nat.cast_nonneg _)]
   exact_mod_cast hσn p.1 p.2
 
+/-- The joint integral of the stopping time `σ` equals the iterated integral over
+the configuration of its integral over the walk, by Fubini's `integral_prod`. -/
 theorem integral_sigma_prod (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) :
@@ -255,6 +295,9 @@ theorem integral_sigma_prod (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeas
   rw [← jointLaw] at h
   exact h
 
+/-- Markov's inequality: the probability that the stopping time exceeds `s` is at
+most the mean stopping time (as an iterated integral over the joint law) divided
+by `s`. -/
 theorem measureReal_blockEvent_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X)
@@ -274,6 +317,8 @@ theorem measureReal_blockEvent_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
   simp only [blockEvent, Set.mem_setOf_eq]
   exact_mod_cast Iff.rfl
 
+/-- The probability of `blockEvent` is trivially at most `1`, since `jointLaw d ν`
+is a probability measure. -/
 theorem measureReal_blockEvent_le_one (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (s : ℕ) :
     (jointLaw d ν).real (blockEvent σ s) ≤ 1 := by
@@ -306,6 +351,9 @@ theorem integral_blockAvg_le (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
 
 /-! ### The scale is monotone -/
 
+/-- `phi d` is monotone on the nonnegative reals: for `d ≤ 3` it is a nonnegative
+power, monotone by `Real.rpow_le_rpow`, and otherwise it is `Real.log`, monotone by
+`Real.log_le_log`. -/
 theorem phi_mono (d : ℕ) {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) : phi d a ≤ phi d b := by
   simp only [phi]
   split_ifs with h

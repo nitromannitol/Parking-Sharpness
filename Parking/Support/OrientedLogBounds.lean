@@ -1,8 +1,13 @@
-/- Step 4 of the oriented walk theorem, two-sided form: at `d ≥ 3` the directed
-particle mean is bounded above and below by constant multiples of `log n`
-(`parking.tex:363-380`). -/
 import Parking.Support.OrientedLogUpper
 import Parking.Support.OrientedParticleLogLower
+
+/-!
+# Step 4, two-sided form: logarithmic bounds on the directed particle mean
+
+Step 4 of the oriented walk theorem, two-sided form: at `d ≥ 3` the directed
+particle mean is bounded above and below by constant multiples of `log n`
+(`parking.tex:363-380`).
+-/
 
 noncomputable section
 namespace Parking

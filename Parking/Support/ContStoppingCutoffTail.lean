@@ -1,4 +1,10 @@
-/-
+import Parking.Support.ContinuumCutoffLimit
+import Parking.Support.ContUc
+import Parking.External.LinearFieldScaling
+
+/-!
+# The randomized cutoff-to-true bound for `contUc`'s stopping summand
+
 **The continuum randomized cutoff-to-true bound for `Parking.contUc`'s own stopping-value
 summand**, instantiating `Parking.ContinuumCutoffLimit` for the white-noise field `Z` of
 `Parking.External.LinearFieldScaling`.
@@ -34,9 +40,6 @@ witness `M n` making the resulting exit-probability series summable. The pointwi
 part 1 is not of this kind, since it controls `Z` at a single point and not its supremum over
 the box.
 -/
-import Parking.Support.ContinuumCutoffLimit
-import Parking.Support.ContUc
-import Parking.External.LinearFieldScaling
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal
@@ -85,10 +88,12 @@ theorem exists_measureReal_abs_Z_gt_le {Ω' : Type} [MeasurableSpace Ω'] (Q' : 
 /-- **The time argument, clamped to `[0,s]`.** -/
 def clampTime (s k : ℝ) : ℝ := max 0 (min s k)
 
+/-- `clampTime` is the identity on `[0, s]`: `min s k = k` and `max 0 k = k` both apply. -/
 theorem clampTime_eq_self_of_mem {s k : ℝ} (hk : k ∈ Set.Icc (0 : ℝ) s) : clampTime s k = k := by
   unfold clampTime
   rw [min_eq_right hk.2, max_eq_right hk.1]
 
+/-- `clampTime s k` always lies in `[0, s]`, by the defining `max 0 (min s k)`. -/
 theorem clampTime_mem {s : ℝ} (hs : 0 ≤ s) (k : ℝ) : clampTime s k ∈ Set.Icc (0 : ℝ) s := by
   unfold clampTime
   constructor
@@ -106,6 +111,9 @@ def clampedStoppingReward {Ω' : Type} (Z : Ω' → ℝ → (Fin d → ℝ) → 
     (x : Fin d → ℝ) (k : ℝ) (y : Fin d → ℝ) : ℝ :=
   -Z ω' (s - clampTime s k) (x + y)
 
+/-- The clamped reward `clampedStoppingReward` agrees with the raw reward
+`fun k y => -Z ω' (s - k) (x + y)` for every `k ∈ [0, s]`, since `clampTime` is the identity
+there (`clampTime_eq_self_of_mem`). -/
 theorem clampedStoppingReward_eqOn {Ω' : Type} (Z : Ω' → ℝ → (Fin d → ℝ) → ℝ) (ω' : Ω') (s : ℝ)
     (x : Fin d → ℝ) :
     ∀ k ∈ Set.Icc (0 : ℝ) s, ∀ y : Fin d → ℝ,

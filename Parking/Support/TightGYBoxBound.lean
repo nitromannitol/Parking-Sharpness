@@ -1,18 +1,21 @@
-/-
+import Parking.Support.TightBoxLaw
+import Parking.Support.OrientedCutoffValue
+
+/-!
+# Reduction of `happ` to a box-supremum moment bound
+
 The reduction of `happ` from a pathwise maximal inequality to a box-supremum moment bound.
 
 `happ` reduces to a bound on `E_{η,p}[max_{k≤n} |G_Y(k, orientedPath 0 p k)|^2]`, the CLAMPED
 reward read along the walk's own random trajectory, uniform in `n`.  This module proves the
 trivial half of that reduction: since `G_Y(k, z) := LatticeProb.BoxClamp.rewardOfBox
 hT hA G (k/n) (Parking.orientedScaledSite n z)` is, for EVERY `k` and `z` (not just those the
-walk visits), the value of the SAME `G : C(LatticeProb.BoxClamp.rewardBox T A, ℝ)` at a point of the box, it is
-bounded by `‖G‖` UNCONDITIONALLY (`LatticeProb.BoxClamp.abs_rewardOfBox_le`) — the walk's own trajectory plays
-no role at all in this half.  So the pathwise maximum is bounded by `‖G‖`, and the remaining
-content is entirely the DETERMINISTIC, `p`-independent bound `E_η[‖G_n η‖^2]` uniform in `n`
-(`Parking/Support/TightBoxSupMoment.lean`).
+walk visits), the value of the SAME `G : C(LatticeProb.BoxClamp.rewardBox T A, ℝ)` at a point
+of the box, it is bounded by `‖G‖` UNCONDITIONALLY (`LatticeProb.BoxClamp.abs_rewardOfBox_le`)
+— the walk's own trajectory plays no role at all in this half.  So the pathwise maximum is
+bounded by `‖G‖`, and the remaining content is entirely the DETERMINISTIC, `p`-independent
+bound `E_η[‖G_n η‖^2]` uniform in `n` (`Parking/Support/TightBoxSupMoment.lean`).
 -/
-import Parking.Support.TightBoxLaw
-import Parking.Support.OrientedCutoffValue
 
 open LatticeProb.BoxClamp (abs_rewardOfBox_le rewardBox rewardOfBox)
 

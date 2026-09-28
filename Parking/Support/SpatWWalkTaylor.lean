@@ -1,6 +1,11 @@
-/- Uniform approximation of the continuum Laplacian by the rescaled lattice walk generator. -/
 import Parking.Support.SpatWTaylorLap
 import LatticeProb.Prob.Scaling.LatticeTaylor
+
+/-!
+# Rescaled lattice walk generator versus the continuum Laplacian
+
+Uniform approximation of the continuum Laplacian by the rescaled lattice walk generator.
+-/
 
 open LatticeProb.WhiteNoise (contDiff_partialDeriv hasCompactSupport_partialDeriv partialDeriv)
 
@@ -44,7 +49,8 @@ theorem uniformContinuous_lapTerm {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFu
   have heq : lapTerm φ i = partialDeriv (partialDeriv φ i) i :=
     funext (lapTerm_eq_partialDeriv hφ.1 i)
   rw [heq]
-  exact (hasCompactSupport_partialDeriv (hasCompactSupport_partialDeriv hφ.2 i) i).uniformContinuous_of_continuous
+  exact (hasCompactSupport_partialDeriv
+      (hasCompactSupport_partialDeriv hφ.2 i) i).uniformContinuous_of_continuous
       (contDiff_partialDeriv (contDiff_partialDeriv hφ.1 i) i).continuous
 
 /-- A single modulus controls coordinate perturbations in every direction. -/

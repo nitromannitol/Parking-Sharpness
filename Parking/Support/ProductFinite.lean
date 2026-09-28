@@ -1,5 +1,15 @@
 import Parking.Support.BoundedProduct
 
+/-!
+# The bounded-differences MGF bound over a finite index type
+
+This file transports the bounded-differences moment generating function bound
+`mgf_bounded_differences`, proved there for the index type `Fin n`, to an arbitrary
+finite index type `ι`. The transport is by an `Equiv.piCongrLeft`-style relabelling of
+coordinates along `Fintype.equivFin`, so no new probabilistic content is used beyond
+that already established for `Fin n`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory
@@ -26,7 +36,8 @@ theorem mgf_bounded_differences_finite {ι X : Type*} [Fintype ι] [DecidableEq 
   have h := mgf_bounded_differences μ (Fintype.card ι) (f ∘ r) (hf.comp hr) B
     (fun w => hB (r w)) (c ∘ e) (fun i => hc (e i))
     (fun w i a => by simpa only [Function.comp_def, he] using hosc (r w) (e i) a) t
-  have hsum : (∑ i : Fin (Fintype.card ι), c (e i) ^ 2) = ∑ j : ι, c j ^ 2 := e.sum_comp (fun j => c j ^ 2)
+  have hsum : (∑ i : Fin (Fintype.card ι), c (e i) ^ 2) = ∑ j : ι, c j ^ 2 :=
+    e.sum_comp (fun j => c j ^ 2)
   have hmp := measurePreserving_piCongrLeft (fun _ : ι => μ) e
   have her : (Equiv.piCongrLeft (fun _ : ι => X) e) = r := by
     funext w i

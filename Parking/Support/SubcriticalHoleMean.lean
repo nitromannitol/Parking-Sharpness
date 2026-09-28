@@ -1,4 +1,8 @@
-/-
+import Parking.Support.ActivityHoles
+
+/-!
+# Mean unfilled holes at a site
+
 The mean number of unfilled holes at a site, which is what Step 1 of
 `thm:subcritical` needs (`parking.tex:2468-2473`):
 
@@ -12,7 +16,6 @@ origin it is at least `-E η(0)`, because `lem:activity-holes` writes it as the
 mean activity minus the mean of the configuration and the activity is
 nonnegative.
 -/
-import Parking.Support.ActivityHoles
 
 open LatticeProb (measurable_from_countable')
 

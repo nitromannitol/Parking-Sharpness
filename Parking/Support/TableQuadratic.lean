@@ -2,6 +2,17 @@ import Parking.Support.TableMomentBounds
 import Parking.Support.RoundEnumerationSum
 import Parking.Support.GreenSquareSum
 
+/-!
+# The Green-weighted odometer bounds the predictable variance
+
+Defines `greenWeightedOdometer`, the sum over the box of radius `R` around `x` of the
+squared-Green-function walk weight times the departure count, and shows
+(`tableDiff_qv_le`) that it bounds the sum of the chronological table martingale's
+conditional second moments over one full sweep of `T` rounds, by summing the per-step
+bound `condExp_tableDiff_sq_le` in blocks of `K` and comparing to
+`sum_rounds_used_eq_odometer`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -10,8 +21,11 @@ variable {d : ℕ}
 /-- The odometer charge bounding the predictable variance of the reveal martingale. -/
 def greenWeightedOdometer (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d)
     (T : ℕ) (x : Site d) (R : ℕ) : ℝ :=
-  ∑ v ∈ boxFinset x R, walkOp (fun y => fullGreen d (y - x) ^ 2) v * ((matchedState η ρ σ T).departures v : ℝ)
+  ∑ v ∈ boxFinset x R,
+    walkOp (fun y => fullGreen d (y - x) ^ 2) v * ((matchedState η ρ σ T).departures v : ℝ)
 
+/-- `greenWeightedOdometer` is nonnegative, being a sum of products of nonnegative
+Green-square weights and departure counts. -/
 theorem greenWeightedOdometer_nonneg (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : RoundNoise d) (T : ℕ) (x : Site d) (R : ℕ) : 0 ≤ greenWeightedOdometer η ρ σ T x R :=
   Finset.sum_nonneg fun v _ => mul_nonneg (greenSquareWeight_nonneg x v) (Nat.cast_nonneg _)
@@ -41,7 +55,8 @@ theorem tableDiff_qv_le (hd : 3 ≤ d) (base : FlatRoundNoise d)
     if (e j).2 < matchedCount η ρ (curryRoundNoise ω) s (e j).1 then
       walkOp (fun y => fullGreen d (y - x) ^ 2) (e j).1 else 0
   have hsum : (∑ i ∈ Finset.Icc 1 (T * K),
-      ((flatRoundNoiseLaw d)[fun ζ => tableDiff η ρ T x e hK i ζ ^ 2 | tableFiltration base e (i - 1)]) ω) ≤
+      ((flatRoundNoiseLaw d)[fun ζ => tableDiff η ρ T x e hK i ζ ^ 2 |
+        tableFiltration base e (i - 1)]) ω) ≤
       ∑ i ∈ Finset.Icc 1 (T * K), f ((i - 1) / K) ⟨(i - 1) % K, Nat.mod_lt _ hK⟩ := by
     apply Finset.sum_le_sum
     intro i hi

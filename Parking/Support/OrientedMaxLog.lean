@@ -1,14 +1,24 @@
-/- A logarithmic mean bound for the directed potential maximum. -/
 import Parking.Support.OrientedPotentialExponential
 import Parking.Support.OrientedPathMax
 import Parking.Support.FiniteExponentialMax
 import Parking.Support.ExponentialMean
+
+/-!
+# A logarithmic mean bound for the potential maximum
+
+A logarithmic mean bound for the directed potential maximum.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- For `d ≥ 3` and a centered scenery law `μ` with an exponential absolute moment, the
+expected maximum `∫ orientedMax (orientedPotential ω.2) n 0 ω.1` over the product of the
+walk law and the scenery law is integrable and at most `C * log (n + 1)`, obtained from
+the exponential moment bound `exists_orientedPotential_exponential` on the coordinate
+increments via `finitePathMax_exponential` and `mean_le_of_exp_integral_le`. -/
 theorem exists_orientedMax_log_mean (hd : 3 ≤ d)
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (hi : Integrable (id : ℝ → ℝ) μ) (hm : ∫ z : ℝ, z ∂μ = 0)
@@ -39,7 +49,8 @@ theorem exists_orientedMax_log_mean (hd : 3 ≤ d)
       (fun ω => Real.exp (τ * |F j ω|))
       (((measurable_orientedPotentialAlong n j).abs.const_mul τ).exp)
       (fun ω => (Real.exp_pos _).le) (fun p => (hsec p).1)
-      (fun _ => 2 * Real.exp (A * Real.log ((n : ℝ) + 1))) (integrable_const _) (fun p => (hsec p).2)
+      (fun _ => 2 * Real.exp (A * Real.log ((n : ℝ) + 1))) (integrable_const _)
+      (fun p => (hsec p).2)
     simpa only [integral_const, probReal_univ, one_smul] using h
   obtain ⟨hEi, hEb⟩ := finitePathMax_exponential Q F
     (fun j => measurable_orientedPotentialAlong n j) n τ
@@ -53,7 +64,8 @@ theorem exists_orientedMax_log_mean (hd : 3 ≤ d)
       Real.exp ((A + 2) * Real.log ((n : ℝ) + 1)) := by
     calc ((n : ℝ) + 1) * (2 * Real.exp (A * Real.log ((n : ℝ) + 1))) =
         Real.exp (Real.log ((n : ℝ) + 1) + Real.log 2 + A * Real.log ((n : ℝ) + 1)) := by
-          rw [Real.exp_add, Real.exp_add, Real.exp_log hn0, Real.exp_log (by norm_num : (0 : ℝ) < 2)]
+          rw [Real.exp_add, Real.exp_add, Real.exp_log hn0,
+            Real.exp_log (by norm_num : (0 : ℝ) < 2)]
           ring
       _ ≤ _ := Real.exp_le_exp.mpr (by nlinarith)
   obtain ⟨hMi, hMb⟩ := mean_le_of_exp_integral_le Q M (measurable_orientedPotentialMax n)

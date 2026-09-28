@@ -1,20 +1,21 @@
-/-
-Proposition 9.2 of parking.tex, frozen.  `parking.tex:2025-2032` (label
-`prop:nearest-two-hole`), in the setting of `parking.tex:1850-1881`:
-
-  "There is $C<\infty$, depending only on $d$, such that, for every $t\geq0$
-   and distinct $x,z\in\Z^d$,
-   $\P(H_t(x)=H_t(z)=1)
-     \leq Ch_t^2\exp\{C\log(1/h_t)(1+|x-z|)^{4-d}\}$."
-
-Distances on the lattice are graph distances (`parking.tex:588-601`), so
-`|x-z|` is the `l^1` norm of `x-z`.  The martingale moment inequality the proof
-quotes enters as an explicit hypothesis.
--/
 import Parking.Support.Range
 import Parking.External.Bernstein
 import Parking.Support.ThreePointLaw
 import Parking.Support.NearestTwoHoleProof
+
+/-!
+# The two-hole joint bound, `d ≥ 5` (frozen)
+
+Proposition 9.2 of parking.tex, frozen. `parking.tex:2025-2032` (label
+`prop:nearest-two-hole`), in the setting of `parking.tex:1850-1881`:
+
+"There is $C<\infty$, depending only on $d$, such that, for every $t\geq0$ and distinct
+$x,z\in\Z^d$, $\P(H_t(x)=H_t(z)=1) \leq Ch_t^2\exp\{C\log(1/h_t)(1+|x-z|)^{4-d}\}$."
+
+Distances on the lattice are graph distances (`parking.tex:588-601`), so `|x-z|` is the
+`l^1` norm of `x-z`. The martingale moment inequality the proof quotes enters as an explicit
+hypothesis.
+-/
 
 open MeasureTheory
 

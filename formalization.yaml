@@ -194,8 +194,8 @@ automation:
       tool_setup: >-
         Lake builds under leanprover/lean4:v4.32.0 with Mathlib at revision
         81a5d257c8e410db227a6665ed08f64fea08e997, Lattice-Probability at
-        commit bbe0b90 and Divisible-Sandpile-Percolation at commit
-        679a368e.  Division of labour: claude-fable-5-1 (Claude Code), the
+        commit 9d44b4d and Divisible-Sandpile-Percolation at commit
+        cd8b15a3.  Division of labour: claude-fable-5-1 (Claude Code), the
         supervising session, set up the frozen-statement scaffold
         (2026-09-06), recorded the author's statement-level decisions, merged the agents'
         branches and synchronized the documents; claude-opus-5, as Claude Code
@@ -225,7 +225,7 @@ automation:
         checkers verify the hashes, the axiom closure of every node, a
         warning-free build, the paper anchors, clause and exponent counts, and
         quantifier order.  The Lean comparator (leanprover/comparator) was run
-        on the ParkingAudit pairs on 2026-09-24, at commit 9c18636, and every pair
+        on the ParkingAudit pairs on 2026-09-27, at commit 81b30f2, and every pair
         passed with the Lean kernel and again with the independent nanoda
         kernel; see ParkingAudit/COMPARATOR_RUNS.md for the results and reproduction
         steps.  .github/workflows/comparator.yml runs it on request.

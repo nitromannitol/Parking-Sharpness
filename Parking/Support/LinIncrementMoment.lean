@@ -1,23 +1,26 @@
-/-
-**The `L^q`-moment form of the two-point, two-time concentration of `V`.**  The tail bound
+import Parking.Support.LinIncrementConcentration
+import Parking.Support.SubGaussianMoment
+
+/-!
+# The `L^q`-moment form of the linear field's concentration
+
+**The `L^q`-moment form of the two-point, two-time concentration of `V`.** The tail bound
 `Parking.exists_linPotential_increment_concentration`
 (`Parking/Support/LinIncrementConcentration.lean`) is a Bernstein-shaped tail bound, not
 the `L^q`-moment bound that `Parking.Support.SpatField`'s Kolmogorov moment hypothesis needs
 and `Parking.External.UConcentration` carries for `u`; this file proves the `L^q`-moment
-bound for `V`.  `Parking.Support.SubGaussianMoment` supplies the general "tail-to-moment"
+bound for `V`. `Parking.Support.SubGaussianMoment` supplies the general tail-to-moment
 conversion (`weighted_exp_conc_Lq`, the `L^q`-moment analogue of the library's own
-`LatticeProb.weighted_exp_conc_tail`); this file applies it to `V` through the SAME
+`LatticeProb.weighted_exp_conc_tail`); this file applies it to `V` through the same
 finite-marginal reindexing bridge (`FinsetReindex.lean`, `LinBox.lean`) that the tail form
-uses, reusing its norm computations.  The resulting bound is
+uses, reusing its norm computations. The resulting bound is
 
     (∫ |(V_n(x) − V_m(y)) − E[V_n(x) − V_m(y)]|^q)^(1/q)
       ≤ C · (√q · ‖g_n(x−·) − g_m(y−·)‖₂ + q · ‖g_n(x−·) − g_m(y−·)‖_∞)
 
-for every `q ≥ 1`, with ONE constant `C` uniform in `n, m, x, y, q` — the exact shape of
-`Parking.External.UConcentration`, but PROVED for the linear field `V`, not cited.
+for every `q ≥ 1`, with one constant `C` uniform in `n, m, x, y, q`: the exact shape of
+`Parking.External.UConcentration`, but proved for the linear field `V`, not cited.
 -/
-import Parking.Support.LinIncrementConcentration
-import Parking.Support.SubGaussianMoment
 
 noncomputable section
 

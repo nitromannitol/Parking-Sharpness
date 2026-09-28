@@ -1,4 +1,9 @@
-/-
+import Parking.Support.RankDistinct
+import Parking.Support.SubcriticalStep2
+
+/-!
+# The tagged uniform variables are almost surely pairwise distinct
+
 The tagged uniform variables are almost surely pairwise distinct.
 
 `Parking.survivalObs` no longer carries a guard, so the pairwise distinctness of
@@ -10,8 +15,6 @@ one coordinate meets a fixed real on a null set and there are countably many
 pairs; and the prescribed family must itself be pairwise distinct, which is a
 condition on it alone and holds for almost every prescription.
 -/
-import Parking.Support.RankDistinct
-import Parking.Support.SubcriticalStep2
 
 open MeasureTheory ProbabilityTheory
 

@@ -1,6 +1,16 @@
 import Parking.Support.MatchedLocality
 import Parking.Support.SingleMean
 
+/-!
+# Locality of the conditional mean odometer
+
+The common-table conditional mean odometer `matchedMeanU` at a finite horizon `T` depends
+only on the values of the initial field inside the box `boxFinset x T` around the query
+site, since no particle from farther away can reach `x` within `T` steps of the matched
+dynamics. As a consequence, adding an extra particle outside that box leaves `matchedMeanU`
+unchanged.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

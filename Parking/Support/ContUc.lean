@@ -1,5 +1,10 @@
-/-
-**The continuum spatial value field `Uc`**, BP's Lemma 2.5 read at the continuum limit:
+import Parking.Support.ContSpatialValue
+import Parking.Support.ContValueLipschitz
+
+/-!
+# The continuum spatial value field `Uc`
+
+BP's Lemma 2.5 read at the continuum limit:
 
     𝒰(s,x) = Z(s,x) + sup_{τ≤s} E_0^{B}[ -Z(s-τ, x+B_τ) ],
 
@@ -28,8 +33,6 @@ because the cutoff reward IS globally bounded, and control the cutoff error by t
 motion's OWN exit probability from a growing box (`LatticeProb.brownian_exit_tail_closed`, used
 in `Parking/Support/ContSpatialCutoff.lean`).
 -/
-import Parking.Support.ContSpatialValue
-import Parking.Support.ContValueLipschitz
 
 open MeasureTheory
 open scoped NNReal ENNReal

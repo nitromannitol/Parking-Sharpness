@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedSceneryMoment
+
+/-!
+# The rescaled convolved potential field
+
 The rescaled convolved potential of the directed scaling limit as a two-parameter
 process on `[0,T] × [-2A, 2A]` (`parking.tex:3207-3218`).
 
@@ -17,7 +21,6 @@ identification of its increments with the potential differences that the
 scenery moment bound of `Parking.exists_oriented_potential_scenery_bound`
 controls.
 -/
-import Parking.Support.OrientedSceneryMoment
 
 open MeasureTheory LatticeProb
 

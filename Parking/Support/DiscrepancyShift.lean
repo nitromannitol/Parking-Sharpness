@@ -1,10 +1,13 @@
-/-
-Translation covariance of persistent discrepancy labels. Their creation,
-priority ranks, motion, waiting and ranked cancellation all commute
-with translation, jointly with the two physical processes.
--/
 import Parking.Support.MatchedShift
 import Parking.Support.DiscrepancyLabels
+
+/-!
+# Translation covariance of persistent discrepancy labels
+
+Translation covariance of persistent discrepancy labels. Their creation, priority ranks,
+motion, waiting and ranked cancellation all commute with translation, jointly with the two
+physical processes.
+-/
 
 noncomputable section
 

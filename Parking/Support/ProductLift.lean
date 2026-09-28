@@ -1,5 +1,15 @@
 import Parking.Support.ProductMoment
 
+/-!
+# Moment-norm lemmas for products
+
+Elementary facts about the `MomentNorm.rNorm` moment norm used to bound conditional
+moments on product spaces: it respects almost-everywhere equality, it evaluates to the
+constant itself on a nonnegative constant function, it satisfies Minkowski's inequality
+for two bounded measurable functions, and a pointwise conditional affine bound integrates
+to the corresponding affine bound for the joint moment norm on `μ.prod ν`.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_add_le rNorm_const_mul rNorm_mono rNorm_nonneg)
 
 noncomputable section

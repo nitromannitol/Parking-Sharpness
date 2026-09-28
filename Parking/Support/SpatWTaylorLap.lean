@@ -1,12 +1,15 @@
-/-
+import Parking.Support.Continuum
+import LatticeProb.WhiteNoise
+import LatticeProb.Prob.Scaling.TaylorSecondDiff
+
+/-!
+# Coordinate Taylor identities for the continuum Laplacian
+
 Coordinate Taylor identities for the continuum Laplacian. Each symmetric
 second difference is the average of two second partial derivatives evaluated
 between its endpoints. Compact support makes these derivatives uniformly
 continuous, as required for the lattice approximation of the continuum operator.
 -/
-import Parking.Support.Continuum
-import LatticeProb.WhiteNoise
-import LatticeProb.Prob.Scaling.TaylorSecondDiff
 
 open LatticeProb.WhiteNoise (contDiff_partialDeriv deriv_slice lap partialDeriv)
 
@@ -19,10 +22,10 @@ variable {d : ℕ}
 
 open LatticeProb.Scaling.TaylorSecondDiff
 
-/-- The `i`-th summand of `LatticeProb.WhiteNoise.lap`: the second partial derivative of `φ` in direction `i`,
-evaluated at `y`. Definitionally equal to `LatticeProb.WhiteNoise.lap`'s own `i`-th term
-(`Parking.lap_eq_sum_lapTerm`), separated out so it can be evaluated at a MOVED point (as
-`exists_symm_second_diff_lapTerm` needs) without re-deriving the whole Laplacian. -/
+/-- The `i`-th summand of `LatticeProb.WhiteNoise.lap`: the second partial derivative of `φ` in
+direction `i`, evaluated at `y`. Definitionally equal to `LatticeProb.WhiteNoise.lap`'s own
+`i`-th term (`Parking.lap_eq_sum_lapTerm`), separated out so it can be evaluated at a MOVED
+point (as `exists_symm_second_diff_lapTerm` needs) without re-deriving the whole Laplacian. -/
 def lapTerm (φ : (Fin d → ℝ) → ℝ) (i : Fin d) (y : Fin d → ℝ) : ℝ :=
   deriv (fun s => deriv (fun t => φ (Function.update y i t)) s) (y i)
 
@@ -66,12 +69,12 @@ theorem exists_symm_second_diff_lapTerm {φ : (Fin d → ℝ) → ℝ} (hφ : Co
   simpa using heq
 
 /-- **`lapTerm` is `LatticeProb.WhiteNoise`'s own second partial derivative.** Applying
-`LatticeProb.WhiteNoise.deriv_slice` twice (once for `φ` itself, once for its first partial derivative, both
-already differentiable since `φ` is `C^∞`) identifies the nested nested-`deriv`
-construction of `lapTerm` with the iterated Fréchet-derivative contraction
-`partialDeriv (partialDeriv φ i) i`, whose continuity and compact support are ALREADY proved
-(`LatticeProb.WhiteNoise.contDiff_partialDeriv`/`hasCompactSupport_partialDeriv`), so
-they need no separate argument here. -/
+`LatticeProb.WhiteNoise.deriv_slice` twice (once for `φ` itself, once for its first partial
+derivative, both already differentiable since `φ` is `C^∞`) identifies the nested nested-`deriv`
+construction of `lapTerm` with the iterated Fréchet-derivative contraction `partialDeriv
+(partialDeriv φ i) i`, whose continuity and compact support are ALREADY proved
+(`LatticeProb.WhiteNoise.contDiff_partialDeriv`/`hasCompactSupport_partialDeriv`), so they need
+no separate argument here. -/
 theorem lapTerm_eq_partialDeriv {φ : (Fin d → ℝ) → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (i : Fin d)
     (y : Fin d → ℝ) : lapTerm φ i y = partialDeriv (partialDeriv φ i) i y := by
   unfold lapTerm

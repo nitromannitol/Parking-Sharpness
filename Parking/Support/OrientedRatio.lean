@@ -1,9 +1,14 @@
-/- Step 3 of the oriented walk theorem, the half that needs no scaling
-proposition: the ratio of the directed particle mean to the directed divisible
-mean tends to one (`parking.tex:3311-3327`). -/
 import Parking.Support.OrientedMeanBound
 import Parking.Support.OrientedMeanComparison
 import Mathlib
+
+/-!
+# Step 3 of the oriented walk theorem: the particle-to-divisible ratio
+
+Step 3 of the oriented walk theorem, the half that needs no scaling
+proposition: the ratio of the directed particle mean to the directed divisible
+mean tends to one (`parking.tex:3311-3327`).
+-/
 
 noncomputable section
 namespace Parking
@@ -20,7 +25,8 @@ theorem tendsto_log_rpow_div_rpow (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
       simpa only [mul_zero] using hbase.const_mul (2 ^ b)
     refine squeeze_zero' ?_ ?_ hb2
     · filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
-      exact div_nonneg (Real.rpow_nonneg (Real.log_nonneg (by linarith)) b) (Real.rpow_nonneg hx.le a)
+      exact div_nonneg (Real.rpow_nonneg (Real.log_nonneg (by linarith)) b)
+        (Real.rpow_nonneg hx.le a)
     · filter_upwards [eventually_ge_atTop (2 : ℝ)] with x hx
       have hx0 : (0 : ℝ) < x := by linarith
       have hlogx : Real.log 2 ≤ Real.log x := Real.log_le_log (by norm_num) hx
@@ -57,7 +63,8 @@ theorem tendsto_meanU_div_meanuOriented (ν : Measure ℤ) (hν : CriticalLaw ν
     have hb : Tendsto (fun n : ℕ =>
         (C / c) * (Real.log ((n : ℝ) + 1) ^ ((3 : ℝ) / 4) / (n : ℝ) ^ ((1 : ℝ) / 8)))
         atTop (𝓝 0) := by
-      simpa using (tendsto_log_rpow_div_rpow (1 / 8) (3 / 4) (by norm_num) (by norm_num)).const_mul (C / c)
+      simpa using
+        (tendsto_log_rpow_div_rpow (1 / 8) (3 / 4) (by norm_num) (by norm_num)).const_mul (C / c)
     refine squeeze_zero' ?_ ?_ hb
     · filter_upwards [eventually_ge_atTop 1] with n hn
       have hdpos : 0 < meanuOriented (orientedLaw 2 ν) n := by
@@ -85,8 +92,9 @@ theorem tendsto_meanU_div_meanuOriented (ν : Measure ℤ) (hν : CriticalLaw ν
               rw [← Real.rpow_add hn0]; norm_num
             rw [h14]
             field_simp
-  have h2 : Tendsto (fun n : ℕ => 1 + (meanU (orientedLaw 2 ν) n - meanuOriented (orientedLaw 2 ν) n) /
-      meanuOriented (orientedLaw 2 ν) n) atTop (𝓝 (1 + 0)) := tendsto_const_nhds.add hlim
+  have h2 : Tendsto (fun n : ℕ =>
+      1 + (meanU (orientedLaw 2 ν) n - meanuOriented (orientedLaw 2 ν) n) /
+        meanuOriented (orientedLaw 2 ν) n) atTop (𝓝 (1 + 0)) := tendsto_const_nhds.add hlim
   rw [add_zero] at h2
   refine h2.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with n hn

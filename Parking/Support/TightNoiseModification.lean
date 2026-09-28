@@ -1,4 +1,13 @@
-/-
+import Parking.Support.TightNoiseHolder
+import Parking.Support.TightGaussianMoment
+import Parking.Support.TightKolmogorov
+import Parking.Support.ScalNoiseModification
+import LatticeProb.Gauss.WhiteNoise
+import LatticeProb.Prob.ChentsovPiModification
+
+/-!
+# A continuous modification of the box-clamped noise field
+
 The box-clamped noise field and the Gaussianity of its increments.
 
 `Parking.contZBoxProcess` is `contZ` pre-composed with clamping its space-time argument
@@ -17,14 +26,9 @@ the zero function off its (null) exceptional set makes the continuity hold at ev
 point of probability space, and restricting to the box (where `Set.projIcc` is the
 identity) makes it a genuine continuous modification of `contZ` there.
 -/
-import Parking.Support.TightNoiseHolder
-import Parking.Support.TightGaussianMoment
-import Parking.Support.TightKolmogorov
-import Parking.Support.ScalNoiseModification
-import LatticeProb.Gauss.WhiteNoise
-import LatticeProb.Prob.ChentsovPiModification
 
-open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contNoiseTest contZ integral_contZ measurable_contZ memLp_contNoiseTest)
+open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contNoiseTest contZ
+  integral_contZ measurable_contZ memLp_contNoiseTest)
 
 open MeasureTheory ProbabilityTheory
 open scoped NNReal ENNReal
@@ -38,6 +42,8 @@ def contZBoxProcess (v T A : ℝ) (hT : 0 ≤ T) (hA : 0 ≤ A) : (Fin 2 → ℝ
   fun u => contZ v T (Set.projIcc (0 : ℝ) T hT (u 0))
     (Set.projIcc (-(2 * A)) (2 * A) (by linarith) (u 1))
 
+/-- The box-clamped noise field at a fixed space-time argument is measurable, since it is
+`contZ` at the (real-valued) clamped coordinates. -/
 theorem measurable_contZBoxProcess (v T A : ℝ) (hT : 0 ≤ T) (hA : 0 ≤ A) (u : Fin 2 → ℝ) :
     Measurable (contZBoxProcess v T A hT hA u) := measurable_contZ _ _ _ _
 
@@ -161,7 +167,8 @@ theorem lintegral_edist_contZBoxProcess_rpow_sixteen_le {v : ℝ} (hv : 0 ≤ v)
     intro ω
     rw [edist_eq_enorm_sub, hΔdef]
   have hfmeas : Measurable fun y : ℝ => ‖y‖ₑ ^ (16 : ℝ) := by fun_prop
-  have hlint : (∫⁻ ω, ‖Δ ω‖ₑ ^ (16 : ℝ) ∂contNoiseLaw) = ∫⁻ y, ‖y‖ₑ ^ (16 : ℝ) ∂(contNoiseLaw.map Δ) :=
+  have hlint : (∫⁻ ω, ‖Δ ω‖ₑ ^ (16 : ℝ) ∂contNoiseLaw)
+      = ∫⁻ y, ‖y‖ₑ ^ (16 : ℝ) ∂(contNoiseLaw.map Δ) :=
     (lintegral_map hfmeas hΔmeas).symm
   have hgaussmom : (∫⁻ y, ‖y‖ₑ ^ (16 : ℝ) ∂(gaussianReal (0 : ℝ) (Real.sqrt σ2 ^ 2).toNNReal))
       = ENNReal.ofReal (Real.sqrt σ2 ^ (16 : ℝ)) * ENNReal.ofReal (gaussianAbsMoment 16) := by
@@ -198,13 +205,15 @@ theorem lintegral_edist_contZBoxProcess_rpow_sixteen_le {v : ℝ} (hv : 0 ≤ v)
       _ ≤ ENNReal.ofReal ((v * K) ^ 8 * (|u 0 - u' 0| + |u 1 - u' 1|) ^ 4)
           * ENNReal.ofReal (gaussianAbsMoment 16) := by
           gcongr
-  have hed : edist u u' ^ (4 : ℝ) = ENNReal.ofReal ((max |u 0 - u' 0| |u 1 - u' 1|) ^ (4 : ℝ)) := by
+  have hed : edist u u' ^ (4 : ℝ)
+      = ENNReal.ofReal ((max |u 0 - u' 0| |u 1 - u' 1|) ^ (4 : ℝ)) := by
     rw [edist_pi_def, Finset.univ_fin2]
     rw [Finset.sup_insert, Finset.sup_singleton]
     rw [edist_dist, edist_dist, Real.dist_eq, Real.dist_eq]
     rw [← ENNReal.ofReal_max, ← ENNReal.ofReal_rpow_of_nonneg
       (le_max_of_le_left (abs_nonneg _)) (by norm_num : (0:ℝ) ≤ 4)]
-  have hsum : (|u 0 - u' 0| + |u 1 - u' 1|) ^ (4:ℝ) ≤ (2:ℝ) ^ (4:ℝ) * (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℝ) := by
+  have hsum : (|u 0 - u' 0| + |u 1 - u' 1|) ^ (4:ℝ)
+      ≤ (2:ℝ) ^ (4:ℝ) * (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℝ) := by
     set a := |u 0 - u' 0| with ha
     set b := |u 1 - u' 1| with hb
     set m := max a b with hm
@@ -216,10 +225,12 @@ theorem lintegral_edist_contZBoxProcess_rpow_sixteen_le {v : ℝ} (hv : 0 ≤ v)
     have hab : a + b ≤ 2 * m := by linarith
     calc (a + b) ^ (4:ℝ) ≤ (2 * m) ^ (4:ℝ) := Real.rpow_le_rpow (by positivity) hab (by norm_num)
       _ = 2 ^ (4:ℝ) * m ^ (4:ℝ) := Real.mul_rpow (by norm_num) h0
-  have hsum4 : (|u 0 - u' 0| + |u 1 - u' 1|) ^ (4:ℕ) ≤ 16 * (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℕ) := by
+  have hsum4 : (|u 0 - u' 0| + |u 1 - u' 1|) ^ (4:ℕ)
+      ≤ 16 * (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℕ) := by
     have e1 : (|u 0 - u' 0| + |u 1 - u' 1|) ^ (4:ℝ) = (|u 0 - u' 0| + |u 1 - u' 1|) ^ (4:ℕ) := by
       rw [show (4:ℝ) = ((4:ℕ):ℝ) by norm_num, Real.rpow_natCast]
-    have e2 : (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℝ) = (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℕ) := by
+    have e2 : (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℝ)
+        = (max |u 0 - u' 0| |u 1 - u' 1|) ^ (4:ℕ) := by
       rw [show (4:ℝ) = ((4:ℕ):ℝ) by norm_num, Real.rpow_natCast]
     have e3 : (2:ℝ) ^ (4:ℝ) = 16 := by
       rw [show (4:ℝ) = ((4:ℕ):ℝ) by norm_num, Real.rpow_natCast]; norm_num

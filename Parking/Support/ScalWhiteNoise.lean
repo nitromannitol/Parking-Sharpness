@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Continuum
+import LatticeProb.Gauss.WhiteNoise
+import LatticeProb.Gauss.Brownian
+
+/-!
+# The canonical spatial white noise of the scaling limit
+
 The canonical spatial white noise of the scaling limit (`parking.tex:1694-1752`).
 
 `prop:spatial-scaling` asserts the joint convergence of the rescaled scenery, the
@@ -15,9 +21,6 @@ rather than assumed.
 its centred Gaussian law, its mean, its covariance `v ∫ φ ψ`, and its
 linearity in the test function.
 -/
-import Parking.Support.Continuum
-import LatticeProb.Gauss.WhiteNoise
-import LatticeProb.Gauss.Brownian
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open scoped NNReal ENNReal
@@ -51,7 +54,8 @@ theorem contW_integral {d : ℕ} {v : ℝ} (_hv : 0 ≤ v) (φ : (Fin d → ℝ)
   constructor
   · exact (hmem.integrable (by norm_num)).const_mul (Real.sqrt v)
   · simp only [contW]
-    rw [MeasureTheory.integral_const_mul, LatticeProb.integral_whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ, mul_zero]
+    rw [MeasureTheory.integral_const_mul,
+      LatticeProb.integral_whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ, mul_zero]
 
 
 /-- **The canonical spatial white noise is a centred Gaussian process.** -/
@@ -69,15 +73,19 @@ theorem integral_contW_mul {d : ℕ} {v : ℝ} (hv : 0 ≤ v) (φ ψ : (Fin d �
     ∫ ω, contW (d := d) v φ ω * contW (d := d) v ψ ω
         ∂(LatticeProb.whiteNoiseLaw (volume : Measure (Fin d → ℝ)))
       = v * ∫ x, φ x * ψ x := by
-  have hf : MemLp φ 2 (volume : Measure (Fin d → ℝ)) := hφ.1.continuous.memLp_of_hasCompactSupport hφ.2
-  have hg : MemLp ψ 2 (volume : Measure (Fin d → ℝ)) := hψ.1.continuous.memLp_of_hasCompactSupport hψ.2
+  have hf : MemLp φ 2 (volume : Measure (Fin d → ℝ)) :=
+    hφ.1.continuous.memLp_of_hasCompactSupport hφ.2
+  have hg : MemLp ψ 2 (volume : Measure (Fin d → ℝ)) :=
+    hψ.1.continuous.memLp_of_hasCompactSupport hψ.2
   simp only [contW]
   have hpt : (fun ω => Real.sqrt v * LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ ω
         * (Real.sqrt v * LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) ψ ω))
       = fun ω => v * (LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ ω
         * LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) ψ ω) := by
     ext ω; have hs : Real.sqrt v * Real.sqrt v = v := by rw [← sq, Real.sq_sqrt hv]
-    linear_combination (LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ ω * LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) ψ ω) * hs
+    linear_combination
+      (LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ ω *
+        LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) ψ ω) * hs
   rw [hpt, MeasureTheory.integral_const_mul,
     LatticeProb.integral_whiteNoiseOf_mul (volume : Measure (Fin d → ℝ)) hf hg]
 
@@ -88,8 +96,10 @@ theorem contW_linear {d : ℕ} {v : ℝ} (_hv : 0 ≤ v) (φ ψ : (Fin d → ℝ
     contW (d := d) v (fun x => a * φ x + b * ψ x)
       =ᵐ[LatticeProb.whiteNoiseLaw (volume : Measure (Fin d → ℝ))]
       fun ω => a * contW (d := d) v φ ω + b * contW (d := d) v ψ ω := by
-  have hf : MemLp φ 2 (volume : Measure (Fin d → ℝ)) := hφ.1.continuous.memLp_of_hasCompactSupport hφ.2
-  have hg : MemLp ψ 2 (volume : Measure (Fin d → ℝ)) := hψ.1.continuous.memLp_of_hasCompactSupport hψ.2
+  have hf : MemLp φ 2 (volume : Measure (Fin d → ℝ)) :=
+    hφ.1.continuous.memLp_of_hasCompactSupport hφ.2
+  have hg : MemLp ψ 2 (volume : Measure (Fin d → ℝ)) :=
+    hψ.1.continuous.memLp_of_hasCompactSupport hψ.2
   have haf : MemLp (a • φ) 2 (volume : Measure (Fin d → ℝ)) := hf.const_smul a
   have hbg : MemLp (b • ψ) 2 (volume : Measure (Fin d → ℝ)) := hg.const_smul b
   have harg : (fun x => a * φ x + b * ψ x) = a • φ + b • ψ := by
@@ -130,7 +140,8 @@ function.** -/
 theorem memLp_contW {d : ℕ} (v : ℝ) (φ : (Fin d → ℝ) → ℝ) :
     MemLp (contW (d := d) v φ) 2
       (LatticeProb.whiteNoiseLaw (volume : Measure (Fin d → ℝ))) :=
-  (LatticeProb.memLp_whiteNoise (LatticeProb.l2HilbertBasis (volume : Measure (Fin d → ℝ))) φ).const_mul (Real.sqrt v)
+  (LatticeProb.memLp_whiteNoise
+    (LatticeProb.l2HilbertBasis (volume : Measure (Fin d → ℝ))) φ).const_mul (Real.sqrt v)
 
 /-- **The law of the canonical spatial white noise at a test function is
 centred Gaussian with variance `v ∫ φ²`.** -/
@@ -138,8 +149,11 @@ theorem map_contW {d : ℕ} {v : ℝ} (hv : 0 ≤ v) (φ : (Fin d → ℝ) → �
     (hφ : MemLp φ 2 (volume : Measure (Fin d → ℝ))) :
     (LatticeProb.whiteNoiseLaw (volume : Measure (Fin d → ℝ))).map (contW (d := d) v φ)
       = ProbabilityTheory.gaussianReal 0 (v * ∫ x, φ x ^ 2).toNNReal := by
-  have hpt : contW (d := d) v φ = (fun x : ℝ => Real.sqrt v * x) ∘ LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ := rfl
-  rw [hpt, ← Measure.map_map (by fun_prop : Measurable fun x : ℝ => Real.sqrt v * x) (LatticeProb.measurable_whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ)]
+  have hpt : contW (d := d) v φ =
+      (fun x : ℝ => Real.sqrt v * x) ∘
+        LatticeProb.whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ := rfl
+  rw [hpt, ← Measure.map_map (by fun_prop : Measurable fun x : ℝ => Real.sqrt v * x)
+    (LatticeProb.measurable_whiteNoiseOf (volume : Measure (Fin d → ℝ)) φ)]
   rw [map_whiteNoiseOf φ hφ, norm_toLpOrZero_sq φ hφ]
   rw [ProbabilityTheory.gaussianReal_map_const_mul]
   congr 1
@@ -161,8 +175,11 @@ theorem isSpatialWhiteNoise_contW {d : ℕ} {v : ℝ} (hv : 0 ≤ v) :
   · intro φ ψ hφ hψ
     exact ⟨(memLp_contW v φ).integrable_mul (memLp_contW v ψ), integral_contW_mul hv φ ψ hφ hψ⟩
   · intro φ hφ
-    have hmem : MemLp φ 2 (volume : Measure (Fin d → ℝ)) := hφ.1.continuous.memLp_of_hasCompactSupport hφ.2
-    exact ⟨(v * ∫ x, φ x ^ 2).toNNReal, Real.coe_toNNReal _ (mul_nonneg hv (integral_nonneg fun x => sq_nonneg _)), map_contW hv φ hmem⟩
+    have hmem : MemLp φ 2 (volume : Measure (Fin d → ℝ)) :=
+      hφ.1.continuous.memLp_of_hasCompactSupport hφ.2
+    exact ⟨(v * ∫ x, φ x ^ 2).toNNReal,
+      Real.coe_toNNReal _ (mul_nonneg hv (integral_nonneg fun x => sq_nonneg _)),
+      map_contW hv φ hmem⟩
 
 
 end Parking

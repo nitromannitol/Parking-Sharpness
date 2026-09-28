@@ -1,10 +1,13 @@
-/-
+import Parking.Support.UpperStep
+
+/-!
+# Oriented Young absorption
+
 Young's inequality in the shape the directed Step 2 of `thm:oriented-walk`
 (`parking.tex:3297-3309`) uses: the square-root term of the directed
 `prop:w-moment` is absorbed into the left-hand side, leaving
 `X ≤ 2Y + a² + 2a` from `X ≤ Y + a(√X + 1)`.
 -/
-import Parking.Support.UpperStep
 
 noncomputable section
 

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.ContSpatialValue
+
+/-!
+# Lipschitz continuity of the continuum stopping value
+
 **The continuum optimal-stopping value `Parking.spatialContValue` is `1`-Lipschitz in its
 terminal reward for the supremum norm.** The continuum analogue of
 `Parking.abs_stoppingSup_sub_le` (`Parking/Support/ValueLipschitz.lean`), for the `Fin
@@ -17,7 +21,6 @@ Brownian randomness has already been integrated out: there the difficulty is tha
 does not arise on `E`, the space of REWARDS itself, which is an ordinary metric space with the
 sup norm.
 -/
-import Parking.Support.ContSpatialValue
 
 open MeasureTheory
 open scoped NNReal ENNReal

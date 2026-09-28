@@ -5,6 +5,15 @@ import Parking.Support.BoundedMoment
 
 open LatticeProb (measurable_from_countable')
 
+/-!
+# The clipped table odometer
+
+Coordinatewise truncation of the initial field by `clipSparse` gives a bounded odometer
+`clippedTableU`, bounded by the box volume `T * (2T + 1) ^ d`, whose law and every measurable
+functional of it agree with the original particle odometer `U` whenever the one-site law is
+already fixed by the clipping almost surely.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -13,15 +22,22 @@ variable {d : ℕ}
 /-- Coordinatewise truncation to the support of the sparse law. -/
 def clippedField (η : Site d → ℤ) : Site d → ℤ := fun y => clipSparse (η y)
 
+/-- `clippedField` is measurable, mapping each coordinate through the countable clipping
+function `clipSparse`. -/
 theorem measurable_clippedField : Measurable (clippedField (d := d)) :=
-  measurable_pi_lambda _ fun y => (measurable_from_countable' clipSparse).comp (measurable_pi_apply y)
+  measurable_pi_lambda _ fun y =>
+    (measurable_from_countable' clipSparse).comp (measurable_pi_apply y)
 
+/-- Every clipped-field value is at most one particle in size, `(clippedField η y).toNat ≤ 1`,
+from the bounds of `clipSparse`. -/
 theorem clippedField_particle_bound (η : Site d → ℤ) (y : Site d) :
     (clippedField η y).toNat ≤ 1 := by
   have h := (clipSparse_bounds (η y)).2
   change (clipSparse (η y)).toNat ≤ 1
   omega
 
+/-- If the one-site law is fixed by `clipSparse` almost surely, the clipped field agrees with
+the original field almost everywhere, by transporting that fact through every coordinate. -/
 theorem ae_clippedField (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hclip : ∀ᵐ k ∂ν, clipSparse k = k) :
     ∀ᵐ η ∂(iidLaw d ν), clippedField η = η := by
@@ -33,7 +49,8 @@ theorem ae_clippedField (ν : Measure ℤ) [IsProbabilityMeasure ν]
 /-- Clipping and reshaping the independent instructions preserve the count law. -/
 theorem measurePreserving_clippedTable (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hclip : ∀ᵐ k ∂ν, clipSparse k = k) :
-    MeasurePreserving (fun ω : (Site d → ℤ) × FlatRoundNoise d => (clippedField ω.1, curryRoundNoise ω.2))
+    MeasurePreserving
+      (fun ω : (Site d → ℤ) × FlatRoundNoise d => (clippedField ω.1, curryRoundNoise ω.2))
       ((iidLaw d ν).prod (flatRoundNoiseLaw d)) ((iidLaw d ν).prod (roundNoiseLaw d)) := by
   haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   haveI := flatRoundNoiseLaw_isProbability hd
@@ -46,9 +63,12 @@ theorem measurePreserving_clippedTable (hd : 1 ≤ d) (ν : Measure ℤ) [IsProb
 def clippedTableU (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × FlatRoundNoise d) : ℝ :=
   ((matchedState (clippedField ω.1) 0 (curryRoundNoise ω.2) T).departures x : ℝ)
 
+/-- The clipped table odometer is a natural number cast, hence nonnegative. -/
 theorem clippedTableU_nonneg (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × FlatRoundNoise d) :
     0 ≤ clippedTableU T x ω := Nat.cast_nonneg _
 
+/-- `clippedTableU T x` is measurable, reading off the departure count of `matchedState` on
+the clipped field and curried noise. -/
 theorem measurable_clippedTableU (hd : 1 ≤ d) (T : ℕ) (x : Site d) :
     Measurable (clippedTableU T x) := by
   have h := measurableState_matchedState ⟨0, hd⟩
@@ -57,6 +77,8 @@ theorem measurable_clippedTableU (hd : 1 ≤ d) (T : ℕ) (x : Site d) :
     measurable_const (measurable_curryRoundNoise.comp measurable_snd) T
   exact (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (h.2.2.2 x)
 
+/-- The clipped table odometer is bounded by the box volume `T * (2T + 1) ^ d`, via
+`matchedOdometer_le_box` applied to the unit particle bound of the clipped field. -/
 theorem clippedTableU_bound (T : ℕ) (x : Site d) (ω : (Site d → ℤ) × FlatRoundNoise d) :
     |clippedTableU T x ω| ≤ ((T * (2 * T + 1) ^ d : ℕ) : ℝ) := by
   rw [abs_of_nonneg (clippedTableU_nonneg T x ω)]
@@ -83,7 +105,8 @@ theorem integral_clippedTableU (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityM
       ∫ ω, φ (f ω : ℝ) ∂((iidLaw d ν).prod (roundNoiseLaw d)) := by
     rw [← hΨ.map_eq]
     exact (integral_map hΨ.measurable.aemeasurable
-      (show AEStronglyMeasurable (fun ω => φ (f ω : ℝ)) _ from (hc.comp hf).aestronglyMeasurable)).symm
+      (show AEStronglyMeasurable (fun ω => φ (f ω : ℝ)) _ from
+        (hc.comp hf).aestronglyMeasurable)).symm
   rw [he, ← integral_map hf.aemeasurable hc.aestronglyMeasurable, map_tableOdometer hd ν T x]
   exact integral_map (measurable_U T x).aemeasurable hc.aestronglyMeasurable
 end Parking

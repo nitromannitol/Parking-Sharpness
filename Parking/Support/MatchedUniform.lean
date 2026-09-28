@@ -3,6 +3,16 @@ import LatticeProb.Walk.Shells
 import Parking.Support.Walk
 import Parking.Support.Comparison
 
+/-!
+# Uniform bounds for the common-table dynamics
+
+Elementary counting facts used throughout the common-table construction: a box
+`boxFinset x R` has the same cardinality `(2R+1)^d` no matter where it is centred, and a
+bound `K` on the initial field's holes gives a uniform bound `(2t+1)^d K` on the matched
+particle count at time `t` and a uniform bound `T * (2T+1)^d K` on the matched odometer at
+horizon `T`.
+-/
+
 open LatticeProb (card_boxFinset_zero)
 
 noncomputable section

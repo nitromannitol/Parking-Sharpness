@@ -2,6 +2,16 @@ import Parking.Support.SinkObservable
 import Parking.Support.BoundedConditionalMoment
 import Parking.Support.WeightedOdometerBounds
 
+/-!
+# Green-weighted moment comparison for the sparse sink
+
+This file shows the sink can only reduce the Green-weighted odometer term by term
+(`sparseSink_greenWeighted_le`), and transfers this pointwise domination through the
+bounded conditional moment machinery of `Parking.Support.BoundedConditionalMoment` to
+conclude that every `r`-th root moment of the sink's Green-weighted odometer is bounded
+by the corresponding moment of the ordinary clipped process (`sparseSink_green_moment_le`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -28,14 +38,20 @@ theorem sparseSink_green_moment_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabil
   let μ := (iidLaw d ν).prod (flatRoundNoiseLaw d)
   let Q : (Site d → ℤ) × FlatRoundNoise d → ℝ := fun z =>
     greenWeightedOdometer (clippedField z.1) 0 (curryRoundNoise z.2) T x T
-  have hQ : Measurable Q := Finset.measurable_sum _ fun y _ => (measurable_clippedTableU hd T y).const_mul _
-  have hQ0 (z : (Site d → ℤ) × FlatRoundNoise d) : 0 ≤ Q z := greenWeightedOdometer_nonneg _ _ _ _ _ _
+  have hQ : Measurable Q :=
+    Finset.measurable_sum _ fun y _ => (measurable_clippedTableU hd T y).const_mul _
+  have hQ0 (z : (Site d → ℤ) × FlatRoundNoise d) : 0 ≤ Q z :=
+    greenWeightedOdometer_nonneg _ _ _ _ _ _
   have hQB (z : (Site d → ℤ) × FlatRoundNoise d) : Q z ≤
-      (∑ y ∈ boxFinset x T, walkOp (fun w => fullGreen d (w - x) ^ 2) y) * ((T * (2 * T + 1) ^ d : ℕ) : ℝ) :=
+      (∑ y ∈ boxFinset x T, walkOp (fun w => fullGreen d (w - x) ^ 2) y) *
+        ((T * (2 * T + 1) ^ d : ℕ) : ℝ) :=
     greenWeightedOdometer_le_box _ (clippedField_particle_bound z.1) 0 _ T x T
   have hi := integrable_rpow_bounded_nonneg μ Q hQ hQ0 _ hQB (by linarith : 0 ≤ r / 2)
-  apply Real.rpow_le_rpow (integral_nonneg fun z => Real.rpow_nonneg (greenWeightedOdometer_nonneg _ _ _ _ _ _) _) _ (by positivity)
-  apply integral_mono_of_nonneg (ae_of_all _ fun z => Real.rpow_nonneg (greenWeightedOdometer_nonneg _ _ _ _ _ _) _) hi
+  apply Real.rpow_le_rpow
+    (integral_nonneg fun z => Real.rpow_nonneg (greenWeightedOdometer_nonneg _ _ _ _ _ _) _) _
+    (by positivity)
+  apply integral_mono_of_nonneg
+    (ae_of_all _ fun z => Real.rpow_nonneg (greenWeightedOdometer_nonneg _ _ _ _ _ _) _) hi
   exact ae_of_all _ fun z => Real.rpow_le_rpow (greenWeightedOdometer_nonneg _ _ _ _ _ _)
     (sparseSink_greenWeighted_le T v x z.1 (curryRoundNoise z.2)) (by linarith)
 end Parking

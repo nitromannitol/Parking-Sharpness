@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightBoxSupTailMoment
+
+/-!
+# Antitonicity of `dtail` in its level argument
+
 `LatticeProb.dtail` is ANTITONE in its level argument (a tail sum over MORE removed terms is
 smaller, for a nonnegative summable sequence): `dtail a m2 ≤ dtail a m1` for `m1 ≤ m2`.  This
 lets `Parking.exists_dtail_moment`'s moment bound, called ONCE at `n1 := 0`, bound `E[dtail(
@@ -6,7 +10,6 @@ levelInc, R, ·)^p]` UNIFORMLY IN `R` — avoiding the need to track how `exists
 moment`'s own constant depends on `n1` (it is not exposed, and re-deriving that dependence would
 duplicate a large part of `TightBoxSupTail.lean`).
 -/
-import Parking.Support.TightBoxSupTailMoment
 
 open MeasureTheory LatticeProb Filter Topology
 

@@ -1,4 +1,10 @@
-/-
+import Parking.Support.CriticalLawReal
+import Parking.Support.MeanPos
+import Parking.Support.CriticalChain
+
+/-!
+# Growth of the mean divisible odometer alone
+
 **The growth rate of the mean divisible odometer alone**, extracted directly from
 `Parking.External.SandpileGrowth` (`thm:BP`) via `Parking.meanu_eq_meanSandpileReal`
 (`Parking/Support/CriticalLawReal.lean`), with NO other External hypothesis.
@@ -19,9 +25,6 @@ times, needs both the lower bound (so the relative threshold does not degenerate
 upper bound (so a single `ε'`, chosen from the largest rescaled time in the compact set,
 controls the whole range).
 -/
-import Parking.Support.CriticalLawReal
-import Parking.Support.MeanPos
-import Parking.Support.CriticalChain
 
 noncomputable section
 

@@ -1,4 +1,10 @@
-/-
+import Parking.Support.ConfMoments
+import Parking.Support.WBound
+import Parking.Support.KernelBridge
+
+/-!
+# A priori bounds on the divisible sandpile odometer
+
 The a priori bounds on the divisible sandpile odometer `u_n` of a realization,
 in the same shape as the bounds on `U_n` and on the error `w_n`: measurability,
 nonnegativity, and the pathwise bound by the configuration over a box, which
@@ -9,9 +15,6 @@ adds `η(x)⁺` to an average of values of `u_k` at the neighbours of `x`, and t
 box of radius `k` around a neighbour of `x` sits inside the box of radius
 `k + 1` around `x`.
 -/
-import Parking.Support.ConfMoments
-import Parking.Support.WBound
-import Parking.Support.KernelBridge
 
 open LatticeProb (measurable_from_countable')
 
@@ -25,6 +28,8 @@ variable {d : ℕ}
 
 /-! ### The walk operator against a bound at the neighbours -/
 
+/-- The walk operator applied to the constant function `B` returns `B`, since it averages
+`2 * d` copies of `B` over the neighbours of `x`. -/
 theorem walkOp_const (hd : 1 ≤ d) (B : ℝ) (x : Site d) :
     walkOp (fun _ : Site d => B) x = B := by
   have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
@@ -52,6 +57,8 @@ theorem walkOp_le_of_nbr (hd : 1 ≤ d) {f : Site d → ℝ} {B : ℝ} {x : Site
 
 /-! ### The sandpile odometer of a realization -/
 
+/-- The sandpile odometer `uOf` is nonnegative at every time, immediate from its
+`max 0 (·)` recursion. -/
 theorem uOf_nonneg (ω : Data d) (n : ℕ) (x : Site d) : 0 ≤ uOf ω n x := by
   cases n with
   | zero => exact le_refl 0
@@ -106,6 +113,9 @@ theorem uOf_le_confBox (hd : 1 ≤ d) (ω : Data d) (k : ℕ) (x : Site d) :
 
 /-! ### Measurability and the moments -/
 
+/-- `uOf ω k x` is measurable in `ω`, by induction on `k` using the measurability of
+`walkOp` of the previous step together with the measurability of the configuration
+evaluation `ω.1 x`. -/
 theorem measurable_uOf (k : ℕ) (x : Site d) :
     Measurable fun ω : Data d => uOf ω k x := by
   induction k generalizing x with
@@ -127,6 +137,8 @@ theorem measurable_uOf (k : ℕ) (x : Site d) :
       rw [hfun]
       exact measurable_const.max (heta.add hwalk)
 
+/-- The bare-function odometer `u η n x` is measurable in `η`, by the same induction on
+`n` as `measurable_uOf`. -/
 theorem measurable_u_eval (n : ℕ) (x : Site d) :
     Measurable fun η : Site d → ℝ => u η n x := by
   induction n generalizing x with
@@ -144,6 +156,8 @@ theorem measurable_u_eval (n : ℕ) (x : Site d) :
       rw [hfun]
       exact measurable_const.max ((measurable_pi_apply x).add hwalk)
 
+/-- Every `r`-th power (`r ≥ 1`) of `|uOf ω n x|` is integrable under `law d ν`, dominated
+by `n ^ r * confBox ω x n ^ r` via `uOf_le_confBox` and `integrable_confBox_rpow`. -/
 theorem integrable_uOf_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)

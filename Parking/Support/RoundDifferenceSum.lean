@@ -2,6 +2,16 @@ import Parking.Support.RoundDifference
 import Parking.Support.RoundBlock
 import Parking.Support.ProductSetCongr
 
+/-!
+# Summing the round reveal differences
+
+`sum_roundDiff` telescopes the reveal differences `roundDiff` of `RoundDifference.lean`
+across a complete enumeration `e` of the coordinates a round's future mean can depend
+on: the sum over every table entry equals the realized round mean at the fully revealed
+data minus the average round mean over the i.i.d. step directions, provided the
+enumeration `e` covers every relevant site-rank pair (`hcover`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedStopping
+
+/-!
+# The oriented form of `eq:stopping`
+
 The oriented form of `eq:stopping` (`parking.tex:876-884`): the oriented
 divisible odometer `u⃗_n` of `eq:oriented-divisible` (`parking.tex:3018`) is the
 value of the bounded optimal stopping problem of the oriented walk.
@@ -15,7 +19,6 @@ The supremum is asserted as a least upper bound, so that no junk value of an
 unattained or unbounded supremum can satisfy it, exactly as
 `Parking.External.Stopping` does for the simple random walk.
 -/
-import Parking.Support.OrientedStopping
 
 open MeasureTheory
 
@@ -27,6 +30,9 @@ open LatticeProb
 
 variable {d : ℕ}
 
+/-- The reward collected along a bounded stopping rule `σ` depends on the direction
+sequence `p` only through its first `n` coordinates, since both the stopping time `σ p`
+and every position `orientedPath x p j` for `j < σ p` do. -/
 theorem orientedStopReward_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d)
     {p q : ℕ → Fin d × Bool} (h : ∀ i, i < n → p i = q i) :
@@ -40,11 +46,16 @@ theorem orientedStopReward_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ
   have hjlt : j < σ p := Finset.mem_range.mp hj
   rw [orientedPath_congr x j (fun i hi => h i (lt_of_lt_of_le (hi.trans hjlt) hle))]
 
+/-- The reward of a bounded stopping rule is integrable against `walkLaw d`, since
+`orientedStopReward_congr` shows it depends on only finitely many coordinates of the
+direction sequence. -/
 theorem integrable_orientedStopReward (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d) :
     Integrable (orientedStopReward η x σ) (walkLaw d) :=
   integrable_of_finite_dependence hd n _ (fun _ _ h => orientedStopReward_congr hσ η x h)
 
+/-- `0` is always an expected reward of a bounded stopping rule bounded by `n`, namely the
+rule that stops immediately. -/
 theorem zero_mem_orientedStopValues (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     (0 : ℝ) ∈ orientedStopValues d η n x := by
   refine ⟨fun _ => 0, ⟨fun _ => Nat.zero_le _, fun _ _ _ => rfl⟩, ?_⟩
@@ -72,6 +83,9 @@ theorem isStoppingTimeLE_shift {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
           exact hrr' k hk
     rw [hσ.2 (consNat u r) (consNat u r') hcons]
 
+/-- The reward of a bounded stopping rule along a direction sequence with head `u` and tail
+`r` splits as `η x` plus the reward of the shifted rule from `x - unit u.1` along `r`, by
+reindexing the sum over `j < σ (consNat u r)` at `j + 1` and using `orientedPath_tail`. -/
 theorem orientedStopReward_consNat {σ : (ℕ → Fin d × Bool) → ℕ}
     (hpos : ∀ p, 1 ≤ σ p) (η : Site d → ℝ) (x : Site d)
     (u : Fin d × Bool) (r : ℕ → Fin d × Bool) :
@@ -92,6 +106,10 @@ theorem orientedStopReward_consNat {σ : (ℕ → Fin d × Bool) → ℕ}
   rw [add_comm]
   rfl
 
+/-- The expected reward of a bounded stopping rule that never stops at once splits, by
+`orientedStopReward_consNat` and the head-tail decomposition of `walkLaw d`, as `η x` plus
+the average over the first direction `u` of the expected reward of the shifted rule from
+`x - unit u.1`. -/
 theorem orientedStopValue_consNat (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE (n + 1) σ) (hpos : ∀ p, 1 ≤ σ p) (η : Site d → ℝ) (x : Site d) :
     orientedStopValue η x σ
@@ -124,6 +142,8 @@ theorem orientedStopValue_consNat (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d 
   rw [integral_add (hfin _) (hfin _), integral_const]
   simp
 
+/-- A stopping rule that stops at once on every trajectory has expected reward `0`, since
+its reward is an empty sum. -/
 theorem orientedStopValue_of_zero {σ : (ℕ → Fin d × Bool) → ℕ}
     (h0 : ∀ p, σ p = 0) (η : Site d → ℝ) (x : Site d) :
     orientedStopValue η x σ = 0 := by
@@ -239,7 +259,8 @@ theorem isLUB_orientedStopValues (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) 
   · intro b hb
     exact hb (uOriented_mem_orientedStopValues hd η n x)
 
-/-- The oriented form of `eq:stopping` read as a supremum. -/
+/-- `isLUB_orientedStopValues` read as a supremum: `sSup` of the set of expected rewards
+of the bounded stopping rules equals the oriented divisible odometer. -/
 theorem csSup_orientedStopValues (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     sSup (orientedStopValues d η n x) = uOriented η n x :=
   (isLUB_orientedStopValues hd η n x).csSup_eq ⟨0, zero_mem_orientedStopValues η n x⟩

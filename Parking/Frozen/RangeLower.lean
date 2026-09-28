@@ -1,4 +1,8 @@
-/-
+import Parking.Support.RangeLower
+
+/-!
+# Lemma 10.1: the range lower bound (frozen)
+
 Lemma 10.1 of parking.tex, frozen.  `parking.tex:2295-2303` (label
 `lem:range-lower`), in the setting of `parking.tex:2287-2294` ("Let $\eta$ be
 i.i.d. and integer-valued, with a finite first moment, negative mean,
@@ -14,10 +18,9 @@ assigned walk and $R_t=\{X_0,\ldots,X_t\}$ its range through time $t$"):
 
 The average `E_0` is over the walk alone, so it is an integral against
 `walkLaw`; its finiteness is asserted alongside the bounds, so that an
-undefined integral cannot satisfy them through its junk value.  Conditioning on `{η(0)=k}` divides by `ν {k}`, which the
-hypothesis keeps away from zero.
+undefined integral cannot satisfy them through its junk value.  Conditioning
+on `{η(0)=k}` divides by `ν {k}`, which the hypothesis keeps away from zero.
 -/
-import Parking.Support.RangeLower
 
 open MeasureTheory
 

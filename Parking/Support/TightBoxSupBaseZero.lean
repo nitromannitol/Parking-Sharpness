@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightBoxSupBase
+
+/-!
+# The level-`0` base term
+
 The level-`0` base term of route A: the maximum of `Parking.Yfield` over the level-`0` grid
 (spacing `1`) inside a box of coordinate radius `R`, a genuine `Finset.sup'` over
 `LatticeProb.boxIdx R 0` — `(2R+1)^2` points, POLYNOMIAL in `R` (unlike the level-`n1` grid,
@@ -8,7 +12,6 @@ per-point moment bound `Parking.exists_Yfield_moment` already used throughout
 gives `|Yfield(dtruncPi R z)| ≤ level0Max R + 2·(telescoping sum)` for every `z` with
 `∀ i, |z i| ≤ R`.
 -/
-import Parking.Support.TightBoxSupBase
 
 open MeasureTheory LatticeProb Filter Topology
 
@@ -16,6 +19,7 @@ noncomputable section
 
 namespace Parking
 
+/-- **`LatticeProb.boxIdx R 0` is nonempty**: the origin index always lies in it. -/
 theorem boxIdx_zero_nonempty (R : ℕ) : (LatticeProb.boxIdx (k := 2) R 0).Nonempty := by
   refine ⟨0, ?_⟩
   rw [LatticeProb.mem_boxIdx_iff]
@@ -27,10 +31,12 @@ def level0Max (A : ℝ) (hA : 0 ≤ A) (R n : ℕ) (η : Site 2 → ℝ) : ℝ :
   (LatticeProb.boxIdx (k := 2) R 0).sup' (boxIdx_zero_nonempty R)
     (fun j => |Yfield A hA n η (LatticeProb.gridPt 0 j)|)
 
+/-- **`Parking.level0Max` is nonnegative**, being a `Finset.sup'` of absolute values. -/
 theorem level0Max_nonneg (A : ℝ) (hA : 0 ≤ A) (R n : ℕ) (η : Site 2 → ℝ) :
     0 ≤ level0Max A hA R n η := by
   obtain ⟨j, hj⟩ := boxIdx_zero_nonempty R
-  exact le_trans (abs_nonneg _) (Finset.le_sup' (fun j => |Yfield A hA n η (LatticeProb.gridPt 0 j)|) hj)
+  exact le_trans (abs_nonneg _)
+    (Finset.le_sup' (fun j => |Yfield A hA n η (LatticeProb.gridPt 0 j)|) hj)
 
 /-- **`|Yfield(dtruncPi 0 z)| ≤ level0Max R`, for every `z` with `∀ i, |z i| ≤ R`.** -/
 theorem abs_Yfield_dtruncPi_zero_le (A : ℝ) (hA : 0 ≤ A) (n R : ℕ) (η : Site 2 → ℝ)
@@ -47,6 +53,8 @@ theorem abs_Yfield_dtruncPi_zero_le (A : ℝ) (hA : 0 ≤ A) (n R : ℕ) (η : S
   rw [heq]
   exact Finset.le_sup' (fun j => |Yfield A hA n η (LatticeProb.gridPt 0 j)|) hjmem
 
+/-- **`Parking.level0Max` is measurable in the scenery**, as a finite `Finset.sup'` of
+measurable functions built from `measurable_Yfield`. -/
 theorem measurable_level0Max (A : ℝ) (hA : 0 ≤ A) (R n : ℕ) :
     Measurable (fun η : Site 2 → ℝ => level0Max A hA R n η) := by
   have heq : (fun η : Site 2 → ℝ => level0Max A hA R n η) =
@@ -59,6 +67,8 @@ theorem measurable_level0Max (A : ℝ) (hA : 0 ≤ A) (R n : ℕ) :
   intro j _
   exact (measurable_Yfield hA n (LatticeProb.gridPt 0 j)).abs
 
+/-- **The exact cardinality of the level-`0` box index set**, `(2R+1)^2`, from
+`LatticeProb.card_boxIdx` at level `0`. -/
 theorem card_boxIdx_zero (R : ℕ) :
     ((LatticeProb.boxIdx (k := 2) R 0).card : ℝ) = (2 * (R : ℝ) + 1) ^ 2 := by
   rw [LatticeProb.card_boxIdx]

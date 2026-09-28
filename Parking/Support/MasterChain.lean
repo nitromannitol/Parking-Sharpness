@@ -1,26 +1,25 @@
-/-
-`thm:master` (`parking.tex:159-168`, proved at `parking.tex:1473-1479`) reduced
-to `cor:critical`.
-
-The upper bound IS the first display of `thm:upper`, which is SEALED.  The lower
-bound is `cor:critical` in two pieces: past a threshold the logarithmic bound
-dominates the constant it carries, and below the threshold the paper covers the
-finitely many horizons by decreasing the constant, which it can do because
-`E U_n(0) >= E U_1(0) = E eta(0)^+ > 0`.
-
-The positive quantity is `S_0`, the mean number of particles started at the
-origin and still active after no rounds at all, which is the mean positive part
-of the configuration there; `lem:transport` makes it a lower bound on the mean
-odometer at every horizon, and it is positive because a nonconstant mean-zero
-law puts mass above the origin.
-
-Below the threshold the argument needs no maximum over the finitely many
-horizons: the logarithm is at most its value at the threshold, so one constant
-covers them all.
--/
 import Parking.Support.CriticalChain
 import Parking.Frozen.Upper
 import Parking.Support.CovParts
+
+/-!
+# `thm:master` reduced to `cor:critical`
+
+`thm:master` (`parking.tex:159-168`, proved at `parking.tex:1473-1479`) reduced to
+`cor:critical`. The upper bound is the first display of `thm:upper`, which is sealed. The
+lower bound is `cor:critical` in two pieces: past a threshold the logarithmic bound
+dominates the constant it carries, and below the threshold the paper covers the finitely
+many horizons by decreasing the constant, which it can do because
+`E U_n(0) ≥ E U_1(0) = E eta(0)^+ > 0`.
+
+The positive quantity is `S_0`, the mean number of particles started at the origin and
+still active after no rounds at all, which is the mean positive part of the configuration
+there; `lem:transport` makes it a lower bound on the mean odometer at every horizon, and it
+is positive because a nonconstant mean-zero law puts mass above the origin.
+
+Below the threshold the argument needs no maximum over the finitely many horizons: the
+logarithm is at most its value at the threshold, so one constant covers them all.
+-/
 
 noncomputable section
 open MeasureTheory Filter
@@ -77,7 +76,8 @@ theorem integral_toNat_pos (ν : Measure ℤ) [IsProbabilityMeasure ν]
     rcases le_or_gt k 0 with hk | hk
     · rw [Int.toNat_of_nonpos hk]; simp
     · have h1 : ((k.toNat : ℕ) : ℤ) = k := Int.toNat_of_nonneg hk.le
-      have h2 : ((k.toNat : ℕ) : ℝ) = (k : ℝ) := by exact_mod_cast congrArg (fun m : ℤ => (m : ℝ)) h1
+      have h2 : ((k.toNat : ℕ) : ℝ) = (k : ℝ) := by
+        exact_mod_cast congrArg (fun m : ℤ => (m : ℝ)) h1
       rw [h2, abs_of_pos (by exact_mod_cast hk)]
   have hI : Integrable (fun k : ℤ => ((k.toNat : ℕ) : ℝ)) ν := by
     refine Integrable.mono' hint (measurable_int_fun _).aestronglyMeasurable

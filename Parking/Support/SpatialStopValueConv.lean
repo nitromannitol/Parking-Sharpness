@@ -1,5 +1,17 @@
-/-
-**The single-point, single-cutoff scalar value convergence**, for the STOPPING-VALUE summand
+import Parking.Support.SpatWalkCLT
+import Parking.Support.ValueLipschitz
+import Parking.Support.ContValueLipschitz
+import Parking.Support.LinearFieldMeasurable
+import Parking.Support.LinHatMeasurable
+import Parking.Support.ExtendedMappingReal
+import LatticeProb.Prob.Scaling.LipschitzLimit
+import LatticeProb.Prob.Scaling.FloorGap
+import Parking.External.SpatialStoppingStability
+
+/-!
+# The single-point, single-cutoff scalar stopping-value convergence
+
+The single-point, single-cutoff scalar value convergence, for the STOPPING-VALUE summand
 of BP's Lemma 2.5 decomposition (`Parking.u_eq_potential_add_stoppingSup`,
 `Parking/Support/Terminal.lean`).  `Parking.External.SpatialStoppingStability` is applied at
 horizon `n := ⌊R²⌋₊` and time `T := s` (NOT `n := ⌊sR²⌋₊`), so that `Parking.spatialScaledSite n`
@@ -30,9 +42,10 @@ cutoff-to-true gap (both the discrete field's own cutoff error, via the walk's e
 `Z(s,x)` (`Parking.tendsto_measure_linHatInterp_sub_barPotential_zero`,
 `Parking/Support/LinGridGap.lean`); (d) the joint/multi-point and scenery-retained forms.
 
-The floor-rounding gap in (a) is handled below (`LatticeProb.Scaling.FloorGap.natFloor_sq_mul_sub_natFloor_horizon_le`,
-consuming `LatticeProb.Scaling.FloorGap.natFloor_sq_mul_sub_natFloor_horizon_le`): the two horizons
-differ by at most `⌊s⌋₊ + 1` steps, uniformly in `R`.  Turning this `O(1)`-step count into a
+The floor-rounding gap in (a) is handled below
+(`LatticeProb.Scaling.FloorGap.natFloor_sq_mul_sub_natFloor_horizon_le`, consuming
+`LatticeProb.Scaling.FloorGap.natFloor_sq_mul_sub_natFloor_horizon_le`): the two horizons differ by
+at most `⌊s⌋₊ + 1` steps, uniformly in `R`.  Turning this `O(1)`-step count into a
 VANISHING bound on `|stoppingSup F ⌊sR²⌋₊ z0 - stoppingSup F ⌊⌊R²⌋₊·s⌋₊ z0|` for the reward `F` in
 question needs more than boundedness of `F` (a bounded reward only gives the crude,
 non-vanishing bound `2‖F‖`): it needs a MODULUS OF CONTINUITY on how the reward, read at
@@ -46,15 +59,6 @@ single-point, single-cutoff scalar value convergence.
 taken here as explicit hypotheses.  This module does not touch `Parking.Frozen.spatial_scaling`,
 which carries them only at the final assembly.
 -/
-import Parking.Support.SpatWalkCLT
-import Parking.Support.ValueLipschitz
-import Parking.Support.ContValueLipschitz
-import Parking.Support.LinearFieldMeasurable
-import Parking.Support.LinHatMeasurable
-import Parking.Support.ExtendedMappingReal
-import LatticeProb.Prob.Scaling.LipschitzLimit
-import LatticeProb.Prob.Scaling.FloorGap
-import Parking.External.SpatialStoppingStability
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal
@@ -65,8 +69,8 @@ namespace Parking
 
 variable {d : ℕ}
 
-/-- Abbreviation for the space of bounded continuous space-time rewards, reducible so that
-instance arguments stated for it transfer transparently. -/
+/-- Abbreviation for the space of bounded continuous space-time rewards, reducible so that instance
+arguments stated for it transfer transparently. -/
 abbrev SpatBCF (d : ℕ) : Type := BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ
 
 /-! ### The reward, and the discrete/continuum stopping-value functionals of a generic
@@ -80,6 +84,8 @@ def spatialStopReward (x : Fin d → ℝ) (s : ℝ)
     (G : BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ) (t : ℝ) (y : Fin d → ℝ) : ℝ :=
   -G (s - t, x + y)
 
+/-- The reward `spatialStopReward x s G` is bounded in absolute value by the sup norm
+`‖G‖` of the cutoff field, since it is `-G` evaluated at a space-time point. -/
 theorem abs_spatialStopReward_le (x : Fin d → ℝ) (s : ℝ)
     (G : BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ) (t : ℝ) (y : Fin d → ℝ) :
     |spatialStopReward x s G t y| ≤ ‖G‖ := by
@@ -87,6 +93,9 @@ theorem abs_spatialStopReward_le (x : Fin d → ℝ) (s : ℝ)
   rw [abs_neg]
   exact G.norm_coe_le_norm _
 
+/-- The reward `spatialStopReward x s G`, read as a function of the joint elapsed-time
+and offset variable, is continuous, since `G` is continuous and the map to its argument
+`(s - t, x + y)` is continuous. -/
 theorem continuous_spatialStopReward (x : Fin d → ℝ) (s : ℝ)
     (G : BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ) :
     Continuous (fun p : ℝ × (Fin d → ℝ) => spatialStopReward x s G p.1 p.2) := by
@@ -114,6 +123,9 @@ def spatialContStopValue {ΩB : Type*} [MeasurableSpace ΩB]
 
 /-! ### The discrete functional is `1`-Lipschitz, uniformly in `R` -/
 
+/-- The discrete stopping-value functional is `1`-Lipschitz in the cutoff field: two fields
+`G1`, `G2` give stopping values differing by at most `dist G1 G2`, by comparing every
+stopping rule's terminal reward through `abs_stoppingSup_sub_le`. -/
 theorem abs_spatialStopValueCutoff_sub_le (hd1 : 1 ≤ d) (x : Fin d → ℝ) (s : ℝ) (R : ℝ)
     (G1 G2 : BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ) :
     |spatialStopValueCutoff x s R G1 - spatialStopValueCutoff x s R G2| ≤ dist G1 G2 := by
@@ -135,12 +147,16 @@ theorem abs_spatialStopValueCutoff_sub_le (hd1 : 1 ≤ d) (x : Fin d → ℝ) (s
     calc |G1 p - G2 p| = dist (G1 p) (G2 p) := (Real.dist_eq _ _).symm
       _ ≤ dist G1 G2 := G1.dist_coe_le_dist p
 
+/-- Repackaging `abs_spatialStopValueCutoff_sub_le` as a `LipschitzWith 1` statement for
+`spatialStopValueCutoff x s R`, viewed as a function of the cutoff field. -/
 theorem lipschitzWith_spatialStopValueCutoff (hd1 : 1 ≤ d) (x : Fin d → ℝ) (s : ℝ) (R : ℝ) :
     LipschitzWith 1 (spatialStopValueCutoff (d := d) x s R) := by
   refine LipschitzWith.of_dist_le_mul fun G1 G2 => ?_
   rw [NNReal.coe_one, one_mul, Real.dist_eq]
   exact abs_spatialStopValueCutoff_sub_le hd1 x s R G1 G2
 
+/-- The discrete stopping-value functional, viewed as a function of the cutoff field,
+is measurable, since it is Lipschitz and hence continuous. -/
 theorem measurable_spatialStopValueCutoff (hd1 : 1 ≤ d) (x : Fin d → ℝ) (s : ℝ) (R : ℝ)
     [MeasurableSpace (BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ)]
     [BorelSpace (BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ)] :
@@ -149,11 +165,17 @@ theorem measurable_spatialStopValueCutoff (hd1 : 1 ≤ d) (x : Fin d → ℝ) (s
 
 /-! ### `⌊R²⌋₊ → ∞` as `R → ∞` -/
 
+/-- The discrete horizon `⌊R ^ 2⌋₊` tends to infinity as `R → ∞`, since squaring and
+taking the natural floor both preserve divergence to `atTop`. -/
 theorem tendsto_nat_floor_sq_atTop : Tendsto (fun R : ℝ => ⌊R ^ 2⌋₊) atTop atTop :=
   tendsto_nat_floor_atTop.comp (tendsto_pow_atTop two_ne_zero)
 
 /-! ### The pointwise limit, via `Parking.External.SpatialStoppingStability` -/
 
+/-- Under `Parking.External.SpatialStoppingStability` and a coupling `hB` of the walk to a
+Brownian motion, the discrete stopping-value functional `spatialStopValueCutoff x s R G`
+converges, as `R → ∞`, to the continuum functional `spatialContStopValue B PB x s G`, by
+transporting the external stability hypothesis along the horizon `⌊R ^ 2⌋₊ → ∞`. -/
 theorem tendsto_spatialStopValueCutoff (hd1 : 1 ≤ d) (hd3 : d ≤ 3)
     (hStopping : Parking.External.SpatialStoppingStability)
     (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
@@ -191,6 +213,9 @@ theorem tendsto_spatialStopValueCutoff (hd1 : 1 ≤ d) (hd3 : d ≤ 3)
 /-! ### The continuum functional is measurable (as the limit of uniformly `1`-Lipschitz
 functions, no cross-integrability hypothesis needed) -/
 
+/-- The continuum stopping-value functional, viewed as a function of the cutoff field, is
+measurable, obtained as the pointwise limit of the uniformly `1`-Lipschitz discrete
+functionals `spatialStopValueCutoff x s R`, with no cross-integrability hypothesis needed. -/
 theorem measurable_spatialContStopValue (hd1 : 1 ≤ d) (hd3 : d ≤ 3)
     (hStopping : Parking.External.SpatialStoppingStability)
     (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
@@ -254,7 +279,8 @@ theorem tendsto_integral_spatialStopValueCutoff (hd1 : 1 ≤ d) (hd3 : d ≤ 3)
     Parking.cutoffBC χ (fun p => Z ω' p.1 p.2) hχ.1.continuous hχ.2.1 (hZcont ω')
     with hcutoffCont
   haveI hνprob : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by unfold LatticeProb.iidLaw; infer_instance
+  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+    unfold LatticeProb.iidLaw; infer_instance
   haveI : IsProbabilityMeasure (LatticeProb.stackLaw d) := LatticeProb.stackLaw_isProbability hd1
   haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   haveI hlawprob : IsProbabilityMeasure (Parking.law d ν) := by

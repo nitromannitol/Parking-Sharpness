@@ -2,6 +2,16 @@ import Parking.Support.MatchedLocality
 import Parking.Support.HoleMean
 import Parking.Support.RoundMeanField
 
+/-!
+# Locality of the finite-horizon conditional hole mean
+
+The conditional hole mean `matchedMeanH η ρ T x` at a horizon `T` and site `x` depends on the
+initial field `η` only through its values on the finite propagation box `boxFinset x T`, since
+`matched_counts_agree_box` transfers agreement there to agreement of the matched counts. Two
+consequences: adding a particle outside that box leaves the mean unchanged, and the mean is
+insensitive to entries of a round assignment `τ` beyond finitely many potentially used slots.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

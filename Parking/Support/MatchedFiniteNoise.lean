@@ -2,6 +2,18 @@ import Parking.Support.MatchedCounts
 import Parking.Support.KernelBridge
 import Parking.Support.MatchedUniform
 
+/-!
+# Locality from finitely many used noise entries
+
+A sharper locality lemma than plain box agreement: two common-table runs agree at radius
+`R` after `t` rounds as soon as the initial fields agree on the box of radius `R + t` and
+the round noise agrees only on the entries that are actually used, i.e. slot indices below
+the running count `matchedCount`. Combined with the uniform bound `matchedCount_le_box`,
+this shows that when the initial counts are capped by `K`, agreement on the first
+`(2 * t + 1) ^ d * K` noise entries per site already suffices, giving a genuinely finite
+instruction table.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb

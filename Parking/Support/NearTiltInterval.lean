@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TailRange
+import Parking.Support.TiltContinuity
+import Parking.Support.SubcriticalInterval
+import Parking.Support.NearTiltMoments
+
+/-!
+# Steps 1 and 2 of `lem:near-tilt`: the tilt interval and its prefactor
+
 Step 1 and Step 2 of `lem:near-tilt` (`parking.tex:2606-2637`).
 
 The paper takes `\lambda_1` in `thm:subcritical` to be the positive zero
@@ -11,10 +18,6 @@ needs of that choice is one-sided: an interval `[0,\lambda_1]` of length of orde
 `a\geq\delta^2/(12AM)`.  The prefactor of `thm:subcritical` is bounded by the same
 moment, uniformly in `\delta`, which is the last sentence of Step 2.
 -/
-import Parking.Support.TailRange
-import Parking.Support.TiltContinuity
-import Parking.Support.SubcriticalInterval
-import Parking.Support.NearTiltMoments
 
 open MeasureTheory
 
@@ -223,6 +226,9 @@ theorem intervalIntegral_tiltAbsMean_le [IsProbabilityMeasure ν]
 def nearTiltConst (θ M : ℝ) : ℝ :=
   Real.exp (2 * M / 3) * (M * ∑' m : ℕ, ((m : ℝ) + 1) * Real.exp (-(5 * θ / 6)) ^ m)
 
+/-- `nearTiltConst θ M` is positive, since it is a product of `Real.exp (2 * M / 3) > 0`
+with `M` times a geometric-type sum that is at least `1` by
+`one_le_tsum_succ_mul_geom`. -/
 theorem nearTiltConst_pos {θ M : ℝ} (hθ : 0 < θ) (hM : 0 < M) : 0 < nearTiltConst θ M := by
   have hr : Real.exp (-(5 * θ / 6)) < 1 := Real.exp_lt_one_iff.2 (by linarith)
   have hT : (1 : ℝ) ≤ ∑' m : ℕ, ((m : ℝ) + 1) * Real.exp (-(5 * θ / 6)) ^ m :=
@@ -242,7 +248,8 @@ theorem subcriticalConst_le_nearTiltConst [IsProbabilityMeasure ν] (hθ : 0 < �
     subcriticalConst ν lam₁ ≤ nearTiltConst θ M := by
   have hM1 : (1 : ℝ) ≤ M := le_trans (one_le_integral_absMoment hθ.le hexp) hM
   have hMpos : (0 : ℝ) < M := lt_of_lt_of_le zero_lt_one hM1
-  have hexp' : Integrable (fun j : ℤ => Real.exp (θ * j)) ν := integrable_exp_of_absMoment hexp hθ.le
+  have hexp' : Integrable (fun j : ℤ => Real.exp (θ * j)) ν :=
+      integrable_exp_of_absMoment hexp hθ.le
   have hlamθ' : lam₁ < θ := by linarith
   have hbase := subcriticalConst_le ν hlam0 hlamθ' hexp'
   have hZ : ∀ s ∈ Set.Icc (0 : ℝ) lam₁, (1 : ℝ) / 2 ≤ ∫ k, Real.exp (s * (k : ℝ)) ∂ν := by
@@ -374,7 +381,8 @@ theorem exists_near_tilt_bound {d : ℕ} (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ 
   have hanonneg : (0 : ℝ) ≤ 1 / (12 * A * M) * δ ^ 2 := by positivity
   have hmono : rangeExp d ((1 / 3) * ∫ s in (0 : ℝ)..lam₁, drift (ν δ) s) t
       ≤ rangeExp d (1 / (12 * A * M) * δ ^ 2) t := rangeExp_anti hd hanonneg ha t
-  have hconst := subcriticalConst_le_nearTiltConst hθ hexpδ hint hmeanδ' hδ0.le hMδ hlam0 hlamθ hlamδ
+  have hconst :=
+      subcriticalConst_le_nearTiltConst hθ hexpδ hint hmeanδ' hδ0.le hMδ hlam0 hlamθ hlamδ
   calc S (law d (ν δ)) t
       ≤ subcriticalConst (ν δ) lam₁
           * rangeExp d ((1 / 3) * ∫ s in (0 : ℝ)..lam₁, drift (ν δ) s) t := hbound

@@ -29,32 +29,19 @@ COMPARATOR_LANDRUN=<landrun> COMPARATOR_LEAN4EXPORT=<lean4export> \
   lake env <comparator>/.lake/build/bin/comparator ParkingAudit/<Pair>/comparator.json
 ```
 
-## 2026-09-27
+## Run of 2026-09-27
 
-The comparator was run again on every pair on 2026-09-27, after the audit library was renamed from `Audit` to `ParkingAudit` and Lattice-Probability and the sandpile repository were pinned at `720e65e` and `cd8b15a`. The run used the Lean sources of commit `5683887`, which differ from those of the commit that records this run only in this file. The tools, their revisions and the machine were those of the first run, and each pair was again checked with the Lean kernel and then with the nanoda kernel enabled.
-
-| Pair | Lean kernel | Lean and nanoda kernels |
-|---|---|---|
-| `Growth` | passed (315 s) | passed (314 s) |
-| `Master` | passed (294 s) | passed (386 s) |
-| `Near` | passed (300 s) | passed (401 s) |
-| `Nearest` | passed (336 s) | passed (480 s) |
-| `NearestCounterexample` | passed (220 s) | passed (304 s) |
-| `SubcriticalTail` | passed (168 s) | passed (185 s) |
-| `OrientedWalk` | passed (401 s) | passed (506 s) |
-| `Trichotomy` | passed (256 s) | passed (318 s) |
-
-## 2026-09-27 (second)
-
-The comparator was run again on every pair on 2026-09-27, on a second local machine (Linux 6.17), with the same tool revisions as above. The run used the Lean sources of commit `028f718`, after the U-concentration, Green-norms, strong-minimum-principle, variance-scale, critical-scale lower-tail and binomial local CLT vocabulary copies and bridge lemmas were removed. Each pair was again checked with the Lean kernel and then with the nanoda kernel enabled.
+Every pair was run again on 2026-09-27, at commit `81b30f2`, against the current
+statements and the published Lattice-Probability pin, on a second local machine
+(Linux 6.17), with the same tool revisions as above.
 
 | Pair | Lean kernel | Lean and nanoda kernels |
 |---|---|---|
-| `Growth` | passed (162 s) | passed (198 s) |
-| `Master` | passed (194 s) | passed (209 s) |
-| `Near` | passed (190 s) | passed (230 s) |
-| `Nearest` | passed (234 s) | passed (391 s) |
-| `NearestCounterexample` | passed (194 s) | passed (199 s) |
-| `SubcriticalTail` | passed (110 s) | passed (119 s) |
-| `OrientedWalk` | passed (228 s) | passed (315 s) |
-| `Trichotomy` | passed (171 s) | passed (224 s) |
+| `Growth` | passed (180 s) | passed (229 s) |
+| `Master` | passed (181 s) | passed (216 s) |
+| `Near` | passed (187 s) | passed (237 s) |
+| `Nearest` | passed (248 s) | passed (388 s) |
+| `NearestCounterexample` | passed (241 s) | passed (208 s) |
+| `OrientedWalk` | passed (232 s) | passed (472 s) |
+| `SubcriticalTail` | passed (121 s) | passed (140 s) |
+| `Trichotomy` | passed (180 s) | passed (212 s) |

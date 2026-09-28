@@ -1,6 +1,15 @@
 import Parking.Support.WeightedMoment
 import Parking.Support.MomentTail
 
+/-!
+# Weighted `rNorm` bound
+
+Restates `Parking.integral_weighted_rpow_le` in terms of `LatticeProb.MomentNorm.rNorm`: a
+nonnegative weighted sum of random variables each of `rNorm` at most `M` has `rNorm` at most
+`(∑ w i) * M`. The reduction to the moment bound goes through raising both sides to the
+power `r`, so it needs `r ≥ 1` and every summand's `r`-th moment to be integrable.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 
 noncomputable section
@@ -27,10 +36,13 @@ theorem rNorm_weighted_sum_le {Ω ι : Type} [MeasurableSpace Ω]
   have h := integral_weighted_rpow_le μ S w F hw hF hm hr hi (M ^ r) (Real.rpow_nonneg hM r) hmi
   refine ⟨h.1, ?_⟩
   have hW : 0 ≤ ∑ i ∈ S, w i := Finset.sum_nonneg hw
-  have hX (ω : Ω) : 0 ≤ ∑ i ∈ S, w i * F i ω := Finset.sum_nonneg fun i hiS => mul_nonneg (hw i hiS) (hF i hiS ω)
+  have hX (ω : Ω) : 0 ≤ ∑ i ∈ S, w i * F i ω :=
+    Finset.sum_nonneg fun i hiS => mul_nonneg (hw i hiS) (hF i hiS ω)
   unfold rNorm
   simp only [abs_of_nonneg (hX _)]
-  have hbnd := Real.rpow_le_rpow (integral_nonneg fun ω => Real.rpow_nonneg (hX ω) r) h.2 (by positivity : 0 ≤ 1 / r)
+  have hbnd := Real.rpow_le_rpow
+    (integral_nonneg fun ω => Real.rpow_nonneg (hX ω) r) h.2 (by positivity : 0 ≤ 1 / r)
   apply hbnd.trans_eq
-  rw [← Real.mul_rpow hW hM, ← Real.rpow_mul (mul_nonneg hW hM), mul_one_div_cancel hr0.ne', Real.rpow_one]
+  rw [← Real.mul_rpow hW hM, ← Real.rpow_mul (mul_nonneg hW hM), mul_one_div_cancel hr0.ne',
+    Real.rpow_one]
 end Parking

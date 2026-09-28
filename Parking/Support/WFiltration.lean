@@ -1,19 +1,19 @@
-/-
-The filtration of `lem:w-martingale`.
-
-The exploration reveals the instructions one at a time, and the sigma-algebra
-of what it has revealed by step `i` is realized here as the comap of a self-map
-of the space of realizations: `Parking.wTrunc i` erases every instruction the
-exploration has not yet read, replacing it by a fixed neighbour of its own site.
-Two facts make that the right object.  Erasing the unread instructions does not
-change the first `i` steps of the exploration, because the exploration reads
-only what it has revealed, so `wTrunc i` is idempotent and the comaps increase
-with `i`.  And a set that is decided by the first `i` steps is its own preimage
-under `wTrunc i`, so it lies in the comap without any factorization through the
-revealed values; that is what makes the increments measurable for the next
-sigma-algebra of the filtration.
--/
 import Parking.Support.WReads
+
+/-!
+# The filtration of `lem:w-martingale`
+
+The exploration reveals the instructions one at a time, and the sigma-algebra of what it has
+revealed by step `i` is realized here as the comap of a self-map of the space of
+realizations: `Parking.wTrunc i` erases every instruction the exploration has not yet read,
+replacing it by a fixed neighbour of its own site. Two facts make that the right object.
+Erasing the unread instructions does not change the first `i` steps of the exploration,
+because the exploration reads only what it has revealed, so `wTrunc i` is idempotent and the
+comaps increase with `i`. And a set that is decided by the first `i` steps is its own
+preimage under `wTrunc i`, so it lies in the comap without any factorization through the
+revealed values; that is what makes the increments measurable for the next sigma-algebra of
+the filtration.
+-/
 
 noncomputable section
 
@@ -117,12 +117,17 @@ sigma-algebra of what the exploration has revealed by step `i`. -/
 def wTrunc (i₀ : Fin d) (n i : ℕ) (ω : Data d) : Data d :=
   (ω.1, fun q => if ∃ k, k < i ∧ wPair i₀ n k ω = q then ω.2.1 q else q.1 + unit i₀, ω.2.2)
 
+/-- Erasing the unread instructions leaves the configuration untouched. -/
 theorem wTrunc_fst (i₀ : Fin d) (n i : ℕ) (ω : Data d) : (wTrunc i₀ n i ω).1 = ω.1 := rfl
 
+/-- Erasing the unread instructions leaves the uniform variables untouched. -/
 theorem wTrunc_rank (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
     (wTrunc i₀ n i ω).2.2 = ω.2.2 := rfl
 
 open scoped Classical in
+/-- Erasing the unread instructions leaves an instruction the exploration has already read
+before step `i` untouched: it falls in the branch of `wTrunc` that copies the original
+stack. -/
 theorem wTrunc_stack_of_read (i₀ : Fin d) (n i : ℕ) (ω : Data d) {k : ℕ} (hk : k < i) :
     (wTrunc i₀ n i ω).2.1 (wPair i₀ n k ω) = ω.2.1 (wPair i₀ n k ω) := by
   show (if ∃ j, j < i ∧ wPair i₀ n j ω = wPair i₀ n k ω then _ else _) = _
@@ -168,6 +173,8 @@ theorem wTrunc_wTrunc (i₀ : Fin d) (n : ℕ) {i j : ℕ} (hij : i ≤ j) (ω :
 /-! ### The filtration -/
 
 open scoped Classical in
+/-- `wTrunc i₀ n i` is measurable: the branch condition at each coordinate is a countable
+union of events determined by the pairs read at the earlier steps. -/
 theorem measurable_wTrunc (i₀ : Fin d) (n i : ℕ) : Measurable (wTrunc i₀ n i) := by
   classical
   refine measurable_fst.prodMk (Measurable.prodMk ?_ (measurable_snd.comp measurable_snd))
@@ -188,10 +195,14 @@ theorem measurable_wTrunc (i₀ : Fin d) (n i : ℕ) : Measurable (wTrunc i₀ n
 @[reducible] def wFiltration (i₀ : Fin d) (n i : ℕ) : MeasurableSpace (Data d) :=
   MeasurableSpace.comap (wTrunc i₀ n i) inferInstance
 
+/-- The sigma-algebra of what the exploration has revealed by step `i` is a sub-sigma-algebra
+of the ambient one, since `wTrunc i₀ n i` is measurable. -/
 theorem wFiltration_le (i₀ : Fin d) (n i : ℕ) :
     wFiltration i₀ n i ≤ inferInstanceAs (MeasurableSpace (Data d)) :=
   (measurable_wTrunc i₀ n i).comap_le
 
+/-- **The filtration is increasing in `i`**: it is the comap of `wTrunc`, and `wTrunc_wTrunc`
+shows `wTrunc i` factors through `wTrunc j` for `i ≤ j`. -/
 theorem wFiltration_mono (i₀ : Fin d) (n : ℕ) : Monotone (wFiltration i₀ n) := by
   intro i j hij A hA
   obtain ⟨B, hB, rfl⟩ := hA

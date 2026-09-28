@@ -1,11 +1,23 @@
 import Parking.Support.PartialInvariant
 
+/-!
+# Comparisons under partial integration
+
+Two structural facts about `partialInt`, the integral over the coordinates outside a set
+`S` at a fixed configuration on `S`: updating a coordinate before partially integrating is
+the same as partially integrating over the enlarged set with that coordinate fixed
+(`partialInt_update_insert`), and a pointwise linear comparison between two bounded
+measurable functions survives partial integration at every retained configuration
+(`partialInt_mul_le`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {ι : Type*} {X : ι → Type*} [∀ i, MeasurableSpace (X i)] [DecidableEq ι]
 
-/-- Updating a functional before partial integration retains that coordinate at the prescribed value. -/
+/-- Updating a functional before partial integration retains that coordinate at the
+prescribed value. -/
 theorem partialInt_update_insert (μ : ∀ i, Measure (X i))
     (S : Set ι) [DecidablePred (· ∈ S)] (F : (Π i, X i) → ℝ) (j : ι)
     (ω : Π i, X i) (a : X j) :

@@ -1,4 +1,14 @@
-/- Steps 2, 3 and 4 of the proof of `thm:oriented-walk` (`parking.tex:3294-3357`):
+import Parking.Support.OrientedMomentRecursion
+import Parking.Support.OrientedConcentration
+import Parking.Support.OrientedTwoMean
+import Parking.Support.OrientedLogMean
+import Parking.Support.UpperTarget
+import Parking.Support.ProductLift
+
+/-!
+# Moment inequalities for the oriented walk theorem
+
+Steps 2, 3 and 4 of the proof of `thm:oriented-walk` (`parking.tex:3294-3357`):
 the moment inequalities the five-step assembly consumes.
 
 The moment recursion is closed by bounding the `r`-th moment of the divisible
@@ -6,12 +16,6 @@ odometer through its mean and the directed concentration estimate, and the
 resulting inequalities are exactly the hypotheses `hmom`, `hmom2` and `herr` of
 `Parking.oriented_walk_of_steps`.
 -/
-import Parking.Support.OrientedMomentRecursion
-import Parking.Support.OrientedConcentration
-import Parking.Support.OrientedTwoMean
-import Parking.Support.OrientedLogMean
-import Parking.Support.UpperTarget
-import Parking.Support.ProductLift
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm rNorm_add_le)
@@ -94,6 +98,12 @@ theorem exists_oriented_uOriented_norm (hd : 2 ≤ d) (hConc : Parking.External.
 
 /-! ### Step 2: the moment inequality at `d = 2` and `r = 8` -/
 
+/-- At `d = 2` and `r = 8`, the `L^8`-norm of `U` at horizon `n` is bounded by `C n^{1/4}`
+plus `C n^{1/8}` times one more than the `1/16`-root of the same `L^8` moment: a self-
+referential bound obtained from `exists_oriented_U_moment_recursion`, the norm comparison
+`exists_oriented_uOriented_norm`, and the two-sided divisible bound
+`exists_meanuOriented_two_upper`, to be resolved elsewhere by treating it as a bound on the
+unknown `A = (∫ U^8)^{1/8}` itself. -/
 theorem exists_oriented_hmom2 (hBern : Parking.External.Bernstein)
     (hConc : Parking.External.UConcentration) (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
@@ -199,6 +209,12 @@ theorem exists_oriented_hmom2 (hBern : Parking.External.Bernstein)
 
 /-! ### Step 4: the moment inequality at `d ≥ 3` and `r = 2 ∨ ⌈log(n+1)⌉` -/
 
+/-- At `d ≥ 3` and the exponent `r = 2 ⊔ ⌈log(n+1)⌉`, the `L^r`-norm of `U` at horizon `n`
+is bounded by `C log(n+1)` plus `C` times `√r` times the same `L^r` moment's `1/r`-root,
+plus `C·r`: the `d ≥ 3` analogue of `exists_oriented_hmom2`, obtained the same way from
+`exists_oriented_U_moment_recursion`, `exists_oriented_uOriented_norm` and
+`exists_meanuOriented_two_upper`, again a self-referential bound on the unknown moment
+itself. -/
 theorem exists_oriented_hmom (hBern : Parking.External.Bernstein)
     (hConc : Parking.External.UConcentration) (d : ℕ) (hd : 3 ≤ d)
     (ν : Measure ℤ) (hν : CriticalLaw ν) :

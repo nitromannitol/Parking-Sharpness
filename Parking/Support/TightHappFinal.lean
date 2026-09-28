@@ -1,4 +1,23 @@
-/-
+import Parking.Support.TightHappStopping
+import Parking.Support.TightHappJensen
+import Parking.Support.TightHappCauchySchwarz
+import Parking.Support.OrientedTwoMean
+import Parking.Support.OrientedLaw
+import Parking.Support.TightYCutoff
+import LatticeProb.Prob.ConvexOrder
+import LatticeProb.Prob.Laplace
+import LatticeProb.Prob.ExpTail
+import Parking.Support.CriticalLawReal
+import LatticeProb.Prob.ConvexProduct
+import Parking.Support.UConvex
+import Parking.Support.OrientedMeanLimit
+import Parking.Support.OrientedScalingCutoff
+import Parking.Support.TightYConvFinal
+import Parking.Support.ConfMoments
+
+/-!
+# The final assembly of `happ`
+
 The final assembly of `happ` (`Parking.oriented_scaling_of_cutoff`'s last remaining hypothesis):
 for every cutoff level `A : ℕ` and scale `n : ℕ`,
 
@@ -19,22 +38,6 @@ for a sequence `e : ℕ → ℝ` with `e → 0`.  Three cases:
   ALREADY sealed) and by `Parking.exists_integral_norm_boxRewardMap_le` respectively, combined
   with the walk's own bad-event tail bound `Parking.measureReal_sup_walkPartialSum_sq_le`.
 -/
-import Parking.Support.TightHappStopping
-import Parking.Support.TightHappJensen
-import Parking.Support.TightHappCauchySchwarz
-import Parking.Support.OrientedTwoMean
-import Parking.Support.OrientedLaw
-import Parking.Support.TightYCutoff
-import LatticeProb.Prob.ConvexOrder
-import LatticeProb.Prob.Laplace
-import LatticeProb.Prob.ExpTail
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import Parking.Support.OrientedMeanLimit
-import Parking.Support.OrientedScalingCutoff
-import Parking.Support.TightYConvFinal
-import Parking.Support.ConfMoments
 
 open LatticeProb.BoxClamp (rewardBox)
 open LatticeProb.MomentNorm (rNorm)
@@ -47,18 +50,26 @@ noncomputable section
 
 namespace Parking
 
+/-- The Borel `σ`-algebra on `C(rewardBox T A, ℝ)`, needed to speak of measurability and
+integrability of functions valued in this continuous-function space. -/
 local instance instMeasurableSpaceRewardBoxTightHappFinal (T A : ℝ) :
     MeasurableSpace C(rewardBox T A, ℝ) := borel _
+/-- `C(rewardBox T A, ℝ)` is a Borel space for the instance above, by definitional
+unfolding. -/
 local instance instBorelSpaceRewardBoxTightHappFinal (T A : ℝ) :
     BorelSpace C(rewardBox T A, ℝ) := ⟨rfl⟩
 
 /-! ### The scale-`0` case: both terms vanish identically -/
 
+/-- At scale `n = 0`, `orientedGridReward` vanishes identically, since its defining
+`n ^ (-1/4)` prefactor is Lean's junk value `0` at `n = 0`. -/
 theorem orientedGridReward_zero_n (N : ℕ) (η : Site 2 → ℝ) (m j : ℤ) :
     orientedGridReward 0 N η m j = 0 := by
   unfold orientedGridReward
   norm_num
 
+/-- At scale `0`, `boxRewardMap` is the zero function, since it interpolates the
+identically-zero grid reward of `orientedGridReward_zero_n`. -/
 theorem boxRewardMap_zero_n (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A) (η : Site 2 → ℝ) :
     boxRewardMap T hT A hA 0 η = 0 := by
   rw [boxRewardMap_eq_boxFieldAssemble]
@@ -69,12 +80,17 @@ theorem boxRewardMap_zero_n (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A) (�
   ext p
   simp [boxFieldAssemble]
 
+/-- `Y A 0 w = 0` for every cutoff `A`, combining `boxRewardMap_zero_n` with
+`Parking.orientedCutoffValuePot_zero`. -/
 theorem Y_zero_n (A : ℕ) (w : Data 2) : Y A 0 w = 0 := by
   unfold Y
   rw [boxRewardMap_zero_n, orientedCutoffValuePot_zero]
 
+/-- `uOriented` at horizon `0`, read at the origin, is `0` by definitional unfolding. -/
 theorem uOriented_confReal_zero_n (w : Data 2) : uOriented (confReal w) 0 0 = 0 := rfl
 
+/-- The `n = 0` case of `happ`'s difference: both `n ^ (-1/4) * u⃗_n(0)` and `Y A 0 w` vanish,
+by `uOriented_confReal_zero_n` and `Y_zero_n` respectively. -/
 theorem happ_diff_eq_zero_of_n_zero (A : ℕ) (w : Data 2) :
     (0 : ℝ) ^ (-(1 : ℝ) / 4) * uOriented (confReal w) 0 0 - Y A 0 w = 0 := by
   rw [uOriented_confReal_zero_n, Y_zero_n, mul_zero, sub_zero]
@@ -159,16 +175,20 @@ theorem happ_bound_A_zero (ν : Measure ℤ) (hν : CriticalLaw ν) (p : ℝ) (h
         ∂(iidLaw 2 (realLaw ν))) ≤ K := by
       have heq2 : K * (1 + ((0:ℕ):ℝ)) ^ (1 / 2 + 2 / p) = K := by norm_num
       linarith [hKbound, heq2]
-    have hbridge : (∫ w, 2 * ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n (confReal w)‖
-        ∂(orientedLaw 2 ν)) = 2 * ∫ η, ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n η‖
+    have hbridge : (∫ w, 2 * ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n
+          (confReal w)‖ ∂(orientedLaw 2 ν)) =
+        2 * ∫ η, ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n η‖
           ∂(iidLaw 2 (realLaw ν)) := by
       rw [integral_const_mul, integral_oriented_confReal (by norm_num) ν hGmeas]
     have hYai2 : Integrable (fun w : Data 2 =>
-        2 * ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n (confReal w)‖) (orientedLaw 2 ν) := by
+        2 * ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n (confReal w)‖)
+        (orientedLaw 2 ν) := by
       have hcomp : Integrable (fun w : Data 2 =>
-          ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n (confReal w)‖) (orientedLaw 2 ν) := by
+          ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n (confReal w)‖)
+          (orientedLaw 2 ν) := by
         have : Integrable (fun η : Site 2 → ℝ =>
-            ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n η‖) (iidLaw 2 (realLaw ν)) := hGi
+            ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n η‖)
+            (iidLaw 2 (realLaw ν)) := hGi
         have heqI : Integrable ((fun η : Site 2 → ℝ =>
             ‖boxRewardMap 1 zero_le_one ((0:ℕ):ℝ) (Nat.cast_nonneg 0) n η‖) ∘ confReal)
             (orientedLaw 2 ν) := by
@@ -279,8 +299,9 @@ theorem happ_bound_A_pos (ν : Measure ℤ) (hν : CriticalLaw ν) (p : ℝ) (hp
               ∂(walkLaw 2)) +
           ‖boxRewardMap 1 zero_le_one Ar hAr0' n η‖ * (walkLaw 2).real (walkBad n Ar) := by
     intro η
-    have hi1 : Integrable (fun p => Set.indicator (walkBad n Ar) (fun p => (n : ℝ) ^ (-(1 : ℝ) / 4) *
-        orientedMax (orientedPotential η) n 0 p) p) (walkLaw 2) :=
+    have hi1 : Integrable (fun p => Set.indicator (walkBad n Ar)
+        (fun p => (n : ℝ) ^ (-(1 : ℝ) / 4) *
+          orientedMax (orientedPotential η) n 0 p) p) (walkLaw 2) :=
       (hgscale η).indicator (measurableSet_walkBad n Ar)
     have hi2 : Integrable (fun p => Set.indicator (walkBad n Ar)
         (fun _ => ‖boxRewardMap 1 zero_le_one Ar hAr0' n η‖) p) (walkLaw 2) :=
@@ -334,7 +355,8 @@ theorem happ_bound_A_pos (ν : Measure ℤ) (hν : CriticalLaw ν) (p : ℝ) (hp
     rw [Real.norm_eq_abs, abs_of_nonneg (abs_nonneg _)]
     exact (hpt η).trans (hetabound η)
   have hintmono := integral_mono hLHSint hRHSint (fun η => (hpt η).trans (hetabound η))
-  have hRHSeq : (∫ η, ((n : ℝ) ^ (-(1 : ℝ) / 4) * (((walkLaw 2).real (walkBad n Ar)) ^ ((7 : ℝ) / 8) *
+  have hRHSeq : (∫ η, ((n : ℝ) ^ (-(1 : ℝ) / 4) *
+          (((walkLaw 2).real (walkBad n Ar)) ^ ((7 : ℝ) / 8) *
         rNorm (walkLaw 2) 8 (orientedMax (orientedPotential η) n 0)) +
       ‖boxRewardMap 1 zero_le_one Ar hAr0' n η‖ * (walkLaw 2).real (walkBad n Ar))
       ∂(iidLaw 2 (realLaw ν))) =

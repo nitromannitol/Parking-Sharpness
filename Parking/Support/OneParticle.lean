@@ -30,6 +30,39 @@ nothing in the argument has to say which particle that is.
 -/
 import Parking.Support.Coupling
 
+/-!
+# Lemma 3.3: the one-particle coupling discrepancy
+
+Lemma 3.3 of `parking.tex`: adding one particle to the configuration changes
+the state by exactly one active particle at one site, or by exactly one
+unfilled hole at one site, and never by both.
+
+The discrepancy is carried through the rounds as `OneParticleInv`: either the
+second process has one active particle the first has not and the holes agree,
+or the actives agree and the first process has one unfilled hole the second has
+not. The base case splits on the sign of the count at the site: raising a
+nonnegative count adds the next label there and leaves the holes alone, raising
+a negative one cancels a hole and leaves the actives alone.
+
+The step is a count.  Writing `A` for the arrivals at the site in question and
+`h` for the holes there, `min(|A|, h)` of the arrivals settle, and the ones
+that do not are those the round's order puts at rank `h` or above
+(`settledIn`, `card_settledIn`).  Adding an arrival cannot make a survivor
+settle, and neither can removing a hole (`survivors_subset_insert`,
+`survivors_subset_holes`), so the survivors of the second process contain those
+of the first, and the two counts decide which case holds:
+
+- from the extra particle, at the site it reaches: if `|A| + 1 ≤ h` every
+  arrival settles in both and the second process is left one hole short; if
+  `h ≤ |A|` both fill all `h` holes and exactly one particle is left over;
+- from the extra hole, at its site: if `|A| ≤ h - 1` every arrival settles in
+  both and the extra hole survives; if `h ≤ |A|` one common particle settles
+  only in the first process.
+
+Where exactly one particle is left over, `eq_insert_of_card_succ` names it, and
+nothing in the argument has to say which particle that is.
+-/
+
 noncomputable section
 
 namespace Parking
@@ -49,9 +82,11 @@ def settledIn (A : Finset α) (r : α → α → Prop) [DecidableRel r] (h : ℕ
   A.filter fun p => (A.filter fun q => r q p).card < h
 
 omit [DecidableEq α] in
+/-- `settledIn A r h` is a subset of `A`. -/
 theorem settledIn_subset (A : Finset α) (h : ℕ) : settledIn A r h ⊆ A :=
   Finset.filter_subset _ _
 
+/-- When `A.card ≤ h`, every element of `A` counts as settled: `settledIn A r h = A`. -/
 theorem settledIn_eq_self (hirr : ∀ a, ¬ r a a) (htr : ∀ a b c, r a b → r b c → r a c)
     (htot : ∀ a b, a ≠ b → r a b ∨ r b a) {A : Finset α} {h : ℕ} (hA : A.card ≤ h) :
     settledIn A r h = A := by
@@ -59,6 +94,7 @@ theorem settledIn_eq_self (hirr : ∀ a, ¬ r a a) (htr : ∀ a b c, r a b → r
   rw [settledIn, card_filter_countLT_lt hirr htr htot h]
   omega
 
+/-- The number of settled elements of `A` is `min A.card h`. -/
 theorem card_settledIn (hirr : ∀ a, ¬ r a a) (htr : ∀ a b c, r a b → r b c → r a c)
     (htot : ∀ a b, a ≠ b → r a b ∨ r b a) (A : Finset α) (h : ℕ) :
     (settledIn A r h).card = min A.card h :=
@@ -112,6 +148,8 @@ end Abstract
 
 /-! ### One round, in counts -/
 
+/-- The particles active at `x` after round `t + 1` are exactly that round's arrivals
+at `x` that did not settle. -/
 theorem pActiveAt_succ_eq (D : PDriver d) (t : ℕ) (x : Site d) :
     pActiveAt D (pState D (t + 1)) (t + 1) x
       = pArrivalsAt D (pState D t) t x \ pSettledAt D t x := by
@@ -128,6 +166,8 @@ theorem pActiveAt_succ_eq (D : PDriver d) (t : ℕ) (x : Site d) :
     exact hno ⟨(mem_pArrivalsAt_iff D t x p).mpr ⟨hact, hpos⟩,
       Bool.not_eq_false _ |>.mp hs⟩
 
+/-- Given a `LabelOrder`, the active count at `x` after round `t + 1` is that round's
+arrival count at `x` minus the holes `x` had at `t`. -/
 theorem pActiveCount_succ (h : LabelOrder d) (D : PDriver d) (t : ℕ) (x : Site d) :
     pActiveCount D (t + 1) x
       = (pArrivalsAt D (pState D t) t x).card - pHoleCount D t x := by
@@ -136,10 +176,14 @@ theorem pActiveCount_succ (h : LabelOrder d) (D : PDriver d) (t : ℕ) (x : Site
     card_pSettledAt h]
   omega
 
+/-- The hole count at `x` after round `t + 1` is the hole count at `t` minus that
+round's arrival count at `x`. -/
 theorem pHoleCount_succ (D : PDriver d) (t : ℕ) (x : Site d) :
     pHoleCount D (t + 1) x
       = pHoleCount D t x - (pArrivalsAt D (pState D t) t x).card := rfl
 
+/-- The particles active at `x` after round `t + 1` are that round's arrivals at `x`
+with the bottom `pHoleCount D t x` of them, in the order `prec D.rank t`, removed. -/
 theorem pActiveAt_succ_eq' (D : PDriver d) (t : ℕ) (x : Site d) :
     pActiveAt D (pState D (t + 1)) (t + 1) x
       = pArrivalsAt D (pState D t) t x
@@ -149,12 +193,16 @@ theorem pActiveAt_succ_eq' (D : PDriver d) (t : ℕ) (x : Site d) :
 
 /-! ### How the two processes' arrivals compare -/
 
+/-- Two drivers with the same move map send an active particle with the same
+position at `t` to the same next position. -/
 theorem pNextPos_congr {D E : PDriver d} (hmove : E.move = D.move) {t : ℕ} {p : Label d}
     (hD : (pState D t).active p = true) (hE : (pState E t).active p = true)
     (hp : (pState D t).pos p = (pState E t).pos p) :
     pNextPos E (pState E t) t p = pNextPos D (pState D t) t p := by
   rw [pNextPos_of_active _ _ _ _ hD, pNextPos_of_active _ _ _ _ hE, hp, hmove]
 
+/-- Two drivers with the same move map and matching active sets and positions at `t`
+have the same arrivals at every site. -/
 theorem pArrivalsAt_congr {D E : PDriver d} (hmove : E.move = D.move) (t : ℕ)
     (hact : ∀ p, (pState E t).active p = (pState D t).active p)
     (hpos : ∀ p, (pState D t).active p = true → (pState D t).pos p = (pState E t).pos p)
@@ -168,6 +216,7 @@ theorem pArrivalsAt_congr {D E : PDriver d} (hmove : E.move = D.move) (t : ℕ)
   · rintro ⟨h1, h2⟩
     exact ⟨h1, by rwa [pNextPos_congr hmove h1 (by rw [hact p]; exact h1) (hpos p h1)]⟩
 
+/-- A particle inactive at `t` is not among that round's arrivals at any site. -/
 theorem notMem_pArrivalsAt {D : PDriver d} {t : ℕ} {u : Label d}
     (hu : (pState D t).active u = false) (x : Site d) :
     u ∉ pArrivalsAt D (pState D t) t x := by
@@ -176,6 +225,9 @@ theorem notMem_pArrivalsAt {D : PDriver d} {t : ℕ} {u : Label d}
   rw [hu] at hmem
   exact Bool.noConfusion hmem.1
 
+/-- If `u` is the sole extra active particle of `E` over `D` (same move map, positions and
+other actives agreeing), `E`'s arrivals at `u`'s next position `w` are `D`'s arrivals at `w`
+with `u` inserted, and agree with `D`'s elsewhere. -/
 theorem pArrivalsAt_insert {D E : PDriver d} (hmove : E.move = D.move) (t : ℕ) (u : Label d)
     (hu' : (pState E t).active u = true) (hu : (pState D t).active u = false)
     (hother : ∀ p, p ≠ u → (pState E t).active p = (pState D t).active p)
@@ -209,6 +261,8 @@ theorem pArrivalsAt_insert {D E : PDriver d} (hmove : E.move = D.move) (t : ℕ)
     · rw [if_neg hx]
       exact hiff
 
+/-- Two drivers with matching active sets and positions at `t` have the same active
+particles at every site. -/
 theorem pActiveAt_congr {D E : PDriver d} (t : ℕ)
     (hact : ∀ p, (pState E t).active p = (pState D t).active p)
     (hpos : ∀ p, (pState D t).active p = true → (pState D t).pos p = (pState E t).pos p)
@@ -219,6 +273,7 @@ theorem pActiveAt_congr {D E : PDriver d} (t : ℕ)
   · rintro ⟨h1, h2⟩; exact ⟨h1, by rwa [hpos p h1]⟩
   · rintro ⟨h1, h2⟩; exact ⟨h1, by rwa [← hpos p h1]⟩
 
+/-- A particle inactive at `t` is not among the particles active at any site at `t`. -/
 theorem notMem_pActiveAt {D : PDriver d} {t : ℕ} {u : Label d}
     (hu : (pState D t).active u = false) (x : Site d) :
     u ∉ pActiveAt D (pState D t) t x := by
@@ -226,6 +281,8 @@ theorem notMem_pActiveAt {D : PDriver d} {t : ℕ} {u : Label d}
   rw [mem_pActiveAt_iff, hu] at hmem
   exact Bool.noConfusion hmem.1
 
+/-- If `u` is the sole extra active particle of `E` over `D`, `E`'s active set at `u`'s
+position is `D`'s active set there with `u` inserted, and agrees with `D`'s elsewhere. -/
 theorem pActiveAt_insert {D E : PDriver d} (t : ℕ) (u : Label d)
     (hu' : (pState E t).active u = true) (hu : (pState D t).active u = false)
     (hother : ∀ p, p ≠ u → (pState E t).active p = (pState D t).active p)
@@ -270,6 +327,8 @@ def OneParticleInv (D : PDriver d) (x₀ : Site d) (t : ℕ) : Prop :=
     ∃ z : Site d, pHoleCount D t z = pHoleCount (addParticleDriver x₀ D) t z + 1 ∧
       ∀ x, x ≠ z → pHoleCount D t x = pHoleCount (addParticleDriver x₀ D) t x)
 
+/-- A particle is active after round `t + 1` iff it lies among the arrivals at its
+next position that the order `prec X.rank t` does not settle there. -/
 theorem active_succ_iff_mem (X : PDriver d) (t : ℕ) (p : Label d) :
     (pState X (t + 1)).active p = true
       ↔ p ∈ pArrivalsAt X (pState X t) t (pNextPos X (pState X t) t p)
@@ -278,10 +337,12 @@ theorem active_succ_iff_mem (X : PDriver d) (t : ℕ) (p : Label d) :
   rw [← pActiveAt_succ_eq', mem_pActiveAt_iff]
   exact ⟨fun hp => ⟨hp, rfl⟩, fun hp => hp.1⟩
 
+/-- A particle active after round `t + 1` was already active at `t`. -/
 theorem pActive_of_succ (X : PDriver d) (t : ℕ) (p : Label d)
     (h : (pState X (t + 1)).active p = true) : (pState X t).active p = true :=
   ((pActive_succ_iff X t p).mp h).1
 
+/-- A particle inactive at `t` stays inactive at `t + 1`. -/
 theorem pActive_succ_eq_false (X : PDriver d) (t : ℕ) (p : Label d)
     (hf : (pState X t).active p = false) : (pState X (t + 1)).active p = false := by
   cases hb : (pState X (t + 1)).active p with
@@ -613,6 +674,8 @@ theorem oneParticleInv_zero (D : PDriver d) (x₀ : Site d) : OneParticleInv D x
       rw [hhol, hhol]
       simp only [addParticle, if_neg hx]
 
+/-- `OneParticleInv` holds at every time `t`, by induction from the base case
+`oneParticleInv_zero` and the one-round step `oneParticleInv_succ`. -/
 theorem oneParticleInv_all (h : LabelOrder d) (D : PDriver d) (x₀ : Site d) :
     ∀ t : ℕ, OneParticleInv D x₀ t := by
   intro t

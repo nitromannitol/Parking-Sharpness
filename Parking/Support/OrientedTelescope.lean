@@ -1,12 +1,20 @@
-/- The telescoping total of the directed instruction variance. -/
 import Parking.Support.OrientedLayerBounds
 import Parking.Support.OrientedVariance
+
+/-!
+# Oriented telescope
+
+The telescoping total of the directed instruction variance.
+-/
 
 noncomputable section
 namespace Parking
 open LatticeProb Finset Filter
 variable {d : ℕ}
 
+/-- The sum of squares of the directed layer weights `orientedLayer d m` tends to zero
+as the horizon `m → ∞`, by squeezing it between `0` and `C / √m` using the two-sided
+bound from `exists_orientedLayer_sq_bounds`. -/
 theorem tsum_orientedLayer_sq_tendsto_zero (hd : 2 ≤ d) :
     Tendsto (fun m : ℕ => ∑' x : Site d, orientedLayer d m x ^ 2) atTop (nhds 0) := by
   obtain ⟨c, C, hc, hC, hb⟩ := exists_orientedLayer_sq_bounds (d := d) (by omega)
@@ -23,6 +31,9 @@ theorem tsum_orientedLayer_sq_tendsto_zero (hd : 2 ≤ d) :
   apply div_le_div_of_nonneg_left hC.le (Real.sqrt_pos.mpr (by linarith)) ?_
   exact le_self_pow₀ hs (by omega)
 
+/-- The successive differences of `∑' x, orientedLayer d l x ^ 2` telescope to a series
+with sum `1`: the partial sums equal `(∑' orientedLayer d 0 ^ 2) - (∑' orientedLayer d m ^ 2)`,
+which tends to `1 - 0` by `tsum_orientedLayer_sq_tendsto_zero`. -/
 theorem hasSum_orientedLayer_sq_telescope (hd : 2 ≤ d) :
     HasSum (fun l : ℕ => ((∑' x : Site d, orientedLayer d l x ^ 2) -
       ∑' x : Site d, orientedLayer d (l + 1) x ^ 2)) 1 := by
@@ -41,11 +52,17 @@ theorem hasSum_orientedLayer_sq_telescope (hd : 2 ≤ d) :
   simp only [htel, h0]
   simpa using tendsto_const_nhds.sub hA
 
+/-- The telescoping series of successive differences of `∑' x, orientedLayer d l x ^ 2`
+sums to `1`, the `tsum` form of `hasSum_orientedLayer_sq_telescope`. -/
 theorem tsum_orientedLayer_sq_telescope (hd : 2 ≤ d) :
     (∑' l : ℕ, ((∑' x : Site d, orientedLayer d l x ^ 2) -
       ∑' x : Site d, orientedLayer d (l + 1) x ^ 2)) = 1 :=
   (hasSum_orientedLayer_sq_telescope (d := d) hd).tsum_eq
 
+/-- The total directed charge summed over every round `l` and site `y` equals `1`, by
+identifying each round's charge sum `∑' y, orientedCharge d l y` with the telescoping
+term `(∑' orientedLayer d l ^ 2) - (∑' orientedLayer d (l + 1) ^ 2)` and summing via
+`hasSum_orientedLayer_sq_telescope`. -/
 theorem tsum_orientedCharge_eq_one (hd : 2 ≤ d) :
     (∑' l : ℕ, ∑' y : Site d, orientedCharge d l y) = 1 := by
   have hd1 : 1 ≤ d := by omega
@@ -53,6 +70,9 @@ theorem tsum_orientedCharge_eq_one (hd : 2 ≤ d) :
   rw [tsum_congr (fun l => tsum_orientedCharge hd1 l)]
   exact htel.tsum_eq
 
+/-- For a fixed site `y`, the charge sequence `l ↦ orientedCharge d l y` is summable: its
+partial sums over `l < m` are bounded by `∑' y', orientedGamma d m y' ≤ 1` from
+`tsum_orientedGamma_le_one`. -/
 theorem summable_orientedCharge_site (hd : 1 ≤ d) (y : Site d) :
     Summable (fun l : ℕ => orientedCharge d l y) := by
   refine summable_of_sum_range_le (c := 1) (fun l => orientedCharge_nonneg l y) (fun m => ?_)
@@ -66,6 +86,10 @@ theorem summable_orientedCharge_site (hd : 1 ≤ d) (y : Site d) :
         tsum_congr fun y' => (orientedGamma_eq_sum m y').symm
     _ ≤ 1 := tsum_orientedGamma_le_one hd m
 
+/-- The supremum over horizons `m` of the layer variance `orientedGamma d m y` equals the
+total directed charge `∑' l, orientedCharge d l y` at `y`, since the monotone sequence
+`orientedGamma d m y` converges to both limits (`tendsto_atTop_ciSup` and the charge
+regrouping `orientedGamma_eq_sum`) and limits of a sequence are unique. -/
 theorem orientedGammaSup_eq_tsum_charge (hd : 1 ≤ d) (y : Site d) :
     (⨆ m : ℕ, orientedGamma d m y) = ∑' l : ℕ, orientedCharge d l y := by
   have hbdd : BddAbove (Set.range fun m : ℕ => orientedGamma d m y) := by
@@ -82,11 +106,15 @@ theorem orientedGammaSup_eq_tsum_charge (hd : 1 ≤ d) (y : Site d) :
       (nhds (∑' l : ℕ, orientedCharge d l y)) := by
     have hsum : HasSum (fun l : ℕ => orientedCharge d l y) (∑' l : ℕ, orientedCharge d l y) :=
       (summable_orientedCharge_site hd y).hasSum
-    refine (hasSum_iff_tendsto_nat_of_nonneg (fun l => orientedCharge_nonneg l y) _).mp hsum |>.congr' ?_
+    refine (hasSum_iff_tendsto_nat_of_nonneg (fun l => orientedCharge_nonneg l y) _).mp hsum
+      |>.congr' ?_
     filter_upwards [] with m
     exact (orientedGamma_eq_sum m y).symm
   exact tendsto_nhds_unique h1 h2
 
+/-- The sequence of round totals `l ↦ ∑' y, orientedCharge d l y` is summable: its
+partial sums over `l < m` equal `∑' y, orientedGamma d m y ≤ 1` by
+`tsum_orientedGamma_le_one`. -/
 theorem summable_orientedCharge_tsum (hd : 1 ≤ d) :
     Summable (fun l : ℕ => ∑' y : Site d, orientedCharge d l y) := by
   refine summable_of_sum_range_le (c := 1)
@@ -98,12 +126,20 @@ theorem summable_orientedCharge_tsum (hd : 1 ≤ d) :
         tsum_congr fun y => (orientedGamma_eq_sum m y).symm
     _ ≤ 1 := tsum_orientedGamma_le_one hd m
 
+/-- The joint charge function `orientedCharge d l y` is summable over all pairs
+`(l, y) : ℕ × Site d`, by Tonelli for nonnegative summands (`summable_prod_of_nonneg`)
+applied to the row summability `summable_orientedCharge` and the row-total summability
+`summable_orientedCharge_tsum`. -/
 theorem summable_orientedCharge_pair (hd : 1 ≤ d) :
     Summable (fun p : ℕ × Site d => orientedCharge d p.1 p.2) := by
   rw [summable_prod_of_nonneg (f := fun p : ℕ × Site d => orientedCharge d p.1 p.2)
     (fun p => orientedCharge_nonneg p.1 p.2)]
   exact ⟨fun l => summable_orientedCharge hd l, summable_orientedCharge_tsum hd⟩
 
+/-- The site sum of the supremal layer variance, `∑' y, sup_m orientedGamma d m y`, equals
+`1`: rewrite each term via `orientedGammaSup_eq_tsum_charge`, swap the order of summation
+using the joint summability `summable_orientedCharge_pair`, then apply
+`tsum_orientedCharge_eq_one`. -/
 theorem tsum_orientedGammaSup_eq_one (hd : 2 ≤ d) :
     (∑' y : Site d, ⨆ m : ℕ, orientedGamma d m y) = 1 := by
   rw [tsum_congr fun y => orientedGammaSup_eq_tsum_charge (by omega : 1 ≤ d) y]

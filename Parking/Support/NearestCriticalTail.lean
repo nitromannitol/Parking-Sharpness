@@ -1,29 +1,38 @@
-/-
-The critical lower tail of `parking.tex:1822-1848` in the rescaled parking
-odometer. The source estimate has fixed positive constants after the law's
-variance and third moment are chosen. Its logarithmic error vanishes with the
-horizon; the remaining negative power of the threshold then tends to zero.
--/
 import Parking.External.CriticalScaleLowerTailProved
 import Parking.Support.NearestCriticalNormalization
 import Parking.Support.URealMoment
 import Parking.Support.Continuum
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
+/-!
+# The critical lower tail, rescaled
+
+The critical lower tail of `parking.tex:1822-1848` in the rescaled parking
+odometer. The source estimate has fixed positive constants after the law's
+variance and third moment are chosen. Its logarithmic error vanishes with the
+horizon; the remaining negative power of the threshold then tends to zero.
+-/
+
 noncomputable section
 open MeasureTheory ProbabilityTheory LatticeProb Filter Topology Parking.CriticalScale
 
+/-- The third absolute moment `∫ |z|^3` of `Parking.realLaw ν` is finite, deduced from a
+critical law's exponential moment bound via `Parking.integrable_abs_pow_of_exp_moment`. -/
 theorem Parking.CriticalScale.realLaw_thirdMoment (ν : Measure ℤ)
     (hν : Parking.CriticalLaw ν) : Integrable (fun z : ℝ => |z| ^ 3) (Parking.realLaw ν) := by
   haveI := hν.prob
   obtain ⟨θ, hθ, he⟩ := Parking.realLaw_expMoment ν hν
   exact Parking.integrable_abs_pow_of_exp_moment _ hθ he 3
 
+/-- A critical law's real image `Parking.realLaw ν` has strictly positive variance, since its
+extended variance is both positive and finite. -/
 theorem Parking.CriticalScale.realLaw_variance_pos (ν : Measure ℤ)
     (hν : Parking.CriticalLaw ν) : 0 < variance (id : ℝ → ℝ) (Parking.realLaw ν) := by
   exact ENNReal.toReal_pos (ne_of_gt (Parking.realLaw_evariance_pos ν hν))
     (ne_of_lt (Parking.realLaw_evariance_lt_top ν hν))
 
+/-- For `1 ≤ d ≤ 3` the Berry-Esseen exponent `4 / (4 - d)` exceeds `1`, a direct consequence
+of `0 < 4 - d`. -/
 theorem Parking.CriticalScale.exponent_one_admissible {d : ℕ}
     (hd : 1 ≤ d) (hd3 : d ≤ 3) : (1 : ℝ) < 4 / (4 - (d : ℝ)) := by
   have hdR : (1 : ℝ) ≤ d := by exact_mod_cast hd
@@ -31,31 +40,41 @@ theorem Parking.CriticalScale.exponent_one_admissible {d : ℕ}
   apply (lt_div_iff₀ (by linarith : (0 : ℝ) < 4 - (d : ℝ))).mpr
   linarith
 
+/-- Eventually `t ≥ 3` and `L^a ≤ t / 2`, combining two facts eventually true at `atTop`. -/
 theorem Parking.CriticalScale.eventually_threshold (L a : ℝ) :
     ∀ᶠ t : ℕ in atTop, 3 ≤ t ∧ L ^ a ≤ (t : ℝ) / 2 := by
   filter_upwards [eventually_ge_atTop 3, (tendsto_natCast_atTop_atTop :
     Tendsto (fun t : ℕ => (t : ℝ)) atTop atTop).eventually_ge_atTop (2 * L ^ a)] with t ht hL
   exact ⟨ht, by linarith⟩
 
+/-- `(log t)^a * t^(-b) → 0` as `t → ∞` for `b > 0`, transported from
+`isLittleO_log_rpow_rpow_atTop` along the natural-number embedding. -/
 theorem Parking.CriticalScale.log_rpow_mul_neg_rpow_tendsto (a b : ℝ) (hb : 0 < b) :
     Tendsto (fun t : ℕ => Real.log (t : ℝ) ^ a * (t : ℝ) ^ (-b)) atTop (𝓝 0) := by
   have h := ((isLittleO_log_rpow_rpow_atTop a hb).tendsto_div_nhds_zero).comp
     (tendsto_natCast_atTop_atTop : Tendsto (fun t : ℕ => (t : ℝ)) atTop atTop)
   simpa only [Real.rpow_neg (Nat.cast_nonneg _), div_eq_mul_inv, Function.comp_def] using h
 
+/-- Rescaling the threshold event `s⁻¹ * x ≤ 1 / L` by a positive `s` gives `x ≤ s / L`. -/
 theorem Parking.CriticalScale.scaled_event {s L x : ℝ} (hs : 0 < s) :
     (s⁻¹ * x ≤ 1 / L) ↔ x ≤ s / L := by
   rw [inv_mul_eq_div, div_le_iff₀ hs]
   simp [div_eq_mul_inv, mul_comm]
 
+/-- `lowerTailRemainder d t L a → 0` as `t → ∞`, split on the dimension-two case by
+`log_rpow_mul_neg_rpow_tendsto` with the exponents fixed by the definition. -/
 theorem Parking.CriticalScale.lowerTailRemainder_tendsto (d : ℕ) (L a : ℝ) :
     Tendsto (fun t : ℕ => lowerTailRemainder d t L a) atTop (𝓝 0) := by
   by_cases hd : d = 2
   · simpa only [lowerTailRemainder, if_pos hd, zero_mul, neg_div] using
-      (log_rpow_mul_neg_rpow_tendsto ((7 : ℝ) / 4) ((1 : ℝ) / 2) (by norm_num)).mul_const (L ^ (a / 2))
+      (log_rpow_mul_neg_rpow_tendsto ((7 : ℝ) / 4) ((1 : ℝ) / 2) (by norm_num)).mul_const
+        (L ^ (a / 2))
   · simpa only [lowerTailRemainder, if_neg hd, zero_mul, neg_div] using
-      (log_rpow_mul_neg_rpow_tendsto ((3 : ℝ) / 4) ((1 : ℝ) / 4) (by norm_num)).mul_const (L ^ (a / 4))
+      (log_rpow_mul_neg_rpow_tendsto ((3 : ℝ) / 4) ((1 : ℝ) / 4) (by norm_num)).mul_const
+        (L ^ (a / 4))
 
+/-- `barDivisible ω √t 1 0` equals the rescaled odometer `t^(-(4-d)/4) * uOf ω t 0`, by
+unfolding `barDivisible` and `latticePoint` at the origin. -/
 theorem Parking.CriticalScale.barDivisible_sqrt {d : ℕ} (ω : Parking.Data d)
     (t : ℕ) (ht : 0 < t) : Parking.barDivisible ω (Real.sqrt (t : ℝ)) 1 0 =
       (t : ℝ) ^ (-((4 - (d : ℝ)) / 4)) * Parking.uOf ω t 0 := by
@@ -70,6 +89,8 @@ theorem Parking.CriticalScale.barDivisible_sqrt {d : ℕ} (ω : Parking.Data d)
     Real.sq_sqrt htR.le, Nat.floor_natCast]
   rfl
 
+/-- For a law with positive variance, produces its standard deviation `ν₀` and third-moment
+ratio `M` with `ν₀² = variance ν` and `∫|z|³ = M * (variance ν)^(3/2)`. -/
 theorem Parking.CriticalScale.exists_moment_parameters (ν : Measure ℝ)
     (hv : 0 < variance (id : ℝ → ℝ) ν) :
     ∃ ν₀ M : ℝ, 0 < ν₀ ∧ ν₀ ^ 2 = variance (id : ℝ → ℝ) ν ∧

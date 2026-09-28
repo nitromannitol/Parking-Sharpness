@@ -1,5 +1,17 @@
 import Mathlib.Probability.Moments.Covariance
 
+/-!
+# Deficit-factor covariance bounds
+
+Covariance estimates for two variables bounded between `0` and a constant. The mean of `F * G`
+exceeds the product of the means by at most the mean of the product of the "deficits" `A - F`
+and `B - G`, via `covariance_eq_sub` applied to `F` and to `A - F`
+(`integral_mul_le_means_add_deficits`). Combined with a lower bound on the means relative to `A`
+and `B`, a bound on the mean deficit product then upgrades to a multiplicative correction factor
+`Real.exp (k / δ ^ 2)` on the product of the means (`integral_mul_factor_of_deficits`), with a
+one-sided variant (`integral_mul_factor_one_sided`) needing a deficit bound on `G` alone.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory
@@ -25,8 +37,9 @@ theorem integral_mul_le_means_add_deficits (μ : Measure Ω) [IsProbabilityMeasu
   change (∫ ω, F ω * G ω ∂μ) - (∫ ω, F ω ∂μ) * (∫ ω, G ω ∂μ) =
     (∫ ω, (A - F ω) * (B - G ω) ∂μ) -
       (∫ ω, A - F ω ∂μ) * (∫ ω, B - G ω ∂μ) at he
-  have hn : 0 ≤ (∫ ω, A - F ω ∂μ) * (∫ ω, B - G ω ∂μ) := mul_nonneg (integral_nonneg fun ω => sub_nonneg.mpr (hA ω).2)
-    (integral_nonneg fun ω => sub_nonneg.mpr (hB ω).2)
+  have hn : 0 ≤ (∫ ω, A - F ω ∂μ) * (∫ ω, B - G ω ∂μ) :=
+    mul_nonneg (integral_nonneg fun ω => sub_nonneg.mpr (hA ω).2)
+      (integral_nonneg fun ω => sub_nonneg.mpr (hB ω).2)
   linarith
 
 /-- Relative lower means and a product-deficit estimate give an exponential reveal factor. -/
@@ -39,9 +52,11 @@ theorem integral_mul_factor_of_deficits (μ : Measure Ω) [IsProbabilityMeasure 
     (∫ ω, F ω * G ω ∂μ) ≤ Real.exp (k / δ ^ 2) *
       ((∫ ω, F ω ∂μ) * ∫ ω, G ω ∂μ) := by
   let M := (∫ ω, F ω ∂μ) * ∫ ω, G ω ∂μ
-  have hM : 0 ≤ M := mul_nonneg (integral_nonneg fun ω => (hA ω).1) (integral_nonneg fun ω => (hB ω).1)
+  have hM : 0 ≤ M :=
+    mul_nonneg (integral_nonneg fun ω => (hA ω).1) (integral_nonneg fun ω => (hB ω).1)
   have hprod := mul_le_mul hMF hMG (mul_nonneg hδ.le hB0) ((mul_nonneg hδ.le hA0).trans hMF)
-  have hAB : A * B ≤ M / δ ^ 2 := (le_div_iff₀ (sq_pos_of_pos hδ)).mpr (by dsimp only [M]; nlinarith [hprod])
+  have hAB : A * B ≤ M / δ ^ 2 :=
+    (le_div_iff₀ (sq_pos_of_pos hδ)).mpr (by dsimp only [M]; nlinarith [hprod])
   have hcost : k * (A * B) ≤ (k / δ ^ 2) * M :=
     (mul_le_mul_of_nonneg_left hAB hk).trans_eq (by ring)
   calc
@@ -49,7 +64,8 @@ theorem integral_mul_factor_of_deficits (μ : Measure Ω) [IsProbabilityMeasure 
       integral_mul_le_means_add_deficits μ F G hF hG A B hA hB
     _ ≤ M + (k / δ ^ 2) * M := add_le_add_right (hdef.trans hcost) M
     _ = (1 + k / δ ^ 2) * M := by ring
-    _ ≤ Real.exp (k / δ ^ 2) * M := mul_le_mul_of_nonneg_right (by linarith [Real.add_one_le_exp (k / δ ^ 2)]) hM
+    _ ≤ Real.exp (k / δ ^ 2) * M :=
+      mul_le_mul_of_nonneg_right (by linarith [Real.add_one_le_exp (k / δ ^ 2)]) hM
 
 /-- One relative influence bound suffices when the other observable is merely nonnegative. -/
 theorem integral_mul_factor_one_sided (μ : Measure Ω) [IsProbabilityMeasure μ]
@@ -61,7 +77,8 @@ theorem integral_mul_factor_one_sided (μ : Measure Ω) [IsProbabilityMeasure μ
       ((∫ ω, F ω ∂μ) * ∫ ω, G ω ∂μ) := by
   have hfi : Integrable F μ := Integrable.of_bound hF.aestronglyMeasurable A
     (ae_of_all _ fun ω => by rw [Real.norm_eq_abs, abs_of_nonneg (hA ω).1]; exact (hA ω).2)
-  have hfgi : Integrable (fun ω => F ω * G ω) μ := Integrable.of_bound (hF.mul hG).aestronglyMeasurable (A * B)
+  have hfgi : Integrable (fun ω => F ω * G ω) μ :=
+    Integrable.of_bound (hF.mul hG).aestronglyMeasurable (A * B)
     (ae_of_all _ fun ω => by
       rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (hA ω).1 (hB ω).1)]
       exact mul_le_mul (hA ω).2 (hB ω).2 (hB ω).1 hA0)
@@ -70,7 +87,8 @@ theorem integral_mul_factor_one_sided (μ : Measure Ω) [IsProbabilityMeasure μ
   have hBB : B ≤ (∫ ω, G ω ∂μ) / δ := (le_div_iff₀ hδ).mpr (by linarith)
   have hcost : B - (∫ ω, G ω ∂μ) ≤ (k / δ) * ∫ ω, G ω ∂μ :=
     hdef.trans ((mul_le_mul_of_nonneg_left hBB hk).trans_eq (by ring))
-  have hupper := integral_mono hfgi (hfi.mul_const B) (fun ω => mul_le_mul_of_nonneg_left (hB ω).2 (hA ω).1)
+  have hupper :=
+    integral_mono hfgi (hfi.mul_const B) (fun ω => mul_le_mul_of_nonneg_left (hB ω).2 (hA ω).1)
   rw [integral_mul_const] at hupper
   calc
     (∫ ω, F ω * G ω ∂μ) ≤ (∫ ω, F ω ∂μ) * B := hupper

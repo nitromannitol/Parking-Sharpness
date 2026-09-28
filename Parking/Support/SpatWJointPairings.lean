@@ -1,7 +1,12 @@
-/- Joint convergence of scenery, field coordinates, and spatial pairings. -/
 import Parking.Support.SpatWBlockPairingConvergence
 import Parking.Support.SpatWPairingConvergence
 import Parking.Support.SpatWSceneryFdd
+
+/-!
+# Joint scenery, field, and spatial pairing convergence
+
+Joint convergence of scenery, field coordinates, and spatial pairings.
+-/
 
 open MeasureTheory ProbabilityTheory Filter Topology
 

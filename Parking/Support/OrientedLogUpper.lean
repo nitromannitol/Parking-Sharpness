@@ -1,10 +1,15 @@
-/- Step 4 of the oriented walk theorem: the logarithmic upper bound on the
-directed particle mean at `d ≥ 3`, from the moment inequality at
-`r = 2 ∨ ⌈log(n+1)⌉` and Young's inequality. -/
 import Parking.Support.OrientedMeanBound
 import Parking.Support.OrientedYoung
 import Parking.Support.OrientedMoments
 import Parking.Support.UpperTarget
+
+/-!
+# Step 4: the logarithmic upper bound on the directed particle mean
+
+Step 4 of the oriented walk theorem: the logarithmic upper bound on the
+directed particle mean at `d ≥ 3`, from the moment inequality at
+`r = 2 ∨ ⌈log(n+1)⌉` and Young's inequality.
+-/
 
 noncomputable section
 namespace Parking

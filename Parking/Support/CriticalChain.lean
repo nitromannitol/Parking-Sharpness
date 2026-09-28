@@ -1,4 +1,12 @@
-/-
+import Parking.Frozen.Comparison
+import Parking.Frozen.Transport
+import Parking.Support.UBound
+import Parking.Support.CriticalReduction
+import Parking.Support.Invariance
+
+/-!
+# `cor:critical` reduced to `lem:critical-density`
+
 `cor:critical` (`parking.tex:1354-1367`) reduced to `lem:critical-density`.
 
 The corollary's proof is two lines: `thm:comparison` gives `E U_n(0) ≥ E u_n(0)`
@@ -16,11 +24,6 @@ configuration summed over the box of radius `n`.
 The reduction is stated so that `cor:critical` follows from `lem:critical-density`
 by application, with nothing left over.
 -/
-import Parking.Frozen.Comparison
-import Parking.Frozen.Transport
-import Parking.Support.UBound
-import Parking.Support.CriticalReduction
-import Parking.Support.Invariance
 
 noncomputable section
 

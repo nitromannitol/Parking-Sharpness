@@ -1,5 +1,9 @@
-/-
-**The covariance of a finite linear combination of i.i.d. mean-zero coordinates.**
+import Mathlib.Probability.HasLaw
+import Mathlib.Probability.Independence.Integration
+import Mathlib.MeasureTheory.Constructions.Pi
+
+/-!
+# The covariance of a finite linear combination of i.i.d. mean-zero coordinates
 
 The orthogonality computation that turns the finite-sum representation of `V` in
 `Parking.Support.LinPotentialSum` into a covariance: for `ξ : ι → ℝ` distributed as
@@ -22,9 +26,6 @@ the finite sum to BP's closed form `Σ_{a<n}Σ_{b<m} P^{a+b}(x-y)` (via
 This module supplies only the finite orthogonality identity; it is stated for a general
 finite i.i.d. family and mentions no object specific to the parking model.
 -/
-import Mathlib.Probability.HasLaw
-import Mathlib.Probability.Independence.Integration
-import Mathlib.MeasureTheory.Constructions.Pi
 
 noncomputable section
 

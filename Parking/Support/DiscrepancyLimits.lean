@@ -1,9 +1,16 @@
-/-
-Relative discrepancy convergence in every moment and almost surely.
--/
 import Parking.Support.DiscrepancyTail
 import Parking.Support.MomentLimits
 import Parking.Support.TailLimits
+
+/-!
+# Discrepancy limits
+
+Relative discrepancy convergence in every moment and almost surely. The discrepancy between the
+two odometers, divided by the mean sandpile odometer, tends to zero in every fixed `Lᵖ` moment
+(`discrepancy_moment_tendsto_zero`), by combining the discrepancy moment bound with the relative
+norm decay `eventually_discrepancy_relative_norm`. Summing the resulting tail probabilities then
+upgrades this to almost-sure convergence (`ae_discrepancy_tendsto_zero`).
+-/
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)

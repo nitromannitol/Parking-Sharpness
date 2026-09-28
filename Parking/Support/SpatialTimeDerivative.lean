@@ -1,7 +1,12 @@
-/- Time differentiation of tests cancels a time-independent source. -/
 import LatticeProb.WhiteNoise
 import Parking.Support.Continuum
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+
+/-!
+# Time differentiation cancels the time-independent source
+
+Time differentiation of tests cancels a time-independent source.
+-/
 
 open MeasureTheory
 
@@ -110,7 +115,8 @@ theorem whiteNoise_apply_zero {Ω : Type} [MeasurableSpace Ω] {v : ℝ} {μ : M
     {W : ((Fin d → ℝ) → ℝ) → Ω → ℝ} (hW : IsSpatialWhiteNoise d v μ W) :
     ∀ᵐ ω ∂μ, W (fun _ => (0 : ℝ)) ω = 0 := by
   obtain ⟨hlin, _, _, _⟩ := hW
-  have h0 := hlin (fun _ : Fin d → ℝ => (0 : ℝ)) (fun _ => (0 : ℝ)) isTestFun_zero isTestFun_zero 0 0
+  have h0 := hlin (fun _ : Fin d → ℝ => (0 : ℝ)) (fun _ => (0 : ℝ)) isTestFun_zero
+    isTestFun_zero 0 0
   filter_upwards [h0] with ω hω
   simpa using hω
 
@@ -125,6 +131,11 @@ variable {Ω : Type} [MeasurableSpace Ω] {Q : Measure Ω}
 -- is `W` applied to the identically-zero function of `x`
 -- (`Parking.integral_timeDeriv_slice_eq_zero`), which is `0` at this `ω`.
 omit [MeasurableSpace Ω] in
+/-- The white noise cancels upon time-differentiation, at the single `ω` witnessed by
+`hpdeω` and `hWzero`: testing the driven equation `hpdeω` against the time-derivative
+`timeDeriv φ` of a test function `φ` supported where `Uc ω` is positive leaves exactly
+the homogeneous identity, since the source term evaluates `W` at the identically-zero
+function of `x` given by `integral_timeDeriv_slice_eq_zero`. -/
 theorem homogeneous_of_hpde {ω : Ω}
     (hpdeω : ∀ ψ : ℝ × (Fin d → ℝ) → ℝ, IsSpaceTimeTest ψ →
         tsupport ψ ⊆ {p : ℝ × (Fin d → ℝ) | 0 < Uc ω p.1 p.2} →
@@ -135,7 +146,8 @@ theorem homogeneous_of_hpde {ω : Ω}
     {φ : ℝ × (Fin d → ℝ) → ℝ} (hφ : IsSpaceTimeTest φ)
     (hφsupp : tsupport φ ⊆ {p : ℝ × (Fin d → ℝ) | 0 < Uc ω p.1 p.2}) :
     -∫ p : ℝ × (Fin d → ℝ), Uc ω p.1 p.2 * deriv (fun s => timeDeriv φ (s, p.2)) p.1
-      = ∫ p : ℝ × (Fin d → ℝ), Uc ω p.1 p.2 * Parking.contOp d (fun x => timeDeriv φ (p.1, x)) p.2 := by
+      = ∫ p : ℝ × (Fin d → ℝ), Uc ω p.1 p.2 *
+          Parking.contOp d (fun x => timeDeriv φ (p.1, x)) p.2 := by
   have hdφ : IsSpaceTimeTest (timeDeriv φ) := isSpaceTimeTest_timeDeriv hφ
   have hdφsupp : tsupport (timeDeriv φ) ⊆ {p : ℝ × (Fin d → ℝ) | 0 < Uc ω p.1 p.2} :=
     (tsupport_timeDeriv_subset φ).trans hφsupp
@@ -161,7 +173,8 @@ theorem homogeneous_ae_of_hpde {v : ℝ} (hW : IsSpatialWhiteNoise d v Q W)
     ∀ᵐ ω ∂Q, ∀ φ : ℝ × (Fin d → ℝ) → ℝ, IsSpaceTimeTest φ →
       tsupport φ ⊆ {p : ℝ × (Fin d → ℝ) | 0 < Uc ω p.1 p.2} →
       -∫ p : ℝ × (Fin d → ℝ), Uc ω p.1 p.2 * deriv (fun s => timeDeriv φ (s, p.2)) p.1
-        = ∫ p : ℝ × (Fin d → ℝ), Uc ω p.1 p.2 * Parking.contOp d (fun x => timeDeriv φ (p.1, x)) p.2 := by
+        = ∫ p : ℝ × (Fin d → ℝ), Uc ω p.1 p.2 *
+            Parking.contOp d (fun x => timeDeriv φ (p.1, x)) p.2 := by
   filter_upwards [hpde, whiteNoise_apply_zero hW] with ω hpdeω hWzero φ hφ hφsupp
   exact homogeneous_of_hpde hpdeω hWzero hφ hφsupp
 

@@ -1,4 +1,12 @@
-/-
+import Parking.Frozen.DensityCompare
+import Parking.Frozen.CriticalDensity
+import Parking.Support.Near
+import Parking.Support.CriticalChain
+import Parking.Support.JointStopping
+
+/-!
+# The lower bound of `thm:near` above dimension three
+
 The lower bound of `thm:near` above dimension three (`parking.tex:2911-2927`).
 
 "For `d ≥ 4`, take independent copies across sites of the coupling in
@@ -17,11 +25,6 @@ the survivor count of the minimum below the survivor count of the law of mean
 difference of the two means, which is at most the mean coupling distance because
 `η_0(0) - min{η_δ(0), η_0(0)} ≤ |η_δ(0) - η_0(0)|` pointwise.
 -/
-import Parking.Frozen.DensityCompare
-import Parking.Frozen.CriticalDensity
-import Parking.Support.Near
-import Parking.Support.CriticalChain
-import Parking.Support.JointStopping
 
 open LatticeProb (measurable_from_countable')
 
@@ -35,6 +38,8 @@ variable {d : ℕ}
 /-- A field of pairs read through a coordinatewise map. -/
 def pairField (F : ℤ × ℤ → ℤ) (c : Site d → ℤ × ℤ) : Site d → ℤ := fun x => F (c x)
 
+/-- `pairField F` is measurable, being `F` composed coordinatewise with each projection
+`c ↦ c x`. -/
 theorem measurable_pairField (F : ℤ × ℤ → ℤ) : Measurable (pairField (d := d) F) :=
   measurable_pi_lambda _ fun x =>
     (measurable_from_countable' F).comp (measurable_pi_apply x)
@@ -45,16 +50,22 @@ def pairCoupling (d : ℕ) (π : Measure (ℤ × ℤ)) (F G : ℤ × ℤ → ℤ
     Measure ((Site d → ℤ) × (Site d → ℤ)) :=
   (LatticeProb.iidLaw d π).map (fun c => (pairField F c, pairField G c))
 
+/-- The pair map `c ↦ (pairField F c, pairField G c)` is measurable, as a pairing of two
+measurable coordinatewise maps. -/
 theorem measurable_pairPair (F G : ℤ × ℤ → ℤ) :
     Measurable (fun c : Site d → ℤ × ℤ => (pairField F c, pairField G c)) :=
   (measurable_pairField F).prodMk (measurable_pairField G)
 
+/-- `pairCoupling d π F G` is a probability measure, being the pushforward of the probability
+measure `iidLaw d π` along the measurable map `measurable_pairPair`. -/
 theorem pairCoupling_isProbability (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     (F G : ℤ × ℤ → ℤ) : IsProbabilityMeasure (pairCoupling d π F G) := by
   haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
   exact Measure.isProbabilityMeasure_map (measurable_pairPair F G).aemeasurable
 
+/-- The first marginal of `pairCoupling d π F G` is `iidLaw d (π.map F)`: pushing forward by
+`Prod.fst` first collapses to the coordinatewise map `pairField F`. -/
 theorem pairCoupling_map_fst (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     (F G : ℤ × ℤ → ℤ) :
     (pairCoupling d π F G).map Prod.fst = LatticeProb.iidLaw d (π.map F) := by
@@ -63,6 +74,8 @@ theorem pairCoupling_map_fst (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure �
   rw [pairCoupling, Measure.map_map measurable_fst (measurable_pairPair F G)]
   exact LatticeProb.iidLaw_map_pi d π (measurable_from_countable' F)
 
+/-- The second marginal of `pairCoupling d π F G` is `iidLaw d (π.map G)`, the analogue of
+`pairCoupling_map_fst` for `Prod.snd`. -/
 theorem pairCoupling_map_snd (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     (F G : ℤ × ℤ → ℤ) :
     (pairCoupling d π F G).map Prod.snd = LatticeProb.iidLaw d (π.map G) := by
@@ -71,6 +84,9 @@ theorem pairCoupling_map_snd (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure �
   rw [pairCoupling, Measure.map_map measurable_snd (measurable_pairPair F G)]
   exact LatticeProb.iidLaw_map_pi d π (measurable_from_countable' G)
 
+/-- `pairCoupling d π F G` is invariant under the diagonal site translation by `v`, because
+the coordinatewise map `pairField` commutes with translating the underlying `ℤ × ℤ`-field and
+`iidLaw` is translation invariant. -/
 theorem pairCoupling_translationInvariant (π : Measure (ℤ × ℤ))
     [IsProbabilityMeasure π] (F G : ℤ × ℤ → ℤ) (v : Site d) :
     (pairCoupling d π F G).map
@@ -95,6 +111,8 @@ theorem pairCoupling_translationInvariant (π : Measure (ℤ × ℤ))
   rw [hcomp, ← Measure.map_map (measurable_pairPair F G) hshift,
     LatticeProb.iidLaw_map_shiftConf π v]
 
+/-- Under `pairCoupling d π F G`, the first field is pointwise below the second at every site
+almost surely, whenever the one-site maps satisfy `F ≤ G`. -/
 theorem pairCoupling_mono (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     {F G : ℤ × ℤ → ℤ} (h : ∀ p : ℤ × ℤ, F p ≤ G p) :
     ∀ᵐ c ∂(pairCoupling d π F G), ∀ x, c.1 x ≤ c.2 x := by
@@ -116,16 +134,22 @@ theorem pairCoupling_mono (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
 /-- The coordinatewise minimum of a coupled pair. -/
 def minPair (p : ℤ × ℤ) : ℤ := min p.1 p.2
 
+/-- `minPair p ≤ p.1`, by definition of `minPair` as `min p.1 p.2`. -/
 theorem minPair_le_fst (p : ℤ × ℤ) : minPair p ≤ p.1 := min_le_left _ _
 
+/-- `minPair p ≤ p.2`, by definition of `minPair` as `min p.1 p.2`. -/
 theorem minPair_le_snd (p : ℤ × ℤ) : minPair p ≤ p.2 := min_le_right _ _
 
+/-- `|minPair p| ≤ |p.1| + |p.2|`, case-splitting on which coordinate realizes the minimum
+and bounding the other coordinate's absolute value by nonnegativity. -/
 theorem abs_minPair_le (p : ℤ × ℤ) :
     |((minPair p : ℤ) : ℝ)| ≤ |((p.1 : ℤ) : ℝ)| + |((p.2 : ℤ) : ℝ)| := by
   rcases min_choice p.1 p.2 with h | h <;> rw [minPair, h]
   · have := abs_nonneg (((p.2 : ℤ) : ℝ)); linarith
   · have := abs_nonneg (((p.1 : ℤ) : ℝ)); linarith
 
+/-- `p.2 - minPair p ≤ |p.1 - p.2|`: when `p.1 ≤ p.2` the left side is `0` or negative, and
+when `p.2 ≤ p.1` the minimum equals `p.2` and the left side vanishes. -/
 theorem snd_sub_minPair_le (p : ℤ × ℤ) :
     ((p.2 : ℤ) : ℝ) - ((minPair p : ℤ) : ℝ) ≤ |((p.1 : ℤ) : ℝ) - ((p.2 : ℤ) : ℝ)| := by
   rcases le_total p.1 p.2 with h | h

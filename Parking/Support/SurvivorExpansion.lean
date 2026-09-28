@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Exchange
+
+/-!
+# The expansion of `S_t` over the configuration at the origin
+
 The expansion of `S_t` over the values of the configuration at the origin.
 
 `lem:transport` closes with
@@ -8,7 +12,6 @@ exchangeability of the origin particles summed: a realization with `η(0) = m`
 contributes its `m` origin particles, each of which is active with the same
 probability as the first.
 -/
-import Parking.Support.Exchange
 
 open LatticeProb (measurable_from_countable')
 
@@ -37,10 +40,14 @@ theorem survivorsFrom_eq_tsum (D : Driver d) (t : ℕ) :
   rw [tsum_eq_sum hz, Finset.sum_boole]
   rfl
 
+/-- The event that label `p` is active at time `t` is measurable, being the preimage
+of a singleton under the measurable state map. -/
 theorem measurableSet_active (t : ℕ) (p : Label d) :
     MeasurableSet {ω : Data d | (state (toDriver ω) t).active p = true} :=
   (measurable_state (d := d) t).1 p (measurableSet_singleton true)
 
+/-- The event that the origin's initial configuration equals `m` is measurable, being
+the preimage of a singleton under the coordinate projection at the origin. -/
 theorem measurableSet_etaEq (m : ℤ) :
     MeasurableSet {ω : Data d | ω.1 0 = m} := by
   have h : {ω : Data d | ω.1 0 = m} = (fun ω : Data d => ω.1 0) ⁻¹' {m} := rfl

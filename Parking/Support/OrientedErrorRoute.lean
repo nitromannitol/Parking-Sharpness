@@ -1,6 +1,11 @@
-/- The directed error field is the routing error of the directed instruction law. -/
 import Parking.Support.OrientedError
 import Parking.Support.OrientedRoutingUnroll
+
+/-!
+# Directed error field as a routing error
+
+The directed error field is the routing error of the directed instruction law.
+-/
 
 noncomputable section
 namespace Parking

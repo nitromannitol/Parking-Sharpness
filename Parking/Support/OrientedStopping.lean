@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedPathMax
+
+/-!
+# The oriented walk as a path measure and stopping problem
+
 The oriented walk of Section 10 of `parking.tex` as a path measure, and the
 bounded optimal stopping problem whose value is the oriented divisible
 odometer.
@@ -16,7 +20,6 @@ already read in `Parking.integral_stepLaw_oriented`.  So the oriented walk needs
 no new path measure, and a stopping time of the oriented walk is
 `Parking.IsStoppingTimeLE`.
 -/
-import Parking.Support.OrientedPathMax
 
 open MeasureTheory
 open scoped ENNReal

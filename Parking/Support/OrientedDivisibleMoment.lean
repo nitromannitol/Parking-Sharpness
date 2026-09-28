@@ -1,5 +1,10 @@
-/- Moment bounds for the two-dimensional directed divisible process. -/
 import Parking.Support.OrientedMaxMoment
+
+/-!
+# Two-dimensional directed divisible process moments
+
+Moment bounds for the two-dimensional directed divisible process.
+-/
 
 open LatticeProb.MomentNorm (rNorm)
 
@@ -7,6 +12,12 @@ noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 
+/-- For a centered i.i.d. scenery `μ` with a finite `r`-th absolute moment, `r > 4`, the
+divisible odometer `uOriented η n 0` has a finite `r`-th moment and its `rNorm` grows at
+most like `n ^ (1 / 4)`, obtained by comparing `uOriented` to twice the running-maximum
+mean `orientedMaxMean` (`uOriented_le_potential_add_max`,
+`abs_le_orientedMaxMean`) and applying the maximum moment bound
+`exists_orientedMax_moment` via Jensen's inequality. -/
 theorem exists_uOriented_two_moment (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (r : ℝ) (hr : 4 < r) (hmom : Integrable (fun z : ℝ => |z| ^ r) μ)
     (hmean : ∫ z : ℝ, z ∂μ = 0) :
@@ -27,7 +38,8 @@ theorem exists_uOriented_two_moment (μ : Measure ℝ) [IsProbabilityMeasure μ]
   have hJi : Integrable J (iidLaw 2 μ) := hi.integral_prod_right
   have hpt (η : Site 2 → ℝ) : |uOriented η n 0| ^ r ≤ (2 : ℝ) ^ r * J η := by
     have hMn (p : ℕ → Fin 2 × Bool) : 0 ≤ F (p, η) := orientedMax_nonneg _ _ _ _
-    have hMi : Integrable (fun p => F (p, η)) (walkLaw 2) := integrable_orientedMax (d := 2) (by norm_num) (orientedPotential η) n 0
+    have hMi : Integrable (fun p => F (p, η)) (walkLaw 2) :=
+      integrable_orientedMax (d := 2) (by norm_num) (orientedPotential η) n 0
     have hMri : Integrable (fun p => F (p, η) ^ r) (walkLaw 2) := by
       apply integrable_of_finite_dependence (by norm_num) n
       intro p q hpq

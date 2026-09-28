@@ -1,4 +1,9 @@
-/-
+import Parking.Support.UpperStep
+import Parking.Support.UBound
+
+/-!
+# Step 1 of `thm:upper`: assembly
+
 Step 1 of the proof of `thm:upper` (`parking.tex:1434-1458`).
 
 The paper takes `r`-th moments in `eq:pathwise-comparison`, inserts
@@ -13,11 +18,9 @@ and therefore
     (E U_n(0)^r)^{1/r} ≤ C ((E u_n(0)^r)^{1/r} + r (n+1)^{2/r} κ_d(n)).
 
 Everything analytic in that is in `Parking/Support/UpperStep.lean`
-(`LatticeProb.MomentNorm.rNorm_add_le`, `LatticeProb.MomentNorm.young_absorb`, `Parking.one_le_kappa`); this
-file is the assembly.
+(`LatticeProb.MomentNorm.rNorm_add_le`, `LatticeProb.MomentNorm.young_absorb`,
+`Parking.one_le_kappa`); this file is the assembly.
 -/
-import Parking.Support.UpperStep
-import Parking.Support.UBound
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm rNorm_add_le rNorm_const_mul rNorm_mono young_absorb)
@@ -32,10 +35,15 @@ variable {d : ℕ}
 
 /-! ### Two exponent identities -/
 
+/-- For `x ≥ 1`, the power `x ^ (1/r)` is at most `x ^ (2/r)`, since `1/r ≤ 2/r` and
+`Real.rpow` is monotone in the exponent for a base at least `1`. -/
 theorem rpow_one_div_le_rpow_two_div {x r : ℝ} (hx : 1 ≤ x) (hr : 0 < r) :
     x ^ (1 / r) ≤ x ^ (2 / r) :=
   Real.rpow_le_rpow_of_exponent_le hx (by gcongr; norm_num)
 
+/-- The elementary power inequality `(a + b) ^ p ≤ 2 ^ p * (a ^ p + b ^ p)` for
+nonnegative `a`, `b`, `p`, obtained by bounding `a + b` by `2 * max a b` and
+`(max a b) ^ p` by `a ^ p + b ^ p`. -/
 theorem rpow_add_le_two_rpow {a b p : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hp : 0 ≤ p) :
     (a + b) ^ p ≤ 2 ^ p * (a ^ p + b ^ p) := by
   have hmax : a + b ≤ 2 * max a b := by
@@ -59,6 +67,7 @@ theorem rpow_add_le_two_rpow {a b p : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hp : 0
   calc (a + b) ^ p ≤ 2 ^ p * (max a b) ^ p := by rw [← h2]; exact h1
     _ ≤ 2 ^ p * (a ^ p + b ^ p) := by exact mul_le_mul_of_nonneg_left h3 h20
 
+/-- Squaring the power `x ^ (1/r)` gives `x ^ (2/r)`, by `Real.rpow_add`. -/
 theorem sq_rpow_one_div {x r : ℝ} (hx : 0 < x) (_hr : r ≠ 0) :
     (x ^ (1 / r)) ^ 2 = x ^ (2 / r) := by
   rw [sq, ← Real.rpow_add hx]
@@ -67,6 +76,9 @@ theorem sq_rpow_one_div {x r : ℝ} (hx : 0 < x) (_hr : r ≠ 0) :
 
 /-! ### The `r`-th moment norms of the three fields at the origin -/
 
+/-- The `r`-th moment norm of the nonnegative parking odometer `U ω n 0` is its plain
+`r`-th moment integral raised to `1/r`, since `U`'s cast to `ℝ` needs no absolute
+value. -/
 theorem rNorm_U (μ : Measure (Data d)) (r : ℝ) (n : ℕ) :
     rNorm μ r (fun ω => ((U ω n 0 : ℕ) : ℝ))
       = (∫ ω, ((U ω n 0 : ℕ) : ℝ) ^ r ∂μ) ^ (1 / r) := by
@@ -74,6 +86,8 @@ theorem rNorm_U (μ : Measure (Data d)) (r : ℝ) (n : ℕ) :
     fun ω => abs_of_nonneg (Nat.cast_nonneg _)
   simp only [rNorm, habs]
 
+/-- The `r`-th moment norm of the nonnegative majorant `wStar ω n 0` is its plain
+`r`-th moment integral raised to `1/r`. -/
 theorem rNorm_wStar (μ : Measure (Data d)) (r : ℝ) (n : ℕ) :
     rNorm μ r (fun ω => wStar ω n 0) = (∫ ω, wStar ω n 0 ^ r ∂μ) ^ (1 / r) := by
   have habs : ∀ ω : Data d, |wStar ω n 0| = wStar ω n 0 :=
@@ -82,6 +96,9 @@ theorem rNorm_wStar (μ : Measure (Data d)) (r : ℝ) (n : ℕ) :
 
 /-! ### The discrepancy has every moment -/
 
+/-- The `r`-th power of the discrepancy `|U ω n 0 - uOf ω n 0|` is integrable,
+dominated by `2 ^ r * wStar ω n 0 ^ r` via the pathwise comparison
+`pathwise_comparison_of_labelOrder` and the integrability of `wStar`'s `r`-th power. -/
 theorem integrable_diff_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)

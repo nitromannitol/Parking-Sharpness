@@ -1,8 +1,15 @@
-/-
-Real moment norms, logarithm domination and logarithmic-exponent tail bounds.
--/
 import Parking.Support.UpperTarget
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+/-!
+# Real moment norms, logarithm domination and logarithmic-exponent tail bounds
+
+A real-valued Markov inequality `measure_gt_le_rNorm_div_rpow` for the moment norm `rNorm`,
+a comparison showing any power of the logarithm is eventually dominated by a positive power
+of `n` (`eventually_log_succ_rpow_le`), and their combination: if the moment norm at a
+logarithmically growing exponent decays polynomially, the resulting tail bound is Gaussian
+in `log n` (`eventually_measure_gt_le_exp_log_sq`).
+-/
 
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 

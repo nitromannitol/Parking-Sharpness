@@ -1,10 +1,13 @@
-/-
-Averaging the conditional finite cancellation count over priorities and the
-resampling law gives the half-square coefficient times the random-walk
-hitting sum. All expectations are nonnegative Lebesgue integrals.
--/
 import Parking.Support.OppositeMeans
 import Parking.Support.DiscrepancyTransport
+
+/-!
+# Averaging the cancellation count
+
+Averaging the conditional finite cancellation count over priorities and the resampling law
+gives the half-square coefficient times the random-walk hitting sum. All expectations are
+nonnegative Lebesgue integrals.
+-/
 
 noncomputable section
 
@@ -13,6 +16,8 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
+/-- `discrepancyOppositePairs` is measurable in the initial configuration, being a countable
+function of the two coordinate values `c z` and `c 0`. -/
 theorem Parking.measurable_discrepancyOppositePairs (z : Site d) :
     Measurable fun c : Site d → ℤ × ℤ => (Parking.discrepancyOppositePairs c z : ℝ≥0∞) := by
   simp_rw [Parking.discrepancyOppositePairs_nat, Nat.cast_add, Nat.cast_mul]
@@ -25,6 +30,8 @@ theorem Parking.measurable_discrepancyOppositePairs (z : Site d) :
       ((q.1.1 - q.1.2).toNat : ℝ≥0∞) * ((q.2.2 - q.2.1).toNat : ℝ≥0∞))).comp
     ((measurable_pi_apply z).prodMk (measurable_pi_apply (0 : Site d)))
 
+/-- The cancellation-pair count at horizon `T` and site `z` is measurable in the coupled
+data, composing `measurable_discrepancyCancelledPairs` with the countable cardinality map. -/
 theorem Parking.measurable_discrepancyCancelledPairs_card (hd : 1 ≤ d) (T : ℕ) (z : Site d) :
     Measurable fun ω : Parking.CoupledData d =>
       ((Parking.discrepancyCancelledPairs ω.1.1 ω.1.2 ω.2 T z).card : ℝ≥0∞) :=

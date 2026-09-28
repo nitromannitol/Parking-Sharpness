@@ -1,21 +1,22 @@
-/-
-The mass transport principle of `parking.tex` Lemma 3.5.
+import Parking.Support.ActivityHoles
 
-Send every particle that is still active after round `t` from its starting site
-to where it stands.  Write `sentTo ω t a b` for the mass that goes from `a` to
-`b`.  Then the mass received at a site is its activity and the mass sent from a
-site is its survivor count:
+/-!
+# The mass transport principle
+
+The mass transport principle of `parking.tex` Lemma 3.5. Send every particle that is
+still active after round `t` from its starting site to where it stands; `sentTo ω t a b`
+is the mass that goes from `a` to `b`. Then the mass received at a site is its activity
+and the mass sent from a site is its survivor count,
 
     A_t(b) = ∑_a sentTo t a b,    survivorsFrom t a = ∑_b sentTo t a b,
 
-both sums being over a box of radius `t`, because after `t` rounds a particle
-is within sup-distance `t` of where it started.  The transport is equivariant,
-`sentTo (shiftData v ω) t a b = sentTo ω t (a + v) (b + v)`, and the law of the
-data is translation invariant, so the expected mass received at the origin is
-the expected mass sent from it.  That is `E A_t(0) = S_t`; summing it over the
-rounds gives `E U_n(0) = ∑_{s < n} S_s`.
+both sums being over a box of radius `t`, because after `t` rounds a particle is within
+sup-distance `t` of where it started. The transport is equivariant,
+`sentTo (shiftData v ω) t a b = sentTo ω t (a + v) (b + v)`, and the law of the data is
+translation invariant, so the expected mass received at the origin is the expected mass
+sent from it. That is `E A_t(0) = S_t`; summing it over the rounds gives
+`E U_n(0) = ∑_{s < n} S_s`.
 -/
-import Parking.Support.ActivityHoles
 
 open LatticeProb (measurable_from_countable' measurable_of_countable_partition shiftLabel)
 
@@ -36,6 +37,8 @@ def sentTo (ω : Data d) (t : ℕ) (a b : Site d) : ℕ :=
   ((Finset.range (ω.1 a).toNat).filter fun i =>
     (state (toDriver ω) t).active (a, i) ∧ (state (toDriver ω) t).pos (a, i) = b).card
 
+/-- The mass sent from `a` to `b` by time `t` never exceeds the initial particle count
+`(ω.1 a).toNat` at `a`. -/
 theorem sentTo_le (ω : Data d) (t : ℕ) (a b : Site d) : sentTo ω t a b ≤ (ω.1 a).toNat := by
   refine le_trans (Finset.card_le_card (Finset.filter_subset _ _)) ?_
   rw [Finset.card_range]
@@ -101,6 +104,8 @@ theorem survivorsFrom_eq_sum_sentTo {ω : Data d}
 
 /-! ### The transport is equivariant -/
 
+/-- `sentTo` is equivariant under translating the data: reading `sentTo` on the data
+shifted by `v` at `(a, b)` agrees with reading the unshifted `sentTo` at `(a + v, b + v)`. -/
 theorem sentTo_shiftData (v : Site d) (ω : Data d) (t : ℕ) (a b : Site d) :
     sentTo (shiftData v ω) t a b = sentTo ω t (a + v) (b + v) := by
   classical
@@ -124,6 +129,7 @@ theorem sentTo_shiftData (v : Site d) (ω : Data d) (t : ℕ) (a b : Site d) :
 
 /-! ### The box is symmetric -/
 
+/-- The box of radius `r` about the origin is closed under negation. -/
 theorem neg_mem_boxFinset_zero {r : ℕ} {x : Site d} (hx : x ∈ boxFinset (0 : Site d) r) :
     -x ∈ boxFinset (0 : Site d) r := by
   rw [mem_boxFinset_iff] at hx ⊢
@@ -131,6 +137,7 @@ theorem neg_mem_boxFinset_zero {r : ℕ} {x : Site d} (hx : x ∈ boxFinset (0 :
   have := hx i
   simpa [abs_sub_comm] using this
 
+/-- Negation maps the box of radius `r` about the origin onto itself. -/
 theorem boxFinset_zero_neg (r : ℕ) :
     (boxFinset (0 : Site d) r).image (fun x => -x) = boxFinset (0 : Site d) r := by
   ext z
@@ -141,6 +148,8 @@ theorem boxFinset_zero_neg (r : ℕ) :
   · intro hz
     exact ⟨-z, neg_mem_boxFinset_zero hz, by simp⟩
 
+/-- A sum over the box of radius `r` about the origin is unchanged by negating the summed
+variable, since negation permutes that box (`boxFinset_zero_neg`). -/
 theorem sum_neg_box {M : Type*} [AddCommMonoid M] (r : ℕ) (f : Site d → M) :
     ∑ x ∈ boxFinset (0 : Site d) r, f (-x) = ∑ x ∈ boxFinset (0 : Site d) r, f x := by
   classical
@@ -149,6 +158,8 @@ theorem sum_neg_box {M : Type*} [AddCommMonoid M] (r : ℕ) (f : Site d → M) :
 
 /-! ### Measurability and integrability of the transport -/
 
+/-- `sentTo · t a b` is measurable, by partitioning on the countable initial count at `a`
+and summing the measurable per-particle indicator of `active ∧ pos = b`. -/
 theorem measurable_sentTo (t : ℕ) (a b : Site d) :
     Measurable fun ω : Data d => sentTo ω t a b := by
   classical
@@ -178,6 +189,8 @@ theorem measurable_sentTo (t : ℕ) (a b : Site d) :
 
 variable {μ : Measure (Site d → ℤ)}
 
+/-- `sentTo · t a b` is integrable under `dataLaw d μ` when `η ↦ |η 0|` is integrable, by
+the deterministic bound `sentTo_le` together with `integrable_of_le_nat`. -/
 theorem integrable_sentTo (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (t : ℕ) (a b : Site d) :
@@ -186,6 +199,8 @@ theorem integrable_sentTo (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (integrable_of_conf hd (integrable_toNat_eta hti hint a)) fun ω => ?_
   exact_mod_cast Nat.cast_le.mpr (sentTo_le ω t a b)
 
+/-- `survivorsFrom (toDriver ·) t a` is integrable under `dataLaw d μ` when `η ↦ |η 0|` is
+integrable, by the same deterministic bound and `integrable_of_le_nat`. -/
 theorem integrable_survivorsFrom_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (t : ℕ) (a : Site d) :

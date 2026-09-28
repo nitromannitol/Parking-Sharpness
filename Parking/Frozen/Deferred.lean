@@ -1,29 +1,28 @@
-/-
-Lemma 3.2 of parking.tex, frozen.  `parking.tex:659-667` (label `lem:deferred`):
-
-  "For every $n\geq0$, every $y$ and $x$ in $\Z^d$ and every $j\geq1$, the event
-   $\{U_n(y)\geq j\}$ is measurable with respect to the initial configuration
-   together with the instructions other than $\rho_j(y)$.  Consequently
-   $\E[\one\{U_n(y)\geq j\}\one\{\rho_j(y)=x\}\mid\eta]
-    =P(y,x)\,\P(U_n(y)\geq j\mid\eta)$."
-
-The paper's instructions are numbered from one and ours from zero, so
-$\rho_{j+1}(y)$ is `ω.2.1 (y, j)` and the event $\{U_n(y)\geq j+1\}$ is
-`j + 1 ≤ U ω n y`.  The measurability clause is stated pathwise, as the
-independence of the event from the one instruction it excludes; that is what
-the paper's proof establishes and it is the form the second clause uses.  It
-holds for the realizations of the model, whose instructions are neighbours of
-the site carrying them, since `ρ_j(y)` has the law `P(y,·)`: without that, a
-particle can stand at a site it is not a candidate for and read an instruction
-of an index the round does not count, and the state after a round is then no
-longer a function of the instructions the odometer has reached.  The second
-clause needs no such hypothesis, because the law of the stacks is carried by
-the realizations that satisfy it.
-Conditioning on `η` is integration over the stacks and the uniform variables
-with `η` held fixed, which is a version of the conditional expectation because
-the law of the data is a product.
--/
 import Parking.Support.DeferredIntegral
+
+/-!
+# The deferred-instruction lemma (frozen)
+
+Lemma 3.2 of parking.tex, frozen. `parking.tex:659-667` (label `lem:deferred`):
+
+"For every $n\geq0$, every $y$ and $x$ in $\Z^d$ and every $j\geq1$, the event
+$\{U_n(y)\geq j\}$ is measurable with respect to the initial configuration together with the
+instructions other than $\rho_j(y)$. Consequently $\E[\one\{U_n(y)\geq j\}\one\{\rho_j(y)=x\}
+\mid\eta] =P(y,x)\,\P(U_n(y)\geq j\mid\eta)$."
+
+The paper's instructions are numbered from one and ours from zero, so $\rho_{j+1}(y)$ is
+`ω.2.1 (y, j)` and the event $\{U_n(y)\geq j+1\}$ is `j + 1 ≤ U ω n y`. The measurability
+clause is stated pathwise, as the independence of the event from the one instruction it
+excludes; that is what the paper's proof establishes and it is the form the second clause
+uses. It holds for the realizations of the model, whose instructions are neighbours of the
+site carrying them, since `ρ_j(y)` has the law `P(y,·)`: without that, a particle can stand
+at a site it is not a candidate for and read an instruction of an index the round does not
+count, and the state after a round is then no longer a function of the instructions the
+odometer has reached. The second clause needs no such hypothesis, because the law of the
+stacks is carried by the realizations that satisfy it. Conditioning on `η` is integration
+over the stacks and the uniform variables with `η` held fixed, which is a version of the
+conditional expectation because the law of the data is a product.
+-/
 
 open MeasureTheory
 

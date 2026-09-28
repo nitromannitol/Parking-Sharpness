@@ -2,6 +2,15 @@ import Parking.Support.TableBernstein
 import Parking.Support.BoundedConditionalMoment
 import Parking.Support.ProductLift
 
+/-!
+# The table moment bound over a random initial field
+
+Extends `Parking.exists_table_noise_moment_bound` from a fixed configuration to any
+bounded random initial field `Φ`, by conditioning on `Φ` and combining the conditional
+`L^r` moment bound of `Support/TableBernstein.lean` with the product-measure lifting lemma
+`rNorm_prod_le_of_conditional` from `Support/BoundedConditionalMoment.lean`.
+-/
+
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm)
 
@@ -17,7 +26,8 @@ theorem exists_table_joint_noise_moment_bound (hBernstein : External.Bernstein) 
       rNorm (μ.prod (flatRoundNoiseLaw d)) r
           (fun z => ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x : ℝ) -
             matchedMeanU (Φ z.1) ρ T x) ≤
-        C * (Real.sqrt r * (∫ z, greenWeightedOdometer (Φ z.1) ρ (curryRoundNoise z.2) T x T ^ (r / 2)
+        C * (Real.sqrt r *
+            (∫ z, greenWeightedOdometer (Φ z.1) ρ (curryRoundNoise z.2) T x T ^ (r / 2)
           ∂(μ.prod (flatRoundNoiseLaw d))) ^ (1 / r) + r * escapeConst d) := by
   obtain ⟨C, hC, hb⟩ := exists_table_noise_moment_bound hBernstein
   refine ⟨C, hC, fun d hd Ω mΩ μ hμ Φ hΦ hΦb ρ T x r hr => ?_⟩
@@ -29,7 +39,8 @@ theorem exists_table_joint_noise_moment_bound (hBernstein : External.Bernstein) 
   let W : ℝ := ∑ v ∈ boxFinset x T, walkOp (fun y => fullGreen d (y - x) ^ 2) v
   let F : Ω × FlatRoundNoise d → ℝ := fun z =>
     ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x : ℝ) - matchedMeanU (Φ z.1) ρ T x
-  let Q : Ω × FlatRoundNoise d → ℝ := fun z => greenWeightedOdometer (Φ z.1) ρ (curryRoundNoise z.2) T x T
+  let Q : Ω × FlatRoundNoise d → ℝ := fun z =>
+    greenWeightedOdometer (Φ z.1) ρ (curryRoundNoise z.2) T x T
   let Y : Ω → ℝ := fun ω => (∫ ξ, Q (ω, ξ) ^ (r / 2) ∂ν) ^ (1 / r)
   have hS := measurableState_matchedState ⟨0, hd1⟩ (fun z : Ω × FlatRoundNoise d => Φ z.1)
     (fun _ => ρ) (fun z => curryRoundNoise z.2) (hΦ.comp measurable_fst)
@@ -46,15 +57,21 @@ theorem exists_table_joint_noise_moment_bound (hBernstein : External.Bernstein) 
     greenWeightedOdometer_le_box _ (hΦb z.1) ρ _ T x T
   have hFB (z : Ω × FlatRoundNoise d) : |F z| ≤ 2 * B := by
     have hu : ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x : ℝ) ≤ B := by
-      exact Nat.cast_le.mpr (by simpa only [mul_one] using matchedOdometer_le_box _ 1 (hΦb z.1) ρ _ T x)
+      exact Nat.cast_le.mpr
+        (by simpa only [mul_one] using matchedOdometer_le_box _ 1 (hΦb z.1) ρ _ T x)
     have hm : matchedMeanU (Φ z.1) ρ T x ≤ B := by
       simpa only [mul_one] using matchedMeanU_le_box hd1 (Φ z.1) 1 (hΦb z.1) ρ T x
-    exact abs_le.mpr ⟨by dsimp only [F]; linarith [Nat.cast_nonneg (α := ℝ) ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x)],
+    exact abs_le.mpr ⟨by
+        dsimp only [F];
+        linarith [Nat.cast_nonneg (α := ℝ)
+          ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x)],
       by dsimp only [F]; linarith [matchedMeanU_nonneg (Φ z.1) ρ T x]⟩
   have hY := bounded_conditional_moment_root ν Q hQ hQ0 (W * B) hQB (by linarith : 0 ≤ r / 2) hr0
   have hi := integrable_abs_rpow_bounded (μ.prod ν) F hF (2 * B) hFB hr0.le
-  have hQi := integrable_rpow_bounded_nonneg (μ.prod ν) Q hQ hQ0 (W * B) hQB (by linarith : 0 ≤ r / 2)
-  have hcond (ω : Ω) : rNorm ν r (fun ξ => F (ω, ξ)) ≤ (C * Real.sqrt r) * Y ω + C * (r * escapeConst d) := by
+  have hQi := integrable_rpow_bounded_nonneg (μ.prod ν) Q hQ hQ0 (W * B) hQB
+    (by linarith : 0 ≤ r / 2)
+  have hcond (ω : Ω) : rNorm ν r (fun ξ => F (ω, ξ)) ≤
+      (C * Real.sqrt r) * Y ω + C * (r * escapeConst d) := by
     have h := hb d hd (Φ ω) (hΦb ω) ρ T x r hr
     convert h using 1
     dsimp only [F, Y, Q, ν]

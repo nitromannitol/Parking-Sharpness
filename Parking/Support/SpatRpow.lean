@@ -1,5 +1,13 @@
 import Parking.Support.Continuum
 
+/-!
+# Spatial rescaling exponent bound
+
+For `d ≤ 3`, the parabolic rescaling exponent `d/2 - 2` is at most `-1/2`, so the
+rescaling factor `R^{d/2-2}` is dominated by `R^{-1/2}` for `R ≥ 1`. This is the
+elementary monotonicity-of-`rpow` step feeding the spatial scaling estimates.
+-/
+
 namespace Parking
 open MeasureTheory LatticeProb
 

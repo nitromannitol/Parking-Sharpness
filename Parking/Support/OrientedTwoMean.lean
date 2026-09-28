@@ -1,7 +1,12 @@
-/- The dimension-two upper bound under the oriented parking law. -/
 import Parking.Support.OrientedDivisibleMoment
 import Parking.Support.OrientedLaw
 import Parking.Support.UpperTarget
+
+/-!
+# Oriented two-mean
+
+The dimension-two upper bound under the oriented parking law.
+-/
 
 open LatticeProb.MomentNorm (rNorm)
 
@@ -9,6 +14,10 @@ noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 
+/-- The dimension-two upper bound `meanuOriented (orientedLaw 2 ν) n ≤ C * n ^ (1 / 4)`, for
+a mean-zero law `ν` with a finite `r`-th moment, `r > 4`: transport to `realLaw ν`, apply the
+moment bound `exists_uOriented_two_moment`, and pass from the `r`-norm back to the mean via
+`integral_le_rNorm` and `integral_oriented_confReal`. -/
 theorem exists_meanuOriented_two_upper (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hmean : ∫ k : ℤ, (k : ℝ) ∂ν = 0) (r : ℝ) (hr : 4 < r)
     (hmom : Integrable (fun k : ℤ => |(k : ℝ)| ^ r) ν) :

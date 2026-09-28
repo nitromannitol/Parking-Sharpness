@@ -1,8 +1,16 @@
-/- A global quadratic remainder bound for the real exponential. -/
 import Mathlib.Analysis.Complex.Exponential
+
+/-!
+# Exponential remainder bound
+
+A global quadratic remainder bound for the real exponential.
+-/
 
 namespace Parking
 
+/-- `exp x ≤ 1 + x + x ^ 2 * exp |x|` for every real `x`, obtained by comparing
+the degree-two Taylor remainder of the complex exponential to its real and
+imaginary parts. -/
 theorem exp_quadratic_remainder (x : ℝ) :
     Real.exp x ≤ 1 + x + x ^ 2 * Real.exp |x| := by
   have h := Complex.norm_exp_sub_sum_le_norm_mul_exp (x : ℂ) 2

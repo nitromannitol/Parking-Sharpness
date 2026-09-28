@@ -4,6 +4,18 @@ import Parking.Support.HorizonSink
 import Parking.Support.AtomUpdate
 import Parking.Support.ClosePair
 
+/-!
+# Strict positivity of the sparse surviving-hole probability
+
+Builds a positive-probability event on which a hole survives to any given horizon, and uses
+it to show the sparse surviving-hole probability `holeProb d (threePointLaw p) T` is strictly
+positive. The event: the field is constantly `-1` (every site a single hole), which forces
+every hole to survive forever (`matchedHole_const_neg_one`); overwriting only the causal box
+around a site with `-1` already suffices for survival at that site
+(`clippedHole_overwrite_box`), and this overwritten configuration occurs with positive
+probability under the three-point law by `ae_overwrite_infinitePi_atoms`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -21,7 +33,8 @@ theorem matchedHole_const_neg_one (ρ : Label d × ℕ → ℝ) (σ : RoundNoise
 /-- Prescribing single holes in the causal box guarantees survival at its center. -/
 theorem clippedHole_overwrite_box (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : RoundNoise d) (T : ℕ) (v : Site d) :
-    (matchedState (clippedField (fun y => if y ∈ boxFinset v T then -1 else η y)) ρ σ T).holes v = 1 := by
+    (matchedState (clippedField (fun y => if y ∈ boxFinset v T then -1 else η y))
+      ρ σ T).holes v = 1 := by
   classical
   have h := matched_counts_agree_box
     (clippedField (fun y => if y ∈ boxFinset v T then -1 else η y)) (fun _ => -1)

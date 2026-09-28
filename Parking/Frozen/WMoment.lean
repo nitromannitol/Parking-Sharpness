@@ -1,4 +1,8 @@
-/-
+import Parking.Support.WMomentProof
+
+/-!
+# Proposition 5.6: the w-error moment bound (frozen)
+
 Proposition 5.6 of parking.tex, frozen.  `parking.tex:1202-1215` (label
 `prop:w-moment`):
 
@@ -18,7 +22,6 @@ an undefined integral cannot satisfy them through its junk value.  The
 martingale moment inequality the proof quotes enters as an explicit
 hypothesis.
 -/
-import Parking.Support.WMomentProof
 
 open MeasureTheory
 

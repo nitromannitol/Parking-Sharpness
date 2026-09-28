@@ -1,8 +1,11 @@
-/- A measurable source representative compatible with all local weak tests. -/
 import Parking.Support.SpatialResidualAlgebra
 import Parking.Support.SpatialNoiseCongruence
 import LatticeProb.Prob.Scaling.CompactPositivity
 import LatticeProb.Prob.Scaling.MeasurableLocalChoice
+
+/-!
+# A measurable source representative compatible with all local weak tests
+-/
 
 open MeasureTheory Set
 noncomputable section

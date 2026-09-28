@@ -1,4 +1,11 @@
-/-
+import Parking.Support.Measurability
+import Parking.Support.Deferred
+import LatticeProb.Prob.Coordinate
+import LatticeProb.Invariance
+
+/-!
+# The second clause of `lem:deferred`
+
 The second clause of `lem:deferred` (`parking.tex:659-667`): averaging over the
 instructions with the configuration held fixed,
 
@@ -19,10 +26,6 @@ almost surely.
 The transition probability is read off the one-step law: the `2d` neighbours of
 a site are distinct, so the law gives each of them mass `1/(2d)`.
 -/
-import Parking.Support.Measurability
-import Parking.Support.Deferred
-import LatticeProb.Prob.Coordinate
-import LatticeProb.Invariance
 
 open LatticeProb (instructionLaw_isProbability rankLaw_isProbability)
 
@@ -35,16 +38,20 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
+/-- Adding a unit vector to `y` is injective in the coordinate. -/
 theorem unit_add_left_inj {y : Site d} {i j : Fin d} (h : y + unit i = y + unit j) : i = j := by
   by_contra hne
   have := congrFun h i
   simp [unit, Pi.single_eq_same,  Pi.single_eq_of_ne hne] at this
 
+/-- Subtracting a unit vector from `y` is injective in the coordinate. -/
 theorem unit_sub_left_inj {y : Site d} {i j : Fin d} (h : y - unit i = y - unit j) : i = j := by
   by_contra hne
   have := congrFun h i
   simp [unit, Pi.single_eq_same,  Pi.single_eq_of_ne hne] at this
 
+/-- Adding a unit vector to `y` never lands where subtracting a unit vector
+does. -/
 theorem unit_add_ne_sub (y : Site d) (i j : Fin d) : y + unit i ≠ y - unit j := by
   intro h
   have := congrFun h i
@@ -52,6 +59,10 @@ theorem unit_add_ne_sub (y : Site d) (i j : Fin d) : y + unit i ≠ y - unit j :
   · subst hij; simp [unit, Pi.single_eq_same] at this; omega
   · simp [unit, Pi.single_eq_same,  Pi.single_eq_of_ne hij] at this
 
+/-- Summing the two Dirac masses `dirac (y + unit i)` and `dirac (y - unit i)`
+over all coordinates `i` gives `1` at each of the `2d` neighbours of `y` (using
+`unit_add_left_inj`, `unit_sub_left_inj` and `unit_add_ne_sub` to see the sum has
+no repeated mass) and `0` elsewhere. -/
 theorem sum_dirac_nbr (y x : Site d) :
     (∑ i : Fin d, ((Measure.dirac (y + unit i) + Measure.dirac (y - unit i))
         ({x} : Set (Site d))))
@@ -92,6 +103,9 @@ theorem sum_dirac_nbr (y x : Site d) :
         simpa using fun hc : y - unit i = x => hx (hc ▸ mem_nbrFinset_sub y i))]
     simp
 
+/-- The one-step transition probability `instructionLaw y {x}` equals `kern d y x`:
+the `2d` neighbours of `y` are distinct by `sum_dirac_nbr`, so the uniform law over
+them gives each mass `1/(2d)`. -/
 theorem instructionLaw_singleton (hd : 1 ≤ d) (y x : Site d) :
     (instructionLaw y ({x} : Set (Site d))).toReal = kern d y x := by
   have h2d : (2 * (d : ℝ≥0∞)) ≠ 0 := by
@@ -116,6 +130,7 @@ is.  The law of the stacks does not see the change. -/
 def nbrProj (i₀ : Fin d) (σ : Site d × ℕ → Site d) : Site d × ℕ → Site d :=
   fun q => if σ q ∈ nbrFinset q.1 then σ q else q.1 + unit i₀
 
+/-- `nbrProj i₀ σ` always outputs a neighbour of the site it is read at. -/
 theorem nbrProj_mem (i₀ : Fin d) (σ : Site d × ℕ → Site d) (q : Site d × ℕ) :
     nbrProj i₀ σ q ∈ nbrFinset q.1 := by
   unfold nbrProj
@@ -123,10 +138,14 @@ theorem nbrProj_mem (i₀ : Fin d) (σ : Site d × ℕ → Site d) (q : Site d �
   · assumption
   · exact mem_nbrFinset_add q.1 i₀
 
+/-- `nbrProj` is the identity on a stack all of whose instructions already point
+to a neighbour of their site. -/
 theorem nbrProj_eq_self {i₀ : Fin d} {σ : Site d × ℕ → Site d}
     (h : ∀ q, σ q ∈ nbrFinset q.1) : nbrProj i₀ σ = σ := by
   funext q; unfold nbrProj; rw [if_pos (h q)]
 
+/-- `nbrProj` commutes with overwriting one coordinate `q₀` by a neighbour `c`
+of `q₀.1`. -/
 theorem nbrProj_update (i₀ : Fin d) (σ : Site d × ℕ → Site d) (q₀ : Site d × ℕ)
     {c : Site d} (hc : c ∈ nbrFinset q₀.1) :
     nbrProj i₀ (Function.update σ q₀ c) = Function.update (nbrProj i₀ σ) q₀ c := by
@@ -135,6 +154,7 @@ theorem nbrProj_update (i₀ : Fin d) (σ : Site d × ℕ → Site d) (q₀ : Si
   · subst hq; simp [nbrProj, hc]
   · simp [nbrProj, Function.update_of_ne hq]
 
+/-- `nbrProj i₀` is measurable. -/
 theorem measurable_nbrProj (i₀ : Fin d) :
     Measurable fun σ : Site d × ℕ → Site d => nbrProj i₀ σ := by
   refine measurable_pi_lambda _ fun q => ?_
@@ -143,6 +163,14 @@ theorem measurable_nbrProj (i₀ : Fin d) :
 
 /-! ### The deferred instruction -/
 
+/-- **The second clause of `lem:deferred`.**  Conditionally on the configuration
+`η`, the event that the odometer at `y` has reached `j + 1` and the instruction of
+index `j` at `y` sends the particle to `x` factors as `kern d y x` times the
+probability of the odometer event alone: `nbrProj` replaces every instruction by a
+neighbour without changing the odometer event (`odometer_ge_congr` via
+`stepsToNeighbour_of_mem`), which is almost surely the identity
+(`stackLaw_ae_nbr`), and then `LatticeProb.integral_mul_indicator_eval_prod`
+factors the resulting integral over the independent coordinate `(y, j)`. -/
 theorem deferred_factorization (hd : 1 ≤ d) (n : ℕ) (y x : Site d) (j : ℕ)
     (η : Site d → ℤ) :
     probGiven d η {ω | j + 1 ≤ U ω n y ∧ ω.2.1 (y, j) = x}
@@ -203,7 +231,8 @@ theorem deferred_factorization (hd : 1 ≤ d) (n : ℕ) (y x : Site d) (j : ℕ)
     have hne : ∀ q : Site d × ℕ, q ≠ (y, j) →
         Function.update (nbrProj i₀ σ) (y, j) c q = nbrProj i₀ σ q := fun q hq =>
       Function.update_of_ne hq _ _
-    have hiff := odometer_ge_congr (D := toDriver ((η, Function.update (nbrProj i₀ σ) (y, j) c, r) : Data d))
+    have hiff := odometer_ge_congr
+      (D := toDriver ((η, Function.update (nbrProj i₀ σ) (y, j) c, r) : Data d))
       (D' := toDriver ((η, nbrProj i₀ σ, r) : Data d))
       (stepsToNeighbour_of_mem hstep2) (stepsToNeighbour_of_mem hstep1) rfl rfl y j n hne
     show Set.indicator A (fun _ => (1 : ℝ))

@@ -1,4 +1,10 @@
-/-
+import Parking.Support.TightBoxLaw
+import Parking.Support.OrientedCutoffValuePot
+import Parking.Support.OrientedLaw
+
+/-!
+# The cutoff value `Y` and its measurability and integrability
+
 `Y`, `hY` and `hYi` of `Parking.oriented_scaling_of_cutoff`: the cutoff optimal-stopping value
 of `parking.tex:3214-3218` TOGETHER WITH the potential at the origin, read at the discrete
 rescaled box-reward field, as a function of the driving data `w : Data 2`.
@@ -22,9 +28,6 @@ corner, by the finite sum of the absolute grid rewards touching the box
 (`Parking.exists_orientedGridReward_single_moment` at `p := 2`) and hence integrable on the
 probability space (`Parking.integrable_of_integrable_sq`, via `|x| ≤ 1 + x²`).
 -/
-import Parking.Support.TightBoxLaw
-import Parking.Support.OrientedCutoffValuePot
-import Parking.Support.OrientedLaw
 
 open LatticeProb.BoxClamp (rewardBox)
 

@@ -1,5 +1,16 @@
 import Parking.Support.Lp
 
+/-!
+# Weighted moment bound
+
+Packages the convexity inequality that lets a common `L^p` moment bound on a finite family
+of nonnegative random variables pass to any nonnegative weighted sum of them: if every `X i`
+has `p`-th moment at most `M`, the weighted sum `∑ w i * X i` has `p`-th moment at most
+`(∑ w i) ^ p * M`. The proof dominates the sum pointwise by `rpow_weighted_sum_le` and
+integrates the resulting convex combination term by term; it does not assume the summands
+are independent or identically distributed.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory

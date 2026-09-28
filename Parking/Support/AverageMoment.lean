@@ -1,6 +1,14 @@
 import Parking.Support.WeightedMoment
 import Parking.Support.MomentLimits
 
+/-!
+# Averaging a common moment bound
+
+A convex combination of random variables that all satisfy the same `L^r` moment bound
+(`LatticeProb.MomentNorm.rNorm`) again satisfies it, by Minkowski's inequality applied
+pointwise to the weighted sum and the convexity bound `integral_weighted_rpow_le`.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 
 noncomputable section

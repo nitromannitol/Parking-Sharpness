@@ -1,6 +1,20 @@
 import Parking.Support.InstructionHoleFactor
 import Parking.Support.PartialInvariant
 
+/-!
+# The round hole reveal factor
+
+`roundHoleCost` isolates the per-entry contribution to the exponential-tilt hole cost:
+zero for an unused table entry, and the two-point `holeKernel` weight for a used one.
+Unused entries, whether a spare per-label direction (`roundSigned_update_inr`) or a
+departing rank past the occupation count, leave the current-round hole mean unchanged
+(`partial_roundMeanH_update_invariant`), so every current entry, used or not, satisfies
+the per-entry reveal factor bound (`instruction_partial_hole_factor_any`). Assembling
+this over one revealed coordinate gives `round_hole_reveal_section`: the after-reveal
+product of two partial hole means is controlled by `exp (roundHoleCost d A x z q)` times
+the before-reveal product.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -24,9 +38,11 @@ theorem partial_roundMeanH_update_invariant (A H : Site d → ℕ) (ρ : Label d
     (T : ℕ) (x : Site d) (S : Set (RoundSlot d)) [DecidablePred (· ∈ S)] (q : RoundSlot d)
     (hq : ∀ τ a, roundSigned A H (Function.update τ q a) = roundSigned A H τ)
     (τ : RoundSlot d → Fin d × Bool) (a : Fin d × Bool) :
-    partialInt (fun _ : RoundSlot d => stepLaw d) S (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x)
+    partialInt (fun _ : RoundSlot d => stepLaw d) S
+        (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x)
       (Function.update τ q a) =
-    partialInt (fun _ : RoundSlot d => stepLaw d) S (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) τ := by
+    partialInt (fun _ : RoundSlot d => stepLaw d) S
+      (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) τ := by
   apply partialInt_update_invariant
   intro ζ b
   rw [hq]
@@ -53,7 +69,8 @@ theorem instruction_partial_hole_factor_any (hd : 3 ≤ d) (A H : Site d → ℕ
         ((∫ a, partialInt (fun _ : RoundSlot d => stepLaw d) (insert q S)
           (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T x) (Function.update τ q a) ∂(stepLaw d)) *
         ∫ a, partialInt (fun _ : RoundSlot d => stepLaw d) (insert q S)
-          (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T z) (Function.update τ q a) ∂(stepLaw d)) := by
+          (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T z) (Function.update τ q a)
+            ∂(stepLaw d)) := by
     simp only [partial_roundMeanH_update_invariant A H ρ T x (insert q S) q hq,
       partial_roundMeanH_update_invariant A H ρ T z (insert q S) q hq,
       hc, Real.exp_zero, integral_const, probReal_univ, one_smul, one_mul, le_refl]
@@ -61,7 +78,8 @@ theorem instruction_partial_hole_factor_any (hd : 3 ≤ d) (A H : Site d → ℕ
   | inl q =>
       rcases q with ⟨v, j⟩
       by_cases hj : j < A v
-      · simpa only [roundHoleCost, if_pos hj] using instruction_partial_hole_factor hd A H v j hj ρ T x z S τ
+      · simpa only [roundHoleCost, if_pos hj] using
+          instruction_partial_hole_factor hd A H v j hj ρ T x z S τ
       · exact hunused (fun ζ a => roundSigned_update_unused A H ζ v j (Nat.le_of_not_gt hj) a)
           (by simp only [roundHoleCost, if_neg hj])
   | inr p => exact hunused (fun ζ a => roundSigned_update_inr A H ζ p a) rfl
@@ -82,9 +100,11 @@ theorem round_hole_reveal_section (hd : 3 ≤ d) (A H : Site d → ℕ)
   classical
   have hd1 : 1 ≤ d := by omega
   haveI := stepLaw_isProbability hd1
-  have hm (v : Site d) : Measurable (fun ζ : RoundSlot d → Fin d × Bool => matchedMeanH (roundSigned A H ζ) ρ T v) :=
+  have hm (v : Site d) :
+      Measurable (fun ζ : RoundSlot d → Fin d × Bool => matchedMeanH (roundSigned A H ζ) ρ T v) :=
     (measurable_matchedMeanH hd1 ρ T v).comp
-      (measurable_roundSigned (fun _ => A) (fun _ => H) id measurable_const measurable_const measurable_id)
+      (measurable_roundSigned (fun _ => A) (fun _ => H) id measurable_const measurable_const
+        measurable_id)
   have he (v : Site d) := partialInt_insert_coordinate (fun _ : RoundSlot d => stepLaw d)
     (↑S : Set (RoundSlot d)) q hq (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T v)
     (hm v) (H v : ℝ) (roundMeanH_bound hd1 A H ρ T v) τ

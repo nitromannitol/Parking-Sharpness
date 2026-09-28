@@ -1,4 +1,9 @@
-/-
+import Parking.Support.BlockTail
+import Parking.Support.RoundHitting
+
+/-!
+# The resolvent bound on the range
+
 Step 2 of the proof of `prop:resolvent` (`parking.tex:2708-2721`):
 
   "For every integer `m ≥ 2`, `E_0 e^{-a|R_t|} ≤ P_0(|R_t| < m) + e^{-am}`."
@@ -10,8 +15,6 @@ readings differ only by the constants.  This file also carries the bridge from
 the signed-direction walk model in which `Parking.rangeExp` is stated to the
 position paths of the library, in which Step 1 is proved.
 -/
-import Parking.Support.BlockTail
-import Parking.Support.RoundHitting
 
 open MeasureTheory
 
@@ -151,6 +154,9 @@ theorem rangeExp_le_add (hd : 1 ≤ d) {a : ℝ} (ha : 0 < a) (m t : ℕ) :
         simp
 
 
+/-- For `x ≥ 1`, the natural-number ceiling `⌈x⌉₊` is at most `2x`, which lets the horizon
+chosen as a ceiling in Steps 1–3 be compared back to the real-valued rate it approximates,
+up to a constant factor of `2`. -/
 theorem ceil_le_two_mul {x : ℝ} (hx : 1 ≤ x) : ((⌈x⌉₊ : ℕ) : ℝ) ≤ 2 * x := by
   have h0 : (0 : ℝ) ≤ x := le_trans zero_le_one hx
   have h := Nat.ceil_lt_add_one h0
@@ -222,6 +228,8 @@ theorem exists_rangeExp_horizon_bound (hd : 1 ≤ d) :
   linarith [hstep1, hstep2, hstep3, hexp1, hexp2]
 
 
+/-- For `a > 0`, `a √(t/a) = √(at)`, the identity used to rewrite the horizon
+`n = ⌈√(t/a)⌉` chosen in Step 2 back in terms of the rate `√(at)` in the `d ≥ 3` case. -/
 theorem mul_sqrt_div_self {a t : ℝ} (ha : 0 < a) (_ht : 0 ≤ t) :
     a * Real.sqrt (t / a) = Real.sqrt (a * t) := by
   nth_rewrite 1 [← Real.sqrt_sq ha.le]
@@ -229,6 +237,8 @@ theorem mul_sqrt_div_self {a t : ℝ} (ha : 0 < a) (_ht : 0 ≤ t) :
   congr 1
   field_simp
 
+/-- For `a > 0` and `t > 0`, `t / √(t/a) = √(at)`, the companion identity to
+`mul_sqrt_div_self` used on the other side of the same horizon rescaling. -/
 theorem div_sqrt_div_self {a t : ℝ} (ha : 0 < a) (ht : 0 < t) :
     t / Real.sqrt (t / a) = Real.sqrt (a * t) := by
   have hta : (0 : ℝ) < t / a := div_pos ht ha
@@ -289,6 +299,8 @@ theorem exists_rangeExp_bound_high (hd : 3 ≤ d) : ∃ c C : ℝ, 0 < c ∧ 0 <
   nlinarith [hb, hterm1, hterm2, hC₁]
 
 
+/-- For `a, t > 0`, `t / (t/a)^{2/3} = a^{2/3} t^{1/3}`, the identity used to convert the
+horizon `⌈(t/a)^{2/3}⌉` chosen in dimension one back into the rate `a^{2/3} t^{1/3}`. -/
 theorem div_rpow_two_thirds {a t : ℝ} (ha : 0 < a) (ht : 0 < t) :
     t / ((t / a) ^ ((2 : ℝ) / 3)) = a ^ ((2 : ℝ) / 3) * t ^ ((1 : ℝ) / 3) := by
   have hne : ((t / a) ^ ((2 : ℝ) / 3)) ≠ 0 := by positivity
@@ -297,6 +309,8 @@ theorem div_rpow_two_thirds {a t : ℝ} (ha : 0 < a) (ht : 0 < t) :
   rw [← Real.rpow_add ht]
   norm_num
 
+/-- For `a, t > 0`, `a (t/a)^{1/3} = a^{2/3} t^{1/3}`, the companion identity to
+`div_rpow_two_thirds` used on the Green-scale side of the same horizon. -/
 theorem mul_rpow_one_third {a t : ℝ} (ha : 0 < a) (ht : 0 < t) :
     a * ((t / a) ^ ((1 : ℝ) / 3)) = a ^ ((2 : ℝ) / 3) * t ^ ((1 : ℝ) / 3) := by
   rw [Real.div_rpow ht.le ha.le]
@@ -304,6 +318,8 @@ theorem mul_rpow_one_third {a t : ℝ} (ha : 0 < a) (ht : 0 < t) :
   rw [← Real.rpow_add ha]
   norm_num
 
+/-- For `x ≥ 0`, `√(x^{2/3}) = x^{1/3}`, used in the dimension-one horizon computation to
+rewrite `√u` for `u = (t/a)^{2/3}` as `(t/a)^{1/3}`. -/
 theorem sqrt_rpow_two_thirds {x : ℝ} (hx : 0 ≤ x) :
     Real.sqrt (x ^ ((2 : ℝ) / 3)) = x ^ ((1 : ℝ) / 3) := by
   rw [Real.sqrt_eq_rpow, ← Real.rpow_mul hx]
@@ -366,10 +382,14 @@ theorem exists_rangeExp_bound_one (hd : d = 1) : ∃ c C : ℝ, 0 < c ∧ 0 < C 
     nlinarith [hstep, hau, hc₁, hrate]
   nlinarith [hb, hterm1, hterm2, hC₁]
 
+/-- For `t ≥ 0` and `x > 0`, `t / √x = √(t²/x)`, used to rewrite `t/v` as the square root
+of a ratio in the dimension-two horizon computation. -/
 theorem div_sqrt_eq_sqrt {t x : ℝ} (ht : 0 ≤ t) (_hx : 0 < x) :
     t / Real.sqrt x = Real.sqrt (t ^ 2 / x) := by
   rw [Real.sqrt_div (sq_nonneg t), Real.sqrt_sq ht]
 
+/-- For `y ≥ 0` and `L > 0`, `√(yL)/L = √(y/L)`, used to simplify `av/L` to the target rate
+`√(at/L)` in the dimension-two horizon computation. -/
 theorem sqrt_mul_div_self {y L : ℝ} (hy : 0 ≤ y) (hL : 0 < L) :
     Real.sqrt (y * L) / L = Real.sqrt (y / L) := by
   rw [eq_comm, eq_div_iff (ne_of_gt hL)]
@@ -506,7 +526,8 @@ theorem exists_rangeExp_bound_two (hd : d = 2) : ∃ c C : ℝ, 0 < c ∧ 0 < C 
 summation of Step 3 uses. -/
 theorem exp_neg_le_div_pow {y : ℝ} (hy : 0 < y) (k : ℕ) :
     Real.exp (-y) ≤ (Nat.factorial k : ℝ) / y ^ k := by
-  have h1 : y ^ k / (Nat.factorial k : ℝ) ≤ Real.exp y := Real.pow_div_factorial_le_exp (x := y) hy.le k
+  have h1 : y ^ k / (Nat.factorial k : ℝ) ≤ Real.exp y :=
+    Real.pow_div_factorial_le_exp (x := y) hy.le k
   have hk : (0 : ℝ) < (Nat.factorial k : ℝ) := by
     exact_mod_cast Nat.factorial_pos k
   rw [le_div_iff₀ (by positivity : (0:ℝ) < y ^ k), Real.exp_neg, inv_mul_eq_div,
@@ -514,6 +535,9 @@ theorem exp_neg_le_div_pow {y : ℝ} (hy : 0 < y) (k : ℕ) :
   rw [div_le_iff₀ hk] at h1
   linarith
 
+/-- For `p > 1`, the series `∑ (n+1)^{-p}` is summable, with its sum bounded by some
+constant `C`, obtained from the partial-sum bound `exists_sum_rpow_le` by
+`summable_of_sum_range_le` and `Real.tsum_le_of_sum_range_le`. -/
 theorem exists_tsum_rpow_le {p : ℝ} (hp : 1 < p) :
     ∃ C : ℝ, 0 < C ∧ Summable (fun n : ℕ => ((n : ℝ) + 1) ^ (-p)) ∧
       ∑' n : ℕ, ((n : ℝ) + 1) ^ (-p) ≤ C := by
@@ -528,6 +552,8 @@ theorem exists_tsum_rpow_le {p : ℝ} (hp : 1 < p) :
   exact ⟨C, hC, summable_of_sum_range_le hnn hrange, Real.tsum_le_of_sum_range_le hnn hrange⟩
 
 
+/-- The reciprocal-square series `∑ 1/(n+1)²` is summable with a finite bound `C` on its
+sum; this is the majorant series against which the resolvent tail is compared in Step 3. -/
 theorem exists_tsum_inv_sq_le : ∃ C : ℝ, 0 < C ∧
     Summable (fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2) ∧
     ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ 2 ≤ C := by
@@ -547,11 +573,16 @@ theorem exists_tsum_inv_sq_le : ∃ C : ℝ, 0 < C ∧
         exact h
   exact ⟨C, hC, summable_of_sum_range_le hnn hrange, Real.tsum_le_of_sum_range_le hnn hrange⟩
 
+/-- For `x ≥ 0`, `(√x)⁴ = x²`, used to raise a square-root rate to the fourth (or eighth)
+power in the exponential-tail bounds of Step 3. -/
 theorem sqrt_pow_four {x : ℝ} (hx : 0 ≤ x) : Real.sqrt x ^ 4 = x ^ 2 := by
   have h := Real.sq_sqrt hx
   have h4 : Real.sqrt x ^ 4 = (Real.sqrt x ^ 2) ^ 2 := by ring
   rw [h4, h]
 
+/-- For `0 < a ≤ 1`, `exp(-3 log(e/a)) ≤ a³`, the cube case of turning the threshold's
+logarithmic factor `log(e/a)` into a power of `a`, used to make the constant `M` in the
+`d ≥ 3` tail summable. -/
 theorem exp_neg_three_lambda_le {a : ℝ} (ha : 0 < a) (_ha1 : a ≤ 1) :
     Real.exp (-(3 * Real.log (Real.exp 1 / a))) ≤ a ^ 3 := by
   have hea : (0 : ℝ) < Real.exp 1 / a := by positivity
@@ -760,6 +791,9 @@ theorem exists_resolvent_tail_high (hd : 3 ≤ d) :
     _ ≤ A * C₁ := mul_le_mul_of_nonneg_left htsum1 hApos.le
     _ ≤ 1 := hAC
 
+/-- For `a > 0` and any `k`, `exp(-(k log(e/a))) ≤ a^k`, the general-exponent form of
+`exp_neg_three_lambda_le` used for the higher powers of `a` needed in dimensions one and
+two. -/
 theorem exp_neg_nat_lambda_le {a : ℝ} (ha : 0 < a) (k : ℕ) :
     Real.exp (-((k : ℝ) * Real.log (Real.exp 1 / a))) ≤ a ^ k := by
   have hea : (0 : ℝ) < Real.exp 1 / a := by positivity
@@ -770,6 +804,9 @@ theorem exp_neg_nat_lambda_le {a : ℝ} (ha : 0 < a) (k : ℕ) :
   rw [div_le_iff₀ (by positivity)]
   nlinarith [pow_nonneg ha.le k, he]
 
+/-- For `a, t ≥ 0`, `(a^{2/3} t^{1/3})³ = a² t`, the identity that lets the dimension-one
+rate `a^{2/3} t^{1/3}` be compared against the horizon threshold `C a^{-2} L³` by cubing
+both sides. -/
 theorem rpow_cube_eq {a t : ℝ} (ha : 0 ≤ a) (ht : 0 ≤ t) :
     (a ^ ((2 : ℝ) / 3) * t ^ ((1 : ℝ) / 3)) ^ 3 = a ^ 2 * t := by
   rw [mul_pow, ← Real.rpow_natCast (a ^ ((2:ℝ)/3)) 3, ← Real.rpow_natCast (t ^ ((1:ℝ)/3)) 3,
@@ -982,6 +1019,9 @@ theorem exists_resolvent_tail_one (hd : d = 1) :
     _ ≤ A * C₁ := mul_le_mul_of_nonneg_left htsum1 hApos.le
     _ ≤ 1 := hAC
 
+/-- For `t ≥ 1`, `log(t+2) ≤ 4√t`, used to control the extra logarithmic factor of the
+dimension-two Green scale by a square root once the horizon has grown past the
+threshold. -/
 theorem log_le_four_sqrt {t : ℝ} (ht : 1 ≤ t) : Real.log (t + 2) ≤ 4 * Real.sqrt t := by
   have ht0 : (0:ℝ) < t := by linarith
   have h2 : (0:ℝ) < t + 2 := by linarith
@@ -996,6 +1036,8 @@ theorem log_le_four_sqrt {t : ℝ} (ht : 1 ≤ t) : Real.log (t + 2) ≤ 4 * Rea
       Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)] at h5
   linarith
 
+/-- `√(exp x) = exp(x/2)`, used to simplify the square root of `exp(pL)` appearing in the
+dimension-two threshold split. -/
 theorem sqrt_exp (x : ℝ) : Real.sqrt (Real.exp x) = Real.exp (x / 2) := by
   have h : Real.exp x = Real.exp (x / 2) ^ 2 := by
     rw [← Real.exp_nat_mul]
@@ -1003,10 +1045,15 @@ theorem sqrt_exp (x : ℝ) : Real.sqrt (Real.exp x) = Real.exp (x / 2) := by
     ring
   rw [h, Real.sqrt_sq (Real.exp_pos _).le]
 
+/-- For `x ≥ 0`, `x²/2 ≤ exp x`, from `Real.quadratic_le_exp_of_nonneg`; used to
+lower-bound `exp(3κL)` by a quadratic in `κL` in the dimension-two tail bound. -/
 theorem exp_ge_sq_half {x : ℝ} (hx : 0 ≤ x) : x ^ 2 / 2 ≤ Real.exp x := by
   have h := Real.quadratic_le_exp_of_nonneg hx
   linarith
 
+/-- For `a > 0`, `a = exp(1) exp(-log(e/a))`, rewriting `a` through its own logarithmic
+threshold `L = log(e/a)`; used to relate `a exp(pL/2)` to `exp(3κL)` in the dimension-two
+tail bound. -/
 theorem eq_exp_one_mul_exp_neg_log {a : ℝ} (ha : 0 < a) :
     a = Real.exp 1 * Real.exp (-(Real.log (Real.exp 1 / a))) := by
   have hea : (0:ℝ) < Real.exp 1 / a := by positivity

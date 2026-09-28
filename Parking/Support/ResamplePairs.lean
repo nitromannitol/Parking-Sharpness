@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Resample
+import LatticeProb.Prob.CoordIntegral
+
+/-!
+# Step 3 of `lem:critical-density`: independence across sites
+
 The independence across sites used in Step 3 of `lem:critical-density`
 (`parking.tex:1340-1343`): "All unmatched particles or holes created at one site
 have the same sign, and the collections created at distinct sites are
@@ -17,8 +22,6 @@ the factorization being the independence of two distinct coordinates of an
 i.i.d. field (`LatticeProb.integral_mul_eval`) and each factor being `ε/2` by the
 symmetry of the one-site joint law (`Parking.integral_posPart_resampleOne`).
 -/
-import Parking.Support.Resample
-import LatticeProb.Prob.CoordIntegral
 
 noncomputable section
 
@@ -38,9 +41,13 @@ def dPos (c : Site d → ℤ × ℤ) (x : Site d) : ℝ := max (((c x).2 : ℝ) 
 /-- The negative part of the change at a site. -/
 def dNeg (c : Site d → ℤ × ℤ) (x : Site d) : ℝ := max (((c x).1 : ℝ) - ((c x).2 : ℝ)) 0
 
+/-- `dPos` at a fixed site `x` is measurable, as evaluation at `x` composed with the
+coordinate projections, subtraction, and `max`. -/
 theorem measurable_dPos (x : Site d) : Measurable (fun c : Site d → ℤ × ℤ => dPos c x) := by
   unfold dPos; fun_prop
 
+/-- `dNeg` at a fixed site `x` is measurable, by the same argument as `measurable_dPos`
+with the two coordinates exchanged. -/
 theorem measurable_dNeg (x : Site d) : Measurable (fun c : Site d → ℤ × ℤ => dNeg c x) := by
   unfold dNeg; fun_prop
 
@@ -54,6 +61,9 @@ theorem dPos_mul_dNeg (c : Site d → ℤ × ℤ) (x : Site d) : dPos c x * dNeg
 
 /-! ### The mean of one part -/
 
+/-- The mean of `dPos` at a site under the lattice resampling law is the one-site
+positive-part mean `p γ / 2`, obtained by pushing forward along evaluation at that
+site to `resampleOne ν p`. -/
 theorem integral_dPos (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1)
     (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν)) (x : Site d) :
     ∫ c, dPos c x ∂(resampleLaw d ν p) = p.toReal * gammaOf ν / 2 := by
@@ -69,6 +79,8 @@ theorem integral_dPos (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0�
       = fun c : Site d → ℤ × ℤ => max (((c x).2 : ℝ) - ((c x).1 : ℝ)) 0 from rfl, ← h]
   exact integral_posPart_resampleOne ν hp hint
 
+/-- The mean of `dNeg` at a site under the lattice resampling law is also `p γ / 2`,
+by the swap symmetry `resampleOne_map_swap` reducing it to `integral_posPart_resampleOne`. -/
 theorem integral_dNeg (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1)
     (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν)) (x : Site d) :
     ∫ c, dNeg c x ∂(resampleLaw d ν p) = p.toReal * gammaOf ν / 2 := by
@@ -169,6 +181,9 @@ theorem integral_dNeg_mul_dPos (ν : Measure ℤ) [IsProbabilityMeasure ν] {p :
   congr 1
   exact integral_posPart_resampleOne ν hp hint
 
+/-- **Opposite-sign pairs across two distinct sites, the other order.**  The same
+factorization as `integral_dNeg_mul_dPos` with `dPos` and `dNeg` exchanged, giving
+the same product `(p γ / 2)²`. -/
 theorem integral_dPos_mul_dNeg (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1)
     (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν))
     {z : Site d} (hz : z ≠ 0) :

@@ -1,4 +1,11 @@
-/-
+import Parking.Support.NearScale
+import Parking.Support.NearCutoff
+import Parking.External.GreenNorms
+import Parking.Support.UpperTarget
+
+/-!
+# The five quantities of Step 3, read at the cutoff
+
 The quantities of Step 3 of the upper bounds of `thm:near`, read at the cutoff in the
 scale `env` (`parking.tex:2959-2993`).
 
@@ -13,10 +20,6 @@ resulting scales are `env 2 3` or `log(e/δ)` for `κ_d` and for the maximum of 
 function, and `env 3 3`, `env 1 3`, `env (1/2) 2` or `log(e/δ)` for `φ_d` and for the
 `L²` norm of the Green function, in dimensions one, two, three and four upward.
 -/
-import Parking.Support.NearScale
-import Parking.Support.NearCutoff
-import Parking.External.GreenNorms
-import Parking.Support.UpperTarget
 
 noncomputable section
 namespace Parking
@@ -29,6 +32,9 @@ def rateEnv (d : ℕ) (δ : ℝ) : ℝ :=
 /-- The scale in which `κ_d` and the maximum of the Green function are read. -/
 def kappaEnv (d : ℕ) (δ : ℝ) : ℝ := if d = 1 then env 2 3 δ else env 0 1 δ
 
+/-- `κ_d(N)` at the cutoff, in the scale `kappaEnv`: `env 2 3` in dimension one via
+`rpow_le_env`, `env 0 1` (a logarithm) in dimension two via `exists_log_le_env`, and
+`log(e/δ)` from dimension three on, where `κ_d(N) = 1`. -/
 theorem exists_kappa_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) (δ : ℝ), 0 < δ → δ ≤ 1 →
       ((N : ℝ) ≤ C₀ * cutoffEnv d δ) → Parking.kappa d N ≤ C * kappaEnv d δ := by
@@ -51,6 +57,9 @@ theorem exists_kappa_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     rw [Parking.kappa, if_neg h1, if_neg h2, kappaEnv, if_neg h1, one_mul, env_log δ]
     exact one_le_bigL hδ0 hδ1
 
+/-- `max_x g_N(x)` at the cutoff, in the same scale `kappaEnv` as `κ_d(N)`: `env 2 3`
+in dimension one, a logarithm in dimension two, and `log(e/δ)` from dimension three
+on, where the maximum of the Green function is `1`. -/
 theorem exists_greenMaxRate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) (δ : ℝ), 0 < δ → δ ≤ 1 →
       ((N : ℝ) ≤ C₀ * cutoffEnv d δ) →
@@ -76,6 +85,9 @@ theorem exists_greenMaxRate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
       env_log δ]
     exact one_le_bigL hδ0 hδ1
 
+/-- `φ_d(N)` at the cutoff, in the scale `rateEnv`: a power of `N + 1 ≤ (C₀ + 1) ·
+cutoffEnv d δ` via `rpow_le_env` below dimension four, and a logarithm via
+`exists_log_le_env` from dimension four on. -/
 theorem exists_phi_le_env (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) (δ : ℝ), 0 < δ → δ ≤ 1 →
       ((N : ℝ) ≤ C₀ * cutoffEnv d δ) → Parking.phi d N ≤ C * rateEnv d δ := by
@@ -132,6 +144,10 @@ theorem exists_phi_le_env (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀ : 0 < C�
     exact hCle (N : ℝ) δ hδ0 hδ1 (Nat.cast_nonneg N)
       (by rw [cutoffEnv, if_neg h1, if_neg h2] at hN; exact hN)
 
+/-- The `L²` norm of the Green function at the cutoff, in the scale `rateEnv`: a power
+below dimension four via `rpow_le_env`, and from dimension four on a bound built by
+taking the square root of `exists_log_le_env`'s logarithmic bound, since
+`log(e/δ) ≤ log(e/δ)²` once `log(e/δ) ≥ 1`. -/
 theorem exists_greenL2Rate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) (δ : ℝ), 0 < δ → δ ≤ 1 →
       ((N : ℝ) ≤ C₀ * cutoffEnv d δ) →
@@ -192,6 +208,9 @@ theorem exists_greenL2Rate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
       rateEnv, if_neg h1, if_neg h2, if_neg h3, one_mul, env_log δ]
     exact one_le_bigL hδ0 hδ1
 
+/-- `Parking.resolventThreshold` is positive: each of its three dimension cases is a
+product of the positive constant `CR` with a positive power of `a` or `a⁻¹` and a
+positive power of `log(e/a) ≥ 1`. -/
 theorem resolventThreshold_pos (d : ℕ) {CR a : ℝ} (hCR : 0 < CR) (ha : 0 < a)
     (ha1 : a ≤ 1) : 0 < Parking.resolventThreshold d CR a := by
   have hΛ : 1 ≤ Real.log (Real.exp 1 / a) := one_le_bigL ha ha1
@@ -203,6 +222,9 @@ theorem resolventThreshold_pos (d : ℕ) {CR a : ℝ} (hCR : 0 < CR) (ha : 0 < a
   · exact mul_pos hCR (mul_pos hi (pow_pos (by linarith) 3))
   · exact mul_pos hCR (mul_pos hi (pow_pos (by linarith) 2))
 
+/-- `Parking.nearCutoff` is at least `2` once `Parking.resolventThreshold` at the
+same parameters is positive, since `nearCutoff` is that threshold's ceiling plus
+one and the ceiling of a positive real is itself positive. -/
 theorem two_le_nearCutoff (d : ℕ) {CR a δ : ℝ}
     (h : 0 < Parking.resolventThreshold d CR (a * δ ^ 2)) : 2 ≤ nearCutoff d CR a δ := by
   have h1 : 0 < ⌈Parking.resolventThreshold d CR (a * δ ^ 2)⌉₊ := Nat.ceil_pos.mpr h

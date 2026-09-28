@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedValueLipschitz
+
+/-!
+# A σ-uniform stopping-value comparison
+
 A σ-uniform comparison of two optimal-stopping values, needed for `happ`
 (`parking.tex:3214-3218`).
 
@@ -16,7 +20,6 @@ argument inside `abs_orientedStoppingSup_sub_le`'s own proof and exposes it
 under this weaker, σ-indexed hypothesis: the argument itself never uses the
 POINTWISE bound directly, only the terminal-value bound it produces.
 -/
-import Parking.Support.OrientedValueLipschitz
 
 open MeasureTheory
 

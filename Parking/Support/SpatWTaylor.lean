@@ -1,6 +1,11 @@
-/- The discrete walk operator has the continuum Laplacian as its second-order limit. -/
 import LatticeProb.Prob.Scaling.SymmetricTaylor
 import Parking.Support.Continuum
+
+/-!
+# Discrete walk operator's continuum Taylor limit
+
+The discrete walk operator has the continuum Laplacian as its second-order limit.
+-/
 
 open LatticeProb.WhiteNoise (lap)
 
@@ -11,6 +16,11 @@ namespace Parking
 open LatticeProb
 open LatticeProb.Scaling.SymmetricTaylor
 
+/-- The discrete walk operator `walkOp` applied to a test function rescaled by `R` matches
+its continuum second-order Taylor expansion `φ + contOp d φ / R ^ 2` up to an error of size
+`O(1 / R ^ 3)`, uniformly in the lattice site `y`; this follows by summing the
+one-variable coordinate Taylor bound `exists_uniform_coordinate_taylor_bound` over each
+coordinate direction. -/
 theorem exists_walkOp_taylor_bound {d : ℕ} (hd : 1 ≤ d)
     {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R → ∀ y : Site d,

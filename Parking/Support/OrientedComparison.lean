@@ -1,9 +1,12 @@
-/-
+import Parking.Support.OrientedError
+
+/-!
+# Pointwise directed pathwise comparison
+
 The pointwise form of the directed pathwise comparison
 (`parking.tex:3315-3321`): the directed particle odometer is at most the
 divisible odometer plus the two error terms.
 -/
-import Parking.Support.OrientedError
 
 noncomputable section
 

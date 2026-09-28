@@ -1,4 +1,11 @@
-/-
+import Parking.Support.CountFiltration
+import Parking.Support.Tilt
+import Parking.Support.ProductFactor
+import LatticeProb.Prob.Reveal
+
+/-!
+# Exponential density of the tilted product law
+
 The tilted product law on finitely many sites has the exponential density.
 
 Step 3 of `lem:product` (`parking.tex:2424-2427`) reads "the tilted law has
@@ -20,12 +27,9 @@ bound: the observables the derivative needs are unbounded.
 one-site functions is integrable with the product of the one-site integrals.
 It supplies the exponential moment of `∑_{x ∈ N} η(x)`.
 -/
-import Parking.Support.CountFiltration
-import Parking.Support.Tilt
-import Parking.Support.ProductFactor
-import LatticeProb.Prob.Reveal
 
-open LatticeProb (integral_coordinate_sections_int measurable_prod_coords prod_update_insert sum_update_insert)
+open LatticeProb (integral_coordinate_sections_int measurable_prod_coords
+    prod_update_insert sum_update_insert)
 
 open MeasureTheory
 

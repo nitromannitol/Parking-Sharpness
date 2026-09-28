@@ -1,4 +1,10 @@
-/- The monotone density step of the last paragraph of Step 3 of the proof of
+import Parking.Support.MeanUniformInt
+import Parking.Support.ScalParabolicScaling
+
+/-!
+# The monotone density theorem for the activity
+
+The monotone density step of the last paragraph of Step 3 of the proof of
 `thm:oriented-walk` (`parking.tex:3339-3346`).
 
 The activity decreases and the mean is its partial sum, `E U⃗_n(0) = ∑_{s<n} S⃗_s`, so the
@@ -8,8 +14,6 @@ windows `[t, (1+ε)t]` and `[(1-ε)t, t]`.  Dividing by the window length and le
 `t → ∞` turns each comparison into a difference quotient of `x ↦ x^{1/4}` at `1`, and
 those converge to the derivative `1/4` as `ε → 0`.
 -/
-import Parking.Support.MeanUniformInt
-import Parking.Support.ScalParabolicScaling
 
 open Filter Topology Finset
 

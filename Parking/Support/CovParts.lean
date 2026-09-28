@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Cov
+
+/-!
+# The comparison of Step 2, without the model
+
 The comparison of Step 2 of `lem:product` (`parking.tex:2411-2427`), in the form
 the model never enters.
 
@@ -25,7 +29,6 @@ nonnegative covariance with the coordinate; and covariance is additive.  So
 
 which is the paper's comparison, for every finite `J` of integers at least one.
 -/
-import Parking.Support.Cov
 
 noncomputable section
 
@@ -84,6 +87,7 @@ theorem cov_cast_nonneg {f : ℤ → ℝ} {B : ℝ} (hfmono : Monotone f) (hfbdd
 /-! ### Covariance is additive and homogeneous in its first argument -/
 
 omit [IsProbabilityMeasure ν] in
+/-- Covariance is additive in its first argument. -/
 theorem cov_add_left {f g h : ℤ → ℝ} (hf : Integrable f ν) (hg : Integrable g ν)
     (hfh : Integrable (fun k => f k * h k) ν) (hgh : Integrable (fun k => g k * h k) ν) :
     cov ν (fun k => f k + g k) h = cov ν f h + cov ν g h := by
@@ -96,6 +100,7 @@ theorem cov_add_left {f g h : ℤ → ℝ} (hf : Integrable f ν) (hg : Integrab
   ring
 
 omit [IsProbabilityMeasure ν] in
+/-- Covariance is homogeneous in its first argument. -/
 theorem cov_const_mul_left {f h : ℤ → ℝ} (c : ℝ) :
     cov ν (fun k => c * f k) h = c * cov ν f h := by
   unfold cov
@@ -107,6 +112,8 @@ theorem cov_const_mul_left {f h : ℤ → ℝ} (c : ℝ) :
   ring
 
 omit [IsProbabilityMeasure ν] in
+/-- Covariance is additive over a finite sum in its first argument, by induction
+from `cov_add_left` on the empty and the `insert` cases of the finset. -/
 theorem cov_sum_left {ι : Type} (J : Finset ι) (f : ι → ℤ → ℝ) (h : ℤ → ℝ)
     (hf : ∀ i ∈ J, Integrable (f i) ν) (hfh : ∀ i ∈ J, Integrable (fun k => f i k * h k) ν) :
     cov ν (fun k => ∑ i ∈ J, f i k) h = ∑ i ∈ J, cov ν (f i) h := by
@@ -135,9 +142,11 @@ theorem cov_sum_left {ι : Type} (J : Finset ι) (f : ι → ℤ → ℝ) (h : �
 /-- The upper indicator `1{k ≥ j}`. -/
 def upperInd (j : ℤ) : ℤ → ℝ := fun k => if j ≤ k then 1 else 0
 
+/-- The upper indicator `1{k ≥ j}` is bounded by `1`. -/
 theorem upperInd_bdd (j : ℤ) : ∀ k : ℤ, |upperInd j k| ≤ 1 := by
   intro k; unfold upperInd; split <;> norm_num
 
+/-- The upper indicator `1{k ≥ j}` is a nondecreasing function of `k`. -/
 theorem upperInd_mono (j : ℤ) : Monotone (upperInd j) := by
   intro a b hab
   by_cases h : j ≤ a

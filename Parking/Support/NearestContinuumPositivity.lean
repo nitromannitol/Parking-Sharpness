@@ -1,4 +1,9 @@
-/-
+import Parking.Support.NearestCriticalTail
+import Mathlib.MeasureTheory.Measure.Portmanteau
+
+/-!
+# Positivity of the continuum odometer at `(1,0)`
+
 Positivity of the continuum odometer at `(1,0)`, as used in the proof of
 `thm:nearest` at `parking.tex:1822-1848`. The critical lower-tail estimate
 passes to the limit through the open-set inequality in Portmanteau. The
@@ -6,8 +11,6 @@ finite-dimensional convergence hypothesis below is exactly the clause of
 `prop:spatial-scaling`; no local uniform convergence is used for this marginal
 conclusion. Continuity then gives a positive ball in each limiting sample.
 -/
-import Parking.Support.NearestCriticalTail
-import Mathlib.MeasureTheory.Measure.Portmanteau
 
 noncomputable section
 open MeasureTheory ProbabilityTheory LatticeProb Filter Topology Parking.CriticalScale
@@ -34,6 +37,9 @@ theorem Parking.ae_pos_of_weak_lower_tails (μ : ProbabilityMeasure ℝ)
   change (μ : Measure ℝ) {x | ¬ 0 < x} = 0
   simpa only [Set.Iic_def, not_lt] using le_antisymm hz bot_le
 
+/-- Positivity a.e. transfers along convergence in law: if `Xn → X` in law and the lower
+tails `P(Xn ≤ δ)` are eventually small for every `δ`, then `X > 0` almost surely. Pushes
+forward to `ae_pos_of_weak_lower_tails` on `ℝ` via the induced probability measures. -/
 theorem Parking.ae_pos_of_convergence_in_law_lower_tails
     {Ω Ω' : Type*} [MeasurableSpace Ω] [MeasurableSpace Ω']
     (P : Measure Ω) [IsProbabilityMeasure P] (Q : Measure Ω') [IsProbabilityMeasure Q]
@@ -101,6 +107,9 @@ theorem Parking.spatial_fdd_at_origin {d : ℕ} (ν : Measure ℤ)
     (fun i => Fin.elim0 i) (fun i => Fin.elim0 i) (fun _ => by norm_num) G
   exact h
 
+/-- Positivity of the continuum limit `Uc · 1 0` almost surely, applying
+`ae_pos_of_convergence_in_law_lower_tails` to the rescaled divisible odometer against the
+critical scale's small lower tail `Parking.scaled_lower_tails_small`. -/
 theorem Parking.ae_pos_of_critical_scale_lower_tail
     (hVar : Parking.External.VarianceScale) (hBerry : Parking.External.MultivariateBerryEsseen)
     {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν)
@@ -153,6 +162,8 @@ theorem Parking.ae_spatial_origin_pos
   exact Parking.ae_pos_of_critical_scale_lower_tail hVar hBerry hd hd3 ν hν Q Uc
     (hm 1 0) (Parking.spatial_fdd_at_origin ν Q W Uc hFDD)
 
+/-- A continuous function positive at the origin stays positive on some `ℓ¹` ball around it,
+by continuity at `0` and the comparison `‖x‖_∞ ≤ ‖x‖_1` between the sup and `ℓ¹` norms. -/
 theorem Parking.exists_pos_l1_ball {d : ℕ} {f : (Fin d → ℝ) → ℝ}
     (hf : Continuous f) (h0 : 0 < f 0) :
     ∃ r : ℝ, 0 < r ∧ ∀ x : Fin d → ℝ, (∑ i, |x i|) ≤ r → 0 < f x := by
@@ -165,6 +176,8 @@ theorem Parking.exists_pos_l1_ball {d : ℕ} {f : (Fin d → ℝ) → ℝ}
   rw [Metric.mem_ball, dist_zero_right]
   exact hn.trans_lt (by linarith)
 
+/-- Almost surely, if `Uc ω 1 0 > 0` and `Uc ω 1 ·` is continuous, some `ℓ¹` ball around the
+origin is a set on which `Uc ω 1 ·` stays positive, by `exists_pos_l1_ball` applied pathwise. -/
 theorem Parking.ae_exists_pos_l1_ball {d : ℕ} {Ω : Type*} [MeasurableSpace Ω]
     (Q : Measure Ω) (Uc : Ω → ℝ → (Fin d → ℝ) → ℝ)
     (hcont : ∀ ω, Continuous (fun p : ℝ × (Fin d → ℝ) => Uc ω p.1 p.2))

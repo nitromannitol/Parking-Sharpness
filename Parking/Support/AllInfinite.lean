@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Ergodic
+import Parking.Support.StackHits
+import Parking.Support.OdometerInfinite
+
+/-!
+# Every odometer is infinite
+
 Every odometer is infinite: Step 2 of `prop:everyone-settles`.
 
 The origin has an infinite odometer with probability at least a fixed positive
@@ -8,9 +14,6 @@ probability.  That event is invariant under every translation of the lattice,
 and the translations act ergodically on the law of the data, so its probability
 is `0` or `1`; being positive, it is `1`.
 -/
-import Parking.Support.Ergodic
-import Parking.Support.StackHits
-import Parking.Support.OdometerInfinite
 
 noncomputable section
 
@@ -28,6 +31,8 @@ theorem Ulimit_shiftData (v : Site d) (ω : Data d) (x : Site d) :
   unfold Parking.Ulimit
   exact iSup_congr fun n => by rw [U_shiftData]
 
+/-- The event `{Ulimit ω x = ⊤}` is measurable, as a countable intersection over `M` of
+countable unions over `n` of the measurable sets `{M ≤ U ω n x}`. -/
 theorem measurableSet_Ulimit_top (x : Site d) :
     MeasurableSet {ω : Data d | Parking.Ulimit ω x = ⊤} := by
   have hset : {ω : Data d | Parking.Ulimit ω x = ⊤}
@@ -38,6 +43,8 @@ theorem measurableSet_Ulimit_top (x : Site d) :
   exact MeasurableSet.iInter fun M => MeasurableSet.iUnion fun n =>
     measurableSet_le measurable_const (measurable_U n x)
 
+/-- The event that every odometer is infinite is measurable, as a countable intersection
+over sites `x` of the measurable events `measurableSet_Ulimit_top`. -/
 theorem measurableSet_forall_Ulimit_top (d : ℕ) :
     MeasurableSet {ω : Data d | ∀ x : Site d, Parking.Ulimit ω x = ⊤} := by
   have hset : {ω : Data d | ∀ x : Site d, Parking.Ulimit ω x = ⊤}

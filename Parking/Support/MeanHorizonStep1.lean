@@ -1,26 +1,3 @@
-/-
-Step 1 of `lem:mean-horizon` (`parking.tex:2790-2816`).
-
-Step 1 is the moment bound `(E u_m(0;ξ_δ)^q)^{1/q} ≤ C_q φ_d(m)`, UNIFORMLY in
-`δ`, and the source of that uniformity is `eq:near-convex`: the one-site law of
-`ξ_δ(0)` is below a FIXED law in convex order, after which `thm:BP`,
-`lem:u-concentration` and `eq:green-norms` are applied at that fixed law alone,
-with constants that no longer see `δ`.
-
-The fixed law is `refZeta θ δ₀ M`, the reference law of
-`LatticeProb/Prob/ConvexOrder.lean` built from the two numbers the family
-supplies: the rate `θ` of its exponential moment and the bound `M` on that
-moment.  Only the product `e^{θδ₀}M` enters, so the same law serves every
-`δ ∈ [0,δ₀]`.
-
-The comparison is at every moment, not only the first: `ξ ↦ u_m(0;ξ)^r` is
-convex but not Lipschitz, so `Parking/Support/UMoment.lean` writes the power as
-an integral of its hinges, each of which IS convex, nondecreasing and
-1-Lipschitz, and integrates the hinge comparison over the level.
-
-The exponent is `q = 5`, which serves every dimension: the paper needs
-`1 - 1/q > (4-d)/4` when `d ≤ 3`, and `1 - 1/5 = 4/5 > 3/4`.
--/
 import Parking.Support.UConcReal
 import Parking.Support.MeanPos
 import Parking.Support.GreenPhi
@@ -31,7 +8,34 @@ import Parking.External.SandpileGrowth
 import Parking.External.GreenNorms
 import LatticeProb.Prob.NearFamily
 
-open LatticeProb.ConvexOrder (convex_integral_le_refLaw evariance_refLaw_lt_top evariance_refLaw_pos integrable_exp_abs_refLaw integrable_exp_abs_shiftLaw integrable_id_shiftLaw integrable_intCast_of_exp integrable_refLaw_id integral_exp_abs_shiftLaw_le integral_refLaw_id integral_shiftLaw_id refLaw shiftLaw)
+/-!
+# Step 1 of `lem:mean-horizon`
+
+Step 1 of `lem:mean-horizon` (`parking.tex:2790-2816`).
+
+Step 1 is the moment bound `(E u_m(0;ξ_δ)^q)^{1/q} ≤ C_q φ_d(m)`, UNIFORMLY in `δ`, and the
+source of that uniformity is `eq:near-convex`: the one-site law of `ξ_δ(0)` is below a FIXED
+law in convex order, after which `thm:BP`, `lem:u-concentration` and `eq:green-norms` are
+applied at that fixed law alone, with constants that no longer see `δ`.
+
+The fixed law is `refZeta θ δ₀ M`, the reference law of `LatticeProb/Prob/ConvexOrder.lean`
+built from the two numbers the family supplies: the rate `θ` of its exponential moment and
+the bound `M` on that moment.  Only the product `e^{θδ₀}M` enters, so the same law serves
+every `δ ∈ [0,δ₀]`.
+
+The comparison is at every moment, not only the first: `ξ ↦ u_m(0;ξ)^r` is convex but not
+Lipschitz, so `Parking/Support/UMoment.lean` writes the power as an integral of its hinges,
+each of which IS convex, nondecreasing and 1-Lipschitz, and integrates the hinge comparison
+over the level.
+
+The exponent is `q = 5`, which serves every dimension: the paper needs `1 - 1/q > (4-d)/4`
+when `d ≤ 3`, and `1 - 1/5 = 4/5 > 3/4`.
+-/
+
+open LatticeProb.ConvexOrder (convex_integral_le_refLaw evariance_refLaw_lt_top
+    evariance_refLaw_pos integrable_exp_abs_refLaw integrable_exp_abs_shiftLaw
+    integrable_id_shiftLaw integrable_intCast_of_exp integrable_refLaw_id
+    integral_exp_abs_shiftLaw_le integral_refLaw_id integral_shiftLaw_id refLaw shiftLaw)
 
 noncomputable section
 
@@ -41,6 +45,8 @@ open MeasureTheory LatticeProb ProbabilityTheory
 
 variable {d : ℕ}
 
+/-- Under a finite exponential moment, every power of the positive part `max t 0` is
+integrable, by comparison with `integrable_abs_pow_of_exp_moment`. -/
 theorem integrable_maxPow_of_exp (ζ : Measure ℝ) [IsProbabilityMeasure ζ] {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun z : ℝ => Real.exp (θ * |z|)) ζ) (k : ℕ) :
     Integrable (fun t : ℝ => max t 0 ^ k) ζ := by
@@ -50,6 +56,8 @@ theorem integrable_maxPow_of_exp (ζ : Measure ℝ) [IsProbabilityMeasure ζ] {�
   rw [Real.norm_eq_abs, abs_of_nonneg (pow_nonneg (le_max_right t 0) _)]
   exact pow_le_pow_left₀ (le_max_right t 0) (max_le (le_abs_self t) (abs_nonneg t)) _
 
+/-- The exponential moment `∫ e^{θ|k|}` of a probability law is at least `1`, since
+`e^{θ|k|} ≥ 1` pointwise. -/
 theorem one_le_integral_exp_abs {θ : ℝ} (hθ : 0 < θ) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) :
     1 ≤ ∫ k, Real.exp (θ * |(k : ℝ)|) ∂ν := by
@@ -137,6 +145,9 @@ theorem integral_pow_u_xi_le (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Measure 
   rw [← hmapped]
   exact integral_pow_u_iid_le hd hμid hζid hcomp k m 0 hIζ
 
+/-- The mean sandpile odometer is at most a constant times the scale `φ_d`, by combining
+`SandpileGrowth`'s three dimension cases (`d ≤ 3`, `d = 4`, `d ≥ 5`) with the matching lower
+bound on `φ_d` in each regime. -/
 theorem exists_mean_le_phi (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGrowth)
     (ζ : Measure ℝ) [IsProbabilityMeasure ζ]
     (hmean : ∫ z, z ∂ζ = 0) (hv0 : 0 < evariance id ζ) (hvT : evariance id ζ < ⊤)
@@ -174,6 +185,8 @@ theorem exists_mean_le_phi (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
     rw [this] at hle
     nlinarith [hrate, Real.log_nonneg (by linarith : (1:ℝ) ≤ (m:ℝ) + 1)]
 
+/-- `φ_d(m) ≥ log 2` uniformly in `d` and `m`: when `d ≤ 3`, `φ_d(m) = (m+1)^{(4-d)/4} ≥ 1 >
+log 2`, and otherwise `φ_d(m) = log(m+2) ≥ log 2`. -/
 theorem log_two_le_phi (d : ℕ) (m : ℕ) : Real.log 2 ≤ phi d m := by
   have hlog2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
   have hlog2' : Real.log 2 < 0.6931471808 := Real.log_two_lt_d9
@@ -225,7 +238,8 @@ theorem exists_zeta_moment (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
     have h4 := (hg3 m hm).2
     have h5 := (hrate m hm).1
     have h6 := (hrate m hm).2
-    have hphi0 : 0 ≤ phi d m := le_trans (le_of_lt (Real.log_pos (by norm_num))) (log_two_le_phi d m)
+    have hphi0 : 0 ≤ phi d m :=
+        le_trans (le_of_lt (Real.log_pos (by norm_num))) (log_two_le_phi d m)
     have hs5 : (0:ℝ) ≤ Real.sqrt 5 := Real.sqrt_nonneg 5
     have hl2 : l2Norm (green d m) ≤ C2 * (C4 * phi d m) := by nlinarith [hC2, h3, h5]
     have hmx : greenMax d m ≤ C3 * (C4 * phi d m) := by nlinarith [hC3, h4, h6]

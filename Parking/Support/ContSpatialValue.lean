@@ -1,6 +1,13 @@
-/-
+import Mathlib
+import LatticeProb.Prob.BrownianContAll
+import Parking.Basic
+
+/-!
+# The `Fin d`-dimensional Brownian optimal-stopping value
+
 The `Fin d`-dimensional Brownian optimal-stopping value, generalizing
-`Parking.contValue`/`LatticeProb.ContinuumStopping.contPayoffs` (`Parking/Support/ContStopGeneral.lean`, built for
+`Parking.contValue`/`LatticeProb.ContinuumStopping.contPayoffs`
+(`Parking/Support/ContStopGeneral.lean`, built for
 the ORIENTED walk's one-real-dimensional driving process) to a `(Fin d → ℝ)`-valued driving
 process, for the UNDIRECTED (spatial) node `prop:spatial-scaling`.
 
@@ -8,7 +15,7 @@ The shared library now carries a genuine `Fin d`-dimensional Brownian motion,
 `LatticeProb.IsBrownianSpace d x B P` (`../Lattice-Probability-clean/LatticeProb/Prob/
 BrownianExit.lean`, built exactly as a product of `d` independent one-dimensional Brownian
 motions, with generator `Δ/(2d)`, matching `parking.tex`'s `L = (2d)^{-1}Δ`), and
-`LatticeProb.exists_isBrownianSpace_cont` proves one exists with every path continuous.  Its
+`LatticeProb.exists_isBrownianSpace_cont` proves one exists with every path continuous. Its
 driving space is `EuclideanSpace ℝ (Fin d)` (so that its norm is the one the paper's Brownian
 motion needs); `Parking.Support.Continuum`'s own frozen vocabulary for `prop:spatial-scaling`
 is `Fin d → ℝ`, the plain Pi type, so a stopping problem in the paper's own vocabulary is
@@ -19,9 +26,6 @@ As everywhere in the repository, a stopping time is recorded by Galmarino's crit
 the value is an `sSup` over the reals attained by the admissible rules; the rule that stops at
 once is admissible, so the set is never empty.
 -/
-import Mathlib
-import LatticeProb.Prob.BrownianContAll
-import Parking.Basic
 
 open MeasureTheory
 open scoped NNReal ENNReal
@@ -32,7 +36,8 @@ namespace Parking
 
 /-- **Galmarino's criterion**, for a stopping time of a `(Fin d → ℝ)`-valued process: if `τ`
 takes the value `t` at a path and a second path agrees with it up to time `t`, then `τ` takes
-the value `t` there too.  The `Fin d`-dimensional analogue of `LatticeProb.ContinuumStopping.IsContStopping`
+the value `t` there too. The `Fin d`-dimensional analogue of
+`LatticeProb.ContinuumStopping.IsContStopping`
 (`Parking/Support/ContOrientedLimit.lean`), which is hard-wired to a real-valued process. -/
 def IsSpatialContStopping {Ω : Type*} {d : ℕ} (B : ℝ≥0 → Ω → (Fin d → ℝ)) (τ : Ω → ℝ≥0) :
     Prop :=
@@ -44,7 +49,8 @@ def IsSpatialContStopping {Ω : Type*} {d : ℕ} (B : ℝ≥0 → Ω → (Fin d 
 The payoff of a rule counts only when it exists: Galmarino's criterion does not make `τ`
 measurable, so for a general rule the integrand need not be measurable and the Bochner
 integral is then the junk value zero; the definition therefore conjoins
-integrability, exactly as `LatticeProb.ContinuumStopping.contPayoffs` does for the one-dimensional case. -/
+integrability, exactly as `LatticeProb.ContinuumStopping.contPayoffs` does for the
+one-dimensional case. -/
 def spatialContPayoffs {d : ℕ} {ΩB : Type*} [MeasurableSpace ΩB] (B : ℝ≥0 → ΩB → (Fin d → ℝ))
     (PB : Measure ΩB) (G : ℝ → (Fin d → ℝ) → ℝ) (T : ℝ) : Set ℝ :=
   {a : ℝ | ∃ τ : ΩB → ℝ≥0, IsSpatialContStopping B τ ∧ (∀ β, (τ β : ℝ) ≤ T) ∧
@@ -131,6 +137,8 @@ def ofBrownianSpace {d : ℕ} {Ω : Type*} (B : ℝ≥0 → Ω → EuclideanSpac
     ℝ≥0 → Ω → (Fin d → ℝ) :=
   fun t ω => (EuclideanSpace.equiv (Fin d) ℝ) (B t ω)
 
+/-- `ofBrownianSpace B` is measurable at time `t` whenever `B t` is, since the coordinate
+equivalence `EuclideanSpace.equiv` is a homeomorphism, hence measurable. -/
 theorem measurable_ofBrownianSpace {d : ℕ} {Ω : Type*} [MeasurableSpace Ω]
     {B : ℝ≥0 → Ω → EuclideanSpace ℝ (Fin d)} {t : ℝ≥0} (hBt : Measurable (B t)) :
     Measurable (ofBrownianSpace B t) :=

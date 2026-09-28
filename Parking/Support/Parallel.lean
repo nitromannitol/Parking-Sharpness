@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Odometer
+
+/-!
+# Lemma 3.1: the parallel toppling recursion
+
 Lemma 3.1 of `parking.tex`: the odometer of the particle system obeys the
 parallel recursion `U_{n+1} = (η + ∑_y I_{y,·}(U_n(y)))⁺`.
 
@@ -17,7 +21,6 @@ and the odometer identity follows by induction on the rounds.
 Ties in the ranks need no separate treatment: the order that decides which
 arrivals fill the holes falls back on the label order, which is linear.
 -/
-import Parking.Support.Odometer
 
 noncomputable section
 
@@ -40,6 +43,9 @@ theorem countLT_lt_card {A : Finset α} {r : α → α → Prop} [DecidableRel r
   exact lt_of_le_of_lt (Finset.card_le_card hsub) (Finset.card_erase_lt_of_mem hp)
 
 omit [DecidableEq α] in
+/-- The count of elements below `p` is strictly less than the count below `q` whenever
+`r p q`: every element counted for `p` is also counted for `q` (by transitivity), plus `p`
+itself is counted for `q` but not for itself (by irreflexivity). -/
 theorem countLT_lt_countLT {A : Finset α} {r : α → α → Prop} [DecidableRel r]
     (hirr : ∀ a, ¬ r a a) (htr : ∀ a b c, r a b → r b c → r a c)
     {p q : α} (hp : p ∈ A) (h : r p q) :
@@ -53,6 +59,9 @@ theorem countLT_lt_countLT {A : Finset α} {r : α → α → Prop} [DecidableRe
     rw [Finset.mem_filter] at this
     exact hirr p this.2
 
+/-- Under a strict total order, the map sending each element of `A` to the count of elements
+below it is injective on `A`: distinct comparable elements have distinct counts by
+`countLT_lt_countLT`, applied to whichever of the two the order puts first. -/
 theorem countLT_injOn {A : Finset α} {r : α → α → Prop} [DecidableRel r]
     (hirr : ∀ a, ¬ r a a) (htr : ∀ a b c, r a b → r b c → r a c)
     (htot : ∀ a b, a ≠ b → r a b ∨ r b a) :
@@ -121,15 +130,21 @@ ties broken by the label. -/
 def prec (rank : Label d × ℕ → ℝ) (t : ℕ) (q p : Label d) : Prop :=
   rank (q, t) < rank (p, t) ∨ (rank (q, t) = rank (p, t) ∧ labelLT q p)
 
+/-- `prec rank t` is decidable, via classical choice, since it is a proposition built from
+the linear order `<` and `=` on `ℝ` together with `labelLT`. -/
 instance (rank : Label d × ℕ → ℝ) (t : ℕ) : DecidableRel (prec rank t) :=
   Classical.decRel _
 
+/-- `prec` is irreflexive: an element neither has strictly smaller rank than itself nor,
+by `LabelOrder.irr`, a strictly smaller label at equal rank. -/
 theorem prec_irrefl (h : LabelOrder d) (rank : Label d × ℕ → ℝ) (t : ℕ) (p : Label d) :
     ¬ prec rank t p p := by
   rintro (hlt | ⟨-, hlab⟩)
   · exact lt_irrefl _ hlt
   · exact h.irr p hlab
 
+/-- `prec` is transitive, combining the transitivity of `<` on ranks with `LabelOrder.trans`
+on labels for the equal-rank case. -/
 theorem prec_trans (h : LabelOrder d) (rank : Label d × ℕ → ℝ) (t : ℕ) (p q z : Label d) :
     prec rank t p q → prec rank t q z → prec rank t p z := by
   rintro (h1 | ⟨e1, l1⟩) (h2 | ⟨e2, l2⟩)
@@ -138,6 +153,8 @@ theorem prec_trans (h : LabelOrder d) (rank : Label d × ℕ → ℝ) (t : ℕ) 
   · exact Or.inl (e1 ▸ h2)
   · exact Or.inr ⟨e1.trans e2, h.trans p q z l1 l2⟩
 
+/-- `prec` is total on distinct labels: trichotomy on the ranks settles the case of unequal
+rank, and `LabelOrder.total` breaks ties at equal rank. -/
 theorem prec_total (h : LabelOrder d) (rank : Label d × ℕ → ℝ) (t : ℕ) (p q : Label d)
     (hne : p ≠ q) : prec rank t p q ∨ prec rank t q p := by
   rcases lt_trichotomy (rank (p, t)) (rank (q, t)) with hlt | heq | hgt
@@ -172,6 +189,9 @@ theorem card_settledAt' (h : LabelOrder d) (D : Driver d) (t : ℕ) (x : Site d)
   exact card_filter_countLT_lt (prec_irrefl h D.rank t) (prec_trans h D.rank t)
     (prec_total h D.rank t) _
 
+/-- For a particle `p` active at `y`, its instruction index is the departures already made
+from `y` plus the count of particles at `y` whose label precedes `p`'s, unfolding
+`instructionIndex` at `S.pos p = y`. -/
 theorem instructionIndex_of_mem {D : Driver d} {S : State d} {t : ℕ} {y : Site d}
     {p : Label d} (hp : p ∈ activeAt D S t y) :
     instructionIndex D S t p
@@ -180,6 +200,9 @@ theorem instructionIndex_of_mem {D : Driver d} {S : State d} {t : ℕ} {y : Site
   unfold instructionIndex
   rw [hpos]
 
+/-- For a particle `p` active at `y`, its next position is read off the departure stack at
+`y` at its own instruction index, unfolding `nextPos` at `S.active p = true` and
+`S.pos p = y`. -/
 theorem nextPos_of_mem {D : Driver d} {S : State d} {t : ℕ} {y : Site d}
     {p : Label d} (hp : p ∈ activeAt D S t y) :
     nextPos D S t p = D.stack (y, instructionIndex D S t p) := by
@@ -250,6 +273,9 @@ theorem arrivalsAt_eq_biUnion {D : Driver d}
     exact ⟨(Finset.mem_filter.mp hp.1).2.1, hp.2⟩
 
 set_option maxHeartbeats 1000000 in
+/-- The number of arrivals at `x` in one round is the sum, over neighbours `y` of `x`, of
+the number of particles active at `y` whose next position is `x`, since
+`arrivalsAt_eq_biUnion` writes the arrivals as a union over disjoint neighbour classes. -/
 theorem card_arrivalsAt {D : Driver d}
     (hn : ∀ q : Site d × ℕ, D.stack q ∈ nbrFinset q.1) (t : ℕ) (x : Site d) :
     (arrivalsAt D (state D t) t x).card
@@ -265,6 +291,8 @@ theorem card_arrivalsAt {D : Driver d}
 def totalArrivals (D : Driver d) (n : ℕ) (x : Site d) : ℕ :=
   ∑ t ∈ Finset.range n, (arrivalsAt D (state D t) t x).card
 
+/-- `totalArrivals` accumulates one more round's arrivals: the sum defining it splits off
+its last term by `Finset.sum_range_succ`. -/
 theorem totalArrivals_succ (D : Driver d) (n : ℕ) (x : Site d) :
     totalArrivals D (n + 1) x
       = totalArrivals D n x + (arrivalsAt D (state D n) n x).card := by
@@ -297,13 +325,17 @@ theorem odometer_eq (h : LabelOrder d) {D : Driver d}
       have hsub : (settledAt D n x).card ≤ (arrivalsAt D (state D n) n x).card :=
         Finset.card_le_card (settledAt_subset D n x)
       rw [particleOdometer_succ, hact]
-      have hcast : ((particleOdometer D (n + 1) x : ℤ)) = max 0 (D.eta x + (totalArrivals D n x : ℤ)) := ih
+      have hcast : ((particleOdometer D (n + 1) x : ℤ)) =
+          max 0 (D.eta x + (totalArrivals D n x : ℤ)) := ih
       have hpos : (0 : ℤ) ≤ ((-(D.eta x)).toNat : ℤ) := Int.natCast_nonneg _
       have h1 : ((-(D.eta x)).toNat : ℤ) = max 0 (-(D.eta x)) := by
         simp [max_comm]
       push_cast [hset, hhole, harr] at *
       omega
 
+/-- Summing, over `t < n`, the count of `P` in the interval `Ico (u t) (u (t + 1))` for a
+monotone sequence `u` with `u 0 = 0` gives the count of `P` in `range (u n)`: the intervals
+partition `range (u n)` by `Finset.Ico_union_Ico_eq_Ico`, proved by induction on `n`. -/
 theorem sum_Ico_filter (P : ℕ → Prop) [DecidablePred P] (u : ℕ → ℕ) (h0 : u 0 = 0)
     (hm : Monotone u) (n : ℕ) :
     ∑ t ∈ Finset.range n, ((Finset.Ico (u t) (u (t + 1))).filter P).card
@@ -321,6 +353,9 @@ theorem sum_Ico_filter (P : ℕ → Prop) [DecidablePred P] (u : ℕ → ℕ) (h
       exact Finset.disjoint_filter_filter
         (by rw [Finset.range_eq_Ico]; exact Finset.Ico_disjoint_Ico_consecutive 0 (u n) (u (n + 1)))
 
+/-- The arrivals at `x` in round `t` are counted, neighbour by neighbour, by the departure
+indices in the window `Ico (particleOdometer D t y) (particleOdometer D (t + 1) y)` whose
+stack entry points at `x`: combines `card_arrivalsAt` with `card_filter_nextPos`. -/
 theorem card_arrivalsAt_Ico (h : LabelOrder d) {D : Driver d}
     (hn : ∀ q : Site d × ℕ, D.stack q ∈ nbrFinset q.1) (t : ℕ) (x : Site d) :
     (arrivalsAt D (state D t) t x).card

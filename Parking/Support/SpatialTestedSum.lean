@@ -1,8 +1,14 @@
-/- Spatial integration of the weak recursion on the parabolic mesh. -/
 import Parking.Support.SpatialParabolicTest
 import Parking.Support.SpatialTimeSourceApproximation
 
-open LatticeProb.Walk (exists_norm_bound_of_hasCompactSupport gridFn integral_gridFn_eq_latticeSum mem_sceneryBox_of_ne_zero sceneryBox)
+/-!
+# Spatial integration of the weak recursion
+
+Spatial integration of the weak recursion on the parabolic mesh.
+-/
+
+open LatticeProb.Walk (exists_norm_bound_of_hasCompactSupport gridFn
+  integral_gridFn_eq_latticeSum mem_sceneryBox_of_ne_zero sceneryBox)
 
 open MeasureTheory LatticeProb Set
 noncomputable section

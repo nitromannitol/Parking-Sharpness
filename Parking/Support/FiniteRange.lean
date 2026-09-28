@@ -1,16 +1,16 @@
-/-
-Finite range of dependence for the particle-driven construction.
-
-`thm:subcritical` applies `lem:product` to two observables of the process at
-time `t`, and `lem:product` asks that they be functions of the data at finitely
-many sites (`parking.tex:2480`).  The state after `s` rounds inside a box of
-radius `r` is determined by the data inside the box of radius `r + s(s+1)`: a
-particle arriving somewhere in the box at round `s + 1` started within `s + 1`
-of it, and whether it settles is decided by the arrivals at its own new site,
-which lies a further `s + 1` out, so each round costs two steps of radius,
-`2(s+1)` in all.
--/
 import Parking.Support.Coupling
+
+/-!
+# Finite range of dependence for the particle-driven construction
+
+`thm:subcritical` applies `lem:product` to two observables of the process at time `t`, and
+`lem:product` asks that they be functions of the data at finitely many sites
+(`parking.tex:2480`). The state after `s` rounds inside a box of radius `r` is determined by
+the data inside the box of radius `r + s(s+1)`: a particle arriving somewhere in the box at
+round `s + 1` started within `s + 1` of it, and whether it settles is decided by the arrivals
+at its own new site, which lies a further `s + 1` out, so each round costs two steps of
+radius, `2(s+1)` in all.
+-/
 
 noncomputable section
 

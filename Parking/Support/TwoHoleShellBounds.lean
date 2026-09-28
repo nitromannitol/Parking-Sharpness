@@ -1,6 +1,17 @@
 import Parking.Support.OrthantCube
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
+/-!
+# Shell bounds for the two-hole exponent
+
+This file supplies the real-analysis facts used to close the two-hole tail bound at
+increasing distance. `exists_twoHole_inner_cutoff` finds an inner cutoff `L` past which
+the polynomially decaying coefficient `C * (1 + L) ^ (4 - d)` is small, using that
+`4 - d < 0` for `d ≥ 5`. `twoHole_coefficient_antitone` records that this coefficient is
+antitone in the radius. `twoHole_middle_bound` converts a bound with the intermediate
+exponential-times-square factor into the sharper power `h ^ (7 / 4)`.
+-/
+
 noncomputable section
 namespace Parking
 open Filter Topology
@@ -12,7 +23,8 @@ theorem exists_twoHole_inner_cutoff (hd : 5 ≤ d) (C : ℝ) :
   have he : 0 < (d : ℝ) - 4 := by
     have hd' : (5 : ℝ) ≤ d := by exact_mod_cast hd
     linarith
-  have ht : Tendsto (fun L : ℕ => (1 : ℝ) + L) atTop atTop := tendsto_atTop_add_const_left atTop 1 tendsto_natCast_atTop_atTop
+  have ht : Tendsto (fun L : ℕ => (1 : ℝ) + L) atTop atTop :=
+    tendsto_atTop_add_const_left atTop 1 tendsto_natCast_atTop_atTop
   have hp : Tendsto (fun L : ℕ => C * (1 + (L : ℝ)) ^ (-((d : ℝ) - 4))) atTop (𝓝 0) := by
     simpa only [mul_zero, Function.comp_def] using ((tendsto_rpow_neg_atTop he).comp ht).const_mul C
   have hq : ∀ᶠ L : ℕ in atTop, C * (1 + (L : ℝ)) ^ (4 - (d : ℝ)) ≤ 1 / 4 := by
@@ -20,6 +32,8 @@ theorem exists_twoHole_inner_cutoff (hd : 5 ≤ d) (C : ℝ) :
     simpa only [neg_sub, mul_zero] using h
   exact hq.exists
 
+/-- The two-hole coefficient `(1 + n) ^ (4 - d)` is antitone in `n`, since `4 - d < 0`
+for `d ≥ 5` makes the base-`(1 + ·)` power decreasing. -/
 theorem twoHole_coefficient_antitone (hd : 5 ≤ d) {L n : ℕ} (hLn : L ≤ n) :
     (1 + (n : ℝ)) ^ (4 - (d : ℝ)) ≤ (1 + (L : ℝ)) ^ (4 - (d : ℝ)) := by
   apply Real.rpow_le_rpow_of_nonpos (by positivity)

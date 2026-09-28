@@ -1,4 +1,16 @@
-/-
+import Parking.Support.SpatWMartingale
+import LatticeProb.Walk.RiemannLattice
+import Parking.Support.Continuum
+import Parking.Support.Measurability
+import LatticeProb.WhiteNoise
+import Parking.Support.MatchedUniform
+import Parking.Frozen.Growth
+import LatticeProb.Prob.Scaling.Telescope
+import LatticeProb.Prob.Scaling.Chebyshev
+
+/-!
+# The martingale variance bound
+
 The variance bound and the Chebyshev step showing `signedM(φ) → 0` in `(law d ν)`-probability.
 This module assembles `Parking.Support.SpatWMartingale`'s partial-sum measurability,
 `Parking.Support.SpatWMartingaleCore`'s single- and two-instruction conditional means, and
@@ -17,20 +29,13 @@ lattice-step oscillation, `Parking.testFun_nbr_diff_le` below — this is the pa
 `meanU(n) ≤ C·n^{(4-d)/4}`, so at `n = ⌊R²⌋₊ ≍ R²` this is `O(R^{(4-d)/2})`, giving
 `E[signedM²] ≤ C_φ·R^{(4-d)/2 - 2} = C_φ·R^{-d/2}`, exactly the paper's own target.
 -/
-import Parking.Support.SpatWMartingale
-import LatticeProb.Walk.RiemannLattice
-import Parking.Support.Continuum
-import Parking.Support.Measurability
-import LatticeProb.WhiteNoise
-import Parking.Support.MatchedUniform
-import Parking.Frozen.Growth
-import LatticeProb.Prob.Scaling.Telescope
-import LatticeProb.Prob.Scaling.Chebyshev
 
 open LatticeProb (measurable_from_countable' measurable_of_countable_partition)
-open LatticeProb.WhiteNoise (contDiff_partialDeriv deriv_slice hasCompactSupport_partialDeriv partialDeriv)
+open LatticeProb.WhiteNoise (contDiff_partialDeriv deriv_slice hasCompactSupport_partialDeriv
+  partialDeriv)
 
-open LatticeProb.Walk (exists_norm_bound_of_hasCompactSupport exists_norm_le_of_hasCompactSupport mem_sceneryBox_of_ne_zero sceneryBox)
+open LatticeProb.Walk (exists_norm_bound_of_hasCompactSupport exists_norm_le_of_hasCompactSupport
+  mem_sceneryBox_of_ne_zero sceneryBox)
 
 open MeasureTheory LatticeProb Finset Filter Topology
 open scoped ENNReal
@@ -136,7 +141,8 @@ theorem walkOp_variance_le (hd : 1 ≤ d) (f : Site d → ℝ) (y : Site d) {B :
     (h : ∀ z ∈ nbrFinset y, (f z - f y) ^ 2 ≤ B) :
     walkOp (fun z => (f z) ^ 2) y - (walkOp f y) ^ 2 ≤ B := by
   have hexpand : (fun z => (f z - f y) ^ 2)
-      = fun z => ((fun z => (f z) ^ 2) z - (fun _ => 2 * f y) z * f z) + (fun _ : Site d => (f y) ^ 2) z := by
+      = fun z => ((fun z => (f z) ^ 2) z - (fun _ => 2 * f y) z * f z)
+          + (fun _ : Site d => (f y) ^ 2) z := by
     funext z; ring
   have h1 : walkOp (fun z => (f z - f y) ^ 2) y
       = (walkOp (fun z => (f z) ^ 2) y - walkOp (fun z => 2 * f y * f z) y) + (f y) ^ 2 := by
@@ -730,6 +736,9 @@ theorem condExp_crossSite_eq_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Criti
 integrability, and the integrability of a cross-site product (the same content
 `condExp_crossSite_eq_zero` builds locally, extracted here for the box'-wide assembly). -/
 
+/-- The `expOdometer`-gated site sum
+`∑ j ∈ Finset.Ico (U ω k z) (expOdometer d k ω z), (φR (ω.2.1 (z, j)) - walkOp φR z)` is
+measurable, by countable-partition on the pair `(U ω k z, expOdometer d k ω z)`. -/
 theorem measurable_siteSum (k : ℕ) (z : Site d) (φR : Site d → ℝ) :
     Measurable (fun ω : Data d =>
       ∑ j ∈ Finset.Ico (U ω k z) (expOdometer d k ω z), (φR (ω.2.1 (z, j)) - walkOp φR z)) := by
@@ -744,6 +753,9 @@ theorem measurable_siteSum (k : ℕ) (z : Site d) (φR : Site d → ℝ) :
     hmeasrange _ (fun c ω => ∑ j ∈ Finset.Ico c.1 c.2, (φR (ω.2.1 (z, j)) - walkOp φR z))
     (fun c => Finset.measurable_sum _ fun j _ => hmeasj j) (fun _ => rfl)
 
+/-- A pathwise bound on the `expOdometer`-gated site sum: its absolute value is at most
+`(M + |walkOp φR z|) * ((expOdometer d k ω z : ℝ) + (U ω k z : ℝ))`, from the termwise
+triangle inequality and a range-length count. -/
 theorem siteSum_abs_le {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M)
     (k : ℕ) (z : Site d) (ω : Data d) :
     |∑ j ∈ Finset.Ico (U ω k z) (expOdometer d k ω z), (φR (ω.2.1 (z, j)) - walkOp φR z)|
@@ -767,6 +779,9 @@ theorem siteSum_abs_le {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x|
         have hUnn : (0 : ℝ) ≤ (U ω k z : ℝ) := Nat.cast_nonneg _
         nlinarith [mul_nonneg h0 hUnn]
 
+/-- The square of the `expOdometer`-gated site sum is integrable, dominated via
+`siteSum_abs_le` by `((expOdometer d k ω z : ℝ) + (U ω k z : ℝ)) ^ 2`, itself integrable
+from `integrable_U_sq` at both round `k` and round `k + 1`. -/
 theorem integrable_siteSum_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (z : Site d) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (fun ω : Data d =>
@@ -815,6 +830,8 @@ theorem integrable_siteSum_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
         sq_le_sq' hab.1 hab.2
     _ = (M + |walkOp φR z|) ^ 2 * ((expOdometer d k ω z : ℝ) + (U ω k z : ℝ)) ^ 2 := by ring
 
+/-- The product of the `expOdometer`-gated site sums at two sites `y` and `y'` is integrable,
+dominated by the average of their two squares via `integrable_siteSum_sq`. -/
 theorem integrable_siteProduct (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (y y' : Site d) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (fun ω : Data d =>
@@ -841,6 +858,8 @@ theorem integrable_siteProduct (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critical
           + (∑ j' ∈ Finset.Ico (U ω k y') (expOdometer d k ω y'),
               (φR (ω.2.1 (y', j')) - walkOp φR y')))]
 
+/-- The `expOdometer`-gated site sum itself (not squared) is integrable, dominated by
+`siteSum_abs_le`'s bound in terms of the integrable `expOdometer` and `U` terms. -/
 theorem integrable_siteSum (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (z : Site d) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (fun ω : Data d =>
@@ -994,11 +1013,16 @@ theorem xiRound_ae_eq_xiRoundExp (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilit
   unfold roundInc
   rw [hω y hy]
 
+/-- `xiRoundExp φR box' k` is integrable, as the finite sum over `box'` of the integrable
+per-site sums `integrable_siteSum`. -/
 theorem integrable_xiRoundExp (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (xiRoundExp φR box' k) (law d ν) :=
   integrable_finsetSum _ (fun y _ => integrable_siteSum hd ν hν k y hbound)
 
+/-- The square of `xiRoundExp φR box' k` is integrable, dominated by `box'.card` times the
+sum of the per-site squares via `sq_sum_le_card_mul_sum_sq`, each term integrable by
+`integrable_siteSum_sq`. -/
 theorem integrable_xiRoundExp_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (fun ω => (xiRoundExp φR box' k ω) ^ 2) (law d ν) := by
@@ -1017,6 +1041,8 @@ theorem integrable_xiRoundExp_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critic
   unfold xiRoundExp
   exact sq_sum_le_card_mul_sum_sq
 
+/-- `xiRound φR box' k` is integrable, transferred from `integrable_xiRoundExp` along the
+almost-sure identification `xiRound_ae_eq_xiRoundExp`. -/
 theorem integrable_xiRound (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (xiRound φR box' k) (law d ν) := by
@@ -1025,6 +1051,8 @@ theorem integrable_xiRound (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw 
   exact (integrable_xiRoundExp hd ν hν k box' hbound).congr
     (xiRound_ae_eq_xiRoundExp hd ν φR box' k).symm
 
+/-- The square of `xiRound φR box' k` is integrable, transferred from
+`integrable_xiRoundExp_sq` along `xiRound_ae_eq_xiRoundExp`. -/
 theorem integrable_xiRound_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (fun ω => (xiRound φR box' k ω) ^ 2) (law d ν) := by
@@ -1036,6 +1064,9 @@ theorem integrable_xiRound_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
     rw [h]
   exact (integrable_xiRoundExp_sq hd ν hν k box' hbound).congr hbridge.symm
 
+/-- `xiRound φR box' k` has conditional mean zero given `expFiltration d k`, transferred from
+`condExp_xiRoundExp_eq_zero` along `xiRound_ae_eq_xiRoundExp` and the congruence of
+conditional expectation under a.e. equality. -/
 theorem condExp_xiRound_eq_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     (law d ν)[xiRound φR box' k | expFiltration d k] =ᵐ[law d ν] fun _ => (0 : ℝ) := by
@@ -1044,6 +1075,9 @@ theorem condExp_xiRound_eq_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critica
   exact (MeasureTheory.condExp_congr_ae (xiRound_ae_eq_xiRoundExp hd ν φR box' k)).trans
     (condExp_xiRoundExp_eq_zero hd ν hν k box' hbound)
 
+/-- The conditional second moment of `xiRound φR box' k` given `expFiltration d k` equals the
+box-summed per-site variance `∑ y ∈ box', γ_y(φR) * (expOdometer d k ω y - U ω k y)`,
+transferred from `condExp_xiRoundExp_sq` along `xiRound_ae_eq_xiRoundExp`. -/
 theorem condExp_xiRound_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     (law d ν)[fun ω => (xiRound φR box' k ω) ^ 2 | expFiltration d k]
@@ -1061,6 +1095,10 @@ theorem condExp_xiRound_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw 
 
 /-! ### Feeding the round martingale square-function identity -/
 
+/-- The partial sum `∑ k < t, xiRound φR box' k` has an integrable square, and its second
+moment is the sum of the per-round second moments, by feeding `xiRound`'s pathwise
+`expFiltration d t`-measurability, integrability and vanishing conditional mean into
+`LatticeProb.Scaling.RoundMartingale.integral_sq_sum_eq_sum_integral_sq`. -/
 theorem xiRound_sq_sum_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) (t : ℕ) :
     Integrable (fun ω => (∑ k ∈ Finset.range t, xiRound φR box' k ω) ^ 2) (law d ν) ∧
@@ -1082,6 +1120,7 @@ theorem xiRound_sq_sum_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw �
 
 /-! ### The mean odometer at round `0`, and telescoping -/
 
+/-- The mean odometer at round `0` vanishes, since `U ω 0 (0 : Site d) = 0` identically. -/
 theorem meanU_zero (P : Measure (Data d)) [IsProbabilityMeasure P] : meanU P 0 = 0 := by
   unfold meanU
   have heq : (fun ω : Data d => (U ω 0 (0 : Site d) : ℝ)) = fun _ => 0 := by
@@ -1090,12 +1129,16 @@ theorem meanU_zero (P : Measure (Data d)) [IsProbabilityMeasure P] : meanU P 0 =
     rw [this]; norm_num
   rw [heq, integral_zero]
 
--- `LatticeProb.Scaling.Telescope.sum_range_sub_telescope` (`LatticeProb/Prob/Scaling/Telescope.lean`) is the
+-- `LatticeProb.Scaling.Telescope.sum_range_sub_telescope`
+-- (`LatticeProb/Prob/Scaling/Telescope.lean`) is the
 -- generic real-sequence telescoping fact this file uses below; it mentions no object specific
 -- to this paper, so it is stated there.
 
 /-! ### The per-round expectation of `(xiRound)²`, in terms of `meanU` -/
 
+/-- The second moment of a single round's increment `xiRound φR box' k` equals
+`∑ y ∈ box', γ_y(φR) * (meanU (law d ν) (k + 1) - meanU (law d ν) k)`, by the tower
+property against `condExp_xiRound_sq` and `meanU_shift_invariant`. -/
 theorem integral_xiRound_sq_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     ∫ ω, (xiRound φR box' k ω) ^ 2 ∂(law d ν)
@@ -1135,6 +1178,9 @@ theorem integral_xiRound_sq_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critical
   have hE2 : ∫ ω, (U ω k y : ℝ) ∂(law d ν) = meanU (law d ν) k := meanU_shift_invariant hd ν k y
   rw [hE1, hE2]
 
+/-- Summing `integral_xiRound_sq_eq` over `k < t` and telescoping the resulting `meanU`
+differences via `LatticeProb.Scaling.Telescope.sum_range_sub_telescope` and `meanU_zero`
+gives `∑ k < t, ∫(xiRound k)² = ∑ y ∈ box', γ_y(φR) * meanU (law d ν) t`. -/
 theorem sum_integral_xiRound_sq_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) (t : ℕ) :
     ∑ k ∈ Finset.range t, ∫ ω, (xiRound φR box' k ω) ^ 2 ∂(law d ν)
@@ -1191,7 +1237,8 @@ theorem signedM_eq_sum_xiRound {ω : Data d} (hstep : ∀ q : Site d × ℕ, ω.
     unfold walkOp nbrSum
     have hterm : ∀ i : Fin d, φ (fun j => ((y + unit i) j : ℝ) / R) = 0
         ∧ φ (fun j => ((y - unit i) j : ℝ) / R) = 0 :=
-      fun i => ⟨hnbrvanish y hy _ (mem_nbrFinset_add y i), hnbrvanish y hy _ (mem_nbrFinset_sub y i)⟩
+      fun i => ⟨hnbrvanish y hy _ (mem_nbrFinset_add y i),
+        hnbrvanish y hy _ (mem_nbrFinset_sub y i)⟩
     have hsum0 : (∑ i : Fin d, (φ (fun j => ((y + unit i) j : ℝ) / R)
         + φ (fun j => ((y - unit i) j : ℝ) / R))) = 0 := by
       apply Finset.sum_eq_zero
@@ -1214,6 +1261,9 @@ theorem signedM_eq_sum_xiRound {ω : Data d} (hstep : ∀ q : Site d × ℕ, ω.
 
 /-! ### The box count and the final numeric bound -/
 
+/-- The lattice box `boxFinset (0 : Site d) (⌈B * R⌉₊ + 1)` has at most
+`(2 * B + 5) ^ d * R ^ d` points, from the exact side-length formula `card_boxFinset` and a
+ceiling bound on `⌈B * R⌉₊`. -/
 theorem card_sceneryBox_le {B : ℝ} (hB : 0 < B) {R : ℝ} (hR : 1 ≤ R) :
     ((boxFinset (0 : Site d) (⌈B * R⌉₊ + 1)).card : ℝ) ≤ (2 * B + 5) ^ d * R ^ d := by
   have hceil : (⌈B * R⌉₊ : ℝ) < B * R + 1 := Nat.ceil_lt_add_one (by positivity)

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightBoxSupChain
+
+/-!
+# The integral tail-moment bound
+
 An INTEGRAL bound `E[dtail(levelInc, n1)^p] ≤ C` on `Parking.levelInc`'s dyadic tail, not just
 the a.e. finiteness `Parking.ae_summable_levelInc` gives.  The integral form is what the
 Lyapunov and Cauchy-Schwarz step downstream needs.  Same Fatou/monotone-convergence
@@ -6,7 +10,6 @@ technique as `TightBoxSupChain.lean`'s `ae_summable_levelInc`, carried one step 
 the partial sums `T_N` are monotone and converge a.e. to `dtail`, `⨆_N T_N^p` equals `dtail^p`
 a.e., so the ALREADY-PROVEN uniform-in-`N` lintegral bound on `T_N^p` transfers to `dtail^p`.
 -/
-import Parking.Support.TightBoxSupChain
 
 open MeasureTheory LatticeProb Filter Topology
 open scoped ENNReal

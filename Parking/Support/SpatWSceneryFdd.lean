@@ -1,4 +1,9 @@
-/-
+import Parking.Support.SceneryFdd
+import Parking.Support.UpperTarget
+
+/-!
+# Finite-dimensional convergence of the scenery pairings
+
 **The finite-dimensional convergence of the rescaled scenery pairings to the canonical spatial
 white noise**, `Parking.tendsto_scenePair_fdd`.  This is the capstone assembly of four
 general-purpose modules (`SpatCLTFilter.lean`, `RiemannLattice.lean`, `CramerWoldFilter.lean`,
@@ -10,8 +15,9 @@ fixed linear combination `t : Fin m → ℝ`, `∑ᵢ tᵢ · X R w i` is, by
 `Parking.scenePair_linearCombination_eq_sum`, ONE finite weighted sum of the i.i.d. scenery at the
 combined test function `ψ := ∑ᵢ tᵢφᵢ`; pushed through `Parking.law_map_confReal` this is exactly
 the shape `Parking.tendsto_charFun_weighted_scenery_sum_filter` consumes, whose limiting variance
-`v·∫ψ²` is identified by the real-parameter Riemann sum `LatticeProb.Walk.tendsto_latticeSum_mul_rpow`.  On
-the limit side, the finite linear combination `∑ᵢ tᵢ·contW v (φ i)` has Gaussian law by
+`v·∫ψ²` is identified by the real-parameter Riemann sum
+`LatticeProb.Walk.tendsto_latticeSum_mul_rpow`.  On the limit side, the finite linear
+combination `∑ᵢ tᵢ·contW v (φ i)` has Gaussian law by
 Mathlib's own `IsGaussianProcess`/`HasGaussianLaw` combinators (`Parking.isGaussianProcess_contW`
 composed with `.comp_right`, `.smul`, `.hasGaussianLaw_fun_sum`), with mean `0`
 (`Parking.contW_integral`, summed) and variance `v·∫ψ²` (`Parking.integral_contW_mul`, expanded
@@ -19,13 +25,12 @@ bilinearly against the SAME expansion of `∫ψ²`), so its characteristic funct
 Gaussian exponential by `HasGaussianLaw.charFun_map_eq`.  The real-parameter Cramer-Wold theorem
 (`LatticeProb.Scaling.CramerWold.tendstoInDistribution_of_tendsto_charFun_linearCombination_filter`)
 assembles the finitely many scalar limits into finite-dimensional convergence in law, and
-`LatticeProb.Scaling.CramerWold.tendsto_integral_of_tendstoInDistribution` reads it off against every
-bounded continuous test function.
+`LatticeProb.Scaling.CramerWold.tendsto_integral_of_tendstoInDistribution` reads it off against
+every bounded continuous test function.
 -/
-import Parking.Support.SceneryFdd
-import Parking.Support.UpperTarget
 
-open LatticeProb.Walk (exists_norm_le_of_hasCompactSupport mem_sceneryBox_of_ne_zero sceneryBox tendsto_latticeSum_mul_rpow tsum_eq_sceneryBox_sum)
+open LatticeProb.Walk (exists_norm_le_of_hasCompactSupport mem_sceneryBox_of_ne_zero sceneryBox
+  tendsto_latticeSum_mul_rpow tsum_eq_sceneryBox_sum)
 
 open MeasureTheory ProbabilityTheory Filter Topology LatticeProb
 open scoped ENNReal NNReal
@@ -45,7 +50,8 @@ real `R` -/
 theorem scenePair_eq_sceneryBox_sum {φ : (Fin d → ℝ) → ℝ} {B : ℝ} (hB : 0 < B)
     (hbound : ∀ x : Fin d → ℝ, φ x ≠ 0 → ‖x‖ ≤ B) {R : ℝ} (hR : 1 ≤ R) (w : Data d) :
     scenePair w R φ
-      = ∑ y ∈ sceneryBox d B R, R ^ (-(d : ℝ) / 2) * (confReal w y * φ (fun j => (y j : ℝ) / R)) := by
+      = ∑ y ∈ sceneryBox d B R, R ^ (-(d : ℝ) / 2) *
+        (confReal w y * φ (fun j => (y j : ℝ) / R)) := by
   show R ^ (-(d : ℝ) / 2) * ∑' y : Site d, (w.1 y : ℝ) * φ (fun j => (y j : ℝ) / R) = _
   rw [← Finset.mul_sum]
   congr 1
@@ -57,6 +63,9 @@ theorem scenePair_eq_sceneryBox_sum {φ : (Fin d → ℝ) → ℝ} {B : ℝ} (hB
   intro hz
   exact hne (by rw [hz, mul_zero])
 
+/-- `scenePair` at a fixed test function `φ` is measurable in the sample `w`, at any scale
+`R ≥ 1` with `φ` supported in a ball of radius `B`, by rewriting it as the finite box sum
+`scenePair_eq_sceneryBox_sum` and applying measurability of each summand. -/
 theorem measurable_scenePair {φ : (Fin d → ℝ) → ℝ} {B : ℝ} (hB : 0 < B)
     (hbound : ∀ x : Fin d → ℝ, φ x ≠ 0 → ‖x‖ ≤ B) {R : ℝ} (hR : 1 ≤ R) :
     Measurable (fun w : Data d => scenePair w R φ) := by
@@ -84,6 +93,9 @@ theorem measurable_scenePair_any_R {φ : (Fin d → ℝ) → ℝ} (R : ℝ) :
 
 /-! ### The exact `Real.rpow`-vs-`Monoid.npow` identity for the discrete variance -/
 
+/-- For `a ≥ 0`, squaring the real power `a ^ (-(d : ℝ) / 2)` as a natural-number power gives
+exactly `(1 / a) ^ d`; the exact `Real.rpow`-versus-`Monoid.npow` identity feeding the
+discrete-variance computation `(c R y) ^ 2` below. -/
 theorem rpow_neg_half_sq {a : ℝ} (ha : 0 ≤ a) (d : ℕ) :
     (a ^ (-(d : ℝ) / 2)) ^ (2 : ℕ) = (1 / a) ^ d := by
   rw [← Real.rpow_natCast (a ^ (-(d : ℝ) / 2)) 2, ← Real.rpow_mul ha]
@@ -127,7 +139,8 @@ theorem charFun_contW_linearCombination {v : ℝ} (hv : 0 ≤ v) {m : ℕ} (t : 
       = ∑ k, ∑ l, (t k * contW (d := d) v (φ k) ω) * (t l * contW (d := d) v (φ l) ω) := by
     intro ω; rw [hYdef, sq, Fintype.sum_mul_sum]
   have hpairInt : ∀ k l : Fin m,
-      Integrable (fun ω => (t k * contW (d := d) v (φ k) ω) * (t l * contW (d := d) v (φ l) ω)) μ := by
+      Integrable (fun ω => (t k * contW (d := d) v (φ k) ω) * (t l * contW (d := d) v (φ l) ω))
+        μ := by
     intro k l
     have hmul : Integrable (fun ω => contW (d := d) v (φ k) ω * contW (d := d) v (φ l) ω) μ :=
       (memLp_contW v (φ k)).integrable_mul (memLp_contW v (φ l))
@@ -156,7 +169,8 @@ theorem charFun_contW_linearCombination {v : ℝ} (hv : 0 ≤ v) {m : ℕ} (t : 
     exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => hpairTerm k l
   -- The same double sum, over `volume`, for `∫ ψ²`.
   have hφpairInt : ∀ k l : Fin m,
-      Integrable (fun x : Fin d → ℝ => (t k * φ k x) * (t l * φ l x)) (volume : Measure (Fin d → ℝ)) := by
+      Integrable (fun x : Fin d → ℝ => (t k * φ k x) * (t l * φ l x))
+        (volume : Measure (Fin d → ℝ)) := by
     intro k l
     have heq : (fun x : Fin d → ℝ => (t k * φ k x) * (t l * φ l x))
         = fun x => (t k * t l) * (φ k x * φ l x) := by funext x; ring

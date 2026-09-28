@@ -2,12 +2,27 @@ import Parking.Support.SafeTransport
 import Parking.Support.FiniteTransport
 import Parking.Support.IndicatorIntegral
 
+/-!
+# A density bound between good holes and hole closers
+
+`measure_holeCloser_ge_good` compares the probabilities of two events built from the
+same "safe mass" function `goodSafeMass`: on `GoodHole ω t R 0`, at least `(R + 1) ^ d`
+sites of the box around the origin are safe, while every safe site itself contributes to
+`HoleCloser ω t`. Translation-invariance of the safe-mass function
+(`integral_box_transport`) lets the box sum bounding `GoodHole`'s indicator from below be
+compared directly to the sum bounding `HoleCloser`'s indicator from above, giving the
+stated inequality between their probabilities.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 open scoped Classical
 variable {d : ℕ}
 
+/-- On `GoodHole`, at least `(R + 1) ^ d` sites are safe, and translation-invariance of
+`goodSafeMass` (`integral_box_transport`) transfers this mass to bound the probability of
+`HoleCloser` below by `(R + 1) ^ d` times the probability of `GoodHole`. -/
 theorem measure_holeCloser_ge_good (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] (t R : ℕ) :
     ((R + 1) ^ d : ℝ) * ((law d ν) {ω | GoodHole ω t R 0}).toReal ≤

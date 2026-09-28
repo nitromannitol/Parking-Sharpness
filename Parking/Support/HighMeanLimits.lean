@@ -1,8 +1,11 @@
-/-
-The divisible mean is smaller than log n and the mean ratio diverges in high dimensions.
--/
 import Parking.Support.MeanPos
 import Parking.Support.GrowthMeans
+
+/-!
+# High-dimensional limits of the divisible mean
+
+The divisible mean is smaller than log n and the mean ratio diverges in high dimensions.
+-/
 
 noncomputable section
 namespace Parking
@@ -10,6 +13,7 @@ open MeasureTheory Filter
 open scoped Topology
 variable {d : ℕ}
 
+/-- A lower bound `b` on the ae support of `ν` transports to the pushforward `realLaw ν`. -/
 theorem realLaw_bounded_below (ν : Measure ℤ) (hb : ∃ b : ℤ, ν (Set.Iio b) = 0) :
     ∃ b : ℝ, ∀ᵐ z ∂(realLaw ν), b ≤ z := by
   obtain ⟨b, hb⟩ := hb

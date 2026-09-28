@@ -1,4 +1,10 @@
-/-
+import Parking.Support.LinPotentialMaximal
+import Parking.Support.SpatialStoppingCutoff
+import Parking.Support.StoppingShift
+
+/-!
+# The pathwise cutoff-to-true bound for the stopping-value summand
+
 **The pathwise cutoff-to-true bound for the stopping-value summand, at an arbitrary starting
 site, with the bounding constant supplied by the CALLER's own cutoff at a second radius.**
 
@@ -22,8 +28,8 @@ quantity, tail-controlled by `Parking.exists_linPotential_maximal_tail_time_shif
 `Parking/Support/LinPotentialMaximalTime.lean`).
 `Parking.abs_stoppingSup_sub_cutoffStoppingSup_pathwise` is the resulting pathwise (`M` still a
 hypothesis, supplied by the caller) comparison at the TARGET cutoff radius `A ≤ A₂`, via the
-cutoff-composition identity `Parking.cutoffReward_cutoffReward_eq_of_le`.  This is the pathwise
-lemma used for the randomized wrapping: the caller instantiates `M` at the tail-controlled
+cutoff-composition identity `Parking.cutoffReward_cutoffReward_eq_of_le`.  This is the
+pathwise lemma used for the randomized wrapping: the caller instantiates `M` at the tail-controlled
 `Finset.sup'` of `Parking.linPotential` over the finite time-space grid
 `(Finset.range (n+1)) ×ˢ (Parking.boxFinset 0 A₂)` and combines with
 `Parking.exists_linPotential_maximal_tail_time_shift`'s tail bound via a good/bad event split.
@@ -33,9 +39,6 @@ out in `Parking/Support/StoppingCutoffRandomized.lean`.
 
 No `External` is registered or consumed: every theorem here is proved, not cited.
 -/
-import Parking.Support.LinPotentialMaximal
-import Parking.Support.SpatialStoppingCutoff
-import Parking.Support.StoppingShift
 
 noncomputable section
 
@@ -47,6 +50,8 @@ variable {d : ℕ}
 
 /-! ### The walk cannot leave a `graphNorm`-ball of its own horizon: a deterministic fact -/
 
+/-- A single step `stepVec b` has `graphNorm` equal to `1`: it is a unit vector in one
+coordinate, positive or negative according to `b.2`. -/
 theorem graphNorm_stepVec (b : Fin d × Bool) : Parking.graphNorm (stepVec b) = 1 := by
   unfold stepVec Parking.graphNorm LatticeProb.unit
   by_cases h : b.2
@@ -133,7 +138,8 @@ theorem abs_stoppingSup_sub_cutoffStoppingSup_pathwise (hd1 : 1 ≤ d) (F : ℕ 
     |stoppingSup d F n z0 - cutoffStoppingSup (fun k y => F k (z0 + y)) A n|
       ≤ M * ((n : ℝ) * d ^ 2 / A ^ 2) := by
   set F' : ℕ → Site d → ℝ := fun k y => F k (z0 + y) with hF'def
-  have hshift : stoppingSup d F n z0 = stoppingSup d F' n (0 : Site d) := stoppingSup_eq_shift F n z0
+  have hshift : stoppingSup d F n z0 = stoppingSup d F' n (0 : Site d) :=
+    stoppingSup_eq_shift F n z0
   have heq1 : stoppingSup d F' n (0 : Site d) = cutoffStoppingSup F' A2 n :=
     stoppingSup_eq_cutoffStoppingSup_of_le F' hnA2
   have heq2 : cutoffStoppingSup (cutoffReward F' A2) A n = cutoffStoppingSup F' A n := by

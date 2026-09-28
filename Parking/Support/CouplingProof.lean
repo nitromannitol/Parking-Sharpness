@@ -1,13 +1,16 @@
-/-
+import Parking.Support.CancellationMean
+import Parking.Support.CoupledMeans
+import Parking.Support.LabelCreation
+
+/-!
+# The resampling coupling proof
+
 The resampling coupling proof of the critical-density estimate. The coupled
 marginals have the original law; persistent discrepancy labels satisfy the
 physical count invariant, the fresh-pair hitting bound, and mass transport.
 Their creation and cancellation expectations give the required quadratic
 inequality for every resampling size.
 -/
-import Parking.Support.CancellationMean
-import Parking.Support.CoupledMeans
-import Parking.Support.LabelCreation
 
 noncomputable section
 

@@ -1,18 +1,20 @@
-/-
+import Parking.Support.WStarBound
+
+/-!
+# The second display of `prop:w-moment`
+
 The second display of `prop:w-moment`:
 
   `(E w^\star_n(0)^r)^{1/r} ≤ (n+1)^{1/r} max_{m ≤ n}(E|w_m(0)|^r)^{1/r}`.
 
-The paper's proof is Jensen's inequality for the walk average, a union bound
-over the `n+1` times, and translation invariance.  The one step the paper writes
-as `\E\,\E_0` and does not comment on is the exchange of the average over the
-walk with the average over the data.  It is not Fubini here: the walk after `j`
-steps lies in the box of radius `j`, a finite set, so the average over the walk
-of a function of the position is a finite combination of the values of that
-function, with coefficients that do not depend on the data, and the average over
-the data passes through the combination one term at a time.
+The paper's proof is Jensen's inequality for the walk average, a union bound over the `n+1`
+times, and translation invariance. The one step the paper writes as `\E\,\E_0` and does not
+comment on is the exchange of the average over the walk with the average over the data. It
+is not Fubini here: the walk after `j` steps lies in the box of radius `j`, a finite set, so
+the average over the walk of a function of the position is a finite combination of the
+values of that function, with coefficients that do not depend on the data, and the average
+over the data passes through the combination one term at a time.
 -/
-import Parking.Support.WStarBound
 
 noncomputable section
 
@@ -24,6 +26,8 @@ variable {d : ℕ}
 
 /-! ### The average over the walk of a function of its position -/
 
+/-- The value of `f` at the walk's position after `j` steps, written as the sum over the box
+of radius `j` of indicators of the fibre where the walk lands at each site. -/
 theorem walk_indicator_sum (j : ℕ) (f : Site d → ℝ) (p : ℕ → Fin d × Bool) :
     f (walkPath (0 : Site d) p j)
       = ∑ z ∈ boxFinset (0 : Site d) j,
@@ -40,10 +44,13 @@ theorem walk_indicator_sum (j : ℕ) (f : Site d → ℝ) (p : ℕ → Fin d × 
   rw [Finset.sum_congr rfl hterm,
     Finset.sum_ite_eq (boxFinset (0 : Site d) j) (walkPath (0 : Site d) p j) f, if_pos hmem]
 
+/-- The fibre where the walk is at a prescribed site after `j` steps is measurable. -/
 theorem measurableSet_walk_fibre (j : ℕ) (z : Site d) :
     MeasurableSet {p : ℕ → Fin d × Bool | walkPath (0 : Site d) p j = z} :=
   (measurable_walkPath (0 : Site d) j) (measurableSet_singleton z)
 
+/-- `f` composed with the walk's position after `j` steps is integrable against the walk
+law, being the finite combination of `walk_indicator_sum`. -/
 theorem integrable_walk_comp (hd : 1 ≤ d) (j : ℕ) (f : Site d → ℝ) :
     Integrable (fun p => f (walkPath (0 : Site d) p j)) (walkLaw d) := by
   classical
@@ -71,6 +78,8 @@ theorem integral_walk_decomp (hd : 1 ≤ d) (j : ℕ) (f : Site d → ℝ) :
   refine Finset.sum_congr rfl fun z _ => ?_
   rw [integral_indicator_const (f z) (measurableSet_walk_fibre j z), smul_eq_mul]
 
+/-- The probabilities of the walk's position after `j` steps, summed over the box of radius
+`j`, add to one: the case `f = 1` of `integral_walk_decomp`. -/
 theorem sum_walk_prob (hd : 1 ≤ d) (j : ℕ) :
     ∑ z ∈ boxFinset (0 : Site d) j,
       (walkLaw d).real {p | walkPath (0 : Site d) p j = z} = 1 := by
@@ -88,11 +97,15 @@ def wWalkMoment (r : ℝ) (m j : ℕ) (ω : Data d) : ℝ :=
   ∑ z ∈ boxFinset (0 : Site d) j,
     (walkLaw d).real {p | walkPath (0 : Site d) p j = z} * |wErr ω m z| ^ r
 
+/-- The average over the walk law of the `r`-th moment of the error at the position after
+`j` steps equals `wWalkMoment`, by `integral_walk_decomp`. -/
 theorem wWalkMoment_eq (hd : 1 ≤ d) (r : ℝ) (m j : ℕ) (ω : Data d) :
     ∫ p, |wErr ω m (walkPath (0 : Site d) p j)| ^ r ∂(walkLaw d)
       = wWalkMoment (d := d) r m j ω :=
   integral_walk_decomp hd j (fun z => |wErr ω m z| ^ r)
 
+/-- `wWalkMoment` is integrable in the data, being a finite sum of constant multiples of the
+integrable `r`-th moment of the error. -/
 theorem integrable_wWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -101,6 +114,8 @@ theorem integrable_wWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityM
   integrable_finsetSum _ fun z _ =>
     (integrable_abs_wErr_rpow hd ν hθ hexp hr m z).const_mul _
 
+/-- **The average of `wWalkMoment` over the data equals the `r`-th moment of the error at the
+origin**, by translation invariance term by term and `sum_walk_prob`. -/
 theorem integral_wWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -121,6 +136,8 @@ theorem integral_wWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMea
 
 /-! ### The bound on the maximum along the walk -/
 
+/-- **`wMax` raised to the `r`-th power is at most the sum of the `r`-th powers** of the
+terms of its finite supremum, since each term is at most that sum's `1/r`-th power. -/
 theorem wMax_rpow_le (ω : Data d) (n : ℕ) {r : ℝ} (hr : 1 ≤ r)
     (p : ℕ → Fin d × Bool) :
     wMax ω n (0 : Site d) p ^ r
@@ -151,6 +168,9 @@ theorem wMax_rpow_le (ω : Data d) (n : ℕ) {r : ℝ} (hr : 1 ≤ r)
 
 /-! ### The second display -/
 
+/-- **The pointwise-to-averaged bound behind the second display**: `wStar` raised to the
+`r`-th power is at most the average over the walk law of the sum bounding `wMax ^ r`, by
+Jensen's inequality for the walk average followed by `wMax_rpow_le` and `wWalkMoment_eq`. -/
 theorem wStar_rpow_le_sum (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (ω : Data d) :
     wStar ω n 0 ^ r

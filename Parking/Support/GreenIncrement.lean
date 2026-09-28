@@ -1,29 +1,31 @@
-/-
-The increment bound `eq:increment` of `parking.tex:1047-1056`:
+import Parking.Support.WQuadratic
+import Parking.External.GreenGradient
+
+/-!
+# The increment bound `eq:increment`
+
+`parking.tex:1047-1056`:
 
   `sup_{m ≥ 1} sup_y sup_{z ∼ y} |g_m(z) - (P g_m)(y)| ≤ C`,
 
-a bound on `greenIncrement d n` that does not grow with the horizon `n`.  The
-repository's `abs_greenDiff_le` gives only `2m`, which is what makes the `r·a`
-of the martingale moment inequality into `r·n` rather than the paper's `r`.
+a bound on `greenIncrement d n` that does not grow with the horizon `n`. The repository's
+`abs_greenDiff_le` gives only `2m`, which is what makes the `r·a` of the martingale moment
+inequality into `r·n` rather than the paper's `r`.
 
-The route here is not the paper's splitting
-`g_m(z)-(Pg_m)(y) = (g_m(z)-g_m(y)) + ((I-P)g_m)(y)` but the observation that
-the discrepancy at one neighbour is already controlled by the variance over all
-of them: `Γ_m(y)` is an average of the squared discrepancies with the weights
-`1/(2d)`, so a single squared discrepancy is at most `2d Γ_m(y)`.  A uniform
-bound on `Γ` therefore bounds the increment, and a uniform bound on `Γ` is what
-the two halves of `lem:gamma-sum` already prove: `4C²(1+|y|)^{2-2d} ≤ 4C²` from
-the gradient in dimension two and above, and `4(min(1, m/|y|²))² ≤ 4` from the
-exact one-dimensional computation.
+The route here is not the paper's splitting `g_m(z)-(Pg_m)(y) = (g_m(z)-g_m(y)) +
+((I-P)g_m)(y)` but the observation that the discrepancy at one neighbour is already
+controlled by the variance over all of them: `Γ_m(y)` is an average of the squared
+discrepancies with the weights `1/(2d)`, so a single squared discrepancy is at most
+`2d Γ_m(y)`. A uniform bound on `Γ` therefore bounds the increment, and a uniform bound on
+`Γ` is what the two halves of `lem:gamma-sum` already prove: `4C²(1+|y|)^{2-2d} ≤ 4C²` from
+the gradient in dimension two and above, and `4(min(1, m/|y|²))² ≤ 4` from the exact
+one-dimensional computation.
 
-Also here: the increment is positive once `n ≥ 2`, which the martingale moment
-inequality needs because its bound `a` is required to be positive.  The witness
-is the horizon `m = 1`, where `g_1` is the indicator of the origin, at a site
-adjacent to the origin, where the discrepancy is `1 - 1/(2d)`.
+Also here: the increment is positive once `n ≥ 2`, which the martingale moment inequality
+needs because its bound `a` is required to be positive. The witness is the horizon `m = 1`,
+where `g_1` is the indicator of the origin, at a site adjacent to the origin, where the
+discrepancy is `1 - 1/(2d)`.
 -/
-import Parking.Support.WQuadratic
-import Parking.External.GreenGradient
 
 noncomputable section
 
@@ -137,9 +139,11 @@ theorem exists_greenIncrement_le (d : ℕ) (hd : 1 ≤ d) :
 
 /-! ### The increment is positive -/
 
+/-- At horizon `1` the truncated Green function is exactly the indicator of the origin. -/
 theorem green_one_apply (d : ℕ) (x : Site d) : green d 1 x = if x = 0 then 1 else 0 := by
   rw [green, Finset.sum_range_one, heat]
 
+/-- The sum of two unit vectors is never zero. -/
 theorem unit_add_unit_ne_zero (i j : Fin d) : unit i + unit j ≠ (0 : Site d) := by
   intro h
   have := congrFun h i
@@ -150,6 +154,7 @@ theorem unit_add_unit_ne_zero (i j : Fin d) : unit i + unit j ≠ (0 : Site d) :
   · rw [Pi.single_eq_of_ne (Ne.symm hji)] at this
     simp at this
 
+/-- Two unit vectors have zero difference exactly when they agree. -/
 theorem unit_sub_unit_eq_zero_iff (i j : Fin d) :
     unit i - unit j = (0 : Site d) ↔ j = i := by
   constructor

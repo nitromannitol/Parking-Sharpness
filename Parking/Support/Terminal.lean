@@ -1,4 +1,8 @@
-/-
+import Parking.Support.StopOptional
+
+/-!
+# The terminal-reward form of the stopping problem
+
 The terminal-reward form of the stopping problem for the simple random walk.
 
 `Parking.stopValue_eq_potential` turns the ADDITIVE reward `∑_{j<σ} η(X_j)`
@@ -13,7 +17,6 @@ the discrete analogue of `𝒰(T,x) = Z(T,x) + sup_{τ≤T} E_x^BM[-Z(T-τ,B_τ)
 (BouRabeePanagiotis2026, Section 2.1, eq. (21)).  The development parallels
 `Parking/Support/OrientedTerminal.lean`.
 -/
-import Parking.Support.StopOptional
 
 open MeasureTheory
 
@@ -95,6 +98,8 @@ theorem isLUB_terminalValues (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x :
     refine hb ⟨σ, hσ, ?_⟩
     rw [terminalValue_potential hd η hσ, ← hval]
 
+/-- The value of the terminal-reward problem at `-V` equals the additive value `u` less
+the potential at the start, read off from `isLUB_terminalValues` via `csSup_eq`. -/
 theorem stoppingSup_potential (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     stoppingSup d (fun k y => -linPotential η (n - k) y) n x
       = u η n x - linPotential η n x :=

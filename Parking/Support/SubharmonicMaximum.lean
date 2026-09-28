@@ -1,5 +1,17 @@
 import LatticeProb.Network.MaximumPrinciple
 
+/-!
+# The finite-set maximum principle for a network Laplacian
+
+Proves the discrete maximum principle for a nonnegative-conductance network
+Laplacian on a finite vertex set `C`: if `f` is subharmonic (`netLaplacian G c f x ≥ 0`)
+at every interior point of `C` outside a boundary-like set `S`, and `f` is bounded by
+`M` off `C` and on `S`, then `f ≤ M` everywhere. The argument locates a maximizer of
+`f` on `C`, shows the set of points where `f` attains that maximum is closed under
+`G`-adjacency using the sign of each conductance-weighted increment, and propagates
+this along a connecting walk to a point outside `C`, where `f ≤ M` is already known.
+-/
+
 noncomputable section
 namespace Parking
 open Finset LatticeProb.Graph LatticeProb.Network
@@ -34,7 +46,8 @@ theorem le_of_subharmonicOn (hG : G.Connected) {c : V → V → ℝ} (hc : IsCon
         have := hle w
         rw [hyb]
         linarith)
-    have hzero : netLaplacian G c f y = 0 := le_antisymm (Finset.sum_nonpos hnonpos) (hsub y hyC hyS)
+    have hzero : netLaplacian G c f y = 0 :=
+      le_antisymm (Finset.sum_nonpos hnonpos) (hsub y hyC hyS)
     have hall := (Finset.sum_eq_zero_iff_of_nonpos hnonpos).mp hzero
     have hz := hall z ((SimpleGraph.mem_neighborFinset _ _ _).mpr hyz)
     have hfz : f z = f y := by

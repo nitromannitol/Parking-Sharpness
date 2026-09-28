@@ -1,13 +1,20 @@
-/- Exponential moments of directed potentials from their square norms. -/
 import Parking.Support.LinearExponentialLift
 import Parking.Support.OrientedFinite
 import Parking.Support.OrientedLogNorm
+
+/-!
+# Exponential moments of directed potentials
+
+Exponential moments of directed potentials from their square norms.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The sum of the squared directed Green function over the box of radius `n` centred at
+`x` equals the full sum over all sites, since `orientedGreen` vanishes outside that box. -/
 theorem orientedGreen_box_sq (n : ℕ) (x : Site d) :
     (∑ z ∈ boxFinset x n, orientedGreen d n (z - x) ^ 2) =
       ∑' z : Site d, orientedGreen d n z ^ 2 := by
@@ -18,6 +25,13 @@ theorem orientedGreen_box_sq (n : ℕ) (x : Site d) :
   simp only [Equiv.coe_addRight, add_sub_cancel_right] at ht
   exact hs.symm.trans ht.symm
 
+/-- **Exponential moments of the truncated directed potential.**  If the one-site law `μ`
+is centred and has an exponential moment at rate `θ`, then for `m ≤ n` the truncated
+potential `orientedPotential η m x`, under the i.i.d. scenery law `iidLaw d μ`, has an
+exponential moment at a rate `τ` and level uniform in `x` and depending on `n` only through
+`log(n + 1)`; this is the linear exponential lift `exists_linear_abs_exponential` applied
+to the coefficients `orientedGreen d m (z - x)`, whose squared sum is bounded logarithmically
+by `exists_orientedGreen_sq_log_bound`. -/
 theorem exists_orientedPotential_exponential (hd : 3 ≤ d)
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (hi : Integrable (id : ℝ → ℝ) μ) (hm : ∫ z : ℝ, z ∂μ = 0)
@@ -30,7 +44,9 @@ theorem exists_orientedPotential_exponential (hd : 3 ≤ d)
   obtain ⟨C, hC, hnorm⟩ := exists_orientedGreen_sq_log_bound hd
   refine ⟨τ, B * C, hτ, by positivity, fun n hn m hmn x => ?_⟩
   obtain ⟨hI, hBound⟩ := hb (boxFinset x m) (fun z => orientedGreen d m (z - x))
-    (fun z _ => by rw [abs_of_nonneg (orientedGreen_nonneg m (z - x))]; exact orientedGreen_le_one (by omega) m (z - x))
+    (fun z _ => by
+      rw [abs_of_nonneg (orientedGreen_nonneg m (z - x))];
+      exact orientedGreen_le_one (by omega) m (z - x))
   simp only [← orientedPotential_eq_box, orientedGreen_box_sq] at hI hBound
   refine ⟨hI, hBound.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by norm_num))⟩
   have h := mul_le_mul_of_nonneg_left (hnorm n hn m hmn) hB.le

@@ -1,5 +1,10 @@
-/- First-moment control of the rescaled odometer mass in a fixed spatial box. -/
 import Parking.Support.SpatWMartingaleVariance
+
+/-!
+# Spatial local mass
+
+First-moment control of the rescaled odometer mass in a fixed spatial box.
+-/
 
 open MeasureTheory LatticeProb Filter Topology
 
@@ -11,11 +16,15 @@ def spatialLocalMass {d : ℕ} (w : Data d) (R B : ℝ) : ℝ :=
   R ^ (-(d : ℝ) / 2 - 2) *
     ∑ y ∈ boxFinset (0 : Site d) (⌈B * R⌉₊ + 1), (U w ⌊R ^ 2⌋₊ y : ℝ)
 
+/-- `spatialLocalMass` is nonnegative whenever `R` is, since it is `R`'s power times a sum
+of odometer values `U w ⌊R ^ 2⌋₊ y`, themselves nonnegative as natural-number casts. -/
 theorem spatialLocalMass_nonneg {d : ℕ} (w : Data d) {R : ℝ} (hR : 0 ≤ R) (B : ℝ) :
     0 ≤ spatialLocalMass w R B := by
   unfold spatialLocalMass
   positivity
 
+/-- `spatialLocalMass w R B`, as a function of `w`, is integrable under `law d ν` for any
+critical law `ν`, being a finite sum of the integrable odometer terms `integrable_U_law`. -/
 theorem integrable_spatialLocalMass {d : ℕ} (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (R B : ℝ) : Integrable (fun w => spatialLocalMass w R B) (law d ν) := by
   haveI := hν.prob

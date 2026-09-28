@@ -1,11 +1,15 @@
-/-
-Finite dependence, perturbation bounds and convex comparison for sandpile odometers.
--/
 import LatticeProb.Prob.ConvexProduct
 import Parking.Support.UConvex
 import LatticeProb.Prob.FiniteMarginal
 
-open LatticeProb.ConvexOrder (convex_lipschitz_integral_le_finite_pi integrable_id_pi integrable_real_lipschitz)
+/-!
+# Finite dependence and convex comparison of sandpile odometers
+
+Finite dependence, perturbation bounds and convex comparison for sandpile odometers.
+-/
+
+open LatticeProb.ConvexOrder (convex_lipschitz_integral_le_finite_pi integrable_id_pi
+    integrable_real_lipschitz)
 
 noncomputable section
 namespace Parking
@@ -84,6 +88,8 @@ variable {d : ℕ}
 def extendField (s : Finset (Site d)) (η : s → ℝ) (x : Site d) : ℝ :=
   if hx : x ∈ s then η ⟨x, hx⟩ else 0
 
+/-- `extendField` recovers the original field at a point of `s`, since the `dif_pos`
+branch of the definition applies there. -/
 theorem extendField_restrict (s : Finset (Site d)) (η : Site d → ℝ)
     {x : Site d} (hx : x ∈ s) : extendField s (s.restrict η) x = η x := by
   simp [extendField, hx, Finset.restrict]
@@ -128,7 +134,8 @@ theorem integral_u_iid_eq_pi (hd : 1 ≤ d) (μ : Measure ℝ) [IsProbabilityMea
   have hm : Measurable ((boxFinset x n).restrict : (Site d → ℝ) → ((boxFinset x n) → ℝ)) :=
     measurable_pi_lambda _ fun y => measurable_pi_apply (y : Site d)
   have hF := (lipschitzWith_u_extendField hd (boxFinset x n) n x).continuous.measurable
-  rw [← iidLaw_map_restrict d μ (boxFinset x n), integral_map hm.aemeasurable hF.aestronglyMeasurable]
+  rw [← iidLaw_map_restrict d μ (boxFinset x n),
+    integral_map hm.aemeasurable hF.aestronglyMeasurable]
   exact integral_congr_ae (ae_of_all _ fun η => (u_extendField_restrict η n x).symm)
 
 /-- First moments of the input field suffice for odometer integrability. -/

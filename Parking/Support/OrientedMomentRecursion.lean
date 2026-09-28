@@ -1,11 +1,3 @@
-/- The moment recursion for the directed particle odometer.
-
-The pathwise comparison and the two displays of the directed moment estimate give
-a self-referential bound on the `r`-th moment of the directed particle odometer at
-the origin, in terms of the same moment of the divisible odometer.  Steps 2 and 4
-of the proof of `thm:oriented-walk` (`parking.tex:3294-3357`) solve it by Young's
-inequality.
--/
 import Parking.Support.OrientedWStarMoment
 import Parking.Support.OrientedDivisibleIntegrable
 import Parking.Support.OrientedInstructionFull
@@ -13,6 +5,16 @@ import Parking.Support.OrientedError
 import Parking.Support.UpperStep
 import Parking.Support.OrientedMoments
 import Parking.Support.NearTailSum
+
+/-!
+# The moment recursion for the directed particle odometer
+
+The pathwise comparison and the two displays of the directed moment estimate give
+a self-referential bound on the `r`-th moment of the directed particle odometer at
+the origin, in terms of the same moment of the divisible odometer.  Steps 2 and 4
+of the proof of `thm:oriented-walk` (`parking.tex:3294-3357`) solve it by Young's
+inequality.
+-/
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm rNorm_add_le rNorm_const_mul rNorm_mono)
@@ -22,6 +24,9 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- For a critical law `ν` with an exponential moment (from `hν.expMoment`), the `r`-th
+power of the particle odometer `U ω n x` is integrable under `orientedLaw d ν` for any
+`r ≥ 1`, by combining `integrable_expMax_of_expAbs` with `integrable_oriented_U_rpow`. -/
 theorem integrable_oriented_U_rpow_of_critical (hd : 1 ≤ d) (ν : Measure ℤ)
     (hν : CriticalLaw ν) {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (x : Site d) :
     Integrable (fun ω : Data d => (U ω n x : ℝ) ^ r) (orientedLaw d ν) := by

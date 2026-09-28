@@ -3,6 +3,17 @@ import Parking.Support.HoleBounds
 import Parking.Support.LogFromTail
 import Parking.Support.CriticalMeanDiverges
 
+/-!
+# Sparse hole probability decays exponentially
+
+Combines the sparse-sink non-arrival exponential bound with the hole/sink comparison
+`holeProb_eq_mul_sink_noArrival` to show that the hole probability at a sparse
+three-point parameter `p` decays exponentially in the mean odometer, uniformly in `p`.
+Inverting the exponential bound gives a logarithmic estimate for the mean odometer, and
+combining with `meanU_tendsto_atTop` at the critical parameter shows the hole
+probability itself tends to zero as the horizon grows.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Filter Topology
@@ -43,7 +54,8 @@ theorem sparse_holeProb_tendsto_zero (hBernstein : External.Bernstein) (hd : 5 �
     filter_upwards [hmean.eventually (eventually_ge_atTop (-B / c))] with T hT
     have h := (div_le_iff₀ hc).mp hT
     linarith
-  have he : Tendsto (fun T => A * Real.exp (-c * meanU (law d (threePointLaw p)) T)) atTop (𝓝 0) := by
+  have he : Tendsto (fun T => A * Real.exp (-c * meanU (law d (threePointLaw p)) T))
+      atTop (𝓝 0) := by
     simpa only [Function.comp_def, mul_zero] using (Real.tendsto_exp_atBot.comp hneg).const_mul A
   exact squeeze_zero (fun _ => ENNReal.toReal_nonneg) (hb p hp hp4) he
 end Parking

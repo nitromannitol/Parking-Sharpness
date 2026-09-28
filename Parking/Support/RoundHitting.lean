@@ -1,13 +1,16 @@
-/-
-The hitting comparison for two particles whose motion in each round may be
-switched on or off using the past. Distinct fresh table entries give independent
-increments, and reversing one direction records the difference of positions.
--/
 import Parking.Support.RoundFresh
 import Parking.Support.LayerHitting
 import Parking.Support.UBound
 import Parking.Support.RangeHitting
 import LatticeProb.Prob.MapPi
+
+/-!
+# Two-particle hitting comparison across rounds
+
+The hitting comparison for two particles whose motion in each round may be
+switched on or off using the past. Distinct fresh table entries give independent
+increments, and reversing one direction records the difference of positions.
+-/
 
 noncomputable section
 
@@ -16,11 +19,18 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
+/-- `srwHitBy d · x` is monotone in the round bound `m`, since it sums the
+nonnegative first-hit probabilities `srwFirstHit` over a growing range. -/
 theorem Parking.srwHitBy_mono (x : Site d) : Monotone fun m => LatticeProb.srwHitBy d m x := by
   intro m n hmn
   exact Finset.sum_le_sum_of_subset_of_nonneg
-    (Finset.range_mono (Nat.add_le_add_right hmn 1)) (fun i _ _ => LatticeProb.srwFirstHit_nonneg i x)
+    (Finset.range_mono (Nat.add_le_add_right hmn 1))
+    (fun i _ _ => LatticeProb.srwFirstHit_nonneg i x)
 
+/-- The walk operator applied to `srwHitBy d m` is bounded above by
+`srwHitBy d (m + 1)`: at the origin this follows from `walkOp_le_of_nbr` and the
+trivial bound `≤ 1` at each neighbour, and away from the origin the two sides
+coincide by `srwHitBy_succ_of_ne`. -/
 theorem Parking.walkOp_srwHitBy_le (hd : 1 ≤ d) (m : ℕ) (x : Site d) :
     walkOp (LatticeProb.srwHitBy d m) x ≤ LatticeProb.srwHitBy d (m + 1) x := by
   by_cases hx : x = 0
@@ -28,6 +38,9 @@ theorem Parking.walkOp_srwHitBy_le (hd : 1 ≤ d) (m : ℕ) (x : Site d) :
     exact Parking.walkOp_le_of_nbr hd fun y _ => LatticeProb.srwHitBy_le_one hd m y
   · rw [LatticeProb.srwHitBy_succ_of_ne hx]
 
+/-- The mean of `f` shifted by a random signed step equals the walk operator applied
+to `f`, unwinding `stepLaw` as the uniform average over the finite direction set via
+`sum_stepVec`. -/
 theorem Parking.integral_stepLaw_add (hd : 1 ≤ d) (f : Site d → ℝ) (x : Site d) :
     ∫ b, f (x + Parking.stepVec b) ∂(Parking.stepLaw d) = walkOp f x := by
   rw [Parking.integral_stepLaw hd, Parking.sum_stepVec, walkOp]
@@ -36,6 +49,9 @@ theorem Parking.integral_stepLaw_add (hd : 1 ≤ d) (f : Site d → ℝ) (x : Si
 def Parking.roundDifference (x : Site d) (u v : Bool) (b₁ b₂ : Fin d × Bool) : Site d :=
   x + (if u then Parking.stepVec b₁ else 0) + (if v then Parking.stepVec b₂ else 0)
 
+/-- The mean truncated hitting probability after applying up to two independent
+signed increments is bounded by `srwHitBy d (m + 2) x`, checked by cases on which
+of the two increments `u`, `v` is switched on. -/
 theorem Parking.integral_roundDifference_hitBy_le (hd : 1 ≤ d) (m : ℕ) (x : Site d)
     (u v : Bool) :
     ∫ q, LatticeProb.srwHitBy d m (Parking.roundDifference x u v q.1 q.2)
@@ -66,6 +82,8 @@ theorem Parking.integral_roundDifference_hitBy_le (hd : 1 ≤ d) (m : ℕ) (x : 
     exact le_trans (Parking.walkOp_mono hd (Parking.walkOp_srwHitBy_le hd m) x)
       (Parking.walkOp_srwHitBy_le hd (m + 1) x)
 
+/-- The signed-direction walk path agrees with the lattice's `sitePath` driven by
+the corresponding step vectors, by induction on the time `t`. -/
 theorem Parking.walkPath_eq_sitePath (x : Site d) (p : ℕ → Fin d × Bool) (t : ℕ) :
     Parking.walkPath x p t = LatticeProb.sitePath x (fun n => Parking.stepVec (p n)) t := by
   induction t with
@@ -84,7 +102,8 @@ theorem Parking.walkLaw_hitZero_eq (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
   let M : (ℕ → Fin d × Bool) → ℕ → Site d := fun p n => Parking.stepVec (p n)
   have hM : Measurable M := measurable_pi_lambda _ fun n =>
     (measurable_of_countable Parking.stepVec).comp (measurable_pi_apply n)
-  have hMLaw : (Parking.walkLaw d).map M = Measure.infinitePi fun _ : ℕ => LatticeProb.incLaw d := by
+  have hMLaw : (Parking.walkLaw d).map M =
+      Measure.infinitePi fun _ : ℕ => LatticeProb.incLaw d := by
     rw [Parking.walkLaw]
     rw [LatticeProb.infinitePi_map_pi (Parking.stepLaw d) (measurable_of_countable Parking.stepVec),
       Parking.map_stepLaw_stepVec]

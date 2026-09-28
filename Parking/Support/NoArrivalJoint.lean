@@ -1,6 +1,16 @@
 import Parking.Support.NoArrivalExponential
 import Parking.Support.FlatNoise
 
+/-!
+# Joint measurability across a mixed initial field
+
+Generalizes the no-arrival flag, entrance compensator, and no-arrival weight from a fixed
+initial field `η` to one drawn jointly with the noise from a measurable space `Ω`, and
+shows the no-arrival exponential bound `integral_noArrivalWeight_le_one` survives mixing
+over a probability measure on `Ω`, by Fubini through the flat noise encoding
+`curryRoundNoise`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -21,8 +31,12 @@ theorem measurable_noArrivalFlag_of {Ω : Type*} [MeasurableSpace Ω] (hd : 1 �
         exact (measurable_from_countable' Finset.card).comp
           (measurable_countArrivals _ _ (measurable_matchedCount ⟨0, hd⟩ e r s he hr hs t)
             ((measurable_pi_apply t).comp hs) x)
-      exact (measurable_from_countable' (fun q : Bool × ℕ => q.1 && decide (q.2 = 0))).comp (ih.prodMk hm)
+      exact (measurable_from_countable' (fun q : Bool × ℕ => q.1 && decide (q.2 = 0))).comp
+        (ih.prodMk hm)
 
+/-- The entrance compensator is jointly measurable in the initial field, matching kernel,
+and noise, being a finite sum over neighbors of the measurable matched-state count
+`measurableState_matchedState`. -/
 theorem measurable_arrivalCompensator_of {Ω : Type*} [MeasurableSpace Ω] (hd : 1 ≤ d)
     (e : Ω → Site d → ℤ) (r : Ω → Label d × ℕ → ℝ) (s : Ω → RoundNoise d)
     (he : Measurable e) (hr : Measurable r) (hs : Measurable s) (t : ℕ) (x : Site d) :
@@ -32,23 +46,29 @@ theorem measurable_arrivalCompensator_of {Ω : Type*} [MeasurableSpace Ω] (hd :
   exact (Finset.measurable_sum _ fun y _ =>
     (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (hS.2.2.2 y)).div_const _
 
+/-- The no-arrival weight is jointly measurable, as an `ite` on the measurable no-arrival
+event `measurable_noArrivalFlag_of` combined with the measurable exponential of the
+compensator `measurable_arrivalCompensator_of`. -/
 theorem measurable_noArrivalWeight_of {Ω : Type*} [MeasurableSpace Ω] (hd : 1 ≤ d)
     (e : Ω → Site d → ℤ) (r : Ω → Label d × ℕ → ℝ) (s : Ω → RoundNoise d)
     (he : Measurable e) (hr : Measurable r) (hs : Measurable s) (t : ℕ) (x : Site d) :
     Measurable (fun ω => noArrivalWeight (e ω) (r ω) (s ω) t x) :=
-  Measurable.ite ((measurable_noArrivalFlag_of hd e r s he hr hs t x) (measurableSet_singleton true))
+  Measurable.ite ((measurable_noArrivalFlag_of hd e r s he hr hs t x)
+      (measurableSet_singleton true))
     (measurable_arrivalCompensator_of hd e r s he hr hs t x).exp measurable_const
 
 /-- Mixing bounded initial fields preserves the no-arrival exponential estimate. -/
 theorem integral_noArrivalWeight_prod_le_one {Ω : Type} [MeasurableSpace Ω] (hd : 1 ≤ d)
     (μ : Measure Ω) [IsProbabilityMeasure μ] (Φ : Ω → Site d → ℤ) (hΦ : Measurable Φ)
     (K : ℕ) (hK : ∀ ω y, (Φ ω y).toNat ≤ K) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
-    ∫ z, noArrivalWeight (Φ z.1) ρ (curryRoundNoise z.2) T x ∂(μ.prod (flatRoundNoiseLaw d)) ≤ 1 := by
+    ∫ z, noArrivalWeight (Φ z.1) ρ (curryRoundNoise z.2) T x
+      ∂(μ.prod (flatRoundNoiseLaw d)) ≤ 1 := by
   haveI := flatRoundNoiseLaw_isProbability hd
   have hm := measurable_noArrivalWeight_of hd (fun z : Ω × FlatRoundNoise d => Φ z.1)
     (fun _ => ρ) (fun z => curryRoundNoise z.2) (hΦ.comp measurable_fst) measurable_const
     (measurable_curryRoundNoise.comp measurable_snd) T x
-  have hi : Integrable (fun z : Ω × FlatRoundNoise d => noArrivalWeight (Φ z.1) ρ (curryRoundNoise z.2) T x)
+  have hi : Integrable (fun z : Ω × FlatRoundNoise d =>
+      noArrivalWeight (Φ z.1) ρ (curryRoundNoise z.2) T x)
       (μ.prod (flatRoundNoiseLaw d)) :=
     Integrable.of_bound hm.aestronglyMeasurable _
       (ae_of_all _ fun z => noArrivalWeight_bound hd (Φ z.1) K (hK z.1) ρ (curryRoundNoise z.2) T x)
@@ -60,7 +80,9 @@ theorem integral_noArrivalWeight_prod_le_one {Ω : Type} [MeasurableSpace Ω] (h
       intro ω
       have he := integral_map (μ := flatRoundNoiseLaw d) measurable_curryRoundNoise.aemeasurable
         (f := fun σ => noArrivalWeight (Φ ω) ρ σ T x)
-        (by rw [map_curryRoundNoise hd]; exact (measurable_noArrivalWeight hd (Φ ω) ρ T x).aestronglyMeasurable)
+        (by
+          rw [map_curryRoundNoise hd]
+          exact (measurable_noArrivalWeight hd (Φ ω) ρ T x).aestronglyMeasurable)
       rw [map_curryRoundNoise hd] at he
       change (∫ ξ, noArrivalWeight (Φ ω) ρ (curryRoundNoise ξ) T x ∂(flatRoundNoiseLaw d)) ≤ 1
       rw [← he]

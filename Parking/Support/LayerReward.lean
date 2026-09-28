@@ -1,7 +1,13 @@
-/-
-Fresh independent layers and the sum of nonnegative rewards paid by a potential.
--/
 import Parking.Support.LayerHitting
+
+/-!
+# Rewards paid by a potential across fresh layers
+
+Fresh independent layers and the sum of nonnegative rewards paid by a potential. A bounded
+potential whose one-round fresh-layer expectation drops by at least a nonnegative reward has
+its initial value bound the expected total reward collected over any finite horizon; the proof
+resamples one layer at a time via `integral_le_of_bounded_layer_sections` and telescopes.
+-/
 
 noncomputable section
 open MeasureTheory LatticeProb

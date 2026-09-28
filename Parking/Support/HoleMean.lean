@@ -2,6 +2,16 @@ import Parking.Support.MatchedCountIntegral
 import Parking.Support.MatchedBellman
 import Parking.Support.FutureValue
 
+/-!
+# The expected remaining hole count in the common-table process
+
+`matchedMeanH η ρ T x` is the mean, over the round noise, of the remaining hole count at `x`
+after `T` rounds of the common-table matching with initial field `η` and priorities `ρ`. This
+module records its basic bounds (nonnegative, at most the initial hole size, equal to the
+initial hole size at `T = 0`), its measurability in `η`, and the first-round Bellman-type
+averaging identity `matchedMeanH_bellman` obtained by peeling off one round via `consNat`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -13,21 +23,30 @@ variable {d : ℕ}
 def matchedMeanH (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) : ℝ :=
   ∫ σ, ((matchedState η ρ σ T).holes x : ℝ) ∂(roundNoiseLaw d)
 
+/-- The expected remaining hole count is nonnegative, as an integral of a `ℕ`-valued
+function. -/
 theorem matchedMeanH_nonneg (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     0 ≤ matchedMeanH η ρ T x := integral_nonneg fun _ => Nat.cast_nonneg _
 
+/-- The expected remaining hole count never exceeds the initial hole size `(-η x).toNat`, since
+`matchedHoles_le_initial` bounds it pointwise for every round noise outcome. -/
 theorem matchedMeanH_le_initial (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (T : ℕ) (x : Site d) : matchedMeanH η ρ T x ≤ ((-η x).toNat : ℝ) := by
   haveI := roundNoiseLaw_isProbability hd
   have h := integral_mono (integrable_matchedHoles hd η ρ T x (roundNoiseLaw d))
-    (integrable_const ((-η x).toNat : ℝ)) (fun σ => Nat.cast_le.mpr (matchedHoles_le_initial η ρ σ T x))
+    (integrable_const ((-η x).toNat : ℝ))
+      (fun σ => Nat.cast_le.mpr (matchedHoles_le_initial η ρ σ T x))
   simpa only [matchedMeanH, integral_const, probReal_univ, one_smul] using h
 
+/-- At the zero horizon no matching has taken place, so the expected remaining hole count is
+exactly the initial hole size. -/
 theorem matchedMeanH_zero (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (x : Site d) :
     matchedMeanH η ρ 0 x = ((-η x).toNat : ℝ) := by
   haveI := roundNoiseLaw_isProbability hd
   simp [matchedMeanH, matchedState, initial]
 
+/-- `matchedMeanH`, as a function of the initial field `η` alone, is measurable: it factors
+through the measurable state map `matchedState` and integrates a measurable count. -/
 theorem measurable_matchedMeanH (hd : 1 ≤ d) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     Measurable (fun η : Site d → ℤ => matchedMeanH η ρ T x) := by
   haveI := roundNoiseLaw_isProbability hd
@@ -41,7 +60,8 @@ theorem measurable_matchedMeanH (hd : 1 ≤ d) (ρ : Label d × ℕ → ℝ) (T 
 theorem matchedHoles_cons (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (τ : RoundSlot d → Fin d × Bool) (σ : RoundNoise d) (T : ℕ) (x : Site d) :
     (matchedState η ρ (consNat τ σ) (T + 1)).holes x =
-      (matchedState (roundSigned (fun y => (η y).toNat) (fun y => (-η y).toNat) τ) ρ σ T).holes x := by
+      (matchedState (roundSigned (fun y => (η y).toNat) (fun y => (-η y).toNat) τ)
+        ρ σ T).holes x := by
   have h := (matchedState_restart η ρ ρ (consNat τ σ) 1 T).2.1 x
   rw [Nat.add_comm 1 T, matchedRestart_one] at h
   have he : (fun n => consNat τ σ (1 + n)) = σ := by

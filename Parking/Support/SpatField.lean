@@ -1,4 +1,9 @@
-/-
+import Parking.Support.NearestBallEvent
+import Mathlib.Probability.Process.Kolmogorov
+
+/-!
+# The rescaled divisible odometer as a Kolmogorov process
+
 The rescaled divisible odometer `Parking.barDivisible`, read as a multi-parameter
 process on a compact box of positive times: the object the Kolmogorov-Chentsov
 route to the third (equicontinuity) clause of `prop:spatial-scaling` runs on.
@@ -11,8 +16,6 @@ at a fixed rescaling `R`, given a uniform increment moment bound, and the
 restriction of the field's domain to a compact set of positive times, which is
 what the frozen clause quantifies over.
 -/
-import Parking.Support.NearestBallEvent
-import Mathlib.Probability.Process.Kolmogorov
 
 noncomputable section
 namespace Parking
@@ -26,6 +29,8 @@ process indexed by space-time `ℝ × (Fin d → ℝ)`.** -/
 def spatField (d : ℕ) (R : ℝ) (p : ℝ × (Fin d → ℝ)) (w : Data d) : ℝ :=
   barDivisible w R p.1 p.2
 
+/-- Unfolding `spatField` at an explicit space-time point recovers `barDivisible`
+directly. -/
 theorem spatField_apply (R : ℝ) (s : ℝ) (x : Fin d → ℝ) (w : Data d) :
     spatField d R (s, x) w = barDivisible w R s x := rfl
 

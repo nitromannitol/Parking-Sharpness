@@ -1,5 +1,14 @@
 import Parking.Support.SingleAddition
 
+/-!
+# The moving discrepancy's fresh instruction
+
+A single added particle produces at most one persistent discrepancy label `(v, 0)`; this
+file shows that when that discrepancy label moves, it uses a match-list instruction whose
+index is at least the smaller process's own matched count at its position, i.e. an
+instruction the smaller process has not yet used.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
@@ -9,7 +18,8 @@ variable {d : ℕ}
 theorem singleAddition_index_unused (η : Site d → ℤ) (v : Site d)
     (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (t : ℕ)
     (hm : discrepancyDoesMove (singleAdditionPair η v) ρ σ t (v, 0) = true) :
-    ∃ j : ℕ, matchedCount η ρ σ t ((discrepancyState (singleAdditionPair η v) ρ σ t).pos (v, 0)) ≤ j ∧
+    ∃ j : ℕ,
+      matchedCount η ρ σ t ((discrepancyState (singleAdditionPair η v) ρ σ t).pos (v, 0)) ≤ j ∧
       discrepancyIndex (singleAdditionPair η v) ρ σ t (v, 0) =
         Sum.inl ((discrepancyState (singleAdditionPair η v) ρ σ t).pos (v, 0), j) := by
   classical
@@ -24,6 +34,7 @@ theorem singleAddition_index_unused (η : Site d → ℤ) (v : Site d)
   have hc0 : coupledConf false c = η := rfl
   have hc1 : coupledConf true c = addParticle v η := rfl
   change Sum.inl (x, min (matchedCount (coupledConf false c) ρ σ t x)
-    (matchedCount (coupledConf true c) ρ σ t x) + rankIn (discrepancyAt c S t x) (matchKey ρ 0) (v, 0)) = _
+    (matchedCount (coupledConf true c) ρ σ t x)
+      + rankIn (discrepancyAt c S t x) (matchKey ρ 0) (v, 0)) = _
   rw [hc0, hc1, min_eq_left (singleAddition_counts_mono η v ρ σ t x).1]
 end Parking

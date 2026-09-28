@@ -1,32 +1,3 @@
-/-
-Theorem 1.7 of parking.tex, frozen.  `parking.tex:314-335` (label `thm:near`):
-
-  "Let $\delta_0>0$.  For each $0\leq\delta\leq\delta_0$, let $\eta_\delta$ have
-   i.i.d. integer-valued coordinates of mean $-\delta$.  Suppose that $\eta_0(0)$
-   is nonconstant, that for some $\theta>0$ the expectations
-   $\E e^{\theta|\eta_\delta(0)|}$ are bounded uniformly over $0\leq\delta\leq\delta_0$,
-   and that for a constant $K<\infty$ and every $0<\delta\leq\delta_0$ the
-   variables $\eta_\delta(0)$ and $\eta_0(0)$ admit a coupling with
-   $\E|\eta_\delta(0)-\eta_0(0)|\leq K\delta$.  Then, as $\delta\downarrow0$,
-   $\E U_\infty^\delta(0)\asymp\delta^{-3}, \delta^{-1}, \delta^{-1/3}$ in
-   dimensions one, two, three, and $\asymp\log(e/\delta)$ for $d\geq4$."
-
-A coupling is a probability measure on `ℤ × ℤ` with the two marginals.  The
-asymptotic is written with constants and a threshold below which it holds;
-the upper bound includes finiteness of `E U_∞^δ(0)`.  The uniform bound on the
-exponential moments carries the integrability that makes it a bound on a
-moment; without it the Bochner integral of a nonintegrable function is zero and
-every family, however heavy tailed, would satisfy the hypothesis.  That
-integrability also makes the mean condition a condition on a genuine mean, and
-makes `∫|η_δ(0)-η_0(0)|` under the coupling a genuine expectation.
-
-The results the proof quotes without proving them here enter as explicit
-hypotheses.  The lower bound goes through `prop:near-divisible`, which carries
-`thm:BP`, `lem:stopping-time`, `lem:u-concentration` and `eq:green-norms`; the
-upper bound reads `eq:green-norms` again at the cutoff of `eq:near-cutoff` and
-applies the Bernstein inequality of `prop:w-moment` at the near-critical law, so
-the node carries those five as explicit hypotheses.
--/
 import Parking.Support.NearEndgame
 import Parking.External.SandpileGrowth
 import Parking.External.Stopping
@@ -34,6 +5,35 @@ import Parking.External.UConcentration
 import Parking.External.UConcentrationProved
 import Parking.External.GreenNormsProved
 import Parking.External.Bernstein
+
+/-!
+# Divergence of the mean odometer as the drift vanishes (frozen)
+
+Theorem 1.7 of parking.tex, frozen. `parking.tex:314-335` (label `thm:near`):
+
+"Let $\delta_0>0$. For each $0\leq\delta\leq\delta_0$, let $\eta_\delta$ have i.i.d.
+integer-valued coordinates of mean $-\delta$. Suppose that $\eta_0(0)$ is nonconstant, that
+for some $\theta>0$ the expectations $\E e^{\theta|\eta_\delta(0)|}$ are bounded uniformly
+over $0\leq\delta\leq\delta_0$, and that for a constant $K<\infty$ and every
+$0<\delta\leq\delta_0$ the variables $\eta_\delta(0)$ and $\eta_0(0)$ admit a coupling with
+$\E|\eta_\delta(0)-\eta_0(0)|\leq K\delta$. Then, as $\delta\downarrow0$,
+$\E U_\infty^\delta(0)\asymp\delta^{-3}, \delta^{-1}, \delta^{-1/3}$ in dimensions one, two,
+three, and $\asymp\log(e/\delta)$ for $d\geq4$."
+
+A coupling is a probability measure on `ℤ × ℤ` with the two marginals. The asymptotic is
+written with constants and a threshold below which it holds; the upper bound includes
+finiteness of `E U_∞^δ(0)`. The uniform bound on the exponential moments carries the
+integrability that makes it a bound on a moment; without it the Bochner integral of a
+nonintegrable function is zero and every family, however heavy tailed, would satisfy the
+hypothesis. That integrability also makes the mean condition a condition on a genuine mean,
+and makes `∫|η_δ(0)-η_0(0)|` under the coupling a genuine expectation.
+
+The results the proof quotes without proving them here enter as explicit hypotheses. The
+lower bound goes through `prop:near-divisible`, which carries `thm:BP`, `lem:stopping-time`,
+`lem:u-concentration` and `eq:green-norms`; the upper bound reads `eq:green-norms` again at
+the cutoff of `eq:near-cutoff` and applies the Bernstein inequality of `prop:w-moment` at the
+near-critical law, so the node carries those five as explicit hypotheses.
+-/
 
 open MeasureTheory
 open scoped ENNReal

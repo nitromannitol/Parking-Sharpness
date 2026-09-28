@@ -1,5 +1,7 @@
-/-
-The origin has an infinite odometer with probability bounded below.
+import Parking.Support.OdometerLower
+
+/-!
+# The origin's odometer is infinite with positive probability
 
 Step 2 of `prop:everyone-settles` (`parking.tex:1525-1541`): the Paley-Zygmund
 bound of `Parking.exists_odometer_lower_prob` holds at every `n`, and
@@ -8,7 +10,6 @@ which the event of that lemma forces `U_n(0) ≥ M`.  The events
 `{U_∞(0) ≥ M}` decrease to `{U_∞(0) = ∞}`, which therefore has probability at
 least the Paley-Zygmund constant.
 -/
-import Parking.Support.OdometerLower
 
 noncomputable section
 namespace Parking
@@ -17,6 +18,7 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
+/-- The odometer at `x` is infinite exactly when it is unbounded over the horizon `n`. -/
 theorem Ulimit_eq_top_iff (ω : Data d) (x : Site d) :
     Parking.Ulimit ω x = ⊤ ↔ ∀ M : ℕ, ∃ n : ℕ, M ≤ Parking.U ω n x := by
   unfold Parking.Ulimit
@@ -30,6 +32,8 @@ theorem Ulimit_eq_top_iff (ω : Data d) (x : Site d) :
     obtain ⟨n, hn⟩ := h (b + 1)
     exact ⟨n, by exact_mod_cast Nat.lt_of_lt_of_le (Nat.lt_succ_self b) hn⟩
 
+/-- Every real threshold `b` is a lower bound for `log n` at some `n ≥ 2`, taking
+`n` from `⌈exp b⌉` (or `2` if that is smaller). -/
 theorem exists_two_le_log_ge (b : ℝ) : ∃ n : ℕ, 2 ≤ n ∧ b ≤ Real.log n := by
   refine ⟨max 2 ⌈Real.exp b⌉₊, le_max_left _ _, ?_⟩
   have hn2 : 2 ≤ max 2 ⌈Real.exp b⌉₊ := le_max_left _ _
@@ -40,6 +44,10 @@ theorem exists_two_le_log_ge (b : ℝ) : ∃ n : ℕ, 2 ≤ n ∧ b ≤ Real.log
   refine le_trans (Nat.le_ceil (Real.exp b)) ?_
   exact_mod_cast Nat.cast_le.mpr (le_max_right 2 ⌈Real.exp b⌉₊)
 
+/-- The event that the odometer at the origin is infinite has probability at least the
+Paley-Zygmund constant `a` from `exists_odometer_lower_prob`, obtained by writing it as a
+decreasing intersection of the events `{U_n(0) ≥ M}` for the `n` given by
+`exists_two_le_log_ge` and passing to the limit in `M`. -/
 theorem exists_prob_Ulimit_top (hGrowth : Parking.External.SandpileGrowth)
     (hBernstein : Parking.External.Bernstein)
     (hConcentration : Parking.External.UConcentration)

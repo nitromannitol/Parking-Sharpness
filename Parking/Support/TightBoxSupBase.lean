@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightBoxSupMoment
+
+/-!
+# Fixed-radius dyadic chaining for `Yfield`
+
 The remaining gap in `happ`: a FIXED-RADIUS dyadic chaining bound, from the level-`0`
 grid up to the level-`n1` grid, for `Parking.Yfield`.  This is deliberately NOT built by reusing
 `LatticeProb.dtruncPi_dist_le`/`LatticeProb.dlimPi_sub_dtruncPi_le` directly: those lemmas'
@@ -35,7 +39,6 @@ the sum over `m` geometric in `TightBoxSupTail.lean`'s tail bound.  So summing t
 moments for `m = 1, …, R` (R := n1, chosen ≥ 2A) gives a bound `Θ(R²)` — polynomial in `R`, not
 exponential — exactly the base term this route needs.
 -/
-import Parking.Support.TightBoxSupMoment
 
 open MeasureTheory LatticeProb Filter Topology
 
@@ -89,6 +92,8 @@ box. -/
 def levelPairsFixed (R m : ℕ) : Finset ((Fin 2 → ℤ) × Fin 2) :=
   (LatticeProb.boxIdx (R + 1) m) ×ˢ (Finset.univ : Finset (Fin 2))
 
+/-- **`Parking.levelPairsFixed` is nonempty**: the origin index paired with any fixed
+direction always lies in the fixed-radius box, since `R + 1 ≥ 1`. -/
 theorem levelPairsFixed_nonempty (R m : ℕ) : (levelPairsFixed R m).Nonempty := by
   refine ⟨(0, 0), ?_⟩
   rw [levelPairsFixed, Finset.mem_product]
@@ -103,6 +108,7 @@ def levelIncTermFixed (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ)
   |Yfield A hA n η (LatticeProb.gridPt m (idx.1 + Pi.single idx.2 1)) -
     Yfield A hA n η (LatticeProb.gridPt m idx.1)|
 
+/-- **`Parking.levelIncTermFixed` is nonnegative**, being an absolute value. -/
 theorem levelIncTermFixed_nonneg (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ)
     (idx : (Fin 2 → ℤ) × Fin 2) : 0 ≤ levelIncTermFixed A hA n m η idx :=
   abs_nonneg _
@@ -112,12 +118,16 @@ radius `R + 1`.** -/
 def levelIncFixed (A : ℝ) (hA : 0 ≤ A) (R n m : ℕ) (η : Site 2 → ℝ) : ℝ :=
   (levelPairsFixed R m).sup' (levelPairsFixed_nonempty R m) (levelIncTermFixed A hA n m η)
 
+/-- **`Parking.levelIncFixed` is nonnegative**, since it is a `Finset.sup'` of the nonnegative
+`Parking.levelIncTermFixed` terms. -/
 theorem levelIncFixed_nonneg (A : ℝ) (hA : 0 ≤ A) (R n m : ℕ) (η : Site 2 → ℝ) :
     0 ≤ levelIncFixed A hA R n m η := by
   obtain ⟨idx, hidx⟩ := levelPairsFixed_nonempty R m
   exact le_trans (levelIncTermFixed_nonneg A hA n m η idx)
     (Finset.le_sup' (levelIncTermFixed A hA n m η) hidx)
 
+/-- **Every term of `Parking.levelIncTermFixed` in the index set is bounded by the
+`Finset.sup'` `Parking.levelIncFixed`.** -/
 theorem levelIncTermFixed_le (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ) {R : ℕ}
     {idx : (Fin 2 → ℤ) × Fin 2} (hmem : idx ∈ levelPairsFixed R m) :
     levelIncTermFixed A hA n m η idx ≤ levelIncFixed A hA R n m η :=
@@ -141,7 +151,8 @@ theorem yfield_step_fixed (A : ℝ) (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → �
     rcases LatticeProb.floor_succ_level_real m (z i) with h | h
     · simp only [hJ₁def, hJ₀def, h]; simp
     · simp only [hJ₁def, hJ₀def, h]; simp
-  have hrange : ∀ t : ℕ, ∀ i, |LatticeProb.chainIdx J₀ J₁ t i| ≤ ((R : ℕ) + 1 : ℕ) * 2 ^ (m + 1) := by
+  have hrange : ∀ t : ℕ, ∀ i, |LatticeProb.chainIdx J₀ J₁ t i| ≤
+      ((R : ℕ) + 1 : ℕ) * 2 ^ (m + 1) := by
     intro t i
     have hb := chainIdx_range_fixed J₀ J₁ t hJ₀ hstep i
     have hle : (2 * ((R : ℤ) * 2 ^ m) + 1) ≤ (((R : ℕ) + 1 : ℕ) : ℤ) * 2 ^ (m + 1) := by

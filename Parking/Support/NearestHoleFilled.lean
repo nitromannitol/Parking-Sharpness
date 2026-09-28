@@ -1,9 +1,12 @@
-/-
+import Parking.Support.NoBoth
+
+/-!
+# Positive particle odometer empties the hole
+
 Support lemma for `thm:nearest` (`parking.tex:1840-1842`): if the particle
 odometer at a site is positive by round `t`, then a particle has left the site,
 so every hole there has been filled and `H_t(x) = 0`.
 -/
-import Parking.Support.NoBoth
 
 open MeasureTheory LatticeProb
 

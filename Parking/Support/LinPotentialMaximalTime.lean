@@ -1,4 +1,10 @@
-/-
+import Parking.Support.LinPotentialMaximal
+import Parking.Support.Invariance
+import Parking.Support.BoxTranslation
+
+/-!
+# The maximal inequality over a time range, re-centered
+
 **The discrete maximal inequality of `Parking.Support.LinPotentialMaximal`, extended over a
 range of TIMES too, and re-centered at an arbitrary site.**
 
@@ -21,9 +27,6 @@ translation covariance of `Parking.linPotential` itself
 
 No `External` is registered or consumed: every theorem here is proved, not cited.
 -/
-import Parking.Support.LinPotentialMaximal
-import Parking.Support.Invariance
-import Parking.Support.BoxTranslation
 
 noncomputable section
 
@@ -113,7 +116,8 @@ range) in the prefactor. -/
 theorem exists_linPotential_maximal_tail_time (hd1 : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (N : ℕ), 1 ≤ N → ∀ (A : ℕ) (M : ℝ), 0 < M →
       ((iidLaw d (realLaw ν))
-          {η | ∃ m ∈ Finset.Icc 1 N, ∃ y ∈ boxFinset (0 : Site d) A, M ≤ |linPotential η m y|}).toReal
+          {η | ∃ m ∈ Finset.Icc 1 N, ∃ y ∈ boxFinset (0 : Site d) A,
+              M ≤ |linPotential η m y|}).toReal
         ≤ C * N * (2 * A + 1) ^ d * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))) := by
   haveI := hν.prob
   haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
@@ -155,7 +159,8 @@ theorem exists_linPotential_maximal_tail_time (hd1 : 1 ≤ d) (ν : Measure ℤ)
     ring
   have hIccCard : (Finset.Icc 1 N).card = N := by rw [Nat.card_Icc]; omega
   have hfinal : (iidLaw d (realLaw ν)).real S
-      ≤ (N : ℕ) • ((2 * A + 1) ^ d * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) := by
+      ≤ (N : ℕ) •
+          ((2 * A + 1) ^ d * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) := by
     refine hstep1.trans ?_
     calc (iidLaw d (realLaw ν)).real (⋃ m ∈ Finset.Icc 1 N, ⋃ y ∈ boxFinset (0 : Site d) A,
           {η : Site d → ℝ | M ≤ |linPotential η m y|})
@@ -170,15 +175,18 @@ theorem exists_linPotential_maximal_tail_time (hd1 : 1 ≤ d) (ν : Measure ℤ)
           refine Finset.sum_le_sum fun m hm => ?_
           rw [← hstep5 m hm]; exact Finset.sum_le_sum (hpoint m hm)
       _ = (Finset.Icc 1 N).card •
-            ((2 * A + 1) ^ d * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) := by
+            ((2 * A + 1) ^ d
+                * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) := by
           rw [Finset.sum_const]
       _ = (N : ℕ) •
-            ((2 * A + 1) ^ d * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) := by
+            ((2 * A + 1) ^ d
+                * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) := by
           rw [hIccCard]
   rw [nsmul_eq_mul] at hfinal
   rw [← measureReal_def]
   calc (iidLaw d (realLaw ν)).real S
-      ≤ (N : ℝ) * ((2 * A + 1) ^ d * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) :=
+      ≤ (N : ℝ)
+          * ((2 * A + 1) ^ d * (C * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))))) :=
         hfinal
     _ = C * N * (2 * A + 1) ^ d * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))) := by
         ring
@@ -203,6 +211,8 @@ theorem linPotential_comp_add (η : Site d → ℝ) (z0 : Site d) (m : ℕ) (y :
     have heq : y - z = y + z0 - (z + z0) := by abel
     rw [heq]
 
+/-- `linPotential` at a fixed step count and site is measurable in the scenery `η`, via its
+    explicit finite-sum representation `linPotential_eq_sum`. -/
 theorem measurable_linPotential_pt (m : ℕ) (y : Site d) :
     Measurable (fun η : Site d → ℝ => linPotential η m y) := by
   have heq : (fun η : Site d → ℝ => linPotential η m y)
@@ -211,6 +221,9 @@ theorem measurable_linPotential_pt (m : ℕ) (y : Site d) :
   rw [heq]
   exact Finset.measurable_sum _ (fun z _ => (measurable_pi_apply z).mul measurable_const)
 
+/-- The maximal-tail-time exceedance event is measurable: rewritten as a finite union, over the
+    time range and the box, of the measurable single-point exceedance sets built from
+    `measurable_linPotential_pt`. -/
 theorem measurableSet_maximal_tail_time_event (N A : ℕ) (M : ℝ) :
     MeasurableSet {η : Site d → ℝ |
       ∃ m ∈ Finset.Icc 1 N, ∃ y ∈ boxFinset (0 : Site d) A, M ≤ |linPotential η m y|} := by

@@ -1,10 +1,12 @@
-/-
-Joint measurability of the discrepancy labels and their priority rules. Every
-finite selection is measurable in the configurations, priorities, instruction
-tables and the preceding state, so induction proves measurability of the full
-label process.
--/
 import Parking.Support.DiscrepancyLabels
+
+/-!
+# Discrepancy measurability
+
+Joint measurability of the discrepancy labels and their priority rules. Every finite selection
+is measurable in the configurations, priorities, instruction tables and the preceding state, so
+induction proves measurability of the full label process.
+-/
 
 noncomputable section
 
@@ -12,6 +14,9 @@ open MeasureTheory LatticeProb
 
 variable {d : ℕ} {Ω : Type*} [MeasurableSpace Ω]
 
+/-- The rank of `p` within the measurably varying finset `A ω`, under the measurably varying
+priority key `matchKey (ρ ω) t`, is measurable: it is the cardinality of a filter of `A ω` by a
+measurable comparison. -/
 theorem Parking.measurable_priorityRank (A : Ω → Finset (Label d))
     (ρ : Ω → Label d × ℕ → ℝ) (hA : Measurable A) (hρ : Measurable ρ) (t : ℕ) (p : Label d) :
     Measurable fun ω => rankIn (A ω) (Parking.matchKey (ρ ω) t) p := by
@@ -25,6 +30,8 @@ theorem Parking.measurable_priorityRank (A : Ω → Finset (Label d))
     fun_prop
   exact (measurable_of_countable (Finset.card (α := Label d))).comp hfilter
 
+/-- `rankSurvivors` is jointly measurable in the two measurably varying finsets and the
+priority key, since membership unfolds to the rank comparison of `measurable_priorityRank`. -/
 theorem Parking.measurable_rankSurvivors (A B : Ω → Finset (Label d))
     (ρ : Ω → Label d × ℕ → ℝ) (hA : Measurable A) (hB : Measurable B) (hρ : Measurable ρ)
     (t : ℕ) : Measurable fun ω => Parking.rankSurvivors (A ω) (B ω) (Parking.matchKey (ρ ω) t) := by
@@ -37,20 +44,28 @@ theorem Parking.measurable_rankSurvivors (A B : Ω → Finset (Label d))
   have hrank := Parking.measurable_priorityRank A ρ hA hρ t p
   fun_prop
 
+/-- `discrepancyConf` is measurable, as an absolute value of a difference of the measurable
+configuration coordinates. -/
 theorem Parking.measurable_discrepancyConf (c : Ω → Site d → ℤ × ℤ) (hc : Measurable c) :
     Measurable fun ω => Parking.discrepancyConf (c ω) := by
   fun_prop [Parking.discrepancyConf]
 
+/-- `discrepancySign` at a fixed label is measurable, as the countable-valued sign of the
+configuration difference at that label's site. -/
 theorem Parking.measurable_discrepancySign (c : Ω → Site d → ℤ × ℤ) (hc : Measurable c)
     (p : Label d) : Measurable fun ω => Parking.discrepancySign (c ω) p := by
   exact (measurable_of_countable (fun z : ℤ × ℤ => decide (0 < z.2 - z.1))).comp
     ((measurable_pi_apply p.1).comp hc)
 
+/-- `discrepancyAt` at a fixed time and site is measurable, via `measurable_matchActive` applied
+to the measurable configuration and state. -/
 theorem Parking.measurable_discrepancyAt (c : Ω → Site d → ℤ × ℤ) (S : Ω → State d)
     (hc : Measurable c) (hS : Parking.MeasurableState S) (t : ℕ) (x : Site d) :
     Measurable fun ω => Parking.discrepancyAt (c ω) (S ω) t x :=
   Parking.measurable_matchActive _ S (Parking.measurable_discrepancyConf c hc) hS t x
 
+/-- The moving predicate `discrepancyMoving` at a fixed label is measurable: it is the
+intersection of a measurable membership set and a measurable rank inequality. -/
 theorem Parking.measurable_discrepancyMoving (c : Ω → Site d → ℤ × ℤ)
     (ρ : Ω → Label d × ℕ → ℝ) (a b : Ω → Site d → ℕ) (S : Ω → State d)
     (hc : Measurable c) (hρ : Measurable ρ) (ha : Measurable a) (hb : Measurable b)
@@ -68,6 +83,9 @@ theorem Parking.measurable_discrepancyMoving (c : Ω → Site d → ℤ × ℤ)
   exact measurableSet_setOf.mp ((measurableSet_setOf.mpr hmem).inter
     (measurableSet_lt hrank ((ha'.sub hb').add (hb'.sub ha'))))
 
+/-- `discrepancySlot` at a fixed label is measurable: both branches of its defining `if` are
+measurable, and `measurable_discrepancyMoving` gives the measurability of the deciding
+predicate. -/
 theorem Parking.measurable_discrepancySlot (c : Ω → Site d → ℤ × ℤ)
     (ρ : Ω → Label d × ℕ → ℝ) (a b : Ω → Site d → ℕ) (S : Ω → State d)
     (hc : Measurable c) (hρ : Measurable ρ) (ha : Measurable a) (hb : Measurable b)
@@ -85,6 +103,8 @@ theorem Parking.measurable_discrepancySlot (c : Ω → Site d → ℤ × ℤ)
   exact Measurable.ite (measurableSet_setOf.mpr hmov)
     (measurable_inl.comp ((hS.2.1 p).prodMk ((ha'.min hb').add hrank))) measurable_const
 
+/-- `discrepancyNextPos` at a fixed label is measurable, combining `measurable_discrepancySlot`
+with the measurable evaluation of the instruction table at that slot. -/
 theorem Parking.measurable_discrepancyNextPos (c : Ω → Site d → ℤ × ℤ)
     (ρ : Ω → Label d × ℕ → ℝ) (a b : Ω → Site d → ℕ)
     (τ : Ω → Parking.RoundSlot d → Fin d × Bool) (S : Ω → State d)
@@ -93,25 +113,31 @@ theorem Parking.measurable_discrepancyNextPos (c : Ω → Site d → ℤ × ℤ)
     Measurable fun ω => Parking.discrepancyNextPos (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t p := by
   have hmov := Parking.measurable_discrepancyMoving c ρ a b S hc hρ ha hb hS t p
   have hslot := Parking.measurable_discrepancySlot c ρ a b S hc hρ ha hb hS t p
-  have hentry : Measurable fun ω => τ ω (Parking.discrepancySlot (c ω) (ρ ω) (a ω) (b ω) (S ω) t p) :=
+  have hentry : Measurable fun ω =>
+      τ ω (Parking.discrepancySlot (c ω) (ρ ω) (a ω) (b ω) (S ω) t p) :=
     LatticeProb.measurable_eval_var _ hslot τ (fun q => (measurable_pi_apply q).comp hτ)
   unfold Parking.discrepancyNextPos
   exact Measurable.ite (measurableSet_setOf.mpr hmov)
     ((hS.2.1 p).add ((measurable_of_countable Parking.stepVec).comp hentry)) (hS.2.1 p)
 
+/-- `discrepancyArrivalsSign` at a fixed time, site and sign is measurable, via
+`measurable_matchActive` on the state built from `measurable_discrepancyNextPos`, further
+filtered by `measurable_discrepancySign`. -/
 theorem Parking.measurable_discrepancyArrivalsSign (c : Ω → Site d → ℤ × ℤ)
     (ρ : Ω → Label d × ℕ → ℝ) (a b : Ω → Site d → ℕ)
     (τ : Ω → Parking.RoundSlot d → Fin d × Bool) (S : Ω → State d)
     (hc : Measurable c) (hρ : Measurable ρ) (ha : Measurable a) (hb : Measurable b)
     (hτ : Measurable τ) (hS : Parking.MeasurableState S) (t : ℕ) (x : Site d) (sgn : Bool) :
-    Measurable fun ω => Parking.discrepancyArrivalsSign (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t x sgn := by
+    Measurable fun ω =>
+      Parking.discrepancyArrivalsSign (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t x sgn := by
   have hn := Parking.measurable_discrepancyNextPos c ρ a b τ S hc hρ ha hb hτ hS t
   let S' : Ω → State d := fun ω =>
     ⟨(S ω).active, (fun p => Parking.discrepancyNextPos (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t p),
       fun _ => 0, fun _ => 0⟩
   have hS' : Parking.MeasurableState S' :=
     ⟨hS.1, hn, fun _ => measurable_const, fun _ => measurable_const⟩
-  have hArr : Measurable fun ω => Parking.discrepancyArrivals (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t x :=
+  have hArr : Measurable fun ω =>
+      Parking.discrepancyArrivals (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t x :=
     Parking.measurable_matchActive _ S' (Parking.measurable_discrepancyConf c hc) hS' (t + 1) x
   apply measurable_finset_iff.mpr
   intro p
@@ -120,12 +146,16 @@ theorem Parking.measurable_discrepancyArrivalsSign (c : Ω → Site d → ℤ ×
   have hsign := Parking.measurable_discrepancySign c hc p
   fun_prop
 
+/-- One step of the label process, `discrepancyStep`, is a measurable state: its position field
+follows `measurable_discrepancyNextPos` and its active field follows
+`measurable_rankSurvivors`. -/
 theorem Parking.measurableState_discrepancyStep (c : Ω → Site d → ℤ × ℤ)
     (ρ : Ω → Label d × ℕ → ℝ) (a b : Ω → Site d → ℕ)
     (τ : Ω → Parking.RoundSlot d → Fin d × Bool) (S : Ω → State d)
     (hc : Measurable c) (hρ : Measurable ρ) (ha : Measurable a) (hb : Measurable b)
     (hτ : Measurable τ) (hS : Parking.MeasurableState S) (t : ℕ) :
-    Parking.MeasurableState fun ω => Parking.discrepancyStep (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t := by
+    Parking.MeasurableState fun ω =>
+      Parking.discrepancyStep (c ω) (ρ ω) (a ω) (b ω) (τ ω) (S ω) t := by
   classical
   have hn := Parking.measurable_discrepancyNextPos c ρ a b τ S hc hρ ha hb hτ hS t
   refine ⟨fun p => ?_, hn, fun _ => measurable_const, fun _ => measurable_const⟩
@@ -151,6 +181,8 @@ theorem Parking.measurableState_discrepancyStep (c : Ω → Site d → ℤ × �
   exact (measurable_of_countable (fun Z : Finset (Label d) => decide (p ∈ Z))).comp
     (Parking.measurable_rankSurvivors A B ρ hA hB hρ 0)
 
+/-- `matchedCount` is measurable, as the cardinality of the measurably varying finset
+`matchActive` built from the measurable `matchedState`. -/
 theorem Parking.measurable_matchedCount (i₀ : Fin d) (e : Ω → Site d → ℤ)
     (ρ : Ω → Label d × ℕ → ℝ) (σ : Ω → Parking.RoundNoise d)
     (he : Measurable e) (hρ : Measurable ρ) (hσ : Measurable σ) (t : ℕ) :

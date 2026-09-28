@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SpatGreenShift
+
+/-!
+# The space-direction two-point comparison, dimensions one and two
+
 **The SPACE-direction two-point comparison of the truncated Green function, dimensions one
 and two.**  Extends `Parking.Support.SpatGreenShift` to the remaining dimensions: that
 module proves the bound
@@ -58,9 +62,9 @@ The `supAbs` half needs no `kappa` factor in ANY dimension `1 ≤ d ≤ 3`: the 
 dimension one is `|green 1 n ![c] - green 1 n ![c+1]| = 2 * srwTail n c' ≤ 2` (`c'` the
 nonnegative reduction of `c`), via `Parking.srwTail_le_one` alone, uniformly in `n`.
 -/
-import Parking.Support.SpatGreenShift
 
-open LatticeProb (shellCard shellCard_le sum_box_radial sum_inv_succ_le_log supNorm supNorm_le_graphNorm)
+open LatticeProb (shellCard shellCard_le sum_box_radial sum_inv_succ_le_log supNorm
+  supNorm_le_graphNorm)
 
 noncomputable section
 
@@ -201,6 +205,8 @@ theorem exists_green_space_sup_bound_of_step {n : ℕ} {B : ℝ} (hB : 0 ≤ B)
 
 /-! ### Dimension one: the exact one-step bound via the tail identity -/
 
+/-- In dimension one, `graphNorm ![c]` equals `c.natAbs`, since the unique coordinate of
+`![c] : Site 1` is `c` itself. -/
 theorem graphNorm_one_eq (c : ℤ) : graphNorm (![c] : Site 1) = c.natAbs := by
   unfold graphNorm
   rw [show (Finset.univ : Finset (Fin 1)) = {0} from rfl]
@@ -341,6 +347,8 @@ pair -/
 /-- The `ℤ`-indexing equivalence of `Site 1`, via evaluation at the unique coordinate. -/
 def site1ToInt : Site 1 ≃ ℤ := Equiv.funUnique (Fin 1) ℤ
 
+/-- `site1ToInt` evaluates a dimension-one site at its unique coordinate `0`, by
+definitional unfolding of `Equiv.funUnique`. -/
 theorem site1ToInt_apply (w : Site 1) : site1ToInt w = w 0 := rfl
 
 /-- **The one-step `tsum` bound in dimension one, at the forward neighbour `x + unit 0`.** -/
@@ -435,6 +443,9 @@ theorem abs_green_one_step_le_two (n : ℕ) (c : ℤ) :
   nlinarith [abs_nonneg (green 1 n ![c] - green 1 n ![c + 1]),
     sq_abs (green 1 n ![c] - green 1 n ![c + 1])]
 
+/-- The one-step `supAbs` bound at the forward neighbour `x + unit 0` in dimension one:
+after reindexing to the origin, this is `abs_green_one_step_le_two`'s uniform bound `2`,
+taken as a supremum over all `z`. -/
 theorem exists_green_space_step_sup_bound_one_plus (n : ℕ) (x : Site 1) :
     supAbs (fun z => green 1 n (x - z) - green 1 n (x + unit 0 - z)) ≤ 2 := by
   unfold supAbs
@@ -667,8 +678,10 @@ theorem exists_green_space_shift_sup_bound_full (hd1 : 1 ≤ d) (hd3 : d ≤ 3) 
   · refine ⟨2, by norm_num, fun n _ x y => ?_⟩
     rw [mul_comm]
     exact exists_green_space_sup_bound_one n x y
-  · exact exists_green_space_shift_sup_bound (by norm_num) (Parking.External.greenGradient 2 (by norm_num))
-  · exact exists_green_space_shift_sup_bound (by norm_num) (Parking.External.greenGradient 3 (by norm_num))
+  · exact exists_green_space_shift_sup_bound (by norm_num)
+      (Parking.External.greenGradient 2 (by norm_num))
+  · exact exists_green_space_shift_sup_bound (by norm_num)
+      (Parking.External.greenGradient 3 (by norm_num))
 
 end Parking
 

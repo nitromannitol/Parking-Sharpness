@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SubcriticalConditional
+
+/-!
+# `thm:subcritical`: the drift positivity and the range bound
+
 The first two assertions of `thm:subcritical` (`parking.tex:2434-2447`).
 
 `a > 0` is the continuity of the drift on `[0, λ₁]` together with its positivity
@@ -8,7 +12,6 @@ probability by `Support/SubcriticalConditional.lean`: the bound is uniform in th
 prescribed particles at the origin, and the prescription a realization carries
 there is independent of everything else.
 -/
-import Parking.Support.SubcriticalConditional
 
 open MeasureTheory
 

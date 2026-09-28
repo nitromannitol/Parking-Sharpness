@@ -1,4 +1,9 @@
-/-
+import Parking.Support.FiniteRange
+import Parking.Support.SubcriticalPair
+
+/-!
+# The subcritical observables depend on finitely many sites
+
 The two observables of `thm:subcritical` are functions of finitely many sites.
 
 `parking.tex:2480` says "both `F` and `Z` depend only on the finitely many sites
@@ -11,8 +16,6 @@ particle that arrives in the range decides whether it settles by looking at the
 arrivals at its own new site, a further step out at every round; only the
 finiteness is used.
 -/
-import Parking.Support.FiniteRange
-import Parking.Support.SubcriticalPair
 
 open LatticeProb Finset
 

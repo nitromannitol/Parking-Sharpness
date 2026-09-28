@@ -1,6 +1,17 @@
 import Parking.Support.ProductReveal
 import LatticeProb.Prob.Coordinate
 
+/-!
+# Factorizing a bounded product expectation across reveals
+
+This file proves that if the single-coordinate reveal of two partial-integral products
+`partialInt μ S F` and `partialInt μ S G` grows by at most a multiplicative factor
+`exp (c j)` at each new coordinate `j`, then the expectation of the product `F * G`
+itself is bounded by `exp (∑ j ∈ S, c j)` times the product of the separate expectations
+of `F` and `G`. The argument inducts on `S` using `integral_coordinate_sections` to turn
+each reveal into an inner integral over the fresh coordinate `j`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -15,7 +26,8 @@ theorem integral_coordinate_sections (μ : ∀ i, Measure (X i)) [∀ i, IsProba
   let T : (Π i, X i) × X j → Π i, X i := fun q => Function.update q.1 j q.2
   have hT : MeasurePreserving T (P.prod (μ j)) P := measurePreserving_update_infinitePi μ j
   have hi : Integrable (fun q => f (T q)) (P.prod (μ j)) :=
-    Integrable.of_bound (hf.comp hT.measurable).aestronglyMeasurable B (ae_of_all _ fun q => hB (T q))
+    Integrable.of_bound (hf.comp hT.measurable).aestronglyMeasurable B
+      (ae_of_all _ fun q => hB (T q))
   have he := integral_map (μ := P.prod (μ j)) (φ := T) (f := f) hT.measurable.aemeasurable
     (by rw [hT.map_eq]; exact hf.aestronglyMeasurable)
   rw [hT.map_eq] at he
@@ -33,16 +45,19 @@ theorem integral_partial_product_factor (μ : ∀ i, Measure (X i)) [∀ i, IsPr
     (S : Finset ι) :
     (∫ ω, partialInt μ (↑S : Set ι) F ω * partialInt μ (↑S : Set ι) G ω
       ∂(Measure.infinitePi μ)) ≤
-      Real.exp (∑ j ∈ S, c j) * ((∫ ω, F ω ∂(Measure.infinitePi μ)) * ∫ ω, G ω ∂(Measure.infinitePi μ)) := by
+      Real.exp (∑ j ∈ S, c j) *
+        ((∫ ω, F ω ∂(Measure.infinitePi μ)) * ∫ ω, G ω ∂(Measure.infinitePi μ)) := by
   classical
   let P := Measure.infinitePi μ
-  let V (S : Finset ι) (ω : Π i, X i) := partialInt μ (↑S : Set ι) F ω * partialInt μ (↑S : Set ι) G ω
+  let V (S : Finset ι) (ω : Π i, X i) :=
+    partialInt μ (↑S : Set ι) F ω * partialInt μ (↑S : Set ι) G ω
   have hm (S : Finset ι) : Measurable (V S) :=
     (measurable_partialInt μ _ hF).mul (measurable_partialInt μ _ hG)
   have hb (S : Finset ι) (ω : Π i, X i) : ‖V S ω‖ ≤ B * C := by
     change ‖partialInt μ (↑S : Set ι) F ω * partialInt μ (↑S : Set ι) G ω‖ ≤ B * C
     rw [Real.norm_eq_abs, abs_mul]
-    exact mul_le_mul (abs_partialInt_le μ _ F B hFB ω) (abs_partialInt_le μ _ G C hGC ω) (abs_nonneg _) hB
+    exact mul_le_mul (abs_partialInt_le μ _ F B hFB ω) (abs_partialInt_le μ _ G C hGC ω)
+      (abs_nonneg _) hB
   have hi (S : Finset ι) : Integrable (V S) P :=
     Integrable.of_bound (hm S).aestronglyMeasurable _ (ae_of_all _ fun ω => hb S ω)
   change (∫ ω, V S ω ∂P) ≤ Real.exp (∑ j ∈ S, c j) * ((∫ ω, F ω ∂P) * ∫ ω, G ω ∂P)
@@ -55,12 +70,15 @@ theorem integral_partial_product_factor (μ : ∀ i, Measure (X i)) [∀ i, IsPr
         dsimp only [V, partialInt]
         simp only [hc]
         rfl
-      simp only [he, integral_const, probReal_univ, one_smul, Finset.sum_empty, Real.exp_zero, one_mul, le_refl]
+      simp only [he, integral_const, probReal_univ, one_smul, Finset.sum_empty, Real.exp_zero,
+        one_mul, le_refl]
   | @insert j S hj ih =>
-      have hsectioni : Integrable (fun ω => ∫ a, V (insert j S) (Function.update ω j a) ∂(μ j)) P := by
+      have hsectioni :
+          Integrable (fun ω => ∫ a, V (insert j S) (Function.update ω j a) ∂(μ j)) P := by
         have hT := measurePreserving_update_infinitePi μ j
         exact (Integrable.of_bound ((hm (insert j S)).comp hT.measurable).aestronglyMeasurable
-          (B * C) (ae_of_all _ fun q => hb (insert j S) (Function.update q.1 j q.2))).integral_prod_left
+          (B * C)
+          (ae_of_all _ fun q => hb (insert j S) (Function.update q.1 j q.2))).integral_prod_left
       calc
         (∫ ω, V (insert j S) ω ∂P) = ∫ ω, ∫ a, V (insert j S) (Function.update ω j a) ∂(μ j) ∂P :=
           integral_coordinate_sections μ _ (hm _) (B * C) (hb _) j
@@ -85,7 +103,9 @@ theorem integral_product_factor (μ : ∀ i, Measure (X i)) [∀ i, IsProbabilit
     (hFS : ∀ ω η, (∀ i ∈ S, ω i = η i) → F ω = F η)
     (hGS : ∀ ω η, (∀ i ∈ S, ω i = η i) → G ω = G η) :
     (∫ ω, F ω * G ω ∂(Measure.infinitePi μ)) ≤
-      Real.exp (∑ j ∈ S, c j) * ((∫ ω, F ω ∂(Measure.infinitePi μ)) * ∫ ω, G ω ∂(Measure.infinitePi μ)) := by
+      Real.exp (∑ j ∈ S, c j) *
+        ((∫ ω, F ω ∂(Measure.infinitePi μ)) * ∫ ω, G ω ∂(Measure.infinitePi μ)) := by
   have h := integral_partial_product_factor μ F G hF hG B C hB hFB hGC c hsec S
-  simpa only [partialInt_eq_self μ (↑S : Set ι) F hFS, partialInt_eq_self μ (↑S : Set ι) G hGS] using h
+  simpa only [partialInt_eq_self μ (↑S : Set ι) F hFS, partialInt_eq_self μ (↑S : Set ι) G hGS]
+    using h
 end Parking

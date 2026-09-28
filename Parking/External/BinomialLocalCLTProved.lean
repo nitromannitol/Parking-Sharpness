@@ -71,6 +71,9 @@ private theorem binomialLocalCLT_tail_bound (m : ℕ) (hm : 1 ≤ m) (j : ℤ)
         mul_le_mul_of_nonneg_left step2 (by norm_num)
     _ = (4 / Real.sqrt (2 * Real.pi)) / (m : ℝ) := by ring
 
+/-- `Parking.External.BinomialLocalCLT` in full: inside `|j| ≤ m` from the library's
+`exists_binomPMF_localCLT` via the `binomLaw`/`binomPMF` index identification, and outside it
+from `binomialLocalCLT_tail_bound`, with the combined constant `C0 + 4/√(2π)`. -/
 private theorem binomialLocalCLT_proof : Parking.External.BinomialLocalCLT := by
   obtain ⟨C0, hC0pos, hC0⟩ := exists_binomPMF_localCLT
   have hCtailpos : (0 : ℝ) < 4 / Real.sqrt (2 * Real.pi) := by positivity

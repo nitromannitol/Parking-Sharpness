@@ -1,5 +1,14 @@
 import Parking.Support.ProductSection
 
+/-!
+# The tower property of partial integration
+
+For a bounded measurable functional, taking the partial integral over a larger retained
+set `T` and then over a smaller retained set `S ⊆ T` agrees with taking the partial
+integral over `S` directly, and inserting one fresh coordinate `j` into the retained set
+expresses the coarser partial integral as the average, over `j`, of the finer one.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -12,8 +21,10 @@ theorem partialInt_tower (μ : ∀ i, Measure (X i)) [∀ i, IsProbabilityMeasur
     (ω : Π i, X i) : partialInt μ S (partialInt μ T F) ω = partialInt μ S F ω := by
   let P := Measure.infinitePi μ
   let f : (Π i, X i) → ℝ := fun η => F (comb S ω η)
-  have hfm : Measurable f := hFm.comp ((measurable_comb S).comp (measurable_const.prodMk measurable_id))
-  have hi : Integrable f P := Integrable.of_bound hfm.aestronglyMeasurable B (ae_of_all _ fun η => hB _)
+  have hfm : Measurable f :=
+    hFm.comp ((measurable_comb S).comp (measurable_const.prodMk measurable_id))
+  have hi : Integrable f P :=
+    Integrable.of_bound hfm.aestronglyMeasurable B (ae_of_all _ fun η => hB _)
   have he (η ζ : Π i, X i) : comb T (comb S ω η) ζ = comb S ω (comb T η ζ) := by
     funext i
     by_cases hi : i ∈ S
@@ -25,7 +36,8 @@ theorem partialInt_tower (μ : ∀ i, Measure (X i)) [∀ i, IsProbabilityMeasur
   have hp := measurePreserving_comb μ T
   rw [← integral_map hp.measurable.aemeasurable hfm.aestronglyMeasurable, hp.map_eq]
 
-/-- Adding a single retained coordinate identifies the preceding mean with its one-coordinate average. -/
+/-- Adding a single retained coordinate identifies the preceding mean with its
+one-coordinate average. -/
 theorem partialInt_insert_coordinate [DecidableEq ι]
     (μ : ∀ i, Measure (X i)) [∀ i, IsProbabilityMeasure (μ i)]
     (S : Set ι) [DecidablePred (· ∈ S)] (j : ι) (hj : j ∉ S)

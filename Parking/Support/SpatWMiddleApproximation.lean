@@ -1,10 +1,16 @@
-/- Deterministic approximation of the signed middle term by its continuum-operator pairing. -/
 import Parking.Support.SpatWWalkGrid
 import Parking.Support.SpatWDivisiblePairing
 import LatticeProb.Prob.Scaling.WeightedIntegral
 
+/-!
+# Middle approximation
+
+Deterministic approximation of the signed middle term by its continuum-operator pairing.
+-/
+
 open LatticeProb (measurable_from_countable')
-open LatticeProb.WhiteNoise (continuous_contOp hasCompactSupport_contOp lap_eq_sum partialDeriv partialDeriv_eq_zero_of_notMem tsupport_partialDeriv_subset)
+open LatticeProb.WhiteNoise (continuous_contOp hasCompactSupport_contOp lap_eq_sum partialDeriv
+  partialDeriv_eq_zero_of_notMem tsupport_partialDeriv_subset)
 
 open LatticeProb.Walk (exists_norm_le_of_hasCompactSupport)
 
@@ -77,7 +83,8 @@ theorem abs_signedMiddle_sub_pairing_le {φ : (Fin d → ℝ) → ℝ} (hφ : Is
     have hnotsupp : x ∉ tsupport φ := by
       intro hs
       have hsub : tsupport φ ⊆ Metric.closedBall (0 : Fin d → ℝ) B :=
-        closure_minimal (fun y hy => by simpa [Metric.mem_closedBall, dist_eq_norm] using hbound y hy)
+        closure_minimal (fun y hy => by simpa [Metric.mem_closedBall, dist_eq_norm]
+                                        using hbound y hy)
           Metric.isClosed_closedBall
       have hb : ‖x‖ ≤ B := by simpa [Metric.mem_closedBall, dist_eq_norm] using hsub hs
       linarith

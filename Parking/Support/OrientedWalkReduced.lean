@@ -1,15 +1,19 @@
-/- `thm:oriented-walk` reduced to the scaling limit of the divisible mean.
-
-Steps 1 to 4 of the proof (`parking.tex:3253-3357`) are discharged here; what is
-left of the theorem is exactly the constant `mu` of `prop:oriented-scaling` and
-the activity asymptotic of the last paragraph of Step 3.
--/
 import Parking.Support.OrientedStepThree
 import Parking.Support.OrientedTwoLower
 import Parking.Support.OrientedTwoUpper
 import Parking.Support.OrientedLogBounds
 import Parking.Support.OrientedRatio
 import Parking.Support.OrientedLowerRates
+
+/-!
+# Oriented walk reduced to the scaling limit
+
+`thm:oriented-walk` reduced to the scaling limit of the divisible mean.
+
+Steps 1 to 4 of the proof (`parking.tex:3253-3357`) are discharged here; what is
+left of the theorem is exactly the constant `mu` of `prop:oriented-scaling` and
+the activity asymptotic of the last paragraph of Step 3.
+-/
 
 noncomputable section
 namespace Parking

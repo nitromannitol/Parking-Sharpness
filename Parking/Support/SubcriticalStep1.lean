@@ -1,4 +1,10 @@
-/-
+import Parking.Support.HoleLawTransfer
+import Parking.Support.SubcriticalHoleMean
+import Parking.Support.HoleObsIntegrable
+
+/-!
+# The first inequality of Step 1 of `thm:subcritical`
+
 The first inequality of Step 1 of `thm:subcritical` (`parking.tex:2468-2473`):
 the mean number of unfilled holes of the range at time `t` is at least
 `δ(λ)|R_t|`.
@@ -9,9 +15,6 @@ constructions have the same law (`Support/HoleLawTransfer.lean`), so the same
 holds for the hole counts the observable `Z` reads; and `Z` is the sum of `|R_t|`
 of them.
 -/
-import Parking.Support.HoleLawTransfer
-import Parking.Support.SubcriticalHoleMean
-import Parking.Support.HoleObsIntegrable
 
 open LatticeProb (measurable_from_countable')
 

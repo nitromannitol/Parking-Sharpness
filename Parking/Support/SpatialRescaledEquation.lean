@@ -1,14 +1,23 @@
-/- The divisible recursion at the parabolic scale, before weak testing. -/
 import Parking.Support.SpatialDiscreteEquation
 import Parking.Support.Continuum
 import Parking.Support.LinPotential
 import Parking.Support.SpatWWalkGrid
+
+/-!
+# The rescaled divisible recursion
+
+The divisible recursion at the parabolic scale, before weak testing.
+-/
 
 open LatticeProb
 noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- The rescaled floor map `latticePoint` commutes with shifting by a lattice site
+divided by the scale `R`: flooring `x + z / R` agrees with flooring `x` and then
+adding `z`, since `R * (z i / R) = z i` cancels the scale before `Int.floor_add_intCast`
+absorbs the integer shift. -/
 theorem latticePoint_add_rescaled (x : Fin d → ℝ) (z : Site d)
     {R : ℝ} (hR : R ≠ 0) :
     latticePoint R (fun i => x i + (z i : ℝ) / R) = latticePoint R x + z := by

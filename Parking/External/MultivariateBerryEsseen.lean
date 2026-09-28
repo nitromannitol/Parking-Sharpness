@@ -1,9 +1,12 @@
-/-
-The orthant form of Raic, Theorem 1.1, used at sandpile.tex:1770-1782.
-This is the explicit MultivariateBerryEsseen hypothesis of the sealed sibling
-critical_toppling, used at parking.tex:1822-1848. Assumed here.
--/
 import Parking.Support.NearestCriticalModel
+
+/-!
+# The multivariate Berry-Esseen orthant bound
+
+The orthant form of Raic, Theorem 1.1, used at sandpile.tex:1770-1782. This is the explicit
+`MultivariateBerryEsseen` hypothesis of the sealed sibling `critical_toppling`, used at
+parking.tex:1822-1848. Assumed here.
+-/
 
 open MeasureTheory ProbabilityTheory
 

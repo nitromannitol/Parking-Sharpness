@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Continuum
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+
+/-!
+# A test function in a prescribed `ℓ¹` ball
+
 A nonnegative test function supported in a prescribed `ℓ¹` ball, with a positive
 value at the origin.
 
@@ -10,8 +15,6 @@ A smooth bump of the right radius supplies it: the supremum norm of `ℝ^d`
 controls the `ℓ¹` norm by the factor `d`, so a bump of radius `r/(d+1)` is
 supported in the `ℓ¹` ball of radius `r`.
 -/
-import Parking.Support.Continuum
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 
 open MeasureTheory Filter Topology
 open scoped ENNReal NNReal
@@ -73,7 +76,8 @@ theorem exists_signed_level_of_pathwise {d : ℕ} {Ω : Type} [MeasurableSpace �
   classical
   rcases le_or_gt 1 ε with hge | hlt
   · obtain ⟨φ, hφtest, hφ0, hφ1, hφsupp⟩ := exists_testFun_ellOne d hr₀
-    refine ⟨φ, 1, hφtest, hφ0, fun x hx => hφsupp x (subset_tsupport φ (by exact ne_of_gt hx)), one_pos,
+    refine ⟨φ, 1, hφtest, hφ0, fun x hx => hφsupp x (subset_tsupport φ (by exact ne_of_gt hx)),
+        one_pos,
       hmeas φ hφtest, ?_⟩
     have h0 : (0 : ℝ) ≤ (Q {ω | (1 : ℝ) ≤ W φ ω + ∫ x, Uc ω 1 x * contOp d φ x}).toReal :=
       ENNReal.toReal_nonneg

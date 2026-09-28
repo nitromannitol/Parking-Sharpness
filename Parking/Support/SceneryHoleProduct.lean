@@ -2,6 +2,17 @@ import Parking.Support.SceneryHoleFactor
 import Parking.Support.HoleLocality
 import Parking.Support.ProductFactor
 
+/-!
+# Accumulating the scenery correlation factor over a box
+
+This file upgrades the single-reveal correlation factor of `Parking.Support.SceneryHoleFactor`
+to a product formula: revealing one more coordinate of the field multiplies the conditional
+hole product at `x` and `z` by at most the prescribed factor, and iterating this over a
+finite propagation box `boxFinset u R` containing both horizons gives the accumulated bound
+on the full-field correlation of the two conditional hole means, with exponent the sum of
+the per-site scenery costs over the box.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -16,8 +27,10 @@ theorem scenery_hole_reveal_section (hd : 3 ≤ d) (ν : Measure ℤ) [IsProbabi
       partialInt (fun _ : Site d => ν) (↑(insert v S) : Set (Site d))
       (fun ζ => matchedMeanH (clippedField ζ) ρ T z) (Function.update η v k) ∂ν) ≤
       Real.exp (sceneryHoleCost d x z v) *
-        (partialInt (fun _ : Site d => ν) (↑S : Set (Site d)) (fun ζ => matchedMeanH (clippedField ζ) ρ T x) η *
-        partialInt (fun _ : Site d => ν) (↑S : Set (Site d)) (fun ζ => matchedMeanH (clippedField ζ) ρ T z) η) := by
+        (partialInt (fun _ : Site d => ν) (↑S : Set (Site d))
+            (fun ζ => matchedMeanH (clippedField ζ) ρ T x) η *
+          partialInt (fun _ : Site d => ν) (↑S : Set (Site d))
+            (fun ζ => matchedMeanH (clippedField ζ) ρ T z) η) := by
   classical
   have hd1 : 1 ≤ d := by omega
   have hm (y : Site d) : Measurable (fun ζ : Site d → ℤ => matchedMeanH (clippedField ζ) ρ T y) :=
@@ -25,8 +38,8 @@ theorem scenery_hole_reveal_section (hd : 3 ≤ d) (ν : Measure ℤ) [IsProbabi
   have hb (y : Site d) (ζ : Site d → ℤ) : |matchedMeanH (clippedField ζ) ρ T y| ≤ 1 := by
     rw [abs_of_nonneg (clippedMeanH_bounds hd1 ζ ρ T y).1]
     exact (clippedMeanH_bounds hd1 ζ ρ T y).2
-  have he (y : Site d) := partialInt_insert_coordinate (fun _ : Site d => ν) (↑S : Set (Site d)) v hv
-    (fun ζ => matchedMeanH (clippedField ζ) ρ T y) (hm y) 1 (hb y) η
+  have he (y : Site d) := partialInt_insert_coordinate (fun _ : Site d => ν)
+    (↑S : Set (Site d)) v hv (fun ζ => matchedMeanH (clippedField ζ) ρ T y) (hm y) 1 (hb y) η
   have h := scenery_partial_hole_factor hd ν ρ T x z v hxz (↑S : Set (Site d)) η
   dsimp only at h
   rw [← he x, ← he z] at h
@@ -59,7 +72,8 @@ theorem scenery_hole_product_factor (hd : 3 ≤ d) (ν : Measure ℤ) [IsProbabi
     (fun S v hv η => scenery_hole_reveal_section hd ν ρ T x z hxz S v hv η)
     (boxFinset u R) (hdep x hxR) (hdep z hzR)
   have he : (∑ y ∈ boxFinset u R, sceneryHoleCost d x z y) =
-      holeSceneryConst d * ∑ y ∈ boxFinset u R, (1 - escapePotential d x y) * (1 - escapePotential d z y) := by
+      holeSceneryConst d * ∑ y ∈ boxFinset u R,
+        (1 - escapePotential d x y) * (1 - escapePotential d z y) := by
     simp only [sceneryHoleCost, Finset.mul_sum, mul_assoc]
   rwa [he] at h
 end Parking

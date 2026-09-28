@@ -1,4 +1,9 @@
-/-
+import Parking.Support.GraftRankAe
+import Parking.Support.SubcriticalStep3
+
+/-!
+# Steps 2 and 3 of `thm:subcritical` with the origin prescribed
+
 Steps 2 and 3 of `thm:subcritical` with the particles at the origin prescribed
 (`parking.tex:2479-2511`).
 
@@ -14,8 +19,6 @@ whose integration over `[0, λ₁]` is `Support/DiffIneq.lean`.  The correction
 terms are continuous in the tilt (`Support/TiltContinuity.lean`), which is what
 the integration needs of them.
 -/
-import Parking.Support.GraftRankAe
-import Parking.Support.SubcriticalStep3
 
 open LatticeProb (le_mul_exp_intervalIntegral)
 

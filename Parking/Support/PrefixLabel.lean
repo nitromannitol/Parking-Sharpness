@@ -1,4 +1,8 @@
-/-
+import Parking.Support.ParticleFiltration
+
+/-!
+# Prefix labels for the particle filtration
+
 The label revealed by one step of the particle filtration.
 
 Step 2 of `lem:product` (`parking.tex:2382-2409`) reveals the particles of a
@@ -9,7 +13,6 @@ finite set of labels gives: stage `i + 1` of the filtration reveals the labels o
 stage `i` together with the `i`-th label of the enumeration, so two consecutive
 stages of the splicing agree at every label but that one.
 -/
-import Parking.Support.ParticleFiltration
 
 noncomputable section
 

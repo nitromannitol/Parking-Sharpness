@@ -1,26 +1,27 @@
-/-
-The exploration of `lem:w-martingale`: the instructions are revealed round by
-round, and inside a round in the order the block lists them.
-
-The order has to be adaptive.  A fixed enumeration of the pairs cannot be used:
-the conditional law of an instruction first read in round `s` is prescribed only
-given the instructions of the earlier rounds, so the rounds must be completed
-one at a time, and a round holds infinitely many pairs unless the pairs it
-actually reads are listed, which depends on the realization.  `blockPrefix`
-lists exactly those pairs, and the two facts that make it an exploration are
-`Parking.blockAt_disjoint`, so that no instruction is read twice, and
-`Parking.blockAt_agree_of_notMem`, so that the list up to any step is decided by
-the instructions the exploration has already read.
-
-The instructions are read through `Parking.nbrProj`, which forces every one of
-them to be a neighbour of its site and is the identity almost surely; the
-exploration parks the steps past the end of the list at a site no block reaches,
-so that they are fresh as well.
--/
 import Parking.Support.WMartingale
 import Parking.Support.Agree
 import Parking.Support.Exposure
 import LatticeProb.Prob.Exploration
+
+/-!
+# The exploration of `lem:w-martingale`
+
+The exploration of `lem:w-martingale`: the instructions are revealed round by round, and
+inside a round in the order the block lists them.
+
+The order has to be adaptive. A fixed enumeration of the pairs cannot be used: the
+conditional law of an instruction first read in round `s` is prescribed only given the
+instructions of the earlier rounds, so the rounds must be completed one at a time, and a
+round holds infinitely many pairs unless the pairs it actually reads are listed, which
+depends on the realization. `blockPrefix` lists exactly those pairs, and the two facts that
+make it an exploration are `Parking.blockAt_disjoint`, so that no instruction is read
+twice, and `Parking.blockAt_agree_of_notMem`, so that the list up to any step is decided by
+the instructions the exploration has already read.
+
+The instructions are read through `Parking.nbrProj`, which forces every one of them to be a
+neighbour of its site and is the identity almost surely; the exploration parks the steps
+past the end of the list at a site no block reaches, so that they are fresh as well.
+-/
 
 open LatticeProb (measurable_of_countable_partition rankLaw_isProbability)
 
@@ -37,8 +38,11 @@ variable {d : ℕ}
 
 /-! ### The site the exploration parks at -/
 
+/-- The site the exploration parks the steps past the end of the list at: a constant site
+outside every box a block of the exploration can reach. -/
 def padSite (d n : ℕ) : Site d := fun _ => (blockRad n 1 : ℤ) + 1
 
+/-- The parking site lies outside every box of radius at most `blockRad n 1`. -/
 theorem padSite_notMem_box (hd : 1 ≤ d) (n R : ℕ) (h : R ≤ blockRad n 1) :
     padSite d n ∉ boxFinset (0 : Site d) R := by
   intro hc
@@ -47,26 +51,35 @@ theorem padSite_notMem_box (hd : 1 ≤ d) (n R : ℕ) (h : R ≤ blockRad n 1) :
   have h' : ((blockRad n 1 : ℤ) + 1) ≤ (R : ℤ) := le_trans (le_abs_self _) this
   omega
 
+/-- Every site of a pair in a prefix of the blocks lies in the box of radius
+`blockRad n 1`, the box of the earliest round the pairs can belong to. -/
 theorem site_mem_box_of_mem_blockPrefix {ω : Data d} {n k : ℕ} {q : Site d × ℕ}
     (h : q ∈ blockPrefix ω n k) : q.1 ∈ boxFinset (0 : Site d) (blockRad n 1) := by
   obtain ⟨s, h1, -, hq⟩ := mem_blockPrefix.mp h
   exact boxFinset_mono (blockRad_antitone h1) (mem_blockAt.mp hq).1
 
+/-- The instruction the exploration reads at step `i`, given the neighbour-projected stack
+`σ`: the `i`-th entry of the prefix of the blocks up to round `n - 1`, or the parking pair
+past the end of that list. -/
 def explIdx (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (n : ℕ)
     (i : ℕ) (σ : Site d × ℕ → Site d) : Site d × ℕ :=
   (blockPrefix ((η, nbrProj i₀ σ, ρ) : Data d) n (n - 1)).getD i (padSite d n, i)
 
+/-- Within the length of the prefix of the blocks, `explIdx` is a member of it. -/
 theorem explIdx_of_lt {i₀ : Fin d} {η ρ n i σ}
     (h : i < (blockPrefix ((η, nbrProj i₀ σ, ρ) : Data d) n (n - 1)).length) :
     explIdx i₀ η ρ n i σ ∈ blockPrefix ((η, nbrProj i₀ σ, ρ) : Data d) n (n - 1) := by
   rw [explIdx, List.getD_eq_getElem _ _ h]
   exact List.getElem_mem h
 
+/-- Past the length of the prefix of the blocks, `explIdx` returns the parking pair. -/
 theorem explIdx_of_le {i₀ : Fin d} {η ρ n i σ}
     (h : (blockPrefix ((η, nbrProj i₀ σ, ρ) : Data d) n (n - 1)).length ≤ i) :
     explIdx i₀ η ρ n i σ = (padSite d n, i) := by
   rw [explIdx, List.getD_eq_default _ _ h]
 
+/-- `explIdx` agrees with the shorter prefix up to round `k` on the indices that prefix
+already covers. -/
 theorem explIdx_eq_prefix {i₀ : Fin d} {η ρ n} {σ} {k m : ℕ} (hk : k ≤ n - 1)
     (hm : m < (blockPrefix ((η, nbrProj i₀ σ, ρ) : Data d) n k).length) :
     explIdx i₀ η ρ n m σ
@@ -75,6 +88,9 @@ theorem explIdx_eq_prefix {i₀ : Fin d} {η ρ n} {σ} {k m : ℕ} (hk : k ≤ 
 
 /-! ### The exploration never reads an instruction twice -/
 
+/-- **The exploration never reads the same instruction twice**: an earlier step's pair
+differs from a later step's, either because the prefix has no duplicate entries or because
+the later, unread step points at the parking site. -/
 theorem explIdx_fresh (hd : 1 ≤ d) (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (n : ℕ) (i : ℕ) (σ : Site d × ℕ → Site d) :
     ∀ k, k < i → explIdx i₀ η ρ n k σ ≠ explIdx i₀ η ρ n i σ := by
@@ -206,6 +222,8 @@ theorem blockAt_eq_of_U_eq {ω ω' : Data d} {R s : ℕ}
     obtain ⟨e1, e2⟩ := h q.1 hq
     exact ⟨hq, e1 ▸ h1, e2 ▸ h2⟩
 
+/-- The odometer, read through the neighbour projection of a variable stack, is measurable
+in that stack. -/
 theorem measurable_U_of_stack (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (t : ℕ) (y : Site d) :
     Measurable fun σ : Site d × ℕ → Site d => U ((η, nbrProj i₀ σ, ρ) : Data d) t y :=
@@ -219,11 +237,15 @@ def explObs (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (
     Fin n → {y : Site d // y ∈ boxFinset (0 : Site d) (blockRad n 1)} → ℕ :=
   fun s y => U ((η, nbrProj i₀ σ, ρ) : Data d) s.val y.val
 
+/-- The table of odometers the exploration reads is measurable in the stack, each entry
+being measurable by `measurable_U_of_stack`. -/
 theorem measurable_explObs (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (n : ℕ) :
     Measurable (explObs i₀ η ρ n) :=
   measurable_pi_lambda _ fun s => measurable_pi_lambda _ fun y =>
     measurable_U_of_stack i₀ η ρ s.val y.val
 
+/-- `explIdx` is measurable in the stack, being determined by the table of odometers
+`explObs` it reads. -/
 theorem measurable_explIdx (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (n i : ℕ) :
     Measurable (explIdx i₀ η ρ n i) := by
   classical
@@ -248,9 +270,13 @@ theorem measurable_explIdx (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d ×
 forces it to be a neighbour of its site. -/
 def wG (i₀ : Fin d) (q : Site d × ℕ) : Site d → Site d := expG i₀ (Sum.inl q)
 
+/-- The displacement recorded by an instruction, read through the neighbour projection, is
+measurable. -/
 theorem measurable_wG (i₀ : Fin d) (q : Site d × ℕ) : Measurable (wG i₀ q) :=
   measurable_expG i₀ (Sum.inl q)
 
+/-- The displacement of an instruction pushes the instruction law forward to the one-step
+displacement law. -/
 theorem instructionLaw_map_wG (i₀ : Fin d) (q : Site d × ℕ) :
     (instructionLaw q.1).map (wG i₀ q) = LatticeProb.displacementLaw d :=
   expLaw_map_expG i₀ (Sum.inl q)
@@ -288,6 +314,8 @@ whole realization. -/
 def wExplIdx (i₀ : Fin d) (n i : ℕ) (p : ConfRank d × (Site d × ℕ → Site d)) : Site d × ℕ :=
   explIdx i₀ p.1.1 p.1.2 n i p.2
 
+/-- The instruction the exploration reads at step `i` is measurable in the whole
+realization, being determined by the table of odometers it reads. -/
 theorem measurable_wExplIdx (i₀ : Fin d) (n i : ℕ) : Measurable (wExplIdx i₀ n i) := by
   classical
   refine measurable_of_determined
@@ -313,6 +341,8 @@ theorem measurable_wExplIdx (i₀ : Fin d) (n i : ℕ) : Measurable (wExplIdx i�
   show explIdx i₀ p.1.1 p.1.2 n i p.2 = explIdx i₀ p'.1.1 p'.1.2 n i p'.2
   rw [explIdx, explIdx, blockPrefix_congr hblock]
 
+/-- The revealed displacements are jointly measurable in the configuration, the uniform
+variables and the stack, each coordinate factoring through the measurable `wExplIdx`. -/
 theorem measurable_wRevealed (i₀ : Fin d) (n : ℕ) :
     Measurable fun p : ConfRank d × (Site d × ℕ → Site d) =>
       LatticeProb.revealed (explIdx i₀ p.1.1 p.1.2 n) (wG i₀) p.2 := by
@@ -328,6 +358,8 @@ exploration reveals. -/
 def wData (i₀ : Fin d) (n : ℕ) (ω : Data d) : ConfRank d × (ℕ → Site d) :=
   ((ω.1, ω.2.2), LatticeProb.revealed (explIdx i₀ ω.1 ω.2.2 n) (wG i₀) ω.2.1)
 
+/-- `wData`, packaging the configuration, the uniform variables and the revealed
+displacements, is measurable. -/
 theorem measurable_wData (i₀ : Fin d) (n : ℕ) : Measurable (wData i₀ n) := by
   have hemb : Measurable fun ω : Data d =>
       (((ω.1, ω.2.2), ω.2.1) : ConfRank d × (Site d × ℕ → Site d)) :=
@@ -424,6 +456,8 @@ theorem sum_map_blockPrefix (ω : Data d) (n k : ℕ) (f : Site d × ℕ → ℝ
 /-- The round in which an instruction is first read. -/
 def roundOf (ω : Data d) (q : Site d × ℕ) : ℕ := sInf {r : ℕ | q.2 < U ω r q.1}
 
+/-- The round `roundOf` assigns an instruction equals the round of any block containing
+it. -/
 theorem roundOf_eq_of_mem_blockAt {ω : Data d} {R s : ℕ} {q : Site d × ℕ} (hs : 1 ≤ s)
     (hq : q ∈ blockAt ω R s) : roundOf ω q = s := by
   obtain ⟨-, h1, h2⟩ := mem_blockAt.mp hq
@@ -444,6 +478,8 @@ the instruction points to and its average over the neighbours. -/
 def wInc (ω : Data d) (n : ℕ) (q : Site d × ℕ) : ℝ :=
   green d (n - roundOf ω q) (ω.2.1 q) - walkOp (green d (n - roundOf ω q)) q.1
 
+/-- The sum of the increments over a block equals the sum of the discrepancies at round
+`s`, `roundOf` collapsing to `s` on every instruction of the block. -/
 theorem sum_wInc_blockAt (ω : Data d) (n : ℕ) {R s : ℕ} (hs : 1 ≤ s) :
     ∑ q ∈ blockAt ω R s, wInc ω n q
       = ∑ q ∈ blockAt ω R s, (green d (n - s) (ω.2.1 q) - walkOp (green d (n - s)) q.1) :=
@@ -466,6 +502,8 @@ their site: the identity almost surely, and what makes the bound on the
 increments hold for every realization. -/
 def wProj (i₀ : Fin d) (ω : Data d) : Data d := (ω.1, nbrProj i₀ ω.2.1, ω.2.2)
 
+/-- The neighbour projection `wProj` forces every instruction to be a neighbour of its
+site. -/
 theorem wProj_stepsToNeighbour (i₀ : Fin d) (ω : Data d) (q : Site d × ℕ) :
     (wProj i₀ ω).2.1 q ∈ nbrFinset q.1 := nbrProj_mem i₀ ω.2.1 q
 
@@ -473,6 +511,7 @@ theorem wProj_stepsToNeighbour (i₀ : Fin d) (ω : Data d) (q : Site d × ℕ) 
 def wXi (i₀ : Fin d) (n i : ℕ) (ω : Data d) : ℝ :=
   ((blockPrefix (wProj i₀ ω) n (n - 1)).map (wInc (wProj i₀ ω) n)).getD i 0
 
+/-- The increment at step `i` vanishes once the list the exploration reads is exhausted. -/
 theorem wXi_eq_zero_of_le {i₀ : Fin d} {n i : ℕ} {ω : Data d}
     (h : (blockPrefix (wProj i₀ ω) n (n - 1)).length ≤ i) : wXi i₀ n i ω = 0 := by
   rw [wXi, List.getD_eq_default]
@@ -507,6 +546,8 @@ theorem abs_wXi_le (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (hn : 1 ≤ n) (i : �
   · rw [wXi_eq_zero_of_le (Nat.le_of_not_lt hi), abs_zero]
     exact hzero
 
+/-- The sum of `l.getD i 0` over `i` in the range of the list's length equals the list's
+sum. -/
 theorem sum_range_getD (l : List ℝ) : ∑ i ∈ Finset.range l.length, l.getD i 0 = l.sum := by
   induction l with
   | nil => simp
@@ -516,6 +557,8 @@ theorem sum_range_getD (l : List ℝ) : ∑ i ∈ Finset.range l.length, l.getD 
       rw [ih, List.sum_cons]
       ring
 
+/-- The infinite sum of `l.getD i 0` equals the list's sum, the terms past its length
+vanishing. -/
 theorem tsum_getD_eq_sum (l : List ℝ) : ∑' i : ℕ, l.getD i 0 = l.sum := by
   rw [tsum_eq_sum (s := Finset.range l.length) fun i hi => ?_, sum_range_getD]
   exact List.getD_eq_default _ _ (by simpa using hi)
@@ -548,6 +591,8 @@ whole realization of the data. -/
 def wPair (i₀ : Fin d) (n i : ℕ) (ω : Data d) : Site d × ℕ :=
   explIdx i₀ ω.1 ω.2.2 n i ω.2.1
 
+/-- The pair the exploration reads at step `i` is measurable in the whole realization of
+the data. -/
 theorem measurable_wPair (i₀ : Fin d) (n i : ℕ) : Measurable (wPair i₀ n i) := by
   have hemb : Measurable fun ω : Data d =>
       (((ω.1, ω.2.2), ω.2.1) : ConfRank d × (Site d × ℕ → Site d)) :=
@@ -567,6 +612,8 @@ def wIncObs (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
   (fun s y => U (wProj i₀ ω) s.val y.val, wPair i₀ n i ω,
     (wProj i₀ ω).2.1 (wPair i₀ n i ω))
 
+/-- The observables of `wIncObs` that decide the increment at step `i` are jointly
+measurable. -/
 theorem measurable_wIncObs (i₀ : Fin d) (n i : ℕ) : Measurable (wIncObs i₀ n i) := by
   classical
   have hproj : Measurable (wProj i₀ (d := d)) :=
@@ -582,6 +629,8 @@ theorem measurable_wIncObs (i₀ : Fin d) (n i : ℕ) : Measurable (wIncObs i₀
     (fun q => (measurable_pi_apply q).comp
       (measurable_fst.comp (measurable_snd.comp hproj))) fun _ => rfl
 
+/-- The increment at step `i` is measurable, being determined by the observables of
+`wIncObs`. -/
 theorem measurable_wXi (i₀ : Fin d) (n i : ℕ) : Measurable (wXi i₀ n i) := by
   classical
   refine measurable_of_determined (wIncObs i₀ n i) (measurable_wIncObs i₀ n i) _ ?_

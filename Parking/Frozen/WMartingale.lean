@@ -1,4 +1,8 @@
-/-
+import Parking.Support.WQuadratic
+
+/-!
+# Lemma 5.4: the w-martingale decomposition (frozen)
+
 Lemma 5.4 of parking.tex, frozen.  `parking.tex:1135-1148` (label
 `lem:w-martingale`):
 
@@ -18,7 +22,6 @@ of an index past which they all vanish.  The two sums over the lattice and over
 the index are asserted summable alongside the identity, so that a divergent
 series cannot satisfy it through the junk value of a nonsummable `tsum`.
 -/
-import Parking.Support.WQuadratic
 
 open MeasureTheory
 

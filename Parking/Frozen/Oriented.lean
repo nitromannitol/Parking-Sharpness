@@ -1,4 +1,11 @@
-/-
+import Parking.Support.Range
+import Parking.Support.OrientedTwoMean
+import Parking.Support.OrientedAllNorms
+import Parking.Support.OrientedLogMean
+
+/-!
+# Theorem 12.2: growth of the oriented odometer (frozen)
+
 Theorem 12.2 of parking.tex, frozen.  `parking.tex:3072-3085` (label
 `thm:oriented`):
 
@@ -16,10 +23,6 @@ directed Green square norms, the walk maximum comparison, and the scenery
 moment estimates give the three bounds.  The lower bound uses convex
 comparison with a sparse symmetric integer law and second and fourth moments.
 -/
-import Parking.Support.Range
-import Parking.Support.OrientedTwoMean
-import Parking.Support.OrientedAllNorms
-import Parking.Support.OrientedLogMean
 
 open MeasureTheory ProbabilityTheory
 

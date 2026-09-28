@@ -1,6 +1,15 @@
 import Parking.Support.OnePointMoment
 import Parking.Support.HoleTail
 
+/-!
+# Assembling the sparse one-point estimates
+
+Combines `exists_sparse_odometer_moment_bound` and `exists_sparse_mean_log_bound` into a
+single dimension-only constant `C` witnessing, for every sparse three-point law, the
+odometer moment bound, the mean-log bound on `meanU`, the antitonicity of `holeProb`, and its
+convergence to zero.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory Filter Topology
@@ -12,8 +21,10 @@ theorem nearest_one_point_proof (hBernstein : External.Bernstein) (d : ℕ) (hd 
           Integrable (fun ω => (U ω t x : ℝ) ^ r) (law d (threePointLaw p)) ∧
           (∫ ω, (U ω t x : ℝ) ^ r ∂(law d (threePointLaw p))) ^ (1 / r)
             ≤ C * (meanU (law d (threePointLaw p)) t + r)) ∧
-      (∀ t : ℕ, meanU (law d (threePointLaw p)) t ≤ C * Real.log (1 / holeProb d (threePointLaw p) t)) ∧
-      Antitone (holeProb d (threePointLaw p)) ∧ Tendsto (holeProb d (threePointLaw p)) atTop (𝓝 0) := by
+      (∀ t : ℕ, meanU (law d (threePointLaw p)) t ≤
+          C * Real.log (1 / holeProb d (threePointLaw p) t)) ∧
+      Antitone (holeProb d (threePointLaw p)) ∧
+          Tendsto (holeProb d (threePointLaw p)) atTop (𝓝 0) := by
   obtain ⟨Cu, hCu, hu⟩ := exists_sparse_odometer_moment_bound hBernstein hd
   obtain ⟨Cl, _, hl⟩ := exists_sparse_mean_log_bound hBernstein hd
   refine ⟨max Cu Cl, hCu.trans_le (le_max_left _ _), fun p hp hp4 => ?_⟩

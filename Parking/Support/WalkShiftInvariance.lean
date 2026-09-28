@@ -1,4 +1,9 @@
-/-
+import Parking.Support.WalkMaximal
+import Parking.Support.StoppingShift
+
+/-!
+# Shift invariance and the excursion decomposition of the walk
+
 **Shift invariance of the simple random walk's driving law, and the excursion decomposition
 of `Parking.walkPath`.**  These serve the temporal half of `prop:spatial-scaling`'s
 equicontinuity clause: the reward gap on the truncated event needs a bound on the walk's OWN
@@ -26,8 +31,6 @@ Combining (1) and (2) with the already-proved maximal-displacement tail
 SAME tail bound for the EXCURSION from any step `n`, uniform in `n`: the walk cannot travel far
 in `m` further steps, whichever step it starts counting from.
 -/
-import Parking.Support.WalkMaximal
-import Parking.Support.StoppingShift
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal
@@ -82,18 +85,17 @@ theorem walkPath_excursion_eq (x : Site d) (p : ℕ → Fin d × Bool) (n j : �
 
 /-! ### The maximal-displacement tail of an excursion -/
 
-/-- **The walk's own maximal displacement over the excursion `[n, n+m]`, uniform in `n`.**
-The excursion has, EXACTLY (not merely in distribution), the walk's own position at step `m`
-of the shifted direction sequence, and the shift preserves `Parking.walkLaw d`
-(`Parking.measurePreserving_walkShift`), so the event has the SAME probability as the
-un-shifted event `Parking.measureReal_sup_walkPath_graphNorm_le` already bounds. -/
+/-- The event that the unshifted walk's `graphNorm` reaches `A'` by some step `j ≤ m` is
+measurable, as a finite union over `j` of the measurable level sets of the discrete-valued
+map `Parking.walkPath`. -/
 theorem measurableSet_walkPath_graphNorm_ge (m : ℕ) (A' : ℝ) :
     MeasurableSet {p : ℕ → Fin d × Bool |
       ∃ j ≤ m, A' ≤ (Parking.graphNorm (Parking.walkPath (0 : Site d) p j) : ℝ)} := by
   have heq : {p : ℕ → Fin d × Bool |
         ∃ j ≤ m, A' ≤ (Parking.graphNorm (Parking.walkPath (0 : Site d) p j) : ℝ)}
       = ⋃ j ∈ Finset.range (m + 1),
-          {p : ℕ → Fin d × Bool | A' ≤ (Parking.graphNorm (Parking.walkPath (0 : Site d) p j) : ℝ)} := by
+          {p : ℕ → Fin d × Bool |
+            A' ≤ (Parking.graphNorm (Parking.walkPath (0 : Site d) p j) : ℝ)} := by
     ext p
     simp only [Set.mem_setOf_eq, Set.mem_iUnion, Finset.mem_range, Nat.lt_succ_iff, exists_prop]
   rw [heq]
@@ -102,6 +104,11 @@ theorem measurableSet_walkPath_graphNorm_ge (m : ℕ) (A' : ℝ) :
     ((Measurable.of_discrete (f := fun z : Site d => (Parking.graphNorm z : ℝ))).comp
       (Parking.measurable_walkPath (0 : Site d) j))
 
+/-- **The maximal-displacement tail bound transfers unchanged to any excursion `[n, n+m]`.**
+The excursion equals, exactly, the unshifted walk at step `m` of the shifted direction
+sequence (`walkPath_excursion_eq`), and the shift preserves `Parking.walkLaw d`
+(`measurePreserving_walkShift`), so its probability is the one
+`Parking.measureReal_sup_walkPath_graphNorm_le` already bounds. -/
 theorem measureReal_sup_walkPath_excursion_le (hd : 1 ≤ d) (x : Site d) (n m : ℕ) {A : ℝ}
     (hA : 0 < A) :
     (Parking.walkLaw d).real

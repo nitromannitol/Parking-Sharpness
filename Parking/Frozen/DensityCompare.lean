@@ -1,22 +1,22 @@
-/-
-Lemma 2.7 of parking.tex, frozen.  `parking.tex:811-821` (label
-`lem:density-compare`):
-
-  "Let $\eta$ and $\widetilde\eta$ have finite first moments and admit a
-   translation invariant coupling under which $\eta(x)\leq\widetilde\eta(x)$
-   for every $x$ almost surely.  Let $S_t$ and $\widetilde S_t$ be the two
-   expected numbers of particles which start at the origin and are still active
-   after round $t$.  Then, for every $t\geq0$,
-   $0\leq\widetilde S_t-S_t\leq\E\widetilde\eta(0)-\E\eta(0)$."
-
-A coupling is a probability measure on pairs of configurations with the two
-marginals; it is translation invariant when the diagonal translation of the
-pair preserves it.  The two processes are driven by their own stacks and
-uniform variables, as the definition of `S_t` requires.  The finiteness of the
-two expected survivor counts is asserted alongside the inequalities, so that
-two undefined integrals cannot satisfy them through their junk values.
--/
 import Parking.Support.DensityCompare
+
+/-!
+# Monotonicity of the survivor density under a coupling (frozen)
+
+Lemma 2.7 of parking.tex, frozen. `parking.tex:811-821` (label `lem:density-compare`):
+
+"Let $\eta$ and $\widetilde\eta$ have finite first moments and admit a translation invariant
+coupling under which $\eta(x)\leq\widetilde\eta(x)$ for every $x$ almost surely. Let $S_t$ and
+$\widetilde S_t$ be the two expected numbers of particles which start at the origin and are
+still active after round $t$. Then, for every $t\geq0$,
+$0\leq\widetilde S_t-S_t\leq\E\widetilde\eta(0)-\E\eta(0)$."
+
+A coupling is a probability measure on pairs of configurations with the two marginals; it is
+translation invariant when the diagonal translation of the pair preserves it. The two
+processes are driven by their own stacks and uniform variables, as the definition of `S_t`
+requires. The finiteness of the two expected survivor counts is asserted alongside the
+inequalities, so that two undefined integrals cannot satisfy them through their junk values.
+-/
 
 open MeasureTheory
 

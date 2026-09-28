@@ -2,6 +2,16 @@ import Parking.Support.HorizonSink
 import Parking.Support.RoundMeanField
 import Parking.Support.DiscrepancyMeas
 
+/-!
+# Integrability of the common-table counts
+
+Measurability and integrability facts for the common-table (`matched`) construction: the
+hole count at a site never exceeds its initial value, and under a uniform bound `K` on the
+initial particle counts the active count, the physical arrival count, and (with no uniform
+assumption needed) a single site's hole count are all integrable, and even measurable,
+functions of the round noise, against any finite measure.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -49,6 +59,9 @@ theorem card_matchedArrivals_eq_countArrivals (η : Site d → ℤ) (ρ : Label 
   rw [card_matchedArrivals]
   rfl
 
+/-- `σ ↦ (matchedArrivals η ρ σ t x).card` is measurable, since by
+`card_matchedArrivals_eq_countArrivals` it factors through the measurable `matchedCount`
+function and the measurable projection `σ ↦ σ t`. -/
 theorem measurable_card_matchedArrivals (hd : 1 ≤ d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) (t : ℕ) (x : Site d) :
     Measurable (fun σ : RoundNoise d => ((matchedArrivals η ρ σ t x).card : ℝ)) := by

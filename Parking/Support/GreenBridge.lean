@@ -1,18 +1,19 @@
-/-
-The truncated Green function of this repository is the library's.
-
-`Parking.heat` and `Parking.green` were written before the shared library had
-the simple random walk, and `LatticeProb.srwHeat` and `LatticeProb.srwGreen`
-are the same recursions verbatim, so the two agree definitionally.  Recording
-that makes every estimate the library proves for `srwGreen` available to
-`lem:gamma-sum` and to `lem:w-martingale` without re-freezing a statement.
-
-Also here: the symmetry of the heat kernel, and the exact form of `Γ_m` in
-dimension one, where a site has exactly two neighbours and the variance of
-`g_m` at a uniform neighbour is a square of one gradient.
--/
 import Parking.Support.Walk
 import LatticeProb.Walk.SRW
+
+/-!
+# The truncated Green function of this repository is the library's
+
+`Parking.heat` and `Parking.green` were written before the shared library had the simple
+random walk, and `LatticeProb.srwHeat` and `LatticeProb.srwGreen` are the same recursions
+verbatim, so the two agree definitionally. Recording that makes every estimate the library
+proves for `srwGreen` available to `lem:gamma-sum` and to `lem:w-martingale` without
+re-freezing a statement.
+
+Also here: the symmetry of the heat kernel, and the exact form of `Γ_m` in dimension one,
+where a site has exactly two neighbours and the variance of `g_m` at a uniform neighbour is a
+square of one gradient.
+-/
 
 noncomputable section
 
@@ -24,6 +25,8 @@ variable {d : ℕ}
 
 /-! ### The bridge -/
 
+/-- `Parking.heat` agrees with `LatticeProb.srwHeat`, by induction matching the two
+identical recursions step by step. -/
 theorem heat_eq_srwHeat (d j : ℕ) (x : Site d) : heat d j x = LatticeProb.srwHeat d j x := by
   induction j generalizing x with
   | zero => rfl
@@ -32,6 +35,8 @@ theorem heat_eq_srwHeat (d j : ℕ) (x : Site d) : heat d j x = LatticeProb.srwH
       show walkOp (heat d j) x = LatticeProb.srwHeat d (j + 1) x
       rw [hfun, LatticeProb.srwHeat_succ]
 
+/-- `Parking.green` agrees with `LatticeProb.srwGreen`, summing `heat_eq_srwHeat` over the
+defining range. -/
 theorem green_eq_srwGreen (d m : ℕ) (x : Site d) :
     green d m x = LatticeProb.srwGreen d m x := by
   unfold green LatticeProb.srwGreen
@@ -39,6 +44,8 @@ theorem green_eq_srwGreen (d m : ℕ) (x : Site d) :
 
 /-! ### The heat kernel is symmetric -/
 
+/-- The heat kernel is symmetric under negation, `heat d j (-x) = heat d j x`, by induction
+on `j` using the walk operator's symmetry between `+unit i` and `-unit i`. -/
 theorem heat_neg (d j : ℕ) (x : Site d) : heat d j (-x) = heat d j x := by
   induction j generalizing x with
   | zero =>
@@ -58,16 +65,21 @@ theorem heat_neg (d j : ℕ) (x : Site d) : heat d j (-x) = heat d j x := by
       rw [h1, h2]
       ring
 
+/-- The truncated Green function is symmetric under negation, summing `heat_neg` over the
+defining range. -/
 theorem green_neg (d m : ℕ) (x : Site d) : green d m (-x) = green d m x := by
   unfold green
   exact Finset.sum_congr rfl fun j _ => heat_neg d j x
 
 /-! ### Dimension one -/
 
+/-- In dimension one the neighbour set of a site is exactly its two unit translates. -/
 theorem nbrFinset_one (y : Site 1) : nbrFinset y = {y + unit 0, y - unit 0} := by
   unfold nbrFinset
   rw [show (Finset.univ : Finset (Fin 1)) = {0} from rfl, Finset.singleton_biUnion]
 
+/-- The two neighbours of a one-dimensional site, `y + unit 0` and `y - unit 0`, are
+distinct. -/
 theorem unit_zero_ne (y : Site 1) : y + unit (0 : Fin 1) ≠ y - unit (0 : Fin 1) := by
   intro h
   have := congrFun h 0
@@ -92,6 +104,8 @@ theorem gamma_one (m : ℕ) (y : Site 1) :
     Finset.sum_pair (unit_zero_ne y), hw]
   ring
 
+/-- `gamma 1 m` vanishes at the origin, since its two symmetric neighbour values of `green`
+coincide there by `green_neg`. -/
 theorem gamma_one_zero (m : ℕ) : gamma 1 m 0 = 0 := by
   rw [gamma_one]
   have h : green 1 m ((0 : Site 1) - unit 0) = green 1 m ((0 : Site 1) + unit 0) := by

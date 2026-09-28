@@ -1,23 +1,25 @@
-/-
-The range of the independent walk, the tilted one-site law, and the
-conditional quantities of Sections 7 to 9 of `parking.tex`.
-
-- `rangeCard d x p t` is `|R_t|`, the number of distinct sites the walk from
-  `x` visits up to and including time `t`.
-- `tiltLaw ν l` is the law `P_l(η(0)=j) = e^{lj}P(η(0)=j)/E e^{l\eta(0)}` of
-  Section 9, and `drift ν l` is `δ(l) = -E_l\eta(0)`.
-- `survivalGiven d ν k t` is `P(τ_1 > t | η(0) = k)` and
-  `survivalGivenWalk d ν k t w` is `P(τ_1 > t | η(0)=k, X_0,…,X_t)` for the
-  walk `w` assigned to the first particle at the origin.  Conditioning on the
-  walk is realized by prescribing the moves of the label `(0,0)`, which is why
-  these use the particle-driven construction; conditioning on `{η(0)=k}` is a
-  division by `ν {k}`, and every statement using it assumes that this is not
-  zero.
-- `fullGreen d x` is `G(x) = ∑_n P^n(0,x)` and `escapeConst d` is `g = G(0)`.
-- `phi d s` is `φ_d(s)` of Section 9 and `orientedKappa d n` is
-  `\vec\kappa_d(n)` of Section 10.
--/
 import Parking.Support.Particle
+
+/-!
+# The range, the tilted one-site law, and the conditional quantities of Sections 7 to 9
+
+The range of the independent walk, the tilted one-site law, and the conditional
+quantities of Sections 7 to 9 of `parking.tex`.
+
+- `rangeCard d x p t` is `|R_t|`, the number of distinct sites the walk from `x` visits up
+  to and including time `t`.
+- `tiltLaw ν l` is the law `P_l(η(0)=j) = e^{lj}P(η(0)=j)/E e^{l\eta(0)}` of Section 9, and
+  `drift ν l` is `δ(l) = -E_l\eta(0)`.
+- `survivalGiven d ν k t` is `P(τ_1 > t | η(0) = k)` and `survivalGivenWalk d ν k t w` is
+  `P(τ_1 > t | η(0)=k, X_0,…,X_t)` for the walk `w` assigned to the first particle at the
+  origin. Conditioning on the walk is realized by prescribing the moves of the label
+  `(0,0)`, which is why these use the particle-driven construction; conditioning on
+  `{η(0)=k}` is a division by `ν {k}`, and every statement using it assumes that this is
+  not zero.
+- `fullGreen d x` is `G(x) = ∑_n P^n(0,x)` and `escapeConst d` is `g = G(0)`.
+- `phi d s` is `φ_d(s)` of Section 9 and `orientedKappa d n` is `\vec\kappa_d(n)` of
+  Section 10.
+-/
 
 open MeasureTheory
 open scoped ENNReal

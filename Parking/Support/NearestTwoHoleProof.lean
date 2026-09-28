@@ -6,6 +6,16 @@ import Parking.Support.HoleKernelBound
 import Parking.Support.HoleTail
 import LatticeProb.Walk.RangeSecond
 
+/-!
+# The two-hole estimate
+
+Assembles the two-hole load moment bound, the sparse mean-log bound, the Green-function bubble
+sum and the log-moment tail estimate into a single dimension-only constant `C` for which the
+probability of two simultaneous surviving holes decays like
+`holeProb ^ 2 * exp(C log(1 / holeProb) * (1 + graphNorm(x - z))^(4 - d))`, for every sparse
+three-point law and every pair of distinct sites.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -15,7 +25,8 @@ theorem nearest_two_hole_proof (hBernstein : External.Bernstein) (d : ℕ) (hd :
     ∃ C : ℝ, 0 < C ∧ ∀ p : ℝ, 0 < p → p ≤ 1 / 4 →
       ∀ (t : ℕ) (x z : Site d), x ≠ z →
         ((law d (threePointLaw p)) {ω | H ω t x = 1 ∧ H ω t z = 1}).toReal ≤
-          C * holeProb d (threePointLaw p) t ^ 2 * Real.exp (C * Real.log (1 / holeProb d (threePointLaw p) t)
+          C * holeProb d (threePointLaw p) t ^ 2 *
+              Real.exp (C * Real.log (1 / holeProb d (threePointLaw p) t)
             * (1 + (graphNorm (x - z) : ℝ)) ^ (4 - (d : ℝ))) := by
   have hd1 : 1 ≤ d := by omega
   have hd3 : 3 ≤ d := by omega
@@ -49,16 +60,21 @@ theorem nearest_two_hole_proof (hBernstein : External.Bernstein) (d : ℕ) (hd :
       exact mem_boxFinset_of_graphNorm_sub_le le_rfl
     intro y hy
     simpa only [R, Nat.add_comm] using mem_boxFinset_add hz hy
-  have hSc : (∑ y ∈ boxFinset x R, (1 - escapePotential d x y) * (1 - escapePotential d z y)) ≤ Cb * b :=
+  have hSc : (∑ y ∈ boxFinset x R, (1 - escapePotential d x y) * (1 - escapePotential d z y))
+      ≤ Cb * b :=
     (hBubble x z (boxFinset x R)).1
   have hSk : (∑ y ∈ boxFinset x R, holeKernel d x z y) ≤ Cb * b := (hBubble x z (boxFinset x R)).2
   have ht := hTail μ (twoHoleLoad T x z x R) (twoHoleLoad_nonneg hd3 T x z x R)
     h m (Cb * b) hh (hh4.trans (by norm_num)) (mul_pos hCb hb) (hMean p hp hp4 T)
     (fun r hr => hMoment p hp hp4 T x z x R (Cb * b) hSk r hr)
-  have hdisc := integral_twoHoleDiscount_le hd3 (threePointLaw p) (ae_clipSparse_threePointLaw p) T x z x hxz R hxR hzR
-  have hdisc' : (∫ ω, twoHoleDiscount T x z x R ω ∂μ) ≤ Real.exp (holeSceneryConst d * (Cb * b)) * h ^ 2 :=
+  have hdisc :=
+      integral_twoHoleDiscount_le hd3 (threePointLaw p) (ae_clipSparse_threePointLaw p)
+        T x z x hxz R hxR hzR
+  have hdisc' : (∫ ω, twoHoleDiscount T x z x R ω ∂μ) ≤
+      Real.exp (holeSceneryConst d * (Cb * b)) * h ^ 2 :=
     hdisc.trans (mul_le_mul_of_nonneg_right
-      (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hSc (holeSceneryConst_pos hd3).le)) (sq_nonneg h))
+      (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hSc (holeSceneryConst_pos hd3).le))
+          (sq_nonneg h))
   have hi : Integrable (twoHoleDiscount T x z x R) μ :=
     Integrable.of_bound (measurable_twoHoleDiscount hd1 T x z x R).aestronglyMeasurable 1
       (ae_of_all _ fun ω => by
@@ -78,7 +94,8 @@ theorem nearest_two_hole_proof (hBernstein : External.Bernstein) (d : ℕ) (hd :
   have hs := measure_event_le_discount_tail μ E hE (twoHoleLoad T x z x R)
     (measurable_twoHoleLoad hd1 T x z x R) Ci hCi.le (twoHoleDiscount T x z x R)
     (fun ω => (twoHoleDiscount_bounds hd3 T x z x R ω).1) hi hED
-    (Real.exp (holeSceneryConst d * (Cb * b)) * h ^ 2) hdisc' (A * (1 + Real.log (1 / h)) * (Cb * b))
+    (Real.exp (holeSceneryConst d * (Cb * b)) * h ^ 2) hdisc'
+        (A * (1 + Real.log (1 / h)) * (Cb * b))
   have hP := hs.trans (add_le_add le_rfl ht)
   have hpair : (μ E).toReal = ((law d (threePointLaw p)) {ω | H ω T x = 1 ∧ H ω T z = 1}).toReal :=
     clippedRoundH_pair_probability hd1 _ (ae_clipSparse_threePointLaw p) T x z

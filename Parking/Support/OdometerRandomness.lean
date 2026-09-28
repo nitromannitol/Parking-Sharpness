@@ -1,9 +1,12 @@
-/-
-A finite prescribed path witnesses randomness conditional on the initial field.
--/
 import Parking.Support.AtomUpdate
 import Parking.Support.LastMove
 import Parking.Support.PositiveAtom
+
+/-!
+# Conditional randomness of the particle odometer
+
+A finite prescribed path witnesses randomness conditional on the initial field.
+-/
 
 open LatticeProb (rankLaw_isProbability)
 
@@ -12,13 +15,16 @@ namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
+/-- A path that repeats the same step `a` at every round reaches `x + t • stepVec a`
+after `t` rounds. -/
 theorem walkPath_constant (x : Site d) (a : Fin d × Bool) (t : ℕ) :
     walkPath x (fun _ => a) t = x + t • stepVec a := by
   induction t with
   | zero => simp [walkPath]
   | succ t ih => rw [walkPath, ih, succ_nsmul]; abel
 
-/-- At every horizon at least two, the particle odometer retains randomness conditional on the field. -/
+/-- At every horizon at least two, the particle odometer retains randomness
+conditional on the field. -/
 theorem not_ae_pOdometer_eq_conf (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (k : ℤ) (hk : 1 ≤ k) (hkν : ν {k} ≠ 0) (t : ℕ) (F : (Site d → ℤ) → ℝ) :
     ¬ (∀ᵐ ω ∂(Parking.pDataLaw d ν),

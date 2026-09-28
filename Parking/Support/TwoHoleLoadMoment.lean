@@ -2,6 +2,17 @@ import Parking.Support.TwoHoleJoint
 import Parking.Support.OnePointMoment
 import Parking.Support.WeightedNorm
 
+/-!
+# A moment bound for the finite two-hole load
+
+This file proves `exists_twoHoleLoad_moment_bound`: for `r ≥ 2`, the `r`-norm of the
+two-hole load `twoHoleLoad T x z u R`, a weighted sum of `clippedRoundU` over a finite
+box, is at most a constant times `(meanU + r)` times any bound `B` on the total weight
+`∑ y, holeKernel d x z y`. It follows by applying the one-point linear moment bound
+`exists_sparse_odometer_moment_bound` to each site and summing with
+`rNorm_weighted_sum_le`.
+-/
+
 open LatticeProb.MomentNorm (rNorm)
 
 noncomputable section
@@ -13,7 +24,8 @@ variable {d : ℕ}
 theorem exists_twoHoleLoad_moment_bound (hBernstein : External.Bernstein) (hd : 5 ≤ d) :
     ∃ C : ℝ, 0 < C ∧ ∀ p : ℝ, 0 < p → p ≤ 1 / 4 → ∀ (T : ℕ) (x z u : Site d) (R : ℕ) (B : ℝ),
       (∑ y ∈ boxFinset u R, holeKernel d x z y) ≤ B → ∀ r : ℝ, 2 ≤ r →
-        Integrable (fun ω => twoHoleLoad T x z u R ω ^ r) ((iidLaw d (threePointLaw p)).prod (roundNoiseLaw d)) ∧
+        Integrable (fun ω => twoHoleLoad T x z u R ω ^ r)
+            ((iidLaw d (threePointLaw p)).prod (roundNoiseLaw d)) ∧
           rNorm ((iidLaw d (threePointLaw p)).prod (roundNoiseLaw d)) r (twoHoleLoad T x z u R) ≤
             C * (meanU (law d (threePointLaw p)) T + r) * B := by
   obtain ⟨C, hC, hb⟩ := exists_sparse_odometer_moment_bound hBernstein hd
@@ -25,10 +37,12 @@ theorem exists_twoHoleLoad_moment_bound (hBernstein : External.Bernstein) (hd : 
   haveI := roundNoiseLaw_isProbability hd1
   let μ := (iidLaw d (threePointLaw p)).prod (roundNoiseLaw d)
   let M := C * (meanU (law d (threePointLaw p)) T + r)
-  have hM : 0 ≤ M := mul_nonneg hC.le (add_nonneg (integral_nonneg fun _ => Nat.cast_nonneg _) (by linarith))
+  have hM : 0 ≤ M :=
+    mul_nonneg hC.le (add_nonneg (integral_nonneg fun _ => Nat.cast_nonneg _) (by linarith))
   have hi (y : Site d) : Integrable (fun ω => clippedRoundU T y ω ^ r) μ :=
     integrable_rpow_bounded_nonneg μ _ (measurable_clippedRoundU hd1 T y)
-      (fun ω => (clippedRoundU_bounds T y ω).1) _ (fun ω => (clippedRoundU_bounds T y ω).2) (by linarith)
+      (fun ω => (clippedRoundU_bounds T y ω).1) _
+      (fun ω => (clippedRoundU_bounds T y ω).2) (by linarith)
   have hnorm (y : Site d) : rNorm μ r (clippedRoundU T y) ≤ M := by
     unfold rNorm
     simp only [abs_of_nonneg (clippedRoundU_bounds T y _).1]
@@ -36,7 +50,8 @@ theorem exists_twoHoleLoad_moment_bound (hBernstein : External.Bernstein) (hd : 
     exact (hb p hp hp4 T y r hr).2
   have h := rNorm_weighted_sum_le μ (boxFinset u R) (holeKernel d x z) (clippedRoundU T)
     (fun y _ => holeKernel_nonneg hd3 x z y) (fun y _ ω => (clippedRoundU_bounds T y ω).1)
-    (fun y _ => measurable_clippedRoundU hd1 T y) (by linarith : 1 ≤ r) (fun y _ => hi y) M hM (fun y _ => hnorm y)
+    (fun y _ => measurable_clippedRoundU hd1 T y) (by linarith : 1 ≤ r) (fun y _ => hi y) M hM
+    (fun y _ => hnorm y)
   refine ⟨h.1, h.2.trans ?_⟩
   exact (mul_le_mul_of_nonneg_right hB hM).trans_eq (mul_comm _ _)
 end Parking

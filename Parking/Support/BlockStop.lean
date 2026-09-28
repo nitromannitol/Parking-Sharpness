@@ -1,4 +1,13 @@
-/-
+import Parking.Support.Walk
+import LatticeProb.Walk.Markov
+import LatticeProb.Graph.ZdRepresentation
+import Parking.External.Stopping
+import Parking.Support.UFinite
+import Parking.Support.UMoment
+
+/-!
+# The block decomposition of Step 2
+
 The block decomposition of Step 2 of `lem:mean-horizon` (`parking.tex:2817-2841`).
 
 Step 2 splits the horizon into the blocks `[0,N)`, `[N,2N)`, `[2N,4N)`, … and
@@ -27,12 +36,6 @@ Summing the blocks is `sum_blockReward`: the rewards of the first `J` blocks add
 up to the reward collected before the stopping time truncated at the `J`-th
 boundary, and the boundaries `blockBound N k = 2^{k-1}N` pass every horizon.
 -/
-import Parking.Support.Walk
-import LatticeProb.Walk.Markov
-import LatticeProb.Graph.ZdRepresentation
-import Parking.External.Stopping
-import Parking.Support.UFinite
-import Parking.Support.UMoment
 
 noncomputable section
 
@@ -45,6 +48,7 @@ variable {d : ℕ}
 /-- The path that follows `X` strictly before time `s` and `Y` from time `s` on. -/
 def glue (s : ℕ) (X Y : ℕ → Site d) : ℕ → Site d := fun j => if j < s then X j else Y (j - s)
 
+/-- Gluing `X` to its own shift by `s` returns `X`. -/
 theorem glue_shiftPath (s : ℕ) (X : ℕ → Site d) :
     glue s X (LatticeProb.shiftPath s X) = X := by
   funext j
@@ -54,6 +58,8 @@ theorem glue_shiftPath (s : ℕ) (X : ℕ → Site d) :
     congr 1
     omega
 
+/-- The glued path up to time `s + k` depends on the future path `Y` only through its
+values up to time `k`. -/
 theorem glue_congr_right {s k : ℕ} (X Y Y' : ℕ → Site d)
     (h : ∀ j ≤ k, Y j = Y' j) : ∀ j ≤ s + k, glue s X Y j = glue s X Y' j := by
   intro j hj
@@ -62,6 +68,7 @@ theorem glue_congr_right {s k : ℕ} (X Y Y' : ℕ → Site d)
   · simp only [glue, if_neg hjs]
     exact h (j - s) (by omega)
 
+/-- The glued path depends on the past `X` only through its values up to time `s`. -/
 theorem glue_congr_left {s : ℕ} (X X' Y : ℕ → Site d)
     (h : ∀ j ≤ s, X j = X' j) : glue s X Y = glue s X' Y := by
   funext j
@@ -73,11 +80,15 @@ theorem glue_congr_left {s : ℕ} (X X' Y : ℕ → Site d)
 def blockStop (σ : (ℕ → Site d) → ℕ) (s ℓ : ℕ) (X Y : ℕ → Site d) : ℕ :=
   min (σ (glue s X Y)) (s + ℓ) - s
 
+/-- `blockStop` is always bounded by the block's length `ℓ`, directly from its definition
+as a difference from `s`. -/
 theorem blockStop_le (σ : (ℕ → Site d) → ℕ) (s ℓ : ℕ) (X Y : ℕ → Site d) :
     blockStop σ s ℓ X Y ≤ ℓ := by
   unfold blockStop
   omega
 
+/-- `blockStop` evaluated at the genuine shifted path of `X` simplifies via
+`glue_shiftPath`. -/
 theorem blockStop_shiftPath (σ : (ℕ → Site d) → ℕ) (s ℓ : ℕ) (X : ℕ → Site d) :
     blockStop σ s ℓ X (LatticeProb.shiftPath s X) = min (σ X) (s + ℓ) - s := by
   rw [blockStop, glue_shiftPath]
@@ -116,6 +127,8 @@ def blockReward (ζ : Site d → ℝ) (σ : (ℕ → Site d) → ℕ) (s ℓ : �
     (X Y : ℕ → Site d) : ℝ :=
   if s < σ X then LatticeProb.Graph.Zd.sceneryPartialSum ζ (blockStop σ s ℓ X Y) Y else 0
 
+/-- `blockReward` evaluated at the genuine shifted path of `X` is the scenery sum over the
+block `[s, min (σ X) (s + ℓ))`, via `blockStop_shiftPath`. -/
 theorem blockReward_shiftPath (ζ : Site d → ℝ) (σ : (ℕ → Site d) → ℕ) (s ℓ : ℕ)
     (X : ℕ → Site d) :
     blockReward ζ σ s ℓ X (LatticeProb.shiftPath s X)
@@ -133,6 +146,8 @@ def blockBound (N : ℕ) : ℕ → ℕ
   | 0 => 0
   | (k + 1) => max N (2 * blockBound N k)
 
+/-- The block boundaries are nondecreasing from one block to the next, directly from the
+`max` in their recursive definition. -/
 theorem blockBound_le_succ (N : ℕ) (k : ℕ) : blockBound N k ≤ blockBound N (k + 1) := by
   induction k with
   | zero => exact Nat.zero_le _
@@ -140,9 +155,12 @@ theorem blockBound_le_succ (N : ℕ) (k : ℕ) : blockBound N k ≤ blockBound N
       rw [blockBound, blockBound]
       omega
 
+/-- `blockBound N` is monotone, from the step bound `blockBound_le_succ`. -/
 theorem blockBound_mono (N : ℕ) : Monotone (blockBound N) :=
   monotone_nat_of_le_succ (blockBound_le_succ N)
 
+/-- The closed form `blockBound N (k + 1) = 2^k * N`, by induction on `k` using that
+`N ≤ 2^k * N` makes the `max` redundant. -/
 theorem blockBound_succ_eq (N : ℕ) (_hN : 1 ≤ N) (k : ℕ) :
     blockBound N (k + 1) = 2 ^ k * N := by
   induction k with
@@ -153,6 +171,8 @@ theorem blockBound_succ_eq (N : ℕ) (_hN : 1 ≤ N) (k : ℕ) :
       rw [max_eq_right (by omega)]
       ring
 
+/-- **The block boundaries pass every horizon.** `k ≤ blockBound N (k + 1)`, from the
+closed form `blockBound_succ_eq` and `k ≤ 2^k`. -/
 theorem le_blockBound (N : ℕ) (hN : 1 ≤ N) (k : ℕ) : k ≤ blockBound N (k + 1) := by
   rw [blockBound_succ_eq N hN k]
   calc k ≤ 2 ^ k := Nat.le_of_lt (Nat.lt_two_pow_self)
@@ -191,6 +211,8 @@ theorem sum_blockReward (ζ : Site d → ℝ) (σ : (ℕ → Site d) → ℕ) (N
 
 /-! ### Measurability and boundedness -/
 
+/-- `glue s` is jointly measurable in the past and future paths, since each coordinate
+reads off one factor by cases on whether it is before `s`. -/
 theorem measurable_glue (s : ℕ) :
     Measurable (fun p : (ℕ → Site d) × (ℕ → Site d) => glue s p.1 p.2) := by
   refine measurable_pi_lambda _ fun j => ?_
@@ -200,6 +222,8 @@ theorem measurable_glue (s : ℕ) :
   · simp only [glue, if_neg h]
     exact measurable_snd.eval
 
+/-- `blockStop` is jointly measurable, composing the measurable stopping time `σ` with the
+measurable glue map `measurable_glue`. -/
 theorem measurable_blockStop {σ : (ℕ → Site d) → ℕ} (hσ : LatticeProb.IsWalkStopping σ)
     {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) :
     Measurable (fun p : (ℕ → Site d) × (ℕ → Site d) => blockStop σ s ℓ p.1 p.2) := by
@@ -208,6 +232,8 @@ theorem measurable_blockStop {σ : (ℕ → Site d) → ℕ} (hσ : LatticeProb.
     hσm.comp (measurable_glue s)
   exact (measurable_of_countable (fun k : ℕ => min k (s + ℓ) - s)).comp h1
 
+/-- `blockReward` is jointly measurable, writing the scenery partial sum as a finite `if`
+selection over the measurable stopping time `measurable_blockStop`. -/
 theorem measurable_blockReward (ζ : Site d → ℝ) {σ : (ℕ → Site d) → ℕ}
     (hσ : LatticeProb.IsWalkStopping σ) {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) :
     Measurable (Function.uncurry (blockReward ζ σ s ℓ)) := by
@@ -237,6 +263,8 @@ theorem measurable_blockReward (ζ : Site d → ℝ) {σ : (ℕ → Site d) → 
     (hσm.comp measurable_fst) (measurableSet_Ioi (a := s))
   exact Measurable.ite hset hsum measurable_const
 
+/-- `blockReward` is bounded by `ℓ * B` whenever the scenery `ζ` is bounded by `B`, since it
+sums at most `blockStop_le ℓ` terms each of size at most `B`. -/
 theorem abs_blockReward_le (ζ : Site d → ℝ) {B : ℝ} (hB0 : 0 ≤ B) (hB : ∀ y, |ζ y| ≤ B)
     (σ : (ℕ → Site d) → ℕ) (s ℓ : ℕ) (X Y : ℕ → Site d) :
     ‖blockReward ζ σ s ℓ X Y‖ ≤ (ℓ : ℝ) * B := by

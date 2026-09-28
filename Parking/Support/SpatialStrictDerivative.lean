@@ -3,6 +3,19 @@ import LatticeProb.Prob.Scaling.HeatPositivity
 import LatticeProb.Prob.Scaling.BackwardPositivity
 import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
 
+/-!
+# Strict positivity of the time derivative from the strong minimum principle
+
+Given `Parking.External.HeatStrongMinimum`, a continuous monotone field `u` vanishing at
+time `0`, and a classical caloric time derivative `v` of `u` wherever `u` is positive,
+this file shows `v` itself must be strictly positive there. It packages the argument in
+a joint-variable form (`spatial_time_derivative_pos`) and a curried form
+(`strict_time_derivative_of_heat_strong_minimum`), then upgrades the pathwise derivative
+to one chosen measurably on the underlying probability space
+(`exists_measurable_strict_time_derivative`), without assuming any measurability of the
+a.e.-existing classical witnesses.
+-/
+
 open MeasureTheory
 
 noncomputable section

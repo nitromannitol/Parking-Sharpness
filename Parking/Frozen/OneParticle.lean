@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OneParticle
+
+/-!
+# Lemma 3.3: the one-particle coupling (frozen)
+
 Lemma 3.3 of parking.tex, frozen.  `parking.tex:682-692` (label
 `lem:one-particle`):
 
@@ -16,7 +20,6 @@ The coupling of the statement is the particle-driven construction of
 and its own uniform variables; `addParticleDriver x₀` raises the configuration
 by one at `x₀` and changes nothing else.
 -/
-import Parking.Support.OneParticle
 
 -- The dimension bound is part of the standing setting of the paper, not of the
 -- argument; the proof does not read it.

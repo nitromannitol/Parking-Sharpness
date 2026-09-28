@@ -1,4 +1,8 @@
-/-
+import Parking.Support.GreenBridge
+
+/-!
+# Mass, second moment, and tail bound of the one-dimensional kernel
+
 The mass and the second moment of the one-dimensional kernel, and the
 Chebyshev bound on its tail that Step 3 of `lem:gamma-sum` needs.
 
@@ -11,7 +15,6 @@ second moment are computed by one induction each against the nearest-neighbour
 recursion, and Chebyshev's inequality turns the second moment `m` into the tail
 bound `m/(y+1)^2`.
 -/
-import Parking.Support.GreenBridge
 
 noncomputable section
 
@@ -22,12 +25,16 @@ open LatticeProb Finset
 /-- The one-dimensional kernel, read as a function on the integers. -/
 def heat1 (m : ℕ) (a : ℤ) : ℝ := LatticeProb.srwHeat 1 m ![a]
 
+/-- The kernel is nonnegative, inherited from `srwHeat_nonneg`. -/
 theorem heat1_nonneg (m : ℕ) (a : ℤ) : 0 ≤ heat1 m a := srwHeat_nonneg _ _
 
+/-- The nearest-neighbour recursion for the kernel: `heat1 (m + 1) a` is the average of
+`heat1 m` at the two neighbouring sites `a - 1` and `a + 1`. -/
 theorem heat1_succ (m : ℕ) (a : ℤ) :
     heat1 (m + 1) a = (heat1 m (a - 1) + heat1 m (a + 1)) / 2 :=
   srwHeat_one_succ m a
 
+/-- The kernel is symmetric under negating its argument. -/
 theorem heat1_neg (m : ℕ) (a : ℤ) : heat1 m (-a) = heat1 m a := by
   have h : (-(![a] : Site 1)) = ![-a] := by
     funext i
@@ -55,9 +62,12 @@ theorem summable_heat1_weight (m : ℕ) (g : ℤ → ℝ) :
   intro a ha
   rw [heat1_eq_zero_of_notMem ha, mul_zero]
 
+/-- The kernel itself is summable, the special case of `summable_heat1_weight` at the constant
+weight `1`. -/
 theorem summable_heat1 (m : ℕ) : Summable (heat1 m) := by
   simpa using summable_heat1_weight m (fun _ => (1 : ℝ))
 
+/-- At `m = 0` the kernel is the point mass at the origin. -/
 theorem heat1_zero_zero : heat1 0 0 = 1 := by
   unfold heat1
   rw [srwHeat_zero, if_pos]
@@ -65,6 +75,7 @@ theorem heat1_zero_zero : heat1 0 0 = 1 := by
   fin_cases i
   simp
 
+/-- At `m = 0` the kernel vanishes away from the origin. -/
 theorem heat1_zero_of_ne {a : ℤ} (ha : a ≠ 0) : heat1 0 a = 0 := by
   refine heat1_eq_zero_of_notMem ?_
   simp only [Finset.mem_Icc, Nat.cast_zero, neg_zero]
@@ -126,7 +137,9 @@ theorem tsum_sq_heat1 (m : ℕ) : ∑' a : ℤ, ((a : ℝ) ^ 2 * heat1 m a) = (m
           (s := Finset.Icc (-(m : ℤ) - |c|) ((m : ℤ) + |c|)) ?_
         intro a ha
         rw [Finset.mem_Icc] at ha
-        rw [heat1_eq_zero_of_notMem (by rw [Finset.mem_Icc]; rcases abs_cases c with ⟨h, _⟩ | ⟨h, _⟩ <;> omega), mul_zero]
+        rw [heat1_eq_zero_of_notMem
+            (by rw [Finset.mem_Icc]; rcases abs_cases c with ⟨h, _⟩ | ⟨h, _⟩ <;> omega),
+          mul_zero]
       have h1 := hsupp (fun a : ℤ => (((a + (-1) : ℤ) : ℝ) + 1) ^ 2 / 2) (-1)
       have h2 := hsupp (fun a : ℤ => (((a + 1 : ℤ) : ℝ) - 1) ^ 2 / 2) 1
       rw [tsum_congr hsplit, h1.tsum_add h2,
@@ -159,6 +172,8 @@ theorem srwTail_eq_sum_image (m : ℕ) (y : ℤ) :
     simp only [add_right_inj] at h
     exact_mod_cast h
 
+/-- The tail of the kernel is at most one, since the kernel is a subprobability sum over the
+tail's index set and totals `1` overall (`tsum_heat1`). -/
 theorem srwTail_le_one (m : ℕ) (y : ℤ) : srwTail m y ≤ 1 := by
   rw [srwTail_eq_sum_image]
   refine le_trans ((summable_heat1 m).sum_le_tsum _ (fun a _ => heat1_nonneg m a)) ?_

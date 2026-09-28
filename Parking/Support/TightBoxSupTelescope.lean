@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightBoxSupChain
+
+/-!
+# Telescoping to the value of `Yfield`
+
 The telescoping assembly: it connects the dyadic-level moment bounds of
 `TightBoxSupTail.lean`/`TightBoxSupChain.lean` to the ACTUAL VALUE of `Parking.Yfield` at every
 point, via the shared library's deterministic chaining lemmas
@@ -7,7 +11,6 @@ point, via the shared library's deterministic chaining lemmas
 identifies the chained limit with `Yfield`'s own value, since `Parking.continuous_Yfield` is
 already proved).
 -/
-import Parking.Support.TightBoxSupChain
 
 open MeasureTheory LatticeProb Filter Topology
 

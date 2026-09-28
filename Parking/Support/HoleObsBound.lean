@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SurvivorTransfer
+
+/-!
+# The hole observable is dominated by the initial hole count
+
 The hole count of the range is dominated by the holes present at time zero.
 
 `lem:product` asks that `Z` be integrable (`parking.tex:2336-2347`).  Hole counts
@@ -7,7 +11,6 @@ number of holes the initial configuration puts on `R_t`, a finite sum of
 `(-\eta(x))^+`; the first moment of the count is what the setting of Section 9
 assumes.
 -/
-import Parking.Support.SurvivorTransfer
 
 noncomputable section
 

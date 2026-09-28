@@ -1,17 +1,19 @@
-/-
-The linear membrane field `V` of the simple random walk (BP eq. 3 and 13 and the
-docstring of `Parking/Support/Walk.lean`; `parking.tex` does not name `V`, since
-the paper works with `u` directly): `V_0 = 0`, `V_{n+1} = η + PV_n`,
-the recursion with the reflection `(\cdot)_+` of the divisible odometer
-removed.  Because the recursion has no reflection, `V` is LINEAR in `η`,
-exactly, with no one-sided obstruction of the kind present for the nonlinear
-odometer `u`: the response of `V_n(x)` to a unit source at `z` is EXACTLY
-`green d n (x - z)`, in both directions, not merely bounded by it.
--/
 import Parking.Support.Walk
 import Parking.Support.GammaSum
 import Parking.Support.WBound
 import Parking.Support.ErrorUnroll
+
+/-!
+# The linear membrane field
+
+The linear membrane field `V` of the simple random walk (BP eq. 3 and 13 and the docstring
+of `Parking/Support/Walk.lean`; `parking.tex` does not name `V`, since the paper works with
+`u` directly): `V_0 = 0`, `V_{n+1} = η + PV_n`, the recursion with the reflection `(·)_+` of
+the divisible odometer removed. Because the recursion has no reflection, `V` is linear in `η`
+exactly, with no one-sided obstruction of the kind present for the nonlinear odometer `u`:
+the response of `V_n(x)` to a unit source at `z` is exactly `green d n (x - z)`, in both
+directions, not merely bounded by it.
+-/
 
 noncomputable section
 
@@ -26,13 +28,18 @@ def linPotential {d : ℕ} (η : Site d → ℝ) : ℕ → Site d → ℝ
   | 0 => fun _ => 0
   | n + 1 => fun x => η x + walkOp (linPotential η n) x
 
+/-- `linPotential η 0` is identically zero, directly from the defining recursion. -/
 theorem linPotential_zero (η : Site d → ℝ) (x : Site d) : linPotential η 0 x = 0 := rfl
 
+/-- The one-step recursion for `linPotential`, unfolding the definition: `linPotential η (n+1) x
+    = η x + walkOp (linPotential η n) x`. -/
 theorem linPotential_succ (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     linPotential η (n + 1) x = η x + walkOp (linPotential η n) x := rfl
 
 /-! ### `walkOp` is additive -/
 
+/-- `walkOp` is additive in its function argument, since the underlying `nbrSum` is a finite
+    sum and hence additive termwise (`Finset.sum_add_distrib`). -/
 theorem walkOp_add (f g : Site d → ℝ) (x : Site d) :
     walkOp (fun y => f y + g y) x = walkOp f x + walkOp g x := by
   have h : nbrSum (fun y => f y + g y) x = nbrSum f x + nbrSum g x := by
@@ -42,6 +49,8 @@ theorem walkOp_add (f g : Site d → ℝ) (x : Site d) :
   unfold walkOp
   rw [h, add_div]
 
+/-- `walkOp` commutes with scalar multiplication of its function argument, since `nbrSum`
+    factors a constant out of a finite sum (`Finset.mul_sum`). -/
 theorem walkOp_const_mul (c : ℝ) (f : Site d → ℝ) (x : Site d) :
     walkOp (fun y => c * f y) x = c * walkOp f x := by
   have h : nbrSum (fun y => c * f y) x = c * nbrSum f x := by
@@ -54,6 +63,8 @@ theorem walkOp_const_mul (c : ℝ) (f : Site d → ℝ) (x : Site d) :
 
 /-! ### `V` is linear in `η` -/
 
+/-- `linPotential` is additive in its source `η`, by induction on `n` using `walkOp_add` at
+    the successor step. -/
 theorem linPotential_add (η ξ : Site d → ℝ) (n : ℕ) (x : Site d) :
     linPotential (fun y => η y + ξ y) n x = linPotential η n x + linPotential ξ n x := by
   induction n generalizing x with
@@ -68,6 +79,8 @@ theorem linPotential_add (η ξ : Site d → ℝ) (n : ℕ) (x : Site d) :
       rw [heq]
       ring
 
+/-- `linPotential` is homogeneous of degree one in its source `η`, by induction on `n` using
+    `walkOp_const_mul` at the successor step. -/
 theorem linPotential_const_mul (c : ℝ) (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     linPotential (fun y => c * η y) n x = c * linPotential η n x := by
   induction n generalizing x with
@@ -82,6 +95,8 @@ theorem linPotential_const_mul (c : ℝ) (η : Site d → ℝ) (n : ℕ) (x : Si
       rw [heq]
       ring
 
+/-- `linPotential` is subtractive in its source `η`, combining `linPotential_add` and
+    `linPotential_const_mul` with the constant `-1`. -/
 theorem linPotential_sub (η ξ : Site d → ℝ) (n : ℕ) (x : Site d) :
     linPotential (fun y => η y - ξ y) n x = linPotential η n x - linPotential ξ n x := by
   have h1 : (fun y => η y - ξ y) = fun y => η y + (fun y => (-1 : ℝ) * ξ y) y := by
@@ -91,6 +106,9 @@ theorem linPotential_sub (η ξ : Site d → ℝ) (n : ℕ) (x : Site d) :
 
 /-! ### The recursion of `green` -/
 
+/-- The one-step recursion for `green`, splitting the last term off the defining sum
+    (`Finset.sum_range_succ'`) and identifying the remaining sum with `walkOp (green d n)`
+    via `walkOp_sum`. -/
 theorem green_succ (n : ℕ) (y : Site d) :
     green d (n + 1) y = (if y = 0 then (1 : ℝ) else 0) + walkOp (green d n) y := by
   show (∑ j ∈ Finset.range (n + 1), heat d j y) = _
@@ -111,6 +129,9 @@ theorem green_succ (n : ℕ) (y : Site d) :
 
 /-! ### The exact response of `V` to a unit source -/
 
+/-- The response of `linPotential` to a unit point source at `z` is exactly the Green function
+    `green d n (x - z)`, by induction on `n` using `green_succ` and the shift identity
+    `walkOp_shift`. -/
 theorem linPotential_single (n : ℕ) (z x : Site d) :
     linPotential (fun w => if w = z then (1 : ℝ) else 0) n x = green d n (x - z) := by
   induction n generalizing x with
@@ -136,7 +157,8 @@ obstruction, unlike the nonlinear odometer `u`. -/
 theorem linPotential_update (η : Site d → ℝ) (n : ℕ) (x z : Site d) (v : ℝ) :
     linPotential (Function.update η z v) n x - linPotential η n x
       = (v - η z) * green d n (x - z) := by
-  have hdiff : (Function.update η z v) = fun w => η w + (v - η z) * (if w = z then (1:ℝ) else 0) := by
+  have hdiff : (Function.update η z v)
+      = fun w => η w + (v - η z) * (if w = z then (1:ℝ) else 0) := by
     funext w
     by_cases hw : w = z
     · subst hw; simp [Function.update_self]

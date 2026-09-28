@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Terminal
+
+/-!
+# Shifting the stopping value to the origin
+
 **The discrete optimal-stopping value at a general starting site reduces to the value
 at the origin, of the reward shifted by that site.**
 
@@ -12,7 +16,6 @@ for the Brownian motion) be applied to `Parking.stoppingSup` at an arbitrary sta
 needed by `Parking.u_eq_potential_add_stoppingSup` (`Parking/Support/Terminal.lean`), which is
 stated for general `x`.
 -/
-import Parking.Support.Terminal
 
 noncomputable section
 

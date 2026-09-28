@@ -1,22 +1,22 @@
-/-
-A particle never settles where the configuration is nonnegative.
-
-`lem:range-lower` follows particle `1` from the origin along its own walk and
-bounds its survival below by the chance that the configuration is nonnegative at
-every site of the walk's range.  In the particle-driven construction that is a
-PATHWISE statement, and this file proves it: a site whose configuration value is
-nonnegative carries no unfilled hole at any time, so nothing settles there, so a
-particle whose walk stays in such sites is active forever and its position is
-the position of the walk.
-
-Also here, and useful beyond this lemma: reindexing an independent family along
-an injection between two arbitrary index sets leaves its law unchanged.  It is
-the exploration lemma along a well-founded dependency with a CONSTANT index map
-and an empty dependency.
--/
 import Parking.Support.SurvivorExpansion
 import Parking.Support.Range
 import Parking.Support.MassTransport
+
+/-!
+# A particle never settles where the configuration is nonnegative
+
+`lem:range-lower` follows particle `1` from the origin along its own walk and bounds its
+survival below by the chance that the configuration is nonnegative at every site of the
+walk's range. In the particle-driven construction that is a PATHWISE statement, and this
+file proves it: a site whose configuration value is nonnegative carries no unfilled hole
+at any time, so nothing settles there, so a particle whose walk stays in such sites is
+active forever and its position is the position of the walk.
+
+Also here, and useful beyond this lemma: reindexing an independent family along an
+injection between two arbitrary index sets leaves its law unchanged. It is the
+exploration lemma along a well-founded dependency with a CONSTANT index map and an empty
+dependency.
+-/
 
 open LatticeProb (measurable_eval_var measurable_from_countable')
 
@@ -123,6 +123,9 @@ theorem moveLaw_map_label (hd : 1 ≤ d) (p : Label d) :
   exact infinitePi_map_inj' (stepLaw d) (fun j : ℕ => (p, j))
     fun a b h => by simpa [Prod.mk.injEq] using h
 
+/-- Combining `pActive_of_nonneg` and `pPos_eq_walkPath`: while the walk of a particle
+starting at `p` stays in nonnegative sites through time `t`, the particle is active at
+`t` and sits at the walk's own position at `t`. -/
 theorem pActive_walk_of_nonneg (D : PDriver d) (p : Label d)
     (h0 : p.2 < (D.eta p.1).toNat) (t : ℕ)
     (hnn : ∀ s, s ≤ t → 0 ≤ D.eta (walkPath p.1 (fun j => D.move (p, j)) s)) :
@@ -146,6 +149,8 @@ theorem pActive_walk_of_nonneg (D : PDriver d) (p : Label d)
       refine ⟨(pActive_succ_iff D t p).mpr ⟨hact, hset⟩, ?_⟩
       rw [pPos_succ, hnext]
 
+/-- `rangeCard x · t` is measurable, being the cardinality of the image of the finitely
+many measurable coordinate projections `walkPath x · 0, …, walkPath x · t`. -/
 theorem measurable_rangeCard (x : Site d) (t : ℕ) :
     Measurable fun p : ℕ → Fin d × Bool => Parking.rangeCard x p t := by
   classical
@@ -170,6 +175,9 @@ theorem measurable_rangeCard (x : Site d) (t : ℕ) :
   rw [hfun]
   exact (measurable_from_countable' _).comp hproj
 
+/-- The probability that an i.i.d. field lies in a finite cylinder event
+`∀ x ∈ R, η x ∈ A x` factors as the product `∏ x ∈ R, ν (A x)`, by mapping the field along
+the inclusion of `R` and applying `Measure.pi_pi`. -/
 theorem iidLaw_cylinder (ν : Measure ℤ) [IsProbabilityMeasure ν] (R : Finset (Site d))
     (A : Site d → Set ℤ) (hA : ∀ x, MeasurableSet (A x)) :
     LatticeProb.iidLaw d ν {η : Site d → ℤ | ∀ x ∈ R, η x ∈ A x} = ∏ x ∈ R, ν (A x) := by
@@ -210,10 +218,14 @@ theorem iidLaw_cylinder (ν : Measure ℤ) [IsProbabilityMeasure ν] (R : Finset
 /-- The walk of the first particle at the origin, read off the data. -/
 def firstWalk (ω : PData d) : ℕ → Fin d × Bool := fun j => ω.2.1 (((0 : Site d), 0), j)
 
+/-- `firstWalk` is measurable, being a projection of the walk coordinates onto the label
+`(0, 0)`. -/
 theorem measurable_firstWalk : Measurable (firstWalk (d := d)) :=
   measurable_pi_lambda _ fun _ =>
     (measurable_pi_apply _).comp (measurable_fst.comp measurable_snd)
 
+/-- The position of the walk from `x` after `s` steps of the first particle's own walk is
+a measurable function of the data, by induction on `s`. -/
 theorem measurable_walkPath_var (x : Site d) (s : ℕ) :
     Measurable fun ω : PData d => walkPath x (firstWalk ω) s := by
   induction s with
@@ -227,6 +239,9 @@ nonnegative along the walk of the first particle there. -/
 def walkGood (d : ℕ) (m : ℤ) (t : ℕ) : Set (PData d) :=
   {ω | ω.1 0 = m ∧ ∀ s ≤ t, 0 ≤ ω.1 (walkPath 0 (firstWalk ω) s)}
 
+/-- `walkGood d m t` is measurable, being the intersection of the measurable event that
+the origin's configuration is `m` with finitely many measurable events that the
+configuration is nonnegative along the walk. -/
 theorem measurableSet_walkGood (m : ℤ) (t : ℕ) : MeasurableSet (walkGood d m t) := by
   classical
   have h1 : MeasurableSet {ω : PData d | ω.1 0 = m} := by
@@ -249,6 +264,7 @@ theorem measurableSet_walkGood (m : ℤ) (t : ℕ) : MeasurableSet (walkGood d m
   rw [this]
   exact h1.inter (MeasurableSet.biInter (Set.to_countable _) fun s _ => h2 s)
 
+/-- The range always contains at least the starting site `x`, so `rangeCard x p t ≥ 1`. -/
 theorem one_le_rangeCard (x : Site d) (p : ℕ → Fin d × Bool) (t : ℕ) :
     1 ≤ Parking.rangeCard x p t := by
   refine Finset.card_pos.mpr ⟨x, ?_⟩
@@ -367,11 +383,14 @@ theorem pDataLaw_walkGood (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
 
 /-! ### The good event sits inside the survival event -/
 
+/-- The good event `walkGood d m t` implies survival of the first particle at the origin
+through round `t`, by `pActive_walk_of_nonneg` applied along the particle's own walk. -/
 theorem walkGood_subset (m : ℤ) (hm : 1 ≤ m) (t : ℕ) :
     walkGood d m t ⊆ {ω : PData d | ω.1 0 = m ∧ (pState (toPDriver ω) t).active (0, 0) = true} := by
   rintro ω ⟨h1, h2⟩
   refine ⟨h1, ?_⟩
-  have h0 : (((0 : Site d), 0) : Label d).2 < ((toPDriver ω).eta (((0 : Site d), 0) : Label d).1).toNat := by
+  have h0 : (((0 : Site d), 0) : Label d).2 <
+      ((toPDriver ω).eta (((0 : Site d), 0) : Label d).1).toNat := by
     show 0 < (ω.1 0).toNat
     rw [h1]; omega
   exact (pActive_walk_of_nonneg (toPDriver ω) ((0 : Site d), 0) h0 t
@@ -379,6 +398,9 @@ theorem walkGood_subset (m : ℤ) (hm : 1 ≤ m) (t : ℕ) :
 
 /-! ### The survival probability, transferred and bounded -/
 
+/-- Activity of a particle at time `t` in the particle-driven construction is a
+measurable function of the data, transferred from the library's `measurable_pState`
+along the recoding into a `LatticeProb.PData`. -/
 theorem measurable_active_pdata (t : ℕ) (p : Label d) :
     Measurable fun ω : PData d => (pState (toPDriver ω) t).active p := by
   have hmeas : Measurable (stepVec (d := d)) := measurable_from_countable' _
@@ -390,7 +412,8 @@ theorem measurable_active_pdata (t : ℕ) (p : Label d) :
         (measurable_snd.comp measurable_snd))
   have hcomp : (fun ω : PData d => (pState (toPDriver ω) t).active p)
       = (fun ω : LatticeProb.PData d => (LatticeProb.pState (LatticeProb.toPDriver ω) t).active p)
-        ∘ (fun ω : PData d => ((ω.1, (fun q => stepVec (ω.2.1 q), ω.2.2)) : LatticeProb.PData d)) := by
+        ∘ (fun ω : PData d =>
+          ((ω.1, (fun q => stepVec (ω.2.1 q), ω.2.2)) : LatticeProb.PData d)) := by
     funext ω
     show (pState (toPDriver ω) t).active p
         = (LatticeProb.pState ⟨ω.1, fun q => stepVec (ω.2.1 q), ω.2.2⟩ t).active p
@@ -400,6 +423,9 @@ theorem measurable_active_pdata (t : ℕ) (p : Label d) :
   rw [hcomp]
   exact ((measurable_pState (d := d) t).1 p).comp hrecode
 
+/-- The joint event that the origin's configuration is `m` and the particle labelled
+`(0, i)` is active at time `t` is measurable, being the intersection of two measurable
+events. -/
 theorem measurableSet_conf_active (m : ℤ) (t : ℕ) (i : ℕ) :
     MeasurableSet {ω : PData d | ω.1 0 = m ∧ (pState (toPDriver ω) t).active (0, i) = true} := by
   have h1 : MeasurableSet {ω : PData d | ω.1 0 = m} := by
@@ -514,17 +540,23 @@ theorem integral_posPart_eq_tsum (ν : Measure ℤ) [IsProbabilityMeasure ν]
 
 
 
+/-- `walkLaw d` is a probability measure once `d ≥ 1`, being built from the probability
+step law. -/
 theorem walkLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (walkLaw d) := by
   haveI := stepLaw_isProbability hd
   unfold walkLaw
   infer_instance
 
+/-- The power `(ν {j | 0 ≤ j}).toReal ^ (rangeCard 0 p t - 1)` of `lem:range-lower` is a
+measurable function of the walk `p`, being a countable function of the range. -/
 theorem measurable_rangePow (ν : Measure ℤ) (t : ℕ) :
     Measurable fun p : ℕ → Fin d × Bool => (ν {j : ℤ | 0 ≤ j}).toReal ^
       (Parking.rangeCard (0 : Site d) p t - 1) :=
   (measurable_from_countable' fun n : ℕ => (ν {j : ℤ | 0 ≤ j}).toReal ^ (n - 1)).comp
     (measurable_rangeCard 0 t)
 
+/-- The power of `lem:range-lower` is at most `1`, since its base
+`(ν {j | 0 ≤ j}).toReal` is at most `1`. -/
 theorem rangePow_le_one (ν : Measure ℤ) [IsProbabilityMeasure ν] (p : ℕ → Fin d × Bool)
     (t : ℕ) :
     (ν {j : ℤ | 0 ≤ j}).toReal ^ (Parking.rangeCard (0 : Site d) p t - 1) ≤ 1 := by
@@ -568,12 +600,18 @@ theorem lintegral_rangePow_toReal (ν : Measure ℤ) [IsProbabilityMeasure ν] (
 
 
 
+/-- The pair of the origin's configuration and the full activity field is measurable in
+the stack-driven construction, by pairing the measurable projection to the configuration
+with the library's measurable activity field. -/
 theorem measurable_confActive_stack :
     Measurable fun ω : Data d =>
       ((ω.1, fun ti : ℕ × Label d => (LatticeProb.state (toDriver ω) ti.1).active ti.2) :
         (Site d → ℤ) × (ℕ × Label d → Bool)) :=
   measurable_fst.prodMk (measurable_pi_lambda _ fun ti => (measurable_state ti.1).1 ti.2)
 
+/-- The pair of the origin's configuration and the full activity field is measurable in
+the particle-driven construction, by pairing the measurable projection to the
+configuration with `measurable_active_pdata`. -/
 theorem measurable_confActive_particle :
     Measurable fun ω : PData d =>
       ((ω.1, fun ti : ℕ × Label d => (pState (toPDriver ω) ti.1).active ti.2) :

@@ -1,5 +1,7 @@
-/-
-Independent input tables revealed one round at a time.
+import LatticeProb.Prob.Splice
+
+/-!
+# Independent input tables revealed one round at a time
 
 A coupled process can inspect both states before choosing the entries each
 marginal uses. The previous directions of that marginal alone need not determine
@@ -9,7 +11,6 @@ unchanged, and every section of the current output has the same prescribed law.
 Resampling that table and integrating its section proves the finite cylinder
 identity, then the joint product law.
 -/
-import LatticeProb.Prob.Splice
 
 noncomputable section
 
@@ -22,6 +23,8 @@ variable {X Y : Type*} [MeasurableSpace X] [MeasurableSpace Y]
 def Parking.layerEvent (F : (ℕ → X) → ℕ → Y) (B : ℕ → Set Y) (n : ℕ) : Set (ℕ → X) :=
   {ω | ∀ k < n, F ω k ∈ B k}
 
+/-- `layerEvent F B n` is measurable, being a finite intersection over `k < n` of the preimage
+of the measurable set `B k` under `fun ω => F ω k`. -/
 theorem Parking.measurableSet_layerEvent {F : (ℕ → X) → ℕ → Y}
     (hF : Measurable F) {B : ℕ → Set Y} (hB : ∀ n, MeasurableSet (B n)) (n : ℕ) :
     MeasurableSet (Parking.layerEvent F B n) := by

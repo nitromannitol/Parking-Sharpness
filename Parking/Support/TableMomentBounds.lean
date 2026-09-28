@@ -1,6 +1,18 @@
 import Parking.Support.TableReads
 import Parking.Support.MatchedUniform
 
+/-!
+# Moment and martingale bounds for the table reveal increments
+
+Collects the elementary bounds needed to run Bernstein's inequality on the
+chronological table-reveal martingale `tableDiff`: a uniform count bound in terms of
+the current round, an almost-sure bound `|tableDiff| ≤ escapeConst d` from the
+one-step round-difference bounds of `Support/RoundDifference.lean`, integrability of
+the increment and its square, vanishing conditional mean given the filtration
+`tableFiltration`, and a conditional second-moment bound charged only at the departure
+site actually used.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -49,23 +61,27 @@ theorem integrable_tableDiff (hd : 3 ≤ d) (η : Site d → ℤ) (hη : ∀ y, 
 theorem condExp_tableDiff_zero (hd : 3 ≤ d) (base : FlatRoundNoise d)
     (η : Site d → ℤ) (hη : ∀ y, (η y).toNat ≤ 1) (ρ : Label d × ℕ → ℝ)
     (T : ℕ) (x : Site d) (e : Fin K ↪ Site d × ℕ) (hK : 0 < K) (n : ℕ) :
-    (flatRoundNoiseLaw d)[tableDiff η ρ T x e hK (n + 1) | tableFiltration base e n] =ᵐ[flatRoundNoiseLaw d] 0 := by
+    (flatRoundNoiseLaw d)[tableDiff η ρ T x e hK (n + 1) | tableFiltration base e n]
+      =ᵐ[flatRoundNoiseLaw d] 0 := by
   have hd1 : 1 ≤ d := by omega
   haveI := stepLaw_isProbability hd1
   apply condExp_zero_of_fresh_coordinate (fun _ : ℕ × RoundSlot d => stepLaw d) base
     (blockReveal (slotEnumeration e) n) (n / K, Sum.inl (e ⟨n % K, Nat.mod_lt n hK⟩))
-    (notMem_blockReveal_next (slotEnumeration e) hK n) _ (measurable_tableDiff hd1 η ρ T x e hK (n + 1))
+    (notMem_blockReveal_next (slotEnumeration e) hK n) _
+    (measurable_tableDiff hd1 η ρ T x e hK (n + 1))
     (integrable_tableDiff hd η hη ρ T x e hK (n + 1)).1 (tableDiff_reads η ρ T x e hK n)
   intro ω
   simp_rw [tableDiff_update]
   exact roundDiff_section_zero hd1 e _ _ ((2 * (n / K) + 1) ^ d)
     (matchedCount_one_bound η hη ρ _ _) ρ _ x _ _
 
-/-- The predictable variance is charged only for a used entry, with weight PG² at its departure site. -/
+/-- The predictable variance is charged only for a used entry, with weight PG² at its
+departure site. -/
 theorem condExp_tableDiff_sq_le (hd : 3 ≤ d) (base : FlatRoundNoise d)
     (η : Site d → ℤ) (hη : ∀ y, (η y).toNat ≤ 1) (ρ : Label d × ℕ → ℝ)
     (T : ℕ) (x : Site d) (e : Fin K ↪ Site d × ℕ) (hK : 0 < K) (n : ℕ) :
-    (flatRoundNoiseLaw d)[fun ω => tableDiff η ρ T x e hK (n + 1) ω ^ 2 | tableFiltration base e n] ≤ᵐ[flatRoundNoiseLaw d]
+    (flatRoundNoiseLaw d)[fun ω => tableDiff η ρ T x e hK (n + 1) ω ^ 2 |
+        tableFiltration base e n] ≤ᵐ[flatRoundNoiseLaw d]
       (fun ω => let j : Fin K := ⟨n % K, Nat.mod_lt n hK⟩
         if (e j).2 < matchedCount η ρ (curryRoundNoise ω) (n / K) (e j).1 then
           walkOp (fun y => fullGreen d (y - x) ^ 2) (e j).1 else 0) := by

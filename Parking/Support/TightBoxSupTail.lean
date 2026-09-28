@@ -6,7 +6,8 @@ bounds are summed, via `LatticeProb.WeightedJensen.rpow_sum_range_le_geometric_w
 BOTH the scale `n` and the range `N`.  The argument needs no Minkowski inequality and no
 `ENNReal`/`eLpNorm` bookkeeping.
 
-The geometric ratio `LatticeProb.WeightedJensen.jensenRatio p := 2 ^ (-1 / (p - 1))` is chosen so that, for
+The geometric ratio `LatticeProb.WeightedJensen.jensenRatio p := 2 ^ (-1 / (p - 1))` is chosen so
+that, for
 `p > 12`, the per-level decay `4 ^ m * (1 / 2 ^ m) ^ (p / 4)` of `exists_levelInc_moment`
 combines with the weighted-Jensen ratio `r ^ (1 - p)` (at `r := jensenRatio p`) into an overall
 geometric ratio `θ = 2 ^ (3 - p / 4) < 1`, making the resulting series
@@ -16,7 +17,9 @@ import Parking.Support.TightBoxSupMoment
 import LatticeProb.Prob.Scaling.PolyGrowth
 import LatticeProb.WeightedJensen
 
-open LatticeProb.WeightedJensen (jensenRatio jensenRatio_lt_one jensenRatio_pos jensenRatio_rpow_one_sub jensenRatio_rpow_one_sub_mul_lt_one rpow_sum_range_le_geometric_weighted_sum)
+open LatticeProb.WeightedJensen (jensenRatio jensenRatio_lt_one jensenRatio_pos
+    jensenRatio_rpow_one_sub jensenRatio_rpow_one_sub_mul_lt_one
+    rpow_sum_range_le_geometric_weighted_sum)
 
 open MeasureTheory LatticeProb Filter Topology LatticeProb.Scaling.PolyGrowth
 

@@ -3,6 +3,18 @@ import Parking.Support.SafeDensity
 import Parking.Support.IsolationUnion
 import Parking.Support.SparseActivity
 
+/-!
+# The pair-sum density criterion
+
+Assembles the isolated-hole, good-hole and sparse-activity estimates of
+`Parking.Support.IsolatedDensity`, `Parking.Support.SafeDensity`,
+`Parking.Support.IsolationUnion` and `Parking.Support.SparseActivity` into a single sufficient
+condition: if the two-point hole correlations summed over a box of radius `4dR` are small
+relative to `holeProb`, then a positive fraction of the region near the origin consists of
+sites where the hole there is closer to being closed than any surviving hole outside the
+region (`HoleCloser`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -40,6 +52,7 @@ theorem holeCloser_lower_of_pair_sum (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 
   have hc := mul_le_mul_of_nonneg_right hg (pow_nonneg (by positivity : 0 ≤ ((R + 1 : ℕ) : ℝ)) d)
   calc h / 4 * ((R + 1 : ℕ) : ℝ) ^ d
     ≤ (μ {ω | GoodHole ω t R 0}).toReal * ((R + 1 : ℕ) : ℝ) ^ d := hc
-    _ ≤ (μ {ω | HoleCloser ω t}).toReal := by simpa only [Nat.cast_add, Nat.cast_one, mul_comm] using hs
+    _ ≤ (μ {ω | HoleCloser ω t}).toReal := by
+        simpa only [Nat.cast_add, Nat.cast_one, mul_comm] using hs
 
 end Parking

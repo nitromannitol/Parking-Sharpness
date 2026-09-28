@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SpatWLinFdd
+
+/-!
+# Joint scenery-and-field finite-dimensional convergence
+
 The finite-dimensional form of the scenery-retained joint clause of
 `Parking.External.LinearFieldScaling`: for finitely many test functions `φ_i` and finitely many
 space-time points `sp_j` at positive times, the pair `(scenePair(φ_i)_i, linHatInterp(sp_j)_j)`
@@ -8,8 +12,8 @@ converges jointly in law to `((√v·W(φ_i))_i, Z(sp_j)_j)`, tested against eve
 This is a transcription of that clause, not new mathematics: it generalizes
 `Parking.tendsto_linHatInterp_fdd` (`Parking/Support/SpatWLinFdd.lean`, the field-alone case) by
 carrying the `scenePair` tuple through UNCHANGED.  The route is the same cutoff trick: choose one
-fixed space-time test function `χ` (`Parking.exists_spaceTimeTest_
-eqOn_finite`) equal to `1` at every target point `sp_j`; since `Parking.cutoffBC
+fixed space-time test function `χ` (`Parking.exists_spaceTimeTest_eqOn_finite`) equal to `1` at
+every target point `sp_j`; since `Parking.cutoffBC
 χ f _ _ _ p = χ p * f p` (`Parking.cutoffBC_apply`), evaluating the cutoff field at a point
 where `χ = 1` reads off the true field exactly, so composing the External's own `hjoint`
 clause's bounded continuous `F` of `(scenePair-tuple, cutoffBC χ linHatInterp)` with "evaluate
@@ -18,7 +22,6 @@ the second coordinate at every `sp_j`" (`BoundedContinuousFunction.compContinuou
 `hjoint` at precisely the finite-dimensional statement wanted; the `scenePair`-tuple coordinate
 of `F` is untouched by this composition, so it passes through the whole computation unchanged.
 -/
-import Parking.Support.SpatWLinFdd
 
 open MeasureTheory ProbabilityTheory Filter Topology
 

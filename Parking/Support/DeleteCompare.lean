@@ -120,6 +120,8 @@ def deletedGuard {d : ℕ} (F : PData d → ℝ) (a : Site d → ℤ) (x : Site 
   Set.indicator {c : PNoise d | Function.Injective c.2}
     (fun c => deleted F a x i c - F ((a, c) : PData d)) b + F ((a, b) : PData d)
 
+/-- On the event that the uniform variables are pairwise distinct, the guard `deletedGuard`
+reduces to the comparison functional `deleted`. -/
 theorem deletedGuard_of_injective {d : ℕ} (F : PData d → ℝ) (a : Site d → ℤ) (x : Site d)
     (i : ℕ) {b : PNoise d} (hb : Function.Injective b.2) :
     deletedGuard F a x i b = deleted F a x i b := by
@@ -127,6 +129,8 @@ theorem deletedGuard_of_injective {d : ℕ} (F : PData d → ℝ) (a : Site d �
   rw [Set.indicator_of_mem hb]
   ring
 
+/-- Off that event, where the relabeling clauses say nothing, the guard `deletedGuard` equals
+the observable itself. -/
 theorem deletedGuard_of_not_injective {d : ℕ} (F : PData d → ℝ) (a : Site d → ℤ)
     (x : Site d) (i : ℕ) {b : PNoise d} (hb : ¬ Function.Injective b.2) :
     deletedGuard F a x i b = F ((a, b) : PData d) := by

@@ -1,9 +1,12 @@
-/-
+import Parking.Support.MatchedLaw
+
+/-!
+# Freshness of two predictable table selections
+
 Freshness for two predictable selections from the round tables. Their entries
 have independent uniform laws in every round; reversing the second direction
 preserves that law and produces increments of a difference of positions.
 -/
-import Parking.Support.MatchedLaw
 
 open LatticeProb (measurable_from_countable')
 
@@ -16,16 +19,22 @@ variable {d : ℕ}
 /-- Reversing a signed direction is a bijection and negates its displacement. -/
 def Parking.reverseDirection (b : Fin d × Bool) : Fin d × Bool := (b.1, !b.2)
 
+/-- `reverseDirection` is its own inverse: applying it twice returns the original
+direction. -/
 theorem Parking.reverseDirection_involutive :
     Function.Involutive (Parking.reverseDirection (d := d)) := by
   intro b
   simp [Parking.reverseDirection]
 
+/-- Reversing a direction negates its step vector: `stepVec` is odd under
+`reverseDirection`. -/
 theorem Parking.stepVec_reverseDirection (b : Fin d × Bool) :
     Parking.stepVec (Parking.reverseDirection b) = -Parking.stepVec b := by
   rcases b with ⟨i, b⟩
   cases b <;> simp [Parking.reverseDirection, Parking.stepVec]
 
+/-- `stepLaw d` is invariant under `reverseDirection`, since reversing permutes the
+finitely many directions among themselves while preserving their equal weights. -/
 theorem Parking.map_reverseDirection :
     (Parking.stepLaw d).map Parking.reverseDirection = Parking.stepLaw d := by
   have hm : Measurable (Parking.reverseDirection (d := d)) := measurable_from_countable' _

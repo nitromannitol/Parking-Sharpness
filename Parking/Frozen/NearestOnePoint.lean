@@ -1,26 +1,26 @@
-/-
-Lemma 9.1 of parking.tex, frozen.  `parking.tex:1882-1891` (label
-`lem:nearest-one-point`), in the setting of `parking.tex:1850-1881`
-("Fix $d\geq5$; every constant below depends only on $d$.  For
-$p\in(0,1/4]$, let $(\eta(x))_{x\in\Z^d}$ be i.i.d. with
-$\P(\eta(0)=1)=\P(\eta(0)=-1)=p$, $\P(\eta(0)=0)=1-2p$", and
-"$h_t=\P(H_t(0)=1)$, $m_t=\E U_t(0)$"):
-
-  "There is $C<\infty$, depending only on $d$, such that, for every $t\geq0$,
-   $x\in\Z^d$, and $r\geq2$,
-   $(\E U_t(x)^r)^{1/r}\leq C(m_t+r)$, $m_t\leq C\log(1/h_t)$.
-   Moreover, $h_t\downarrow0$."
-
-The constant depends only on the dimension, so it is bound before `p`.
-`h_t ↓ 0` is the conjunction of monotonicity and convergence to zero.  The
-moment on the left is asserted finite alongside the bound, so that an undefined
-integral cannot satisfy it through its junk value.  The martingale moment
-inequality the proof quotes enters as an explicit hypothesis.
--/
 import Parking.Support.NearestOnePointProof
 import Parking.Support.Range
 import Parking.External.Bernstein
 import Parking.Support.ThreePointLaw
+
+/-!
+# The one-point moment and hole-probability bounds, `d ≥ 5` (frozen)
+
+Lemma 9.1 of parking.tex, frozen. `parking.tex:1882-1891` (label `lem:nearest-one-point`), in
+the setting of `parking.tex:1850-1881` ("Fix $d\geq5$; every constant below depends only on
+$d$. For $p\in(0,1/4]$, let $(\eta(x))_{x\in\Z^d}$ be i.i.d. with
+$\P(\eta(0)=1)=\P(\eta(0)=-1)=p$, $\P(\eta(0)=0)=1-2p$", and "$h_t=\P(H_t(0)=1)$,
+$m_t=\E U_t(0)$"):
+
+"There is $C<\infty$, depending only on $d$, such that, for every $t\geq0$, $x\in\Z^d$, and
+$r\geq2$, $(\E U_t(x)^r)^{1/r}\leq C(m_t+r)$, $m_t\leq C\log(1/h_t)$. Moreover,
+$h_t\downarrow0$."
+
+The constant depends only on the dimension, so it is bound before `p`. `h_t ↓ 0` is the
+conjunction of monotonicity and convergence to zero. The moment on the left is asserted
+finite alongside the bound, so that an undefined integral cannot satisfy it through its junk
+value. The martingale moment inequality the proof quotes enters as an explicit hypothesis.
+-/
 
 open MeasureTheory Filter Topology
 

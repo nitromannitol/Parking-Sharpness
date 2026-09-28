@@ -1,4 +1,9 @@
-/-
+import Parking.Support.PhiSum
+import Parking.Support.Near
+
+/-!
+# The optimization over the mean horizon of Step 1
+
 The optimization over the mean horizon in Step 1 of `prop:near-divisible`
 (`parking.tex:2863-2874`).
 
@@ -15,13 +20,14 @@ leaves `δ(M+1) - δM = δ` plus a multiple of `δ^{-α/(1-α)}`; the exponent
 it is `log x ≤ x/a + log a - 1` with `a = C₀/δ`, which leaves `2δ` plus
 `C₀ log(C₀/δ)`, and `log(C₀/δ) ≤ (1 + |log C₀|) log(e/δ)`.
 -/
-import Parking.Support.PhiSum
-import Parking.Support.Near
 
 noncomputable section
 
 namespace Parking
 
+/-- **Young's inequality** `x^α ≤ α(εx) + (1-α)ε^{-α/(1-α)}`, from the weighted
+arithmetic-geometric mean inequality applied to `εx` and `ε^{-α/(1-α)}` with weights
+`α` and `1-α`. -/
 theorem rpow_le_young {α ε x : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (hε : 0 < ε) (hx : 0 ≤ x) :
     x ^ α ≤ α * (ε * x) + (1 - α) * ε ^ (-α / (1 - α)) := by
   have hone : (1:ℝ) - α ≠ 0 := by linarith
@@ -36,6 +42,7 @@ theorem rpow_le_young {α ε x : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (hε : 0 <
   rw [hprod] at h
   exact h
 
+/-- **`log x ≤ x/a + log a - 1`**, from `Real.log_le_sub_one_of_pos` applied to `x / a`. -/
 theorem log_le_div_add (x a : ℝ) (hx : 0 < x) (ha : 0 < a) :
     Real.log x ≤ x / a + Real.log a - 1 := by
   have h := Real.log_le_sub_one_of_pos (show (0:ℝ) < x / a by positivity)

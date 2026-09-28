@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Oriented
+
+/-!
+# Lemma 12.1: the layer-shift energy identity (frozen)
+
 Lemma 12.1 of parking.tex, frozen.  `parking.tex:3047-3052` (label
 `lem:shift`), in the setting of `parking.tex:3039-3046` ("When $d=2$, the
 number of steps in direction $-e_1$ identifies the support of $\vec p_\ell$
@@ -13,7 +17,6 @@ probability `1/2` extended by zero to the integers.  Summability of both sums
 is asserted alongside the identity, so that a divergent series cannot satisfy
 it through the junk value of a nonsummable `tsum`.
 -/
-import Parking.Support.Oriented
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.shift (q : ℤ) :

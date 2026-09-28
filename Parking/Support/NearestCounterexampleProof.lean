@@ -5,6 +5,18 @@ import Parking.Support.FloorVolume
 import Parking.Support.NearestDensityCriterion
 import Parking.Support.HoleTail
 
+/-!
+# The nearest-hole counterexample in dimension at least five
+
+Assembles the nearest-hole counterexample above dimension four: at a sparse three-point
+critical law, a positive-density set of sites is eventually closer to a hole than to an
+active site. `nearest_counterexample_eventual` picks the hole probability `p` and volume
+parameters so that the two-hole pair-sum bound of `Parking/Support/NearestPairSum.lean`
+dominated by `h t / 4` forces `HoleCloser` to occur with density at least `b / 4` for all
+large times `t`; `nearest_counterexample_proof` converts the eventual bound into a `liminf`
+bound, using that the event's probability is bounded by `1`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Filter Topology
@@ -50,7 +62,8 @@ theorem nearest_counterexample_eventual (hBernstein : External.Bernstein) (d : �
   obtain ⟨R, hvol, houter⟩ := exists_radius_volume d hd1 hb (hh t) htb
   have htwo (z : Site d) (hz : z ≠ 0) :
       ((law d (threePointLaw p)) {ω | H ω t 0 = 1 ∧ H ω t z = 1}).toReal ≤
-      C * h t ^ 2 * Real.exp (C * Real.log (1 / h t) * (1 + (graphNorm z : ℝ)) ^ (4 - (d : ℝ))) := by
+      C * h t ^ 2 * Real.exp (C * Real.log (1 / h t) * (1 + (graphNorm z : ℝ)) ^ (4 - (d : ℝ)))
+        := by
     have h0 := hTwo p hp hp4 t 0 z (Ne.symm hz)
     simpa only [zero_sub, graphNorm, Pi.neg_apply, Int.natAbs_neg] using h0
   have hs := nearest_pair_sum_bound hd hp hp4 hC t R L M htwo hL hfar

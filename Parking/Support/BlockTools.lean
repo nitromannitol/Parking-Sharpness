@@ -1,23 +1,24 @@
-/-
-The analytic tools of Step 2 of `lem:mean-horizon` (`parking.tex:2817-2841`).
-
-Step 2 turns the block decomposition of `Parking/Support/BlockStop.lean` into a
-number.  Four elementary facts do it.
-
-* The odometer commutes with translation (`u_shift`), which is how "the walk is
-  independent of `ξ_δ`, so stationarity gives …" is read here: the moment of
-  `u_{ℓ}(X_{s};ξ_δ)` does not depend on where the walk stands.
-* Hölder's inequality with the exponents `5/4` and `5` splits
-  `E[1_{σ>s} u_ℓ(X_s)]` into `P(σ>s)^{4/5}` and the fifth moment norm
-  (`integral_ite_le_holder`).
-* Markov's inequality bounds `P(σ>s)` by `E σ / s` (`measureReal_gt_le_div`).
-* The scale `φ_d` does not see a shift of its argument by two
-  (`phi_add_two_le`), which is what turns `φ_d(N)` with `N = 1 ∨ ⌈M⌉` back into
-  `φ_d(M)`.
--/
 import Parking.Support.BlockStop
 import Parking.Support.UpperStep
 import Parking.Support.PhiSum
+
+/-!
+# The analytic tools of the mean-horizon Step 2
+
+The analytic tools of Step 2 of `lem:mean-horizon` (`parking.tex:2817-2841`).
+
+Step 2 turns the block decomposition of `Parking/Support/BlockStop.lean` into a number. Four
+elementary facts do it.
+
+* The odometer commutes with translation (`u_shift`), which is how "the walk is independent
+  of `ξ_δ`, so stationarity gives …" is read here: the moment of `u_{ℓ}(X_{s};ξ_δ)` does not
+  depend on where the walk stands.
+* Hölder's inequality with the exponents `5/4` and `5` splits `E[1_{σ>s} u_ℓ(X_s)]` into
+  `P(σ>s)^{4/5}` and the fifth moment norm (`integral_ite_le_holder`).
+* Markov's inequality bounds `P(σ>s)` by `E σ / s` (`measureReal_gt_le_div`).
+* The scale `φ_d` does not see a shift of its argument by two (`phi_add_two_le`), which is
+  what turns `φ_d(N)` with `N = 1 ∨ ⌈M⌉` back into `φ_d(M)`.
+-/
 
 open LatticeProb.MomentNorm (eLpNorm_ne_top)
 
@@ -29,6 +30,9 @@ open MeasureTheory LatticeProb
 
 variable {d : ℕ}
 
+/-- The divisible sandpile odometer commutes with translation:
+`u (fun z => η (z + y)) n x = u η n (x + y)`, by induction on `n` using the recursion and
+reindexing the neighbor sum. -/
 theorem u_shift (_hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (y x : Site d) :
     u (fun z => η (z + y)) n x = u η n (x + y) := by
   induction n generalizing x with
@@ -45,6 +49,9 @@ theorem u_shift (_hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (y x : Site d) :
       rw [ih (x + unit i), ih (x - unit i)]
       congr 2 <;> abel
 
+/-- The scale `phi d` absorbs a shift of its argument by two into a factor of `3`:
+`phi d (M + 2) ≤ 3 * phi d M`, by cases on `d ≤ 3` (power growth, via `Real.rpow_le_rpow`)
+and `d ≥ 4` (logarithmic growth, via `Real.log_two_gt_d9`). -/
 theorem phi_add_two_le (d : ℕ) {M : ℝ} (hM : 0 ≤ M) : phi d (M + 2) ≤ 3 * phi d M := by
   simp only [phi]
   split_ifs with h

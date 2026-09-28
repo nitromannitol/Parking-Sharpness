@@ -2,6 +2,17 @@ import Parking.Support.RoundDifference
 import Parking.Support.FlatNoise
 import Parking.Support.ProductFresh
 
+/-!
+# The chronological table-reveal increment
+
+Defines `tableDiff`, the increment revealed at chronological step `n` of the flattened
+table process (one uniform coordinate at a time, in the order fixed by the injection
+`e`), as a shifted `roundDiff` at round `(n - 1) / K` and within-round index
+`(n - 1) % K`. Records its value at `n = 0` and its recursive unfolding at `n + 1`,
+proves it is measurable in the independent table entries, and shows that updating the
+one fresh coordinate it reads changes only the round it names.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -16,10 +27,13 @@ def tableDiff (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x :
       (T - (n - 1) / K - 1) x ⟨(n - 1) % K, Nat.mod_lt _ hK⟩
       (curryRoundNoise ω ((n - 1) / K))
 
+/-- `tableDiff` vanishes at index `0`, by definition. -/
 theorem tableDiff_zero (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d)
     (e : Fin K ↪ Site d × ℕ) (hK : 0 < K) (ω : FlatRoundNoise d) :
     tableDiff η ρ T x e hK 0 ω = 0 := by simp [tableDiff]
 
+/-- The recursive unfolding of `tableDiff` at `n + 1`, as a `roundDiff` at round `n / K`
+and within-round index `n % K`. -/
 theorem tableDiff_succ (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d)
     (e : Fin K ↪ Site d × ℕ) (hK : 0 < K) (n : ℕ) (ω : FlatRoundNoise d) :
     tableDiff η ρ T x e hK (n + 1) ω =
@@ -39,9 +53,11 @@ theorem measurable_tableDiff (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d 
       exact measurable_const
   | succ n =>
       have hS := measurableState_matchedState ⟨0, hd⟩ (fun _ : FlatRoundNoise d => η)
-        (fun _ => ρ) curryRoundNoise measurable_const measurable_const measurable_curryRoundNoise (n / K)
+        (fun _ => ρ) curryRoundNoise measurable_const measurable_const
+        measurable_curryRoundNoise (n / K)
       have hA := measurable_matchedCount ⟨0, hd⟩ (fun _ : FlatRoundNoise d => η)
-        (fun _ => ρ) curryRoundNoise measurable_const measurable_const measurable_curryRoundNoise (n / K)
+        (fun _ => ρ) curryRoundNoise measurable_const measurable_const
+        measurable_curryRoundNoise (n / K)
       change Measurable (fun ω => tableDiff η ρ T x e hK (n + 1) ω)
       simp only [tableDiff_succ]
       exact measurable_roundDiff hd e _ _ _ hA (measurable_pi_lambda _ hS.2.2.1)

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.CriticalReduction
+
+/-!
+# The choice of `ε`
+
 The end of Step 3 of `lem:critical-density` (`parking.tex:1344-1353`): the
 choice of `ε`.
 
@@ -14,7 +18,6 @@ exactly `t ≥ 1/(2γ)`, which is why the threshold is where it is.
 Chaining that with `critical_density_of_survivor_bound` reduces
 `lem:critical-density` to the quadratic bound alone.
 -/
-import Parking.Support.CriticalReduction
 
 noncomputable section
 

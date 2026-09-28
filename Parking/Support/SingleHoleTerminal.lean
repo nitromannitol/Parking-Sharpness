@@ -1,6 +1,17 @@
 import Parking.Support.SingleAddition
 import Parking.Support.EscapePotential
 
+/-!
+# The terminal hole-count comparison under one added particle
+
+Away from the discrepancy's position, adding one particle to the initial field leaves the
+matched hole count at every site unchanged, since the only coupling difference sits at the
+discrepancy label. Combined with the escape probability of that discrepancy, this gives the
+terminal-time comparison between the base and augmented hole counts that the single-addition
+argument needs: the base hole count times the discrepancy's escape probability is bounded by
+the augmented hole count, at every site and every horizon.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
@@ -27,7 +38,8 @@ theorem singleAddition_holes_eq_off_label (η : Site d → ℤ) (v x : Site d)
   have hm := singleAddition_counts_mono η v ρ σ t x
   omega
 
-/-- The base hole count times the discrepancy's escape probability is bounded by the augmented hole count. -/
+/-- The base hole count times the discrepancy's escape probability is bounded by the
+augmented hole count. -/
 theorem singleAddition_hole_escape_terminal (hd : 3 ≤ d) (η : Site d → ℤ) (v x : Site d)
     (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (T : ℕ) :
     ((matchedState η ρ σ T).holes x : ℝ) *

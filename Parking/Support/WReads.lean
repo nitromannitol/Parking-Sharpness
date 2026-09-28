@@ -1,26 +1,26 @@
-/-
-The exploration of `lem:w-martingale` reads only what it has revealed.
-
-`LatticeProb.ReadsOnlyRevealed` is the hypothesis the library's conditional
-exploration lemma needs: two realizations on which the exploration has taken the
-same steps and found the same instructions there read the same instruction next.
-It implies the `pred` field of `LatticeProb.IsExploration` and, with the values
-read through an injective map, it makes the index measurable for the
-sigma-algebra of the values already revealed.
-
-The content is the mixed locality of the odometer.  `Parking.state_congr` says
-that the state after `t` rounds reads only the instructions the odometer has
-reached; `LatticeProb.state_agree_box` says that the state in a box reads only
-the instructions near it.  Neither alone suffices here: two realizations with the
-same revealed prefix differ at infinitely many coordinates at once, and the ones
-they differ at are those the odometer has not reached, wherever they lie.  The
-two are joined by the hybrid driver that follows the first realization at every
-instruction the odometer has reached and the second at all the rest: it has the
-same state as the first because `state_congr` reads only what the odometer has
-reached, and it agrees with the second throughout the box.
--/
 import Parking.Support.WExploration
 import LatticeProb.Prob.ExplorationCond
+
+/-!
+# The exploration reads only what it has revealed
+
+The exploration of `lem:w-martingale` reads only what it has revealed.
+`LatticeProb.ReadsOnlyRevealed` is the hypothesis the library's conditional exploration lemma
+needs: two realizations on which the exploration has taken the same steps and found
+the same instructions there read the same instruction next. It implies the `pred` field of
+`LatticeProb.IsExploration` and, with the values read through an injective map, it makes the
+index measurable for the sigma-algebra of the values already revealed.
+
+The content is the mixed locality of the odometer. `Parking.state_congr` says that the
+state after `t` rounds reads only the instructions the odometer has reached;
+`LatticeProb.state_agree_box` says that the state in a box reads only the instructions near
+it. Neither alone suffices here: two realizations with the same revealed prefix differ at
+infinitely many coordinates at once, and the ones they differ at are those the odometer has
+not reached, wherever they lie. The two are joined by the hybrid driver that follows the
+first realization at every instruction the odometer has reached and the second at all the
+rest: it has the same state as the first because `state_congr` reads only what the odometer
+has reached, and it agrees with the second throughout the box.
+-/
 
 noncomputable section
 

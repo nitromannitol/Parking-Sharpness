@@ -1,4 +1,9 @@
-/-
+import LatticeProb.ParticleDriven
+import Parking.Support.Reads
+
+/-!
+# Measurability of the particle-driven state
+
 Every field of the particle-driven state is a measurable function of its data.
 
 `Parking.Support.Measurability` proves this for the stack construction.  The
@@ -14,10 +19,9 @@ read the candidate set off the configuration are generalized here to an
 arbitrary space carrying a measurable configuration, since the two
 constructions have different data types.
 -/
-import LatticeProb.ParticleDriven
-import Parking.Support.Reads
 
-open LatticeProb (measurable_decide measurable_eval_var measurable_from_countable' measurable_of_countable_partition)
+open LatticeProb (measurable_decide measurable_eval_var measurable_from_countable'
+  measurable_of_countable_partition)
 
 noncomputable section
 
@@ -31,6 +35,10 @@ variable {d : ℕ} {α : Type*} [MeasurableSpace α]
 
 /-! ### The candidate helpers, for any data carrying a configuration -/
 
+/-- The generalization of `measurable_of_candidates` to any measurable-space-valued
+configuration `e : α → Site d → ℤ`: anything computed from the candidate set
+`candidates (e a) z r` is measurable, because that set is a function of `e a` restricted
+to a box. -/
 theorem measurable_of_candidates' (e : α → Site d → ℤ) (he : Measurable e) (z : Site d)
     (r : ℕ) {X : Type*} [MeasurableSpace X] (f : α → X) (g : Finset (Label d) → α → X)
     (hg : ∀ F, Measurable (g F)) (h : ∀ a, f a = g (candidates (e a) z r) a) :
@@ -41,6 +49,9 @@ theorem measurable_of_candidates' (e : α → Site d → ℤ) (he : Measurable e
     f (fun c a => g (candidatesOf z r c) a) (fun c => hg _) fun a => ?_
   rw [h a, candidates_eq_candidatesOf]
 
+/-- The generalization of `measurable_card_filter_candidates` to an arbitrary
+measurable-space-valued configuration `e`: the cardinality of a filtered candidate set is
+measurable when the filter is. -/
 theorem measurable_card_filter_candidates' (e : α → Site d → ℤ) (he : Measurable e)
     (y : Site d) (r : ℕ) (P : α → Label d → Bool) (hP : ∀ q, Measurable fun a => P a q) :
     Measurable fun a : α => ((candidates (e a) y r).filter fun q => P a q = true).card := by
@@ -261,6 +272,9 @@ theorem measurable_pState (t : ℕ) :
 
 /-! ### The observables of the two constructions -/
 
+/-- The observable bundle `stackObservables` of the stack construction (the odometer,
+the active count, the hole count, and the active flag) is measurable, assembling the
+already-known measurability of each of its four component fields. -/
 theorem measurable_stackObservables :
     Measurable (LatticeProb.stackObservables (d := d)) := by
   refine Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
@@ -272,6 +286,10 @@ theorem measurable_stackObservables :
   · exact measurable_holeCount tx.1 tx.2
   · exact (measurable_state (d := d) ti.1).1 ti.2
 
+/-- The corresponding observable bundle `pObservables` of the particle-driven
+construction is measurable: three of its four fields follow directly from
+`measurable_pState`, and the active count is computed from a filtered candidate set via
+`measurable_card_filter_candidates'`. -/
 theorem measurable_pObservables :
     Measurable (LatticeProb.pObservables (d := d)) := by
   obtain ⟨hact, -, hhol, hdep⟩ := measurable_pState (d := d) 0

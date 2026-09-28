@@ -1,19 +1,31 @@
-/- Integrals and atom masses for a directed particle instruction. -/
 import Parking.Support.OrientedKernel
 import Parking.Support.OrientedLaw
+
+/-!
+# Integrals and atom masses for a directed particle instruction
+
+Integrals and atom masses for a directed particle instruction.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- Integrating `f` against `orientedInstructionLaw y` gives the uniform average
+`(∑ i, f (y + unit i)) / d` over the `d` forward neighbors, by unfolding the law as a
+scaled sum of Dirac masses. -/
 theorem integral_orientedInstructionLaw (f : Site d → ℝ) (y : Site d) :
     (∫ z, f z ∂(orientedInstructionLaw y)) = (∑ i : Fin d, f (y + unit i)) / d := by
   have hi : ∀ z : Site d, Integrable f (Measure.dirac z) := fun z => integrable_dirac (by simp)
   rw [orientedInstructionLaw, integral_smul_measure,
     integral_finsetSum_measure (fun i _ => hi (y + unit i))]
-  simp only [integral_dirac, ENNReal.toReal_inv, ENNReal.toReal_natCast, smul_eq_mul, div_eq_inv_mul]
+  simp only [integral_dirac, ENNReal.toReal_inv, ENNReal.toReal_natCast, smul_eq_mul,
+    div_eq_inv_mul]
 
+/-- The point `y + unit i` carries mass exactly `1 / d` under `orientedInstructionLaw y`,
+computed as the integral of the indicator function via
+`integral_orientedInstructionLaw`. -/
 theorem orientedInstructionLaw_forward_mass (y : Site d) (i : Fin d) :
     (orientedInstructionLaw y).real {y + unit i} = (d : ℝ)⁻¹ := by
   classical
@@ -25,6 +37,9 @@ theorem orientedInstructionLaw_forward_mass (y : Site d) (i : Fin d) :
   change (∑ j : Fin d, Set.indicator {y + unit i} (fun _ => (1 : ℝ)) (y + unit j)) / d = _
   simp only [hterm, sum_ite_eq', mem_univ, if_true, one_div]
 
+/-- The complement of `{y + unit i}` carries mass `1 - 1 / d` under
+`orientedInstructionLaw y`, the complementary probability to
+`orientedInstructionLaw_forward_mass`. -/
 theorem orientedInstructionLaw_miss_mass (hd : 1 ≤ d) (y : Site d) (i : Fin d) :
     (orientedInstructionLaw y).real {y + unit i}ᶜ = 1 - (d : ℝ)⁻¹ := by
   haveI := orientedInstructionLaw_isProbability hd y

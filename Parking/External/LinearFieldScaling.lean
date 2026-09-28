@@ -1,4 +1,10 @@
-/-
+import Parking.Support.LinInterp
+import Parking.External.SRWLocalCLT
+import Parking.Support.Continuum
+
+/-!
+# The linear membrane field scaling limit
+
 External input: BouRabeePanagiotis2026's Proposition 4.3 ("Invariance of the heat
 potential"), the joint space-time weak convergence of the rescaled, interpolated LINEAR
 membrane field, in its own vocabulary.  Here "BP" (Bou-Rabee and Panagiotis, *Quantitative
@@ -106,9 +112,6 @@ covariance clause's inner integral, at `s = 0` collapsing to one time variable),
 already uses for `Parking.tendsto_scenePair_fdd`'s own limit, at `v := 1` instead of the
 general `v`), so the existential is not vacuous.
 -/
-import Parking.Support.LinInterp
-import Parking.External.SRWLocalCLT
-import Parking.Support.Continuum
 
 open MeasureTheory ProbabilityTheory Filter Topology
 

@@ -2,6 +2,15 @@ import Parking.Support.SingleMean
 import Parking.Support.MatchedPriority
 import Parking.Support.MatchedLaw
 
+/-!
+# The conditional mean odometer as a particle-driver expectation
+
+The common-table conditional mean odometer `matchedMeanU` does not depend on the choice of
+priority function `ρ`, is measurable in the initial field, and equals the expectation of the
+particle-driven odometer `pOdometer` over the move law `moveLaw`. This identifies the table
+construction's mean with the more primitive particle-driver formulation.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -13,7 +22,8 @@ variable {d : ℕ}
 theorem matchedMeanU_priority (η : Site d → ℤ) (ρ ρ' : Label d × ℕ → ℝ)
     (T : ℕ) (x : Site d) : matchedMeanU η ρ T x = matchedMeanU η ρ' T x := by
   apply integral_congr_ae
-  exact ae_of_all _ fun σ => congrArg (fun k : ℕ => (k : ℝ)) ((matchedState_counts_priority η ρ ρ' σ T).2.2 x)
+  exact ae_of_all _ fun σ =>
+    congrArg (fun k : ℕ => (k : ℝ)) ((matchedState_counts_priority η ρ ρ' σ T).2.2 x)
 
 /-- The conditional mean odometer is measurable as a function of the initial field. -/
 theorem measurable_matchedMeanU (hd : 1 ≤ d) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
@@ -25,7 +35,8 @@ theorem measurable_matchedMeanU (hd : 1 ≤ d) (ρ : Label d × ℕ → ℝ) (T 
   exact ((measurable_from_countable' fun k : ℕ => (k : ℝ)).comp
     (hS.2.2.2 x)).stronglyMeasurable.integral_prod_right'.measurable
 
-/-- The table expectation is the particle-driver expectation, for each fixed configuration and priorities. -/
+/-- The table expectation is the particle-driver expectation, for each fixed configuration and
+    priorities. -/
 theorem matchedMeanU_eq_integral_pOdometer (hd : 1 ≤ d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     matchedMeanU η ρ T x = ∫ m, (pOdometer ⟨η, m, ρ⟩ T x : ℝ) ∂(moveLaw d) := by

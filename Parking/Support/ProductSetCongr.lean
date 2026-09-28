@@ -1,5 +1,12 @@
 import Parking.Support.ProductSection
 
+/-!
+# Partial integration is invariant under the presentation of the retained set
+
+`partialInt` depends on its retained set `S` only through its extension: replacing `S`
+by an equal set `T` leaves the partial integral of any functional unchanged.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

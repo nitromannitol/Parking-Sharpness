@@ -1,4 +1,11 @@
-/-
+import LatticeProb.Prob.TwoPointOrder
+import Parking.Support.MeanHorizonStep1
+import Parking.Support.CriticalLawReal
+import Parking.Support.CriticalChain
+
+/-!
+# Step 2 of the near-divisible lower bound
+
 Step 2 of `prop:near-divisible` (`parking.tex:2876-2894`), up to the optimization
 over the horizon.
 
@@ -20,12 +27,10 @@ two point law at `±a₀` is such a law.
 `Parking.lowerRate` is the rate of the lower half of `thm:BP`: `m^{(4-d)/4}` below
 dimension four, `log m` in dimension four and `(log m)^{2/d}` above it.
 -/
-import LatticeProb.Prob.TwoPointOrder
-import Parking.Support.MeanHorizonStep1
-import Parking.Support.CriticalLawReal
-import Parking.Support.CriticalChain
 
-open LatticeProb.ConvexOrder (evariance_twoPointLaw_lt_top evariance_twoPointLaw_pos exists_twoPoint_comparison integrable_id_shiftLaw integrable_intCast_of_exp integrable_twoPointLaw integral_twoPointLaw_id shiftLaw twoPointLaw)
+open LatticeProb.ConvexOrder (evariance_twoPointLaw_lt_top evariance_twoPointLaw_pos
+    exists_twoPoint_comparison integrable_id_shiftLaw integrable_intCast_of_exp
+    integrable_twoPointLaw integral_twoPointLaw_id shiftLaw twoPointLaw)
 
 open MeasureTheory ProbabilityTheory LatticeProb
 
@@ -33,6 +38,7 @@ noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- `shiftLaw 0 ν` is `realLaw ν`, the zero shift being the identity. -/
 theorem shiftLaw_zero (ν : Measure ℤ) : shiftLaw 0 ν = realLaw ν := by
   rw [shiftLaw, realLaw]
   simp

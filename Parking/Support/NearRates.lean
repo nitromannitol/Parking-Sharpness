@@ -1,4 +1,8 @@
-/-
+import Mathlib
+
+/-!
+# A power of `log(e/δ)` against a negative power of `δ`
+
 The elementary rate comparisons behind the choice of the cutoff `eq:near-cutoff`
 and of the exponent `r ≍ log(e/δ)` of Step 3 of the upper bounds of `thm:near`
 (`parking.tex:2967-2993`).
@@ -10,7 +14,6 @@ with `x ≥ 1`, gives `log(e/δ) ≤ (1 + k/p)x` and hence
 carries powers of `δ` and of `log(e/δ)`, into a constant multiple of the rate of
 `eq:near`, whose power of `δ` is strictly larger.
 -/
-import Mathlib
 
 noncomputable section
 namespace Parking

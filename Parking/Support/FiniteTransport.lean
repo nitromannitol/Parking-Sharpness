@@ -1,5 +1,15 @@
 import Parking.Support.MassTransport
 
+/-!
+# A finite-range mass transport principle for the driving law
+
+The box-truncated mass transport principle for the stationary driving law: for a bounded,
+shift-covariant transport function `F` under `law d ν`, the total mass sent from `0` into a
+box of radius `R` equals the total mass received at `0` from that box. The proof composes
+the driving law's translation invariance (`integral_comp_shiftData`) with the box-negation
+reindexing `sum_neg_box`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

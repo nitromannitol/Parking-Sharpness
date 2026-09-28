@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TiltContinuity
+
+/-!
+# The tilting interval of `thm:subcritical`
+
 The tilting interval of `thm:subcritical` and the support point it is applied at.
 
 `parking.tex:2318-2335` chooses `0 < λ₁ < θ` "so small that, for `0 ≤ λ ≤ λ₁`,
@@ -12,7 +16,6 @@ tilt, which the nonpositive-mean hypothesis of `thm:subcritical` asserts
 alongside the inequality, and `Parking.exists_support_pos` produces the integer
 `k ≥ 1` in the support of the count at the origin out of `P(η(0) > 0) > 0`.
 -/
-import Parking.Support.TiltContinuity
 
 open MeasureTheory Set Filter Topology
 

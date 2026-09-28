@@ -1,33 +1,33 @@
-/-
-Lemma 11.3 of parking.tex, frozen.  `parking.tex:2779-2785` (label
-`lem:mean-horizon`), in the setting of `parking.tex:2744-2778` ($\xi_\delta
-\coloneqq\eta_\delta+\delta$, and $\phi_d(s)=(s+1)^{(4-d)/4}$ for $d\leq3$,
-$\log(s+2)$ for $d\geq4$):
-
-  "Conditionally on $\xi_\delta$, let $\sigma$ be a bounded stopping time for
-   the walk.  If $M=\E\sigma$, then
-   $\E\sum_{j<\sigma}\xi_\delta(X_j)\leq C\phi_d(M)$."
-
-"Conditionally on $\xi_\delta$" makes the stopping rule a function of the
-configuration as well as of the walk; it is a stopping time for the natural
-filtration of the walk for each configuration, and it is bounded by one
-horizon `n` uniformly.  A stopping time is measurable, in the walk for each
-configuration and in the configuration for each walk, so that both expectations
-below are expectations of genuine random variables.  Both average over the
-configuration and the walk.  The three results the proof quotes without proving
-them here enter as explicit hypotheses.  Their finiteness is asserted alongside the bound,
-so that an undefined integral cannot satisfy it through its junk value.
-
-Step 1 of the paper's proof cites `eq:green-norms` at `parking.tex:2805` to read
-the concentration term as a multiple of the scale, so the node carries
-`Parking.External.GreenNorms` as a fourth explicit hypothesis.
--/
 import Parking.Support.MeanHorizonProof
 import Parking.External.SandpileGrowth
 import Parking.External.Stopping
 import Parking.External.UConcentration
 import Parking.External.UConcentrationProved
 import Parking.External.GreenNormsProved
+
+/-!
+# The mean-horizon bound on a stopped tilted sum (frozen)
+
+Lemma 11.3 of parking.tex, frozen. `parking.tex:2779-2785` (label `lem:mean-horizon`), in the
+setting of `parking.tex:2744-2778` ($\xi_\delta \coloneqq\eta_\delta+\delta$, and
+$\phi_d(s)=(s+1)^{(4-d)/4}$ for $d\leq3$, $\log(s+2)$ for $d\geq4$):
+
+"Conditionally on $\xi_\delta$, let $\sigma$ be a bounded stopping time for the walk. If
+$M=\E\sigma$, then $\E\sum_{j<\sigma}\xi_\delta(X_j)\leq C\phi_d(M)$."
+
+"Conditionally on $\xi_\delta$" makes the stopping rule a function of the configuration as
+well as of the walk; it is a stopping time for the natural filtration of the walk for each
+configuration, and it is bounded by one horizon `n` uniformly. A stopping time is
+measurable, in the walk for each configuration and in the configuration for each walk, so
+that both expectations below are expectations of genuine random variables. Both average
+over the configuration and the walk. The three results the proof quotes without proving
+them here enter as explicit hypotheses. Their finiteness is asserted alongside the bound,
+so that an undefined integral cannot satisfy it through its junk value.
+
+Step 1 of the paper's proof cites `eq:green-norms` at `parking.tex:2805` to read the
+concentration term as a multiple of the scale, so the node carries
+`Parking.External.GreenNorms` as a fourth explicit hypothesis.
+-/
 
 open MeasureTheory
 

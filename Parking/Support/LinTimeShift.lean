@@ -1,28 +1,23 @@
-/-
-**The two-time (fixed space) comparison of the truncated Green function, general `d`.**
+import Parking.Support.GreenBridge
+import Parking.Support.Kernel
+import LatticeProb.Walk.GreenSq
+import LatticeProb.Walk.VarianceScale
 
-This is the TIME half of the translated-kernel-difference bound `parking.tex:1760-1762`
-asks for, in the form that the `l2Norm`/`supAbs` of `Parking.Support.LinIncrementMoment`
-need: a bound on
+/-!
+# The two-time comparison of the truncated Green function
 
-    l2Norm (fun z => green d n (x - z) - green d m (x - z))
-    supAbs (fun z => green d n (x - z) - green d m (x - z))
-
-for the SAME site `x` and two horizons `1 ≤ m ≤ n`, decaying as `n - m` stays small
-relative to `m`.  Unlike the SPACE-only comparison (see the docstring of
+The two-time (fixed space) comparison of the truncated Green function, general `d`: a
+bound on `l2Norm`/`supAbs` of `fun z => green d n (x - z) - green d m (x - z)`, for the
+same site `x` and two horizons `1 ≤ m ≤ n`, decaying as `n - m` stays small relative to
+`m`. Unlike the space-only comparison (see the docstring of
 `exists_green_time_shift_l2_bound`), this one is a short computation from tools already
 proved in the shared library: `LatticeProb.tsum_sum_srwHeat_mul` (Chapman-Kolmogorov,
 `LatticeProb/Walk/GreenSq.lean`) turns the l2Norm-squared into the double sum
 `∑_{a,b ∈ Ico m n} srwHeat d (a+b) 0`, and the on-diagonal decay bounds
 `LatticeProb.srwHeat_diag_le`/`srwHeat_sup_le` (`LatticeProb/Walk/VarianceScale.lean`,
 already general in `d`) bound every term of that sum, since `a + b ≥ 2m` throughout.
-
 No External is registered or consumed: this is a theorem of the repository.
 -/
-import Parking.Support.GreenBridge
-import Parking.Support.Kernel
-import LatticeProb.Walk.GreenSq
-import LatticeProb.Walk.VarianceScale
 
 noncomputable section
 
@@ -42,6 +37,7 @@ def subLeftEquiv (x : Site d) : Site d ≃ Site d where
   left_inv z := by simp
   right_inv z := by simp
 
+/-- Reindexing a `tsum` along the involution `subLeftEquiv x` leaves it unchanged. -/
 theorem tsum_comp_subLeft (x : Site d) (f : Site d → ℝ) :
     ∑' z : Site d, f (x - z) = ∑' z : Site d, f z :=
   (subLeftEquiv x).tsum_eq f
@@ -82,6 +78,8 @@ theorem tsum_green_sub_sq_eq {m n : ℕ} (hmn : m ≤ n) (x : Site d) :
 
 /-! ### The double sum is bounded by the on-diagonal decay at the earliest time -/
 
+/-- The double sum `∑_{a,b ∈ Ico m n} srwHeat d (a+b) 0` is at most `(n - m) ^ 2` times the
+on-diagonal decay bound `diagConst d / √(2m) ^ d` at the earliest time `2m ≤ a + b`. -/
 theorem sum_sum_srwHeat_le {m n : ℕ} (hm : 1 ≤ m) (hmn : m ≤ n) (hd : 0 < d) :
     ∑ a ∈ Finset.Ico m n, ∑ b ∈ Finset.Ico m n, LatticeProb.srwHeat d (a + b) 0
       ≤ ((n : ℝ) - m) ^ 2 * (LatticeProb.diagConst d / Real.sqrt (2 * m) ^ d) := by

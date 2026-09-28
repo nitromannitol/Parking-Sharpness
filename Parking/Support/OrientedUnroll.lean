@@ -1,7 +1,12 @@
-/- The directed error at the origin, unrolled as the sum over the rounds of the
-finite route sums (`parking.tex:3255-3265`). -/
 import Parking.Support.OrientedSiteRound
 import Parking.Support.OrientedFiniteRoute
+
+/-!
+# Oriented unroll
+
+The directed error at the origin, unrolled as the sum over the rounds of the
+finite route sums (`parking.tex:3255-3265`).
+-/
 
 noncomputable section
 namespace Parking

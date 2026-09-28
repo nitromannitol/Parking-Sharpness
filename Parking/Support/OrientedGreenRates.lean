@@ -1,13 +1,21 @@
-/- Directed Green square norms in the logarithmic and summable dimensions. -/
 import Parking.Support.OrientedLayerBounds
 import Parking.Support.OrientedNormPositive
 import Parking.Support.CriticalReduction
+
+/-!
+# Directed Green square norm growth rates
+
+Directed Green square norms in the logarithmic and summable dimensions.
+-/
 
 noncomputable section
 namespace Parking
 open LatticeProb Finset
 variable {d : ℕ}
 
+/-- The squared Green-function `tsum` at horizon `n` splits as the `l = 0` term, which is
+`1`, plus the sum over layers `1 ≤ l < n` of the squared layer function, by re-indexing
+`range n` as `insert 0 (Ico 1 n)`. -/
 theorem orientedGreen_sq_split (n : ℕ) (hn : 1 ≤ n) :
     (∑' x : Site d, orientedGreen d n x ^ 2) =
       1 + ∑ l ∈ Ico 1 n, ∑' x : Site d, orientedLayer d l x ^ 2 := by
@@ -19,6 +27,8 @@ theorem orientedGreen_sq_split (n : ℕ) (hn : 1 ≤ n) :
   rw [hs, sum_insert (by simp)]
   simp [orientedLayer]
 
+/-- `log (n + 1) ≤ 1 + log n` for `n ≥ 1`, from `n + 1 ≤ 2 * n` and `log 2 < 1`
+(`Real.log_two_lt_d9`). -/
 theorem log_nat_add_one_le (n : ℕ) (hn : 1 ≤ n) :
     Real.log ((n : ℝ) + 1) ≤ 1 + Real.log (n : ℝ) := by
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
@@ -27,6 +37,10 @@ theorem log_nat_add_one_le (n : ℕ) (hn : 1 ≤ n) :
   rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (by linarith : (n : ℝ) ≠ 0)] at h
   linarith [Real.log_two_lt_d9]
 
+/-- In dimension `3` the squared Green `tsum` grows like `log n`: it is sandwiched
+between `c * log (n + 1)` and `C * log (n + 1)`, by combining the per-layer bound
+`exists_orientedLayer_sq_bounds` (order `1 / l`) with the harmonic-sum estimates
+`log_sub_log_le_sum_inv` and `sum_inv_le_one_add_log` via `orientedGreen_sq_split`. -/
 theorem exists_orientedGreen_three_sq_bounds :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
       c * Real.log ((n : ℝ) + 1) ≤ ∑' x : Site 3, orientedGreen 3 n x ^ 2 ∧
@@ -71,6 +85,9 @@ theorem exists_orientedGreen_three_sq_bounds :
     nlinarith
   · nlinarith
 
+/-- For `d ≥ 4` the squared Green `tsum` stays uniformly bounded in `n`, since the
+per-layer bound `exists_orientedLayer_sq_bounds` decays like `l ^ (-3/2)`, which is
+summable in `l` by `sum_rpow_three_halves_le`. -/
 theorem exists_orientedGreen_high_sq_bound (hd : 4 ≤ d) :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n → (∑' x : Site d, orientedGreen d n x ^ 2) ≤ C := by
   obtain ⟨c, C, _hc, hC, hb⟩ := exists_orientedLayer_sq_bounds (d := d) (by omega)

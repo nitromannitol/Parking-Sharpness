@@ -1,15 +1,18 @@
-/-
-The classical strong minimum principle for the heat operator `(2d)⁻¹Δ`, used
-in Step 4 of `parking.tex:1800-1820`. A nonnegative smooth classical solution
-which vanishes at a point vanishes along every backward vertical segment
-through that point contained in its open domain.
+import Parking.Support.Continuum
+
+/-!
+# The strong minimum principle for the heat operator
+
+The classical strong minimum principle for the heat operator `(2d)⁻¹Δ`, used in Step 4 of
+`parking.tex:1800-1820`. A nonnegative smooth classical solution which vanishes at a point
+vanishes along every backward vertical segment through that point contained in its open
+domain.
 
 No longer assumed: proved as `Parking.External.heatStrongMinimum` in
 `Parking/External/HeatStrongMinimumProved.lean`, from the shared library's
-`LatticeProb.WhiteNoise.heat_strong_minimum` (Nirenberg 1953, Theorem 1), proved
-there by a barrier argument and the weak minimum principle on a compact cylinder.
+`LatticeProb.WhiteNoise.heat_strong_minimum` (Nirenberg 1953, Theorem 1), proved there by a
+barrier argument and the weak minimum principle on a compact cylinder.
 -/
-import Parking.Support.Continuum
 
 open MeasureTheory
 

@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Kernel
+import LatticeProb.Walk.BinomLaw
+
+/-!
+# The oriented walk: layer laws and the binomial law in dimension two
+
 The oriented walk of Section 10 of `parking.tex`: its layer laws, its
 truncated Green function, and the binomial law that identifies the layer law
 in dimension two.
@@ -11,8 +16,6 @@ support of `\vec p_l` with `{0,…,l}` and `\vec p_l` with the binomial law of
 zero to the integers; it is defined in the library (`LatticeProb/Walk/BinomLaw.lean`)
 and exported into `Parking`.
 -/
-import Parking.Support.Kernel
-import LatticeProb.Walk.BinomLaw
 
 noncomputable section
 

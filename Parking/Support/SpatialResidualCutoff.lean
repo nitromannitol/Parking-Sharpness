@@ -1,7 +1,12 @@
-/- Vanishing mean of bounded residual tests on the discrete positive region. -/
 import Parking.Support.SpatialResidualEstimate
 import Parking.Support.SpatialSceneryAlgebra
 import LatticeProb.Prob.Scaling.LocalResidual
+
+/-!
+# Vanishing mean of the cutoff residual test
+
+Vanishing mean of bounded residual tests on the discrete positive region.
+-/
 
 open MeasureTheory Set Filter Topology LatticeProb
 open LatticeProb.Scaling.PositiveCutoff LatticeProb.Scaling.LocalResidual
@@ -16,6 +21,10 @@ theorem measurable_cutoff_barDivisible (K : Set (ℝ × (Fin d → ℝ))) (δ R 
     (fun w q => R ^ ((d : ℝ) / 2 - 2) * uOf w q.1 q.2)
     (fun q => (measurable_uOf q.1 q.2).const_mul _)
 
+/-- The discrete residual test functional `w ↦ test volume K (tsupport ψ) δ
+(spaceTimeResidualTest ψ) (scenePair w R …) (barDivisible w R)` is measurable in `w`,
+as a product of the measurable positivity cutoff with a measurable minimum of the
+constant `1` and the absolute difference of two measurable integrals. -/
 theorem measurable_discreteResidualTest
     {ψ : ℝ × (Fin d → ℝ) → ℝ} (hψ : IsSpaceTimeTest ψ)
     (K : Set (ℝ × (Fin d → ℝ))) (δ R : ℝ) :
@@ -75,7 +84,8 @@ theorem tendsto_integral_discreteResidualTest_zero (hd : 1 ≤ d) (hd3 : d ≤ 3
       exact add_nonneg (mul_nonneg hη.le hY) (abs_nonneg _)
     have hp := positive_of_cutoff_ne_zero hδ hz
     have he := herr w hp
-    have heS := scenePair_sub_test w (isTestFun_sampledTimeIntegral hψ T R) (isTestFun_timeIntegral hψ) hR
+    have heS := scenePair_sub_test w (isTestFun_sampledTimeIntegral hψ T R)
+        (isTestFun_timeIntegral hψ) hR
     have htest : F R w ≤ |(∫ p in K, barDivisible w R p.1 p.2 * spaceTimeResidualTest ψ p) -
         scenePair w R (fun x => ∫ s : ℝ, ψ (s, x))| := by
       exact (mul_le_mul (cutoff_le_one _ _ _) (min_le_right _ _)
@@ -84,7 +94,8 @@ theorem tendsto_integral_discreteResidualTest_zero (hd : 1 ≤ d) (hd3 : d ≤ 3
     calc
       _ ≤ |(∫ p in K, barDivisible w R p.1 p.2 * spaceTimeResidualTest ψ p) -
           scenePair w R (sampledTimeIntegral ψ T R)| +
-          |scenePair w R (sampledTimeIntegral ψ T R) - scenePair w R (fun x => ∫ s : ℝ, ψ (s, x))| := abs_sub_le _ _ _
+          |scenePair w R (sampledTimeIntegral ψ T R) -
+            scenePair w R (fun x => ∫ s : ℝ, ψ (s, x))| := abs_sub_le _ _ _
       _ ≤ η * Y R w + E R w := by rw [← heS]; exact add_le_add he le_rfl
   apply Metric.tendsto_nhds.mpr
   intro ε hε

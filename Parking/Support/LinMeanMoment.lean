@@ -1,24 +1,27 @@
-/-
-The mean and second-moment integrability of the linear membrane field `V`, under an i.i.d.
-law with mean zero and a finite second moment -- the two prerequisites of the grid-gap
-estimate of `prop:spatial-scaling`'s Step 1 (`Parking.Support.LinGridGap`): (i) `E[V_n(x)] = 0`,
-an instance of the generic centered finite-linear-combination identity
-`Parking.integral_linear_sum_infinitePi` (`Parking/Support/LinearFirstMoment.lean`) at the
-explicit finite-sum representation `Parking.linPotential_eq_sum`
-(`Parking/Support/LinPotentialSum.lean`), since `Parking.iidLaw d ν0` unfolds to
-`Measure.infinitePi (fun _ => ν0)`; (ii) the second-moment integrability of `V_n(x)` and of
-the two-point, two-time difference `V_n(x) - V_m(y)`, from the SAME finite bilinear-form
-machinery `Parking.integrable_sum_mul_sum_pi` (`Parking/Support/LinCovarianceGlue.lean`) that
-gives the covariance value, here used to conclude integrability rather than to compute a
-value.  Neither prerequisite can be read off the stated conclusion of
-`Parking.exists_linPotential_increment_moment` (an `L^q`-moment bound whose integral is, by
-the Mathlib junk-value convention, `0` and so satisfies `0 ≤ RHS` trivially when the
-underlying quantity is not integrable), so both are proved directly here.
--/
 import Parking.Support.LinCovarianceGlue
 import Parking.Support.LinearFirstMoment
 import Parking.Support.CriticalLawReal
 import Parking.Support.LinIncrementConcentration
+
+/-!
+# Mean and second-moment integrability of the linear field
+
+The mean and second-moment integrability of the linear membrane field `V`, under an i.i.d.
+law with mean zero and a finite second moment: the two prerequisites of the grid-gap
+estimate of `prop:spatial-scaling`'s Step 1 (`Parking.Support.LinGridGap`). (i) `E[V_n(x)] = 0`
+is an instance of the generic centered finite-linear-combination identity
+`Parking.integral_linear_sum_infinitePi` (`Parking/Support/LinearFirstMoment.lean`) at the
+explicit finite-sum representation `Parking.linPotential_eq_sum`
+(`Parking/Support/LinPotentialSum.lean`), since `Parking.iidLaw d ν0` unfolds to
+`Measure.infinitePi (fun _ => ν0)`. (ii) The second-moment integrability of `V_n(x)` and of
+the two-point, two-time difference `V_n(x) - V_m(y)` comes from the same finite bilinear-form
+machinery `Parking.integrable_sum_mul_sum_pi` (`Parking/Support/LinCovarianceGlue.lean`) that
+gives the covariance value, here used to conclude integrability rather than to compute a
+value. Neither prerequisite can be read off the stated conclusion of
+`Parking.exists_linPotential_increment_moment` (an `L^q`-moment bound whose integral is, by
+the Mathlib junk-value convention, `0` and so satisfies `0 ≤ RHS` trivially when the
+underlying quantity is not integrable), so both are proved directly here.
+-/
 
 noncomputable section
 

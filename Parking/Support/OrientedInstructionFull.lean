@@ -1,11 +1,15 @@
-/- Removing the stack cutoff from the directed instruction estimate, and the
+import Parking.Support.OrientedInstructionMoment
+
+/-!
+# Removing the stack cutoff from the instruction estimate
+
+Removing the stack cutoff from the directed instruction estimate, and the
 resulting moment bound on the directed error field at the origin.
 
 This is the first display of `prop:w-moment` for the directed kernel, with
 `kappa_d(n)` replaced by one, which is what Step 1 of the proof of
 `thm:oriented-walk` (`parking.tex:3253-3292`) asserts.
 -/
-import Parking.Support.OrientedInstructionMoment
 
 open LatticeProb (measurable_from_countable' measurable_of_countable_partition)
 
@@ -41,6 +45,9 @@ def orientedFiniteInstr (S : Finset (Site d)) (n : ℕ)
   ∑ y ∈ S, ∑ j ∈ range (orientedOdometer z.1 z.2 (n - 1) y),
     orientedCumDisc (orientedAlive z.1 z.2 n y j) y (z.2 (y, j))
 
+/-- Once the truncation level `M` dominates every relevant odometer count on `S`, the
+truncated instruction sum `orientedTruncatedInstr S n M` agrees with the full finite
+instruction sum `orientedFiniteInstr S n`, via `sum_range_ite_lt`. -/
 theorem orientedTruncatedInstr_eq_of_le (S : Finset (Site d)) (n M : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d))
     (hM : ∀ y ∈ S, orientedOdometer z.1 z.2 (n - 1) y ≤ M) :
@@ -48,6 +55,9 @@ theorem orientedTruncatedInstr_eq_of_le (S : Finset (Site d)) (n M : ℕ)
   refine sum_congr rfl fun y hy => ?_
   rw [sum_range_ite_lt, min_eq_right (hM y hy)]
 
+/-- The truncated instruction sum eventually equals the full finite instruction sum as
+the truncation level `M → ∞`, taking `M` past the finite supremum of the relevant
+odometer counts on `S` and applying `orientedTruncatedInstr_eq_of_le`. -/
 theorem orientedTruncatedInstr_eventually_eq (S : Finset (Site d)) (n : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) :
     ∀ᶠ M in Filter.atTop, orientedTruncatedInstr S n M z = orientedFiniteInstr S n z := by
@@ -56,6 +66,9 @@ theorem orientedTruncatedInstr_eventually_eq (S : Finset (Site d)) (n : ℕ)
   exact orientedTruncatedInstr_eq_of_le S n M z fun y hy =>
     (le_sup (f := fun y => orientedOdometer z.1 z.2 (n - 1) y) hy).trans hM
 
+/-- The finite instruction sum is bounded in absolute value by the sum, over `S`, of the
+relevant odometer counts at horizon `n - 1`, using the triangle inequality and the
+single-instruction bound `abs_orientedCumDisc_le`. -/
 theorem abs_orientedFiniteInstr_le (hd : 1 ≤ d) (S : Finset (Site d)) (n : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) :
     |orientedFiniteInstr S n z| ≤ ∑ y ∈ S, (orientedOdometer z.1 z.2 (n - 1) y : ℝ) := by
@@ -65,6 +78,8 @@ theorem abs_orientedFiniteInstr_le (hd : 1 ≤ d) (S : Finset (Site d)) (n : ℕ
     (fun j _ => abs_orientedCumDisc_le hd (orientedAlive z.1 z.2 n y j) y (z.2 (y, j)))
   simpa using h
 
+/-- The truncated instruction sum satisfies the same bound as the untruncated one, since
+truncating to level `M` only shrinks the range of each inner sum. -/
 theorem abs_orientedTruncatedInstr_le (hd : 1 ≤ d) (S : Finset (Site d)) (n M : ℕ)
     (z : (Site d → ℤ) × (Site d × ℕ → Site d)) :
     |orientedTruncatedInstr S n M z| ≤ ∑ y ∈ S, (orientedOdometer z.1 z.2 (n - 1) y : ℝ) := by
@@ -83,6 +98,9 @@ theorem abs_orientedTruncatedInstr_le (hd : 1 ≤ d) (S : Finset (Site d)) (n M 
     sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => zero_le_one
   simpa using h1
 
+/-- `orientedFiniteInstr S n` is measurable, since the inner range depends measurably on
+the data through `orientedOdometer` and `measurable_of_countable_partition` handles each
+countable value of that range using `measurable_orientedCumDisc_term`. -/
 theorem measurable_orientedFiniteInstr (S : Finset (Site d)) (n : ℕ) :
     Measurable (orientedFiniteInstr S n) := by
   refine Finset.measurable_sum _ fun y _ => ?_
@@ -93,6 +111,8 @@ theorem measurable_orientedFiniteInstr (S : Finset (Site d)) (n : ℕ) :
   intro N
   exact Finset.measurable_sum _ fun j _ => measurable_orientedCumDisc_term n y j
 
+/-- `orientedTruncatedInstr S n M` is measurable, as a finite sum of `if`-then-else terms
+built from the measurable odometer and `measurable_orientedCumDisc_term`. -/
 theorem measurable_orientedTruncatedInstr (S : Finset (Site d)) (n M : ℕ) :
     Measurable (orientedTruncatedInstr S n M) := by
   refine Finset.measurable_sum _ fun y _ => Finset.measurable_sum _ fun j _ => ?_

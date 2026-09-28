@@ -1,4 +1,11 @@
-/-
+import Parking.Support.OrientedTerminal
+import Parking.Support.OrientedScaling
+import Parking.Support.ContStopGeneral
+import Parking.Support.SpatialCutoff
+
+/-!
+# Oriented optimal-stopping stability (frozen external input)
+
 External input: the stability of optimal-stopping values under uniform
 convergence of uniformly bounded rewards, together with the invariance principle
 for the stopped oriented walk, in the form the paper cites at
@@ -75,7 +82,8 @@ MODELLING.
   motion but the statement is quantified over a space carrying one, as every
   other continuum statement of the repository is.
 - A stopping time of `B` is recorded by Galmarino's criterion
-  (`LatticeProb.ContinuumStopping.IsContStopping`), as in the companion divisible-sandpile repository.
+  (`LatticeProb.ContinuumStopping.IsContStopping`), as in the companion
+  divisible-sandpile repository.
 
 WHY THE UNIFORM CONVERGENCE IS OVER ALL OF `[0,T] × ℝ`.  The cited estimates
 need only uniform convergence on compact sets, at the price of a tightness bound
@@ -133,10 +141,6 @@ sets are nonempty, and both rewards are bounded by `M`, so both sets are bounded
 above by `M`.  The statement is therefore a genuine assertion about two
 suprema and not satisfiable through a junk value.
 -/
-import Parking.Support.OrientedTerminal
-import Parking.Support.OrientedScaling
-import Parking.Support.ContStopGeneral
-import Parking.Support.SpatialCutoff
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal

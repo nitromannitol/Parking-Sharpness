@@ -1,4 +1,8 @@
-/-
+import Parking.Support.CovParts
+
+/-!
+# The arithmetic of Step 2
+
 The arithmetic of Step 2 at a single site.
 
 Step 2 of `lem:product` (`parking.tex:2382-2409`) bounds the conditional
@@ -8,7 +12,6 @@ parts of `Support/CovParts.lean`.  Only the values `k ≥ 1` contribute, and the
 the weight `k` is exactly the weight the summation by parts produces, so the
 comparison is term by term.
 -/
-import Parking.Support.CovParts
 
 open MeasureTheory
 

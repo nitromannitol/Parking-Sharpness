@@ -2,12 +2,26 @@ import Parking.Support.IsolatedTransport
 import Parking.Support.FiniteTransport
 import Parking.Support.IndicatorIntegral
 
+/-!
+# From isolated holes to good holes
+
+`measure_isolated_le_good_add_activity` bounds the probability of an isolated hole
+at the origin by the probability of a `GoodHole` (an isolated hole with at most one
+nearby active site) plus half the mean active count there, using the mass-transport
+identity `integral_box_transport` to control the contribution of isolated holes with
+several nearby active sites.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 open scoped Classical
 variable {d : ℕ}
 
+/-- Splits the isolated-hole indicator as the good-hole indicator (at most one nearby
+active site) plus half the mass transported to nearby active sites, then bounds that
+transported mass by the mean active count `A` at the origin via the box-transport
+identity `integral_box_transport`. -/
 theorem measure_isolated_le_good_add_activity (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] (t K : ℕ)
     (hiA : Integrable (fun ω : Data d => (A ω t 0 : ℝ)) (law d ν)) :
@@ -38,9 +52,11 @@ theorem measure_isolated_le_good_add_activity (hd : 1 ≤ d) (ν : Measure ℤ)
     have hc := (Nat.cast_le (α := ℝ)).mpr h
     simpa only [F, Nat.cast_sum] using hc
   let I := fun ω : Data d => if IsolatedHole ω t (2 * K) 0 then (1 : ℝ) else 0
-  let G := fun ω : Data d => if IsolatedHole ω t (2 * K) 0 ∧ (activeSites ω t K 0).card ≤ 1 then (1 : ℝ) else 0
+  let G := fun ω : Data d =>
+      if IsolatedHole ω t (2 * K) 0 ∧ (activeSites ω t K 0).card ≤ 1 then (1 : ℝ) else 0
   have hmI := measurableSet_IsolatedHole (d := d) t (2 * K) 0
-  have hmG : MeasurableSet {ω : Data d | IsolatedHole ω t (2 * K) 0 ∧ (activeSites ω t K 0).card ≤ 1} :=
+  have hmG : MeasurableSet
+      {ω : Data d | IsolatedHole ω t (2 * K) 0 ∧ (activeSites ω t K 0).card ≤ 1} :=
     hmI.inter (measurableSet_le (measurable_activeSites_card t K 0) measurable_const)
   have hiI : Integrable I μ := integrable_ite_one_zero μ _ hmI
   have hiG : Integrable G μ := integrable_ite_one_zero μ _ hmG
@@ -56,15 +72,19 @@ theorem measure_isolated_le_good_add_activity (hd : 1 ≤ d) (ν : Measure ℤ)
       · simp only [I, G, hI, hC, and_self, if_true]
         have hn : 0 ≤ ((activeSites ω t K 0).card : ℝ) := Nat.cast_nonneg _
         linarith
-      · have h2 : (2 : ℝ) ≤ (activeSites ω t K 0).card := by exact_mod_cast (show 2 ≤ (activeSites ω t K 0).card by omega)
+      · have h2 : (2 : ℝ) ≤ (activeSites ω t K 0).card :=
+            by exact_mod_cast (show 2 ≤ (activeSites ω t K 0).card by omega)
         simp only [I, G, hI, hC, and_false, if_true, if_false]
         linarith
     · simp only [I, G, hI, false_and, if_false, mul_zero, add_zero, le_refl]
   have h := integral_mono hiI (hiG.add (hiOut.const_mul (1 / 2 : ℝ))) hp
   change (∫ ω, I ω ∂μ) ≤ ∫ ω, G ω + (1 / 2 : ℝ) * ∑ a ∈ boxFinset 0 K, F ω 0 a ∂μ at h
   rw [integral_add hiG (hiOut.const_mul (1 / 2 : ℝ)), integral_const_mul] at h
-  have hI : (∫ ω, I ω ∂μ) = (μ {ω | IsolatedHole ω t (2 * K) 0}).toReal := integral_ite_one_zero μ _ hmI
-  have hG : (∫ ω, G ω ∂μ) = (μ {ω | IsolatedHole ω t (2 * K) 0 ∧ (activeSites ω t K 0).card ≤ 1}).toReal := integral_ite_one_zero μ _ hmG
+  have hI : (∫ ω, I ω ∂μ) = (μ {ω | IsolatedHole ω t (2 * K) 0}).toReal :=
+      integral_ite_one_zero μ _ hmI
+  have hG : (∫ ω, G ω ∂μ) =
+      (μ {ω | IsolatedHole ω t (2 * K) 0 ∧ (activeSites ω t K 0).card ≤ 1}).toReal :=
+      integral_ite_one_zero μ _ hmG
   rw [hI, hG] at h
   exact h.trans (add_le_add le_rfl (mul_le_mul_of_nonneg_left hOut (by norm_num)))
 

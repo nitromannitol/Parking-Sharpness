@@ -1,6 +1,11 @@
-/- A finite-path maximal inequality from moment bounds on increments. -/
 import Parking.Support.DyadicMoment
 import Mathlib.Data.Nat.Log
+
+/-!
+# A finite-path maximal inequality
+
+A finite-path maximal inequality from moment bounds on increments.
+-/
 
 open LatticeProb.MomentNorm (rNorm rNorm_mono)
 
@@ -8,20 +13,25 @@ noncomputable section
 namespace Parking
 open MeasureTheory Finset
 
+/-- The maximum of `|f j|` over `j ≤ n`. -/
 def finitePathMax (f : ℕ → ℝ) (n : ℕ) : ℝ :=
   (range (n + 1)).sup' (by simp) (fun j => |f j|)
 
+/-- `|f j| ≤ finitePathMax f n` for every `j ≤ n`. -/
 theorem abs_le_finitePathMax (f : ℕ → ℝ) (n j : ℕ) (hj : j ≤ n) :
     |f j| ≤ finitePathMax f n :=
   le_sup' (fun j => |f j|) (mem_range.mpr (by omega))
 
+/-- `finitePathMax f n ≥ 0`, since it dominates `|f 0|`. -/
 theorem finitePathMax_nonneg (f : ℕ → ℝ) (n : ℕ) : 0 ≤ finitePathMax f n :=
   (abs_nonneg (f 0)).trans (abs_le_finitePathMax f n 0 (Nat.zero_le _))
 
+/-- `finitePathMax f n ≤ b` whenever `|f j| ≤ b` for every `j ≤ n`. -/
 theorem finitePathMax_le (f : ℕ → ℝ) (n : ℕ) {b : ℝ}
     (h : ∀ j : ℕ, j ≤ n → |f j| ≤ b) : finitePathMax f n ≤ b :=
   sup'_le _ _ (fun j hj => h j (by have := mem_range.mp hj; omega))
 
+/-- `ω ↦ finitePathMax (fun i => F i ω) n` is measurable whenever each `F i` is. -/
 theorem measurable_finitePathMax {Ω : Type} [MeasurableSpace Ω]
     (F : ℕ → Ω → ℝ) (hm : ∀ i, Measurable (F i)) (n : ℕ) :
     Measurable fun ω => finitePathMax (fun i => F i ω) n := by

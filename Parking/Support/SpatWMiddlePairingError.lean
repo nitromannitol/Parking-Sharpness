@@ -1,9 +1,14 @@
-/- Replacement of the signed-density middle term by a continuum pairing. -/
 import Parking.Support.SpatWTaylorRemainder
 import Parking.Support.SpatWRiemann
 import LatticeProb.WhiteNoise
 import Parking.Support.Continuum
 import LatticeProb.Prob.Scaling.VanishingMassError
+
+/-!
+# Middle pairing error
+
+Replacement of the signed-density middle term by a continuum pairing.
+-/
 
 open LatticeProb.WhiteNoise (continuous_contOp hasCompactSupport_contOp)
 

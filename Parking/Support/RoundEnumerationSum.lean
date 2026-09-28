@@ -2,6 +2,17 @@ import Parking.Support.RoundEnumeration
 import Parking.Support.MatchedBounds
 import Parking.Support.BlockSum
 
+/-!
+# Summing over the round enumeration
+
+Rewrites sums indexed by `roundEnumeration` as sums over its underlying finite
+rectangle (`sum_roundEnumeration`), specializes this to count each used table entry
+exactly once at its departure site (`sum_roundEnumeration_used`), records that a site's
+total departures through round `T` are the sum of its per-round matched counts
+(`matchedOdometer_eq_sum`), and combines the two to charge the sum of used-entry
+weights over all rounds to the final odometer (`sum_rounds_used_eq_odometer`).
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb

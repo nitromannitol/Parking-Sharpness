@@ -1,26 +1,26 @@
-/-
-Theorem 8.2 of parking.tex, frozen.  `parking.tex:1601-1610` (label
-`thm:four-sparse`):
-
-  "Let $d=4$ and, for $0<\eps\leq1/2$, let $(\eta(x))_{x\in\Z^4}$ be
-   independent and identically distributed, with $\eta(0)$ taking the values
-   $1$ and $-1$ with probability $\eps/2$ each and $0$ otherwise.  There is
-   $c>0$, independent of $\eps$, such that
-   $\liminf_{n\to\infty}\frac{\E U_n(0)}{\E u_n(0)}\geq c\log(e/\eps)$."
-
-The constant is independent of `ε`, so it is bound before it.  The three-point
-law with parameter `ε/2` is `Parking.threePointLaw (ε/2)`, already used by
-`thm:nearest-counterexample`.  The two results the proof quotes without proving
-them here, the growth of the mean sandpile odometer and the optimal stopping
-representation, enter as explicit hypotheses. The asymptotic lower bound is
-written as an eventual inequality, with a smaller universal constant. This
-avoids a real liminf whose boundedness would require additional cited inputs
-used by the separate upper-ratio theorem.
--/
 import Parking.Support.ThreePointLaw
 import Parking.External.SandpileGrowth
 import Parking.External.Stopping
 import Parking.Support.FourSparseChain
+
+/-!
+# Divergence of the growth ratio at `d = 4` (frozen)
+
+Theorem 8.2 of parking.tex, frozen. `parking.tex:1601-1610` (label `thm:four-sparse`):
+
+"Let $d=4$ and, for $0<\eps\leq1/2$, let $(\eta(x))_{x\in\Z^4}$ be independent and
+identically distributed, with $\eta(0)$ taking the values $1$ and $-1$ with probability
+$\eps/2$ each and $0$ otherwise. There is $c>0$, independent of $\eps$, such that
+$\liminf_{n\to\infty}\frac{\E U_n(0)}{\E u_n(0)}\geq c\log(e/\eps)$."
+
+The constant is independent of `ε`, so it is bound before it. The three-point law with
+parameter `ε/2` is `Parking.threePointLaw (ε/2)`, already used by `thm:nearest-counterexample`.
+The two results the proof quotes without proving them here, the growth of the mean sandpile
+odometer and the optimal stopping representation, enter as explicit hypotheses. The
+asymptotic lower bound is written as an eventual inequality, with a smaller universal
+constant. This avoids a real liminf whose boundedness would require additional cited inputs
+used by the separate upper-ratio theorem.
+-/
 
 open MeasureTheory Filter Topology
 

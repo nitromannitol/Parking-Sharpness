@@ -1,12 +1,24 @@
 import Parking.Support.BoxTranslation
 import Parking.Support.MatchedUniform
 
+/-!
+# Three-shell sums over a finite set
+
+Proves that a site within graph-norm `R` of the origin lies in the centered box
+`boxFinset 0 R`, and uses this to bound a finite sum `∑ z ∈ S, f z` by splitting
+`S` into a fixed inner shell of radius `L`, a growing middle shell of radius `M`,
+and the remaining far region, using separate uniform bounds `B₀`, `B₁`, `B₂` on
+each shell.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
 open scoped Classical
 variable {d : ℕ}
 
+/-- A site within graph-norm `R` of the origin lies in the centered box `boxFinset 0 R`,
+since each coordinate's absolute value is bounded by the sum defining `graphNorm`. -/
 theorem mem_box_zero_of_graphNorm_le {z : Site d} {R : ℕ} (hz : graphNorm z ≤ R) :
     z ∈ boxFinset (0 : Site d) R := by
   apply mem_boxFinset_iff.mpr
@@ -39,7 +51,8 @@ theorem sum_three_shell_le (S : Finset (Site d)) (f : Site d → ℝ) (L M : ℕ
         linarith
       · have h := h₂ z hz (by omega) (by omega)
         simpa only [hzL, hzM, if_false, zero_add] using h
-  have hcount (K : ℕ) : ((S.filter fun z => graphNorm z < K).card : ℝ) ≤ ((2 * K + 1 : ℕ) : ℝ) ^ d := by
+  have hcount (K : ℕ) :
+      ((S.filter fun z => graphNorm z < K).card : ℝ) ≤ ((2 * K + 1 : ℕ) : ℝ) ^ d := by
     have hs : (S.filter fun z => graphNorm z < K) ⊆ boxFinset (0 : Site d) K := by
       intro z hz
       exact mem_box_zero_of_graphNorm_le (Nat.le_of_lt (Finset.mem_filter.mp hz).2)
@@ -51,7 +64,8 @@ theorem sum_three_shell_le (S : Finset (Site d)) (f : Site d → ℝ) (L M : ℕ
     rw [← Finset.sum_filter]
     simp
   calc (∑ z ∈ S, f z)
-    ≤ ∑ z ∈ S, ((if graphNorm z < L then B₀ else 0) + (if graphNorm z < M then B₁ else 0) + B₂) := Finset.sum_le_sum hp
+    ≤ ∑ z ∈ S, ((if graphNorm z < L then B₀ else 0) + (if graphNorm z < M then B₁ else 0) + B₂) :=
+      Finset.sum_le_sum hp
     _ = ((S.filter fun z => graphNorm z < L).card : ℝ) * B₀ +
         ((S.filter fun z => graphNorm z < M).card : ℝ) * B₁ + (S.card : ℝ) * B₂ := by
       rw [Finset.sum_add_distrib, Finset.sum_add_distrib, he, he]

@@ -1,4 +1,9 @@
-/-
+import Parking.Support.NearBounded
+import Parking.Support.CriticalChain
+
+/-!
+# Comparison of the limit mean odometers
+
 The comparison of the two limit means, for the lower bounds of `thm:near`
 (`parking.tex:2912-2918`).
 
@@ -12,8 +17,6 @@ the horizon of the means, and the particle limit mean is the lower integral of t
 pointwise supremum.  Both ends of the comparison are read through
 `ofReal_integral_eq_lintegral_ofReal` at a fixed horizon and then `lintegral_mono`.
 -/
-import Parking.Support.NearBounded
-import Parking.Support.CriticalChain
 
 open MeasureTheory ProbabilityTheory LatticeProb
 open scoped ENNReal NNReal

@@ -2,6 +2,17 @@ import Parking.Support.PinnedSceneryFinite
 import Parking.Support.SinkField
 import LatticeProb.Prob.FiniteMarginal
 
+/-!
+# Subgaussianity and moment bound for the sink scenery contribution
+
+This file transfers the subgaussian bound of `Parking.Support.PinnedSceneryFinite` for a
+finite-marginal pinned box field to the sink mean odometer `matchedMeanU
+(sparseSinkField ...)` by an integral identity over the box's independent marginals, and
+then converts this subgaussian bound into a square-root `r`-norm moment bound on the
+scenery contribution's fluctuation around its mean, uniformly in the sink's capacity and
+location, for `d ≥ 5`.
+-/
+
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm)
 
@@ -49,9 +60,11 @@ theorem exists_sparseSinkMeanU_subgaussian (hd : 5 ≤ d) :
   apply (HasSubgaussianMGF.of_map hR.aemeasurable hg).congr
   exact ae_of_all _ fun η => by dsimp only [Function.comp_def]; rw [he η, hm]
 
-/-- The sink scenery contribution has a square-root moment bound, uniformly in its capacity and location. -/
+/-- The sink scenery contribution has a square-root moment bound, uniformly in its
+capacity and location. -/
 theorem exists_sparseSink_scenery_moment (hd : 5 ≤ d) :
-    ∃ C : ℝ, 0 < C ∧ ∀ (ν : Measure ℤ) [IsProbabilityMeasure ν] (T : ℕ) (v x : Site d) (r : ℝ), 2 ≤ r →
+    ∃ C : ℝ, 0 < C ∧ ∀ (ν : Measure ℤ) [IsProbabilityMeasure ν] (T : ℕ) (v x : Site d)
+      (r : ℝ), 2 ≤ r →
       rNorm (iidLaw d ν) r (fun η => matchedMeanU (sparseSinkField T v η) 0 T x -
         ∫ ζ, matchedMeanU (sparseSinkField T v ζ) 0 T x ∂(iidLaw d ν)) ≤ C * Real.sqrt r := by
   obtain ⟨V, _hV, hsg⟩ := exists_sparseSinkMeanU_subgaussian hd

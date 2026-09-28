@@ -1,6 +1,16 @@
 import Parking.Support.RoundMeanField
 import Parking.Support.ProductTower
 
+/-!
+# Measurability and a uniform bound for the partial round mean
+
+Records that `partialInt`, applied to the current-round future mean `matchedMeanU
+(roundSigned A H ·) ρ T x` at a revealed set `S`, is jointly measurable in the
+occupation, hole, and table data (`measurable_partialRoundMean`), and inherits the
+uniform bound `roundMeanU_bound` on the full mean at every stage of the partial reveal
+(`partialRoundMean_bound`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

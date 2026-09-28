@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightKolmogorov
+import Parking.Support.BinomialConvolution
+import Parking.Support.CriticalLawReal
+import LatticeProb.Prob.CoordIntegral
+
+/-!
+# Green-function cross sums for the covariance
+
 The Green-function cross sums behind the covariance of the rescaled reward
 field of the directed scaling limit (`parking.tex:3207-3218`).
 
@@ -18,10 +25,6 @@ binomial coefficient mass.  This module is the exact algebra:
   layer points collapses to a single sum of binomial masses, the sum the local
   central limit theorem turns into the heat-kernel overlap integral.
 -/
-import Parking.Support.TightKolmogorov
-import Parking.Support.BinomialConvolution
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.CoordIntegral
 
 open LatticeProb.Walk (binomLaw_symm)
 

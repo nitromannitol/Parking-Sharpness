@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Range
+import LatticeProb.WhiteNoise
+
+/-!
+# Continuum objects of Section 8
+
 The continuum objects of Section 8 of `parking.tex`: test functions on
 `R^d` and on space-time, the operator `L = (2d)^{-1}Δ`, spatial white noise,
 and the rescaled lattice fields of `prop:spatial-scaling`.
@@ -18,8 +23,6 @@ and the rescaled lattice fields of `prop:spatial-scaling`.
 library (`LatticeProb/WhiteNoise.lean`) and exported into `Parking`, where the frozen
 statements name them.
 -/
-import Parking.Support.Range
-import LatticeProb.WhiteNoise
 
 open MeasureTheory
 open scoped ENNReal

@@ -3,6 +3,15 @@ import Parking.Support.SceneryCenter
 import Parking.Support.ClippedTable
 import Parking.Support.WalkIntegral
 
+/-!
+# Integrability of the conditional mean odometer
+
+Integrability facts for the conditional mean odometer `matchedMeanU`: it is integrable in
+any bounded measurable random initial field, the walk average `walkOp` of finitely many
+integrable functions stays integrable, and under a three-point sparse law the conditional
+mean of the clipped field recovers the scalar mean `meanU` of that law.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

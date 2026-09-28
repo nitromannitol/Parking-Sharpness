@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Relabel
+import Parking.Support.NoiseSplice
+import LatticeProb.Prob.ZeroOne
+
+/-!
+# The law of relabeled noise
+
 The law of the noise under a relabeling of the particles at a site.
 
 `relabelAt x₀ σ` moves the walk and the uniform variables attached to the label
@@ -11,9 +17,6 @@ the particle to be deleted with the last particle at the site changes neither
 the law of the noise nor, by the symmetry hypothesis, the value of the
 observable.
 -/
-import Parking.Support.Relabel
-import Parking.Support.NoiseSplice
-import LatticeProb.Prob.ZeroOne
 
 open MeasureTheory
 

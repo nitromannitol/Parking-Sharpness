@@ -1,4 +1,10 @@
-/-
+import Parking.Support.NearRates
+import Parking.Support.Near
+import Parking.Support.Pathwise
+
+/-!
+# The scale in which Step 3 of the upper bounds of `thm:near` is read
+
 The scale in which Step 3 of the upper bounds of `thm:near` is read
 (`parking.tex:2959-2993`).
 
@@ -11,9 +17,6 @@ scale `δ^{-α}L^k` turns Step 3's comparisons into two facts: the scale is
 multiplicative, and a power of `L` is absorbed by any strictly larger power of
 `1/δ`.
 -/
-import Parking.Support.NearRates
-import Parking.Support.Near
-import Parking.Support.Pathwise
 
 noncomputable section
 namespace Parking
@@ -23,21 +26,28 @@ variable {d : ℕ}
 read. -/
 def env (α : ℝ) (k : ℕ) (δ : ℝ) : ℝ := δ ^ (-α) * Real.log (Real.exp 1 / δ) ^ k
 
+/-- `1 ≤ log(e/δ)` for `0 < δ ≤ 1`, since `log(e/δ) = 1 - log δ` and `log δ ≤ 0`. -/
 theorem one_le_bigL {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) :
     1 ≤ Real.log (Real.exp 1 / δ) := by
   rw [Real.log_div (Real.exp_ne_zero 1) (ne_of_gt hδ0), Real.log_exp]
   have h := Real.log_nonpos hδ0.le hδ1
   linarith
 
+/-- `env α k δ > 0` for `0 < δ ≤ 1`, as a product of a positive `rpow` and a positive power
+of `log(e/δ) ≥ 1`. -/
 theorem env_pos {α : ℝ} {k : ℕ} {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) : 0 < env α k δ := by
   have hL := one_le_bigL hδ0 hδ1
   exact mul_pos (Real.rpow_pos_of_pos hδ0 _) (pow_pos (by linarith) k)
 
+/-- `env` is multiplicative in its two parameters: `env α k δ * env β l δ = env (α+β) (k+l) δ`,
+combining the `rpow` exponents and the pointwise powers of `log(e/δ)`. -/
 theorem env_mul (α β : ℝ) (k l : ℕ) {δ : ℝ} (hδ0 : 0 < δ) :
     env α k δ * env β l δ = env (α + β) (k + l) δ := by
   simp only [env, neg_add, Real.rpow_add hδ0, pow_add]
   ring
 
+/-- `env` is monotone in its two parameters for `0 < δ ≤ 1`: raising `α` to `α'` and `k` to `k'`
+only increases `env α k δ`, since `δ^{-α} ≤ δ^{-α'}` and `log(e/δ)^k ≤ log(e/δ)^{k'}`. -/
 theorem env_mono {α α' : ℝ} {k k' : ℕ} {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
     (hα : α ≤ α') (hk : k ≤ k') : env α k δ ≤ env α' k' δ := by
   have hL := one_le_bigL hδ0 hδ1
@@ -61,9 +71,11 @@ theorem exists_env_le (k : ℕ) {α α' : ℝ} (h : α < α') :
   rw [h1, env, pow_zero, mul_one]
   nlinarith
 
+/-- `env α 0 δ = δ^{-α}`, since the log power drops to `log(e/δ)^0 = 1`. -/
 theorem env_zero (α : ℝ) (δ : ℝ) : env α 0 δ = δ ^ (-α) := by
   rw [env, pow_zero, mul_one]
 
+/-- `env 0 1 δ = log(e/δ)`, since the `rpow` factor drops to `δ^0 = 1`. -/
 theorem env_log (δ : ℝ) : env 0 1 δ = Real.log (Real.exp 1 / δ) := by
   rw [env, neg_zero, Real.rpow_zero, one_mul, pow_one]
 
@@ -88,6 +100,8 @@ theorem u_mono_field (hd : 1 ≤ d) {f g : Site d → ℝ} (h : ∀ y, f y ≤ g
       rw [u, u]
       exact max_le_max (le_refl 0) (add_le_add (h x) (walkOp_mono hd (fun y => ih y) x))
 
+/-- `env α k δ ≥ 1` for `0 < δ ≤ 1` and `α ≥ 0`, as a product of `1 ≤ δ^{-α}` and
+`1 ≤ log(e/δ)^k`. -/
 theorem one_le_env {α : ℝ} {k : ℕ} {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) (hα : 0 ≤ α) :
     1 ≤ env α k δ := by
   have hL := one_le_bigL hδ0 hδ1
@@ -97,6 +111,8 @@ theorem one_le_env {α : ℝ} {k : ℕ} {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ �
   rw [env]
   nlinarith
 
+/-- `(env α k δ)^β ≤ env (α β) k δ` for `0 < δ ≤ 1` and `β ≤ 1`: splitting the `rpow` of the
+product and dropping the exponent on the (already `≥ 1`) logarithmic factor from `β` to `1`. -/
 theorem rpow_env_le {α : ℝ} {k : ℕ} {δ β : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
     (hβ1 : β ≤ 1) : (env α k δ) ^ β ≤ env (α * β) k δ := by
   have hL := one_le_bigL hδ0 hδ1
@@ -116,6 +132,8 @@ theorem rpow_env_le {α : ℝ} {k : ℕ} {δ β : ℝ} (hδ0 : 0 < δ) (hδ1 : �
   rw [h1, env]
   exact mul_le_mul_of_nonneg_left h2 (Real.rpow_nonneg hδ0.le _)
 
+/-- `√(env α k δ) ≤ env (α/2) k δ`, the case `β = 1/2` of `rpow_env_le` read through
+`Real.sqrt_eq_rpow`. -/
 theorem sqrt_env_le {α : ℝ} {k : ℕ} {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) :
     Real.sqrt (env α k δ) ≤ env (α / 2) k δ := by
   rw [Real.sqrt_eq_rpow]

@@ -1,4 +1,13 @@
-/-
+import Parking.Support.ExposureProduct
+import Parking.Support.ErrorUnroll
+import Parking.Support.UpperTarget
+import Parking.Support.Equivariance
+import Parking.Support.Invariance
+import LatticeProb.Prob.Scaling.CondExpPartition
+
+/-!
+# Martingale core: single- and double-instruction conditional means
+
 The core conditional-expectation facts needed to show `signedM(φ) → 0` in probability, via the
 martingale construction of `parking.tex:1773-1781`'s proof from `lem:exposure`
 (`Parking.Frozen.exposure`) and `cor:growth` (`Parking.Frozen.growth`).  The filtration is
@@ -26,12 +35,6 @@ repository's model, so it lives at
 `LatticeProb.Scaling.CondExpPartition.condExp_of_countable_partition`; apply it with
 `m := expFiltration d k`, `hm := expFiltration_le d k`, `μ := law d ν`.
 -/
-import Parking.Support.ExposureProduct
-import Parking.Support.ErrorUnroll
-import Parking.Support.UpperTarget
-import Parking.Support.Equivariance
-import Parking.Support.Invariance
-import LatticeProb.Prob.Scaling.CondExpPartition
 
 open LatticeProb (measurable_from_countable')
 
@@ -45,6 +48,9 @@ variable {d : ℕ}
 
 /-! ### `walkOp` as a kernel sum -/
 
+/-- `walkOp ψ y` equals the kernel-weighted sum `∑ z ∈ nbrFinset y, kern d y z * ψ z`, unfolding
+`walkOp` as `nbrSum ψ y / (2 * d)` and `kern` as the uniform weight `1 / (2 * d)` at a
+neighbour. -/
 theorem walkOp_eq_sum_kern (ψ : Site d → ℝ) (y : Site d) :
     walkOp ψ y = ∑ z ∈ nbrFinset y, kern d y z * ψ z := by
   have h1 : (∑ z ∈ nbrFinset y, ψ z) = nbrSum ψ y := sum_nbrFinset_eq y ψ
@@ -56,6 +62,10 @@ theorem walkOp_eq_sum_kern (ψ : Site d → ℝ) (y : Site d) :
 
 /-! ### The single-instruction conditional mean, at measure level -/
 
+/-- On a `expFiltration d k`-measurable event `T` where the instruction `(y, j)` is still
+unread (`hTsub`), prescribing that single instruction to send its particle to `x` cuts the
+measure of `T` by exactly the kernel weight `kern d y x`, by specializing `exposure_core` to
+the singleton index set `{(y, j)}`. -/
 theorem single_core_measureReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (k : ℕ) (y : Site d) (j : ℕ) (x : Site d)
     {T : Set (Data d)} (hT : MeasurableSet[expFiltration d k] T)
@@ -82,6 +92,10 @@ theorem single_core_measureReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
 
 /-! ### The two-instruction conditional joint law, at measure level -/
 
+/-- On a `expFiltration d k`-measurable event `T` where two distinct instructions `(y, j)`
+and `(y', j')` are both still unread, jointly prescribing their destinations factors the
+resulting measure as `kern d y x * kern d y' x' * (law d ν).real T`, again by specializing
+`exposure_core`, now to the two-element index set. -/
 theorem double_core_measureReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (k : ℕ) (y y' : Site d) (j j' : ℕ) (hne : (y, j) ≠ (y', j')) (x x' : Site d)
     {T : Set (Data d)} (hT : MeasurableSet[expFiltration d k] T)
@@ -119,6 +133,10 @@ theorem double_core_measureReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
 
 /-! ### The single-instruction conditional mean, as an integral -/
 
+/-- The conditional mean of a test function `ψ` read off the still-unread instruction `(y, j)`,
+restricted to a `expFiltration d k`-measurable event `T`, equals `walkOp ψ y * (law d ν).real T`:
+expand the indicator as a sum over the (a.s. finitely many) neighbour destinations via
+`ae_stack_nbr_law`, apply `single_core_measureReal` to each, and resum via `walkOp_eq_sum_kern`. -/
 theorem single_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (k : ℕ) (y : Site d) (j : ℕ) (ψ : Site d → ℝ)
     {T : Set (Data d)} (hT : MeasurableSet[expFiltration d k] T)
@@ -167,6 +185,11 @@ theorem single_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
 
 /-! ### The two-instruction conditional cross term, as an integral -/
 
+/-- The conditional mean of the product `ψ (ω.2.1 (y, j)) * ψ' (ω.2.1 (y', j'))` of test
+functions read off two distinct still-unread instructions, restricted to a
+`expFiltration d k`-measurable event `T`, factors as `walkOp ψ y * walkOp ψ' y' *
+(law d ν).real T`: expand over the joint neighbour destinations via `ae_stack_nbr_law`, apply
+`double_core_measureReal`, and resum. -/
 theorem double_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (k : ℕ) (y y' : Site d) (j j' : ℕ) (hne : (y, j) ≠ (y', j')) (ψ ψ' : Site d → ℝ)
     {T : Set (Data d)} (hT : MeasurableSet[expFiltration d k] T)

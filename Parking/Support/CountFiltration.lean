@@ -1,15 +1,18 @@
-/-
+import Parking.Support.CountSite
+
+/-!
+# Revealing counts one site at a time
+
 Step 1 of `lem:product` for finitely many sites.
 
 Revealing one count at a time splits a covariance into the covariance of the two
 averages over that count and the mean of the one-site conditional covariance,
 which is `Support/CovCond.lean` transported along the measure preserving map
-that resamples one coordinate.  The one-site covariance is bounded by
+that resamples one coordinate. The one-site covariance is bounded by
 `Support/Cov.lean`'s coupling inequality, and its mean is the covariance with
 the count at that site, so an induction over the finite family of sites gives
 the paper's `|Cov(f(Y), z(Y))| ≤ Σ_i Cov(f, η(x_i))`.
 -/
-import Parking.Support.CountSite
 
 open MeasureTheory
 
@@ -26,6 +29,9 @@ def avgAt {d : ℕ} (ν : Measure ℤ) (x : Site d) (g : (Site d → ℤ) → �
     (a : Site d → ℤ) : ℝ :=
   ∫ k, g (Function.update a x k) ∂ν
 
+/-- If `F` depends only on the configuration data at the sites in `N` (`DependsOn N F`), its
+average `meanF F` over the auxiliary randomness depends only on the counts at those sites,
+since two count profiles agreeing on `N` can be completed by the same auxiliary data. -/
 theorem meanF_dependsOnCounts {d : ℕ} {N : Finset (Site d)} {F : PData d → ℝ}
     (hFN : DependsOn N F) : DependsOnCounts N (meanF F) := by
   intro a a' h

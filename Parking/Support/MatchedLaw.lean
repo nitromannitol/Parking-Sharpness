@@ -1,11 +1,15 @@
-/-
-The marginal law of the common-table particle construction. With the initial
-configuration and priorities fixed, the received directions are independent.
-Integrating the fixed-parameter identity gives the joint driving-data law.
--/
 import Parking.Support.Matched
 import Parking.Support.LayerLaw
 import LatticeProb.Prob.Blocks
+
+/-!
+# Marginal law of the common-table particle construction
+
+With the initial configuration and priorities fixed, the directions received by the
+particles are independent draws from the step law. Integrating this fixed-parameter
+identity over the initial configuration and priorities gives the joint law of the
+driving data (`Parking.map_matchedData`).
+-/
 
 noncomputable section
 

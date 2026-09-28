@@ -1,10 +1,21 @@
-/- Integrating an event probability from its exact countable fiber probabilities. -/
 import Mathlib
+
+/-!
+# Integrating an event probability against countable fiber probabilities
+
+If a countable-valued measurable map `F` splits an event `E` so that on each fiber `{F = m}`
+the event `E` carries a known fraction `w m` of the fiber's mass, then the total probability
+of `E` is the expectation of `w ∘ F`. This lets a probability be computed by conditioning on
+`F` and integrating the conditional probabilities `w`.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory
 
+/-- If `E` occupies fraction `w m` of the mass of each fiber `{F = m}` of a countable-valued
+measurable map `F`, then `μ.real E = ∫ w (F ω) ∂μ`, by summing `w m` weighted by fiber mass
+over the countable range of `F` (`integral_countable`). -/
 theorem probability_eq_integral_of_fibers {Ω M : Type*} [MeasurableSpace Ω]
     [MeasurableSpace M] [MeasurableSingletonClass M] [Countable M]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (F : Ω → M) (hF : Measurable F)

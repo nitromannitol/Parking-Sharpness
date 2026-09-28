@@ -2,6 +2,14 @@ import Parking.Support.ClippedTable
 
 open LatticeProb.MomentNorm (rNorm)
 
+/-!
+# Moment norms of the clipped table odometer
+
+The clipped table odometer `clippedTableU` has the same moment norm as the particle odometer
+`U` under the identification `clipSparse k = k`, and, at the sparse three-point law, its
+moment at any site equals its moment at the origin, by translation invariance.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

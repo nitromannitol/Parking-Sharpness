@@ -2,6 +2,16 @@ import Parking.Support.ClippedTable
 import Parking.Support.ClippedRoundMean
 import Parking.Support.IndicatorIntegral
 
+/-!
+# Hole activity of the sparse sandpile
+
+This file records that the hole indicator `H` is almost surely at most one under the
+sparse three-point law, identifies its expectation with the hole probability `holeProb`,
+and uses the hole-activity balance identity together with the mean-zero property of the
+sparse increments to compute the expectation of the activity indicator `A` at the origin
+as `holeProb d (threePointLaw p) t`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -10,12 +20,16 @@ open MeasureTheory LatticeProb
 open scoped Classical
 variable {d : ℕ}
 
+/-- Under the sparse three-point law, the hole indicator `H` never exceeds one, since the
+clipped field agrees almost surely with the original configuration and the initial
+count at each site is at least `-1`. -/
 theorem ae_sparse_H_le_one {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (t : ℕ) (x : Site d) : ∀ᵐ ω ∂(law d (threePointLaw p)), H ω t x ≤ 1 := by
   haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
   haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   have ha : ∀ᵐ ω ∂(law d (threePointLaw p)), clippedField ω.1 = ω.1 :=
-    Measure.quasiMeasurePreserving_fst.ae (ae_clippedField (threePointLaw p) (ae_clipSparse_threePointLaw p))
+    Measure.quasiMeasurePreserving_fst.ae
+      (ae_clippedField (threePointLaw p) (ae_clipSparse_threePointLaw p))
   filter_upwards [ha] with ω hω
   have hx := congrFun hω x
   have hlow : -1 ≤ ω.1 x := by
@@ -24,6 +38,8 @@ theorem ae_sparse_H_le_one {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
   have h := holeCount_le_initial ω t x
   omega
 
+/-- The expectation of the hole indicator `H` under the sparse three-point law equals the
+hole probability `holeProb d (threePointLaw p) t`. -/
 theorem integral_sparse_H_eq_holeProb (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (t : ℕ) (x : Site d) :
     (∫ ω, (H ω t x : ℝ) ∂(law d (threePointLaw p))) = holeProb d (threePointLaw p) t := by
@@ -35,10 +51,14 @@ theorem integral_sparse_H_eq_holeProb (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4
     · simp only [h, if_true, Nat.cast_one]
     · have hz : H ω t x = 0 := by omega
       simp only [hz, zero_ne_one, if_false, Nat.cast_zero]
-  have hS : MeasurableSet {ω : Data d | H ω t x = 1} := (measurable_H t x) (measurableSet_singleton 1)
+  have hS : MeasurableSet {ω : Data d | H ω t x = 1} :=
+    (measurable_H t x) (measurableSet_singleton 1)
   rw [integral_congr_ae he, integral_ite_one_zero _ (fun ω => H ω t x = 1) hS]
   exact holeProb_at_site hd _ t x
 
+/-- The activity indicator `A` at the origin is integrable under the sparse three-point
+law, with expectation `holeProb d (threePointLaw p) t`, derived from the mean-zero
+increments and the hole-activity balance identity. -/
 theorem sparse_activity_mean (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) (t : ℕ) :
     Integrable (fun ω : Data d => (A ω t 0 : ℝ)) (law d (threePointLaw p)) ∧
       (∫ ω, (A ω t 0 : ℝ) ∂(law d (threePointLaw p))) = holeProb d (threePointLaw p) t := by
@@ -52,7 +72,8 @@ theorem sparse_activity_mean (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 
   have hiA := integrable_A_data hd hti hi t 0
   have hbal := activity_holes_main hd hti hi t
   have hm : (∫ η : Site d → ℤ, (η 0 : ℝ) ∂(iidLaw d (threePointLaw p))) = 0 := by
-    have hm : (iidLaw d (threePointLaw p)).map (fun η : Site d → ℤ => η 0) = threePointLaw p := hmp.map_eq
+    have hm : (iidLaw d (threePointLaw p)).map (fun η : Site d → ℤ => η 0) = threePointLaw p :=
+      hmp.map_eq
     have hf : AEStronglyMeasurable (fun k : ℤ => (k : ℝ))
         ((iidLaw d (threePointLaw p)).map (fun η : Site d → ℤ => η 0)) := by
       rw [hm]

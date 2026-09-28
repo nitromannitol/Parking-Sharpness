@@ -1,6 +1,11 @@
-/-
-The tilting interval of `thm:subcritical`, and the bound in the form the tail
-theorem consumes (`parking.tex:2318-2335`, `parking.tex:2512-2517`).
+import Parking.Support.SubcriticalJointBound
+import Parking.Support.TiltInterval
+
+/-!
+# The tilting interval of `thm:subcritical`
+
+The tilting interval of `thm:subcritical`, and the bound in the form the tail theorem
+consumes (`parking.tex:2318-2335`, `parking.tex:2512-2517`).
 
 `parking.tex:2318-2335` chooses `0 < λ₁ < θ` so small that the tilted law has
 nonpositive mean on `[0, λ₁]`, "by continuity"; `Parking.exists_lam1` is that
@@ -10,8 +15,6 @@ which the exponential moment supplies for every parameter below `θ`.  With both
 the last assertion of `thm:subcritical` reads `S_t ≤ C E₀ e^{-a|R_t|}` with `a`
 and `C` produced from the standing hypotheses alone.
 -/
-import Parking.Support.SubcriticalJointBound
-import Parking.Support.TiltInterval
 
 open MeasureTheory
 

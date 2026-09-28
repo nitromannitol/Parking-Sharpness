@@ -1,5 +1,15 @@
 import Parking.Frozen.CorCritical
 
+/-!
+# The mean odometer diverges
+
+An unconditional consequence of `Parking.Frozen.cor_critical`: for any
+nonconstant, mean-zero one-site law with a first absolute moment, the mean
+particle odometer at the origin, `meanU (law d ν) n`, tends to infinity as
+`n → ∞`. This upgrades the logarithmic lower bound `E U_n(0) ≥ c log n - C`
+to a statement free of the constants `c` and `C`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory Filter

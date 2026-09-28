@@ -1,9 +1,14 @@
-/-
-The common instruction tables in counts: the minimum number of departures is
-shared, the maximum number of entries is read, and physical arrivals correspond
-bijectively to arriving table entries. Settling preserves the signed count.
--/
 import Parking.Support.Matched
+
+/-!
+# Counts in the common-table construction
+
+The common instruction tables in counts: the minimum number of departures is shared
+(`card_common_matchSlots`), the maximum number of entries is read
+(`card_union_matchSlots`), and physical arrivals correspond bijectively to arriving table
+entries (`image_matchSlot_matchedArrivals`). Settling preserves the signed count
+(`matchedSigned_succ`).
+-/
 
 noncomputable section
 
@@ -46,6 +51,8 @@ def Parking.matchedArrivals (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
   Parking.pArrivalsAt ⟨η, Parking.matchedMoves η ρ σ, ρ⟩
     (Parking.matchedState η ρ σ t) t x
 
+/-- At round `0` the active count at a site is exactly the positive part `(η x).toNat` of
+the initial field there. -/
 theorem Parking.matchedCount_zero (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (x : Site d) :
     Parking.matchedCount η ρ σ 0 x = (η x).toNat := by
@@ -56,6 +63,8 @@ theorem Parking.matchedCount_zero (η : Site d → ℤ) (ρ : Label d × ℕ →
     Finset.filter_true_of_mem (fun i hi =>
       ⟨by simpa [initial] using Finset.mem_range.mp hi, rfl⟩), Finset.card_range]
 
+/-- `p` lies in `matchActive` for the common-table state at `x` iff it is active and
+positioned at `x`, unwinding `matchActive` through `pActiveAt`. -/
 theorem Parking.mem_matchActive_iff (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (t : ℕ) (x : Site d) (p : Label d) :
     p ∈ Parking.matchActive η (Parking.matchedState η ρ σ t) t x ↔
@@ -64,6 +73,8 @@ theorem Parking.mem_matchActive_iff (η : Site d → ℤ) (ρ : Label d × ℕ �
   simpa only [Parking.pState_matchedMoves, Parking.pActiveAt, Parking.matchActive] using
     Parking.mem_pActiveAt_iff ⟨η, Parking.matchedMoves η ρ σ, ρ⟩ t x p
 
+/-- The active count advances by one round via `pActiveCount_succ`:
+`matchedCount (t + 1) x = (matchedArrivals t x).card - (matchedState t).holes x`. -/
 theorem Parking.matchedCount_succ (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (t : ℕ) (x : Site d) :
     Parking.matchedCount η ρ σ (t + 1) x =
@@ -72,6 +83,8 @@ theorem Parking.matchedCount_succ (η : Site d → ℤ) (ρ : Label d × ℕ →
     Parking.matchedCount, Parking.matchedArrivals, Parking.pActiveAt, Parking.matchActive] using
     Parking.pActiveCount_succ (Parking.labelOrder d) ⟨η, Parking.matchedMoves η ρ σ, ρ⟩ t x
 
+/-- The number of holes advances by one round via `pHoleCount_succ`:
+`(matchedState (t + 1)).holes x = (matchedState t).holes x - (matchedArrivals t x).card`. -/
 theorem Parking.matchedHoles_succ (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (t : ℕ) (x : Site d) :
     (Parking.matchedState η ρ σ (t + 1)).holes x =
@@ -140,6 +153,8 @@ def Parking.arrivalSlots (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     ((Finset.range (Parking.matchedCount η ρ σ t y)).filter fun j =>
       y + Parking.stepVec (σ t (Sum.inl (y, j))) = x).image fun j => Sum.inl (y, j)
 
+/-- `p` arrives at `x` in round `t` iff it was active at time `t` and its position plus its
+chosen step vector lands on `x`, unwinding `matchedArrivals` through `pArrivalsAt`. -/
 theorem Parking.mem_matchedArrivals_iff (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (t : ℕ) (x : Site d) (p : Label d) :
     p ∈ Parking.matchedArrivals η ρ σ t x ↔
@@ -156,6 +171,8 @@ theorem Parking.mem_matchedArrivals_iff (η : Site d → ℤ) (ρ : Label d × �
   · rintro ⟨ha, hp⟩
     exact ⟨ha, by simpa [Parking.pNextPos, ha] using hp⟩
 
+/-- `y + stepVec b` is always a lattice neighbour of `y`, for either coordinate direction
+`b.1` and either sign `b.2`. -/
 theorem Parking.mem_nbrFinset_add_stepVec (y : Site d) (b : Fin d × Bool) :
     y + Parking.stepVec b ∈ nbrFinset y := by
   apply Parking.mem_nbrFinset_iff.mpr
@@ -210,6 +227,8 @@ theorem Parking.image_matchSlot_matchedArrivals (η : Site d → ℤ)
     rw [hp'.2, Parking.matchedMoves, hslot]
     exact hdir
 
+/-- The count of physical arrivals equals the count of arriving table entries, by the
+bijection `image_matchSlot_matchedArrivals`. -/
 theorem Parking.card_matchedArrivals (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (t : ℕ) (x : Site d) :
     (Parking.matchedArrivals η ρ σ t x).card = (Parking.arrivalSlots η ρ σ t x).card := by

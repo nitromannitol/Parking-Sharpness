@@ -1,4 +1,17 @@
-/-
+import Parking.External.SandpileGrowth
+import Parking.External.Bernstein
+import Parking.External.UConcentration
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
+import Parking.External.Stopping
+
+import Parking.Support.LowMeanLimits
+import Parking.Support.FourRatio
+import Parking.Support.HighDiscrepancy
+
+/-!
+# Theorem 1.4: the dimension trichotomy (frozen)
+
 Theorem 1.4 of parking.tex, frozen.  `parking.tex:207-238` (label `thm:trichotomy`):
 
   "(i) [$d\leq3$] almost surely and in $L^r$ for every $r\geq1$,
@@ -27,16 +40,6 @@ Parts (i) and (iii) read the growth of the mean odometers off `cor:growth`, so
 this node carries every external that `cor:growth` carries, the collected Green
 estimates among them.
 -/
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
-import Parking.External.Stopping
-
-import Parking.Support.LowMeanLimits
-import Parking.Support.FourRatio
-import Parking.Support.HighDiscrepancy
 
 open MeasureTheory Filter Topology
 

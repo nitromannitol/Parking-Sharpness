@@ -1,4 +1,9 @@
-/-
+import Parking.Support.SpatGreenShiftLowDim
+import Parking.Support.LinTimeShift
+
+/-!
+# Joint space-time comparison of the truncated Green function
+
 **The JOINT space-time two-point comparison of the truncated Green function**, combining
 `Parking.Support.SpatGreenShift`/`Parking.Support.SpatGreenShiftLowDim` (the SPACE direction,
 fixed horizon, `1 ≤ d ≤ 3`) and `Parking.Support.LinTimeShift` (the TIME
@@ -18,8 +23,6 @@ itself, a self-contained building block for them.
 No `External` beyond what `Parking.Support.SpatGreenShiftLowDim`'s own combined wrappers
 already discharge (`GreenGradient` at `d = 2, 3`, proved; nothing at `d = 1`) is used.
 -/
-import Parking.Support.SpatGreenShiftLowDim
-import Parking.Support.LinTimeShift
 
 open LatticeProb (supNorm supNorm_le_graphNorm)
 

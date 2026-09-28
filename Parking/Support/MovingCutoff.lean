@@ -1,10 +1,21 @@
 import Mathlib
 
+/-!
+# A middle cutoff scale for dimensions `d ≥ 5`
+
+For `d ≥ 5` and a scale `h t → 0`, `eventually_exists_middle_cutoff` produces an intermediate
+box radius `M`, of order `(h t) ^ (-1/(4d))`, that is eventually small enough to make both the
+interaction-exponent term `C log(1/h t) (1+M)^{4-d}` bounded by `1` and the middle-shell term
+`(2M+1)^d C (h t)^{7/4}` bounded by `h t / 8`. The two competing scales are balanced by
+choosing `M` from the power `a = -1/(4d)` of `h t`.
+-/
+
 noncomputable section
 namespace Parking
 open Filter Topology
 
-/-- A power-scale intermediate cutoff makes both the interaction exponent and the middle shell small. -/
+/-- A power-scale intermediate cutoff makes both the interaction exponent and the middle
+shell small. -/
 theorem eventually_exists_middle_cutoff (d : ℕ) (hd : 5 ≤ d) (C : ℝ) (hC : 0 < C)
     (h : ℕ → ℝ) (hh : ∀ t, 0 < h t) (hh1 : ∀ t, h t ≤ 1)
     (hlim : Tendsto h atTop (𝓝 0)) :
@@ -23,11 +34,13 @@ theorem eventually_exists_middle_cutoff (d : ℕ) (hd : 5 ≤ d) (C : ℝ) (hC :
     tendsto_nhdsWithin_iff.mpr ⟨hlim, Eventually.of_forall hh⟩
   have hfar : Tendsto (fun t => C * Real.log (1 / h t) * (h t) ^ r) atTop (𝓝 0) := by
     have ht := ((tendsto_log_mul_rpow_nhdsGT_zero hr).comp hlim').neg.const_mul C
-    simpa only [Function.comp_def, one_div, Real.log_inv, neg_mul, mul_assoc, neg_zero, mul_zero] using ht
+    simpa only [Function.comp_def, one_div, Real.log_inv, neg_mul, mul_assoc, neg_zero, mul_zero]
+        using ht
   have hsmall : Tendsto (fun t => C * (3 : ℝ) ^ d * (h t) ^ (1 / 2 : ℝ)) atTop (𝓝 0) := by
     have ht := ((Real.continuous_rpow_const (by norm_num : 0 ≤ (1 / 2 : ℝ))).tendsto 0).comp hlim
     have ht' := ht.const_mul (C * (3 : ℝ) ^ d)
-    simpa only [Real.zero_rpow (by norm_num : (1 / 2 : ℝ) ≠ 0), mul_zero, Function.comp_def] using ht'
+    simpa only [Real.zero_rpow (by norm_num : (1 / 2 : ℝ) ≠ 0), mul_zero, Function.comp_def]
+        using ht'
   filter_upwards [hfar.eventually (eventually_le_nhds (by norm_num : (0 : ℝ) < 1)),
     hsmall.eventually (eventually_le_nhds (by norm_num : (0 : ℝ) < 1 / 8))] with t hF hS
   let S : ℝ := (h t) ^ a
@@ -42,11 +55,13 @@ theorem eventually_exists_middle_cutoff (d : ℕ) (hd : 5 ≤ d) (C : ℝ) (hC :
       dsimp only [S, r]
       rw [← Real.rpow_mul (hh t).le]
     rw [he] at hc
-    have hL : 0 ≤ Real.log (1 / h t) := Real.log_nonneg (by apply (le_div_iff₀ (hh t)).mpr; simpa using hh1 t)
+    have hL : 0 ≤ Real.log (1 / h t) :=
+        Real.log_nonneg (by apply (le_div_iff₀ (hh t)).mpr; simpa using hh1 t)
     exact (mul_le_mul_of_nonneg_left hc (mul_nonneg hC.le hL)).trans hF
   · have hbox : ((2 * M + 1 : ℕ) : ℝ) ≤ 3 * S := by push_cast; linarith
     have hp := pow_le_pow_left₀ (by positivity) hbox d
-    have hm := mul_le_mul_of_nonneg_right hp (mul_nonneg hC.le (Real.rpow_nonneg (hh t).le (7 / 4 : ℝ)))
+    have hm := mul_le_mul_of_nonneg_right hp
+        (mul_nonneg hC.le (Real.rpow_nonneg (hh t).le (7 / 4 : ℝ)))
     have he : (3 * S) ^ d * (C * (h t) ^ (7 / 4 : ℝ)) =
         (C * (3 : ℝ) ^ d * (h t) ^ (1 / 2 : ℝ)) * h t := by
       rw [mul_pow]

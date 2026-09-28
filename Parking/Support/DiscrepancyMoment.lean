@@ -1,8 +1,14 @@
-/-
-The dimensional moment bounds for the difference of the two odometers.
--/
 import Parking.Support.DiscrepancyNorm
 import Parking.Support.DiscrepancyScale
+
+/-!
+# Discrepancy moment bounds
+
+The dimensional moment bounds for the difference of the two odometers. A single constant `C`
+bounds the `rHigh n`-th moment norm of the discrepancy `U ω n 0 - uOf ω n 0` by
+`C * discrepancyRate d n` uniformly over every horizon `n ≥ 1`, combining the horizon-one case
+with the general bound from `exists_diff_rHigh_low`.
+-/
 
 open LatticeProb.MomentNorm (rNorm)
 

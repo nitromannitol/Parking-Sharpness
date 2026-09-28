@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Equivariance
+import LatticeProb.Invariance
+
+/-!
+# Translation invariance of the driving data
+
 The law of the driving data is translation invariant.
 
 The three factors are invariant for three different reasons.  The i.i.d.
@@ -11,10 +16,10 @@ lives on the neighbours of `y`.  Translating the data reads the stack of
 of a neighbour of `y + v` by `-v` is a uniform choice of a neighbour of `y`, so
 that factor is invariant too.
 -/
-import Parking.Support.Equivariance
-import LatticeProb.Invariance
 
-open LatticeProb (instructionLaw_isProbability instructionLaw_map_sub measurable_shiftRank measurable_shiftStack rankLaw_isProbability shiftLabel shiftLabel_injective shiftRank shiftStack uniformUnit_isProbability)
+open LatticeProb (instructionLaw_isProbability instructionLaw_map_sub measurable_shiftRank
+    measurable_shiftStack rankLaw_isProbability shiftLabel shiftLabel_injective shiftRank
+    shiftStack uniformUnit_isProbability)
 
 noncomputable section
 
@@ -29,26 +34,38 @@ variable {d : ℕ}
 
 /-! ### The three factors -/
 
+/-- `LatticeProb.stackLaw d` is a probability measure, as the infinite product of the
+per-site instruction laws `instructionLaw y`, each a probability measure by
+`instructionLaw_isProbability`. -/
 theorem stackLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (LatticeProb.stackLaw d) := by
   haveI : ∀ y : Site d, IsProbabilityMeasure (instructionLaw y) := fun y =>
     instructionLaw_isProbability hd y
   exact inferInstanceAs
     (IsProbabilityMeasure (Measure.infinitePi fun p : Site d × ℕ => instructionLaw p.1))
 
+/-- `LatticeProb.rankLaw d` is a probability measure, as the infinite product of
+i.i.d. uniform variables on `[0, 1]`. -/
 theorem rankLaw_isProbability (d : ℕ) : IsProbabilityMeasure (LatticeProb.rankLaw d) := by
   haveI := uniformUnit_isProbability
   exact inferInstanceAs (IsProbabilityMeasure
     (Measure.infinitePi fun _ : Label d × ℕ => volume.restrict (Set.Icc (0 : ℝ) 1)))
 
+/-- The product `stackRankLaw d` of the stack law and the rank law is a probability
+measure, combining `stackLaw_isProbability` and `rankLaw_isProbability`. -/
 theorem stackRankLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (stackRankLaw d) := by
   haveI := stackLaw_isProbability hd
   haveI := rankLaw_isProbability d
   exact inferInstanceAs
     (IsProbabilityMeasure ((LatticeProb.stackLaw d).prod (LatticeProb.rankLaw d)))
 
+/-- Translating a configuration by `v` is measurable, since each coordinate
+`x ↦ η (x + v)` is a coordinate projection. -/
 theorem measurable_shiftConf (v : Site d) : Measurable (shiftConf (d := d) v) :=
   measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)
 
+/-- Translating the full data triple by `v` is measurable, combining
+`measurable_shiftConf`, `measurable_shiftStack` and `measurable_shiftRank`
+coordinatewise. -/
 theorem measurable_shiftData (v : Site d) : Measurable (shiftData (d := d) v) :=
   (measurable_shiftConf v).comp measurable_fst |>.prodMk
     ((((measurable_shiftStack v).comp (measurable_fst.comp measurable_snd)).prodMk
@@ -62,6 +79,7 @@ theorem iidLaw_map_shiftConf {α : Type*} [MeasurableSpace α] (ν : Measure α)
   (LatticeProb.measurePreserving_coordShift (fun _ : Site d => ν)
     (g := fun x : Site d => x + v) (fun _ _ h => add_right_cancel h) fun _ => rfl).map_eq
 
+/-- `iidLaw_map_shiftConf` specialized to an integer-valued one-site law `ν`. -/
 theorem iidLaw_map_shiftConf' (ν : Measure ℤ) [IsProbabilityMeasure ν] (v : Site d) :
     (LatticeProb.iidLaw d ν).map (shiftConf v) = LatticeProb.iidLaw d ν :=
   iidLaw_map_shiftConf ν v
@@ -110,6 +128,9 @@ theorem rankLaw_map_shiftRank (v : Site d) :
 
 /-! ### The law of the data -/
 
+/-- The product law `stackRankLaw d` is invariant under translating the stack and
+rank coordinates together, combining `stackLaw_map_shiftStack` and
+`rankLaw_map_shiftRank` via `Measure.map_prod_map`. -/
 theorem stackRankLaw_map (hd : 1 ≤ d) (v : Site d) :
     (stackRankLaw d).map (Prod.map (shiftStack v) (shiftRank v)) = stackRankLaw d := by
   haveI := stackLaw_isProbability hd

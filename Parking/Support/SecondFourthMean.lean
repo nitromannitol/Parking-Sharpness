@@ -1,12 +1,20 @@
-/- A first-moment lower bound from second and fourth moments. -/
 import Parking.Support.UpperStep
 import LatticeProb.Prob.PaleyZygmund
 import LatticeProb.Prob.Moments
+
+/-!
+# The Paley-Zygmund first-moment bound
+
+A first-moment lower bound from second and fourth moments.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 
+/-- A lower bound on `E|X|` from the second moment `E X² = aV`, the fourth-moment bound
+`E X⁴ ≤ bV²` and a Paley-Zygmund estimate on `Q {|X| > √(aV/2)}`, giving the paper's
+first-moment lower bound `(a²/(4b) · √(a/2)) · √V ≤ E|X|`. -/
 theorem abs_mean_lower_of_second_fourth {Ω : Type} [MeasurableSpace Ω]
     (Q : Measure Ω) [IsProbabilityMeasure Q] (X : Ω → ℝ) (hm : Measurable X)
     (h4 : Integrable (fun ω => X ω ^ 4) Q) {a b V : ℝ}
@@ -30,7 +38,8 @@ theorem abs_mean_lower_of_second_fourth {Ω : Type} [MeasurableSpace Ω]
     have hV2 : 0 < V ^ 2 := sq_pos_of_pos hV
     nlinarith [hpz, hf]
   have hXi : Integrable X Q := integrable_pow_of_integrable_pow_four
-    hm.aestronglyMeasurable h4 (p := 1) (by norm_num) |>.congr (Filter.Eventually.of_forall fun ω => by simp)
+    hm.aestronglyMeasurable h4 (p := 1) (by norm_num)
+    |>.congr (Filter.Eventually.of_forall fun ω => by simp)
   have hdom (ω : Ω) : S.indicator (fun _ => Real.sqrt (a * V / 2)) ω ≤ |X ω| := by
     by_cases hω : ω ∈ S
     · rw [Set.indicator_of_mem hω]
@@ -47,7 +56,8 @@ theorem abs_mean_lower_of_second_fourth {Ω : Type} [MeasurableSpace Ω]
   have hs : Real.sqrt (a * V / 2) = Real.sqrt (a / 2) * Real.sqrt V := by
     rw [show a * V / 2 = (a / 2) * V by ring, Real.sqrt_mul (by positivity)]
   rw [hs] at hi
-  have hp' := mul_le_mul_of_nonneg_right hp (mul_nonneg (Real.sqrt_nonneg (a / 2)) (Real.sqrt_nonneg V))
+  have hp' := mul_le_mul_of_nonneg_right hp
+    (mul_nonneg (Real.sqrt_nonneg (a / 2)) (Real.sqrt_nonneg V))
   calc (a ^ 2 / (4 * b) * Real.sqrt (a / 2)) * Real.sqrt V
       ≤ Q.real S * (Real.sqrt (a / 2) * Real.sqrt V) := by
         simpa only [mul_assoc] using hp'

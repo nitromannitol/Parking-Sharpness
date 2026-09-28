@@ -19,6 +19,8 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
+/-- No site is its own neighbour: `x + unit i` and `x - unit i` both differ from `x` since
+`unit i` is nonzero. -/
 theorem notMem_nbrFinset_self (x : Site d) : x ∉ nbrFinset x := by
   classical
   simp only [nbrFinset, Finset.mem_biUnion, Finset.mem_univ, true_and, Finset.mem_insert,

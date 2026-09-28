@@ -1,5 +1,8 @@
-/- A fixed positive-time compact set contains the parabolic test coefficients. -/
 import Parking.Support.SpatialCellIntegral
+
+/-!
+# A fixed positive-time compact set contains the parabolic test coefficients
+-/
 
 open LatticeProb.Walk (abs_floor_mul_div_sub_le)
 
@@ -8,16 +11,26 @@ noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- `parabolicTime R s` is always nonnegative, being a natural-number floor cast to `ℝ`
+divided by `R ^ 2`. -/
 theorem parabolicTime_nonneg {R : ℝ} (s : ℝ) : 0 ≤ parabolicTime R s := by
   unfold parabolicTime
   positivity
 
+/-- For `R > 0` and `s ≥ 0`, `parabolicTime R s ≤ s`, since the natural-number floor
+`⌊s * R ^ 2⌋₊` used in its definition never exceeds `s * R ^ 2`. -/
 theorem parabolicTime_le {R s : ℝ} (hR : 0 < R) (hs : 0 ≤ s) : parabolicTime R s ≤ s :=
   (div_le_iff₀ (sq_pos_of_pos hR)).mpr (Nat.floor_le (mul_nonneg hs (sq_nonneg R)))
 
+/-- `parabolicTime R s` vanishes for every nonpositive `s`, since the natural-number
+floor of the nonpositive quantity `s * R ^ 2` is zero. -/
 theorem parabolicTime_eq_zero_of_nonpos {R s : ℝ} (hs : s ≤ 0) : parabolicTime R s = 0 := by
   simp [parabolicTime, Nat.floor_of_nonpos (mul_nonpos_of_nonpos_of_nonneg hs (sq_nonneg R))]
 
+/-- If the test function `ψ` vanishes at both mesh times `parabolicTime R p.1` and
+`parabolicTime R p.1 + 1 / R ^ 2` (at the relevant spatial coordinate), then both
+`parabolicTimeTest ψ R p` and `parabolicSpaceTest ψ R p` vanish at `p`, since both unfold
+to expressions built only from these two values. -/
 theorem parabolicTests_eq_zero_of_timeSlices {ψ : ℝ × (Fin d → ℝ) → ℝ} {R : ℝ}
     (p : ℝ × (Fin d → ℝ))
     (hzero : ∀ x, ψ (parabolicTime R p.1, x) = 0)
@@ -28,6 +41,9 @@ theorem parabolicTests_eq_zero_of_timeSlices {ψ : ℝ × (Fin d → ℝ) → �
   · simp only [parabolicSpaceTest, scaledWalkTest, hnext, walkOp, nbrSum, add_zero,
       Finset.sum_const_zero, zero_div, sub_self, mul_zero]
 
+/-- If `p.1 < a` and `ψ` vanishes for every time `s < 2 * a`, both parabolic test
+coefficients at `p` vanish: the mesh bound `hmesh` keeps `parabolicTime R p.1` and its
+successor node both below `2 * a`, reducing to `parabolicTests_eq_zero_of_timeSlices`. -/
 theorem parabolicTests_eq_zero_of_time_lt {ψ : ℝ × (Fin d → ℝ) → ℝ}
     {a R : ℝ} (ha : 0 < a) (hR : 0 < R) (hmesh : 1 / R ^ 2 < a)
     (hlow : ∀ s x, s < 2 * a → ψ (s, x) = 0)
@@ -41,6 +57,10 @@ theorem parabolicTests_eq_zero_of_time_lt {ψ : ℝ × (Fin d → ℝ) → ℝ}
   exact parabolicTests_eq_zero_of_timeSlices p
     (fun x => hlow _ x (by linarith)) (fun x => hlow _ x (by linarith))
 
+/-- If `T + 1 < p.1` and `ψ` vanishes for every time `s ≥ T`, both parabolic test
+coefficients at `p` vanish: the mesh-width bound `1 / R ^ 2 ≤ 1` (from `R ≥ 1`) keeps
+`parabolicTime R p.1` and its successor both at least `T`, reducing to
+`parabolicTests_eq_zero_of_timeSlices`. -/
 theorem parabolicTests_eq_zero_of_time_gt {ψ : ℝ × (Fin d → ℝ) → ℝ}
     {T R : ℝ} (hT : 0 < T) (hR : 1 ≤ R)
     (hhigh : ∀ s x, T ≤ s → ψ (s, x) = 0)
@@ -51,8 +71,13 @@ theorem parabolicTests_eq_zero_of_time_gt {ψ : ℝ × (Fin d → ℝ) → ℝ}
   have habs := abs_parabolicTime_sub_le hRpos (by linarith : 0 ≤ p.1)
   have ht : T ≤ parabolicTime R p.1 := by linarith [neg_le_of_abs_le habs]
   exact parabolicTests_eq_zero_of_timeSlices p
-    (fun x => hhigh _ x ht) (fun x => hhigh _ x (by linarith [one_div_pos.mpr (sq_pos_of_pos hRpos)]))
+    (fun x => hhigh _ x ht)
+    (fun x => hhigh _ x (by linarith [one_div_pos.mpr (sq_pos_of_pos hRpos)]))
 
+/-- If `B + 2 < ‖p.2‖` and `ψ (s, x) ≠ 0` forces `‖x‖ ≤ B`, both parabolic test
+coefficients at `p` vanish: the nearest lattice point to `p.2` is still farther than `B`
+from the origin, so `ψ` vanishes there, and `scaledWalkTest_eq_zero_of_norm_gt` handles
+the space test coefficient directly. -/
 theorem parabolicTests_eq_zero_of_space_gt {ψ : ℝ × (Fin d → ℝ) → ℝ}
     {B R : ℝ} (hR : 1 ≤ R) (hb : ∀ s x, ψ (s, x) ≠ 0 → ‖x‖ ≤ B)
     {p : ℝ × (Fin d → ℝ)} (hp : B + 2 < ‖p.2‖) :
@@ -114,12 +139,14 @@ theorem parabolicTests_eq_zero_outside_strip {ψ : ℝ × (Fin d → ℝ) → �
       by_contra hn
       exact hp ⟨hs, lt_of_not_ge hn⟩
     have hn : ⌈T * R ^ 2⌉₊ ≤ ⌊p.1 * R ^ 2⌋₊ :=
-      (Nat.le_floor_iff (mul_nonneg hs (sq_nonneg R))).mpr ((div_le_iff₀ (sq_pos_of_pos hRpos)).mp he)
+      (Nat.le_floor_iff (mul_nonneg hs (sq_nonneg R))).mpr
+        ((div_le_iff₀ (sq_pos_of_pos hRpos)).mp he)
     have ht : T ≤ parabolicTime R p.1 := by
       apply (le_div_iff₀ (sq_pos_of_pos hRpos)).mpr
       exact (Nat.le_ceil _).trans (by exact_mod_cast hn)
     exact parabolicTests_eq_zero_of_timeSlices p
-      (fun x => hhigh _ x ht) (fun x => hhigh _ x (by linarith [one_div_pos.mpr (sq_pos_of_pos hRpos)]))
+      (fun x => hhigh _ x ht)
+      (fun x => hhigh _ x (by linarith [one_div_pos.mpr (sq_pos_of_pos hRpos)]))
   · exact parabolicTests_eq_zero_of_time_lt ha hRpos hmesh hlow (by linarith)
 
 end Parking

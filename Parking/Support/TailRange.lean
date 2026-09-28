@@ -1,4 +1,11 @@
-/-
+import Parking.Support.Near
+import Parking.Support.RangeHitting
+import Parking.Support.RangeLower
+import Parking.Support.Cov
+
+/-!
+# Range quantities of the subcritical tail
+
 The range quantities of `thm:subcritical-tail` (`parking.tex:2512-2517`).
 
 The upper bound of `thm:subcritical` and the lower bound of `lem:range-lower`
@@ -8,10 +15,6 @@ second into the first, so the Donsker-Varadhan estimate applies to both.  The
 positivity of `q` and of `\E\eta(0)^+` comes from `\P(\eta(0)>0)>0`, and `q<1`,
 which is what makes `a_1` positive, comes from the negative mean.
 -/
-import Parking.Support.Near
-import Parking.Support.RangeHitting
-import Parking.Support.RangeLower
-import Parking.Support.Cov
 
 open MeasureTheory
 

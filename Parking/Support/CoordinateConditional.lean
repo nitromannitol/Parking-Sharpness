@@ -1,12 +1,25 @@
-/- Conditional averaging of a fresh coordinate in the presence of independent background data. -/
 import Parking.Support.CoordinateProductFactor
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic
+
+/-!
+# Conditional averaging of a fresh coordinate
+
+This upgrades the unconditional factoring identity of `CoordinateProductFactor` to a
+conditional expectation. If a sub-σ-algebra `m` is unaffected by overwriting a coordinate `q`
+with a fixed value `b`, and `H` is `m`-measurable, then conditioning `H * g(z.2 q)` on `m`
+replaces `g(z.2 q)` by its average, since `H` itself is left unchanged by the same overwrite.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 open scoped Classical
 
+/-- If a sub-σ-algebra `m` is invariant under overwriting coordinate `q` with `b`, and `H` is
+`m`-measurable, then `E[H * g(z.2 q) | m] = H * E[g]` almost everywhere: `m`-invariance forces
+`H` itself to be unchanged by the overwrite, and the pointwise identity
+`integral_mul_coordinate_prod_of_update_invariant` is applied on each `m`-measurable set via
+`ae_eq_condExp_of_forall_setIntegral_eq`. -/
 theorem condExp_mul_fresh_coordinate {Ω ι : Type*} {X : ι → Type*}
     [MeasurableSpace Ω] [DecidableEq ι] [∀ i, MeasurableSpace (X i)]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (P : ∀ i, Measure (X i))
@@ -49,7 +62,8 @@ theorem condExp_mul_fresh_coordinate {Ω ι : Type*} {X : ι → Type*}
       simp only [F, Set.indicator_of_notMem hz, Set.indicator_of_notMem hzu]
   have hfactor := integral_mul_coordinate_prod_of_update_invariant μ P q b F hF hiF hFi g hg hiFG
   rw [he, integral_indicator hSa] at hfactor
-  have hFH : (∫ z, F z ∂(μ.prod (Measure.infinitePi P))) = ∫ z in S, H z ∂(μ.prod (Measure.infinitePi P)) :=
+  have hFH : (∫ z, F z ∂(μ.prod (Measure.infinitePi P))) =
+      ∫ z in S, H z ∂(μ.prod (Measure.infinitePi P)) :=
     integral_indicator hSa
   rw [hFH] at hfactor
   rw [integral_mul_const]

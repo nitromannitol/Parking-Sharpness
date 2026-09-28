@@ -1,6 +1,17 @@
 import Parking.Support.MatchedCounts
 import Parking.Support.MatchedLaw
 
+/-!
+# The flat round-noise product space
+
+Packages the independent per-round, per-slot instruction tables of `MatchedCounts` into a
+single product measure `flatRoundNoiseLaw` on the flat index `ℕ × RoundSlot d`, and shows that
+uncurrying it (`curryRoundNoise`) pushes it forward to the round-indexed law `roundNoiseLaw d`
+of `MatchedLaw`. Also records that updating a single flat entry at round `s` cannot change the
+matched state before round `s`, and that at round `s` itself a flat update is exactly a
+one-slot update of the corresponding round table.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -9,15 +20,23 @@ variable {d : ℕ}
 /-- Round and slot coordinates in a single product space. -/
 abbrev FlatRoundNoise (d : ℕ) := ℕ × RoundSlot d → Fin d × Bool
 
+/-- The product law on the flat index `ℕ × RoundSlot d`, one independent `stepLaw d` factor
+per round/slot pair. -/
 def flatRoundNoiseLaw (d : ℕ) : Measure (FlatRoundNoise d) :=
   Measure.infinitePi fun _ : ℕ × RoundSlot d => stepLaw d
 
+/-- Uncurries a flat table into a `RoundNoise d`, reading off the entry for round `t` and
+slot `q`. -/
 def curryRoundNoise (ω : FlatRoundNoise d) : RoundNoise d := fun t q => ω (t, q)
 
+/-- `curryRoundNoise` is measurable, since each output coordinate is a single coordinate
+projection of the flat table. -/
 theorem measurable_curryRoundNoise : Measurable (curryRoundNoise (d := d)) :=
   measurable_pi_lambda _ fun t => measurable_pi_lambda _ fun q => measurable_pi_apply (t, q)
 
-theorem flatRoundNoiseLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (flatRoundNoiseLaw d) := by
+/-- `flatRoundNoiseLaw` is a probability measure, since each factor `stepLaw d` is. -/
+theorem flatRoundNoiseLaw_isProbability (hd : 1 ≤ d) :
+    IsProbabilityMeasure (flatRoundNoiseLaw d) := by
   haveI := stepLaw_isProbability hd
   unfold flatRoundNoiseLaw
   infer_instance

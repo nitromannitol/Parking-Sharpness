@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightWalk
+import Mathlib.Probability.Martingale.OptionalStopping
+import Mathlib.Probability.Independence.InfinitePi
+import Mathlib.Probability.ConditionalExpectation
+
+/-!
+# A maximal inequality for the rescaled walk
+
 A maximal inequality for the rescaled oriented walk's coordinate-difference partial sum
 `Parking.walkPartialSum` (`TightWalk.lean`'s `S_k := ∑_{j<k} walkStepSign (p j).1`), uniform in
 the horizon `n`: Doob's maximal inequality applied to the submartingale `S_k²`.  This is the
@@ -14,10 +21,6 @@ is independent of the coordinates before `k` (`ProbabilityTheory.indep_iSup_of_d
 the martingale property of `S` and, directly, the exact conditional increment identity
 `E[(S_{k+1})² - (S_k)² | 𝒢_k] = 1` that makes `S²` a submartingale.
 -/
-import Parking.Support.TightWalk
-import Mathlib.Probability.Martingale.OptionalStopping
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.ConditionalExpectation
 
 open MeasureTheory ProbabilityTheory Filter Topology Finset
 open scoped NNReal ENNReal
@@ -31,25 +34,34 @@ namespace Parking
 def walkPartialSum (k : ℕ) (p : ℕ → Fin 2 × Bool) : ℝ :=
   ∑ j ∈ Finset.range k, walkStepSign (p j).1
 
+/-- `walkPartialSum k p` is exactly the coordinate difference of the oriented path at step
+`k`, the reverse direction of `Parking.orientedPath_coord_sub`. -/
 theorem walkPartialSum_eq_orientedPath_coord_sub (k : ℕ) (p : ℕ → Fin 2 × Bool) :
     walkPartialSum k p = ((orientedPath (0 : Site 2) p k : Site 2) 1 : ℝ)
         - ((orientedPath (0 : Site 2) p k : Site 2) 0 : ℝ) :=
   (orientedPath_coord_sub k p).symm
 
+/-- `walkPartialSum k` is measurable, since it depends only on the finitely many coordinates
+`p 0, ..., p (k - 1)` of the direction sequence. -/
 theorem measurable_walkPartialSum (k : ℕ) : Measurable (walkPartialSum k) :=
   measurable_of_finite_dependence (d := 2) (by norm_num) k _
     (fun p q hpq => Finset.sum_congr rfl fun j hj => by
       rw [Finset.mem_range] at hj; rw [hpq j hj])
 
+/-- `walkPartialSum k` is strongly measurable, immediate from `measurable_walkPartialSum`. -/
 theorem stronglyMeasurable_walkPartialSum (k : ℕ) : StronglyMeasurable (walkPartialSum k) :=
   (measurable_walkPartialSum k).stronglyMeasurable
 
+/-- Each step sign has absolute value `1`, by cases on `c`. -/
 theorem abs_walkStepSign (c : Fin 2) : |walkStepSign c| = 1 := by
   fin_cases c <;> simp [walkStepSign]
 
+/-- Each step sign squares to `1`, by cases on `c`. -/
 theorem sq_walkStepSign (c : Fin 2) : (walkStepSign c) ^ 2 = 1 := by
   fin_cases c <;> norm_num [walkStepSign]
 
+/-- The partial sum after `k` steps has absolute value at most `k`, by the triangle
+inequality applied to `k` unit-magnitude terms. -/
 theorem abs_walkPartialSum_le (k : ℕ) (p : ℕ → Fin 2 × Bool) : |walkPartialSum k p| ≤ k := by
   calc |walkPartialSum k p| ≤ ∑ j ∈ Finset.range k, |walkStepSign (p j).1| :=
         Finset.abs_sum_le_sum_abs _ _
@@ -70,6 +82,7 @@ theorem iIndep_coord :
 def walkFiltration : Filtration ℕ (inferInstance : MeasurableSpace (ℕ → Fin 2 × Bool)) :=
   Filtration.natural walkPartialSum stronglyMeasurable_walkPartialSum
 
+/-- `walkPartialSum` is strongly adapted to its own natural filtration `walkFiltration`. -/
 theorem stronglyAdapted_walkFiltration :
     StronglyAdapted walkFiltration walkPartialSum :=
   Filtration.stronglyAdapted_natural stronglyMeasurable_walkPartialSum
@@ -148,13 +161,17 @@ theorem condExp_walkStepSign_walkFiltration (k : ℕ) :
   rw [hp]
   exact integral_walkStepSign_eval k
 
+/-- `walkPartialSum k` is integrable, dominated by the constant `k` via
+`abs_walkPartialSum_le`. -/
 theorem integrable_walkPartialSum (k : ℕ) : Integrable (walkPartialSum k) (walkLaw 2) := by
   haveI := stepLaw_isProbability (d := 2) (by norm_num)
   haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
-  exact Integrable.mono' (integrable_const (k : ℝ)) (measurable_walkPartialSum k).aestronglyMeasurable
+  exact Integrable.mono' (integrable_const (k : ℝ))
+    (measurable_walkPartialSum k).aestronglyMeasurable
     (Filter.Eventually.of_forall fun p => by
       rw [Real.norm_eq_abs]; exact abs_walkPartialSum_le k p)
 
+/-- The square of `walkPartialSum k` is integrable, dominated by the constant `k ^ 2`. -/
 theorem integrable_walkPartialSum_sq (k : ℕ) :
     Integrable (fun p => (walkPartialSum k p) ^ 2) (walkLaw 2) := by
   haveI := stepLaw_isProbability (d := 2) (by norm_num)

@@ -1,6 +1,19 @@
 import Parking.Support.IncomingSlots
 import Parking.Support.CoordinateProductIntegral
 
+/-!
+# No-arrival probability bound via entry avoidance
+
+`entryEntranceProb x q` is the probability that a single table entry `q` lands at `x`,
+and `entryAvoids x q` records the complementary event; its mean is `1 - entryEntranceProb
+x q` (`integral_entryAvoids`). Summing the entrance probabilities of every entry that
+could possibly be used recovers the walk operator applied to the occupation `A`
+(`sum_entryEntranceProb`). Combining the elementary bound `1 - p ≤ exp (-p)` entrywise
+with independence across the finitely many potentially used entries bounds the
+probability of no arrivals in a fresh round by the exponential of minus the compensator
+`walkOp (fun y => (A y : ℝ)) x` (`integral_noArrivals_le_exp`).
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -14,7 +27,10 @@ def entryEntranceProb (x : Site d) (q : RoundSlot d) : ℝ :=
   | Sum.inl (y, _) => kern d y x
   | Sum.inr _ => 0
 
-theorem entryAvoids_nonneg (x : Site d) (q : RoundSlot d) (b : Fin d × Bool) : 0 ≤ entryAvoids x q b := by
+/-- `entryAvoids` is nonnegative, since it is an indicator by cases on whether `q` is a
+departing slot or a spare label direction. -/
+theorem entryAvoids_nonneg (x : Site d) (q : RoundSlot d) (b : Fin d × Bool) :
+    0 ≤ entryAvoids x q b := by
   cases q with
   | inl q => rcases q with ⟨y, j⟩; dsimp only [entryAvoids]; split <;> norm_num
   | inr q => norm_num [entryAvoids]
@@ -38,8 +54,10 @@ theorem integral_entryAvoids (hd : 1 ≤ d) (x : Site d) (q : RoundSlot d) :
       simp_rw [he]
       rw [integral_sub (integrable_const 1) hi, integral_const, probReal_univ, one_smul]
       have hF : (∫ b, F b ∂(stepLaw d)) = kern d y x := by
-        change (∫ b, (fun z : Site d => if z = x then (1 : ℝ) else 0) (y + stepVec b) ∂(stepLaw d)) = _
-        rw [integral_stepLaw_add hd (fun z : Site d => if z = x then (1 : ℝ) else 0) y, walkOp_eq_nbrFinset]
+        change (∫ b, (fun z : Site d => if z = x then (1 : ℝ) else 0)
+          (y + stepVec b) ∂(stepLaw d)) = _
+        rw [integral_stepLaw_add hd (fun z : Site d => if z = x then (1 : ℝ) else 0) y,
+          walkOp_eq_nbrFinset]
         by_cases hx : x ∈ nbrFinset y <;> simp [kern, hx]
       rw [hF]
       rfl
@@ -55,7 +73,8 @@ theorem sum_entryEntranceProb (A : Site d → ℕ) (x : Site d) :
   rw [kern, if_pos (nbrFinset_symm hy)]
   ring
 
-/-- The probability of no arrival in a fresh round is at most the exponential of minus its compensator. -/
+/-- The probability of no arrival in a fresh round is at most the exponential of minus
+its compensator. -/
 theorem integral_noArrivals_le_exp (hd : 1 ≤ d) (A : Site d → ℕ) (x : Site d) :
     (∫ τ, (if (countArrivals A τ x).card = 0 then (1 : ℝ) else 0)
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) ≤

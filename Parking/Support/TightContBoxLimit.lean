@@ -145,7 +145,8 @@ theorem tendsto_contBoxRewardMap (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ 
   intro ε hε
   set f : (Fin 2 → ℝ) → ℝ := fun z => Y z ω with hf
   have hfu : UniformContinuousOn f (orientedBox T A) :=
-    (isCompact_Icc (a := (![0, -(2 * A)] : Fin 2 → ℝ)) (b := ![T, 2 * A])).uniformContinuousOn_of_continuous
+    (isCompact_Icc (a := (![0, -(2 * A)] : Fin 2 → ℝ))
+      (b := ![T, 2 * A])).uniformContinuousOn_of_continuous
       (hYcont ω)
   obtain ⟨δ, hδ, hmod⟩ := Metric.uniformContinuousOn_iff.1 hfu (ε / 2) (by linarith)
   obtain ⟨N₀, hN₀⟩ := (Metric.tendsto_atTop.1 tendsto_contMeshBound) δ hδ

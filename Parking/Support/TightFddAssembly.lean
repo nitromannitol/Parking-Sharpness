@@ -1,4 +1,9 @@
-/-
+import Parking.Support.TightContFdd
+import LatticeProb.Prob.Scaling.CramerWold
+
+/-!
+# Finite-dimensional convergence of the rescaled box reward field
+
 The finite-dimensional convergence in law (`hfdd`) of the rescaled box reward field to the
 continuum noise field, at finitely many box points (`parking.tex:3207-3218`, Stage 2 of the
 covariance-to-Gaussian step).
@@ -6,12 +11,10 @@ covariance-to-Gaussian step).
 Assembles `Parking.tendsto_charFun_orientedBoxReward_linearCombination` (the discrete scalar
 characteristic-function limit), `Parking.charFun_map_contZ_linearCombination` (the matching
 continuum scalar characteristic-function value), and
-`LatticeProb.Scaling.CramerWold.tendstoInDistribution_of_tendsto_charFun_linearCombination` (Cramer-Wold) into the
-finite-dimensional convergence in law that `LatticeProb.tendsto_integral_of_fdd_of_equicontinuous`
-consumes as its `hfdd` hypothesis.
+`LatticeProb.Scaling.CramerWold.tendstoInDistribution_of_tendsto_charFun_linearCombination`
+(Cramer-Wold) into the finite-dimensional convergence in law that
+`LatticeProb.tendsto_integral_of_fdd_of_equicontinuous` consumes as its `hfdd` hypothesis.
 -/
-import Parking.Support.TightContFdd
-import LatticeProb.Prob.Scaling.CramerWold
 
 open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contZ measurable_contZ)
 open LatticeProb.Scaling.CramerWold (tendstoInDistribution_of_tendsto_charFun_linearCombination)

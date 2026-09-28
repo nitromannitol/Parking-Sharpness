@@ -3,6 +3,14 @@ import Parking.Support.TableDecomposition
 import Parking.Support.ClippedGreenMoment
 import Parking.Support.ClippedScenery
 
+/-!
+# The high-dimensional sparse odometer's linear moment bound
+
+Assembles the table decomposition, the clipped scenery norm bound and the clipped Green
+moment bound into a single `r`-th moment bound for the sparse odometer at a fixed point,
+linear in `r` and in the mean odometer, uniformly over the sparse three-point law.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg young_absorb)
 
 noncomputable section
@@ -10,7 +18,8 @@ namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
-/-- The high-dimensional sparse odometer has every finite moment, with the paper's linear moment bound. -/
+/-- The high-dimensional sparse odometer has every finite moment, with the paper's
+linear moment bound. -/
 theorem exists_sparse_odometer_moment_bound (hBernstein : External.Bernstein) (hd : 5 ≤ d) :
     ∃ C : ℝ, 0 < C ∧ ∀ p : ℝ, 0 < p → p ≤ 1 / 4 → ∀ (T : ℕ) (x : Site d) (r : ℝ), 2 ≤ r →
       Integrable (fun ω => (U ω T x : ℝ) ^ r) (law d (threePointLaw p)) ∧
@@ -57,7 +66,8 @@ theorem exists_sparse_odometer_moment_bound (hBernstein : External.Bernstein) (h
     dsimp only [A]
     nlinarith [mul_le_mul_of_nonneg_left hsr hCs.le]
   have hfinal : X ≤ (2 + A) * (m + r) := hlinear.trans (by nlinarith [mul_nonneg hA hm])
-  refine ⟨integrable_U_rpow hd1 _ (by norm_num : (0 : ℝ) < 1) (integrable_threePointLaw p _) hr1 T x, ?_⟩
+  refine ⟨integrable_U_rpow hd1 _ (by norm_num : (0 : ℝ) < 1) (integrable_threePointLaw p _)
+      hr1 T x, ?_⟩
   have hnorm : (∫ ω, (U ω T x : ℝ) ^ r ∂(law d (threePointLaw p))) ^ (1 / r) =
       rNorm μ r (clippedTableU T x) := by
     rw [rNorm_clippedTableU hd1 _ (ae_clipSparse_threePointLaw p) T x hr0.le]

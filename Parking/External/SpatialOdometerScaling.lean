@@ -1,4 +1,9 @@
-/-
+import Parking.Support.SpatialGreenPairing
+import Parking.Support.ContUc
+
+/-!
+# The spatial odometer scaling limit (frozen)
+
 External input: Bou-Rabee and Panagiotis, *Quantitative explosion and percolation
 of the divisible sandpile*, Theorem 1.3(i)(b), "Critical growth and spatial
 scaling" (`sandpile.tex:206-235`, `thm:main-explosion`). The enclosing hypotheses
@@ -67,8 +72,6 @@ No conclusion about the parking odometer, signed density, driven equation or
 strict time derivative is assumed here. Those are proved in Parking from this
 input and the separately stated growth and classical parabolic inputs.
 -/
-import Parking.Support.SpatialGreenPairing
-import Parking.Support.ContUc
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open scoped NNReal ENNReal

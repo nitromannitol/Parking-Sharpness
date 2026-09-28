@@ -1,11 +1,13 @@
-/-
-Particles coupled by matching their departure ranks at each site. A round has
-fresh site tables; each configuration reads an initial segment at its site.
-The construction is measurable, and its received directions drive an ordinary
-particle process pathwise.
--/
 import Parking.Support.Agree
 import Parking.Support.Coupling
+
+/-!
+# The common-table construction
+
+Particles coupled by matching their departure ranks at each site. A round has fresh site
+tables; each configuration reads an initial segment at its site. The construction is
+measurable, and its received directions drive an ordinary particle process pathwise.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -19,6 +21,8 @@ variable {d : ℕ}
 labels that do not depart. -/
 abbrev Parking.RoundSlot (d : ℕ) := (LatticeProb.Site d × ℕ) ⊕ LatticeProb.Label d
 
+/-- The instruction tables across all rounds: at round `t`, a direction for each
+`RoundSlot d`. -/
 abbrev Parking.RoundNoise (d : ℕ) := ℕ → Parking.RoundSlot d → Fin d × Bool
 
 /-- The active labels available for matching at a site. -/
@@ -30,6 +34,8 @@ def Parking.matchActive (η : Site d → ℤ) (S : State d) (t : ℕ) (x : Site 
 def Parking.matchKey (ρ : Label d × ℕ → ℝ) (t : ℕ) (p : Label d) :
     Lex (ℝ × Lex (Lex (Fin d → ℤ) × ℕ)) := toLex (ρ (p, t), labelKey p)
 
+/-- `matchKey ρ t` is injective, since two labels with the same key agree on `labelKey`,
+which is itself injective. -/
 theorem Parking.matchKey_injective (ρ : Label d × ℕ → ℝ) (t : ℕ) :
     Function.Injective (Parking.matchKey ρ t) := by
   intro p q hpq
@@ -43,6 +49,9 @@ def Parking.matchSlot (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
       rankIn (Parking.matchActive η S t (S.pos p)) (Parking.matchKey ρ t) p)
   else Sum.inr p
 
+/-- `matchSlot η ρ S t` is injective: two active labels landing in the same slot share a
+position and rank, hence are equal by `rankIn_injOn` and `matchKey_injective`, while two
+inactive labels are equal by injectivity of `Sum.inr`. -/
 theorem Parking.matchSlot_injective (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (S : State d) (t : ℕ) : Function.Injective (Parking.matchSlot η ρ S t) := by
   classical
@@ -56,6 +65,8 @@ theorem Parking.matchSlot_injective (η : Site d → ℤ) (ρ : Label d × ℕ �
     exact rankIn_injOn (Parking.matchKey_injective ρ t).injOn hp hq hrank
   · exact Sum.inr_injective hpq
 
+/-- On an active label `p` at `x`, `matchSlot` evaluates to `Sum.inl (x, rank)`, where
+`rank` is `p`'s position under `matchKey` among the active labels at `x`. -/
 theorem Parking.matchSlot_of_mem (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (S : State d) (t : ℕ) (x : Site d) {p : Label d}
     (hp : p ∈ Parking.matchActive η S t x) :
@@ -117,6 +128,8 @@ theorem Parking.pStep_congr_moves (η : Site d → ℤ) (ρ : Label d × ℕ →
   simp only [Parking.pStep, ha, hs, funext hn]
   rfl
 
+/-- `pState` after `t` rounds depends only on the moves used at rounds before `t`, by
+induction using `pStep_congr_moves`. -/
 theorem Parking.pState_congr_moves (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (m m' : Label d × ℕ → Fin d × Bool) (t : ℕ)
     (h : ∀ s < t, ∀ p, m (p, s) = m' (p, s)) :
@@ -151,6 +164,8 @@ theorem Parking.matchedState_congr (η : Site d → ℤ) (ρ : Label d × ℕ �
       exact Parking.pStep_congr_moves η ρ _ _ _ t fun p =>
         congrFun (h t (by omega)) _
 
+/-- Updating the noise entry at a round `n ≥ t` does not change `matchedState` at time `t`,
+by `matchedState_congr`, since the update never touches an earlier round. -/
 theorem Parking.matchedState_update (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (n t : ℕ) (v : Parking.RoundSlot d → Fin d × Bool)
     (ht : t ≤ n) :
@@ -168,6 +183,8 @@ def Parking.MeasurableState (S : Ω → State d) : Prop :=
   (∀ x, Measurable fun ω => (S ω).holes x) ∧
   (∀ x, Measurable fun ω => (S ω).departures x)
 
+/-- `pState` is jointly measurable in the configuration, moves and priorities: rewriting via
+`pState_stepVec` and `toPDriver` reduces it to the library's `measurable_pState`. -/
 theorem Parking.measurableState_pState (e : Ω → Site d → ℤ)
     (m : Ω → Label d × ℕ → Fin d × Bool) (r : Ω → Label d × ℕ → ℝ)
     (he : Measurable e) (hm : Measurable m) (hr : Measurable r) (t : ℕ) :
@@ -185,6 +202,8 @@ theorem Parking.measurableState_pState (e : Ω → Site d → ℤ)
   exact ⟨fun p => (h.1 p).comp hT, fun p => (h.2.1 p).comp hT,
     fun x => (h.2.2.1 x).comp hT, fun x => (h.2.2.2 x).comp hT⟩
 
+/-- `matchActive` is measurable in the configuration and state, by `measurable_finset_iff`
+applied to the measurable `active` and `pos` fields of `MeasurableState`. -/
 theorem Parking.measurable_matchActive (e : Ω → Site d → ℤ)
     (S : Ω → State d) (he : Measurable e) (hS : Parking.MeasurableState S)
     (t : ℕ) (x : Site d) :
@@ -197,6 +216,9 @@ theorem Parking.measurable_matchActive (e : Ω → Site d → ℤ)
   have hp := hS.2.1 p
   fun_prop
 
+/-- `matchSlot` is measurable in the configuration, priorities and state, combining
+measurability of `matchActive` and of the rank computed by `rankIn` through
+`measurable_eval_var`. -/
 theorem Parking.measurable_matchSlot (e : Ω → Site d → ℤ)
     (r : Ω → Label d × ℕ → ℝ) (S : Ω → State d)
     (he : Measurable e) (hr : Measurable r) (hS : Parking.MeasurableState S)
@@ -256,6 +278,9 @@ theorem Parking.measurableState_matchedState (i₀ : Fin d) (e : Ω → Site d �
       rw [hst]
       exact Parking.measurableState_pState e m r he hm hr t
 
+/-- `matchedMoves` is jointly measurable in the configuration, priorities and round noise,
+by `measurable_matchSlot` applied to the measurable state
+`measurableState_matchedState`. -/
 theorem Parking.measurable_matchedMoves (i₀ : Fin d) (e : Ω → Site d → ℤ)
     (r : Ω → Label d × ℕ → ℝ) (σ : Ω → Parking.RoundNoise d)
     (he : Measurable e) (hr : Measurable r) (hσ : Measurable σ) :
@@ -272,6 +297,8 @@ def Parking.roundNoiseLaw (d : ℕ) : Measure (Parking.RoundNoise d) :=
   Measure.infinitePi fun _ : ℕ =>
     Measure.infinitePi fun _ : Parking.RoundSlot d => Parking.stepLaw d
 
+/-- `roundNoiseLaw d` is a probability measure whenever `stepLaw d` is, since it is an
+iterated `Measure.infinitePi` of `stepLaw d`. -/
 theorem Parking.roundNoiseLaw_isProbability (hd : 1 ≤ d) :
     IsProbabilityMeasure (Parking.roundNoiseLaw d) := by
   haveI := Parking.stepLaw_isProbability hd

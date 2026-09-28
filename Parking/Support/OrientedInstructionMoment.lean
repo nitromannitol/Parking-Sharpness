@@ -1,4 +1,12 @@
-/- The moment bound for the directed error regrouped by instruction.
+import Parking.Support.PredictableCoordinate
+import Parking.Support.OrientedInstructionSum
+import Parking.Support.OrientedSupCharge
+import Parking.Support.SortedEnumeration
+
+/-!
+# Moment bound for the directed error by instruction
+
+The moment bound for the directed error regrouped by instruction.
 
 Each instruction is a fresh independent coordinate, read once, with the
 cumulative discrepancy `Parking.orientedCumDisc` at the horizon it is alive for.
@@ -10,10 +18,6 @@ it returns is the odometer weighted by the layer variances at the selected
 horizons, which `Parking.orientedGamma_eq_sum` bounds by the weights
 `sup_M Gamma_M(y)` of `Parking.orientedSupCharge`.
 -/
-import Parking.Support.PredictableCoordinate
-import Parking.Support.OrientedInstructionSum
-import Parking.Support.OrientedSupCharge
-import Parking.Support.SortedEnumeration
 
 open LatticeProb (measurable_from_countable')
 
@@ -109,7 +113,8 @@ theorem exists_oriented_instr_moment (hBern : External.Bernstein) :
     (fun _ _ => Measurable.of_discrete) (fun j Mi x => abs_orientedCumDisc_le hd _ _ x)
     (fun j Mi => integral_orientedCumDisc hd _ _) hr zero_lt_one
   have hsum (z : (Site d → ℤ) × (Site d × ℕ → Site d)) :
-      (∑ j : Fin T.card, H j z * g j (sel j z) (z.2 (q j))) = orientedTruncatedInstr (boxFinset (0 : Site d) N) n M z := by
+      (∑ j : Fin T.card, H j z * g j (sel j z) (z.2 (q j))) =
+        orientedTruncatedInstr (boxFinset (0 : Site d) N) n M z := by
     have he (j : Fin T.card) : H j z * g j (sel j z) (z.2 (q j)) =
         if (q j).2 < orientedOdometer z.1 z.2 (n - 1) (q j).1 then
           orientedCumDisc (orientedAlive z.1 z.2 n (q j).1 (q j).2) (q j).1 (z.2 (q j)) else 0 := by

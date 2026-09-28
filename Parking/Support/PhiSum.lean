@@ -1,5 +1,7 @@
-/-
-The dyadic block sum of Step 2 of `lem:mean-horizon` (`parking.tex:2817-2841`).
+import Parking.Support.RangeResolvent
+
+/-!
+# The dyadic block sum of Step 2 of `lem:mean-horizon` (`parking.tex:2817-2841`)
 
 Step 2 splits the horizon into the blocks `[0, N)` and `[2^{k-1}N, 2^k N)` and
 bounds the reward collected in the `k`-th block by `φ_d(2^{k-1}N)` times the
@@ -14,7 +16,6 @@ grows by at most `2^{jα}` with `α = (4-d)/4` across `j` dyadic doublings when
 `d ≤ 3`, and by at most the factor `j log 2 + 1` when `d ≥ 4`, so the series is
 geometric in the first case and geometric with a linear weight in the second.
 -/
-import Parking.Support.RangeResolvent
 
 open MeasureTheory
 
@@ -24,6 +25,8 @@ namespace Parking
 
 variable {d : ℕ}
 
+/-- For `d ≤ 3`, doubling the scale `k` times multiplies `φ_d` by at most
+`2^{k(4-d)/4}`, from bounding `2^k N + 1` by `2^k (N + 1)` inside the power `(4-d)/4`. -/
 theorem phi_two_pow_le_pow {d : ℕ} (hd3 : d ≤ 3) (k : ℕ) {N : ℝ} (hN : 1 ≤ N) :
     phi d (2 ^ k * N) ≤ 2 ^ ((k : ℝ) * (((4 : ℝ) - (d : ℝ)) / 4)) * phi d N := by
   simp only [phi, if_pos hd3]
@@ -41,6 +44,9 @@ theorem phi_two_pow_le_pow {d : ℕ} (hd3 : d ≤ 3) (k : ℕ) {N : ℝ} (hN : 1
     _ = 2 ^ ((k : ℝ) * (((4 : ℝ) - (d : ℝ)) / 4)) * (N + 1) ^ (((4 : ℝ) - (d : ℝ)) / 4) := by
         rw [Real.rpow_mul (by norm_num : (0:ℝ) ≤ 2), Real.rpow_natCast]
 
+/-- For `d ≥ 4`, doubling the scale `k` times multiplies `φ_d = log(· + 2)` by at most
+the factor `k log 2 + 1`, via `log(2^k(N + 2)) = k log 2 + log(N + 2)` together with
+`log(N + 2) ≥ 1` for `N ≥ 1`. -/
 theorem phi_two_pow_le_log {d : ℕ} (hd4 : 4 ≤ d) (k : ℕ) {N : ℝ} (hN : 1 ≤ N) :
     phi d (2 ^ k * N) ≤ ((k : ℝ) * Real.log 2 + 1) * phi d N := by
   have hd3 : ¬ (d ≤ 3) := by omega
@@ -60,15 +66,24 @@ theorem phi_two_pow_le_log {d : ℕ} (hd4 : 4 ≤ d) (k : ℕ) {N : ℝ} (hN : 1
   nlinarith [h1, h2, h3, h4]
 
 
+/-- `φ_d(N)` is nonnegative for `N ≥ 1`, by cases on which branch of its definition
+applies. -/
 theorem phi_nonneg (d : ℕ) {N : ℝ} (hN : 1 ≤ N) : 0 ≤ phi d N := by
   unfold phi
   split_ifs with h
   · exact Real.rpow_nonneg (by linarith) _
   · exact Real.log_nonneg (by linarith)
 
+/-- The real power `2 ^ (j x)` equals `(2 ^ x) ^ j` for a natural exponent `j`, the
+algebraic identity used to turn a dyadic scaling exponent into a geometric ratio. -/
 theorem two_rpow_mul (x : ℝ) (j : ℕ) : (2:ℝ) ^ ((j : ℝ) * x) = ((2:ℝ) ^ x) ^ j := by
   rw [mul_comm, Real.rpow_mul (by norm_num : (0:ℝ) ≤ 2), Real.rpow_natCast]
 
+/-- The dyadic block sum `∑_j 2^{-jθ} φ_d(2^j N)` converges and is bounded by `C * φ_d(N)`
+for a constant `C` independent of `N ≥ 1`: each term is dominated by a geometric series,
+`r ^ j * φ_d(N)` when `d ≤ 3` via `phi_two_pow_le_pow` with `r = 2^{(4-d)/4 - θ}`, and
+`(j log 2 + 1) * r ^ j * φ_d(N)` when `d ≥ 4` via `phi_two_pow_le_log` with `r = 2^{-θ}`,
+in both cases with `r < 1`. -/
 theorem exists_phi_block_sum (d : ℕ) {θ : ℝ} (hθ : 0 < θ)
     (hθd : d ≤ 3 → ((4:ℝ) - (d:ℝ)) / 4 < θ) :
     ∃ C : ℝ, 0 < C ∧ ∀ N : ℝ, 1 ≤ N →

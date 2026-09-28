@@ -1,5 +1,14 @@
 import Parking.Support.BoundedMoment
 
+/-!
+# The moment norm on a product measure
+
+The `rNorm` moment norm on a product measure `μ.prod ν` equals the outer `rNorm` of the
+conditional `rNorm` in the second coordinate, the conditional moment norm is measurable
+in the retained coordinate, and taking the outer average of a `1/r` root of a conditional
+`p`-th moment recovers the `1/r` root of the corresponding joint `p`-th moment.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 
 noncomputable section

@@ -1,4 +1,12 @@
-/-
+import Parking.Support.HatInterpD
+import Parking.Support.LinPotentialSum
+import Parking.Support.LinInterp
+import Parking.Support.UConcBridge
+import Parking.Basic
+
+/-!
+# Measurability of the cutoff interpolated linear field
+
 **Measurability of the cutoff, rescaled, interpolated linear field as a random element.**
 
 Applying the library's extended continuous mapping theorem
@@ -26,8 +34,8 @@ is LIPSCHITZ for the sup metrics (`Parking.lipschitzWith_cutoffBC_linHatInterp_r
 the crude field-Lipschitz bound on `linPotential`,
 `Parking.lipschitzWith_linPotential_extendField`, summed over the fixed finite grid box).  A
 Lipschitz map is continuous, hence Borel measurable, and composing a measurable map with a
-continuous one is measurable (`Parking.measurable_cutoffBC_linHatInterp`, the module's main
-theorem).
+continuous one is measurable (`Parking.measurable_cutoffBC_linHatInterp`, this module's
+central result).
 
 The module also proves measurability of the linear membrane field `Parking.linPotential` and
 its interpolated, rescaled version `Parking.linHatInterp`, as functions of the scenery
@@ -50,11 +58,6 @@ combination of the coordinates `η z`, hence measurable in `η` (equivalently in
 `η := confReal w`) by the same coordinate-projection argument as `Parking.measurable_scenePair`
 (`Parking/Support/SpatWSceneryFdd.lean`).
 -/
-import Parking.Support.HatInterpD
-import Parking.Support.LinPotentialSum
-import Parking.Support.LinInterp
-import Parking.Support.UConcBridge
-import Parking.Basic
 
 noncomputable section
 
@@ -104,6 +107,8 @@ def linHatTimeBox (R0 : ℝ) : Finset ℤ := Finset.Icc (⌊-R0⌋ : ℤ) (⌊R0
 index in `linHatTimeBox R0`, read as a `ℕ` horizon via `Int.toNat`, is at most this. -/
 def linHatRad (R0 : ℝ) : ℕ := (⌊R0⌋ + 1).toNat
 
+/-- Every integer time index in `linHatTimeBox R0`, read as a natural-number horizon via
+    `Int.toNat`, is at most `linHatRad R0`: unfold both definitions and close with `omega`. -/
 theorem toNat_mem_linHatTimeBox_le {R0 : ℝ} {m : ℤ} (hm : m ∈ linHatTimeBox R0) :
     m.toNat ≤ linHatRad R0 := by
   unfold linHatTimeBox at hm
@@ -119,6 +124,9 @@ def linHatBoxSites (d : ℕ) (R0 : ℝ) : Finset (Site d) :=
   (Fintype.piFinset fun _ : Fin d => linHatTimeBox R0).biUnion
     fun c => boxFinset c (linHatRad R0)
 
+/-- For any grid site `c` in the space window, `boxFinset c (linHatRad R0)` is one of the
+    finitely many pieces that `linHatBoxSites d R0` unions together
+    (`Finset.subset_biUnion_of_mem`). -/
 theorem boxFinset_subset_linHatBoxSites {d : ℕ} {R0 : ℝ} {c : Site d}
     (hc : c ∈ Fintype.piFinset fun _ : Fin d => linHatTimeBox R0) :
     boxFinset c (linHatRad R0) ⊆ linHatBoxSites d R0 := by
@@ -127,6 +135,10 @@ theorem boxFinset_subset_linHatBoxSites {d : ℕ} {R0 : ℝ} {c : Site d}
 
 /-! ### `linPotential` at every grid point of the corner box reads only the finite site box -/
 
+/-- At every grid point `(m.toNat, c)` of the time-space corner box, `linPotential` reads the
+    field only through its restriction to the finite site box `linHatBoxSites d R0`, combining
+    the box-monotonicity `linPotential_eq_extendField_of_boxFinset_subset` with
+    `boxFinset_subset_linHatBoxSites`. -/
 theorem linPotential_eq_extendField_linHatBoxSites {d : ℕ} {R0 : ℝ} {m : ℤ}
     (hm : m ∈ linHatTimeBox R0) {c : Site d}
     (hc : c ∈ Fintype.piFinset fun _ : Fin d => linHatTimeBox R0) (ζ : Site d → ℤ) :
@@ -311,7 +323,8 @@ theorem exists_lipschitz_cutoffBC_linHatInterp (d : ℕ) (hd : 1 ≤ d) (R : ℝ
                 ≤ ∑ c ∈ Sbox, |R ^ ((d : ℝ) / 2 - 2)| * (linHatRad R0 : ℝ) * dist y1 y2 :=
                   (Finset.abs_sum_le_sum_abs _ _).trans
                     (Finset.sum_le_sum fun c hc => hterm m hm c hc)
-              _ = (Sbox.card : ℝ) * (|R ^ ((d : ℝ) / 2 - 2)| * (linHatRad R0 : ℝ) * dist y1 y2) := by
+              _ = (Sbox.card : ℝ)
+                  * (|R ^ ((d : ℝ) / 2 - 2)| * (linHatRad R0 : ℝ) * dist y1 y2) := by
                   rw [Finset.sum_const, nsmul_eq_mul]
         _ = (Tbox.card * Sbox.card : ℝ)
               * (|R ^ ((d : ℝ) / 2 - 2)| * (linHatRad R0 : ℝ) * dist y1 y2) := by

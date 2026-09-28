@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SubcriticalBound
+
+/-!
+# Joint bound via the walk of the bottom particle at the origin
+
 The joint bound `P(η(0) = k, τ₁ > t) ≤ ν{k} C_k E₀ e^{-a|R_t|}`
 (`parking.tex:2508-2511`).
 
@@ -11,7 +15,6 @@ The count at the origin and the walks are independent fields of the law, so the
 average factorizes, and the law of the walk of one label is the law of a simple
 random walk's direction sequence.
 -/
-import Parking.Support.SubcriticalBound
 
 open MeasureTheory
 
@@ -23,6 +26,8 @@ open LatticeProb
 
 variable {d : ℕ}
 
+/-- At a label of the origin, `graftOrigin` reads the walk of `ω₁`, the
+prescribed realization. -/
 theorem graftOrigin_move_zero {q : Label d × ℕ} (hq : q.1.1 = (0 : Site d))
     (ω₁ ω : PData d) : (graftOrigin ω₁ ω).2.1 q = ω₁.2.1 q := by
   simp [graftOrigin, hq]
@@ -31,6 +36,8 @@ theorem graftOrigin_move_zero {q : Label d × ℕ} (hq : q.1.1 = (0 : Site d))
 def originMoveOf (ω : PData d) : ℕ → Fin d × Bool :=
   fun s => ω.2.1 ((((0 : Site d), 0) : Label d), s)
 
+/-- Setting the walks of the origin's bottom particle to its own current walk
+changes nothing. -/
 theorem setMoves_originMoveOf (ω : PData d) : setMoves (originMoveOf ω) ω = ω := by
   refine Prod.ext rfl (Prod.ext ?_ rfl)
   funext q
@@ -41,6 +48,8 @@ theorem setMoves_originMoveOf (ω : PData d) : setMoves (originMoveOf ω) ω = �
     rw [← hq]
   · rw [if_neg hq]
 
+/-- The walk of the bottom particle at the origin after grafting is that of the
+prescribed realization `ω₁`, by `graftOrigin_move_zero`. -/
 theorem originMoveOf_graftOrigin (ω₁ ω : PData d) :
     originMoveOf (graftOrigin ω₁ ω) = originMoveOf ω₁ := by
   funext s
@@ -52,11 +61,16 @@ def jointObs (k : ℕ) (t : ℕ) : PData d → ℝ :=
   Set.indicator {ω' : PData d | ω'.1 (0 : Site d) = (k : ℤ) ∧
       (pState (toPDriver ω') t).active ((0 : Site d), 0) = true} (fun _ => (1 : ℝ))
 
+/-- `jointObs` agrees with `condObs` conditioned on the realization's own walk
+at the origin, since setting the moves to that walk changes nothing. -/
 theorem jointObs_eq_condObs (k t : ℕ) (ω : PData d) :
     jointObs k t ω = condObs (originMoveOf ω) k t ω := by
   unfold condObs jointObs
   rw [setMoves_originMoveOf]
 
+/-- `jointObs` on a grafted realization factors as the indicator that the
+origin count of `ω₁` is `k` times the survival observable of the unshifted
+realization with the origin removed. -/
 theorem jointObs_graftOrigin (k t : ℕ) (ω₁ ω : PData d) :
     jointObs k t (graftOrigin ω₁ ω)
       = Set.indicator {ω' : PData d | ω'.1 (0 : Site d) = (k : ℤ)} (fun _ => (1 : ℝ)) ω₁
@@ -76,6 +90,8 @@ theorem moveLaw_map_originMove (d : ℕ) (hd : 1 ≤ d) :
     = Measure.infinitePi fun _ : ℕ => stepLaw d
   exact Measure.map_infinitePi_infinitePi_of_inj hinj
 
+/-- `originMoveOf` is measurable, being a coordinate projection of the driving
+data. -/
 theorem measurable_originMoveOf : Measurable (originMoveOf (d := d)) := by
   refine measurable_pi_lambda _ fun s => ?_
   exact (measurable_pi_apply ((((0 : Site d), 0) : Label d), s)).comp

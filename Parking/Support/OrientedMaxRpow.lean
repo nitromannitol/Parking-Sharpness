@@ -1,14 +1,23 @@
-/- The r-th power of the directed maximum along the walk is at most the sum of
-the r-th powers of the error at the path times. -/
 import Parking.Support.OrientedPathMax
 import Parking.Support.OrientedMaximum
 import Parking.Support.WStarMoment
+
+/-!
+# The `r`-th power of the maximum is at most a sum of `r`-th powers
+
+The r-th power of the directed maximum along the walk is at most the sum of
+the r-th powers of the error at the path times.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- For `r ≥ 1`, the `r`-th power of `orientedMax F n x p` is at most the sum over path
+times `j ≤ n` of the `r`-th powers `|F (n - j) (orientedPath x p j)| ^ r`, obtained by
+bounding each term of the maximum by the `r`-th root of the total sum via
+`Finset.sup'_le` and raising back to the `r`-th power. -/
 theorem orientedMax_rpow_le_sum (F : ℕ → Site d → ℝ) (n : ℕ) (x : Site d) {r : ℝ}
     (hr : 1 ≤ r) (p : ℕ → Fin d × Bool) :
     orientedMax F n x p ^ r

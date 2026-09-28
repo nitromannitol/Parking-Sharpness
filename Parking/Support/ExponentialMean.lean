@@ -1,10 +1,18 @@
-/- Jensen's inequality converts a finite exponential moment to a mean bound. -/
 import Mathlib
+
+/-!
+# Exponential moment to mean bound
+
+Jensen's inequality converts a finite exponential moment to a mean bound.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory
 
+/-- If `exp (τ * X)` is integrable with `∫ exp (τ * X) ≤ exp B` for some `τ > 0`,
+then `X` itself is integrable and `τ * ∫ X ≤ B`, by applying Jensen's inequality
+(`convexOn_exp.map_integral_le`) to `τ * X`. -/
 theorem mean_le_of_exp_integral_le {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ)
     (hm : Measurable X) (hn : ∀ ω, 0 ≤ X ω) {τ B : ℝ} (hτ : 0 < τ)

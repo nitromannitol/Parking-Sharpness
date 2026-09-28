@@ -1,6 +1,16 @@
 import Parking.Support.SinkGreenMoment
 import Parking.Support.OnePointMoment
 
+/-!
+# Instruction-noise moment bound for the sink odometer
+
+This file combines the table-joint noise moment bound, the clipped Green moment bound,
+and the one-point odometer moment bound of `Parking.Support.OnePointMoment` with the
+Green-weighted moment comparison of `Parking.Support.SinkGreenMoment` to bound the
+`r`-norm fluctuation of the sink odometer `sparseSinkTableU` around its conditional mean,
+for every instruction table, uniformly over `p ≤ 1/4` and dimension `d ≥ 5`.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 
 noncomputable section
@@ -42,7 +52,8 @@ theorem exists_sparseSink_noise_moment (hBernstein : External.Bernstein) (hd : 5
       simp only [habs]
     rw [he]
     exact (hu p hp hp4 T 0 r hr).2
-  have hQ := (sparseSink_green_moment_le hd1 (threePointLaw p) T v x hr0).trans (hw p hp hp4 T x r hr)
+  have hQ :=
+    (sparseSink_green_moment_le hd1 (threePointLaw p) T v x hr0).trans (hw p hp hp4 T x r hr)
   have hroot : Real.sqrt (W * X) ≤ Real.sqrt (W * (Cu * (m + r))) :=
     Real.sqrt_le_sqrt (mul_le_mul_of_nonneg_left hXu hW.le)
   have hQ' := hQ.trans hroot
@@ -56,5 +67,6 @@ theorem exists_sparseSink_noise_moment (hBernstein : External.Bernstein) (hd : 5
     congr 1
     ring
   rw [he] at h
-  exact h.trans (by nlinarith [mul_nonneg ha hr0.le, mul_nonneg hg.le (Real.sqrt_nonneg (r * (m + r)))])
+  exact h.trans (by
+    nlinarith [mul_nonneg ha hr0.le, mul_nonneg hg.le (Real.sqrt_nonneg (r * (m + r)))])
 end Parking

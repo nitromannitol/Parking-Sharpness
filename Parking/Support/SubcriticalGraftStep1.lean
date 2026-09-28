@@ -1,4 +1,9 @@
-/-
+import Parking.Support.SubcriticalGraft
+import Parking.Support.SubcriticalStep1
+
+/-!
+# Grafting cost for Step 1 of `thm:subcritical`
+
 The second inequality of Step 1 of `thm:subcritical` (`parking.tex:2471-2477`).
 
 "If the origin instead has value `j`, then passing from that value to the
@@ -14,8 +19,6 @@ observable reads the particles present alone.  Then `k - 1` additions put the
 prescribed particles there.  Each stage is a single-particle change, so the hole
 count of the range moves by at most one at each of the `|j| + k - 1` steps.
 -/
-import Parking.Support.SubcriticalGraft
-import Parking.Support.SubcriticalStep1
 
 open LatticeProb (measurable_from_countable')
 
@@ -33,12 +36,16 @@ variable {d : ℕ}
 def setOriginCount (c : ℤ) (ω : PData d) : PData d :=
   ((fun x => if x = (0 : Site d) then c else ω.1 x), ω.2)
 
+/-- The count at the origin after `setOriginCount c ω` is `c`. -/
 @[simp] theorem setOriginCount_eta_zero (c : ℤ) (ω : PData d) :
     (setOriginCount c ω).1 (0 : Site d) = c := by simp [setOriginCount]
 
+/-- `setOriginCount` leaves the count at every site other than the origin
+unchanged. -/
 theorem setOriginCount_eta_of_ne {x : Site d} (hx : x ≠ (0 : Site d)) (c : ℤ) (ω : PData d) :
     (setOriginCount c ω).1 x = ω.1 x := by simp [setOriginCount, hx]
 
+/-- Setting the origin count to its own current value is the identity. -/
 theorem setOriginCount_self (ω : PData d) : setOriginCount (ω.1 (0 : Site d)) ω = ω := by
   refine Prod.ext ?_ rfl
   funext x
@@ -46,6 +53,8 @@ theorem setOriginCount_self (ω : PData d) : setOriginCount (ω.1 (0 : Site d)) 
   · simp [setOriginCount, hx]
   · simp [setOriginCount, hx]
 
+/-- Iterating `addAt` at the origin `n` times adds `n` to the origin count and
+changes nothing else, by induction on `n`. -/
 theorem addAt_iter_origin (n : ℕ) (ω : PData d) :
     (addAt (0 : Site d))^[n] ω = setOriginCount (ω.1 (0 : Site d) + (n : ℤ)) ω := by
   induction n with
@@ -60,6 +69,8 @@ theorem addAt_iter_origin (n : ℕ) (ω : PData d) :
       ring
     · simp [addAt, addParticle, setOriginCount, hx]
 
+/-- Iterating `delAt` at the origin `n` times subtracts `n` from the origin
+count and changes nothing else, by induction on `n`. -/
 theorem delAt_iter_origin (n : ℕ) (ω : PData d) :
     (delAt (0 : Site d))^[n] ω = setOriginCount (ω.1 (0 : Site d) - (n : ℤ)) ω := by
   induction n with
@@ -74,6 +85,9 @@ theorem delAt_iter_origin (n : ℕ) (ω : PData d) :
       ring
     · simp [delAt, setOriginCount, hx]
 
+/-- Iterating `addAt` at the origin `n` times moves `holeObs` by at most `n`, by
+induction using the single-particle Lipschitz bound `holeObs_add_lip` at each
+step. -/
 theorem abs_holeObs_add_iter (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (t : ℕ) (n : ℕ)
     (ω : PData d) :
     |holeObs w t ((addAt (0 : Site d))^[n] ω) - holeObs w t ω| ≤ (n : ℝ) := by
@@ -87,6 +101,9 @@ theorem abs_holeObs_add_iter (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (t : ℕ
     push_cast
     linarith
 
+/-- Iterating `delAt` at the origin `n` times moves `holeObs` by at most `n`, by
+induction using the single-particle Lipschitz bound `holeObs_del_lip` at each
+step. -/
 theorem abs_holeObs_del_iter (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (t : ℕ) (n : ℕ)
     (ω : PData d) :
     |holeObs w t ((delAt (0 : Site d))^[n] ω) - holeObs w t ω| ≤ (n : ℝ) := by
@@ -215,6 +232,9 @@ theorem integral_abs_eta_pDataLaw (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabili
   rw [hmap] at h
   exact h.symm
 
+/-- The absolute count at the origin is integrable under `pDataLaw d ν` whenever
+it is integrable under the one-site law `ν`, by reducing to the marginal at the
+origin. -/
 theorem integrable_abs_eta_pDataLaw (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) :
     Integrable (fun ω : PData d => |((ω.1 (0 : Site d) : ℤ) : ℝ)|) (pDataLaw d ν) := by
@@ -229,6 +249,9 @@ theorem integrable_abs_eta_pDataLaw (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabi
     (by rw [hmap]; exact hint.aestronglyMeasurable)
     (measurable_pi_apply (0 : Site d)).aemeasurable).mp (by rw [hmap]; exact hint)
 
+/-- `graftHoleObs` is integrable under `pDataLaw d ν`, by dominating it with the
+integrable sum of `holeObs`, the integrable absolute count at the origin, and
+the constant `(ω₁.1 0).toNat`, via `abs_graftHoleObs_sub_le`. -/
 theorem integrable_graftHoleObs (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (w : ℕ → Fin d × Bool) (t : ℕ)
     {ω₁ : PData d} (hc : 0 ≤ ω₁.1 (0 : Site d)) :

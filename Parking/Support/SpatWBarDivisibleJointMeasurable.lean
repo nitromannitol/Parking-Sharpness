@@ -1,13 +1,18 @@
-/-
+import Parking.Support.SpatWDivisiblePairing
+import Parking.Support.Measurability
+
+/-!
+# Joint measurability of the rescaled divisible odometer
+
 Joint measurability of the rescaled divisible odometer `barDivisible w R t x`, in `(w, x)`
 together, at a FIXED `R` and `t`.  This is needed for the pairing convergence of
 `Parking/Support/SpatWPairingConvergence.lean`: the McShane-lifted functional
 `LatticeProb.Scaling.BoundedFunctionalLift.liftPhiOn K (Phi0 K h F) (NiceOnK K) L0` must be shown
-measurable IN `w` when composed with the (spatially non-continuous) field `fun x => barDivisible
-w R t x`, matching the `hfΦm` hypothesis of `LatticeProb.tendsto_integral_of_fdd_of_equicontinuous'`.
+measurable IN `w` when composed with the (spatially non-continuous) field `fun x => barDivisible w R
+t x`, matching the `hfΦm` hypothesis of `LatticeProb.tendsto_integral_of_fdd_of_equicontinuous'`.
 `LatticeProb.Scaling.BoundedFunctionalLift.liftPhiOn_eq_of_nice`
-(`LatticeProb/Prob/Scaling/BoundedFunctionalLift.lean`) identifies the lift with `Phi0 K h F` exactly at
-`barDivisible w R t ·`, since it is `NiceOnK` (`Parking.niceOnK_barDivisible`,
+(`LatticeProb/Prob/Scaling/BoundedFunctionalLift.lean`) identifies the lift with `Phi0 K h F`
+exactly at `barDivisible w R t ·`, since it is `NiceOnK` (`Parking.niceOnK_barDivisible`,
 `Parking/Support/SpatWDivisiblePairing.lean`); this reduces the measurability question to
 `Measurable fun w => ∫ x in K, barDivisible w R t x * h x`, a Bochner integral depending
 measurably on a parameter.
@@ -26,8 +31,6 @@ time. Once the field is jointly measurable, `MeasureTheory.StronglyMeasurable.in
 (Mathlib, the measurability half of Fubini's theorem) gives the parametrized integral's
 measurability directly.
 -/
-import Parking.Support.SpatWDivisiblePairing
-import Parking.Support.Measurability
 
 open LatticeProb (measurable_eval_var)
 

@@ -1,7 +1,12 @@
-/- Integrability and uniform expectation bounds for local rescaled odometer mass. -/
 import Parking.Support.SpatWWalkGrid
 import Parking.Support.SceneryCenter
 import Parking.Frozen.Growth
+
+/-!
+# Local rescaled odometer mass
+
+Integrability and uniform expectation bounds for local rescaled odometer mass.
+-/
 
 open LatticeProb (measurable_eval_var measurable_from_countable')
 open Set Filter Topology LatticeProb MeasureTheory
@@ -17,7 +22,8 @@ theorem measurable_uncurry_barOdometer (R t : ℝ) :
     (measurable_pi_lambda _ (fun i => Int.measurable_floor.comp
       (measurable_const.mul (measurable_pi_apply i)))).comp measurable_snd
   have hf : ∀ y : Site d, Measurable (fun p : Data d × (Fin d → ℝ) => (U p.1 n y : ℝ)) :=
-    fun y => ((measurable_from_countable' fun k : ℕ => (k : ℝ)).comp (measurable_U n y)).comp measurable_fst
+    fun y => ((measurable_from_countable' fun k : ℕ => (k : ℝ)).comp
+      (measurable_U n y)).comp measurable_fst
   have hj := measurable_eval_var (fun p : Data d × (Fin d → ℝ) => latticePoint R p.2) hq
     (fun p y => (U p.1 n y : ℝ)) hf
   exact hj.const_mul _
@@ -47,7 +53,8 @@ theorem integrable_uncurry_barOdometer (hd : 1 ≤ d) (ν : Measure ℤ)
     ⟨by rw [Measure.restrict_apply_univ]; exact hK.measure_lt_top⟩
   apply (integrable_prod_iff' (measurable_uncurry_barOdometer R t).aestronglyMeasurable).mpr
   constructor
-  · exact ae_of_all _ fun x => (integrable_U_law hd ν hint ⌊t * R ^ 2⌋₊ (latticePoint R x)).const_mul _
+  · exact ae_of_all _ fun x => (integrable_U_law hd ν hint ⌊t * R ^ 2⌋₊
+      (latticePoint R x)).const_mul _
   · have heq : (fun x => ∫ w, ‖barOdometer w R t x‖ ∂law d ν) =
         fun _ : Fin d → ℝ => R ^ ((d : ℝ) / 2 - 2) * meanU (law d ν) ⌊t * R ^ 2⌋₊ := by
       funext x

@@ -1,5 +1,9 @@
-/-
-**Summability of the exit-tail series.** This module derives the `hexitsummable` hypothesis of
+import Parking.Support.ContSpatialCutoff
+
+/-!
+# Summability of the exit-tail series
+
+This module derives the `hexitsummable` hypothesis of
 `Parking.ae_tendsto_contCutoffValue_sub_contStoppingValue`
 (`Parking/Support/ContStoppingCutoffTail.lean`) from the library's own Brownian exit-tail
 estimate.
@@ -17,7 +21,6 @@ estimate.
   exponential `exp(-r(n+1))` for `r := c/(s+1)`, and a polynomial times a single exponential is
   summable (`Real.summable_pow_mul_exp_neg_nat_mul`, shifted by one index).
 -/
-import Parking.Support.ContSpatialCutoff
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal

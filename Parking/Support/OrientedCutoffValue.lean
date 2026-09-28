@@ -1,4 +1,13 @@
-/-
+import LatticeProb.ExtendedMapping
+import Parking.Support.OrientedValueLipschitz
+import Parking.External.OrientedStoppingStability
+import Mathlib.Topology.ContinuousMap.Compact
+import Mathlib.Topology.Order.ProjIcc
+import LatticeProb.BoxClamp
+
+/-!
+# Cutoff optimal-stopping values
+
 The cutoff optimal-stopping values of `parking.tex:3214-3218` as functions on a
 space of continuous rewards, and their convergence in law.
 
@@ -7,9 +16,9 @@ differ only on the compact box `K = [0,T] × [-2A, 2A]`, so both values are
 functions of the restriction of the reward to `K`, i.e. of a point of `C(K)`.
 This module builds that reading:
 
-- `LatticeProb.BoxClamp.rewardBox T A` is `K`, and `LatticeProb.BoxClamp.rewardOfBox` extends a point of
-  `C(K)` to a bounded continuous reward on `[0,∞) × ℝ` by clamping the argument
-  to `K`.  The extension is an isometry for the supremum norm.
+- `LatticeProb.BoxClamp.rewardBox T A` is `K`, and `LatticeProb.BoxClamp.rewardOfBox`
+  extends a point of `C(K)` to a bounded continuous reward on `[0,∞) × ℝ` by clamping
+  the argument to `K`.  The extension is an isometry for the supremum norm.
 - `Parking.orientedCutoffValue` is the value of the discrete problem at that
   reward, and `Parking.brownianCutoffValue` the value of the Brownian problem.
 - The discrete value is `1`-Lipschitz in the reward
@@ -23,15 +32,11 @@ This is the step of `parking.tex:3214-3218` executed with no coupling and no
 Skorokhod representation: the only cited input is
 `Parking.External.OrientedStoppingStability`, read at a deterministic reward.
 -/
-import LatticeProb.ExtendedMapping
-import Parking.Support.OrientedValueLipschitz
-import Parking.External.OrientedStoppingStability
-import Mathlib.Topology.ContinuousMap.Compact
-import Mathlib.Topology.Order.ProjIcc
-import LatticeProb.BoxClamp
 
-open LatticeProb.BoxClamp (abs_rewardOfBox_le abs_rewardOfBox_sub_le continuous_rewardOfBox rewardBox rewardOfBox)
-open LatticeProb.ExtendedMapping (locallyUniform_of_lipschitz tendsto_integral_comp_of_locally_uniform)
+open LatticeProb.BoxClamp (abs_rewardOfBox_le abs_rewardOfBox_sub_le continuous_rewardOfBox
+  rewardBox rewardOfBox)
+open LatticeProb.ExtendedMapping (locallyUniform_of_lipschitz
+  tendsto_integral_comp_of_locally_uniform)
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal

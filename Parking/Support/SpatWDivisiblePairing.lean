@@ -1,4 +1,9 @@
-/-
+import Parking.Support.SpatialTightnessBridge
+import LatticeProb.Prob.Scaling.BoundedFunctionalLift
+
+/-!
+# Building blocks for the barDivisible pairing convergence
+
 Building blocks for the pairing convergence of `barDivisible` against a fixed test function, the
 piece needed to close the `signedPair` block of `prop:spatial-scaling`'s joint clause and the
 continuum equation (`parking.tex:1755-1781`, Steps 1-2 of the proof).
@@ -60,8 +65,6 @@ combined with a deterministic Taylor/Riemann-discretization bound relating `sign
 to this pairing, closes `hMiddle` and hence the `signedPair` block of `hjoint`; the SAME
 technique one level up (space AND time) closes the continuum equation `hpde`.
 -/
-import Parking.Support.SpatialTightnessBridge
-import LatticeProb.Prob.Scaling.BoundedFunctionalLift
 
 open MeasureTheory LatticeProb.Scaling.BoundedFunctionalLift
 
@@ -94,6 +97,8 @@ theorem niceOnK_mono {K K' : Set (Fin d → ℝ)} (hsub : K ⊆ K') {g : (Fin d 
     (hg : NiceOnK K' g) : NiceOnK K g :=
   ⟨hg.1, hg.2.imp fun _ hM x hx => hM x (hsub hx)⟩
 
+/-- A point of the closed ball of radius `B` about the origin has each coordinate bounded by
+`B` in absolute value, since the coordinate norm is dominated by the sup-norm `‖x‖`. -/
 theorem norm_le_of_mem_closedBall {B : ℝ} {x : Fin d → ℝ}
     (hx : x ∈ Metric.closedBall (0 : Fin d → ℝ) B) (i : Fin d) : |x i| ≤ B := by
   rw [Metric.mem_closedBall, dist_eq_norm, sub_zero] at hx
@@ -151,6 +156,8 @@ theorem exists_bound_h_on_K {K : Set (Fin d → ℝ)} (hK : IsCompact K)
   · obtain ⟨x0, hx0mem, hx0max⟩ := hK.exists_isMaxOn hKne hh.abs.continuousOn
     exact ⟨|h x0|, abs_nonneg _, fun x hx => hx0max hx⟩
 
+/-- The product of a `NiceOnK` function `g` and a continuous `h` is integrable on the compact
+set `K`, dominated by the constant `M * Mh` bounding `|g|` and `|h|` there. -/
 theorem integrableOn_mul_of_niceOnK {K : Set (Fin d → ℝ)} (hK : IsCompact K)
     {h : (Fin d → ℝ) → ℝ} (hh : Continuous h) {g : (Fin d → ℝ) → ℝ} (hg : NiceOnK K g) :
     IntegrableOn (fun x => g x * h x) K volume := by

@@ -1,4 +1,12 @@
-/-
+import Parking.Support.SpatWMartingaleCore
+import Parking.Support.SpatWSignedDecomp
+import Parking.Support.NearTailSum
+import Parking.Support.DensitySequence
+import LatticeProb.Prob.Scaling.RoundMartingale
+
+/-!
+# The round martingale for `signedM`
+
 The round martingale behind `signedM(φ) → 0` in `(law d ν)`-probability, following the proof of
 `parking.tex:1773-1781`.
 
@@ -19,11 +27,6 @@ the martingale orthogonality argument (`single_core`/`double_core`), is then a
 PURELY ALGEBRAIC telescoping fact (`Parking.U_mono_time`, `U ω 0 y = 0`), needing no
 measurability of the individual pieces at all.
 -/
-import Parking.Support.SpatWMartingaleCore
-import Parking.Support.SpatWSignedDecomp
-import Parking.Support.NearTailSum
-import Parking.Support.DensitySequence
-import LatticeProb.Prob.Scaling.RoundMartingale
 
 open LatticeProb (measurable_from_countable' measurable_of_countable_partition)
 
@@ -39,6 +42,8 @@ variable {d : ℕ}
 filtration's own countable-partition technique through a "was it read, and to where" selector. -/
 instance : MeasurableSpace (Option (Site d)) := ⊤
 
+/-- Every singleton of the discrete space `Option (Site d)` is measurable, since its
+σ-algebra is the full power set. -/
 instance : MeasurableSingletonClass (Option (Site d)) := ⟨fun _ => trivial⟩
 
 /-! ### The gated read: genuinely `expFiltration d t`-measurable, not merely a.e. -/
@@ -49,6 +54,9 @@ by round `t`, else `none`.  Countable-valued, and genuinely `expFiltration d t`-
 def readSel (t : ℕ) (y : Site d) (j : ℕ) (ω : Data d) : Option (Site d) :=
   if j + 1 ≤ U ω t y then some (ω.2.1 (y, j)) else none
 
+/-- `readSel t y j` is genuinely `expFiltration d t`-measurable: writing `t = k + 1`, each
+fiber (`none`, or `some x`) unfolds to a set built from the exposure filtration's own
+generators `measurableSet_generator`. -/
 theorem measurable_readSel {t : ℕ} (ht : 1 ≤ t) (y : Site d) (j : ℕ) :
     Measurable[expFiltration d t] (readSel t y j) := by
   obtain ⟨k, rfl⟩ : ∃ k, t = k + 1 := ⟨t - 1, by omega⟩
@@ -97,11 +105,15 @@ genuinely `expFiltration d t`-measurable. -/
 def readGate (d t : ℕ) (y : Site d) (j : ℕ) (ψ : Site d → ℝ) (ω : Data d) : ℝ :=
   (readSel t y j ω).elim 0 ψ
 
+/-- `readGate d t y j ψ` is `expFiltration d t`-measurable, as the composite of `readSel`'s
+measurability with the countable map `Option.elim 0 ψ`. -/
 theorem measurable_readGate {t : ℕ} (ht : 1 ≤ t) (y : Site d) (j : ℕ) (ψ : Site d → ℝ) :
     Measurable[expFiltration d t] (readGate d t y j ψ) :=
   (measurable_from_countable' (fun o : Option (Site d) => o.elim (0 : ℝ) ψ)).comp
     (measurable_readSel ht y j)
 
+/-- Once the instruction `(y, j)` has been read by round `t` (`j < U ω t y`), the gated read
+`readGate d t y j ψ ω` agrees with the raw read `ψ (ω.2.1 (y, j))`. -/
 theorem readGate_eq_of_lt {t : ℕ} {y : Site d} {j : ℕ} {ψ : Site d → ℝ} {ω : Data d}
     (h : j < U ω t y) : readGate d t y j ψ ω = ψ (ω.2.1 (y, j)) := by
   unfold readGate readSel

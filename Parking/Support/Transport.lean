@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Pathwise
+
+/-!
+# Pathwise identities behind the averaged transport statements
+
 The two pathwise identities of Section 3 of `parking.tex` that the averaged
 statements rest on.
 
@@ -11,7 +15,6 @@ departures.  It follows from the parallel identity and from the holes being
 what is left of the initial ones after the arrivals, because a positive and a
 negative part are never both positive.
 -/
-import Parking.Support.Pathwise
 
 noncomputable section
 
@@ -28,6 +31,8 @@ theorem particleOdometer_eq_sum (D : Driver d) (n : ℕ) (x : Site d) :
   | zero => rfl
   | succ n ih => rw [particleOdometer_succ, ih, Finset.sum_range_succ]
 
+/-- Transports `particleOdometer_eq_sum` along `toDriver`: the odometer `U ω n x` is the
+running total of the active counts `A ω s x` over `s < n`. -/
 theorem U_eq_sum_A (ω : Data d) (n : ℕ) (x : Site d) :
     U ω n x = ∑ s ∈ Finset.range n, A ω s x :=
   particleOdometer_eq_sum (toDriver ω) n x

@@ -1,4 +1,9 @@
-/-
+import LatticeProb.ContinuumHeatKernel
+import Parking.Support.Continuum
+
+/-!
+# Heat-kernel overlap integral for the covariance
+
 The heat-kernel overlap integral behind the covariance of the continuum
 directed field (`parking.tex:3190-3218`).
 
@@ -18,10 +23,9 @@ semigroup, and the remaining time integral is the overlap.
 - `Parking.integral_contNoiseTest_mul`: the overlap of two truncated test
   functions is the time integral of `contHeat` of the total elapsed time.
 -/
-import LatticeProb.ContinuumHeatKernel
-import Parking.Support.Continuum
 
-open LatticeProb.ContinuumStopping (contHeat contNoiseTest integrable_contNoiseTest_sq measurable_contNoiseTest toNNReal_ne_zero_of_pos)
+open LatticeProb.ContinuumStopping (contHeat contNoiseTest integrable_contNoiseTest_sq
+    measurable_contNoiseTest toNNReal_ne_zero_of_pos)
 
 open MeasureTheory ProbabilityTheory
 

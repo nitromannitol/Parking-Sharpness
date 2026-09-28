@@ -1,11 +1,19 @@
-/- Expected counts with a bounded random horizon independent of each trial. -/
 import Mathlib
+
+/-!
+# Expected counts with a bounded random horizon
+
+Expected counts with a bounded random horizon independent of each trial.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory Finset
 open scoped Classical
 
+/-- The count of `j < n` satisfying `P` equals the sum, over the larger range `M ≥ n`,
+of the indicator of `j < n ∧ P j`, so a range-`n` count can be rewritten as a
+range-`M` sum. -/
 theorem count_below_eq_sum (n M : ℕ) (hn : n ≤ M) (P : ℕ → Prop) :
     ((range n).filter P).card = ∑ j ∈ range M, if j < n ∧ P j then 1 else 0 := by
   rw [card_filter]
@@ -17,11 +25,19 @@ theorem count_below_eq_sum (n M : ℕ) (hn : n ≤ M) (P : ℕ → Prop) :
           simp only [mem_range.mp hj, true_and]
     _ = _ := sum_subset (range_mono hn) (fun j _ hj => if_neg (fun h => hj (mem_range.mpr h.1)))
 
+/-- The integral of the `{0, 1}`-valued indicator of a measurable event `S` equals
+`μ.real S`, via `integral_indicator_one`. -/
 theorem integral_event_indicator {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
     {S : Set Ω} (hS : MeasurableSet S) :
     (∫ ω, (if ω ∈ S then (1 : ℝ) else 0) ∂μ) = μ.real S := by
   simpa only [Set.indicator_apply, Pi.one_apply] using integral_indicator_one (μ := μ) hS
 
+/-- For a random horizon `N` almost surely bounded by `M` and independent of each `Y j`,
+`j < M`, with `Y j` hitting `a` with fixed probability `p`, the count of hits among the
+first `N` trials is integrable with mean `p * E[N]`. The proof rewrites the count (via
+`count_below_eq_sum`) and `N` itself as range-`M` sums of indicators of the events
+`{j < N}` and `{j < N ∧ Y j = a}`, and computes each term's integral from independence
+(`IndepFun.measure_inter_preimage_eq_mul`). -/
 theorem integral_random_count {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
     [MeasurableSingletonClass X] (μ : Measure Ω) [IsProbabilityMeasure μ]
     (N : Ω → ℕ) (hN : Measurable N) (Y : ℕ → Ω → X) (hY : ∀ j, Measurable (Y j))
@@ -39,8 +55,10 @@ theorem integral_random_count {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpa
   let g : ℕ → Ω → ℝ := fun j => Set.indicator (C j) (fun _ => 1)
   have hf (j : ℕ) : Integrable (f j) μ := (integrable_const (1 : ℝ)).indicator (hD j)
   have hg (j : ℕ) : Integrable (g j) μ := (integrable_const (1 : ℝ)).indicator (hC j)
-  have hfi : Integrable (fun ω => ∑ j ∈ range M, f j ω) μ := integrable_finsetSum _ (fun j _ => hf j)
-  have hgi : Integrable (fun ω => ∑ j ∈ range M, g j ω) μ := integrable_finsetSum _ (fun j _ => hg j)
+  have hfi : Integrable (fun ω => ∑ j ∈ range M, f j ω) μ :=
+      integrable_finsetSum _ (fun j _ => hf j)
+  have hgi : Integrable (fun ω => ∑ j ∈ range M, g j ω) μ :=
+      integrable_finsetSum _ (fun j _ => hg j)
   have heF : (fun ω => (((range (N ω)).filter fun j => Y j ω = a).card : ℝ)) =ᵐ[μ]
       fun ω => ∑ j ∈ range M, f j ω := hNM.mono fun ω hω => by
     have h := count_below_eq_sum (N ω) M hω (fun j => Y j ω = a)

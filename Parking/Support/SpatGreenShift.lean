@@ -1,4 +1,12 @@
-/-
+import Parking.Support.GammaSum
+import Parking.Support.LinTimeShift
+import Parking.Support.Odometer
+import Parking.External.GreenGradient
+import LatticeProb.Walk.GreenPointwise
+
+/-!
+# Space-direction two-point Green function comparison
+
 **The SPACE-direction two-point comparison of the truncated Green function, dimension three
 and above.**  The other half (alongside the already-proved TIME direction,
 `Parking.Support.LinTimeShift`) of the translated-kernel-difference bound
@@ -40,13 +48,9 @@ divergence at `d = 2`, and `GammaSum.lean`'s own exact `srwTail` identity in pla
 No External beyond `Parking.External.GreenGradient` (already proved in the shared library,
 `Parking.External.greenGradient`) is used or registered.
 -/
-import Parking.Support.GammaSum
-import Parking.Support.LinTimeShift
-import Parking.Support.Odometer
-import Parking.External.GreenGradient
-import LatticeProb.Walk.GreenPointwise
 
-open LatticeProb (mem_boxFinset_zero_iff shellCard shellCard_le sum_box_radial sum_inv_sq_succ_le_one supNorm supNorm_le_graphNorm supNorm_le_iff)
+open LatticeProb (mem_boxFinset_zero_iff shellCard shellCard_le sum_box_radial
+  sum_inv_sq_succ_le_one supNorm supNorm_le_graphNorm supNorm_le_iff)
 
 noncomputable section
 
@@ -58,6 +62,9 @@ variable {d : ℕ}
 
 /-! ### Elementary sup-norm and box facts -/
 
+/-- `z` lies in the box of radius `r` centered at `x` iff the sup-norm of `x - z` is at most
+`r`, the symmetric restatement of `LatticeProb.mem_boxFinset_iff` (which reads the sup-norm
+of `z - x`). -/
 theorem mem_boxFinset_iff' {x z : Site d} {r : ℕ} :
     z ∈ boxFinset x r ↔ supNorm (x - z) ≤ r := by
   rw [LatticeProb.mem_boxFinset_iff, supNorm_le_iff]
@@ -71,9 +78,12 @@ theorem mem_boxFinset_iff' {x z : Site d} {r : ℕ} :
     rw [abs_sub_comm]
     simpa using this
 
+/-- The sup-norm of the zero vector is zero. -/
 theorem supNorm_zero' : supNorm (0 : Site d) = 0 := by
   unfold supNorm; simp
 
+/-- Summing a radial function of the sup-norm over a box centered at `x` equals summing it
+over the same-radius box centered at the origin, by the translation `z ↦ x - z`. -/
 theorem sum_boxFinset_shift (x : Site d) (r : ℕ) (g : ℕ → ℝ) :
     ∑ z ∈ boxFinset x r, g (supNorm (x - z)) = ∑ w ∈ boxFinset (0 : Site d) r, g (supNorm w) := by
   refine Finset.sum_nbij' (fun z => x - z) (fun w => x - w) ?_ ?_ ?_ ?_ ?_
@@ -88,6 +98,10 @@ theorem sum_boxFinset_shift (x : Site d) (r : ℕ) (g : ℕ → ℝ) :
   · intro w _; abel
   · intro z _; rfl
 
+/-- The truncated-Green difference `green d n (a - z) - green d n (b - z)` vanishes once
+`z` lies outside a box around `c` of radius `R`, provided `R` is large enough that both
+`a` and `b` remain within graph-distance `R - n` of `c`, since `green d n` vanishes past
+graph-distance `n`. -/
 theorem green_diff_eq_zero_of_notMem_box {n R : ℕ} {a b c : Site d}
     (ha : supNorm (c - a) + n ≤ R) (hb : supNorm (c - b) + n ≤ R)
     {z : Site d} (hz : z ∉ boxFinset c R) :
@@ -111,6 +125,9 @@ theorem green_diff_eq_zero_of_notMem_box {n R : ℕ} {a b c : Site d}
 
 /-! ### Two-term triangle inequalities for finitely-supported fields -/
 
+/-- The triangle inequality for `l2Norm` of a sum of two fields `f, g` that both vanish
+outside a common finite set `S`: reduce the infinite sums defining `l2Norm` to sums over
+`S` and apply the finite Cauchy-Schwarz inequality `Finset.sum_mul_sq_le_sq_mul_sq`. -/
 theorem l2Norm_add_le_of_support {S : Finset (Site d)} {f g : Site d → ℝ}
     (hf : ∀ z ∉ S, f z = 0) (hg : ∀ z ∉ S, g z = 0) :
     l2Norm (fun z => f z + g z) ≤ l2Norm f + l2Norm g := by
@@ -125,7 +142,8 @@ theorem l2Norm_add_le_of_support {S : Finset (Site d)} {f g : Site d → ℝ}
   have hSg : 0 ≤ ∑ z ∈ S, g z ^ 2 := Finset.sum_nonneg fun z _ => sq_nonneg _
   have hCS : (∑ z ∈ S, f z * g z) ^ 2 ≤ (∑ z ∈ S, f z ^ 2) * (∑ z ∈ S, g z ^ 2) :=
     Finset.sum_mul_sq_le_sq_mul_sq S f g
-  have hCSle : ∑ z ∈ S, f z * g z ≤ Real.sqrt (∑ z ∈ S, f z ^ 2) * Real.sqrt (∑ z ∈ S, g z ^ 2) := by
+  have hCSle : ∑ z ∈ S, f z * g z ≤
+      Real.sqrt (∑ z ∈ S, f z ^ 2) * Real.sqrt (∑ z ∈ S, g z ^ 2) := by
     have hsq : (Real.sqrt (∑ z ∈ S, f z ^ 2) * Real.sqrt (∑ z ∈ S, g z ^ 2)) ^ 2
         = (∑ z ∈ S, f z ^ 2) * (∑ z ∈ S, g z ^ 2) := by
       rw [mul_pow, Real.sq_sqrt hSf, Real.sq_sqrt hSg]
@@ -134,7 +152,8 @@ theorem l2Norm_add_le_of_support {S : Finset (Site d)} {f g : Site d → ℝ}
       mul_nonneg (Real.sqrt_nonneg (∑ z ∈ S, f z ^ 2)) (Real.sqrt_nonneg (∑ z ∈ S, g z ^ 2))]
   have hexpand : ∑ z ∈ S, (f z + g z) ^ 2
       = (∑ z ∈ S, f z ^ 2) + 2 * (∑ z ∈ S, f z * g z) + (∑ z ∈ S, g z ^ 2) := by
-    have hterm : ∀ z ∈ S, (f z + g z) ^ 2 = f z ^ 2 + 2 * (f z * g z) + g z ^ 2 := fun z _ => by ring
+    have hterm : ∀ z ∈ S, (f z + g z) ^ 2 = f z ^ 2 + 2 * (f z * g z) + g z ^ 2 :=
+      fun z _ => by ring
     rw [Finset.sum_congr rfl hterm, Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.mul_sum]
   have hbound : ∑ z ∈ S, (f z + g z) ^ 2
       ≤ (Real.sqrt (∑ z ∈ S, f z ^ 2) + Real.sqrt (∑ z ∈ S, g z ^ 2)) ^ 2 := by
@@ -143,7 +162,8 @@ theorem l2Norm_add_le_of_support {S : Finset (Site d)} {f g : Site d → ℝ}
     nlinarith [hCSle, hA, hB, hexpand]
   show Real.sqrt (∑' z : Site d, (f z + g z) ^ 2) ≤ l2Norm f + l2Norm g
   rw [h1]
-  have hrhs : Real.sqrt (∑ z ∈ S, f z ^ 2) + Real.sqrt (∑ z ∈ S, g z ^ 2) = l2Norm f + l2Norm g := by
+  have hrhs : Real.sqrt (∑ z ∈ S, f z ^ 2) + Real.sqrt (∑ z ∈ S, g z ^ 2) =
+      l2Norm f + l2Norm g := by
     unfold l2Norm; rw [h2, h3]
   calc Real.sqrt (∑ z ∈ S, (f z + g z) ^ 2)
       ≤ Real.sqrt ((Real.sqrt (∑ z ∈ S, f z ^ 2) + Real.sqrt (∑ z ∈ S, g z ^ 2)) ^ 2) :=
@@ -152,6 +172,8 @@ theorem l2Norm_add_le_of_support {S : Finset (Site d)} {f g : Site d → ℝ}
         Real.sqrt_sq (by positivity)
     _ = l2Norm f + l2Norm g := hrhs
 
+/-- A field vanishing outside a finite set `S` has an absolute value bounded above (by the
+finite sum of its absolute values on `S`), so `supAbs` of it is well defined. -/
 theorem bddAbove_abs_of_support {S : Finset (Site d)} {f : Site d → ℝ}
     (hf : ∀ z ∉ S, f z = 0) :
     BddAbove (Set.range fun z : Site d => |f z|) := by
@@ -162,9 +184,14 @@ theorem bddAbove_abs_of_support {S : Finset (Site d)} {f : Site d → ℝ}
   · show |f z| ≤ ∑ z ∈ S, |f z|
     rw [hf z hz]; simp; positivity
 
-theorem le_supAbs {f : Site d → ℝ} (hbdd : BddAbove (Set.range fun z : Site d => |f z|)) (z : Site d) :
+/-- Every pointwise absolute value of `f` is bounded by `supAbs f`, once `supAbs f` is
+known to be well defined. -/
+theorem le_supAbs {f : Site d → ℝ} (hbdd : BddAbove (Set.range fun z : Site d => |f z|))
+    (z : Site d) :
     |f z| ≤ supAbs f := le_ciSup hbdd z
 
+/-- The triangle inequality for `supAbs` of a sum of two fields that are both finitely
+supported, proved pointwise via `abs_add_le` and `le_supAbs`. -/
 theorem supAbs_add_le_of_support {S : Finset (Site d)} {f g : Site d → ℝ}
     (hf : ∀ z ∉ S, f z = 0) (hg : ∀ z ∉ S, g z = 0) :
     supAbs (fun z => f z + g z) ≤ supAbs f + supAbs g := by
@@ -176,9 +203,13 @@ theorem supAbs_add_le_of_support {S : Finset (Site d)} {f g : Site d → ℝ}
 
 /-! ### One neighbour step reduces the graph distance to the target by one -/
 
+/-- Subtracting the unit vector `unit i` from `w` reduces `graphNorm w` by exactly one,
+provided the `i`-th coordinate of `w` is strictly positive: the other coordinates are
+unchanged, and the `i`-th coordinate's absolute value drops by one. -/
 theorem graphNorm_sub_unit_of_pos {w : Site d} {i : Fin d} (hi : 0 < w i) :
     graphNorm (w - unit i) + 1 = graphNorm w := by
-  have hsplit : ∀ v : Site d, graphNorm v = (v i).natAbs + ∑ j ∈ Finset.univ.erase i, (v j).natAbs := by
+  have hsplit : ∀ v : Site d, graphNorm v =
+      (v i).natAbs + ∑ j ∈ Finset.univ.erase i, (v j).natAbs := by
     intro v
     show (∑ j, (v j).natAbs) = _
     rw [← Finset.add_sum_erase Finset.univ _ (Finset.mem_univ i)]
@@ -192,9 +223,12 @@ theorem graphNorm_sub_unit_of_pos {w : Site d} {i : Fin d} (hi : 0 < w i) :
   rw [hsplit w, hsplit (w - unit i), Finset.sum_congr rfl hrest]
   omega
 
+/-- Adding the `i`-th unit vector to `w` reduces the graph norm by exactly one, when the
+`i`-th coordinate of `w` is negative, the mirror case of `graphNorm_sub_unit_of_pos`. -/
 theorem graphNorm_add_unit_of_neg {w : Site d} {i : Fin d} (hi : w i < 0) :
     graphNorm (w + unit i) + 1 = graphNorm w := by
-  have hsplit : ∀ v : Site d, graphNorm v = (v i).natAbs + ∑ j ∈ Finset.univ.erase i, (v j).natAbs := by
+  have hsplit : ∀ v : Site d, graphNorm v =
+      (v i).natAbs + ∑ j ∈ Finset.univ.erase i, (v j).natAbs := by
     intro v
     show (∑ j, (v j).natAbs) = _
     rw [← Finset.add_sum_erase Finset.univ _ (Finset.mem_univ i)]
@@ -208,6 +242,9 @@ theorem graphNorm_add_unit_of_neg {w : Site d} {i : Fin d} (hi : w i < 0) :
   rw [hsplit w, hsplit (w + unit i), Finset.sum_congr rfl hrest]
   omega
 
+/-- For distinct `x, y`, some neighbor `x'` of `x` reduces the graph distance to `y` by
+exactly one, obtained by moving one nonzero coordinate of `x - y` a unit step towards
+zero. -/
 theorem exists_nbr_graphNorm_pred {x y : Site d} (hxy : x ≠ y) :
     ∃ x' : Site d, x' ∈ nbrFinset x ∧ graphNorm (x' - y) + 1 = graphNorm (x - y) := by
   have hne : x - y ≠ 0 := sub_ne_zero.mpr hxy
@@ -226,6 +263,7 @@ theorem exists_nbr_graphNorm_pred {x y : Site d} (hxy : x ≠ y) :
     rw [hval]
     exact graphNorm_sub_unit_of_pos hpos
 
+/-- Two neighboring sites are at sup-norm distance at most one. -/
 theorem supNorm_sub_le_one_of_nbr {x x' : Site d} (h : x' ∈ nbrFinset x) :
     supNorm (x - x') ≤ 1 := by
   rw [supNorm_le_iff]
@@ -234,12 +272,16 @@ theorem supNorm_sub_le_one_of_nbr {x x' : Site d} (h : x' ∈ nbrFinset x) :
   rw [abs_sub_comm] at h1
   simpa using h1
 
+/-- Translating a neighbor relation by a fixed site `z` preserves it: if `x'` neighbors `x`
+then `x' - z` neighbors `x - z`. -/
 theorem nbrFinset_sub_mem {x x' z : Site d} (h : x' ∈ nbrFinset x) :
     x' - z ∈ nbrFinset (x - z) := by
   obtain ⟨i, hi | hi⟩ := mem_nbrFinset_iff.mp h
   · exact mem_nbrFinset_iff.mpr ⟨i, Or.inl (by rw [hi]; abel)⟩
   · exact mem_nbrFinset_iff.mpr ⟨i, Or.inr (by rw [hi]; abel)⟩
 
+/-- Specializing the `GreenGradient` hypothesis to a translated pair `x - z`, `x' - z` with
+`x'` a neighbor of `x`, using `nbrFinset_sub_mem` to transport the neighbor relation. -/
 theorem abs_green_nbr_diff_le {C : ℝ} (hgrad : ∀ m : ℕ, 1 ≤ m → ∀ y z : Site d,
       z ∈ nbrFinset y → |green d m y - green d m z| ≤ C * (1 + (graphNorm y : ℝ)) ^ (1 - (d:ℝ)))
     {n : ℕ} (hn : 1 ≤ n) {x x' : Site d} (hx' : x' ∈ nbrFinset x) (z : Site d) :
@@ -248,6 +290,9 @@ theorem abs_green_nbr_diff_le {C : ℝ} (hgrad : ∀ m : ℕ, 1 ≤ m → ∀ y 
 
 /-! ### The shell sum `Σ (1+k)^(2(1-d))`, dimension three and above -/
 
+/-- For `d ≥ 3`, summing `(1 + supNorm y)^{2(1-d)}` over the box of radius `n` around the
+origin is bounded by a `d`-only constant, uniformly in `n`, by grouping the box into shells
+of constant sup-norm and bounding each shell's contribution geometrically. -/
 theorem sum_sq_rpow_le (hd3 : 3 ≤ d) (n : ℕ) :
     ∑ y ∈ boxFinset (0 : Site d) n, ((1 + (supNorm y : ℝ)) ^ ((1:ℝ) - (d:ℝ))) ^ 2
       ≤ 1 + 2 * (d:ℝ) * 2 ^ (d - 1) := by
@@ -307,6 +352,9 @@ theorem sum_sq_rpow_le (hd3 : 3 ≤ d) (n : ℕ) :
 
 /-! ### The one-step spatial comparison, dimension three and above -/
 
+/-- For `d ≥ 3`, the `l2Norm` of the truncated-Green step difference `green d n (x - ·) -
+green d n (x' - ·)`, for `x'` a neighbor of `x`, is bounded by `C` times a `d`-only constant,
+combining `abs_green_nbr_diff_le`'s pointwise bound with the shell sum `sum_sq_rpow_le`. -/
 theorem exists_green_space_step_l2_bound (hd3 : 3 ≤ d) {C : ℝ} (hC : 0 < C)
     (hgrad : ∀ m : ℕ, 1 ≤ m → ∀ y z : Site d,
       z ∈ nbrFinset y → |green d m y - green d m z| ≤ C * (1 + (graphNorm y : ℝ)) ^ (1 - (d:ℝ)))
@@ -344,7 +392,8 @@ theorem exists_green_space_step_l2_bound (hd3 : 3 ≤ d) {C : ℝ} (hC : 0 < C)
           Finset.sum_le_sum fun z _ => hsq z
       _ = C ^ 2 * ∑ z ∈ boxFinset x (n + 1), ((1 + (supNorm (x - z) : ℝ)) ^ (1 - (d:ℝ))) ^ 2 := by
           rw [Finset.mul_sum]
-      _ = C ^ 2 * ∑ w ∈ boxFinset (0 : Site d) (n + 1), ((1 + (supNorm w : ℝ)) ^ (1 - (d:ℝ))) ^ 2 := by
+      _ = C ^ 2 * ∑ w ∈ boxFinset (0 : Site d) (n + 1),
+            ((1 + (supNorm w : ℝ)) ^ (1 - (d:ℝ))) ^ 2 := by
           rw [sum_boxFinset_shift x (n + 1) (fun k => ((1 + (k : ℝ)) ^ (1 - (d:ℝ))) ^ 2)]
       _ ≤ C ^ 2 * (1 + 2 * (d:ℝ) * 2 ^ (d - 1)) :=
           mul_le_mul_of_nonneg_left (sum_sq_rpow_le hd3 (n + 1)) (sq_nonneg C)
@@ -355,6 +404,9 @@ theorem exists_green_space_step_l2_bound (hd3 : 3 ≤ d) {C : ℝ} (hC : 0 < C)
     _ = C * Real.sqrt (1 + 2 * (d:ℝ) * 2 ^ (d - 1)) := by
         rw [Real.sqrt_mul (sq_nonneg C), Real.sqrt_sq hC.le]
 
+/-- The one-neighbor-step `supAbs` comparison: bounding the pointwise Green difference
+between `x` and a neighbor `x'` uniformly by `C`, using that `(1 + graphNorm)^(1 - d) ≤ 1`
+whenever `d ≥ 1`. -/
 theorem exists_green_space_step_sup_bound {C : ℝ} (hC : 0 < C) (hd1 : 1 ≤ d)
     (hgrad : ∀ m : ℕ, 1 ≤ m → ∀ y z : Site d,
       z ∈ nbrFinset y → |green d m y - green d m z| ≤ C * (1 + (graphNorm y : ℝ)) ^ (1 - (d:ℝ)))
@@ -376,6 +428,10 @@ theorem exists_green_space_step_sup_bound {C : ℝ} (hC : 0 < C) (hd1 : 1 ≤ d)
 
 /-! ### The `L`-step space comparison, dimension three and above -/
 
+/-- For `d ≥ 3` and sites `x, y` at graph distance `L`, the `l2Norm` of `green d n (x - ·) -
+green d n (y - ·)` is bounded by `L` times the single-step constant of
+`exists_green_space_step_l2_bound`, by induction on `L` along a graph-distance-realizing
+chain of neighbor steps and the triangle inequality `l2Norm_add_le_of_support`. -/
 theorem exists_green_space_l2_bound (hd3 : 3 ≤ d) {C : ℝ} (hC : 0 < C)
     (hgrad : ∀ m : ℕ, 1 ≤ m → ∀ y z : Site d,
       z ∈ nbrFinset y → |green d m y - green d m z| ≤ C * (1 + (graphNorm y : ℝ)) ^ (1 - (d:ℝ)))
@@ -441,6 +497,9 @@ theorem exists_green_space_l2_bound (hd3 : 3 ≤ d) {C : ℝ} (hC : 0 < C)
         _ = ((L : ℝ) + 1) * (C * Real.sqrt (1 + 2 * (d:ℝ) * 2 ^ (d - 1))) := by ring
         _ = ((L + 1 : ℕ) : ℝ) * (C * Real.sqrt (1 + 2 * (d:ℝ) * 2 ^ (d - 1))) := by push_cast; ring
 
+/-- The `L`-step `supAbs` comparison: chaining the one-step bound
+`exists_green_space_step_sup_bound` over the `L := graphNorm (x - y)` neighbor steps from
+`x` to `y`, by induction on `L` and the triangle inequality `supAbs_add_le_of_support`. -/
 theorem exists_green_space_sup_bound {C : ℝ} (hC : 0 < C) (hd1 : 1 ≤ d)
     (hgrad : ∀ m : ℕ, 1 ≤ m → ∀ y z : Site d,
       z ∈ nbrFinset y → |green d m y - green d m z| ≤ C * (1 + (graphNorm y : ℝ)) ^ (1 - (d:ℝ)))
@@ -517,7 +576,8 @@ theorem exists_green_space_shift_l2_bound (hd3 : 3 ≤ d) (hgrad : Parking.Exter
 
 /-- **The space-direction translated-kernel-difference comparison for the cited External
 `Parking.External.GreenGradient`, `supAbs` form, dimension two and above.** -/
-theorem exists_green_space_shift_sup_bound (hd1 : 1 ≤ d) (hgrad : Parking.External.GreenGradient d) :
+theorem exists_green_space_shift_sup_bound (hd1 : 1 ≤ d)
+    (hgrad : Parking.External.GreenGradient d) :
     ∃ K : ℝ, 0 < K ∧ ∀ n : ℕ, 1 ≤ n → ∀ x y : Site d,
       supAbs (fun z => green d n (x - z) - green d n (y - z)) ≤ K * (graphNorm (x - y) : ℝ) := by
   obtain ⟨C, hC, hgradraw⟩ := hgrad

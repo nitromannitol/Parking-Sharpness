@@ -1,11 +1,16 @@
-/- The assembly of `thm:oriented-walk` from its five steps: given the directed
-moment inequality of Step 1 (with `kappa` replaced by one), the particle-error
-bound of Step 3 and the scaling limit of `prop:oriented-scaling`, the frozen
-statement follows. -/
 import Parking.Support.OrientedTwoLower
 import Parking.Support.OrientedTwoUpper
 import Parking.Support.OrientedLogBounds
 import Parking.Support.OrientedRatio
+
+/-!
+# Oriented walk assembly
+
+The assembly of `thm:oriented-walk` from its five steps: given the directed
+moment inequality of Step 1 (with `kappa` replaced by one), the particle-error
+bound of Step 3 and the scaling limit of `prop:oriented-scaling`, the frozen
+statement follows.
+-/
 
 noncomputable section
 namespace Parking
@@ -54,7 +59,8 @@ theorem oriented_walk_of_steps (d : ℕ) (hd : 2 ≤ d) (ν : Measure ℤ) (hν 
           (μ' / 4 * (t : ℝ) ^ (-(3 : ℝ) / 4))) atTop (𝓝 1)) := by
   haveI := hν.prob
   obtain ⟨c₂, hc₂, hlo₂⟩ := exists_meanU_oriented_two_lower ν hν
-  obtain ⟨c₂', hc₂', hlo₂'⟩ := exists_meanuOriented_two_lower ν hν.nonconst hν.integrable_abs hν.mean
+  obtain ⟨c₂', hc₂', hlo₂'⟩ :=
+    exists_meanuOriented_two_lower ν hν.nonconst hν.integrable_abs hν.mean
   obtain ⟨C₂, hC₂, hup₂⟩ := meanU_oriented_two_upper_of_moment ν hν C₁ hC₁ hmom2
   have hratio := tendsto_meanU_div_meanuOriented ν hν c₂' C₁ hc₂' (fun n _ => hlo₂' n) herr
   refine ⟨?_, ?_, ?_⟩

@@ -1,4 +1,10 @@
-/-
+import Parking.Basic
+import Parking.External.DonskerVaradhan
+import Parking.Support.TailTwoSided
+
+/-!
+# Theorem 1.1: the two-sided subcritical tail (frozen)
+
 Theorem 1.1 of parking.tex, frozen.  `parking.tex:123-135`
 (label `thm:subcritical-tail`):
 
@@ -12,9 +18,6 @@ two bounds in `t` by the Donsker-Varadhan estimate for the range, which the pape
 cites; under R1 that estimate is carried as the explicit hypothesis
 `Parking.External.DonskerVaradhanRange`.
 -/
-import Parking.Basic
-import Parking.External.DonskerVaradhan
-import Parking.Support.TailTwoSided
 
 open MeasureTheory
 

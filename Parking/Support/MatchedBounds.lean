@@ -1,5 +1,15 @@
 import Parking.Support.MatchedCounts
 
+/-!
+# Bounds for the common-table odometer
+
+Deterministic and integrability bounds for `matchedState` in the common-table (`matched`)
+construction: the reachable candidate set `candidates η x t` is monotone in the time
+horizon `t`, the odometer `departures x` after `T` rounds is bounded by `T` times the
+candidate count, and consequently the finite-horizon odometer is integrable under any
+round-noise law.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -14,11 +24,13 @@ theorem candidates_mono_time (η : Site d → ℤ) (x : Site d) {s t : ℕ} (hst
   unfold candidates
   exact Finset.biUnion_subset_biUnion_of_subset_left _ (boxFinset_mono hst)
 
-/-- At a fixed site and finite horizon, the common-table odometer has a deterministic finite bound. -/
+/-- At a fixed site and finite horizon, the common-table odometer has a deterministic finite
+bound. -/
 theorem matchedOdometer_le_candidates (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : RoundNoise d) (T : ℕ) (x : Site d) :
     (matchedState η ρ σ T).departures x ≤ T * (candidates η x T).card := by
-  have hsum : ∀ t, (matchedState η ρ σ t).departures x = ∑ s ∈ Finset.range t, matchedCount η ρ σ s x := by
+  have hsum : ∀ t, (matchedState η ρ σ t).departures x =
+      ∑ s ∈ Finset.range t, matchedCount η ρ σ s x := by
     intro t
     induction t with
     | zero => simp [matchedState, initial]
@@ -27,11 +39,13 @@ theorem matchedOdometer_le_candidates (η : Site d → ℤ) (ρ : Label d × ℕ
         rw [Finset.sum_range_succ, ih]
   rw [hsum]
   calc
-    ∑ s ∈ Finset.range T, matchedCount η ρ σ s x ≤ ∑ _s ∈ Finset.range T, (candidates η x T).card := by
+    ∑ s ∈ Finset.range T, matchedCount η ρ σ s x ≤
+        ∑ _s ∈ Finset.range T, (candidates η x T).card := by
       apply Finset.sum_le_sum
       intro s hs
       apply Finset.card_le_card
-      exact (Finset.filter_subset _ _).trans (candidates_mono_time η x (by simpa using (Finset.mem_range.mp hs).le))
+      exact (Finset.filter_subset _ _).trans
+          (candidates_mono_time η x (by simpa using (Finset.mem_range.mp hs).le))
     _ = T * (candidates η x T).card := by simp
 
 /-- Conditional on any initial field and priorities, every finite-horizon odometer is integrable. -/

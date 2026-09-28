@@ -1,4 +1,10 @@
-/-
+import Parking.Frozen.Growth
+import Parking.Support.CouplingTarget
+import Parking.Support.DensitySequence
+
+/-!
+# Step 1 of `prop:everyone-settles`: every particle settles and every hole is filled
+
 Step 1 of `prop:everyone-settles` (`parking.tex:1511-1523`): every particle
 settles and every hole is filled.
 
@@ -14,9 +20,6 @@ holes at the origin, whose mean is again `S_t` by `lem:transport` and
 filled.  Translation invariance of the law and countability of the lattice carry
 both statements to every site.
 -/
-import Parking.Frozen.Growth
-import Parking.Support.CouplingTarget
-import Parking.Support.DensitySequence
 
 open LatticeProb (measurable_from_countable')
 
@@ -212,6 +215,9 @@ theorem ae_exists_holes_zero (hGrowth : Parking.External.SandpileGrowth)
 
 /-! ### Every site -/
 
+/-- The event that site `y` eventually has zero survivors is measurable, being a countable
+union over `t` of the preimages of `{0}` under the measurable maps `ω ↦ survivorsFrom (toDriver
+ω) t y`. -/
 theorem measurableSet_exists_survivors_zero (d : ℕ) (y : Site d) :
     MeasurableSet {ω : Data d | ∃ t : ℕ, LatticeProb.survivorsFrom (toDriver ω) t y = 0} := by
   have hset : {ω : Data d | ∃ t : ℕ, LatticeProb.survivorsFrom (toDriver ω) t y = 0}
@@ -221,6 +227,8 @@ theorem measurableSet_exists_survivors_zero (d : ℕ) (y : Site d) :
   exact MeasurableSet.iUnion fun t =>
     (Parking.measurable_survivorsFrom t y) (measurableSet_singleton 0)
 
+/-- The set of realizations where the holes at site `y` eventually vanish is measurable,
+being a countable union of preimages of `{0}` under `Parking.H · t y`. -/
 theorem measurableSet_exists_holes_zero (d : ℕ) (y : Site d) :
     MeasurableSet {ω : Data d | ∃ t : ℕ, Parking.H ω t y = 0} := by
   have hset : {ω : Data d | ∃ t : ℕ, Parking.H ω t y = 0}

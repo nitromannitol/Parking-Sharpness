@@ -1,5 +1,15 @@
 import Parking.Support.MomentTail
 
+/-!
+# An exponential lower tail from Bernstein-type moment growth
+
+If the moment norm `rNorm μ r (X - b)` grows at most at the Bernstein rate
+`C * (√(r(m+r)) + r)`, then the deviation `X` is unlikely to fall far below `m / g`: after
+choosing a scale `δ` small enough that a `δ m`-th moment already controls a quarter of the
+mean (`exists_small_moment_scale`), a Markov bound at that moment turns the growth condition
+into an exponential lower tail `P(X < m/(2g)) ≤ A exp(-c m)`.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 
 noncomputable section
@@ -66,8 +76,10 @@ theorem exists_exponential_lower_tail {Ω : Type} [MeasurableSpace Ω]
       apply (div_le_iff₀ ha).mpr
       have he : (1 / 2 : ℝ) * (m / (2 * g)) = m / (4 * g) := by ring
       rwa [he]
-    have hmkv := measure_gt_le_rNorm_div_rpow μ (fun ω => X ω - b) (by linarith : 0 < δ * m) ha (hi _ hr)
-    have hpow := Real.rpow_le_rpow (div_nonneg (rNorm_nonneg _ _ _) ha.le) hratio (by linarith : 0 ≤ δ * m)
+    have hmkv := measure_gt_le_rNorm_div_rpow μ (fun ω => X ω - b) (by linarith : 0 < δ * m) ha
+        (hi _ hr)
+    have hpow := Real.rpow_le_rpow (div_nonneg (rNorm_nonneg _ _ _) ha.le) hratio
+        (by linarith : 0 ≤ δ * m)
     have he : (1 / 2 : ℝ) ^ (δ * m) = Real.exp (-(δ * l) * m) := by
       rw [Real.rpow_def_of_pos (by norm_num)]
       congr 1
@@ -77,7 +89,8 @@ theorem exists_exponential_lower_tail {Ω : Type} [MeasurableSpace Ω]
     apply (hsub.trans (hmkv.trans hpow)).trans
     exact le_mul_of_one_le_left (Real.exp_pos _).le (Real.one_le_exp_iff.mpr (by positivity))
   · have hprob : (μ {ω | X ω < m / (2 * g)}).toReal ≤ 1 := by
-      exact (ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono (Set.subset_univ _))).trans_eq (by simp)
+      exact (ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono (Set.subset_univ _))).trans_eq
+          (by simp)
     apply hprob.trans
     rw [← Real.exp_add]
     apply Real.one_le_exp_iff.mpr

@@ -1,21 +1,34 @@
-/- The directed particle odometer as a recursion on lower layers. -/
 import Parking.Support.OrientedInstructionSupport
 import Parking.Support.OrientedLayer
 import Parking.Support.ErrorUnroll
+
+/-!
+# The directed particle odometer as a lower-layer recursion
+
+The directed particle odometer as a recursion on lower layers.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- `layerHeight` is additive with respect to subtraction, matching `layerHeight_add`. -/
 theorem layerHeight_sub (x y : Site d) : layerHeight (x - y) = layerHeight x - layerHeight y := by
   simp only [layerHeight, Pi.sub_apply, sum_sub_distrib]
 
+/-- The particle odometer `orientedOdometer η σ n x`, at horizon `n` and site `x`: it is
+`0` at horizon `0`, and at horizon `n + 1` it is the nonnegative part `.toNat` of the
+scenery `η x` plus the arrivals routed to `x` from its `d` predecessors `x - unit i`,
+computed from their odometer values at horizon `n`. -/
 def orientedOdometer (η : Site d → ℤ) (σ : Site d × ℕ → Site d) : ℕ → Site d → ℕ
   | 0 => fun _ => 0
   | n + 1 => fun x => (η x + ∑ i : Fin d,
       (arrivals σ (x - unit i) x (orientedOdometer η σ n (x - unit i)) : ℤ)).toNat
 
+/-- If every instruction routes forward (`σ q = q.1 + unit i` for some `i`), then no
+instruction issued at `y` can ever arrive at an `x` that is not a forward neighbor of
+`y`, so `arrivals σ y x m` vanishes. -/
 theorem arrivals_eq_zero_of_forward {σ : Site d × ℕ → Site d}
     (hσ : ∀ q : Site d × ℕ, ∃ i : Fin d, σ q = q.1 + unit i)
     (y x : Site d) (m : ℕ) (hxy : ¬∃ i : Fin d, x = y + unit i) : arrivals σ y x m = 0 := by
@@ -25,6 +38,9 @@ theorem arrivals_eq_zero_of_forward {σ : Site d × ℕ → Site d}
   obtain ⟨i, hi⟩ := hσ (y, j)
   exact hxy ⟨i, hj.symm.trans hi⟩
 
+/-- Under a forward-routing stack `σ`, summing arrivals over all lattice neighbors `y` of
+`x` reduces to summing over the `d` predecessors `x - unit i`, since
+`arrivals_eq_zero_of_forward` kills the contribution of the `d` successors `x + unit i`. -/
 theorem sum_arrivals_oriented {σ : Site d × ℕ → Site d}
     (hσ : ∀ q : Site d × ℕ, ∃ i : Fin d, σ q = q.1 + unit i)
     (x : Site d) (v : Site d → ℕ) :
@@ -40,6 +56,10 @@ theorem sum_arrivals_oriented {σ : Site d × ℕ → Site d}
   simp only [hz, Nat.cast_zero, zero_add] at h
   exact_mod_cast h
 
+/-- Under a forward-routing stack, the directed odometer `orientedOdometer ω.1 ω.2.1 n x`
+agrees with the general parking odometer `U ω n x`, by induction on `n`: the recursion for
+`U` from `parallel_of_labelOrder`, restricted via `sum_arrivals_oriented` to the `d`
+predecessors, is exactly the recursion defining `orientedOdometer`. -/
 theorem orientedOdometer_eq_U (ω : Data d)
     (hσ : ∀ q : Site d × ℕ, ∃ i : Fin d, ω.2.1 q = q.1 + unit i) (n : ℕ) (x : Site d) :
     orientedOdometer ω.1 ω.2.1 n x = U ω n x := by
@@ -63,11 +83,17 @@ theorem orientedOdometer_eq_U (ω : Data d)
     simpa only [Int.toNat_natCast, hmax]
       using (congrArg Int.toNat hpar).symm
 
+/-- Almost surely under `orientedLaw d ν`, the directed odometer agrees with the general
+parking odometer `U`, by combining `orientedLaw_ae_forward` with `orientedOdometer_eq_U`. -/
 theorem orientedOdometer_ae_eq_U (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (x : Site d) :
     (fun ω : Data d => orientedOdometer ω.1 ω.2.1 n x) =ᵐ[orientedLaw d ν] fun ω => U ω n x :=
   (orientedLaw_ae_forward hd ν).mono fun ω hω => orientedOdometer_eq_U ω hω n x
 
+/-- The odometer value `orientedOdometer η σ n x` depends only on the scenery `η` at
+sites of layer height at most that of `x` and on the stack `σ` at instructions of layer
+height strictly less than that of `x`, by induction on `n` using that the recursion only
+consults the `d` predecessors, whose layer height is one lower. -/
 theorem orientedOdometer_lower_layers {η η' : Site d → ℤ} {σ σ' : Site d × ℕ → Site d}
     (n : ℕ) (x : Site d)
     (hη : ∀ y : Site d, layerHeight y ≤ layerHeight x → η y = η' y)

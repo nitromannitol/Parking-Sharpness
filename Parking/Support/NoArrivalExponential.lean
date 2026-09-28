@@ -1,6 +1,15 @@
 import Parking.Support.NoArrivalWeight
 import Parking.Support.LayerReward
 
+/-!
+# The no-arrival exponential supermartingale is a bounded expectation
+
+The single theorem `integral_noArrivalWeight_le_one` shows that `noArrivalWeight` is a
+supermartingale in the round index `T`: its expectation starts at one at `T = 0` and each
+step preserves the bound `∫ ≤ 1`, by induction using `integral_le_of_bounded_layer_sections`
+to compare consecutive layers.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

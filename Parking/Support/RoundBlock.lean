@@ -2,6 +2,17 @@ import Parking.Support.RoundMeanField
 import Parking.Support.ProductDoob
 import Parking.Support.ProductTower
 
+/-!
+# Localizing the round mean to a finite query set
+
+`roundQuerySet x R N` collects the current-round coordinates that a future round-mean
+functional can depend on: those at a site within radius `R` of `x` and with slot index
+below the occupation bound `N`. Revealing exactly this finite set of coordinates already
+pins down `matchedMeanU (roundSigned A H ·) ρ T x` to its actual value
+(`partialInt_roundMeanU_query`), while revealing nothing at all leaves it at the full
+round average over the i.i.d. step directions (`partialInt_empty_roundMeanU`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -11,6 +22,8 @@ variable {d : ℕ}
 def roundQuerySet (x : Site d) (R N : ℕ) : Finset (RoundSlot d) :=
   (boxFinset x R).biUnion fun y => (Finset.range N).image fun j => Sum.inl (y, j)
 
+/-- `Sum.inl (v, j)` lies in the query set at `x`, radius `R`, bound `N` iff `v` is
+within the box of radius `R` around `x` and `j < N`. -/
 theorem mem_roundQuerySet (x : Site d) (R N : ℕ) (v : Site d) (j : ℕ) :
     Sum.inl (v, j) ∈ roundQuerySet x R N ↔ v ∈ boxFinset x R ∧ j < N := by
   classical
@@ -27,7 +40,8 @@ theorem partialInt_roundMeanU_query (hd : 1 ≤ d) (A H : Site d → ℕ)
     (N : ℕ) (hA : ∀ y, A y ≤ N) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d)
     (R : ℕ) (hR : T + 1 ≤ R) (τ : RoundSlot d → Fin d × Bool) :
     partialInt (fun _ : RoundSlot d => stepLaw d) (roundQuerySet x R N : Set (RoundSlot d))
-      (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) τ = matchedMeanU (roundSigned A H τ) ρ T x := by
+      (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) τ
+      = matchedMeanU (roundSigned A H τ) ρ T x := by
   classical
   haveI := stepLaw_isProbability hd
   apply partialInt_eq_self

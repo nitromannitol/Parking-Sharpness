@@ -1,30 +1,45 @@
-/-
-Green-function identities and bubble decay for the nearest-hole estimates.
--/
 import Parking.Support.GreenBridge
 import Parking.Support.Range
 import Parking.Support.GammaSum
 import LatticeProb.Walk.GreenPointwise
 import LatticeProb.Walk.HitProb
 
+/-!
+# Green-function identities and bubble decay
+
+Green-function identities and bubble decay for the nearest-hole estimates. `fullGreen` is
+identified with the library's simple-random-walk Green function `srwGreenInf`, giving
+nonnegativity, an escape-constant lower bound for `d ≥ 3`, and the hitting-probability ratio
+`fullGreen / escapeConst = srwHitProb` in the same range. For `d ≥ 5` the squared Green
+function is summable and the two-hole convolution `∑ fullGreen(y-x) fullGreen(y-z)` decays
+like `(1 + graphNorm(x-z))^(4-d)`, the bubble bound used by the two-hole estimates.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
+/-- `fullGreen` agrees with the library's `srwGreenInf`, termwise via `heat_eq_srwHeat`. -/
 theorem fullGreen_eq_srwGreenInf (d : ℕ) (x : Site d) :
     fullGreen d x = srwGreenInf d x := by
   unfold fullGreen srwGreenInf
   exact tsum_congr fun n => heat_eq_srwHeat d n x
 
+/-- `fullGreen d x` is nonnegative, being a sum of nonnegative heat-kernel values via
+`fullGreen_eq_srwGreenInf`. -/
 theorem fullGreen_nonneg (d : ℕ) (x : Site d) : 0 ≤ fullGreen d x := by
   rw [fullGreen_eq_srwGreenInf]
   exact tsum_nonneg fun n => srwHeat_nonneg n x
 
+/-- For `d ≥ 3` the escape constant `escapeConst d` is at least `1`, transported from
+`one_le_srwGreenInf_origin`. -/
 theorem one_le_escapeConst (hd : 3 ≤ d) : 1 ≤ escapeConst d := by
   rw [escapeConst, fullGreen_eq_srwGreenInf]
   exact one_le_srwGreenInf_origin hd
 
+/-- For `d ≥ 5` the squared Green function `fullGreen d x ^ 2` is summable, transported from
+`summable_srwGreenInf_sq` after writing `d = k + 5`. -/
 theorem summable_fullGreen_sq (hd : 5 ≤ d) : Summable fun x : Site d => fullGreen d x ^ 2 := by
   obtain ⟨k, rfl⟩ : ∃ k : ℕ, d = k + 5 := ⟨d - 5, by omega⟩
   simpa only [fullGreen_eq_srwGreenInf] using summable_srwGreenInf_sq k

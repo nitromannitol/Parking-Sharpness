@@ -1,8 +1,13 @@
-/- One-quarter time increments of the directed potential under the joint law. -/
 import Parking.Support.OrientedSceneryMoment
 import Parking.Support.OrientedCountLoad
 import Parking.Support.NonnegativeProduct
 import Parking.Support.Measurability
+
+/-!
+# One-quarter time increments of the directed potential
+
+One-quarter time increments of the directed potential under the joint law.
+-/
 
 open LatticeProb (measurable_eval_var measurable_from_countable')
 
@@ -15,6 +20,8 @@ def orientedPotentialAlong {d : ℕ} (n j : ℕ)
     (ω : (ℕ → Fin d × Bool) × (Site d → ℝ)) : ℝ :=
   orientedPotential ω.2 (n - j) (orientedPath 0 ω.1 j)
 
+/-- `p ↦ orientedPath x p j` is measurable, by induction on `j` using the step recursion
+defining `orientedPath`. -/
 theorem measurable_orientedPath {d : ℕ} (x : Site d) (j : ℕ) :
     Measurable fun p : ℕ → Fin d × Bool => orientedPath x p j := by
   induction j with
@@ -23,6 +30,9 @@ theorem measurable_orientedPath {d : ℕ} (x : Site d) (j : ℕ) :
     exact ih.sub ((measurable_from_countable' (fun b : Fin d × Bool => unit b.1)).comp
       (measurable_pi_apply j))
 
+/-- `orientedPotentialAlong n j` is measurable, as the composition of the measurable
+walk position `orientedPath 0 ω.1 j` (`measurable_orientedPath`) with the measurable
+potential evaluation `measurable_orientedPotential`. -/
 theorem measurable_orientedPotentialAlong {d : ℕ} (n j : ℕ) :
     Measurable (orientedPotentialAlong (d := d) n j) :=
   measurable_eval_var (fun ω : (ℕ → Fin d × Bool) × (Site d → ℝ) => orientedPath 0 ω.1 j)
@@ -57,7 +67,8 @@ theorem exists_oriented_potential_increment (μ : Measure ℝ) [IsProbabilityMea
   let W : (ℕ → Fin 2 × Bool) → ℝ := fun p => Real.sqrt h + |(D p : ℝ) - (h : ℝ) / 2|
   let F : (ℕ → Fin 2 × Bool) × (Site 2 → ℝ) → ℝ :=
     fun ω => orientedPotentialAlong n j ω - orientedPotentialAlong n k ω
-  have hm : Measurable F := (measurable_orientedPotentialAlong n j).sub (measurable_orientedPotentialAlong n k)
+  have hm : Measurable F :=
+    (measurable_orientedPotentialAlong n j).sub (measurable_orientedPotentialAlong n k)
   have hh : j + h = k := Nat.add_sub_of_le hjk
   have hN : N + h = n - j := by dsimp only [N, h]; omega
   have hx (p : ℕ → Fin 2 × Bool) : orientedPath 0 p k =

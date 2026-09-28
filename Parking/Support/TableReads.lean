@@ -1,5 +1,15 @@
 import Parking.Support.TableDifference
 
+/-!
+# The chronological reveal filtration
+
+Shows that `tableDiff` at step `n + 1` depends only on the coordinates already
+revealed by step `n` plus the one fresh coordinate it names (`tableDiff_reads`),
+defines the filtration `tableFiltration` this generates from the reveal order fixed
+by `e`, and records that it is monotone and bounded by the ambient sigma-algebra, so
+that `tableDiff` is adapted to it.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -33,11 +43,13 @@ theorem tableDiff_reads (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (T :
 @[reducible] def tableFiltration (base : FlatRoundNoise d) (e : Fin K ↪ Site d × ℕ) (n : ℕ) :
     MeasurableSpace (FlatRoundNoise d) := productCoordAlg base (blockReveal (slotEnumeration e) n)
 
+/-- `tableFiltration` is monotone in `n`. -/
 theorem tableFiltration_mono (base : FlatRoundNoise d) (e : Fin K ↪ Site d × ℕ) :
     Monotone (tableFiltration base e) := by
   intro m n hmn
   exact productCoordAlg_mono base _ _ (blockReveal_mono (slotEnumeration e) hmn)
 
+/-- `tableFiltration` is bounded above by the ambient sigma-algebra. -/
 theorem tableFiltration_le (base : FlatRoundNoise d) (e : Fin K ↪ Site d × ℕ) (n : ℕ) :
     tableFiltration base e n ≤ (inferInstance : MeasurableSpace (FlatRoundNoise d)) :=
   productCoordAlg_le base _

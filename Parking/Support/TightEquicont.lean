@@ -1,4 +1,9 @@
-/-
+import Parking.Support.TightKolmogorov
+import LatticeProb.Prob.KolmogorovBound
+
+/-!
+# Equicontinuity and boundedness in probability of the reward field
+
 Equicontinuity in probability and uniform boundedness of the rescaled
 oriented reward field on the box (`parking.tex:3207-3218`).
 
@@ -19,8 +24,6 @@ uniformly in the scale `n`:
   lower corner `(0, -2A)`, which the remaining-horizon single-point bound
   supplies.
 -/
-import Parking.Support.TightKolmogorov
-import LatticeProb.Prob.KolmogorovBound
 
 open LatticeProb.KolmogorovChentsov (rpow_quarter_mul_rpow_neg_quarter)
 

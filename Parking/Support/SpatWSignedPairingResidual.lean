@@ -1,6 +1,13 @@
-/- The signed-density residual relative to the divisible odometer pairing. -/
 import Parking.Support.SpatWMiddlePairingError
 import Parking.Support.SpatWPairingTransfer
+
+/-!
+# Signed-density residual relative to the divisible pairing
+
+The signed-density residual relative to the divisible odometer pairing. This file shows
+that the signed density agrees with the scenery plus the current-scale divisible-odometer
+pairing, up to an error term that converges to zero in `law d ν`-probability.
+-/
 
 open LatticeProb.WhiteNoise (continuous_contOp hasCompactSupport_contOp)
 
@@ -35,7 +42,8 @@ theorem tendsto_signedPair_sub_scenePair_sub_pairing_zero {d : ℕ}
       hGrowth hBernstein hConcentration hGreenNorms ν hν
       (continuous_contOp hφ) (hasCompactSupport_contOp hφ) hb
   have hsum := LatticeProb.Scaling.VanishingMassError.tendsto_measure_add_gt_zero (law d ν)
-    (fun b hb => LatticeProb.Scaling.VanishingMassError.tendsto_measure_add_gt_zero (law d ν) h₁ h₂ hb)
+    (fun b hb => LatticeProb.Scaling.VanishingMassError.tendsto_measure_add_gt_zero (law d ν)
+      h₁ h₂ hb)
     (tendsto_signedM_zero hd hd3 hGrowth hBernstein hConcentration hGreenNorms ν hν hφ) ha
   apply hsum.congr'
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with R hR

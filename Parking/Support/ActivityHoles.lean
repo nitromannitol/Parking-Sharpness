@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Invariance
+import Parking.Support.Comparison
+
+/-!
+# The averaged identities of Section 3
+
 The averaged identities of Section 3 of `parking.tex`.
 
 Everything here rests on two facts already available: the pathwise signed count
@@ -15,10 +20,9 @@ rounds only the particles that started within sup-distance `t` of a site can be
 there, so every count in sight is dominated by a finite sum of `η(y)⁺`, whose
 mean does not depend on `y`.
 -/
-import Parking.Support.Invariance
-import Parking.Support.Comparison
 
-open LatticeProb (measurable_from_countable' measurable_of_countable_partition rankLaw_isProbability)
+open LatticeProb (measurable_from_countable' measurable_of_countable_partition
+    rankLaw_isProbability)
 
 noncomputable section
 
@@ -33,11 +37,14 @@ variable {d : ℕ}
 
 /-! ### Integrating a function of the configuration alone -/
 
+/-- Projecting `dataLaw d μ` onto its first coordinate returns `μ`. -/
 theorem dataLaw_map_fst (hd : 1 ≤ d) (μ : Measure (Site d → ℤ)) [IsProbabilityMeasure μ] :
     (dataLaw d μ).map Prod.fst = μ := by
   haveI := stackRankLaw_isProbability (d := d) hd
   exact Measure.fst_prod
 
+/-- A function integrable against `μ` is integrable against `dataLaw d μ` when read only
+through the configuration coordinate, via the pushforward `dataLaw_map_fst`. -/
 theorem integrable_of_conf (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)} [IsProbabilityMeasure μ]
     {f : (Site d → ℤ) → ℝ} (hf : Integrable f μ) :
     Integrable (fun ω : Data d => f ω.1) (dataLaw d μ) := by
@@ -47,6 +54,8 @@ theorem integrable_of_conf (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)} [IsPro
   have h3 : Integrable f ((dataLaw d μ).map Prod.fst) := by rw [hmap]; exact hf
   exact (integrable_map_measure h1 measurable_fst.aemeasurable).mp h3
 
+/-- Integrating a function of the configuration alone against `dataLaw d μ` agrees with
+integrating it against `μ`, via the pushforward `dataLaw_map_fst`. -/
 theorem integral_of_conf (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)} [IsProbabilityMeasure μ]
     {f : (Site d → ℤ) → ℝ} (hf : AEStronglyMeasurable f μ) :
     ∫ ω, f ω.1 ∂(dataLaw d μ) = ∫ η, f η ∂μ := by
@@ -58,6 +67,8 @@ theorem integral_of_conf (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)} [IsProba
 
 /-! ### The mean of the configuration does not depend on the site -/
 
+/-- Precomposing an integrable function with a configuration shift stays integrable, since a
+translation-invariant `μ` maps to itself under the shift. -/
 theorem integrable_comp_shiftConf {μ : Measure (Site d → ℤ)} (hti : TranslationInvariant μ)
     {f : (Site d → ℤ) → ℝ} (hf : Integrable f μ) (v : Site d) :
     Integrable (fun η => f (shiftConf v η)) μ := by
@@ -67,12 +78,16 @@ theorem integrable_comp_shiftConf {μ : Measure (Site d → ℤ)} (hti : Transla
   have h3 : Integrable f (μ.map (shiftConf v)) := by rw [hmap]; exact hf
   exact (integrable_map_measure h1 (measurable_shiftConf v).aemeasurable).mp h3
 
+/-- Integrability of `|η 0|` transports to `|η y|` at any site `y`, via
+`integrable_comp_shiftConf`. -/
 theorem integrable_abs_eta {μ : Measure (Site d → ℤ)} (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (y : Site d) :
     Integrable (fun η : Site d → ℤ => |((η y : ℤ) : ℝ)|) μ := by
   have := integrable_comp_shiftConf hti hint y
   simpa [shiftConf] using this
 
+/-- `(η y).toNat` is integrable, dominated by the integrable `|η y|` from
+`integrable_abs_eta`. -/
 theorem integrable_toNat_eta {μ : Measure (Site d → ℤ)} [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (y : Site d) :
@@ -92,6 +107,8 @@ theorem integrable_toNat_eta {μ : Measure (Site d → ℤ)} [IsProbabilityMeasu
 
 /-! ### Domination -/
 
+/-- The sum of `(η y).toNat` over a finite box is integrable under `dataLaw d μ`, as a finite
+sum of the integrable terms of `integrable_toNat_eta` pulled back by `integrable_of_conf`. -/
 theorem integrable_boxSum (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)} [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (x : Site d) (r : ℕ) :
@@ -103,6 +120,8 @@ theorem integrable_boxSum (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)} [IsProb
     simpa using this
   exact integrable_of_conf hd hμ
 
+/-- The a priori bound `uBound` is integrable under `dataLaw d μ`, as a finite sum over
+growing radii of the integrable box sums of `integrable_boxSum`. -/
 theorem integrable_uBound (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)} [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (x : Site d) (n : ℕ) :
@@ -125,6 +144,8 @@ theorem integrable_of_le_nat {P : Measure (Data d)} {f : Data d → ℕ} {g : Da
 
 /-! ### Measurability of the arrival counts -/
 
+/-- The arrivals count at `x` from `y` through `U ω t y` steps is measurable in the data,
+as a finite sum of measurable indicator counts on the stack instructions. -/
 theorem measurable_arrivalsU (t : ℕ) (y x : Site d) :
     Measurable fun ω : Data d => arrivals ω.2.1 y x (U ω t y) := by
   classical
@@ -142,6 +163,8 @@ theorem measurable_arrivalsU (t : ℕ) (y x : Site d) :
 
 variable {μ : Measure (Site d → ℤ)}
 
+/-- The configuration value `η y` is integrable under `dataLaw d μ`, dominated by
+`|η y|` via `integrable_abs_eta`. -/
 theorem integrable_eta_at (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (y : Site d) :
@@ -153,6 +176,8 @@ theorem integrable_eta_at (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     · exact Filter.Eventually.of_forall fun η => le_of_eq (Real.norm_eq_abs _)
   exact integrable_of_conf hd hμ
 
+/-- The active count `A ω t x` is integrable, dominated by the box sum `integrable_boxSum`
+through `activeCount_le`. -/
 theorem integrable_A_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (t : ℕ) (x : Site d) :
@@ -160,6 +185,8 @@ theorem integrable_A_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
   integrable_of_le_nat (measurable_A t x) (integrable_boxSum hd hti hint x t) fun ω => by
     exact_mod_cast Nat.cast_le.mpr (activeCount_le ω t x)
 
+/-- The odometer `U ω t x` is integrable, dominated by `integrable_uBound` through
+`U_le_uBound`. -/
 theorem integrable_U_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (t : ℕ) (x : Site d) :
@@ -167,6 +194,8 @@ theorem integrable_U_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
   integrable_of_le_nat (measurable_U t x) (integrable_uBound hd hti hint x t) fun ω => by
     exact_mod_cast Nat.cast_le.mpr (U_le_uBound ω t x)
 
+/-- The arrivals count is integrable, since it is bounded by `U ω t y` and hence by
+`integrable_uBound`. -/
 theorem integrable_arrivalsU_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (t : ℕ) (y x : Site d) :
@@ -178,11 +207,15 @@ theorem integrable_arrivalsU_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     rw [Finset.card_range]
   exact_mod_cast Nat.cast_le.mpr (le_trans h1 (U_le_uBound ω t y))
 
+/-- The hole count at `x` never exceeds the negative part of the initial configuration
+there, by antitonicity of `holeCount`. -/
 theorem holeCount_le_initial (ω : Data d) (t : ℕ) (x : Site d) :
     H ω t x ≤ (-(ω.1 x)).toNat := by
   have := holeCount_antitone (toDriver ω) x (Nat.zero_le t)
   exact this
 
+/-- The hole count `H ω t x` is integrable, dominated by `|η x|` through
+`holeCount_le_initial`. -/
 theorem integrable_H_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ)
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (t : ℕ) (x : Site d) :
@@ -200,6 +233,8 @@ theorem integrable_H_data (hd : 1 ≤ d) [IsProbabilityMeasure μ]
 
 /-! ### Transporting an integral by a translation -/
 
+/-- Precomposing an integral with a data shift leaves it unchanged, since a
+translation-invariant `μ` gives a `dataLaw` invariant under `shiftData`. -/
 theorem integral_comp_shiftData (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hti : TranslationInvariant μ) (v : Site d)
     {F : Data d → ℝ} (hF : AEStronglyMeasurable F (dataLaw d μ)) :
@@ -210,6 +245,8 @@ theorem integral_comp_shiftData (hd : 1 ≤ d) [IsProbabilityMeasure μ]
   rw [hmap] at h
   exact h.symm
 
+/-- Shifting the data by `v` translates the arrivals count: arrivals at `x` from `y` after
+the shift equal arrivals at `x + v` from `y + v` before it. -/
 theorem arrivals_shiftData (v : Site d) (ω : Data d) (y x : Site d) (m : ℕ) :
     arrivals (shiftData v ω).2.1 y x m = arrivals ω.2.1 (y + v) (x + v) m := by
   classical
@@ -220,6 +257,8 @@ theorem arrivals_shiftData (v : Site d) (ω : Data d) (y x : Site d) (m : ℕ) :
   show (ω.2.1 (y + v, j) - v = x) ↔ (ω.2.1 (y + v, j) = x + v)
   exact sub_eq_iff_eq_add
 
+/-- `arrivals_shiftData` combined with the shift identity for `U`, applied at the shifted
+odometer time. -/
 theorem arrivalsU_shiftData (v : Site d) (ω : Data d) (t : ℕ) (y x : Site d) :
     arrivals (shiftData v ω).2.1 y x (U (shiftData v ω) t y)
       = arrivals ω.2.1 (y + v) (x + v) (U ω t (y + v)) := by
@@ -246,6 +285,7 @@ theorem integral_arrivals_transport (hd : 1 ≤ d) [IsProbabilityMeasure μ]
 
 /-! ### The arrivals sum to the departures -/
 
+/-- The neighbours of the origin are closed under negation. -/
 theorem neg_mem_nbrFinset_zero {y : Site d} (hy : y ∈ nbrFinset (0 : Site d)) :
     -y ∈ nbrFinset (0 : Site d) := by
   rw [mem_nbrFinset_iff] at hy ⊢
@@ -253,6 +293,7 @@ theorem neg_mem_nbrFinset_zero {y : Site d} (hy : y ∈ nbrFinset (0 : Site d)) 
   · exact ⟨i, Or.inr (by rw [hi]; abel)⟩
   · exact ⟨i, Or.inl (by rw [hi]; abel)⟩
 
+/-- Negation maps `nbrFinset 0` onto itself, from `neg_mem_nbrFinset_zero`. -/
 theorem nbrFinset_zero_neg :
     (nbrFinset (0 : Site d)).image (fun y => -y) = nbrFinset (0 : Site d) := by
   ext z
@@ -263,6 +304,8 @@ theorem nbrFinset_zero_neg :
   · intro hz
     exact ⟨-z, neg_mem_nbrFinset_zero hz, by simp⟩
 
+/-- Reindexing a sum over the neighbours of the origin by negation, via the image identity
+`nbrFinset_zero_neg`. -/
 theorem sum_neg_nbr {M : Type*} [AddCommMonoid M] (f : Site d → M) :
     ∑ y ∈ nbrFinset (0 : Site d), f (-y) = ∑ y ∈ nbrFinset (0 : Site d), f y := by
   classical
@@ -280,6 +323,8 @@ theorem sum_arrivals_nbr {σ : Site d × ℕ → Site d} (h : ∀ q : Site d × 
 
 /-! ### The averaged identity -/
 
+/-- Almost surely under `dataLaw d μ`, every stack instruction is a neighbour of its site,
+pulled back from `stackLaw_ae_nbr` through the product structure. -/
 theorem ae_stack_nbr (hd : 1 ≤ d) (μ : Measure (Site d → ℤ)) [IsProbabilityMeasure μ] :
     ∀ᵐ ω ∂(dataLaw d μ), ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1 := by
   haveI := stackLaw_isProbability (d := d) hd

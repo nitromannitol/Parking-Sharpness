@@ -1,27 +1,29 @@
-/-
-The proof of `lem:mean-horizon` (`parking.tex:2787-2842`).
-
-Step 1 is `Parking.exists_step1`: the fifth moment of the odometer of the
-recentred scenery is at most `C φ_d(m)`, uniformly in `δ`, because the one-site
-law of `ξ_δ(0)` is below a fixed law in convex order.
-
-Step 2 is assembled here.  For each configuration the reward is split into the
-dyadic blocks `[0,N)`, `[N,2N)`, `[2N,4N)`, … with `N = 1 ∨ ⌈M⌉`
-(`Parking.integral_stopping_reward_le`); each block is bounded by Hölder's
-inequality on the joint space of the configuration and the walk
-(`Parking.integral_blockAvg_le`); the chance that the stopping time reaches the
-`k`-th block is at most `M / s_k ≤ 2^{1-k}` by Markov's inequality
-(`Parking.measureReal_blockEvent_le`); and the resulting series
-`∑_j 2^{-4j/5} φ_d(2^j N)` converges to at most `C φ_d(N)`
-(`Parking.exists_phi_block_sum`), which is the paper's "the last series converges
-by the choice of `q`".  Finally `φ_d(N) ≤ 3 φ_d(M)`, because `N ≤ M + 2`.
-
-The exponent is `q = 5` throughout: the paper asks for `1 - 1/q > (4-d)/4` when
-`d ≤ 3`, and `1 - 1/5 = 4/5 > 3/4`.
--/
 import Parking.Support.JointBlocks
 import Parking.Support.MeanHorizonStep1
 import Parking.Support.PhiSum
+
+/-!
+# The proof of `lem:mean-horizon`
+
+The proof of `lem:mean-horizon` (`parking.tex:2787-2842`).
+
+Step 1 is `Parking.exists_step1`: the fifth moment of the odometer of the recentred scenery
+is at most `C φ_d(m)`, uniformly in `δ`, because the one-site law of `ξ_δ(0)` is below a
+fixed law in convex order.
+
+Step 2 is assembled here.  For each configuration the reward is split into the dyadic blocks
+`[0,N)`, `[N,2N)`, `[2N,4N)`, … with `N = 1 ∨ ⌈M⌉` (`Parking.integral_stopping_reward_le`);
+each block is bounded by Hölder's inequality on the joint space of the configuration and the
+walk (`Parking.integral_blockAvg_le`); the chance that the stopping time reaches the `k`-th
+block is at most `M / s_k ≤ 2^{1-k}` by Markov's inequality
+(`Parking.measureReal_blockEvent_le`); and the resulting series `∑_j 2^{-4j/5} φ_d(2^j N)`
+converges to at most `C φ_d(N)` (`Parking.exists_phi_block_sum`), which is the paper's "the
+last series converges by the choice of `q`".  Finally `φ_d(N) ≤ 3 φ_d(M)`, because
+`N ≤ M + 2`.
+
+The exponent is `q = 5` throughout: the paper asks for `1 - 1/q > (4-d)/4` when `d ≤ 3`, and
+`1 - 1/5 = 4/5 > 3/4`.
+-/
 
 noncomputable section
 
@@ -31,18 +33,24 @@ open MeasureTheory LatticeProb
 
 variable {d : ℕ}
 
+/-- The length of the `(j+1)`-th dyadic block is `2^j N`, from two applications of
+`blockBound_succ_eq`. -/
 theorem blockLen_succ (N : ℕ) (hN : 1 ≤ N) (j : ℕ) :
     blockBound N (j + 2) - blockBound N (j + 1) = 2 ^ j * N := by
   rw [blockBound_succ_eq N hN (j + 1), blockBound_succ_eq N hN j]
   have h : 2 ^ (j + 1) * N = 2 * (2 ^ j * N) := by ring
   omega
 
+/-- The zeroth dyadic block has length exactly `N`, from `blockBound N 1 = N ⊔ (2 *
+blockBound N 0)` and `blockBound N 0 = 0`. -/
 theorem blockLen_zero (N : ℕ) : blockBound N (0 + 1) - blockBound N 0 = N := by
   show blockBound N 1 - blockBound N 0 = N
   rw [show blockBound N 1 = max N (2 * blockBound N 0) from rfl,
     show blockBound N 0 = 0 from rfl]
   omega
 
+/-- The dyadic block count `N = 1 ∨ ⌈Mσ⌉₊` sandwiches the mean `Mσ`: it is at least `Mσ`
+(`Nat.le_ceil`) and at most `Mσ + 2` (`Nat.ceil_lt_add_one`). -/
 theorem ceil_bounds {Mσ : ℝ} (hM : 0 ≤ Mσ) :
     Mσ ≤ ((max 1 ⌈Mσ⌉₊ : ℕ) : ℝ) ∧ ((max 1 ⌈Mσ⌉₊ : ℕ) : ℝ) ≤ Mσ + 2 := by
   constructor

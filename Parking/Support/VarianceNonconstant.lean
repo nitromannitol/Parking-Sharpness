@@ -1,10 +1,18 @@
-/- Positive variance excludes a point mass for an integer law. -/
 import Parking.Support.CriticalLawReal
+
+/-!
+# Positive variance excludes a point mass
+
+Positive variance excludes a point mass for an integer law.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory
 
+/-- **A law with positive variance is not a point mass.**  If `ν {k} = 1` for some `k`, then
+`ν`-almost every integer equals `k`, forcing the mean to be `k` and the variance to vanish,
+contradicting `hv`. -/
 theorem nonconstant_of_evariance_pos (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hv : 0 < evariance (fun k : ℤ => (k : ℝ)) ν) : ∀ k : ℤ, ν {k} ≠ 1 := by
   intro k hk

@@ -1,5 +1,13 @@
 import Parking.Support.MomentLowerTail
 
+/-!
+# Logarithmic mean bound from an exponential tail
+
+If a small probability `h` is bounded above by an exponential `A * exp (-c * m)`, this file
+converts that exponential decay in `m` into a logarithmic upper bound `m ≤ C * log (1 / h)`
+on the parameter `m` itself, for a constant `C` depending only on `A` and `c`.
+-/
+
 noncomputable section
 namespace Parking
 

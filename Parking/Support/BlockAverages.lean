@@ -1,4 +1,8 @@
-/-
+import Parking.Support.BlockMoments
+
+/-!
+# The block averages of Step 2
+
 The block averages of Step 2 of `lem:mean-horizon`, read in the configuration.
 
 `blockAvg` is the `k`-th term of `eq:stopping-blocks` averaged over the walk,
@@ -14,7 +18,6 @@ The domination is the a priori bound of `eq:apriori-finite` read along the walk:
 almost surely the walk has stayed within `n` of the origin by time `n`, so the
 odometer at a block's start reads only the box of radius `n + max N (2n)`.
 -/
-import Parking.Support.BlockMoments
 
 open LatticeProb.ConvexOrder (integrable_intCast_of_exp)
 
@@ -39,6 +42,7 @@ def rewardAvg (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (�
   ∫ X, (∑ j ∈ Finset.range (σ η X), Parking.xi δ η (X j))
     ∂(LatticeProb.siteWalkLaw d (0 : Site d))
 
+/-- `blockAvg` is nonnegative, as a walk-average of the nonnegative odometer `u`. -/
 theorem blockAvg_nonneg (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (N k : ℕ)
     (η : Site d → ℤ) : 0 ≤ blockAvg δ σ N k η := by
   refine integral_nonneg fun X => ?_
@@ -47,6 +51,8 @@ theorem blockAvg_nonneg (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) �
   · rw [if_pos h]; exact u_nonneg _ _ _
   · rw [if_neg h]
 
+/-- `blockAvg` is strongly measurable in the configuration, by integrating out the walk
+from the jointly measurable block term `measurable_blockTerm`. -/
 theorem stronglyMeasurable_blockAvg (hd : 1 ≤ d) (δ : ℝ)
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) (N k : ℕ) :
@@ -56,6 +62,8 @@ theorem stronglyMeasurable_blockAvg (hd : 1 ≤ d) (δ : ℝ)
     (measurable_blockTerm hσ hσn hm δ (blockBound N k)
       (blockBound N (k + 1) - blockBound N k)).stronglyMeasurable
 
+/-- `rewardAvg` is strongly measurable in the configuration, by integrating out the walk
+from the jointly measurable reward sum `measurable_rewardSum`. -/
 theorem stronglyMeasurable_rewardAvg (hd : 1 ≤ d) (δ : ℝ)
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) :
@@ -66,6 +74,9 @@ theorem stronglyMeasurable_rewardAvg (hd : 1 ≤ d) (δ : ℝ)
 
 /-! ### The a priori bounds in the configuration -/
 
+/-- **The a priori bound on `blockAvg`.** Averaging the pointwise box bound
+`blockTerm_bound` over the walk, using that the walk almost surely stays within `n` of the
+origin (`ae_mem_boxFinset`). -/
 theorem blockAvg_le (hd : 1 ≤ d) (δ : ℝ) {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ}
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (N k : ℕ) (η : Site d → ℤ) :
     blockAvg δ σ N k η
@@ -88,6 +99,8 @@ theorem blockAvg_le (hd : 1 ≤ d) (δ : ℝ) {σ : (Site d → ℤ) → (ℕ �
   refine hle.trans (le_of_eq ?_)
   rw [integral_const, probReal_univ, one_smul]
 
+/-- **The a priori bound on `rewardAvg`.** The reward sum has at most `n` terms, each
+dominated by the box sum `G`, so its walk-average is at most `n * G`. -/
 theorem abs_rewardAvg_le (hd : 1 ≤ d) (δ : ℝ) {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ}
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (η : Site d → ℤ) :
     |rewardAvg δ σ η| ≤ (n : ℝ) * ∑ z ∈ boxFinset (0 : Site d) n, |Parking.xi δ η z| := by
@@ -125,6 +138,9 @@ theorem abs_rewardAvg_le (hd : 1 ≤ d) (δ : ℝ) {σ : (Site d → ℤ) → (�
 
 /-! ### Integrability in the configuration -/
 
+/-- `blockAvg` is integrable against the i.i.d. configuration law, dominated by
+`blockAvg_le`'s box-sum bound, which is integrable since the one-site law has a first
+moment (`integrable_boxSum_xi`). -/
 theorem integrable_blockAvg (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν)
@@ -140,6 +156,8 @@ theorem integrable_blockAvg (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
   rw [Real.norm_eq_abs, abs_of_nonneg (blockAvg_nonneg δ σ N k η)]
   exact blockAvg_le hd δ hσn N k η
 
+/-- `rewardAvg` is integrable against the i.i.d. configuration law, dominated by
+`abs_rewardAvg_le`'s box-sum bound, integrable by `integrable_boxSum_xi`. -/
 theorem integrable_rewardAvg (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν)

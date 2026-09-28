@@ -1,4 +1,9 @@
-/- Bounded predictable products of successively revealed independent coordinates,
+import Parking.Support.CoordinateMartingale
+
+/-!
+# Bounded predictable products with a past-selected reward
+
+Bounded predictable products of successively revealed independent coordinates,
 with the reward at each step CHOSEN from a finite family by the past.
 
 `Parking.exists_finite_coordinate_moment_bound` bounds the moments of a sum
@@ -16,7 +21,6 @@ past-measurable multiple of a fresh centred coordinate, so its conditional mean
 is zero; and because at most one indicator fires, the conditional variance is
 `H_j^2 ∫ (g_j (sel_j))^2` with no cross terms.
 -/
-import Parking.Support.CoordinateMartingale
 
 noncomputable section
 namespace Parking
@@ -99,25 +103,32 @@ theorem exists_finite_coordinate_moment_bound_sel (hBern : External.Bernstein) :
     rw [he]
     exact Finset.measurable_sum _ fun M _ => hterm_m j M
   have hAi (j : Fin K) : Integrable (A j) Q :=
-    Integrable.of_bound ((hAm j).mono (coordinateFiltration_le b q (j.val + 1)) le_rfl).aestronglyMeasurable a
+    Integrable.of_bound
+      ((hAm j).mono (coordinateFiltration_le b q (j.val + 1)) le_rfl).aestronglyMeasurable a
       (ae_of_all Q fun z => by simpa only [Real.norm_eq_abs] using hAb j z)
   have hH'i (j : Fin K) (M : Fin N) : Integrable (H' j M) Q :=
-    Integrable.of_bound ((hH'm j M).mono (coordinateFiltration_le b q j.val) le_rfl).aestronglyMeasurable 1
+    Integrable.of_bound
+      ((hH'm j M).mono (coordinateFiltration_le b q j.val) le_rfl).aestronglyMeasurable 1
       (ae_of_all Q fun z => by simpa only [Real.norm_eq_abs] using hH'b j M z)
   have hH'2i (j : Fin K) (M : Fin N) : Integrable (fun z => H' j M z ^ 2) Q :=
-    Integrable.of_bound (((hH'm j M).mono (coordinateFiltration_le b q j.val) le_rfl).pow_const 2).aestronglyMeasurable 1
+    Integrable.of_bound
+      (((hH'm j M).mono
+        (coordinateFiltration_le b q j.val) le_rfl).pow_const 2).aestronglyMeasurable 1
       (ae_of_all Q fun z => by
         rw [Real.norm_eq_abs, abs_pow]
         simpa using pow_le_pow_left₀ (abs_nonneg (H' j M z)) (hH'b j M z) 2)
   have htermi (j : Fin K) (M : Fin N) :
       Integrable (fun z => H' j M z * g j M (z.2 (q j))) Q :=
-    Integrable.of_bound ((hterm_m j M).mono (coordinateFiltration_le b q (j.val + 1)) le_rfl).aestronglyMeasurable a
+    Integrable.of_bound
+      ((hterm_m j M).mono (coordinateFiltration_le b q (j.val + 1)) le_rfl).aestronglyMeasurable a
       (ae_of_all Q fun z => by
         rw [Real.norm_eq_abs, abs_mul]
         exact (mul_le_mul (hH'b j M z) (hgb j M _) (abs_nonneg _) zero_le_one).trans_eq (one_mul a))
   have hterm2m (j : Fin K) (M : Fin N) :
       Measurable[F (j.val + 1)] fun z => H' j M z ^ 2 * g j M (z.2 (q j)) ^ 2 := by
-    apply (((hH'm j M).mono (coordinateFiltration_mono b q (Nat.le_succ j.val)) le_rfl).pow_const 2).mul
+    apply
+      (((hH'm j M).mono
+        (coordinateFiltration_mono b q (Nat.le_succ j.val)) le_rfl).pow_const 2).mul
     exact ((hg j M).pow_const 2).comp
       (measurable_coordinateFiltration_eval b hq j (Nat.lt_succ_self j.val))
   have hterm2i (j : Fin K) (M : Fin N) :

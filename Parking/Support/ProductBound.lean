@@ -1,5 +1,9 @@
-/-
-The three steps of `lem:product` combined.
+import Parking.Support.CountFiltration
+import Parking.Support.NoiseSplice
+import Parking.Support.RestrictLaw
+
+/-!
+# The three steps of `lem:product` combined
 
 The covariance under the particle-driven law splits into the covariance of the
 two conditional means given the counts and the mean of the conditional
@@ -9,9 +13,6 @@ by Step 1 (`Support/CountFiltration.lean`) and the second by Step 2
 covariance of the mean of `F` with the count there, so the covariance is at most
 three times that sum.
 -/
-import Parking.Support.CountFiltration
-import Parking.Support.NoiseSplice
-import Parking.Support.RestrictLaw
 
 open MeasureTheory
 

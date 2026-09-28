@@ -1,22 +1,26 @@
-/-
+import Parking.Support.TightYCutoff
+import Parking.Support.TightHlawAssembly
+import Parking.External.OrientedStoppingStability
+import Parking.Support.OrientedCutoffValuePot
+
+/-!
+# `hYconv`, parametrized by its three ingredients
+
 `hYconv` of `Parking.oriented_scaling_of_cutoff`, parametrized by the three ingredients
 `Parking.tendsto_integral_orientedCutoffValuePot` itself needs: the cited stability External,
 a concrete quarter-Brownian motion, and the finite-dimensional convergence of the rescaled
 oriented walk to it (`hWalk`).
 
-`Parking.tendsto_integral_Y_of_hWalk` rewrites `Parking.tendsto_integral_orientedCutoffValuePot`'s
-conclusion, at `T := 1` and `ν := Parking.contBoxRewardLaw`/`νs := Parking.boxRewardLaw` (fed
-by `Parking.hlaw_orientedBoxReward`, already SEALED), from an integral against
+`Parking.tendsto_integral_Y_of_hWalk` rewrites
+`Parking.tendsto_integral_orientedCutoffValuePot`'s conclusion, at `T := 1` and
+`ν := Parking.contBoxRewardLaw`/`νs := Parking.boxRewardLaw` (fed by
+`Parking.hlaw_orientedBoxReward`, already SEALED), from an integral against
 `Parking.boxRewardLaw` back to an integral against the oriented law itself: `boxRewardLaw`
 is the pushforward of `iidLaw 2 (realLaw ν)` along `Parking.boxRewardMap` (`integral_map`), and
 `iidLaw 2 (realLaw ν)` is itself the pushforward of `Parking.orientedLaw 2 ν` along
 `Parking.confReal` (`Parking.integral_oriented_confReal`) — the SAME two bridges `Parking.Y`
 itself was built from.  This is EXACTLY `hYconv`, with no new probability.
 -/
-import Parking.Support.TightYCutoff
-import Parking.Support.TightHlawAssembly
-import Parking.External.OrientedStoppingStability
-import Parking.Support.OrientedCutoffValuePot
 
 open LatticeProb.BoxClamp (rewardBox)
 open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contZ)
@@ -77,7 +81,8 @@ theorem tendsto_integral_Y_of_hWalk (ν : Measure ℤ) (hν : CriticalLaw ν)
       integral_map
         (measurable_boxRewardMap 1 (zero_le_one) (A : ℝ) (Nat.cast_nonneg A) n).aemeasurable
         (F.continuous.measurable.comp
-          (measurable_orientedCutoffValuePot (zero_le_one) (Nat.cast_nonneg A) n)).aestronglyMeasurable
+          (measurable_orientedCutoffValuePot (zero_le_one) (Nat.cast_nonneg A)
+            n)).aestronglyMeasurable
     have hGmeas : Measurable fun η : Site 2 → ℝ =>
         F (orientedCutoffValuePot (zero_le_one) (Nat.cast_nonneg A) n
           (boxRewardMap 1 (zero_le_one) (A : ℝ) (Nat.cast_nonneg A) n η)) :=

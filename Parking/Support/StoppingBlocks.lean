@@ -1,4 +1,9 @@
-/-
+import Parking.Support.BlockTools
+import LatticeProb.Walk.RangeSecond
+
+/-!
+# `eq:stopping-blocks`: the block decomposition of the reward
+
 `eq:stopping-blocks` for a fixed configuration (`parking.tex:2821-2829`).
 
 The paper's display is
@@ -19,8 +24,6 @@ about a site within `n` of the origin reads only the box of radius `n + ℓ`
 (`Parking.u_eq_of_eqOn_box`).  On a block the stopping time reaches, the block's
 start is below `n`, so its length is at most `max N (2n)` and `n + ℓ ≤ 3n + N`.
 -/
-import Parking.Support.BlockTools
-import LatticeProb.Walk.RangeSecond
 
 noncomputable section
 
@@ -34,6 +37,9 @@ variable {d : ℕ}
 def clipField (ζ : Site d → ℝ) (R : ℕ) : Site d → ℝ :=
   fun y => if y ∈ boxFinset (0 : Site d) R then ζ y else 0
 
+/-- The clipped field is bounded, at every site, by the sum of `|ζ|` over the box of
+radius `R`: it either equals `ζ y` for `y` inside the box, contributing one term of the
+sum, or is `0`. -/
 theorem clipField_bound (ζ : Site d → ℝ) (R : ℕ) (y : Site d) :
     |clipField ζ R y| ≤ ∑ z ∈ boxFinset (0 : Site d) R, |ζ z| := by
   classical
@@ -44,10 +50,13 @@ theorem clipField_bound (ζ : Site d → ℝ) (R : ℕ) (y : Site d) :
   · rw [if_neg hy, abs_zero]
     exact Finset.sum_nonneg fun z _ => abs_nonneg _
 
+/-- The bound `∑ z ∈ boxFinset 0 R, |ζ z|` used for the clipped field is nonnegative, as a
+finite sum of absolute values. -/
 theorem clipField_nonneg_bound (ζ : Site d → ℝ) (R : ℕ) :
     (0:ℝ) ≤ ∑ z ∈ boxFinset (0 : Site d) R, |ζ z| :=
   Finset.sum_nonneg fun _ _ => abs_nonneg _
 
+/-- The clipped field agrees with `ζ` at every site inside the box of radius `R`. -/
 theorem clipField_eq_of_mem (ζ : Site d → ℝ) {R : ℕ} {y : Site d}
     (hy : y ∈ boxFinset (0 : Site d) R) : clipField ζ R y = ζ y := by
   rw [clipField, if_pos hy]
@@ -62,6 +71,9 @@ theorem u_clipField_eq (_hd : 1 ≤ d) (ζ : Site d → ℝ) {R t ℓ : ℕ} {y 
 
 /-! ### Measurability of the block quantities -/
 
+/-- The reward `∑_{s ≤ j < min(σ X, s + ℓ)} ζ(X j)` collected on one block depends only on
+the first `n` coordinates of `X`, since `σ` is a stopping time bounded by `n` and hence
+agrees on any two paths that agree up to `n`. -/
 theorem dependsUpTo_blockSum (ζ : Site d → ℝ) {σ : (ℕ → Site d) → ℕ}
     (hσ : LatticeProb.IsWalkStopping σ) {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) :
     LatticeProb.DependsUpTo n
@@ -75,6 +87,9 @@ theorem dependsUpTo_blockSum (ζ : Site d → ℝ) {σ : (ℕ → Site d) → �
   have hjlt : j < min (σ X') (s + ℓ) := (Finset.mem_Ico.mp hj).2
   exact congrArg ζ (h j (by have := hσn X'; omega))
 
+/-- The indicator-weighted odometer term `if s < σ X then u ζ ℓ (X s) else 0` used in one
+block depends only on the first `n` coordinates of `X`, by the same stopping-time argument
+as `dependsUpTo_blockSum`. -/
 theorem dependsUpTo_blockU (ζ : Site d → ℝ) {σ : (ℕ → Site d) → ℕ}
     (hσ : LatticeProb.IsWalkStopping σ) {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) :
     LatticeProb.DependsUpTo n
@@ -87,6 +102,9 @@ theorem dependsUpTo_blockU (ζ : Site d → ℝ) {σ : (ℕ → Site d) → ℕ}
   · rw [if_pos hlt, if_pos hlt, h s (by have := hσn X'; omega)]
   · rw [if_neg hlt, if_neg hlt]
 
+/-- The block reward `∑_{s ≤ j < min(σ X, s + ℓ)} ζ(X j)` is integrable: by
+`dependsUpTo_blockSum` it depends on finitely many coordinates, and it is bounded, in
+absolute value, by `n * B` where `B` bounds `|ζ|`. -/
 theorem integrable_blockSum (hd : 1 ≤ d) (ζ : Site d → ℝ) {B : ℝ} (hB0 : 0 ≤ B)
     (hB : ∀ y, |ζ y| ≤ B) {σ : (ℕ → Site d) → ℕ}
     (hσ : LatticeProb.IsWalkStopping σ) {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) (x : Site d) :
@@ -108,6 +126,8 @@ theorem integrable_blockSum (hd : 1 ≤ d) (ζ : Site d → ℝ) {B : ℝ} (hB0 
         have := hσn X
         exact_mod_cast (by omega : min (σ X) (s + ℓ) - s ≤ n)
 
+/-- The indicator-weighted odometer term of `dependsUpTo_blockU` is integrable, bounded in
+absolute value by `ℓ * B` via `u_le_mul_of_le` since `|ζ| ≤ B`. -/
 theorem integrable_blockU (hd : 1 ≤ d) (ζ : Site d → ℝ) {B : ℝ} (hB0 : 0 ≤ B)
     (hB : ∀ y, |ζ y| ≤ B) {σ : (ℕ → Site d) → ℕ}
     (hσ : LatticeProb.IsWalkStopping σ) {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) (x : Site d) :
@@ -126,6 +146,9 @@ theorem integrable_blockU (hd : 1 ≤ d) (ζ : Site d → ℝ) {B : ℝ} (hB0 : 
 
 /-! ### The block decomposition of the whole reward -/
 
+/-- Almost surely, the walk started at `x` stays inside the box of radius `t` about `x` up
+through time `t`, restating `LatticeProb.ae_image_subset_boxFinset` as a pointwise
+membership statement. -/
 theorem ae_mem_boxFinset (hd : 1 ≤ d) (t : ℕ) (x : Site d) :
     ∀ᵐ X ∂(LatticeProb.siteWalkLaw d x), ∀ j ≤ t, X j ∈ boxFinset x t := by
   haveI : NeZero d := ⟨by omega⟩

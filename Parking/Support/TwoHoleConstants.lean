@@ -1,9 +1,21 @@
 import Parking.Support.LogFromTail
 
+/-!
+# A uniform constant for the two-hole tail bound
+
+This file proves `exists_two_hole_constant_assembly`, an elementary real-analysis lemma
+that extracts a single uniform constant `C` from four positive constants `Cb`, `Cs`,
+`Ci`, `A` so that any bound of the exponential-plus-fourth-power two-hole form collapses
+to a single exponential of `Real.log (1 / h)` times `b`. It packages the constant
+bookkeeping needed once the finite-box factor and the fourth-power tail have each been
+established separately.
+-/
+
 noncomputable section
 namespace Parking
 
-/-- The finite-box factor and fourth-power tail have the claimed two-hole form, with one uniform constant. -/
+/-- The finite-box factor and fourth-power tail have the claimed two-hole form, with one
+uniform constant. -/
 theorem exists_two_hole_constant_assembly (Cb Cs Ci A : ℝ)
     (hCb : 0 < Cb) (hCs : 0 < Cs) (hCi : 0 < Ci) (hA : 0 < A) :
     ∃ C : ℝ, 0 < C ∧ ∀ h b P : ℝ, 0 < h → h ≤ 1 / 4 → 0 ≤ b →
@@ -31,19 +43,23 @@ theorem exists_two_hole_constant_assembly (Cb Cs Ci A : ℝ)
     dsimp only [K]
     nlinarith only [hscale]
   have hExp : Ci * (A * (1 + L) * (Cb * b)) + Cs * (Cb * b) ≤ C * L * b :=
-    hK.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_right 2 K) hLpos.le) hb)
+    hK.trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (le_max_right 2 K) hLpos.le) hb)
   have hh1 : h ≤ 1 := hh4.trans (by norm_num)
   have hsq : h ^ 2 ≤ 1 := by nlinarith [mul_nonneg hh.le (sub_nonneg.mpr hh1)]
   have hfour : h ^ 4 ≤ h ^ 2 := by nlinarith [mul_nonneg (sq_nonneg h) (sub_nonneg.mpr hsq)]
-  have he1 : 1 ≤ Real.exp (C * L * b) := Real.one_le_exp_iff.mpr (mul_nonneg (mul_nonneg hC.le hLpos.le) hb)
+  have he1 : 1 ≤ Real.exp (C * L * b) :=
+    Real.one_le_exp_iff.mpr (mul_nonneg (mul_nonneg hC.le hLpos.le) hb)
   have htail : h ^ 4 ≤ h ^ 2 * Real.exp (C * L * b) :=
     hfour.trans (by nlinarith [mul_le_mul_of_nonneg_left he1 (sq_nonneg h)])
   calc
     P ≤ Real.exp (Ci * (A * (1 + L) * (Cb * b))) * (Real.exp (Cs * (Cb * b)) * h ^ 2) + h ^ 4 := hP
-    _ = h ^ 2 * Real.exp (Ci * (A * (1 + L) * (Cb * b)) + Cs * (Cb * b)) + h ^ 4 := by rw [Real.exp_add]; ring
+    _ = h ^ 2 * Real.exp (Ci * (A * (1 + L) * (Cb * b)) + Cs * (Cb * b)) + h ^ 4 := by
+      rw [Real.exp_add]; ring
     _ ≤ h ^ 2 * Real.exp (C * L * b) + h ^ 2 * Real.exp (C * L * b) :=
       add_le_add (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hExp) (sq_nonneg h)) htail
     _ = 2 * h ^ 2 * Real.exp (C * L * b) := by ring
     _ ≤ C * h ^ 2 * Real.exp (C * L * b) :=
-      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left 2 K) (sq_nonneg h)) (Real.exp_pos _).le
+      mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (le_max_left 2 K) (sq_nonneg h)) (Real.exp_pos _).le
 end Parking

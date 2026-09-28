@@ -1,6 +1,13 @@
-/-
-**Translation covariance of the divisible sandpile odometer, and shift-invariance in
-law of the discrepancy `U_n - u_n` between the particle and divisible odometers.**
+import Parking.Support.Equivariance
+import Parking.Support.DiscrepancyTail
+import Parking.Support.WBound
+import Parking.Support.UBound
+
+/-!
+# Translation covariance and shift-invariance of the discrepancy
+
+Translation covariance of the divisible sandpile odometer, and shift-invariance in
+law of the discrepancy `U_n - u_n` between the particle and divisible odometers.
 
 `Parking.U_shiftData` (`Parking/Support/Equivariance.lean`) already gives the particle
 odometer's translation covariance, `U (shiftData v ω) n x = U ω n (x + v)`.  This file
@@ -13,10 +20,6 @@ for transferring the SEALED `prop:discrepancy` (a bound at the single site `0`) 
 at every site of a mesh, via a union bound, towards the vanishing-distance clause of
 `prop:spatial-scaling`.
 -/
-import Parking.Support.Equivariance
-import Parking.Support.DiscrepancyTail
-import Parking.Support.WBound
-import Parking.Support.UBound
 
 open LatticeProb (measurable_from_countable')
 
@@ -75,7 +78,8 @@ theorem law_discrepancy_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
     (law d ν) {ω | r < |(U ω n z : ℝ) - uOf ω n z|}
       = (law d ν) {ω | r < |(U ω n (0 : Site d) : ℝ) - uOf ω n (0 : Site d)|} := by
   have hz : z = (0 : Site d) + z := by abel
-  have hmeasT : MeasurableSet {ω : Data d | r < |(U ω n (0 : Site d) : ℝ) - uOf ω n (0 : Site d)|} :=
+  have hmeasT :
+      MeasurableSet {ω : Data d | r < |(U ω n (0 : Site d) : ℝ) - uOf ω n (0 : Site d)|} :=
     measurableSet_lt measurable_const
       ((((measurable_from_countable' (fun k : ℕ => (k : ℝ))).comp
         (measurable_U n (0 : Site d))).sub (measurable_uOf n (0 : Site d))).abs)

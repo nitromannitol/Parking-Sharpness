@@ -1,11 +1,20 @@
-/- A quadratic exponential-moment bound near the origin for a centered law. -/
 import Parking.Support.ExponentialRemainder
 import Parking.Support.ConfMoments
+
+/-!
+# A quadratic exponential-moment bound near the origin
+
+A quadratic exponential-moment bound near the origin for a centered law.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory
 
+/-- Under an exponential-moment hypothesis near the origin for a centered law `μ`, there
+are `τ, D > 0` such that, for every `|t| ≤ τ`, `exp (t z)` is `μ`-integrable and its
+integral is at most `exp (D t ^ 2)`, a quadratic bound on the moment generating function
+near the origin obtained from the quadratic remainder of the exponential series. -/
 theorem exists_oneSite_exponential_bound (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (hi : Integrable (id : ℝ → ℝ) μ) (hm : ∫ z : ℝ, z ∂μ = 0)
     {θ : ℝ} (hθ : 0 < θ) (he : Integrable (fun z : ℝ => Real.exp (θ * |z|)) μ) :
@@ -31,7 +40,8 @@ theorem exists_oneSite_exponential_bound (μ : Measure ℝ) [IsProbabilityMeasur
         ring
   let D := (∫ z, W z ∂μ) + 1
   have hD : 0 < D := by
-    have h : 0 ≤ ∫ z, W z ∂μ := integral_nonneg fun z => mul_nonneg (sq_nonneg z) (Real.exp_pos _).le
+    have h : 0 ≤ ∫ z, W z ∂μ := integral_nonneg fun z =>
+      mul_nonneg (sq_nonneg z) (Real.exp_pos _).le
     dsimp only [D]
     linarith
   refine ⟨τ, D, hτ, hD, fun t ht => ?_⟩

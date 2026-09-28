@@ -3,6 +3,18 @@ import Parking.Support.MatchedCountIntegral
 import Parking.Support.LayerIntegral
 import Parking.Support.WalkIntegral
 
+/-!
+# Mean balance for the common-table odometer
+
+Averages the pathwise conservation laws of the common-table construction: the expected
+number of arrivals in a round equals the walk average of the expected active counts
+(`integral_matchedArrivals`), which turns the pathwise signed balance into a one-step
+recursion for the mean odometer (`matchedMeanU_succ`) and, by induction on the round
+number, into the discrete Poisson equation `matchedMeanU_signed_balance` relating the walk
+operator applied to the mean odometer to the mean active and hole counts and the initial
+field.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -62,9 +74,11 @@ theorem matchedMeanU_succ (hd : 1 ≤ d) (η : Site d → ℤ) (K : ℕ)
       ((matchedState η ρ σ t).departures x : ℝ) + (matchedCount η ρ σ t x : ℝ) := Nat.cast_add _ _
   unfold matchedMeanU
   simp_rw [he]
-  exact integral_add (integrable_matchedOdometer hd η ρ t x) (integrable_matchedCount_bounded hd η K hη ρ t x _)
+  exact integral_add (integrable_matchedOdometer hd η ρ t x)
+    (integrable_matchedCount_bounded hd η K hη ρ t x _)
 
-/-- Averaging the signed conservation law gives the Poisson equation for the conditional mean odometer. -/
+/-- Averaging the signed conservation law gives the Poisson equation for the conditional
+mean odometer. -/
 theorem matchedMeanU_signed_balance (hd : 1 ≤ d) (η : Site d → ℤ) (K : ℕ)
     (hη : ∀ y, (η y).toNat ≤ K) (ρ : Label d × ℕ → ℝ) (t : ℕ) (x : Site d) :
     walkOp (matchedMeanU η ρ t) x - matchedMeanU η ρ t x =

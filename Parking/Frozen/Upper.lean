@@ -1,4 +1,13 @@
-/-
+import Parking.External.SandpileGrowth
+import Parking.External.Bernstein
+import Parking.External.UConcentration
+import Parking.External.UConcentrationProved
+import Parking.External.GreenNormsProved
+import Parking.Support.UpperTarget
+
+/-!
+# Theorem 7.2: the odometer moment bound (frozen)
+
 Theorem 7.2 of parking.tex, frozen.  `parking.tex:1418-1431` (label
 `thm:upper`):
 
@@ -20,12 +29,6 @@ hypotheses: the growth of the mean sandpile odometer, the martingale moment
 inequality, the concentration of the sandpile odometer, and the asymptotics of
 the two Green norms of `eq:green-norms`, which Steps 2 and 3 read.
 -/
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
-import Parking.Support.UpperTarget
 
 open MeasureTheory
 

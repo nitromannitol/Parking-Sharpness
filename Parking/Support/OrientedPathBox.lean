@@ -1,11 +1,16 @@
-/- The directed walk stays in the box of radius `j`, and its indicator
-decomposition over the fibres of the box. -/
 import Parking.Support.OrientedMaximum
 import Parking.Support.Pathwise
 import Parking.Support.Walk
 import Parking.Support.Coupling
 import Parking.Support.WStarMoment
 import Parking.Support.OrientedIncrement
+
+/-!
+# The directed walk stays in its box
+
+The directed walk stays in the box of radius `j`, and its indicator
+decomposition over the fibres of the box.
+-/
 
 noncomputable section
 namespace Parking

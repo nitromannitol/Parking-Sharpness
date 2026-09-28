@@ -1,15 +1,20 @@
-/-
+import Parking.Support.NearestCriticalModel
+import Parking.Support.CriticalLawReal
+
+/-!
+# Critical normalization: mass-centered odometer law
+
 The probability-law correspondence for the critical lower tail cited at
 `parking.tex:1822-1848`, in the mass normalization of `sandpile.tex:1696-1720`.
 The initial mass is σ = 1 + 2dη. The output odometer equals Parking.u η
 exactly; independent instruction and rank coordinates do not affect its law.
 -/
-import Parking.Support.NearestCriticalModel
-import Parking.Support.CriticalLawReal
 
 noncomputable section
 open MeasureTheory ProbabilityTheory LatticeProb Filter Topology Parking.CriticalScale
 
+/-- `relax` applied to the mass `1 + 2dη` reduces to `max 0 (η x + walkOp f x)`, by unfolding
+`relax` and `walkOp` and clearing the `2d` denominator. -/
 theorem Parking.CriticalScale.relax_centered {d : ℕ} (hd : 1 ≤ d)
     (η f : Site d → ℝ) (x : Site d) :
     relax (fun y => 1 + 2 * (d : ℝ) * η y) f x = max 0 (η x + walkOp f x) := by
@@ -29,10 +34,13 @@ theorem Parking.CriticalScale.odometer_centered {d : ℕ} (hd : 1 ≤ d)
     funext x
     rw [odometer, ih, relax_centered hd, Parking.u]
 
+/-- The affine mass-centering map `η ↦ (x ↦ 1 + 2dη x)` is measurable. -/
 theorem Parking.CriticalScale.measurable_centered (d : ℕ) :
     Measurable (fun η : Site d → ℝ => fun x => 1 + 2 * (d : ℝ) * η x) := by
   exact measurable_pi_lambda _ fun x => measurable_const.add ((measurable_pi_apply x).const_mul _)
 
+/-- `centeredMassLaw d ν` is the pushforward of the i.i.d. law `iidLaw d ν` under the
+mass-centering map `η ↦ 1 + 2dη`. -/
 theorem Parking.CriticalScale.centeredMassLaw_eq_map (d : ℕ) (ν : Measure ℝ)
     [IsProbabilityMeasure ν] : centeredMassLaw d ν =
       (iidLaw d ν).map (fun η : Site d → ℝ => fun x => 1 + 2 * (d : ℝ) * η x) := by
@@ -41,6 +49,8 @@ theorem Parking.CriticalScale.centeredMassLaw_eq_map (d : ℕ) (ν : Measure ℝ
   exact Measure.infinitePi_map_pi _ (fun _ : Site d =>
     measurable_const.add (measurable_id.const_mul (2 * (d : ℝ))))
 
+/-- `odometer σ t x` is measurable in `σ`, by induction on `t` using measurability of the
+finite sum defining each relaxation step. -/
 theorem Parking.CriticalScale.measurable_odometer {d : ℕ} (t : ℕ) (x : Site d) :
     Measurable (fun σ : Site d → ℝ => odometer σ t x) := by
   induction t generalizing x with
@@ -53,6 +63,8 @@ theorem Parking.CriticalScale.measurable_odometer {d : ℕ} (t : ℕ) (x : Site 
       (Finset.measurable_sum Finset.univ (fun i _ =>
         (ih (x + unit i)).add (ih (x - unit i))))).div_const _)
 
+/-- `centeredMassLaw d ν` is a probability measure, being the pushforward of the probability
+measure `iidLaw d ν` under the measurable centering map. -/
 theorem Parking.CriticalScale.centeredMassLaw_isProbability (d : ℕ) (ν : Measure ℝ)
     [IsProbabilityMeasure ν] : IsProbabilityMeasure (centeredMassLaw d ν) := by
   unfold centeredMassLaw
@@ -61,6 +73,8 @@ theorem Parking.CriticalScale.centeredMassLaw_isProbability (d : ℕ) (ν : Meas
   unfold iidLaw
   infer_instance
 
+/-- `lowerTailRemainder d t L a` is nonnegative whenever `0 ≤ L`, as a product of nonnegative
+`Real.rpow` factors. -/
 theorem Parking.CriticalScale.lowerTailRemainder_nonneg (d t : ℕ) {L a : ℝ}
     (hL : 0 ≤ L) : 0 ≤ lowerTailRemainder d t L a := by
   unfold lowerTailRemainder
@@ -79,6 +93,8 @@ theorem Parking.CriticalScale.odometer_lowerTail_eq {d : ℕ} (hd : 1 ≤ d)
   ext η
   simp only [Set.mem_preimage, Set.mem_setOf_eq, odometer_centered hd]
 
+/-- The integer-valued analogue of `odometer_lowerTail_eq`: transports the lower-tail event
+for `Parking.uOf` along the pushforward identity `Parking.law_map_confReal`. -/
 theorem Parking.CriticalScale.uOf_lowerTail_eq {d : ℕ} (hd : 1 ≤ d)
     (ν : Measure ℤ) [IsProbabilityMeasure ν] (t : ℕ) (x : Site d) (b : ℝ) :
     (Parking.law d ν) {ω | Parking.uOf ω t x ≤ b} =

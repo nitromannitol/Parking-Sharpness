@@ -1,14 +1,16 @@
-/-
-External input: the martingale Rosenthal-Burkholder inequalities the paper
-quotes (`parking.tex:1175-1188`, `lem:bernstein`) from Pinelis: the first
-bound is Theorem 4.1 there, and the second follows by integrating the tail
-bound of Theorem 3.3 there (`parking.tex:1190-1193`).
-
-Assumed here.  It enters only as an explicit hypothesis of the results whose
-proofs use it.  The constant is universal, so it is bound before every other
-datum of the statement.
--/
 import Parking.Basic
+
+/-!
+# The martingale Bernstein inequalities
+
+External input: the martingale Rosenthal-Burkholder inequalities the paper quotes
+(`parking.tex:1175-1188`, `lem:bernstein`) from Pinelis: the first bound is Theorem 4.1 there,
+and the second follows by integrating the tail bound of Theorem 3.3 there
+(`parking.tex:1190-1193`).
+
+Assumed here. It enters only as an explicit hypothesis of the results whose proofs use it.
+The constant is universal, so it is bound before every other datum of the statement.
+-/
 
 open MeasureTheory
 

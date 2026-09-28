@@ -1,5 +1,10 @@
-/- Joint measurability and local integrability of the rescaled space-time field. -/
 import Parking.Support.SpatWBarDivisibleJointMeasurable
+
+/-!
+# Joint measurability of the space-time field
+
+Joint measurability and local integrability of the rescaled space-time field.
+-/
 
 open LatticeProb (measurable_eval_var)
 
@@ -25,6 +30,9 @@ theorem measurable_uncurry_spaceTime_barDivisible (R : ℝ) :
     (fun p (q : ℕ × Site d) => uOf p.1 q.1 q.2)
     (fun q => (measurable_uOf q.1 q.2).comp measurable_fst)).const_mul _
 
+/-- For a fixed configuration `w`, the space-time field `p ↦ barDivisible w R p.1 p.2`
+is measurable, by precomposing `measurable_uncurry_spaceTime_barDivisible` with the map
+pairing the constant `w` to `p`. -/
 theorem measurable_spaceTime_barDivisible (w : Data d) (R : ℝ) :
     Measurable (fun p : ℝ × (Fin d → ℝ) => barDivisible w R p.1 p.2) :=
   (measurable_uncurry_spaceTime_barDivisible R).comp
@@ -38,6 +46,9 @@ theorem exists_bound_spaceTime_barDivisible (hd : 1 ≤ d) (w : Data d)
   exact ⟨_, fun p hp => abs_barDivisible_le hd w hR hC
     (hbound p hp).1 (hbound p hp).2⟩
 
+/-- The space-time field `barDivisible w R` restricted to a compact set `K` is
+integrable, combining its measurability with the uniform bound
+`exists_bound_spaceTime_barDivisible` on `K`. -/
 theorem integrableOn_spaceTime_barDivisible (hd : 1 ≤ d) (w : Data d)
     {R : ℝ} (hR : 0 ≤ R) {K : Set (ℝ × (Fin d → ℝ))} (hK : IsCompact K) :
     IntegrableOn (fun p => barDivisible w R p.1 p.2) K := by

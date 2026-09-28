@@ -1,5 +1,11 @@
-/-
-`thm:nearest` from `prop:spatial-scaling`.
+import Parking.Support.NearestPathwise
+import Parking.Support.NearestSigned
+import Parking.Support.NearestContinuumPositivity
+import Parking.Frozen.SpatialScaling
+import Parking.Support.UpperTarget
+
+/-!
+# `thm:nearest` from `prop:spatial-scaling`
 
 `parking.tex:1822-1848` proves Theorem 1.5 from Proposition 8.3 and two inputs
 cited there: the critical-scale lower tail, which makes the limit field positive
@@ -14,11 +20,6 @@ clauses; it follows from the measurability of `U` at each fixed point and its
 continuity in the space variable, which together make the integrand jointly
 measurable.
 -/
-import Parking.Support.NearestPathwise
-import Parking.Support.NearestSigned
-import Parking.Support.NearestContinuumPositivity
-import Parking.Frozen.SpatialScaling
-import Parking.Support.UpperTarget
 
 open LatticeProb.WhiteNoise (continuous_contOp)
 

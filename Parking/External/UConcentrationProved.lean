@@ -22,6 +22,8 @@ namespace Parking.External
 
 open Parking LatticeProb LatticeProb.Walk
 
+/-- Membership in the box of radius `r` around a site is symmetric: `y ∈ boxFinset x r` iff
+`x ∈ boxFinset y r`. -/
 theorem uconc_mem_box_symm {d : ℕ} {x y : Site d} {r : ℕ} :
     y ∈ boxFinset x r ↔ x ∈ boxFinset y r := by
   rw [mem_boxFinset_iff, mem_boxFinset_iff]
@@ -31,11 +33,15 @@ theorem uconc_mem_box_symm {d : ℕ} {x y : Site d} {r : ℕ} :
   · intro h i
     simpa [Pi.sub_apply, abs_sub_comm] using h i
 
+/-- The `j`-step iterate of the kernel `K` started at `x` and evaluated at `z`: the same
+recursion as `kIter`, but with an explicit starting site `x` in place of the origin. -/
 def uconc_kIterFrom {d : ℕ} (r : ℕ) (K : Site d → Site d → ℝ) :
     ℕ → Site d → Site d → ℝ
   | 0, x, z => if z = x then 1 else 0
   | j + 1, x, z => ∑ y ∈ boxFinset x r, K x y * uconc_kIterFrom r K j y z
 
+/-- Translation invariance of the kernel `K` identifies `uconc_kIterFrom r K j x z` with the
+origin-based iterate `kIter r K j (z - x)`. -/
 theorem uconc_kIterFrom_eq_kIter_sub {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K) (j : ℕ)
     (x z : Site d) :
@@ -74,6 +80,8 @@ theorem uconc_kIterFrom_eq_kIter_sub {d : ℕ} {r : ℕ}
           congr 1 <;> funext i <;> dsimp <;> abel
         rw [hshift', mul_comm]
 
+/-- `uconc_kIterFrom r K j x z` is nonnegative for every `j`, `x`, `z`, by induction on `j`
+using nonnegativity of `K`. -/
 theorem uconc_kIterFrom_nonneg {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K) :
     ∀ j x z, 0 ≤ uconc_kIterFrom r K j x z := by
@@ -88,6 +96,8 @@ theorem uconc_kIterFrom_nonneg {d : ℕ} {r : ℕ}
       exact Finset.sum_nonneg fun y hy =>
         mul_nonneg (hK.1 x y) (ih y z)
 
+/-- `kIter r K j z` is nonnegative, transferred from `uconc_kIterFrom_nonneg` via
+`uconc_kIterFrom_eq_kIter_sub`. -/
 theorem uconc_kIter_nonneg {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K) :
     ∀ j z, 0 ≤ kIter r K j z := by
@@ -98,12 +108,17 @@ theorem uconc_kIter_nonneg {d : ℕ} {r : ℕ}
     _ = kIter r K j (z - 0) := uconc_kIterFrom_eq_kIter_sub hK j 0 z
     _ = kIter r K j z := by simp
 
+/-- The Green function `kGreen r K n z`, a finite sum of the nonnegative iterates
+`kIter r K j z`, is nonnegative. -/
 theorem uconc_kGreen_nonneg {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K) (n : ℕ) (z : Site d) :
     0 ≤ kGreen r K n z := by
   unfold kGreen
   exact Finset.sum_nonneg fun j hj => uconc_kIter_nonneg hK j z
 
+/-- The `j`-step iterate `kIter r K j z` vanishes once `z` lies outside the box of radius
+`r * j` around the origin, since a finite-range kernel of range `r` cannot reach further than
+that in `j` steps. -/
 theorem uconc_kIter_zero_of_not_mem {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (_hK : IsLatticeKernel r K) :
     ∀ j z, z ∉ boxFinset (0 : Site d) (r * j) → kIter r K j z = 0 := by
@@ -130,6 +145,8 @@ theorem uconc_kIter_zero_of_not_mem {d : ℕ} {r : ℕ}
         simpa [Nat.mul_succ, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using h
       · rw [ih y hybox, zero_mul]
 
+/-- The Green function `kGreen r K n z` vanishes once `z` lies outside the box of radius
+`r * n`, by summing `uconc_kIter_zero_of_not_mem` over the `n` steps. -/
 theorem uconc_kGreen_zero_of_not_mem {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K) (n : ℕ) (z : Site d)
     (hz : z ∉ boxFinset (0 : Site d) (r * n)) :
@@ -144,6 +161,8 @@ theorem uconc_kGreen_zero_of_not_mem {d : ℕ} {r : ℕ}
     have hj' := Finset.mem_range.mp hj
     exact Nat.mul_le_mul_left r (Nat.le_of_lt hj')) hzj
 
+/-- `kGreen r K n 0 ≥ 1` for `n ≥ 1`, since the `j = 0` term of the defining sum,
+`kIter r K 0 0 = 1`, already reaches one and every other term is nonnegative. -/
 theorem uconc_kGreen_one_le {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K) {n : ℕ} (hn : 1 ≤ n) :
     1 ≤ kGreen r K n 0 := by
@@ -154,10 +173,14 @@ theorem uconc_kGreen_one_le {d : ℕ} {r : ℕ}
     (fun j hj => uconc_kIter_nonneg hK j 0) hmem
   simpa [kIter] using hsingle
 
+/-- The Green function of `K` started at `x`, summing `uconc_kIterFrom r K j x z` over
+`j < n`; the analogue of `kGreen` with an explicit starting site. -/
 def uconc_kGreenFrom {d : ℕ} (r : ℕ) (K : Site d → Site d → ℝ)
     (n : ℕ) (x z : Site d) : ℝ :=
   ∑ j ∈ Finset.range n, uconc_kIterFrom r K j x z
 
+/-- Translation invariance identifies `uconc_kGreenFrom r K n x z` with the origin-based
+Green function `kGreen r K n (z - x)`. -/
 theorem uconc_kGreenFrom_eq_kGreen_sub {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K) (n : ℕ)
     (x z : Site d) :
@@ -167,6 +190,9 @@ theorem uconc_kGreenFrom_eq_kGreen_sub {d : ℕ} {r : ℕ}
   intro j hj
   exact uconc_kIterFrom_eq_kIter_sub hK j x z
 
+/-- The one-step recursion for `uconc_kGreenFrom`: separating the `j = 0` term from the sum
+defining it at horizon `n + 1` splits it into the indicator at `x` plus the kernel applied to
+the horizon-`n` Green function from each neighbour. -/
 theorem uconc_kGreenFrom_succ {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (n : ℕ) (x z : Site d) :
     uconc_kGreenFrom r K (n + 1) x z =
@@ -179,6 +205,9 @@ theorem uconc_kGreenFrom_succ {d : ℕ} {r : ℕ}
   rw [Finset.sum_comm]
   ring
 
+/-- The kernel average `kOp r K` is Lipschitz in its function argument: pointwise,
+`|kOp r K f x - kOp r K g x|` is bounded by the `K`-weighted sum of `|f y - g y|` over the
+neighbours of `x`. -/
 theorem uconc_kOp_abs_sub_le {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K)
     (f g : Site d → ℝ) (x : Site d) :
@@ -202,6 +231,9 @@ theorem uconc_kOp_abs_sub_le {d : ℕ} {r : ℕ}
       intro y hy
       rw [abs_mul, abs_of_nonneg (hK.1 x y)]
 
+/-- The coordinate-Lipschitz bound: changing the scenery `η` at a single site `z` to `v`
+changes the recursion's value `kSol r K η n x` by at most `|η z - v|` times the Green function
+`uconc_kGreenFrom r K n x z` from `x` to `z`, by induction on `n`. -/
 theorem uconc_kSol_update_le {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K)
     (η : Site d → ℝ) (z : Site d) (v : ℝ) :
@@ -275,6 +307,8 @@ theorem uconc_kSol_update_le {d : ℕ} {r : ℕ}
           intro y hy
           ring
 
+/-- `uconc_kSol_update_le` specialized to `x = 0` and rewritten with the origin-based Green
+function `kGreen r K n z` via `uconc_kGreenFrom_eq_kGreen_sub`. -/
 theorem uconc_kSol_update_lipschitz {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (hK : IsLatticeKernel r K)
     (η : Site d → ℝ) (z : Site d) (v : ℝ) (n : ℕ) :
@@ -284,6 +318,8 @@ theorem uconc_kSol_update_lipschitz {d : ℕ} {r : ℕ}
   rw [uconc_kGreenFrom_eq_kGreen_sub hK n 0 z] at h
   simpa [mul_comm] using h
 
+/-- `kSol r K η n x` depends on `η` only through its values on the box of radius `r * n`
+around `x`: two sceneries agreeing there give the same value, by induction on `n`. -/
 theorem uconc_kSol_eq_of_eqOn_box {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (_hK : IsLatticeKernel r K)
     {η ξ : Site d → ℝ} (n : ℕ) (x : Site d)
@@ -308,6 +344,8 @@ theorem uconc_kSol_eq_of_eqOn_box {d : ℕ} {r : ℕ}
         max 0 (ξ x + kOp r K (kSol r K ξ n) x)
       rw [hηx, hop]
 
+/-- `kSol r K (extendField s η) n x` is measurable in the finitely many coordinates
+`η : s → ℝ`, by induction on `n` using measurability of the finite sum defining `kOp`. -/
 theorem uconc_measurable_kSol_extend {d : ℕ} {r : ℕ}
     {K : Site d → Site d → ℝ} (s : Finset (Site d)) (n : ℕ) (x : Site d) :
     Measurable (fun η : s → ℝ => kSol r K (extendField s η) n x) := by

@@ -3,6 +3,18 @@ import Parking.Support.NearestBallEvent
 import Parking.Support.SpatialVanishingDistance
 import Parking.Support.SpatWMiddleApproximation
 
+/-!
+# Transferring odometer closeness to test-function pairings
+
+This file transfers the uniform closeness of the rescaled parking and divisible odometers,
+established pointwise by `SpatialVanishingDistance`, to pairings of these fields against a
+fixed continuous, compactly supported test function `g`. A local uniform bound on
+`|barOdometer - barDivisible|` on the support of `g` controls the difference of the two
+pairings by `ε * M * volume.real K`, and combining this with the vanishing-distance estimate
+shows that the pairing difference itself converges to zero in `law d ν`-probability, both at a
+fixed time `1` and, more generally, at any fixed time `t > 0`.
+-/
+
 open LatticeProb.Walk (exists_norm_bound_of_hasCompactSupport exists_norm_le_of_hasCompactSupport)
 
 open MeasureTheory LatticeProb Filter Topology
@@ -61,7 +73,8 @@ theorem tendsto_barOdometer_sub_barDivisible_pairing_zero (hd : 1 ≤ d) (hd3 : 
   have hC : 0 < C := by dsimp [C]; positivity
   have htail := exists_spatial_vanishing_distance hd hd3 hGrowth hBernstein
     hConcentration hGreenNorms ν hν (({(1 : ℝ)} : Set ℝ) ×ˢ K)
-    (isCompact_singleton.prod hK) (fun p hp => by simpa only [Set.mem_singleton_iff.mp hp.1] using zero_lt_one)
+    (isCompact_singleton.prod hK)
+    (fun p hp => by simpa only [Set.mem_singleton_iff.mp hp.1] using zero_lt_one)
     (a / C) (div_pos ha hC)
   apply squeeze_zero' (Eventually.of_forall fun _ => ENNReal.toReal_nonneg) _ htail
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with R hR
@@ -84,7 +97,8 @@ theorem tendsto_barOdometer_sub_barDivisible_pairing_zero (hd : 1 ≤ d) (hd3 : 
 
 open Set
 
-/-- Local uniform closeness transfers to integration against a continuous compactly supported test. -/
+/-- Local uniform closeness transfers to integration against a continuous compactly supported
+test. -/
 theorem tendsto_barOdometer_pairing_sub_barDivisible_pairing_zero
     (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hGrowth : External.SandpileGrowth) (hBernstein : External.Bernstein)
@@ -124,7 +138,8 @@ theorem tendsto_barOdometer_pairing_sub_barDivisible_pairing_zero
   have hbound : ∀ᶠ R : ℝ in atTop,
       ((law d ν) {w | a < |(∫ x, barOdometer w R t x * g x) -
         ∫ x, barDivisible w R t x * g x|}).toReal ≤
-      ((law d ν) {w | δ < ⨆ p ∈ K', |barOdometer w R p.1 p.2 - barDivisible w R p.1 p.2|}).toReal := by
+      ((law d ν) {w | δ < ⨆ p ∈ K',
+        |barOdometer w R p.1 p.2 - barDivisible w R p.1 p.2|}).toReal := by
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with R hR
     apply ENNReal.toReal_mono (measure_ne_top _ _)
     apply measure_mono
@@ -140,9 +155,11 @@ theorem tendsto_barOdometer_pairing_sub_barDivisible_pairing_zero
       integrableOn_mul_of_niceOnK hK hg (niceOnK_barDivisible hd w R t B hR ht.le)
     have hweight : IntegrableOn g K volume := hg.continuousOn.integrableOn_compact hK
     have he := LatticeProb.Scaling.WeightedIntegral.abs_pairing_sub_le hweight
-      (by simpa only [mul_comm, IntegrableOn] using hiu) (by simpa only [mul_comm, IntegrableOn] using hiv)
+      (by simpa only [mul_comm, IntegrableOn] using hiu)
+      (by simpa only [mul_comm, IntegrableOn] using hiv)
       (by filter_upwards [ae_restrict_mem hK.measurableSet] with x hx; exact hpoint x hx)
-    have he' : |(∫ x in K, barOdometer w R t x * g x) - ∫ x in K, barDivisible w R t x * g x| ≤ δ * M := by
+    have he' : |(∫ x in K, barOdometer w R t x * g x) -
+        ∫ x in K, barDivisible w R t x * g x| ≤ δ * M := by
       simpa only [mul_comm] using he
     rw [hI, hI] at he'
     exact (not_lt_of_ge (he'.trans hδM.le)) hw

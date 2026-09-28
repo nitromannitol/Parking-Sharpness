@@ -1,4 +1,14 @@
-/-
+import Parking.Support.SpatialTightnessBridge
+import Parking.Support.UDivisibleShift
+import Parking.Support.MeanuGrowthBounds
+import Parking.Support.BoxTranslation
+import Parking.Support.MatchedUniform
+import Parking.Frozen.Discrepancy
+import Parking.Support.NearestLimit
+
+/-!
+# The vanishing-distance clause of spatial scaling
+
 The vanishing-distance clause of `prop:spatial-scaling` (`parking.tex:1727-1729`,
 the mutual local uniform closeness of the two rescaled odometers), proved by a union
 bound over a finite space-time mesh transferring the sealed `prop:discrepancy` (a tail
@@ -7,13 +17,6 @@ bound at the single site `0`) to every point of a compact set of positive times,
 `Parking.exists_meanu_growth_bounds` (`MeanuGrowthBounds.lean`).  It needs
 `Parking.External.GreenNorms`, the same input carried by `prop:discrepancy` itself.
 -/
-import Parking.Support.SpatialTightnessBridge
-import Parking.Support.UDivisibleShift
-import Parking.Support.MeanuGrowthBounds
-import Parking.Support.BoxTranslation
-import Parking.Support.MatchedUniform
-import Parking.Frozen.Discrepancy
-import Parking.Support.NearestLimit
 
 noncomputable section
 
@@ -182,8 +185,10 @@ theorem exists_spatial_vanishing_distance (hd : 1 ≤ d) (hd3 : d ≤ 3)
   have hR2 : (2:ℝ) ≤ R := le_trans (le_max_left _ _) hR
   have hR1 : (1:ℝ) ≤ R := le_trans (by norm_num) hR2
   have hR4 : 4 / s_min ≤ R := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hR
-  have hRx0 : x₀ ≤ R := le_trans (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hR
-  have hRN : (N:ℝ) ≤ R := le_trans (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hR
+  have hRx0 : x₀ ≤ R :=
+    le_trans (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hR
+  have hRN : (N:ℝ) ≤ R :=
+    le_trans (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hR
   have hR0 : (0:ℝ) ≤ R := zero_le_one.trans hR1
   have hs4 : (4:ℝ) ≤ s_min * R := by
     rw [mul_comm]; exact (div_le_iff₀ hs_min_pos).mp hR4

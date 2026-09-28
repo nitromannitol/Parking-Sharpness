@@ -1,7 +1,12 @@
-/- Conditional scenery moments of directed potential increments. -/
 import Parking.Support.OrientedFinite
 import Parking.Support.OrientedDelay
 import Parking.Support.LinearFiniteSupport
+
+/-!
+# Conditional scenery moments of potential increments
+
+Conditional scenery moments of directed potential increments.
+-/
 
 noncomputable section
 namespace Parking

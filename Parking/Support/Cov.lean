@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Range
+import Parking.Support.Measurability
+
+/-!
+# Covariance of one coordinate and Step 1 of `lem:product`
+
 The covariance of two functions of one coordinate, and Step 1 of the proof of
 `lem:product` (`parking.tex:2374-2389`).
 
@@ -13,8 +18,6 @@ is the monotonicity of `f`, which makes `f(Y) - f(Y₁)` and `Y - Y₁` share a
 sign.  Nothing in it is about the parking model, so it is proved here for a
 general probability measure on `ℤ`.
 -/
-import Parking.Support.Range
-import Parking.Support.Measurability
 
 open LatticeProb (measurable_from_countable')
 
@@ -71,12 +74,16 @@ end Coupling
 
 /-! ### Elementary sign facts -/
 
+/-- If `A` and `B` have the same sign (both nonnegative or both nonpositive),
+their product of absolute values equals their product. -/
 theorem abs_mul_abs_of_same_sign {A B : ℝ}
     (h : (0 ≤ A ∧ 0 ≤ B) ∨ (A ≤ 0 ∧ B ≤ 0)) : |A| * |B| = A * B := by
   rcases h with ⟨hA, hB⟩ | ⟨hA, hB⟩
   · rw [abs_of_nonneg hA, abs_of_nonneg hB]
   · rw [abs_of_nonpos hA, abs_of_nonpos hB]; ring
 
+/-- For a monotone `f`, the increment `f a - f b` and the increment `a - b` of
+the coordinate always share a sign. -/
 theorem same_sign_of_monotone {f : ℤ → ℝ} (hf : Monotone f) (a b : ℤ) :
     (0 ≤ f a - f b ∧ 0 ≤ (a : ℝ) - (b : ℝ)) ∨
       (f a - f b ≤ 0 ∧ (a : ℝ) - (b : ℝ) ≤ 0) := by
@@ -94,15 +101,19 @@ section OneSite
 
 variable {ν : Measure ℤ} [IsProbabilityMeasure ν]
 
+/-- Every function on the countable type `ℤ` is measurable. -/
 theorem measurable_int_fun (f : ℤ → ℝ) : Measurable f := measurable_from_countable' f
 
 omit [IsProbabilityMeasure ν] in
+/-- The coordinate `k ↦ (k : ℝ)` is integrable once its absolute value is. -/
 theorem integrable_cast (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) :
     Integrable (fun k : ℤ => (k : ℝ)) ν := by
   refine Integrable.mono' hint (measurable_int_fun _).aestronglyMeasurable
     (Filter.Eventually.of_forall fun k => ?_)
   rw [Real.norm_eq_abs]
 
+/-- A one-Lipschitz function `z` of the coordinate is integrable whenever the
+coordinate has a first absolute moment, by comparing `|z k|` to `|z k - z 0| + |z 0|`. -/
 theorem integrable_of_lipschitz {z : ℤ → ℝ}
     (hzlip : ∀ a b : ℤ, |z a - z b| ≤ |(a : ℝ) - (b : ℝ)|)
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) : Integrable z ν := by
@@ -118,6 +129,7 @@ theorem integrable_of_lipschitz {z : ℤ → ℝ}
   linarith
 
 omit [IsProbabilityMeasure ν] in
+/-- A function bounded by `1` times an integrable function is integrable. -/
 theorem integrable_bdd_mul {f w : ℤ → ℝ} (hfbdd : ∀ k : ℤ, |f k| ≤ 1)
     (hw : Integrable w ν) : Integrable (fun k : ℤ => f k * w k) ν := by
   refine Integrable.mono' hw.abs (measurable_int_fun _).aestronglyMeasurable

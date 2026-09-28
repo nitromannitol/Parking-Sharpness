@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TaggedRankAe
+import Parking.Support.SubcriticalStep1
+import Parking.Support.TiltContinuity
+import LatticeProb.Prob.DiffIneq
+
+/-!
+# Step 3 of `thm:subcritical`: integrating the differential inequality
+
 Step 3 of `thm:subcritical` (`parking.tex:2499-2511`): integrating the
 differential inequality of Step 2 over `[0, λ₁]`.
 
@@ -22,10 +29,6 @@ The tilt acts on every site of the box, the origin included, so the correction
 the origin at its prescribed configuration, does not appear: `g` is exactly
 `δ(λ)|R_t|`.
 -/
-import Parking.Support.TaggedRankAe
-import Parking.Support.SubcriticalStep1
-import Parking.Support.TiltContinuity
-import LatticeProb.Prob.DiffIneq
 
 open LatticeProb (le_mul_exp_intervalIntegral)
 

@@ -1,4 +1,13 @@
-/-
+import Parking.Support.LinPotentialSum
+import Parking.Support.CriticalLawReal
+import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
+import Mathlib.Probability.Independence.InfinitePi
+import Mathlib.Probability.Independence.Integration
+import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+
+/-!
+# The scalar characteristic-function engine for spatial CLT
+
 The scalar characteristic-function engine for the finite-dimensional convergence clause of
 `prop:spatial-scaling` (`parking.tex:1694-1752`).
 
@@ -30,12 +39,6 @@ fixed dimension:
   negligible, the characteristic function of the weighted i.i.d. sum converges to the
   Gaussian one `exp(-σ²Vt²/2)`.
 -/
-import Parking.Support.LinPotentialSum
-import Parking.Support.CriticalLawReal
-import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.Independence.Integration
-import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 
 open MeasureTheory LatticeProb ProbabilityTheory Filter Complex
 open scoped Topology RealInnerProductSpace InnerProductSpace
@@ -96,7 +99,8 @@ theorem exists_spatTaylor_charFun_realLaw (ν : Measure ℤ) (hν : CriticalLaw 
   have hσpos : 0 < σ := Real.sqrt_pos.mpr hσ2pos
   have hσsq : σ ^ 2 = σ2 := Real.sq_sqrt hσ2pos.le
   set X : ℝ → ℝ := fun z => σ⁻¹ * z with hX
-  have hXm : AEMeasurable X (realLaw ν) := (continuous_const.mul continuous_id).measurable.aemeasurable
+  have hXm : AEMeasurable X (realLaw ν) :=
+    (continuous_const.mul continuous_id).measurable.aemeasurable
   have hmean : ∫ z : ℝ, z ∂(realLaw ν) = 0 := realLaw_mean ν hν
   have hint2 : Integrable (fun z : ℝ => z ^ 2) (realLaw ν) :=
     (realLaw_memLp_two ν hν).integrable_sq
@@ -172,7 +176,8 @@ theorem charFun_map_weighted_sum_eq_prod {d : ℕ} (ν : Measure ℤ) (hν : Cri
     hind'.integral_fun_prod_eq_prod_integral hmeas
   have hmap : ∀ w : Site d, (iidLaw d (realLaw ν)).map (fun η : Site d → ℝ => η w) = realLaw ν :=
     fun w => Measure.infinitePi_map_eval _ w
-  have hfactor : ∀ w : Site d, ∫ η, g w (η w) ∂(iidLaw d (realLaw ν)) = charFun (realLaw ν) (t * c w) := by
+  have hfactor : ∀ w : Site d, ∫ η, g w (η w) ∂(iidLaw d (realLaw ν)) =
+      charFun (realLaw ν) (t * c w) := by
     intro w
     have h1 : (∫ η, g w (η w) ∂(iidLaw d (realLaw ν))) = ∫ b, g w b ∂(realLaw ν) := by
       have hfwd : ∫ b, g w b ∂((iidLaw d (realLaw ν)).map (fun η : Site d → ℝ => η w))
@@ -195,7 +200,8 @@ theorem charFun_map_weighted_sum_eq_prod {d : ℕ} (ν : Measure ℤ) (hν : Cri
     Complex.continuous_exp.comp ((Complex.continuous_ofReal.comp
       (Continuous.inner continuous_id continuous_const)).mul continuous_const)
   have hchar : charFun ((iidLaw d (realLaw ν)).map (fun η : Site d → ℝ => ∑ w ∈ S, c w * η w)) t
-      = ∫ η, ∏ w : (S : Finset (Site d)), g (w : Site d) (η (w : Site d)) ∂(iidLaw d (realLaw ν)) := by
+      = ∫ η, ∏ w : (S : Finset (Site d)), g (w : Site d) (η (w : Site d))
+          ∂(iidLaw d (realLaw ν)) := by
     have hmeasSum : AEMeasurable (fun η : Site d → ℝ => ∑ w ∈ S, c w * η w)
         (iidLaw d (realLaw ν)) :=
       (Finset.measurable_sum S fun w _ =>
@@ -228,6 +234,10 @@ theorem charFun_map_weighted_sum_eq_prod {d : ℕ} (ν : Measure ℤ) (hν : Cri
   rw [← Finset.prod_coe_sort S (fun w => charFun (realLaw ν) (t * c w))]
   exact Finset.prod_congr rfl fun w _ => hfactor (w : Site d)
 
+/-- **The combined Taylor and logarithm bound for the one-site characteristic function**
+at `0`: for every `ε > 0` there is a neighborhood of `0` on which `charFun (realLaw ν)` is
+nonzero and its logarithm is within `ε·s²` of `-σ²s²/2`, derived from
+`exists_spatTaylor_charFun_realLaw` via the power-series bound on `log (1 + z) - z`. -/
 theorem exists_spatLog_charFun_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ s : ℝ, |s| < δ →
       charFun (realLaw ν) s ≠ 0 ∧

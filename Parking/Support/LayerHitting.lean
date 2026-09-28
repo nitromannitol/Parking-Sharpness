@@ -1,11 +1,14 @@
-/-
+import Parking.Support.LayerLaw
+import LatticeProb.Walk.HitProb
+
+/-!
+# A finite-horizon hitting bound from fresh layers
+
 A finite-horizon hitting bound for paths driven by fresh independent layers.
 The walk hitting probability is a supermartingale bound when each round's
 conditional transition is dominated by two walk steps. Waiting rounds are
 allowed, and the proof integrates fresh-layer sections directly.
 -/
-import Parking.Support.LayerLaw
-import LatticeProb.Walk.HitProb
 
 noncomputable section
 
@@ -38,9 +41,13 @@ theorem Parking.integral_le_of_layer_sections (μ : Measure α) [IsProbabilityMe
     _ = ∫ ω, ∫ v, f (Function.update ω n v) ∂μ ∂P := integral_prod _ hint
     _ ≤ ∫ ω, g ω ∂P := integral_mono hint.integral_prod_left hgint hsec
 
+/-- The set of driving sequences `ω` along which the path `X ω` has already hit `0` by
+time `t`. -/
 def Parking.layerHits (X : (ℕ → α) → ℕ → Site d) (t : ℕ) : Set (ℕ → α) :=
   {ω | ∃ s ≤ t, X ω s = 0}
 
+/-- `layerHits X t` is measurable, being the countable union over `s ≤ t` of the preimage of
+`{0}` under `fun ω => X ω s`. -/
 theorem Parking.measurableSet_layerHits (X : (ℕ → α) → ℕ → Site d)
     (hX : Measurable X) (t : ℕ) : MeasurableSet (Parking.layerHits X t) := by
   have heq : Parking.layerHits X t =
@@ -51,6 +58,9 @@ theorem Parking.measurableSet_layerHits (X : (ℕ → α) → ℕ → Site d)
   exact MeasurableSet.biUnion (Set.to_countable _) fun s _ =>
     ((measurable_pi_apply s).comp hX) (measurableSet_singleton _)
 
+/-- The simple random walk hitting probability from the origin itself is `1`, whatever the
+time horizon `n`, by `srwHitBy_zero` at `n = 0` and the library lemma `srwHitBy_succ_origin`
+otherwise. -/
 theorem Parking.srwHitBy_origin (n : ℕ) : LatticeProb.srwHitBy d n 0 = 1 := by
   cases n with
   | zero => simp [LatticeProb.srwHitBy_zero]
@@ -63,6 +73,8 @@ def Parking.layerHitPotential (X : (ℕ → α) → ℕ → Site d) (T s : ℕ) 
   exact if ω ∈ Parking.layerHits X s then 1 else LatticeProb.srwHitBy d (2 * (T - s)) (X ω s)
 
 omit [MeasurableSpace α] in
+/-- `layerHitPotential X T s ω` lies in `[0, 1]`: it is either the constant `1` on an already-hit
+path, or a walk hitting probability, bounded via `srwHitBy_nonneg` and `srwHitBy_le_one`. -/
 theorem Parking.layerHitPotential_bounds (hd : 1 ≤ d) (X : (ℕ → α) → ℕ → Site d)
     (T s : ℕ) (ω : ℕ → α) :
     0 ≤ Parking.layerHitPotential X T s ω ∧ Parking.layerHitPotential X T s ω ≤ 1 := by
@@ -72,12 +84,16 @@ theorem Parking.layerHitPotential_bounds (hd : 1 ≤ d) (X : (ℕ → α) → �
   · exact ⟨LatticeProb.srwHitBy_nonneg _ _, LatticeProb.srwHitBy_le_one hd _ _⟩
 
 omit [MeasurableSpace α] in
+/-- `‖layerHitPotential X T s ω‖ ≤ 1`, from `layerHitPotential_bounds` since the quantity is
+nonnegative. -/
 theorem Parking.norm_layerHitPotential_le (hd : 1 ≤ d) (X : (ℕ → α) → ℕ → Site d)
     (T s : ℕ) (ω : ℕ → α) : ‖Parking.layerHitPotential X T s ω‖ ≤ 1 := by
   have hb := Parking.layerHitPotential_bounds hd X T s ω
   rw [Real.norm_eq_abs, abs_of_nonneg hb.1]
   exact hb.2
 
+/-- `layerHitPotential X T s` is measurable, as an `if`-`then`-`else` between a constant and a
+measurable composition of `srwHitBy` with `X`, split on the measurable set `layerHits X s`. -/
 theorem Parking.measurable_layerHitPotential (X : (ℕ → α) → ℕ → Site d)
     (hX : Measurable X) (T s : ℕ) : Measurable (Parking.layerHitPotential X T s) := by
   exact Measurable.ite (Parking.measurableSet_layerHits X hX s) measurable_const

@@ -1,11 +1,23 @@
-/- Exponential moments on finite coordinate sets of an infinite product. -/
 import Parking.Support.LinearExponential
 import Parking.Support.LinearMoment
+
+/-!
+# Exponential moments on finite coordinate sets of an infinite product
+
+Lifts the finite-product exponential-moment bound of `Parking.Support.LinearExponential` to
+the infinite product `Measure.infinitePi`, for a linear combination supported on a finite
+coordinate set `S`, and then combines the bound with its mirror image to bound the exponential
+moment of the absolute value of the combination.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 
+/-- Lifts `linear_exponential_pi`'s bound on a finite product to the infinite product
+`Measure.infinitePi`, for a linear combination supported on the finite set `S`, by reindexing
+through the coordinate-reading map `read : (ι → ℝ) → Fin S.card → ℝ` and the measure-preserving
+`hread`. -/
 theorem linear_exponential_infinitePi {ι : Type*} (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {τ D : ℝ} (hτ : 0 ≤ τ)
     (hb : ∀ t : ℝ, |t| ≤ τ →
@@ -41,6 +53,8 @@ theorem linear_exponential_infinitePi {ι : Type*} (μ : Measure ℝ) [IsProbabi
   rw [heq, he (fun i => a i ^ 2)] at hB
   simpa only [hcomp] using And.intro hi hB
 
+/-- `exp(τ * |x|) ≤ exp(τ * x) + exp(τ * (-x))`, by splitting on the sign of `x` and dropping
+the other, positive, exponential term. -/
 theorem exp_abs_le_exp_add (τ x : ℝ) :
     Real.exp (τ * |x|) ≤ Real.exp (τ * x) + Real.exp (τ * (-x)) := by
   by_cases hx : 0 ≤ x
@@ -49,6 +63,11 @@ theorem exp_abs_le_exp_add (τ x : ℝ) :
   · rw [abs_of_neg (lt_of_not_ge hx)]
     linarith [Real.exp_pos (τ * x)]
 
+/-- From a one-site exponential tail bound (`exists_oneSite_exponential_bound`), produces a
+rate `τ > 0` and constant `B > 0` such that every finitely-supported, `|a i| ≤ 1`-bounded
+linear combination has `exp(τ * |∑ a i * ξ i|)` integrable with mean at most
+`2 * exp(B * ∑ a i ^ 2)`, by applying `linear_exponential_infinitePi` to `a` and to `-a` and
+combining the two bounds via `exp_abs_le_exp_add`. -/
 theorem exists_linear_abs_exponential {ι : Type*} (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (hi : Integrable (id : ℝ → ℝ) μ) (hm : ∫ z : ℝ, z ∂μ = 0)
     {θ : ℝ} (hθ : 0 < θ) (he : Integrable (fun z : ℝ => Real.exp (θ * |z|)) μ) :

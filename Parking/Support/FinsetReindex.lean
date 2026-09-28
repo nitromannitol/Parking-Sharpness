@@ -1,11 +1,14 @@
-/-
-The measure-preserving bijection between a `Fintype`-indexed product measure and its
-`Fin N`-indexed reindexing, needed to apply the shared library's
-`LatticeProb.weighted_exp_conc_exp`/`weighted_exp_conc_tail` (stated for `Fin N → ℝ`) to a
-function of a finite BOX of sites (naturally indexed by a `Finset (Site d)`, not by `Fin N`).
-General purpose, nothing here is specific to the parking model.
--/
 import Mathlib
+
+/-!
+# Reindexing a `Fintype`-indexed product measure by `Fin N`
+
+The measure-preserving bijection between a `Fintype`-indexed product measure and its `Fin N`-
+indexed reindexing, needed to apply the shared library's
+`LatticeProb.weighted_exp_conc_exp`/`weighted_exp_conc_tail` (stated for `Fin N → ℝ`) to a
+function of a finite box of sites, naturally indexed by a `Finset (Site d)` rather than by
+`Fin N`. General purpose: nothing here is specific to the parking model.
+-/
 
 noncomputable section
 
@@ -21,12 +24,18 @@ def finEquivIndex (ι : Type*) [Fintype ι] : (Fin (Fintype.card ι) → ℝ) �
   left_inv ξ := funext fun j => by simp
   right_inv ζ := funext fun k => by simp
 
+/-- Unfolds `finEquivIndex` at a point: `finEquivIndex ι ξ k = ξ (Fintype.equivFin ι k)`,
+by `rfl`. -/
 theorem finEquivIndex_apply (ξ : Fin (Fintype.card ι) → ℝ) (k : ι) :
     finEquivIndex ι ξ k = ξ (Fintype.equivFin ι k) := rfl
 
+/-- `finEquivIndex` is measurable, since each coordinate is a coordinate projection
+precomposed with `Fintype.equivFin`. -/
 theorem measurable_finEquivIndex : Measurable (finEquivIndex ι) :=
   measurable_pi_lambda _ fun k => measurable_pi_apply (Fintype.equivFin ι k)
 
+/-- The inverse of `finEquivIndex` is measurable, by the same coordinate-projection
+argument as `measurable_finEquivIndex`. -/
 theorem measurable_finEquivIndex_symm : Measurable (finEquivIndex ι).symm :=
   measurable_pi_lambda _ fun j => measurable_pi_apply ((Fintype.equivFin ι).symm j)
 
@@ -59,6 +68,8 @@ def finMEquivIndex (ι : Type*) [Fintype ι] : (Fin (Fintype.card ι) → ℝ) �
   measurable_toFun := measurable_finEquivIndex
   measurable_invFun := measurable_finEquivIndex_symm
 
+/-- `finEquivIndex` is a measurable embedding, inherited from the measurable equivalence
+`finMEquivIndex`. -/
 theorem measurableEmbedding_finEquivIndex : MeasurableEmbedding (finEquivIndex ι) :=
   (finMEquivIndex ι).measurableEmbedding
 

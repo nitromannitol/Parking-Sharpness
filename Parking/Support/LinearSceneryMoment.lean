@@ -1,5 +1,13 @@
-/- Finite coefficient moments under an infinite independent field. -/
 import Parking.Support.LinearMoment
+
+/-!
+# Finite coefficient moments under an infinite independent field
+
+Finite coefficient moments under an infinite independent field, lifting the square-function
+estimate of `Parking.Support.LinearMoment` from a finite product to a finitely-supported linear
+combination over an infinite independent family, by reindexing through the coordinates in the
+support.
+-/
 
 noncomputable section
 namespace Parking

@@ -1,4 +1,10 @@
-/-
+import Parking.Support.ScalNoiseModification
+import Parking.Support.ContStopGeneral
+import Parking.External.OrientedStoppingStability
+
+/-!
+# The chain of `prop:oriented-scaling`, from what the repository has and what it is owed
+
 The chain of `prop:oriented-scaling` (`parking.tex:3166-3237`), assembled from
 the inputs the repository has and the inputs it is still owed.
 
@@ -20,9 +26,6 @@ multi-parameter Kolmogorov-Chentsov theorem of the library.  Items 2 and 3 are
 carried here as explicit hypotheses, in the shape the frozen statement needs,
 until the canonical Wiener space and the joint-measurability lemma land.
 -/
-import Parking.Support.ScalNoiseModification
-import Parking.Support.ContStopGeneral
-import Parking.External.OrientedStoppingStability
 
 open LatticeProb.ContinuumStopping (contStopValue contU contValue_le measurable_contZ)
 

@@ -1,10 +1,19 @@
-/- Exponential moments of the maximum over finitely many time points. -/
 import Parking.Support.FinitePathMoment
+
+/-!
+# Exponential moment of a finite path maximum
+
+Exponential moments of the maximum over finitely many time points.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory Finset
 
+/-- If each `exp (τ * |F j|)` for `j ≤ n` is integrable with mean at most `B`,
+then `exp (τ * finitePathMax (F ·) n)` is integrable with mean at most
+`(n + 1) * B`, by bounding the exponential of a max by the sum of the
+exponentials (`exists_mem_eq_sup'`, `single_le_sum`). -/
 theorem finitePathMax_exponential {Ω : Type} [MeasurableSpace Ω]
     (μ : Measure Ω) (F : ℕ → Ω → ℝ) (hm : ∀ j, Measurable (F j))
     (n : ℕ) (τ B : ℝ)

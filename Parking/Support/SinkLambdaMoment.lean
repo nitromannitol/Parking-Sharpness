@@ -2,6 +2,16 @@ import Parking.Support.SinkCenteredMoment
 import Parking.Support.AverageMoment
 import Parking.Support.SinkCompensatorMean
 
+/-!
+# Neighbor-averaged moment bound for the sink entrance count
+
+This file averages the centered sink odometer moment bound of
+`Parking.Support.SinkCenteredMoment` over the neighbors of the origin, using the
+neighbor-averaging moment inequality of `Parking.Support.AverageMoment`, to obtain the
+same `r`-norm moment scale for the fluctuation of `sparseSinkLambda` around its mean
+compensator `walkOp (sparseSinkMean p T) 0`.
+-/
+
 open LatticeProb.MomentNorm (rNorm)
 
 noncomputable section
@@ -29,7 +39,8 @@ theorem exists_sparseSinkLambda_centered_moment (hBernstein : External.Bernstein
       |F x z| ≤ ((T * (2 * T + 1) ^ d : ℕ) : ℝ) + |sparseSinkMean (d := d) p T x| :=
     (abs_sub _ _).trans (add_le_add (sparseSinkTableU_bound T 0 x z) (le_refl _))
   have hsum : ∑ _x ∈ nbrFinset (0 : Site d), (1 / (2 * (d : ℝ))) = 1 := by
-    simp only [Finset.sum_const, Graph.Zd.card_nbrFinset, nsmul_eq_mul, Nat.cast_mul, Nat.cast_ofNat]
+    simp only [Finset.sum_const, Graph.Zd.card_nbrFinset, nsmul_eq_mul, Nat.cast_mul,
+      Nat.cast_ofNat]
     have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (by omega : d ≠ 0)
     field_simp
   have h := rNorm_average_le μ (nbrFinset (0 : Site d)) (fun _ => 1 / (2 * (d : ℝ))) F

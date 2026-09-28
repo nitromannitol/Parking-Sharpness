@@ -3,6 +3,18 @@ import Parking.Support.BoundedMoment
 import Parking.Support.TableDifferenceSum
 import Parking.External.Bernstein
 
+/-!
+# Bernstein's inequality for the table martingale
+
+Applies the martingale Bernstein inequality `External.Bernstein` to the chronological
+table-reveal martingale `tableDiff` (built in `Support/TableDifference.lean` and summed
+in `Support/TableDifferenceSum.lean`), whose increments are almost surely bounded and
+whose predictable quadratic variation is controlled by the Green-weighted odometer
+`greenWeightedOdometer`. The resulting `L^r` moment bound on the departure count at `x`
+after `T` rounds, centered at its mean `matchedMeanU`, is stated purely in terms of that
+odometer bound and the escape constant `escapeConst d`, with no further citation.
+-/
+
 open LatticeProb.MomentNorm (rNorm)
 
 noncomputable section
@@ -14,7 +26,8 @@ variable {d : ℕ}
 theorem exists_table_noise_moment_bound (hBernstein : External.Bernstein) :
     ∃ C : ℝ, 0 < C ∧ ∀ (d : ℕ), 3 ≤ d → ∀ (η : Site d → ℤ),
       (∀ y, (η y).toNat ≤ 1) → ∀ (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) (r : ℝ), 2 ≤ r →
-      rNorm (flatRoundNoiseLaw d) r (fun ω => ((matchedState η ρ (curryRoundNoise ω) T).departures x : ℝ) - matchedMeanU η ρ T x) ≤
+      rNorm (flatRoundNoiseLaw d) r (fun ω =>
+        ((matchedState η ρ (curryRoundNoise ω) T).departures x : ℝ) - matchedMeanU η ρ T x) ≤
         C * (Real.sqrt r * (∫ ω, greenWeightedOdometer η ρ (curryRoundNoise ω) T x T ^ (r / 2)
           ∂(flatRoundNoiseLaw d)) ^ (1 / r) + r * escapeConst d) := by
   obtain ⟨C, hC, hBern⟩ := hBernstein
@@ -45,7 +58,8 @@ theorem exists_table_noise_moment_bound (hBernstein : External.Bernstein) :
     sum_tableDiff hd1 η hη ρ T x e hK
       (fun y hy j hj => roundEnumeration_covers x T N y j hy hj) ω
   simp only [hsum] at hb
-  let V : FlatRoundNoise d → ℝ := fun ω => ∑ n ∈ Finset.Icc 1 (T * K), (μ[fun ζ => ξ n ζ ^ 2 | F (n - 1)]) ω
+  let V : FlatRoundNoise d → ℝ := fun ω =>
+    ∑ n ∈ Finset.Icc 1 (T * K), (μ[fun ζ => ξ n ζ ^ 2 | F (n - 1)]) ω
   let Q : FlatRoundNoise d → ℝ := fun ω => greenWeightedOdometer η ρ (curryRoundNoise ω) T x T
   have hV0 : ∀ᵐ ω ∂μ, 0 ≤ V ω := by
     have hn : ∀ᵐ ω ∂μ, ∀ n : ℕ, 0 ≤ (μ[fun ζ => ξ n ζ ^ 2 | F (n - 1)]) ω :=
@@ -53,7 +67,8 @@ theorem exists_table_noise_moment_bound (hBernstein : External.Bernstein) :
     filter_upwards [hn] with ω hω
     exact Finset.sum_nonneg fun n _ => hω n
   have hVQ : V ≤ᵐ[μ] Q := tableDiff_qv_le hd base η hη ρ T x T N le_rfl hK
-  let B : ℝ := (∑ v ∈ boxFinset x T, walkOp (fun y => fullGreen d (y - x) ^ 2) v) * ((T * (2 * T + 1) ^ d : ℕ) : ℝ)
+  let B : ℝ := (∑ v ∈ boxFinset x T, walkOp (fun y => fullGreen d (y - x) ^ 2) v) *
+    ((T * (2 * T + 1) ^ d : ℕ) : ℝ)
   have hQB (ω : FlatRoundNoise d) : |Q ω| ≤ B := by
     rw [abs_of_nonneg (greenWeightedOdometer_nonneg _ _ _ _ _ _)]
     exact greenWeightedOdometer_le_box η hη ρ _ T x T
@@ -72,5 +87,6 @@ theorem exists_table_noise_moment_bound (hBernstein : External.Bernstein) :
     exact Real.rpow_le_rpow hn hle (by linarith)
   have hroot := Real.rpow_le_rpow hVint hIq (by positivity : (0 : ℝ) ≤ 1 / r)
   exact hb.trans (mul_le_mul_of_nonneg_left
-    (add_le_add (mul_le_mul_of_nonneg_left hroot (Real.sqrt_nonneg r)) (le_refl (r * escapeConst d))) hC.le)
+    (add_le_add (mul_le_mul_of_nonneg_left hroot (Real.sqrt_nonneg r))
+      (le_refl (r * escapeConst d))) hC.le)
 end Parking

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SubcriticalPair
+
+/-!
+# Relabeling equivariance of the tagged construction
+
 The equivariance of the TAGGED construction under relabeling the particles at
 one site.
 
@@ -18,7 +22,6 @@ least one among themselves, so it decides every tie the same way.  That is
 `Parking.TieInvariant`, and it is all the equivariance of `Support/RelabelEquiv.lean`
 asks for.
 -/
-import Parking.Support.SubcriticalPair
 
 noncomputable section
 
@@ -28,17 +31,26 @@ open LatticeProb
 
 variable {d : ℕ}
 
+/-- `relabelAt x₀ σ ω` reads its walk at `(q, s)` from `ω`'s walk at the same
+label, with the index at `x₀` permuted by `σ`, by definition. -/
 theorem relabelAt_move (x₀ : Site d) (σ : Equiv.Perm ℕ) (ω : PData d) (q : Label d) (s : ℕ) :
     (relabelAt x₀ σ ω).2.1 (q, s) = ω.2.1 ((q.1, if q.1 = x₀ then σ q.2 else q.2), s) := rfl
 
+/-- `relabelAt x₀ σ ω` reads its uniform variable at `(q, s)` from `ω`'s uniform
+variable at the same label, with the index at `x₀` permuted by `σ`, by
+definition. -/
 theorem relabelAt_rank (x₀ : Site d) (σ : Equiv.Perm ℕ) (ω : PData d) (q : Label d) (s : ℕ) :
     (relabelAt x₀ σ ω).2.2 (q, s) = ω.2.2 ((q.1, if q.1 = x₀ then σ q.2 else q.2), s) := rfl
 
+/-- `taggedMove w m` at the tagged label `(0, 0)` is `w`, at another origin
+label `(0, j)` is `m` at `(0, j - 1)`, and elsewhere is `m`, by definition. -/
 theorem taggedMove_apply (w : ℕ → Fin d × Bool) (m : Label d × ℕ → Fin d × Bool)
     (p : Label d) (s : ℕ) :
     taggedMove w m (p, s)
       = if p.1 = 0 then (if p.2 = 0 then w s else m ((0, p.2 - 1), s)) else m (p, s) := rfl
 
+/-- `taggedRank r v` at the tagged label `(0, 0)` is `r`, at another origin
+label `(0, j)` is `v` at `(0, j - 1)`, and elsewhere is `v`, by definition. -/
 theorem taggedRank_apply (r : ℕ → ℝ) (v : Label d × ℕ → ℝ) (p : Label d) (s : ℕ) :
     taggedRank r v (p, s)
       = if p.1 = 0 then (if p.2 = 0 then r s else v ((0, p.2 - 1), s)) else v (p, s) := rfl
@@ -97,6 +109,9 @@ theorem labelLT_iff_lex (p q : Label d) :
     labelLT p q ↔ ((toLex p.1 : Lex (Fin d → ℤ)) < toLex q.1 ∨ (p.1 = q.1 ∧ p.2 < q.2)) := by
   simp only [labelLT, labelKey, Prod.Lex.toLex_lt_toLex, toLex_inj]
 
+/-- When two labels sit at different sites, `labelLT` between them does not
+depend on their indices, since the comparison is decided by the sites
+alone. -/
 theorem labelLT_of_fst_ne {p q : Label d} (h : p.1 ≠ q.1) (i j : ℕ) :
     labelLT p q ↔ labelLT ((p.1, i) : Label d) (q.1, j) := by
   rw [labelLT_iff_lex, labelLT_iff_lex]
@@ -121,6 +136,8 @@ theorem labelLT_origin_iff (q : Label d) :
   rw [labelLT_iff_lex]
   simp [Nat.pos_iff_ne_zero]
 
+/-- A comparison with the tagged label on the other side, read as a
+lexicographic comparison of sites. -/
 theorem labelLT_to_origin_iff (q : Label d) :
     labelLT q ((0 : Site d), 0) ↔ (toLex q.1 : Lex (Fin d → ℤ)) < toLex (0 : Site d) := by
   rw [labelLT_iff_lex]
@@ -208,8 +225,11 @@ def shiftPerm (σ : Equiv.Perm ℕ) : Equiv.Perm ℕ where
         Equiv.apply_symm_apply]
       omega
 
+/-- `shiftPerm σ` fixes the tagged index `0`, by definition. -/
 @[simp] theorem shiftPerm_zero (σ : Equiv.Perm ℕ) : shiftPerm σ 0 = 0 := rfl
 
+/-- Away from the tagged index, `shiftPerm σ` follows `σ` shifted up by one, by
+definition. -/
 theorem shiftPerm_apply_ne (σ : Equiv.Perm ℕ) {i : ℕ} (h : i ≠ 0) :
     shiftPerm σ i = σ (i - 1) + 1 := by
   show (if i = 0 then 0 else σ (i - 1) + 1) = σ (i - 1) + 1

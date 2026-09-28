@@ -1,4 +1,14 @@
-/- The mean clause of `prop:oriented-scaling` from its convergence-in-distribution clause.
+import Parking.Support.MeanUniformInt
+import Parking.Support.OrientedDivisibleMoment
+import Parking.Support.OrientedDivisibleIntegrable
+import Parking.Support.OrientedLaw
+import Parking.Support.OrientedTwoMean
+import Parking.Support.ScalParabolicScaling
+
+/-!
+# The mean clause of the scaling proposition from weak convergence
+
+The mean clause of `prop:oriented-scaling` from its convergence-in-distribution clause.
 
 The proposition (`parking.tex:3166-3174`) asserts both that `n^{-1/4} u⃗_{⌊nT⌋}(0)`
 converges in distribution and that `n^{-1/4} E u⃗_n(0) → μ`, the mean of the limit.
@@ -7,12 +17,6 @@ it is the uniform `L^r` bound of Step 2 at a fixed `r > 4`: the rescaled odomete
 bounded in `L^8` uniformly in the number of rounds, and a family bounded in `L^r` for one
 `r > 1` is uniformly integrable, so its means converge along with its laws.
 -/
-import Parking.Support.MeanUniformInt
-import Parking.Support.OrientedDivisibleMoment
-import Parking.Support.OrientedDivisibleIntegrable
-import Parking.Support.OrientedLaw
-import Parking.Support.OrientedTwoMean
-import Parking.Support.ScalParabolicScaling
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm)

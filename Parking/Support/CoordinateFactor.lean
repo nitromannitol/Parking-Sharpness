@@ -1,10 +1,20 @@
 import LatticeProb.Prob.Coordinate
 
+/-!
+# Factoring against an updated coordinate
+
+If a measurable function `F` on a product space does not change when a single coordinate `q`
+is overwritten with a fixed value `b`, then `F` is independent of the projection to that
+coordinate, and the expectation of `F` times any observable `g` of coordinate `q` factors as a
+product of expectations.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory LatticeProb
 
-/-- A measurable function invariant under a coordinate update factors against any observable of that coordinate. -/
+/-- A measurable function `F` invariant under overwriting coordinate `q` with `b` is independent
+of that coordinate, so `E[F * g(ω q)] = E[F] * E[g]` for any observable `g` of coordinate `q`. -/
 theorem integral_mul_coordinate_of_update_invariant {ι : Type*} {X : ι → Type*}
     [DecidableEq ι] [∀ i, MeasurableSpace (X i)] (μ : ∀ i, Measure (X i))
     [∀ i, IsProbabilityMeasure (μ i)] (q : ι) (b : X q)
@@ -14,7 +24,8 @@ theorem integral_mul_coordinate_of_update_invariant {ι : Type*} {X : ι → Typ
       (∫ ω, F ω ∂(Measure.infinitePi μ)) * ∫ a, g a ∂(μ q) := by
   have hind : IndepFun F (fun ω : Π i, X i => ω q) (Measure.infinitePi μ) :=
     indepFun_of_update_invariant μ b F hF hiF
-  have hmap : (Measure.infinitePi μ).map (fun ω : Π i, X i => ω q) = μ q := Measure.infinitePi_map_eval _ q
+  have hmap : (Measure.infinitePi μ).map (fun ω : Π i, X i => ω q) = μ q :=
+    Measure.infinitePi_map_eval _ q
   have hga : AEStronglyMeasurable g ((Measure.infinitePi μ).map (fun ω : Π i, X i => ω q)) := by
     rw [hmap]
     exact hg.aestronglyMeasurable

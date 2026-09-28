@@ -1,4 +1,9 @@
-/-
+import Parking.Support.ValueLipschitz
+import Parking.Support.StoppingShift
+
+/-!
+# The stopping value's spatial modulus
+
 **The optimal-stopping value's spatial increment is controlled by the reward's own spatial
 modulus, uniformly over the relevant time range.**
 
@@ -25,8 +30,6 @@ reward `F : ℕ → Site d → ℝ` and the shared walk/stopping machinery (`Par
 `Parking.Site`), which is developed in `Parking.Support` (`Terminal.lean`, `StoppingShift.lean`,
 `ValueLipschitz.lean`).
 -/
-import Parking.Support.ValueLipschitz
-import Parking.Support.StoppingShift
 
 noncomputable section
 

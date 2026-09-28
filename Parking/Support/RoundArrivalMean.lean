@@ -2,6 +2,19 @@ import Parking.Support.RoundMeanField
 import Parking.Support.RoundHitting
 import Parking.Support.BoundedMoment
 
+/-!
+# The mean number of arrivals at a site
+
+For an occupation vector `A` and a random per-slot direction assignment `τ`, the number
+of particles arriving at a site `x` is a sum over neighbouring sites `y` and the `A y`
+individual particles waiting there, each contributing an indicator of stepping to `x`
+(`card_countArrivals_eq_sum`). A single such indicator has expectation equal to the
+one-step transition kernel `kern d y x` of the simple random walk on `Site d`
+(`integral_round_entry_arrives`), and averaging the whole sum over the i.i.d. field of
+directions turns the occupation count into the walk operator `walkOp` applied to `A`
+(`integral_countArrivals`).
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -18,8 +31,9 @@ theorem card_countArrivals_eq_sum (A : Site d → ℕ) (τ : RoundSlot d → Fin
   rw [Finset.card_biUnion]
   · apply Finset.sum_congr rfl
     intro y _
-    rw [Finset.card_image_of_injective _ (show Function.Injective (fun j : ℕ => (Sum.inl (y, j) : RoundSlot d)) from
-      fun _ _ h => congrArg Prod.snd (Sum.inl_injective h)), Finset.card_filter]
+    rw [Finset.card_image_of_injective _
+      (show Function.Injective (fun j : ℕ => (Sum.inl (y, j) : RoundSlot d)) from
+        fun _ _ h => congrArg Prod.snd (Sum.inl_injective h)), Finset.card_filter]
   · intro y _ z _ hyz
     apply Finset.disjoint_left.mpr
     rintro q hq hq'
@@ -44,7 +58,8 @@ theorem integral_round_entry_arrives (hd : 1 ≤ d) (y x : Site d) (j : ℕ) :
     exact hi.symm
   rw [he]
   change (∫ b, (fun z : Site d => if z = x then (1 : ℝ) else 0) (y + stepVec b) ∂(stepLaw d)) = _
-  rw [integral_stepLaw_add hd (fun z : Site d => if z = x then (1 : ℝ) else 0) y, walkOp_eq_nbrFinset]
+  rw [integral_stepLaw_add hd (fun z : Site d => if z = x then (1 : ℝ) else 0) y,
+    walkOp_eq_nbrFinset]
   by_cases hx : x ∈ nbrFinset y <;> simp [kern, hx]
 
 /-- Averaging all fresh directions sends the outgoing count through the walk operator. -/
@@ -69,7 +84,8 @@ theorem integral_countArrivals (hd : 1 ≤ d) (A : Site d → ℕ) (x : Site d) 
     rfl
   simp_rw [he]
   rw [integral_finsetSum _ (fun y _ => integrable_finsetSum _ (fun j _ => hi y j))]
-  have hinner (y : Site d) : (∫ τ, ∑ j ∈ Finset.range (A y), f y j τ ∂μ) = (A y : ℝ) * kern d y x := by
+  have hinner (y : Site d) :
+      (∫ τ, ∑ j ∈ Finset.range (A y), f y j τ ∂μ) = (A y : ℝ) * kern d y x := by
     rw [integral_finsetSum _ (fun j _ => hi y j)]
     have heq (j : ℕ) : (∫ τ, f y j τ ∂μ) = kern d y x := integral_round_entry_arrives hd y x j
     simp_rw [heq]

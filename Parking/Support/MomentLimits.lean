@@ -1,8 +1,14 @@
-/-
-Moment norms, exponents and deterministic normalization.
--/
 import Parking.Support.UpperStep
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
+
+/-!
+# Moment norms, exponents and deterministic normalization
+
+Basic facts about the real moment norm `rNorm`: it increases with the exponent under a
+probability measure, raising it to its own exponent recovers the moment integral, and
+dividing a random variable by a deterministic scale preserves integrability of every finite
+moment and rescales the normalized moment by that scale.
+-/
 
 open LatticeProb.MomentNorm (eLpNorm_ne_top eLpNorm_toReal_eq rNorm rNorm_nonneg)
 

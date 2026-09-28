@@ -1,5 +1,12 @@
 import Parking.Support.RevealPrefix
 
+/-!
+# Reindexing sums into chronological blocks
+
+Two finite-sum reindexing lemmas used to split a sum over an initial segment into equal
+chronological blocks, and to shift a sum indexed from one down to an index from zero.
+-/
+
 noncomputable section
 namespace Parking
 

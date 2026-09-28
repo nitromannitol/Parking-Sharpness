@@ -1,4 +1,11 @@
-/-
+import Parking.Support.LinBox
+import Parking.Support.FinsetReindex
+import LatticeProb.Prob.WeightedConc
+import LatticeProb.Walk.GreenPointwise
+
+/-!
+# Two-point, two-time concentration of the linear field
+
 **The two-point, two-time concentration of the linear membrane field `V`**
 (`Parking.linPotential`), PROVED (not cited) through the shared library's weighted
 exponential concentration (`LatticeProb.weighted_exp_conc_tail`,
@@ -6,19 +13,15 @@ exponential concentration (`LatticeProb.weighted_exp_conc_tail`,
 (`Parking.Support.FinsetReindex`, `Parking.Support.LinBox`).
 
 This is the route that `parking.tex:1760-1762`'s own phrase "heat-kernel bounds and bounds
-on translated kernel differences" describes for the LINEAR field, and it is the input that
+on translated kernel differences" describes for the linear field, and it is the input that
 BouRabeePanagiotis2026's Proposition 4.3 (the joint space-time convergence of the linear
-membrane field) uses.  `Parking.linPotential_update` gives the EXACT (not merely one-sided)
+membrane field) uses. `Parking.linPotential_update` gives the exact (not merely one-sided)
 coordinatewise response of `V` to a single scenery value, so `V_n(x;η) - V_m(y;η)`,
 restricted to any finite box containing the supports of both `green d n (x - ·)` and
-`green d m (y - ·)`, is an EXACTLY coordinate-Lipschitz function with influence vector
+`green d m (y - ·)`, is an exactly coordinate-Lipschitz function with influence vector
 `z ↦ |green d n (x - z) - green d m (y - z)|`, and `LatticeProb.weighted_exp_conc_tail`
 applies to it directly.
 -/
-import Parking.Support.LinBox
-import Parking.Support.FinsetReindex
-import LatticeProb.Prob.WeightedConc
-import LatticeProb.Walk.GreenPointwise
 
 open LatticeProb (supNorm supNorm_le_graphNorm supNorm_le_iff)
 
@@ -41,9 +44,13 @@ def linIncrement (s : Finset (Site d)) (n m : ℕ) (x y : Site d) (ζ : s → �
 def linIncrementWeight (s : Finset (Site d)) (n m : ℕ) (x y : Site d) (i : s) : ℝ :=
   |green d n (x - (i : Site d)) - green d m (y - (i : Site d))|
 
+/-- `linIncrementWeight` is nonnegative, being defined as an absolute value. -/
 theorem linIncrementWeight_nonneg (s : Finset (Site d)) (n m : ℕ) (x y : Site d) (i : s) :
     0 ≤ linIncrementWeight s n m x y i := abs_nonneg _
 
+/-- `linIncrement` is measurable in the finite-box scenery `ζ`, as the difference of the two
+    Lipschitz (hence continuous) functions `linPotential (extendField s ζ) n x` and
+    `linPotential (extendField s ζ) m y`. -/
 theorem measurable_linIncrement (hd : 1 ≤ d) (s : Finset (Site d)) (n m : ℕ) (x y : Site d) :
     Measurable (linIncrement s n m x y) :=
   ((lipschitzWith_linPotential_extendField hd s n x).continuous.sub
@@ -85,12 +92,19 @@ theorem abs_linIncrement_update_le (s : Finset (Site d)) (n m : ℕ) (x y : Site
 def linIncrementBox (n m : ℕ) (x y : Site d) : Finset (Site d) :=
   boxFinset x n ∪ boxFinset y m
 
+/-- `boxFinset x n` is contained in `linIncrementBox n m x y`, immediate from
+    `Finset.subset_union_left`. -/
 theorem boxFinset_x_subset_linIncrementBox (n m : ℕ) (x y : Site d) :
     boxFinset x n ⊆ linIncrementBox n m x y := Finset.subset_union_left
 
+/-- `boxFinset y m` is contained in `linIncrementBox n m x y`, immediate from
+    `Finset.subset_union_right`. -/
 theorem boxFinset_y_subset_linIncrementBox (n m : ℕ) (x y : Site d) :
     boxFinset y m ⊆ linIncrementBox n m x y := Finset.subset_union_right
 
+/-- `green d n (x - z)` vanishes once `z` lies outside `boxFinset x n`: then
+    `supNorm (x - z) > n`, and `supNorm ≤ graphNorm` transports this to the hypothesis of
+    `green_eq_zero_of_le`. -/
 theorem green_eq_zero_of_not_mem_boxFinset {n : ℕ} {x z : Site d} (hz : z ∉ boxFinset x n) :
     green d n (x - z) = 0 := by
   refine green_eq_zero_of_le ?_
@@ -110,6 +124,8 @@ theorem green_eq_zero_of_not_mem_boxFinset {n : ℕ} {x z : Site d} (hz : z ∉ 
   have hle : supNorm (x - z) ≤ graphNorm (x - z) := supNorm_le_graphNorm (x - z)
   omega
 
+/-- Outside `linIncrementBox n m x y`, both `green d n (x - z)` and `green d m (y - z)` vanish
+    by `green_eq_zero_of_not_mem_boxFinset`, so their difference is zero. -/
 theorem linIncrementWeight_eq_zero_of_not_mem (n m : ℕ) (x y : Site d) {z : Site d}
     (hz : z ∉ linIncrementBox n m x y) :
     green d n (x - z) - green d m (y - z) = 0 := by

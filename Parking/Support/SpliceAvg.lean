@@ -1,4 +1,9 @@
-/-
+import Mathlib
+import LatticeProb.Prob.SpliceAvg
+
+/-!
+# Averaging a functional over part of the randomness
+
 Averaging a functional over part of the randomness.
 
 Step 2 of `lem:product` (`parking.tex:2382-2409`) reveals the walks and the
@@ -13,10 +18,9 @@ they are proved here; the shared library proves them for the splicing of a
 single product field, and the model of the parking process needs a pair of
 fields, the walks and the uniform variables.
 -/
-import Mathlib
-import LatticeProb.Prob.SpliceAvg
 
-open LatticeProb (abs_spInt_le integrable_comp_splice integrable_spInt integral_spInt integral_spInt_telescope measurable_spInt spInt)
+open LatticeProb (abs_spInt_le integrable_comp_splice integrable_spInt integral_spInt
+  integral_spInt_telescope measurable_spInt spInt)
 
 open MeasureTheory
 

@@ -1,4 +1,9 @@
-/-
+import Parking.Support.SurvivorHoles
+import Parking.Support.SubcriticalPair
+
+/-!
+# `F Z = 0` for the realization with the tagged particle put back
+
 `F Z = 0` at the level of the realization with the tagged particle put back
 (`parking.tex:2463-2470`).
 
@@ -8,8 +13,6 @@ settled in no round, so by `Parking.pHoleCount_visited_eq_zero` each of those
 sites carries no unfilled hole at time `t`.  At the origin there is no hole to
 begin with, because the origin carries the prescribed particles.
 -/
-import Parking.Support.SurvivorHoles
-import Parking.Support.SubcriticalPair
 
 open LatticeProb Finset
 

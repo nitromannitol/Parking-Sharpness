@@ -5,6 +5,16 @@ import Parking.Support.WeightedOdometerBounds
 
 open LatticeProb.MomentNorm (rNorm)
 
+/-!
+# The clipped scenery norm bound
+
+The moment norm of the initial-field part of the clipped odometer is at most the true mean
+odometer plus a Gaussian moment error `C√r`, obtained by centering the bounded functional
+`matchedMeanU (clippedField η) 0 T x` at the true mean and applying the sparse scenery moment
+bound `exists_sparse_scenery_moment` together with the bounded triangle-inequality lemma
+`rNorm_bounded_add_le`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -36,7 +46,8 @@ theorem exists_clipped_scenery_norm_bound (hd : 5 ≤ d) :
     calc
       _ ≤ |M η| + |-m| := abs_add_le _ _
       _ ≤ B + |m| := by rw [abs_neg]; exact add_le_add (hMB η) le_rfl
-  have heint := integral_matchedMeanU_eq_meanU hd1 (threePointLaw p) (integrable_threePointLaw p _) T x
+  have heint :=
+    integral_matchedMeanU_eq_meanU hd1 (threePointLaw p) (integrable_threePointLaw p _) T x
   have he : F =ᵐ[μ] (fun η => matchedMeanU η 0 T x - ∫ ζ, matchedMeanU ζ 0 T x ∂μ) := by
     filter_upwards [ae_clippedField (threePointLaw p) (ae_clipSparse_threePointLaw p)] with η hη
     change matchedMeanU (clippedField η) 0 T x - m = _

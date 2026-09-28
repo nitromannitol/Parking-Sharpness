@@ -1,4 +1,10 @@
-/-
+import Parking.Support.SubcriticalRelabel
+import Parking.Support.ReadsPresent
+import Parking.Support.SubcriticalDepends
+
+/-!
+# Relabeling invariance of the subcritical observables
+
 The two observables of `thm:subcritical` are invariant under relabeling the
 particles at a site (`parking.tex:2336-2347`, `parking.tex:2449-2462`).
 
@@ -16,9 +22,6 @@ both, and the label `(0, j + 1)` of the tagged realization carries the data of
 the label `(0, j)` of the realization, which is present exactly when `(0, j+1)`
 is present in the tagged one.
 -/
-import Parking.Support.SubcriticalRelabel
-import Parking.Support.ReadsPresent
-import Parking.Support.SubcriticalDepends
 
 noncomputable section
 

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightBoxSupTail
+
+/-!
+# A.e. summability of the dyadic increment tail
+
 The a.e. summability of `Parking.levelInc`'s dyadic increments, from
 `Parking/Support/TightBoxSupTail.lean`'s geometric-tail moment bound.  This is the
 prerequisite for applying the library's telescoping lemmas
@@ -15,7 +19,6 @@ in `N`, with `E[(T_N)^{16}] ≤ C` UNIFORM IN `N`
 `T_N(η)` are (for a.e. `η`) bounded by a SINGLE finite constant, uniformly in `N`, which is
 exactly what `summable_of_sum_range_le` needs.
 -/
-import Parking.Support.TightBoxSupTail
 
 open MeasureTheory LatticeProb Filter Topology
 open scoped ENNReal

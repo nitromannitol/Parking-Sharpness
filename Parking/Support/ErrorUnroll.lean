@@ -1,4 +1,9 @@
-/-
+import Parking.Support.GammaSum
+import Parking.Support.DeferredIntegral
+
+/-!
+# The error field as one increment per instruction
+
 The algebraic half of `lem:w-martingale`: the error field of
 `eq:error-recursion` written as one increment per instruction.
 
@@ -13,8 +18,6 @@ which the instruction is first read.  That is the display of
 `parking.tex:1155-1162`, and it is what the martingale of `lem:w-martingale`
 is assembled from.
 -/
-import Parking.Support.GammaSum
-import Parking.Support.DeferredIntegral
 
 open LatticeProb (mem_boxFinset_zero_iff supNorm supNorm_le_graphNorm)
 
@@ -67,6 +70,7 @@ def errorTerm (ω : Data d) (k : ℕ) (x : Site d) : ℝ :=
   ∑ y ∈ nbrFinset x,
     ((arrivals ω.2.1 y x (U ω k y) : ℝ) - (U ω k y : ℝ) / (2 * d))
 
+/-- `wErr` unfolds one step: `wErr ω (k+1) x = walkOp (wErr ω k) x + errorTerm ω k x`. -/
 theorem wErr_succ (ω : Data d) (k : ℕ) :
     wErr ω (k + 1) = fun x => walkOp (wErr ω k) x + errorTerm ω k x := rfl
 
@@ -92,10 +96,14 @@ theorem wErr_eq_iterate (ω : Data d) (n : ℕ) :
 
 /-! ### Pairing against the kernel -/
 
+/-- `heat d m x = 0` once `m` is smaller than the graph distance `graphNorm x`, since the walk
+cannot yet have reached `x`. -/
 theorem heat_eq_zero_of_lt {m : ℕ} {x : Site d} (h : m < graphNorm x) : heat d m x = 0 := by
   rw [heat_eq_srwHeat]
   exact LatticeProb.srwHeat_eq_zero_of_lt (by rw [← graphNorm_eq_srw]; exact h)
 
+/-- `heat d m x = 0` once `x` lies outside the box `boxFinset 0 m`, via `heat_eq_zero_of_lt`
+and `supNorm_le_graphNorm`. -/
 theorem heat_eq_zero_of_notMem_box {m : ℕ} {x : Site d}
     (h : x ∉ boxFinset (0 : Site d) m) : heat d m x = 0 := by
   have hsup : m < supNorm x := by
@@ -103,6 +111,8 @@ theorem heat_eq_zero_of_notMem_box {m : ℕ} {x : Site d}
     exact h (mem_boxFinset_zero_iff.mpr (by omega))
   exact heat_eq_zero_of_lt (lt_of_lt_of_le hsup (supNorm_le_graphNorm x))
 
+/-- `heat d m x * u x` is summable in `x`, since `heat d m` vanishes outside the finite box
+`boxFinset 0 m`. -/
 theorem summable_heat_mul (m : ℕ) (u : Site d → ℝ) :
     Summable fun x : Site d => heat d m x * u x := by
   refine summable_of_ne_finset_zero (s := boxFinset (0 : Site d) m) fun x hx => ?_
@@ -190,6 +200,8 @@ theorem iterate_walkOp_apply_zero (m : ℕ) (u : Site d → ℝ) :
 
 /-! ### The error of a round, one instruction at a time -/
 
+/-- Neighbouring sites differ in sup-norm by at most one: `supNorm y ≤ supNorm x + 1` when
+`x ∈ nbrFinset y`. -/
 theorem supNorm_le_succ_of_mem_nbrFinset {y x : Site d} (h : x ∈ nbrFinset y) :
     supNorm y ≤ supNorm x + 1 := by
   have hcoord : ∀ j : Fin d, (y j).natAbs ≤ (x j).natAbs + 1 := by
@@ -437,6 +449,8 @@ theorem sum_blocks_regroup (n : ℕ) (u : ℕ → ℕ) (hu : Monotone u) (hu0 : 
 
 /-! ### Summability of the blocks, and the display of the paper -/
 
+/-- The block sum `∑ j ∈ Finset.range (a y), (heat d m (ω.2.1 (y,j)) - heat d (m+1) y)` is
+summable in `y`, since both terms vanish once `y` leaves the box `boxFinset 0 (m+1)`. -/
 theorem summable_heat_block (ω : Data d)
     (hstep : ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1) (m : ℕ) (a : Site d → ℕ) :
     Summable fun y : Site d =>
@@ -456,17 +470,23 @@ theorem summable_heat_block (ω : Data d)
     omega
   rw [h1, h2, sub_zero]
 
+/-- The walk operator applied to `green d M` shifts the heat kernel index:
+`walkOp (green d M) y = ∑ m ∈ Finset.range M, heat d (m+1) y`. -/
 theorem walkOp_green (M : ℕ) (y : Site d) :
     walkOp (green d M) y = ∑ m ∈ Finset.range M, heat d (m + 1) y := by
   have hg : (green d M) = fun z : Site d => ∑ m ∈ Finset.range M, heat d m z := rfl
   rw [hg, walkOp_sum]
   rfl
 
+/-- `green d M z - walkOp (green d M) y` splits into the termwise difference
+`∑ m ∈ Finset.range M, (heat d m z - heat d (m+1) y)`, by `walkOp_green`. -/
 theorem green_block (M : ℕ) (z y : Site d) :
     green d M z - walkOp (green d M) y
       = ∑ m ∈ Finset.range M, (heat d m z - heat d (m + 1) y) := by
   rw [walkOp_green, green, ← Finset.sum_sub_distrib]
 
+/-- The block sum `∑ j ∈ Finset.Ico (a y) (b y), (green d M (ω.2.1 (y,j)) - walkOp (green d M)
+y)` is summable in `y`, since both terms vanish once `y` leaves the box `boxFinset 0 M`. -/
 theorem summable_green_block (ω : Data d)
     (hstep : ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1) (M : ℕ) (a b : Site d → ℕ) :
     Summable fun y : Site d =>

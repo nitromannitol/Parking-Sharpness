@@ -1,4 +1,12 @@
-/-
+import Parking.Support.TailRange
+import Parking.Support.TailExp
+import Parking.Support.SubcriticalInterval
+import Parking.Frozen.RangeLower
+import Parking.External.DonskerVaradhan
+
+/-!
+# The two-sided subcritical tail bound
+
 `thm:subcritical-tail` from `thm:subcritical` and `lem:range-lower`
 (`parking.tex:2512-2517`).
 
@@ -10,11 +18,6 @@ which is positive because the mean is negative.  The Donsker-Varadhan estimate
 turns each average into a stretched exponential in `t`, and the two one-sided
 bounds are then merged into one pair of constants.
 -/
-import Parking.Support.TailRange
-import Parking.Support.TailExp
-import Parking.Support.SubcriticalInterval
-import Parking.Frozen.RangeLower
-import Parking.External.DonskerVaradhan
 
 open MeasureTheory Filter Topology
 

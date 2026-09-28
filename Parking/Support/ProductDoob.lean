@@ -1,5 +1,16 @@
 import Parking.Support.ProductConditioning
 
+/-!
+# The coordinate-reveal Doob martingale
+
+This file assembles the coordinate-conditioning facts of `ProductConditioning` into a
+discrete-time martingale: as an increasing sequence of coordinate sets `S n` reveals more
+of `ω`, the partial integrals `partialInt μ (S n) F` form a Doob martingale with respect
+to the filtration `productCoordAlg b (S n)`, its increments `productDoobDiff` are
+measurable, integrable, and have conditional mean zero, and any finite run of increments
+telescopes back to the difference of the endpoint partial integrals.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -56,7 +67,8 @@ theorem integrable_productDoobDiff (μ : ∀ i, Measure (X i)) [∀ i, IsProbabi
 theorem condExp_productDoobDiff (μ : ∀ i, Measure (X i)) [∀ i, IsProbabilityMeasure (μ i)]
     (b : Π i, X i) (S : ℕ → Set ι) [∀ n, DecidablePred (· ∈ S n)] (hS : Monotone S)
     {F : (Π i, X i) → ℝ} (hFm : Measurable F) (hFi : Integrable F (Measure.infinitePi μ)) (n : ℕ) :
-    (Measure.infinitePi μ)[productDoobDiff μ S F n | productCoordAlg b (S (n - 1))] =ᵐ[Measure.infinitePi μ] 0 := by
+    (Measure.infinitePi μ)[productDoobDiff μ S F n |
+      productCoordAlg b (S (n - 1))] =ᵐ[Measure.infinitePi μ] 0 := by
   change (Measure.infinitePi μ)[partialInt μ (S n) F - partialInt μ (S (n - 1)) F |
     productCoordAlg b (S (n - 1))] =ᵐ[Measure.infinitePi μ] 0
   have h := condExp_sub (integrable_partialInt μ (S n) hFi)

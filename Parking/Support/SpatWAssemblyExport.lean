@@ -1,4 +1,12 @@
-/-
+import Parking.Support.SpatWMartingaleVariance
+import Parking.Support.SpatWJointLaw
+import Parking.Support.LinHatMeasurable
+import Parking.Support.NearestEvents
+import LatticeProb.Prob.Scaling.Slutsky
+
+/-!
+# The scenery-side export for the joint spatial-scaling assembly
+
 The scenery-side export for the final assembly of `Parking.Frozen.spatial_scaling`'s joint
 clause (`parking.tex:1694-1752`).
 
@@ -14,25 +22,21 @@ with `L(w) := ∫x, Uc w 1 x * contOp d φ x`.
 
 The joint statement below rests on Slutsky's theorem, in the form `LatticeProb.Scaling.Slutsky`
 (`LatticeProb/Prob/Scaling/Slutsky.lean`): Mathlib's own
-`MeasureTheory.TendstoInDistribution.prodMk_of_tendstoInMeasure_const` already IS Slutsky's
-theorem, in exactly the needed generality (an arbitrary `SeminormedAddCommGroup`, no tightness
+`MeasureTheory.TendstoInDistribution.prodMk_of_tendstoInMeasure_const` already IS Slutsky's theorem,
+in exactly the needed generality (an arbitrary `SeminormedAddCommGroup`, no tightness
 hypothesis, proved by a Lipschitz-approximation argument), so `LatticeProb.Scaling.Slutsky` is a
 short adaptation layer.  `Parking.tendsto_scenePair_linHatInterp_joint_fdd_signedResidual`
 below is the three-block export: it combines `Parking.tendsto_scenePair_linHatInterp_joint_fdd`
 (the scenery/linear-field block, `X_R`) with the `signedPair(χ)-scenePair(χ)-middle(χ)` block
 (`Y_R → 0` in probability, via `Parking.tendsto_signedPair_sub_scenePair_sub_middle_zero` above,
-combined coordinatewise by `LatticeProb.Scaling.Slutsky.tendsto_zero_pi_of_forall_tendsto_zero`) into
-ONE joint statement via `LatticeProb.Scaling.Slutsky.tendsto_prodMk_of_tendsto_zero`.  In this
+combined coordinatewise by `LatticeProb.Scaling.Slutsky.tendsto_zero_pi_of_forall_tendsto_zero`)
+into ONE joint statement via `LatticeProb.Scaling.Slutsky.tendsto_prodMk_of_tendsto_zero`.  In this
 statement the third block converges to `0` (not to `(√v·W(χ_l))_l`), which is equivalent to
 `signedPair(χ_l) - L l ⇒ √v·W(χ_l)`: `scenePair(χ_l)` itself also converges to `√v·W(χ_l)`, by
 `Parking.tendsto_scenePair_fdd`, so adding it back on both sides recovers the version with the
 middle term.  That version is not stated here; the shape with third block `0` is the one the
-value side's assembly consumes. -/
-import Parking.Support.SpatWMartingaleVariance
-import Parking.Support.SpatWJointLaw
-import Parking.Support.LinHatMeasurable
-import Parking.Support.NearestEvents
-import LatticeProb.Prob.Scaling.Slutsky
+value side's assembly consumes.
+-/
 
 open MeasureTheory ProbabilityTheory Filter Topology
 

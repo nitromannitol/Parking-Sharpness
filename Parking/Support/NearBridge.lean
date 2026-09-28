@@ -1,4 +1,13 @@
-/-
+import Parking.Support.NearEnv
+import Parking.Support.NearMoment
+import Parking.Support.UConcBridge
+import Parking.Support.NearLower
+import Parking.Support.UConcReal
+import Parking.Support.XiLaw
+
+/-!
+# The particle-law odometer moment against the recentred odometer moment
+
 The moment of the particle-law odometer against the moment of the recentred odometer
 (`parking.tex:2967-2970`).
 
@@ -11,12 +20,6 @@ odometer at every realization and hence every moment of it.  Both moments are fi
 because the odometer at a finite horizon reads only the coordinates of a finite box and
 is Lipschitz in them, and the one-site law has an exponential moment.
 -/
-import Parking.Support.NearEnv
-import Parking.Support.NearMoment
-import Parking.Support.UConcBridge
-import Parking.Support.NearLower
-import Parking.Support.UConcReal
-import Parking.Support.XiLaw
 
 open LatticeProb.ConvexOrder (integrable_exp_abs_shiftLaw measurable_intShift shiftLaw)
 
@@ -102,7 +105,8 @@ theorem exists_near_uNorm (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGro
   have hr2 : (2 : ℝ) ≤ (j : ℝ) + 2 := by
     have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     linarith
-  have hbridge := integral_uOf_rpow_le_xi (r := (j : ℝ) + 2) hd (ν δ) hθ (hexp δ hδ).1 hδ.1 (by linarith) m
+  have hbridge :=
+    integral_uOf_rpow_le_xi (r := (j : ℝ) + 2) hd (ν δ) hθ (hexp δ hδ).1 hδ.1 (by linarith) m
   have hconv : ∫ η, |u (Parking.xi δ η) m 0| ^ ((j : ℝ) + 2) ∂(LatticeProb.iidLaw d (ν δ))
       = ∫ η, u (Parking.xi δ η) m 0 ^ (j + 2) ∂(LatticeProb.iidLaw d (ν δ)) := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun η => ?_)

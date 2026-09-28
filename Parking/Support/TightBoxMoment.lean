@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightEquicont
+
+/-!
+# Uniform box-reward moment bound
+
 The `p`-th moment of the rescaled oriented reward field, UNIFORM over every
 point of the box (not just the lower corner `(0, -2A)`), and over the scale
 `n ≥ 1`.
@@ -22,7 +26,6 @@ random point `z` of the walk (independent of the scenery `η`), Tonelli gives
 `E_η[G_n(z)^2] ≤ M` directly from this lemma, since the bound holds at
 EVERY `z` in the box uniformly.
 -/
-import Parking.Support.TightEquicont
 
 open LatticeProb.KolmogorovChentsov (rpow_quarter_mul_rpow_neg_quarter)
 

@@ -1,5 +1,14 @@
 import Parking.Support.ProductReveal
 
+/-!
+# Coordinate invariance under partial integration
+
+If a functional `F` is unchanged by updating a single coordinate `j`, then partially
+integrating `F` over any set of coordinates commutes with that same update: the update
+either falls inside the averaged set, where it is absorbed by the joint distribution's
+coordinate structure, or outside it, where `partialInt_update_of_notMem` applies directly.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

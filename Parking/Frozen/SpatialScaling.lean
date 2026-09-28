@@ -1,4 +1,21 @@
-/-
+import Parking.Support.Continuum
+import Parking.External.SandpileGrowth
+import Parking.External.Bernstein
+import Parking.External.UConcentration
+import Parking.External.UConcentrationProved
+import Parking.External.HeatStrongMinimumProved
+import Parking.External.GreenNormsProved
+import Parking.External.SpatialOdometerScaling
+import Parking.Support.UpperTarget
+import Parking.Support.SpatialDerivativeLimit
+import Parking.Support.SpatialVanishingDistance
+import Parking.Support.SpatWSignedJoint
+import Parking.Support.SpatialFixedTestPDE
+import Parking.Support.SpatialNoiseVersion
+
+/-!
+# Proposition 8.3: the spatial scaling limit (frozen)
+
 Proposition 8.3 of parking.tex, frozen.  `parking.tex:1694-1752` (label
 `prop:spatial-scaling`):
 
@@ -48,20 +65,6 @@ inputs feed the signed-density martingale estimate and the transfer to the
 parking odometer. The driven equation and strict positivity of the time
 derivative are proved downstream using the three classical parabolic inputs.
 -/
-import Parking.Support.Continuum
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.HeatStrongMinimumProved
-import Parking.External.GreenNormsProved
-import Parking.External.SpatialOdometerScaling
-import Parking.Support.UpperTarget
-import Parking.Support.SpatialDerivativeLimit
-import Parking.Support.SpatialVanishingDistance
-import Parking.Support.SpatWSignedJoint
-import Parking.Support.SpatialFixedTestPDE
-import Parking.Support.SpatialNoiseVersion
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open scoped NNReal

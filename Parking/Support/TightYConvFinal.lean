@@ -1,7 +1,13 @@
-/-
+import Parking.Support.TightYConv
+import Parking.Support.TightWalkConv
+
+/-!
+# `hYconv`, assembled unconditionally
+
 `hYconv`, unconditionally: assembles `Parking.tendsto_integral_Y_of_hWalk` (`TightYConv.lean`)
-with a concrete quarter-Brownian motion (`LatticeProb.ContinuumStopping.exists_isQuarterBrownian_cont`,
-`TightQuarterBrownian.lean`), its finite-dimensional convergence to the rescaled oriented walk
+with a concrete quarter-Brownian motion
+(`LatticeProb.ContinuumStopping.exists_isQuarterBrownian_cont`, `TightQuarterBrownian.lean`),
+its finite-dimensional convergence to the rescaled oriented walk
 (`Parking.hWalk_of_quarterBrownian`, `TightWalkConv.lean`), and the everywhere-continuous noise
 modification (`Parking.exists_continuousOn_modification_contZ_box`,
 `TightNoiseModification.lean`).  This is `hYconv` in exactly the shape
@@ -9,8 +15,6 @@ modification (`Parking.exists_continuousOn_modification_contZ_box`,
 two already registered (`Parking.External.BinomialLocalCLT`,
 `Parking.External.OrientedStoppingStability`).
 -/
-import Parking.Support.TightYConv
-import Parking.Support.TightWalkConv
 
 open LatticeProb.ContinuumStopping (exists_isQuarterBrownian_cont isGaussianProcess_quarterBrownian)
 

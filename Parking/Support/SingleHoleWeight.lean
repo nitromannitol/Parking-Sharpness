@@ -3,6 +3,18 @@ import Parking.Support.SingleFreshSlot
 import Parking.Support.EscapePotential
 import Parking.Support.CoordinateFactor
 
+/-!
+# The escape-weighted future hole count
+
+This file defines `singleHoleWeight`, the base process's conditional future hole count
+at a site, weighted by the escape probability of the unique discrepancy created by
+adding one particle at `v`. It shows this weight is measurable in the round noise and
+lies between `0` and the base hole indicator, and that revealing one more round of the
+discrepancy's motion can only increase its expected value: when the discrepancy moves,
+the fresh instruction it uses is independent of the base process's own escape
+probability, by `Parking.Support.SingleFreshSlot`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -16,17 +28,25 @@ def singleHoleWeight (η : Site d → ℤ) (v : Site d) (ρ : Label d × ℕ →
   futureHoleValue η ρ σ T s x *
     escapePotential d x ((discrepancyState (singleAdditionPair η v) ρ σ s).pos (v, 0))
 
+/-- `singleHoleWeight` always lies between `0` and the base hole indicator
+`(-η x).toNat`, from the corresponding bounds on `futureHoleValue` and on
+`escapePotential`. -/
 theorem singleHoleWeight_bounds (hd : 3 ≤ d) (η : Site d → ℤ) (v : Site d)
     (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (T s : ℕ) (x : Site d) :
     0 ≤ singleHoleWeight η v ρ σ T s x ∧ singleHoleWeight η v ρ σ T s x ≤ ((-η x).toNat : ℝ) := by
   have hF := futureHoleValue_bounds (by omega : 1 ≤ d) η ρ σ T s x
-  have hE := escapePotential_bounds hd x ((discrepancyState (singleAdditionPair η v) ρ σ s).pos (v, 0))
+  have hE := escapePotential_bounds hd x
+    ((discrepancyState (singleAdditionPair η v) ρ σ s).pos (v, 0))
   exact ⟨mul_nonneg hF.1 hE.1, (mul_le_of_le_one_right hF.1 hE.2).trans hF.2⟩
 
+/-- `singleHoleWeight` is measurable in the round noise, from the measurability of
+`futureHoleValue` and of the discrepancy's position, via
+`measurableState_discrepancyState`. -/
 theorem measurable_singleHoleWeight (hd : 3 ≤ d) (η : Site d → ℤ) (v : Site d)
     (ρ : Label d × ℕ → ℝ) (T s : ℕ) (x : Site d) :
     Measurable (fun σ : RoundNoise d => singleHoleWeight η v ρ σ T s x) := by
-  have hS := measurableState_discrepancyState ⟨0, by omega⟩ (fun _ : RoundNoise d => singleAdditionPair η v)
+  have hS := measurableState_discrepancyState ⟨0, by omega⟩
+    (fun _ : RoundNoise d => singleAdditionPair η v)
     (fun _ => ρ) id measurable_const measurable_const measurable_id s
   exact (measurable_futureHoleValue (by omega) η ρ T s x).mul
     ((measurable_from_countable' (escapePotential d x)).comp (hS.2.1 (v, 0)))
@@ -43,9 +63,12 @@ theorem singleHoleWeight_section_ge (hd : 3 ≤ d) (η : Site d → ℤ) (v : Si
   let c := singleAdditionPair η v
   let y := (discrepancyState c ρ σ s).pos (v, 0)
   let q := discrepancyIndex c ρ σ s (v, 0)
-  let F : (RoundSlot d → Fin d × Bool) → ℝ := fun τ => futureHoleValue η ρ (Function.update σ s τ) T (s + 1) x
-  have hF : Measurable F := (measurable_futureHoleValue hd1 η ρ T (s + 1) x).comp (measurable_update σ)
-  have hFB : (∫ τ, F τ ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) = futureHoleValue η ρ σ T s x :=
+  let F : (RoundSlot d → Fin d × Bool) → ℝ :=
+    fun τ => futureHoleValue η ρ (Function.update σ s τ) T (s + 1) x
+  have hF : Measurable F :=
+    (measurable_futureHoleValue hd1 η ρ T (s + 1) x).comp (measurable_update σ)
+  have hFB : (∫ τ, F τ ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) =
+      futureHoleValue η ρ σ T s x :=
     futureHoleValue_bellman hd1 η ρ σ T s hs x
   unfold singleHoleWeight
   simp_rw [discrepancyPosition_update_succ]
@@ -56,7 +79,8 @@ theorem singleHoleWeight_section_ge (hd : 3 ≤ d) (η : Site d → ℤ) (v : Si
       dsimp only [F, q, c]
       rw [hq, futureHoleValue_update_succ, futureHoleValue_update_succ,
         roundSigned_update_unused _ _ _ _ _ hj]
-    have hfactor := integral_mul_coordinate_of_update_invariant (fun _ : RoundSlot d => stepLaw d) q b F hF hinv
+    have hfactor := integral_mul_coordinate_of_update_invariant
+      (fun _ : RoundSlot d => stepLaw d) q b F hF hinv
       (fun a => escapePotential d x (y + stepVec a)) (measurable_from_countable' _)
     change futureHoleValue η ρ σ T s x * escapePotential d x y ≤
       ∫ τ, F τ * escapePotential d x (if discrepancyDoesMove c ρ σ s (v, 0) then

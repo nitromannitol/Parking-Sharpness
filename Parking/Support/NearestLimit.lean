@@ -1,19 +1,25 @@
-/-
+import Parking.Support.NearestEvents
+import Parking.Support.Invariance
+
+/-!
+# The probability endgame
+
 The probability endgame of `parking.tex:1822-1848`.
 The positive-event estimate is an explicit hypothesis. Its derivation uses
 spatial scaling and the cited critical-scale lower tail. Substitution of the
 radius `sqrt t` recovers every integer horizon exactly.
 -/
-import Parking.Support.NearestEvents
-import Parking.Support.Invariance
 
 noncomputable section
 open MeasureTheory LatticeProb Filter Topology
 
+/-- `⌊(√t)²⌋₊ = t` for a natural number `t`, since `(√t)² = t` exactly. -/
 theorem Parking.sqrt_nat_floor_sq (t : ℕ) : ⌊(Real.sqrt (t : ℝ)) ^ 2⌋₊ = t := by
   rw [Real.sq_sqrt (Nat.cast_nonneg t)]
   simp
 
+/-- A nonnegative function that is eventually at most every `ε > 0` tends to `0`, via the
+order characterization of convergence at a filter. -/
 theorem Parking.tendsto_zero_of_eventual_small {ι : Type*} (l : Filter ι) (f : ι → ℝ)
     (h0 : ∀ i, 0 ≤ f i) (hf : ∀ ε : ℝ, 0 < ε → ∀ᶠ i in l, f i ≤ ε) :
     Tendsto f l (𝓝 0) := by
@@ -25,15 +31,23 @@ theorem Parking.tendsto_zero_of_eventual_small {ι : Type*} (l : Filter ι) (f :
     filter_upwards [hf (b / 2) (by linarith)] with i hi
     linarith
 
+/-- `√t → ∞` as the natural number `t → ∞`, composing `Real.tendsto_sqrt_atTop` with the
+cast. -/
 theorem Parking.sqrt_nat_tendsto_atTop :
     Tendsto (fun t : ℕ => Real.sqrt (t : ℝ)) atTop atTop := by
   exact Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop
 
+/-- If `f ⌊R²⌋₊ → 0` as the real `R → ∞`, then `f t → 0` as the natural `t → ∞`, substituting
+`R = √t` via `sqrt_nat_floor_sq` and `sqrt_nat_tendsto_atTop`. -/
 theorem Parking.tendsto_of_floor_sq (f : ℕ → ℝ)
     (h : Tendsto (fun R : ℝ => f ⌊R ^ 2⌋₊) atTop (𝓝 0)) :
     Tendsto f atTop (𝓝 0) := by
-  simpa only [Function.comp_def, Parking.sqrt_nat_floor_sq] using h.comp Parking.sqrt_nat_tendsto_atTop
+  simpa only [Function.comp_def, Parking.sqrt_nat_floor_sq]
+      using h.comp Parking.sqrt_nat_tendsto_atTop
 
+/-- If measurable events `G ε t` disjoint from `HoleCloser` become arbitrarily likely as
+`t → ∞`, the probability of `HoleCloser ω t` tends to `0`, via
+`measureReal_le_one_sub_of_disjoint`. -/
 theorem Parking.nearest_tendsto_of_good_events {d : ℕ} (μ : Measure (Parking.Data d))
     [IsProbabilityMeasure μ] (G : ℝ → ℕ → Set (Parking.Data d))
     (hG : ∀ ε t, MeasurableSet (G ε t))

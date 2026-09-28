@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightOverlap
+
+/-!
+# Hölder bounds for the noise field's covariance
+
 Quantitative bounds on the covariance structure of the continuum noise field
 `contZ`, used to build a jointly continuous version of a box-clamped copy of
 the field.
@@ -21,9 +25,9 @@ passes to a higher moment to reach an exponent above `2`.
 - `Parking.noiseVarDiff_le_two_mul_add`: the triangle bound through an
   intermediate point.
 -/
-import Parking.Support.TightOverlap
 
-open LatticeProb.ContinuumStopping (contHeat contNoiseTest integrable_contNoiseTest_sq integral_contNoiseTest_sq memLp_contNoiseTest)
+open LatticeProb.ContinuumStopping (contHeat contNoiseTest integrable_contNoiseTest_sq
+  integral_contNoiseTest_sq memLp_contNoiseTest)
 
 open MeasureTheory
 open scoped ENNReal NNReal
@@ -72,17 +76,23 @@ theorem noiseVarDiff_eq (T s x s' x' : ℝ) :
   unfold noiseVarDiff
   ring
 
+/-- `noiseVarDiff` is nonnegative, since by `noiseVarDiff_eq` it equals an `L²` integral of a
+square. -/
 theorem noiseVarDiff_nonneg (T : ℝ) (u u' : Fin 2 → ℝ) : 0 ≤ noiseVarDiff T u u' := by
   rw [show u = ![u 0, u 1] from List.ofFn_inj.mp rfl,
     show u' = ![u' 0, u' 1] from List.ofFn_inj.mp rfl, ← noiseVarDiff_eq]
   exact integral_nonneg fun p => sq_nonneg _
 
+/-- `noiseVarDiff` is symmetric in its two space-time arguments, by symmetry of
+`Parking.contOverlap`. -/
 theorem noiseVarDiff_symm (T : ℝ) (u u' : Fin 2 → ℝ) :
     noiseVarDiff T u u' = noiseVarDiff T u' u := by
   unfold noiseVarDiff
   rw [contOverlap_symm T u u']
   ring
 
+/-- `noiseVarDiff` vanishes on the diagonal, since the two copies of `contOverlap T u u` cancel
+against the `2 * contOverlap T u u` term. -/
 @[simp] theorem noiseVarDiff_self (T : ℝ) (u : Fin 2 → ℝ) : noiseVarDiff T u u = 0 := by
   unfold noiseVarDiff; ring
 
@@ -123,7 +133,8 @@ theorem noiseVarDiff_le_two_mul_add (T : ℝ) (u h v : Fin 2 → ℝ) :
         nlinarith [sq_nonneg (contNoiseTest T (u 0) (u 1) p - 2 * contNoiseTest T (h 0) (h 1) p
           + contNoiseTest T (v 0) (v 1) p)]
     _ = 2 * (∫ p : ℝ × ℝ, (contNoiseTest T (u 0) (u 1) p - contNoiseTest T (h 0) (h 1) p) ^ 2)
-        + 2 * (∫ p : ℝ × ℝ, (contNoiseTest T (h 0) (h 1) p - contNoiseTest T (v 0) (v 1) p) ^ 2) := by
+        + 2 * (∫ p : ℝ × ℝ,
+            (contNoiseTest T (h 0) (h 1) p - contNoiseTest T (v 0) (v 1) p) ^ 2) := by
         rw [integral_add h1' h2', integral_const_mul, integral_const_mul]
 
 /-- `1 - e^{-u} ≤ min u 1` for `u ≥ 0`. -/

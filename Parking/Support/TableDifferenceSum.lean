@@ -4,6 +4,17 @@ import Parking.Support.FutureValue
 import Parking.Support.BlockSum
 import Parking.Support.MatchedUniform
 
+/-!
+# The table martingale sums to the odometer deviation
+
+Sums the chronological increments `tableDiff` over one full sweep of `T` rounds (indices
+`1` to `T · K`) and identifies the total with the departure count at `x` after `T` rounds
+minus its conditional mean `matchedMeanU`, by grouping the sum into blocks of `K`
+consecutive increments, one per round, applying `sum_roundDiff` within each block, and
+telescoping the resulting `futureValue` differences via the Bellman recursion
+`futureValue_bellman`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

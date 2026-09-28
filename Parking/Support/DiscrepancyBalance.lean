@@ -1,10 +1,13 @@
-/-
-The discrepancy labels equal the signed difference of the coupled physical
-processes. Rank assignment covers exactly the surplus departure slots; the
-incoming labels are surplus arrivals together with waiting labels. Opposite
-cancellation preserves the signed count, and only one sign remains at a site.
--/
 import Parking.Support.DiscrepancyLabels
+
+/-!
+# Discrepancy balance
+
+The discrepancy labels equal the signed difference of the coupled physical processes. Rank
+assignment covers exactly the surplus departure slots; the incoming labels are surplus arrivals
+together with waiting labels. Opposite cancellation preserves the signed count, and only one
+sign remains at a site.
+-/
 
 noncomputable section
 
@@ -23,7 +26,8 @@ theorem Parking.card_discrepancyAtSign_add (c : Site d → ℤ × ℤ) (S : Stat
 /-- The signed count of labels is preserved by cancellation. -/
 theorem Parking.discrepancySigned_step (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (a b : Site d → ℕ) (τ : Parking.RoundSlot d → Fin d × Bool) (S : State d) (t : ℕ) (x : Site d) :
-    ((Parking.discrepancyAtSign c (Parking.discrepancyStep c ρ a b τ S t) (t + 1) x true).card : ℤ) -
+    ((Parking.discrepancyAtSign c (Parking.discrepancyStep c ρ a b τ S t)
+        (t + 1) x true).card : ℤ) -
       (Parking.discrepancyAtSign c (Parking.discrepancyStep c ρ a b τ S t) (t + 1) x false).card =
     ((Parking.discrepancyArrivalsSign c ρ a b τ S t x true).card : ℤ) -
       (Parking.discrepancyArrivalsSign c ρ a b τ S t x false).card := by
@@ -31,6 +35,8 @@ theorem Parking.discrepancySigned_step (c : Site d → ℤ × ℤ) (ρ : Label d
   simp only [Bool.not_true, Bool.not_false]
   omega
 
+/-- At time `0`, the labels present at `x` are exactly the initial candidates
+`(x, 0), …, (x, discrepancyConf c x - 1)`. -/
 theorem Parking.discrepancyAt_zero (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (x : Site d) :
     Parking.discrepancyAt c (Parking.discrepancyState c ρ σ 0) 0 x =
@@ -43,10 +49,13 @@ theorem Parking.discrepancyAt_zero (c : Site d → ℤ × ℤ) (ρ : Label d × 
   exact Finset.filter_true_of_mem fun i hi =>
     ⟨by simpa [initial] using Finset.mem_range.mp hi, rfl⟩
 
+/-- At time `0` every label at `x` shares the sign `discrepancySign c (x, 0)`, so the signed
+count of one sign is `discrepancyConf c x` and the other is `0`, via `discrepancyAt_zero`. -/
 theorem Parking.card_discrepancyAtSign_zero (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (x : Site d) (sgn : Bool) :
     (Parking.discrepancyAtSign c (Parking.discrepancyState c ρ σ 0) 0 x sgn).card =
-      if Parking.discrepancySign c (x, 0) = sgn then (Parking.discrepancyConf c x).toNat else 0 := by
+      if Parking.discrepancySign c (x, 0) = sgn then (Parking.discrepancyConf c x).toNat
+          else 0 := by
   classical
   unfold Parking.discrepancyAtSign
   rw [Parking.discrepancyAt_zero, Finset.filter_map, Finset.card_map]
@@ -57,6 +66,8 @@ theorem Parking.card_discrepancyAtSign_zero (c : Site d → ℤ × ℤ) (ρ : La
   · simp only [h, Finset.filter_true, Finset.card_range, if_true]
   · simp only [h, Finset.filter_false, Finset.card_empty, if_false]
 
+/-- At time `0` the positive-signed label count at `x` is `((c x).2 - (c x).1).toNat`, from
+`card_discrepancyAtSign_zero` and the definition of `discrepancyConf` as an absolute value. -/
 theorem Parking.card_discrepancyPositive_zero (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (x : Site d) :
     (Parking.discrepancyAtSign c (Parking.discrepancyState c ρ σ 0) 0 x true).card =
@@ -68,6 +79,8 @@ theorem Parking.card_discrepancyPositive_zero (c : Site d → ℤ × ℤ) (ρ : 
   · simp only [h, decide_false, Bool.false_eq_true, if_false]
     exact (Int.toNat_eq_zero.mpr (by omega : (c x).2 - (c x).1 ≤ 0)).symm
 
+/-- The negative-signed companion of `card_discrepancyPositive_zero`: at time `0` the
+negative-signed label count at `x` is `((c x).1 - (c x).2).toNat`. -/
 theorem Parking.card_discrepancyNegative_zero (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (x : Site d) :
     (Parking.discrepancyAtSign c (Parking.discrepancyState c ρ σ 0) 0 x false).card =
@@ -104,6 +117,9 @@ def Parking.DiscrepancyBalance (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ 
       ((Parking.matchedCount (Parking.coupledConf false c) ρ σ t x : ℤ) -
         ((Parking.matchedState (Parking.coupledConf false c) ρ σ t).holes x : ℤ))
 
+/-- The base case of the balance induction: at time `0` both sides reduce, via
+`card_discrepancyPositive_zero`, `card_discrepancyNegative_zero` and `matchedCount_zero`, to the
+same arithmetic identity in `(c x).1` and `(c x).2`. -/
 theorem Parking.discrepancyBalance_zero (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) : Parking.DiscrepancyBalance c ρ σ 0 := by
   intro x
@@ -162,7 +178,8 @@ theorem Parking.discrepancySign_of_surplus (c : Site d → ℤ × ℤ)
   by_contra hsign
   have hopp : Parking.discrepancySign c p = !sgn := by
     cases sgn <;> cases hh : Parking.discrepancySign c p <;> simp_all
-  have hpos : 0 < (Parking.discrepancyAtSign c (Parking.discrepancyState c ρ σ t) t x (!sgn)).card :=
+  have hpos : 0 < (Parking.discrepancyAtSign c (Parking.discrepancyState c ρ σ t) t x
+      (!sgn)).card :=
     Finset.card_pos.mpr ⟨p, Finset.mem_filter.mpr ⟨hp, hopp⟩⟩
   cases sgn <;> simp only [Bool.not_false, Bool.not_true] at hsur hpos <;> omega
 
@@ -368,7 +385,8 @@ theorem Parking.image_discrepancyIncoming_moving
     obtain ⟨hp, hm⟩ := Finset.mem_filter.mp hp
     obtain ⟨ha, hn, hs⟩ := (Parking.mem_discrepancyIncoming_iff c ρ σ t x sgn p).mp hp
     have hpAt := (Parking.mem_discrepancyAt_iff c ρ σ t ((S).pos p) p).mpr ⟨ha, rfl⟩
-    obtain ⟨j, he, hj, ho⟩ := Parking.discrepancySlot_surplus c ρ σ t hbal ((S).pos p) sgn hpAt hs hm
+    obtain ⟨j, he, hj, ho⟩ := Parking.discrepancySlot_surplus c ρ σ t hbal ((S).pos p) sgn
+      hpAt hs hm
     have hd : (S).pos p + Parking.stepVec (σ t (Sum.inl ((S).pos p, j))) = x := by
       simpa only [Parking.discrepancyNextPos, if_pos hm, he] using hn
     rw [he, Finset.mem_sdiff, Parking.mem_arrivalSlots_iff, Parking.mem_arrivalSlots_iff]

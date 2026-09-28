@@ -3,16 +3,26 @@ import Parking.Support.Invariance
 
 open LatticeProb (measurable_from_countable')
 
+/-!
+# Means and moments of the clipped-field table description
+
+Translation invariance and the equality of laws from `Parking/Support/ClippedRoundLaw.lean`
+give the clipped table description the same hole probabilities, joint two-hole probabilities,
+hole means, and odometer moments as the unclipped particle-hole process.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
 /-- The surviving-hole probability is independent of the target site. -/
-theorem holeProb_at_site (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] (T : ℕ) (x : Site d) :
+theorem holeProb_at_site (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] (T : ℕ)
+    (x : Site d) :
     ((law d ν) {ω | H ω T x = 1}).toReal = holeProb d ν T := by
   have h := congrArg (fun μ => μ {ω : Data d | H ω T 0 = 1}) (law_map_shiftData hd ν x)
-  have hS : MeasurableSet {ω : Data d | H ω T 0 = 1} := (measurable_H T 0) (measurableSet_singleton 1)
+  have hS : MeasurableSet {ω : Data d | H ω T 0 = 1} :=
+    (measurable_H T 0) (measurableSet_singleton 1)
   rw [Measure.map_apply (measurable_shiftData x) hS] at h
   have he : (shiftData x) ⁻¹' {ω : Data d | H ω T 0 = 1} = {ω : Data d | H ω T x = 1} := by
     ext ω
@@ -23,17 +33,20 @@ theorem holeProb_at_site (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure
 /-- The bounded table hole probability equals the original hole probability. -/
 theorem clippedRoundH_probability (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hclip : ∀ᵐ k ∂ν, clipSparse k = k) (T : ℕ) (x : Site d) :
-    (((iidLaw d ν).prod (roundNoiseLaw d)) {ω | clippedRoundH T x ω = 1}).toReal = holeProb d ν T := by
+    (((iidLaw d ν).prod (roundNoiseLaw d)) {ω | clippedRoundH T x ω = 1}).toReal =
+      holeProb d ν T := by
   have hm : Measurable (fun O : CountHistory d => O.2.2 (T, x)) :=
     (measurable_pi_apply (T, x)).comp (measurable_snd.comp measurable_snd)
-  have h := measure_clippedRoundHistory hd ν hclip {O | O.2.2 (T, x) = 1} (hm (measurableSet_singleton 1))
+  have h := measure_clippedRoundHistory hd ν hclip {O | O.2.2 (T, x) = 1}
+    (hm (measurableSet_singleton 1))
   have h' := congrArg ENNReal.toReal h
   exact h'.trans (holeProb_at_site hd ν T x)
 
 /-- The table construction preserves the joint two-hole event. -/
 theorem clippedRoundH_pair_probability (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hclip : ∀ᵐ k ∂ν, clipSparse k = k) (T : ℕ) (x z : Site d) :
-    (((iidLaw d ν).prod (roundNoiseLaw d)) {ω | clippedRoundH T x ω = 1 ∧ clippedRoundH T z ω = 1}).toReal =
+    (((iidLaw d ν).prod (roundNoiseLaw d))
+        {ω | clippedRoundH T x ω = 1 ∧ clippedRoundH T z ω = 1}).toReal =
       ((law d ν) {ω | H ω T x = 1 ∧ H ω T z = 1}).toReal := by
   have hm (v : Site d) : Measurable (fun O : CountHistory d => O.2.2 (T, v)) :=
     (measurable_pi_apply (T, v)).comp (measurable_snd.comp measurable_snd)
@@ -58,11 +71,13 @@ theorem integral_clippedMeanH_eq_holeProb (hd : 1 ≤ d) (ν : Measure ℤ) [IsP
   haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let μ := (iidLaw d ν).prod (roundNoiseLaw d)
   have hi : Integrable (fun ω => (clippedRoundH T x ω : ℝ)) μ :=
-    Integrable.of_bound ((measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (measurable_clippedRoundH hd T x)).aestronglyMeasurable 1
+    Integrable.of_bound ((measurable_from_countable' fun n : ℕ => (n : ℝ)).comp
+      (measurable_clippedRoundH hd T x)).aestronglyMeasurable 1
       (ae_of_all _ fun ω => by
         rw [Real.norm_eq_abs, abs_of_nonneg (Nat.cast_nonneg _)]
         exact_mod_cast clippedRoundH_le_one T x ω)
-  have he : (∫ η, matchedMeanH (clippedField η) 0 T x ∂(iidLaw d ν)) = ∫ ω, (clippedRoundH T x ω : ℝ) ∂μ :=
+  have he : (∫ η, matchedMeanH (clippedField η) 0 T x ∂(iidLaw d ν)) =
+      ∫ ω, (clippedRoundH T x ω : ℝ) ∂μ :=
     (integral_prod _ hi).symm
   rw [he]
   simp_rw [clippedRoundH_eq_indicator]
@@ -70,7 +85,8 @@ theorem integral_clippedMeanH_eq_holeProb (hd : 1 ≤ d) (ν : Measure ℤ) [IsP
     (measurable_clippedRoundH hd T x) (measurableSet_singleton 1)
   rw [integral_indicator_const (1 : ℝ) hS]
   simp only [smul_eq_mul, mul_one]
-  change (((iidLaw d ν).prod (roundNoiseLaw d)) {ω | clippedRoundH T x ω = 1}).toReal = holeProb d ν T
+  change (((iidLaw d ν).prod (roundNoiseLaw d)) {ω | clippedRoundH T x ω = 1}).toReal =
+    holeProb d ν T
   exact clippedRoundH_probability hd ν hclip T x
 
 /-- Every real moment of a table odometer equals the original moment. -/
@@ -79,6 +95,7 @@ theorem integral_clippedRoundU_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabi
     (∫ ω, clippedRoundU T x ω ^ r ∂((iidLaw d ν).prod (roundNoiseLaw d))) =
       ∫ ω, (U ω T x : ℝ) ^ r ∂(law d ν) := by
   have hm : Measurable (fun O : CountHistory d => (O.1 (T, x) : ℝ) ^ r) :=
-    (measurable_from_countable' fun n : ℕ => (n : ℝ) ^ r).comp ((measurable_pi_apply (T, x)).comp measurable_fst)
+    (measurable_from_countable' fun n : ℕ => (n : ℝ) ^ r).comp
+      ((measurable_pi_apply (T, x)).comp measurable_fst)
   exact integral_clippedRoundHistory hd ν hclip _ hm
 end Parking

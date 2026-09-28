@@ -1,7 +1,12 @@
-/- Exact no-arrival probability from fresh predecessor instructions. -/
 import Parking.Support.OrientedIncomingSlots
 import Parking.Support.CountableFiberIntegral
 import Parking.Support.OrientedGivenBound
+
+/-!
+# Exact no-arrival probability from fresh instructions
+
+Exact no-arrival probability from fresh predecessor instructions.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -10,14 +15,22 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The single-slot miss probability `1 - (d : ℝ)⁻¹` is nonnegative, since `(d : ℝ)⁻¹ ≤
+1` for `d ≥ 1`. -/
 theorem oriented_miss_probability_nonneg (hd : 1 ≤ d) : 0 ≤ 1 - (d : ℝ)⁻¹ := by
   have hdR : (1 : ℝ) ≤ d := by exact_mod_cast hd
   exact sub_nonneg.mpr ((inv_le_one₀ (by positivity)).mpr hdR)
 
+/-- The single-slot miss probability `1 - (d : ℝ)⁻¹` is strictly positive once `d ≥ 2`,
+since then `(d : ℝ)⁻¹ < 1`. -/
 theorem oriented_miss_probability_pos (hd : 2 ≤ d) : 0 < 1 - (d : ℝ)⁻¹ := by
   have hdR : (1 : ℝ) < d := by exact_mod_cast (show 1 < d by omega)
   exact sub_pos.mpr ((inv_lt_one₀ (by positivity)).mpr hdR)
 
+/-- Given the scenery `η`, the probability of no arrival at `x` by round `n` equals the
+integral of `(1 - 1/d) ^ (∑ i, orientedOdometer η σ n (x - unit i))`, since each of the
+`d` predecessor instructions independently misses `x` with probability `1 - 1/d` and
+`probability_eq_integral_of_fibers` reduces the event to that count. -/
 theorem oriented_noArrival_probability_given (hd : 1 ≤ d) (η : Site d → ℤ)
     (n : ℕ) (x : Site d) :
     (orientedStackLaw d).real {σ : Site d × ℕ → Site d | orientedArrivalCount η σ n x = 0} =
@@ -37,6 +50,9 @@ theorem oriented_noArrival_probability_given (hd : 1 ≤ d) (η : Site d → ℤ
       (sub_le_self _ (inv_nonneg.mpr (Nat.cast_nonneg d)))
   · exact fun m => oriented_noArrival_count_fiber hd η n x m
 
+/-- For `d ≥ 2`, the exponential of `log(1 - 1/d)` times the expected total predecessor
+odometer is a lower bound for the no-arrival probability, by Jensen's inequality applied
+to the convexity of `exp` and the identity `oriented_noArrival_probability_given`. -/
 theorem oriented_noArrival_exp_given (hd : 2 ≤ d) (η : Site d → ℤ)
     (n : ℕ) (x : Site d) :
     Real.exp (Real.log (1 - (d : ℝ)⁻¹) * ∑ i : Fin d,

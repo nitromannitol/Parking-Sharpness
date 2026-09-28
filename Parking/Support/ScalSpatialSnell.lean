@@ -1,4 +1,8 @@
-/-
+import Parking.Support.ScalDyadicSnell
+
+/-!
+# The spatial dyadic Snell recursion
+
 The spatial analogue of the dyadic Snell recursion of
 `prop:spatial-scaling` (`parking.tex:1694-1752`).
 
@@ -10,7 +14,6 @@ measurability of the conditional expectation in the noise parameter as an
 explicit hypothesis (available from
 `LatticeProb.exists_measurable_condExp_param`).
 -/
-import Parking.Support.ScalDyadicSnell
 
 open LatticeProb.ContinuumStopping (contNoiseSpace)
 
@@ -51,7 +54,8 @@ theorem measurable_dyadicRewardSp {d : ℕ} {ΩB : Type*} [mB : MeasurableSpace 
     (hB : Measurable fun p : ℝ≥0 × ΩB => B p.1 p.2) (m k : ℕ) :
     Measurable (dyadicRewardSp (d := d) (ΩB := ΩB) Y B m k) := by
   unfold dyadicRewardSp
-  exact (hY.comp (Measurable.prodMk (hB.comp (Measurable.prodMk measurable_const measurable_snd)) measurable_fst)).neg
+  exact (hY.comp (Measurable.prodMk
+    (hB.comp (Measurable.prodMk measurable_const measurable_snd)) measurable_fst)).neg
 
 /-- **The spatial dyadic Snell recursion is jointly measurable** from the joint
 measurability of the conditional expectation in the noise parameter. -/
@@ -136,7 +140,8 @@ theorem abs_dyadicSnellSp_le_of_condExp_le {d : ℕ} {ΩB : Type*} [mB : Measura
           (dyadicSnellRecSp (mB := mB) PB 𝒢 Y B m j) from rfl]
       simp only [dyadicSnellStep]
       refine abs_le.mpr ⟨?_, ?_⟩
-      · exact le_max_iff.mpr (Or.inl (abs_le.mp (by simpa [dyadicRewardSp, abs_neg] using hYb _ ω)).1)
+      · exact le_max_iff.mpr
+          (Or.inl (abs_le.mp (by simpa [dyadicRewardSp, abs_neg] using hYb _ ω)).1)
       · exact max_le (abs_le.mp (by simpa [dyadicRewardSp, abs_neg] using hYb _ ω)).2
           (abs_le.mp (hcond (2 ^ m - (j + 1)) (dyadicSnellRecSp (mB := mB) PB 𝒢 Y B m j) ω
             (fun β => ih ω β) β)).2

@@ -1,9 +1,12 @@
-/-
+import Parking.Support.UpperTarget
+import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+/-!
+# Growth of antitone sequences from their partial sums
+
 Decreasing sequences and their partial sums: the power and logarithmic
 comparisons used in the density estimates of the growth corollary.
 -/
-import Parking.Support.UpperTarget
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 noncomputable section
 namespace Parking
@@ -136,7 +139,8 @@ theorem antitone_log_upper (f : ℕ → ℝ) (hf : Antitone f)
     rw [Nat.cast_add, Nat.cast_one] at hb'
     have hlog : Real.log ((t : ℝ) + 1) ≤ Real.log ((t : ℝ) + 2) :=
       Real.log_le_log ht0 (by linarith)
-    have hlog0 : 0 ≤ Real.log ((t : ℝ) + 2) := Real.log_nonneg (by have := Nat.cast_nonneg (α := ℝ) t; linarith)
+    have hlog0 : 0 ≤ Real.log ((t : ℝ) + 2) :=
+      Real.log_nonneg (by have := Nat.cast_nonneg (α := ℝ) t; linarith)
     have hC' := mul_le_mul_of_nonneg_right
       (le_max_left C ((f 0 + 1) / Real.log 2)) hlog0
     nlinarith

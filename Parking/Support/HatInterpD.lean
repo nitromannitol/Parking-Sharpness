@@ -1,4 +1,17 @@
-/-
+import LatticeProb.Site
+import Mathlib.Algebra.BigOperators.Finprod
+import Mathlib.Topology.MetricSpace.Lipschitz
+import Mathlib.Topology.Algebra.Monoid
+import Mathlib.Topology.Algebra.Ring.Real
+import Mathlib.Algebra.Order.Floor.Ring
+import Mathlib.Order.Interval.Finset.Basic
+import Mathlib.Data.Int.Interval
+import Mathlib.Topology.Constructions
+import Parking.Support.TightInterp
+
+/-!
+# The `(d+1)`-dimensional piecewise multilinear interpolation
+
 The piecewise multilinear interpolation of a grid field on `ℤ × Site d`
 (`parking.tex:1756-1767`, BouRabeePanagiotis2026 Theorem 1.3(i)(b): "the field on the
 left denotes the multilinear interpolation from `R^{-1}ℤ^d` of the values ...").
@@ -19,16 +32,6 @@ becomes a `Fin d`-indexed family of space indices, and the two-factor bound that
 `Parking.Support.TightInterp` proves by hand is replaced by a general `d`-fold
 product-difference bound (`abs_prod_sub_prod_le`).
 -/
-import LatticeProb.Site
-import Mathlib.Algebra.BigOperators.Finprod
-import Mathlib.Topology.MetricSpace.Lipschitz
-import Mathlib.Topology.Algebra.Monoid
-import Mathlib.Topology.Algebra.Ring.Real
-import Mathlib.Algebra.Order.Floor.Ring
-import Mathlib.Order.Interval.Finset.Basic
-import Mathlib.Data.Int.Interval
-import Mathlib.Topology.Constructions
-import Parking.Support.TightInterp
 
 noncomputable section
 namespace Parking

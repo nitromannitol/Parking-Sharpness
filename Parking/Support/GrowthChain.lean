@@ -1,10 +1,17 @@
-/-
-The growth corollary: mean estimates, the activity mass-transport identity,
-and monotonicity of survivor density.
--/
 import Parking.Support.GrowthMeans
 import Parking.Support.GrowthSequence
 import Parking.Support.DensitySequence
+
+/-!
+# The growth corollary
+
+Mean estimates, the activity mass-transport identity, and monotonicity of survivor density.
+Chains the odometer mean bounds `meanU_growth` with the mass-transport identity
+`Parking.Frozen.transport` and the antitone-sequence comparison lemmas
+(`antitone_power_bounds`, `antitone_log_upper`, `antitone_reciprocal_lower`) to derive matching
+power-law bounds on `meanU` and `S` in dimensions up to three, and logarithmic bounds from
+dimension four on.
+-/
 
 noncomputable section
 namespace Parking

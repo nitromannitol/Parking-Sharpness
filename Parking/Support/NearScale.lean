@@ -1,4 +1,8 @@
-/-
+import Parking.Support.NearEnv
+
+/-!
+# The scale `env` under powers and logarithms
+
 Two comparisons in the scale `env`, used to read the quantities of Step 3 of the upper
 bounds of `thm:near` at the cutoff (`parking.tex:2959-2993`).
 
@@ -10,11 +14,13 @@ scale with the exponent of `1/δ` multiplied by `β`, and a logarithm of a bound
 scale is a constant multiple of `log(e/δ)`, because `log(δ^{-α}L^k) = α(L-1) + k log L`
 and `log L ≤ L`.
 -/
-import Parking.Support.NearEnv
 
 noncomputable section
 namespace Parking
 
+/-- **A power of a bound in the scale `env` is a bound in the scale.**  If `x ≤ C₀ · env α
+k δ` with `0 ≤ β ≤ 1`, then `x ^ β ≤ max 1 C₀ · env (α * β) k δ`, by `rpow_env_le` applied
+to `x ^ β ≤ (C₀ * env α k δ) ^ β`. -/
 theorem rpow_le_env {α β : ℝ} {k : ℕ} {C₀ x δ : ℝ} (hC₀ : 0 < C₀) (hβ0 : 0 ≤ β)
     (hβ1 : β ≤ 1) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) (hx : 0 ≤ x)
     (hxle : x ≤ C₀ * env α k δ) : x ^ β ≤ max 1 C₀ * env (α * β) k δ := by
@@ -35,6 +41,9 @@ theorem rpow_le_env {α β : ℝ} {k : ℕ} {C₀ x δ : ℝ} (hC₀ : 0 < C₀)
     _ ≤ C₀ ^ β * env (α * β) k δ := mul_le_mul_of_nonneg_left h3 h5
     _ ≤ max 1 C₀ * env (α * β) k δ := mul_le_mul_of_nonneg_right h4 h6
 
+/-- **A logarithm of a bound in the scale `env` is a constant multiple of `log(e/δ)`.**
+If `0 ≤ x ≤ C₀ · env α k δ`, then `log(x + c) ≤ C · env 0 1 δ` for a constant `C` built
+from `α`, `k`, `C₀` and `c`, using `log(env α k δ) ≤ (α + k) log(e/δ)`. -/
 theorem exists_log_le_env {α : ℝ} {k : ℕ} {C₀ : ℝ} (hC₀ : 0 < C₀) (hα : 0 ≤ α)
     {c : ℝ} (hc : 0 ≤ c) :
     ∃ C : ℝ, 0 < C ∧ ∀ x δ : ℝ, 0 < δ → δ ≤ 1 → 0 ≤ x → x ≤ C₀ * env α k δ →

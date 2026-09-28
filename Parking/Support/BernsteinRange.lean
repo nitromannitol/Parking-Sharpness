@@ -1,11 +1,21 @@
-/- Bernstein's bounded-increment inequality indexed from zero. -/
 import Parking.External.Bernstein
 import Parking.Support.BlockSum
+
+/-!
+# Bernstein's inequality indexed from zero
+
+Bernstein's bounded-increment inequality indexed from zero.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory Finset
 
+/-- **Bernstein's bounded-increment inequality, reindexed from `1` to `0`.** Given the
+external `Bernstein` bound for a martingale-difference array indexed from `1`, the same
+`L^r` bound holds for an array indexed from `0`, by shifting it up by one slot (padding the
+new slot `0` with the zero difference) and applying the external bound to the shifted
+array. -/
 theorem exists_bernstein_range_bound (hBern : External.Bernstein) :
     ∃ C : ℝ, 0 < C ∧ ∀ (Ω : Type) (_ : MeasurableSpace Ω) (μ : Measure Ω)
       (_ : IsProbabilityMeasure μ) (k : ℕ) (F : ℕ → MeasurableSpace Ω)

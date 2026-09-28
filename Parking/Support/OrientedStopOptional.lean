@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedStoppingValue
+
+/-!
+# Optional stopping for the oriented walk
+
 Optional stopping for the oriented walk: the expected reward of a bounded
 stopping rule is the potential at the start minus the expected stopped
 potential.
@@ -17,7 +21,6 @@ The proof is the same head-tail induction as `Parking.orientedStopValue_consNat`
 with `Parking.orientedPotential_succ`, `Φ_{m+1}(x) = η(x) + (P⃗Φ_m)(x)`, in place
 of the odometer recursion.
 -/
-import Parking.Support.OrientedStoppingValue
 
 open MeasureTheory
 
@@ -34,6 +37,9 @@ def orientedStopTerminal (η : Site d → ℝ) (n : ℕ) (x : Site d)
     (σ : (ℕ → Fin d × Bool) → ℕ) (p : ℕ → Fin d × Bool) : ℝ :=
   orientedPotential η (n - σ p) (orientedPath x p (σ p))
 
+/-- The stopped potential at a bounded stopping rule `σ` depends on the direction sequence
+`p` only through its first `n` coordinates, since both the stopping time `σ p` and the
+position `orientedPath x p (σ p)` do. -/
 theorem orientedStopTerminal_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d)
     {p q : ℕ → Fin d × Bool} (h : ∀ i, i < n → p i = q i) :
@@ -43,6 +49,9 @@ theorem orientedStopTerminal_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → �
   unfold orientedStopTerminal
   rw [hsame, orientedPath_congr x (σ p) (fun i hi => h i (lt_of_lt_of_le hi hle))]
 
+/-- The stopped potential of a bounded stopping rule is integrable against `walkLaw d`,
+since `orientedStopTerminal_congr` shows it depends on only finitely many coordinates of
+the direction sequence. -/
 theorem integrable_orientedStopTerminal (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d) :
     Integrable (orientedStopTerminal η n x σ) (walkLaw d) :=

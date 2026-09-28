@@ -1,30 +1,28 @@
-/-
-Prescribing the particles at the origin.
-
-`thm:subcritical` (`parking.tex:2449-2455`) begins "Prescribe the `k` particles
-at the origin and temporarily condition on all their walks and uniform
-variables", and writes `Ê_λ` for the expectation in which "the origin carries
-the remaining `k-1` prescribed particles and every other site has the tilted
-law".  `graftOrigin ω₁ ω` is that realization: the count, the walks and the
-uniform variables at the origin are read off the prescription `ω₁`, and every
-other site is read off `ω`.
-
-The observables of the theorem, read at `graftOrigin ω₁ ω`, are then functions
-of the data at the sites OTHER than the origin, which is what `lem:product` asks
-of them once the origin is held fixed.  Their two relabeling clauses survive the
-graft:
-
-- relabeling the particles at the ORIGIN changes nothing at all, because the
-  graft overwrites exactly the data such a relabeling moves;
-- relabeling the particles at another site `x₀` is the same relabeling of the
-  grafted realization, and there every tie among the uniform variables involves
-  a label AT THE ORIGIN, because off the origin the grafted uniform variables
-  are those of `ω` read at distinct labels.  The label order is site-major and
-  `x₀` is not the origin, so the permutation fixes every label of the origin and
-  compares it with any other label by the two sites alone.  That is
-  `Parking.TieInvariant`, which is all that `Support/RelabelEquiv.lean` needs.
--/
 import Parking.Support.SubcriticalRelabel
+
+/-!
+# Prescribing the particles at the origin
+
+`thm:subcritical` (`parking.tex:2449-2455`) begins "Prescribe the `k` particles at the origin
+and temporarily condition on all their walks and uniform variables", and writes `Ê_λ` for the
+expectation in which "the origin carries the remaining `k-1` prescribed particles and every
+other site has the tilted law". `graftOrigin ω₁ ω` is that realization: the count, the walks
+and the uniform variables at the origin are read off the prescription `ω₁`, and every other
+site is read off `ω`.
+
+The observables of the theorem, read at `graftOrigin ω₁ ω`, are then functions of the data at
+the sites OTHER than the origin, which is what `lem:product` asks of them once the origin is
+held fixed. Their two relabeling clauses survive the graft:
+
+- relabeling the particles at the ORIGIN changes nothing at all, because the graft overwrites
+  exactly the data such a relabeling moves;
+- relabeling the particles at another site `x₀` is the same relabeling of the grafted
+  realization, and there every tie among the uniform variables involves a label AT THE ORIGIN,
+  because off the origin the grafted uniform variables are those of `ω` read at distinct
+  labels. The label order is site-major and `x₀` is not the origin, so the permutation fixes
+  every label of the origin and compares it with any other label by the two sites alone. That
+  is `Parking.TieInvariant`, which is all that `Support/RelabelEquiv.lean` needs.
+-/
 
 noncomputable section
 
@@ -41,18 +39,22 @@ def graftOrigin (ω₁ ω : PData d) : PData d :=
     (fun q : Label d × ℕ => if q.1.1 = (0 : Site d) then ω₁.2.1 q else ω.2.1 q),
     (fun q : Label d × ℕ => if q.1.1 = (0 : Site d) then ω₁.2.2 q else ω.2.2 q))
 
+/-- The graft reads the particle count at the origin from the prescription `ω₁`. -/
 @[simp] theorem graftOrigin_eta_zero (ω₁ ω : PData d) :
     (graftOrigin ω₁ ω).1 (0 : Site d) = ω₁.1 (0 : Site d) := by
   simp [graftOrigin]
 
+/-- Off the origin, the graft reads the particle count from `ω`. -/
 theorem graftOrigin_eta_of_ne {x : Site d} (hx : x ≠ (0 : Site d)) (ω₁ ω : PData d) :
     (graftOrigin ω₁ ω).1 x = ω.1 x := by
   simp [graftOrigin, hx]
 
+/-- Off the origin, the graft reads a particle's walk instructions from `ω`. -/
 theorem graftOrigin_move_of_ne {q : Label d × ℕ} (hq : q.1.1 ≠ (0 : Site d))
     (ω₁ ω : PData d) : (graftOrigin ω₁ ω).2.1 q = ω.2.1 q := by
   simp [graftOrigin, hq]
 
+/-- Off the origin, the graft reads a particle's uniform variable from `ω`. -/
 theorem graftOrigin_rank_of_ne {q : Label d × ℕ} (hq : q.1.1 ≠ (0 : Site d))
     (ω₁ ω : PData d) : (graftOrigin ω₁ ω).2.2 q = ω.2.2 q := by
   simp [graftOrigin, hq]
@@ -134,6 +136,8 @@ theorem graftOrigin_delAt {x₀ : Site d} (hx₀ : x₀ ≠ (0 : Site d)) (ω₁
     rw [if_pos hx, if_neg hne, if_pos hx]
   · rw [if_neg hx, if_neg hx]
 
+/-- `graftOrigin ω₁` is measurable in `ω`: each of its three coordinates is either the
+constant `ω₁`-value at the origin or a coordinate projection of `ω` elsewhere. -/
 theorem measurable_graftOrigin (ω₁ : PData d) : Measurable (graftOrigin (d := d) ω₁) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
   · refine measurable_pi_lambda _ fun x => ?_

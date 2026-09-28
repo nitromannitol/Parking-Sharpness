@@ -1,7 +1,12 @@
-/- The joint signed-density limit, with the continuum witnesses fixed. -/
 import Parking.Support.SpatWJointPairings
 import Parking.Support.SpatWSignedPairingResidual
 import Parking.Support.NearestEvents
+
+/-!
+# Joint signed-density limit
+
+The joint signed-density limit, with the continuum witnesses fixed.
+-/
 
 open LatticeProb.WhiteNoise (continuous_contOp hasCompactSupport_contOp)
 
@@ -115,7 +120,8 @@ theorem tendsto_spatial_signed_joint
         tendsto_signedPair_sub_scenePair_sub_pairing_zero hd hd3 hGrowth hBernstein
           hConcentration hGreenNorms ν hν (hχ l) ha
   have hprod := hbase.prodMk_of_tendstoInMeasure_const _ Y _
-    (LatticeProb.Scaling.Slutsky.tendstoInMeasure_zero_of_forall_lt hYzero) (fun R => (hYm R).aemeasurable)
+    (LatticeProb.Scaling.Slutsky.tendstoInMeasure_zero_of_forall_lt hYzero)
+    (fun R => (hYm R).aemeasurable)
   let H : ((((Fin (m + p) → ℝ) × (Fin k → ℝ)) × (Fin p → ℝ)) × (Fin (k + p) → ℝ)) →
       (Fin m → ℝ) × (Fin k → ℝ) × (Fin k → ℝ) × (Fin p → ℝ) := fun q =>
     (fun i => q.1.1.1 (Fin.castAdd p i), q.1.1.2,
@@ -128,9 +134,12 @@ theorem tendsto_spatial_signed_joint
     apply Continuous.prodMk
     · exact continuous_pi fun j => ((continuous_apply j).comp continuous_fst.fst.snd).add
         ((continuous_apply (Fin.castAdd p j)).comp continuous_snd)
-    · exact continuous_pi fun l => (((continuous_apply (Fin.natAdd m l)).comp continuous_fst.fst.fst).add
-        ((continuous_apply l).comp continuous_fst.snd)).add ((continuous_apply (Fin.natAdd k l)).comp continuous_snd)
-  have h := LatticeProb.Scaling.CramerWold.tendsto_integral_of_tendstoInDistribution (hprod.continuous_comp hH) F
+    · exact continuous_pi fun l =>
+        (((continuous_apply (Fin.natAdd m l)).comp continuous_fst.fst.fst).add
+          ((continuous_apply l).comp continuous_fst.snd)).add
+        ((continuous_apply (Fin.natAdd k l)).comp continuous_snd)
+  have h := LatticeProb.Scaling.CramerWold.tendsto_integral_of_tendstoInDistribution
+    (hprod.continuous_comp hH) F
   have heqL : ∀ R w, H (((fun i => scenePair w R (tests i),
       fun j => barDivisible w R (sp j).1 (sp j).2),
       fun l => ∫ x, barDivisible w R 1 x * g l x), Y R w) =

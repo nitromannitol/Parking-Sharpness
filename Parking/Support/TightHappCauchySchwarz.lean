@@ -1,4 +1,10 @@
-/-
+import Parking.Support.TightBoxSupL2
+import Parking.Support.TightBoxLaw
+import Parking.Support.MomentLimits
+
+/-!
+# The reward-field-side `L¹` moment bound for `happ`
+
 The reward-field-side moment bound `happ` needs, in `L¹`: `E_η[‖Parking.boxRewardMap ...‖]`,
 uniform in the scale `n`, growing only POLYNOMIALLY in the cutoff radius `A` (in fact with
 exponent `2/p` for any `p > 12`, via `Parking.rNorm_mono_exponent` from `Parking.
@@ -6,9 +12,6 @@ exists_yfieldSup3_L2_moment`'s `L²` bound).  The box's own points, read through
 boxToFin`, always lie in a fixed-radius box of `Parking.Yfield`'s own kind
 (`Parking.boxToFin_mem_orientedBox`), so `Parking.ae_abs_Yfield_le_yfieldSup3` applies directly.
 -/
-import Parking.Support.TightBoxSupL2
-import Parking.Support.TightBoxLaw
-import Parking.Support.MomentLimits
 
 open LatticeProb.BoxClamp (rewardBox)
 open LatticeProb.MomentNorm (rNorm rNorm_mono)
@@ -19,8 +22,12 @@ noncomputable section
 
 namespace Parking
 
+/-- The Borel `σ`-algebra on `C(rewardBox T A, ℝ)`, needed to speak of measurability and
+integrability of functions valued in this continuous-function space. -/
 local instance instMeasurableSpaceRewardBoxTightHappCS (T A : ℝ) :
     MeasurableSpace C(rewardBox T A, ℝ) := borel _
+/-- `C(rewardBox T A, ℝ)` is a Borel space for the instance above, by definitional
+unfolding. -/
 local instance instBorelSpaceRewardBoxTightHappCS (T A : ℝ) :
     BorelSpace C(rewardBox T A, ℝ) := ⟨rfl⟩
 
@@ -28,11 +35,14 @@ local instance instBorelSpaceRewardBoxTightHappCS (T A : ℝ) :
 `2A`. -/
 def happBoxRadius (A : ℝ) : ℕ := ⌈2 * A⌉₊ + 1
 
+/-- `happBoxRadius A` is at least `1`, since it is `⌈2A⌉₊ + 1` and the ceiling term is
+nonnegative. -/
 theorem one_le_happBoxRadius (A : ℝ) : (1 : ℝ) ≤ (happBoxRadius A : ℝ) := by
   unfold happBoxRadius
   push_cast
   linarith [Nat.cast_nonneg (α := ℝ) ⌈2 * A⌉₊]
 
+/-- `happBoxRadius A` is at least `2A`, since `⌈2A⌉₊ ≥ 2A` by `Nat.le_ceil`. -/
 theorem two_mul_le_happBoxRadius {A : ℝ} (_hA : 0 ≤ A) : 2 * A ≤ (happBoxRadius A : ℝ) := by
   unfold happBoxRadius
   have h := Nat.le_ceil (2 * A)
@@ -132,8 +142,9 @@ theorem exists_integral_norm_boxRewardMap_le (ν : Measure ℤ) (hν : CriticalL
     norm_num
   have hGnrpow2int : Integrable (fun η => |Gn η| ^ (2 : ℝ)) (iidLaw 2 (realLaw ν)) := by
     rw [hGnrpow2eq]; exact hGnsqint
-  have hmono1 := rNorm_mono_exponent (iidLaw 2 (realLaw ν)) (le_refl (1 : ℝ)) (by norm_num : (1:ℝ) ≤ 2)
-    Gn hGnaesm hGnrpow1int hGnrpow2int
+  have hmono1 :=
+    rNorm_mono_exponent (iidLaw 2 (realLaw ν)) (le_refl (1 : ℝ)) (by norm_num : (1:ℝ) ≤ 2)
+      Gn hGnaesm hGnrpow1int hGnrpow2int
   have hrnorm1eq : rNorm (iidLaw 2 (realLaw ν)) 1 Gn = ∫ η, Gn η ∂(iidLaw 2 (realLaw ν)) := by
     unfold rNorm
     rw [hGnrpow1eq]
@@ -147,14 +158,16 @@ theorem exists_integral_norm_boxRewardMap_le (ν : Measure ℤ) (hν : CriticalL
           funext η
           rw [abs_of_nonneg (hYnn η), ← Real.rpow_natCast (Y η) 2]; norm_num
         rw [heq]; exact hYsqint)
-  have hrnorm2Yeq : rNorm (iidLaw 2 (realLaw ν)) 2 Y = (∫ η, (Y η) ^ 2 ∂(iidLaw 2 (realLaw ν))) ^ ((1:ℝ)/2) := by
+  have hrnorm2Yeq : rNorm (iidLaw 2 (realLaw ν)) 2 Y
+      = (∫ η, (Y η) ^ 2 ∂(iidLaw 2 (realLaw ν))) ^ ((1:ℝ)/2) := by
     unfold rNorm
     congr 1
     apply integral_congr_ae
     filter_upwards with η
     rw [abs_of_nonneg (hYnn η), ← Real.rpow_natCast (Y η) 2]
     norm_num
-  have hYsqbound2 : (∫ η, (Y η) ^ 2 ∂(iidLaw 2 (realLaw ν))) ≤ (D * (((R:ℝ)+1)^2)) ^ (2/p) := hYsqbound
+  have hYsqbound2 : (∫ η, (Y η) ^ 2 ∂(iidLaw 2 (realLaw ν)))
+      ≤ (D * (((R:ℝ)+1)^2)) ^ (2/p) := hYsqbound
   have hfin : ((∫ η, (Y η) ^ 2 ∂(iidLaw 2 (realLaw ν))) ) ^ ((1:ℝ)/2)
       ≤ ((D * (((R:ℝ)+1)^2)) ^ (2/p)) ^ ((1:ℝ)/2) :=
     Real.rpow_le_rpow (integral_nonneg fun η => sq_nonneg _) hYsqbound2 (by norm_num)
@@ -196,7 +209,8 @@ theorem exists_integral_norm_boxRewardMap_le (ν : Measure ℤ) (hν : CriticalL
     Real.rpow_le_rpow hDR2nn hDR2bound (by positivity)
   have heqfinal : ((9 * K0) * (1 + A) ^ (p / 2 + 2)) ^ (1/p) =
       (9 * K0) ^ (1/p) * (1 + A) ^ (1 / 2 + 2 / p) := by
-    rw [Real.mul_rpow (by positivity) (by positivity), ← Real.rpow_mul (by linarith : (0:ℝ) ≤ 1 + A)]
+    rw [Real.mul_rpow (by positivity) (by positivity),
+      ← Real.rpow_mul (by linarith : (0:ℝ) ≤ 1 + A)]
     congr 2
     field_simp
   rw [heqfinal] at hfinal2

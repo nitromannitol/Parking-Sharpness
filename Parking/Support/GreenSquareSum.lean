@@ -2,6 +2,16 @@ import Parking.Support.NearestGreen
 import Parking.Support.RoundHitting
 import Parking.Support.GreenPotential
 
+/-!
+# A uniform bound on finite sums of the squared Green function
+
+Bounds, in dimension five and above, the sum over any finite set `S` of sites of the
+neighbour-averaged squared Green function `walkOp (fun y => fullGreen d (y - x) ^ 2)` by a
+dimension-only constant. The bound is obtained by exchanging the finite sum with the
+expectation over one fresh step and comparing each resulting partial sum to the full
+summable series bounded by the external bubble constant `fullGreen_bubble_bound`.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -36,15 +46,18 @@ theorem exists_greenSquareWeight_sum_bound (hd : 5 ≤ d) :
       abel
     rw [he]
     exact (hs.sum_le_tsum S (fun _ _ => sq_nonneg _)).trans hc
-  have hi (v : Site d) : Integrable (fun a : Fin d × Bool => fullGreen d (v + stepVec a - x) ^ 2) (stepLaw d) := by
-    apply Integrable.of_bound (measurable_from_countable' _).aestronglyMeasurable (escapeConst d ^ 2)
+  have hi (v : Site d) :
+      Integrable (fun a : Fin d × Bool => fullGreen d (v + stepVec a - x) ^ 2) (stepLaw d) := by
+    apply Integrable.of_bound (measurable_from_countable' _).aestronglyMeasurable
+      (escapeConst d ^ 2)
     exact ae_of_all _ fun a => by
       rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
       exact pow_le_pow_left₀ (fullGreen_nonneg d _) (fullGreen_le_escapeConst (by omega) _) 2
   have he : (∑ v ∈ S, walkOp (fun y => fullGreen d (y - x) ^ 2) v) =
       ∫ a, (∑ v ∈ S, fullGreen d (v + stepVec a - x) ^ 2) ∂(stepLaw d) := by
     rw [integral_finsetSum _ (fun v _ => hi v)]
-    exact Finset.sum_congr rfl fun v _ => (integral_stepLaw_add hd1 (fun y => fullGreen d (y - x) ^ 2) v).symm
+    exact Finset.sum_congr rfl fun v _ =>
+      (integral_stepLaw_add hd1 (fun y => fullGreen d (y - x) ^ 2) v).symm
   rw [he]
   have h := integral_mono (integrable_finsetSum _ (fun v _ => hi v)) (integrable_const C) hfinite
   simpa only [integral_const, probReal_univ, one_smul] using h

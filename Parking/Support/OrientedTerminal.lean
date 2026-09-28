@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedStopOptional
+
+/-!
+# The terminal-reward form of oriented stopping
+
 The terminal-reward form of the oriented stopping problem.
 
 `Parking.orientedStopValue_eq_potential` turns the ADDITIVE reward
@@ -17,7 +21,6 @@ The first argument of the reward is the ELAPSED time `σ`, so that a reward
 written with the remaining time carries it as `n - σ`; that is how the
 rescaled reward of the scaling limit is read.
 -/
-import Parking.Support.OrientedStopOptional
 
 open MeasureTheory
 
@@ -100,6 +103,9 @@ theorem isLUB_orientedTerminalValues (hd : 1 ≤ d) (η : Site d → ℝ) (n : �
     refine hb ⟨σ, hσ, ?_⟩
     rw [orientedTerminalValue_potential hd η hσ, ← hval]
 
+/-- The value of the terminal-reward stopping problem with reward `-Φ` equals the
+oriented odometer at `n` less the potential at the start, the `sSup` form of
+`isLUB_orientedTerminalValues`. -/
 theorem orientedStoppingSup_potential (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Site d) :
     orientedStoppingSup d (fun k y => -orientedPotential η (n - k) y) n x
       = uOriented η n x - orientedPotential η n x :=
@@ -147,6 +153,9 @@ theorem orientedTerminalValue_const_mul (c : ℝ) (F : ℕ → Site d → ℝ) (
   unfold orientedTerminalValue
   exact MeasureTheory.integral_const_mul c _
 
+/-- Scaling the reward `F` by a constant `c` scales the set of terminal values by `c`:
+`orientedTerminalValues` for `c • F` is the image of `orientedTerminalValues` for `F`
+under multiplication by `c`, via `orientedTerminalValue_const_mul`. -/
 theorem orientedTerminalValues_const_mul (c : ℝ) (F : ℕ → Site d → ℝ) (n : ℕ) (x : Site d) :
     orientedTerminalValues d (fun k y => c * F k y) n x
       = (fun a => c * a) '' orientedTerminalValues d F n x := by

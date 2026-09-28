@@ -1,4 +1,10 @@
-/-
+import Parking.Support.SubcriticalJoint
+import Parking.Support.RangeLower
+import Parking.Support.Near
+
+/-!
+# The joint bound of `thm:subcritical`
+
 The joint bound of `parking.tex:2508-2511`, and the last assertion of
 `thm:subcritical`.
 
@@ -11,9 +17,6 @@ walk's direction sequence.  Summing over `k` against `eq:S-expand` then gives
 `S_t ≤ C E₀ e^{-a|R_t|}`, the constant being finite because
 `k e^{λ₁k/3} ≤ C e^{λ₁ k}` and `E e^{θ η(0)} < ∞` with `λ₁ < θ`.
 -/
-import Parking.Support.SubcriticalJoint
-import Parking.Support.RangeLower
-import Parking.Support.Near
 
 open LatticeProb (measurable_from_countable')
 
@@ -32,14 +35,18 @@ theorem measurable_rangeCard_walk (t : ℕ) :
     Measurable fun p : ℕ → Fin d × Bool => ((rangeCard (0 : Site d) p t : ℕ) : ℝ) :=
   (measurable_from_countable' (fun k : ℕ => (k : ℝ))).comp (measurable_rangeCard (0 : Site d) t)
 
+/-- `jointObs k t` is measurable, being the indicator of the measurable set
+where the origin count is `k` and the tagged particle is active. -/
 theorem measurable_jointObs (k t : ℕ) : Measurable (jointObs (d := d) k t) := by
   classical
   exact measurable_const.indicator (measurableSet_conf_active (k : ℤ) t 0)
 
+/-- `jointObs` is nonnegative, being an indicator function. -/
 theorem jointObs_nonneg (k t : ℕ) (ω : PData d) : 0 ≤ jointObs k t ω := by
   unfold jointObs
   exact Set.indicator_apply_nonneg fun _ => zero_le_one
 
+/-- `jointObs` is at most one, being an indicator function. -/
 theorem jointObs_le_one (k t : ℕ) (ω : PData d) : jointObs k t ω ≤ 1 := by
   unfold jointObs
   rw [Set.indicator_apply]
@@ -318,6 +325,8 @@ def subcriticalConst (ν : Measure ℤ) (lam₁ : ℝ) : ℝ :=
   Real.exp ((1 / 3) * ∫ s in (0 : ℝ)..lam₁, ∫ j, |(j : ℝ)| ∂(tiltLaw ν s))
     * ∑' m : ℕ, ((m : ℝ) + 1) * (ν {(m : ℤ) + 1}).toReal * Real.exp (lam₁ * (m : ℝ) / 3)
 
+/-- `subcriticalConst` is nonnegative, being a product of an exponential and a
+sum of nonnegative terms. -/
 theorem subcriticalConst_nonneg (ν : Measure ℤ) (lam₁ : ℝ) : 0 ≤ subcriticalConst ν lam₁ := by
   refine mul_nonneg (Real.exp_pos _).le (tsum_nonneg fun m => ?_)
   exact mul_nonneg (mul_nonneg (by positivity) ENNReal.toReal_nonneg) (Real.exp_pos _).le

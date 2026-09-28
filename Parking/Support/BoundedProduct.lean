@@ -1,6 +1,16 @@
 import Mathlib.Probability.Moments.SubGaussian
 import Mathlib.MeasureTheory.Constructions.Pi
 
+/-!
+# A bounded-differences subgaussian moment bound
+
+McDiarmid's bounded-differences inequality on a finite product `(Fin n → X)`: a functional
+whose value changes by at most `c i` when the `i`-th coordinate is resampled has a Gaussian
+moment-generating-function bound `exp((∑ c i ^ 2) * t ^ 2 / 2)` around its mean, proved by
+induction on `n` splitting off one coordinate at a time and applying the subgaussian
+moment-generating bound for a bounded random variable at each step.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory
@@ -39,7 +49,8 @@ theorem integrable_exp_centered_bounded {Ω : Type*} [MeasurableSpace Ω]
     (B : ℝ) (hB : ∀ ω, |f ω| ≤ B) (t m : ℝ) :
     Integrable (fun ω => Real.exp (t * (f ω - m))) μ := by
   apply integrable_exp_mul_of_mem_Icc (a := -B - m) (b := B - m) (hf.sub_const m).aemeasurable
-  exact ae_of_all _ fun ω => ⟨by linarith [(abs_le.mp (hB ω)).1], by linarith [(abs_le.mp (hB ω)).2]⟩
+  exact ae_of_all _ fun ω =>
+    ⟨by linarith [(abs_le.mp (hB ω)).1], by linarith [(abs_le.mp (hB ω)).2]⟩
 
 /-- Bounded coordinate oscillations give a Gaussian moment-generating bound on a finite product. -/
 theorem mgf_bounded_differences (μ : Measure X) [IsProbabilityMeasure μ]
@@ -60,13 +71,16 @@ theorem mgf_bounded_differences (μ : Measure X) [IsProbabilityMeasure μ]
       let P := Measure.pi (fun _ : Fin n => μ)
       let F : X → ℝ := fun a => ∫ w, f (Fin.cons a w) ∂P
       let m := ∫ w, f w ∂(Measure.pi (fun _ : Fin (n + 1) => μ))
-      have hfm : Measurable (fun q : X × (Fin n → X) => f (Fin.cons q.1 q.2)) := hf.comp measurable_cons_tuple
+      have hfm : Measurable (fun q : X × (Fin n → X) => f (Fin.cons q.1 q.2)) :=
+        hf.comp measurable_cons_tuple
       have hFi (a : X) : Integrable (fun w : Fin n → X => f (Fin.cons a w)) P :=
-        Integrable.of_bound (hfm.comp (measurable_const.prodMk measurable_id)).aestronglyMeasurable B
+        Integrable.of_bound
+          (hfm.comp (measurable_const.prodMk measurable_id)).aestronglyMeasurable B
           (ae_of_all _ fun w => by simpa only [Real.norm_eq_abs] using hB (Fin.cons a w))
       have hFm : Measurable F := hfm.stronglyMeasurable.integral_prod_right'.measurable
       have hFB (a : X) : |F a| ≤ B := by
-        have h := norm_integral_le_of_norm_le_const (μ := P) (f := fun w : Fin n → X => f (Fin.cons a w))
+        have h := norm_integral_le_of_norm_le_const (μ := P)
+          (f := fun w : Fin n → X => f (Fin.cons a w))
           (ae_of_all _ fun w => by simpa only [Real.norm_eq_abs] using hB (Fin.cons a w))
         simpa only [F, probReal_univ, mul_one, Real.norm_eq_abs] using h
       have hfi : Integrable f (Measure.pi (fun _ : Fin (n + 1) => μ)) :=
@@ -92,7 +106,8 @@ theorem mgf_bounded_differences (μ : Measure X) [IsProbabilityMeasure μ]
           (fun w => hB (Fin.cons a w)) (fun i => c i.succ) (fun i => hc i.succ) ?_
         intro w i b
         change |f (Fin.cons a w) - f (Fin.cons a (Function.update w i b))| ≤ c i.succ
-        have he : Function.update (Fin.cons a w : Fin (n + 1) → X) i.succ b = Fin.cons a (Function.update w i b) := by
+        have he : Function.update (Fin.cons a w : Fin (n + 1) → X) i.succ b =
+            Fin.cons a (Function.update w i b) := by
           funext j
           refine Fin.cases ?_ (fun k => ?_) j
           · rw [Function.update_of_ne (Fin.succ_ne_zero i).symm]
@@ -102,7 +117,8 @@ theorem mgf_bounded_differences (μ : Measure X) [IsProbabilityMeasure μ]
       let a₀ : X := Classical.arbitrary X
       have hsg := hasSubgaussianMGF_of_mem_Icc (μ := μ) hFm.aemeasurable
         (a := F a₀ - c 0) (b := F a₀ + c 0)
-        (ae_of_all _ fun a => by obtain ⟨h1, h2⟩ := abs_le.mp (hFc a a₀); exact ⟨by linarith, by linarith⟩)
+        (ae_of_all _ fun a => by
+          obtain ⟨h1, h2⟩ := abs_le.mp (hFc a a₀); exact ⟨by linarith, by linarith⟩)
       have houter : ∫ a, Real.exp (t * (F a - m)) ∂μ ≤ Real.exp ((c 0) ^ 2 * t ^ 2 / 2) := by
         have h := hsg.mgf_le t
         have he : (F a₀ + c 0) - (F a₀ - c 0) = 2 * c 0 := by ring
@@ -112,7 +128,8 @@ theorem mgf_bounded_differences (μ : Measure X) [IsProbabilityMeasure μ]
         rw [abs_of_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) (hc 0))] at h
         rw [show 2 * c 0 / 2 = c 0 by ring] at h
         simpa only [mgf, hm] using h
-      have hei := integrable_exp_centered_bounded (Measure.pi (fun _ : Fin (n + 1) => μ)) f hf B hB t m
+      have hei := integrable_exp_centered_bounded
+        (Measure.pi (fun _ : Fin (n + 1) => μ)) f hf B hB t m
       have hpi : Integrable (fun q : X × (Fin n → X) => Real.exp (t * (f (Fin.cons q.1 q.2) - m)))
           (μ.prod P) := Integrable.of_bound
             ((hfm.sub_const m).const_mul t).exp.aestronglyMeasurable

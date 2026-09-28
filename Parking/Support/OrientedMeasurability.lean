@@ -1,8 +1,13 @@
-/- Measurability of the directed odometer, arrival counts and error field. -/
 import Parking.Support.OrientedError
 import Parking.Support.OrientedOdometerMeasurable
 import Parking.Support.Measurability
 import Parking.Support.ActivityHoles
+
+/-!
+# Measurability of the directed odometer and error field
+
+Measurability of the directed odometer, arrival counts and error field.
+-/
 
 open LatticeProb (measurable_from_countable' measurable_of_countable_partition)
 
@@ -11,6 +16,9 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The arrival count `ω ↦ arrivals ω.2.1 y x (orientedOdometer ω.1 ω.2.1 t y)` is
+measurable, by partitioning on the countably many values of the odometer and observing
+that on each piece the arrival count is a finite sum of measurable indicators. -/
 theorem measurable_arrivals_oriented (t : ℕ) (y x : Site d) :
     Measurable fun ω : Data d => arrivals ω.2.1 y x (orientedOdometer ω.1 ω.2.1 t y) := by
   classical
@@ -24,9 +32,12 @@ theorem measurable_arrivals_oriented (t : ℕ) (y x : Site d) :
   simp only [hsum]
   refine Finset.measurable_sum _ fun j _ => ?_
   refine Measurable.ite ?_ measurable_const measurable_const
-  exact measurableSet_eq_fun ((measurable_pi_apply (y, j)).comp (measurable_fst.comp measurable_snd))
-    measurable_const
+  exact measurableSet_eq_fun
+    ((measurable_pi_apply (y, j)).comp (measurable_fst.comp measurable_snd)) measurable_const
 
+/-- The directed error field `ω ↦ wErrOriented ω.1 ω.2.1 k x` is measurable, by induction
+on `k` using `measurable_arrivals_oriented` and `measurable_orientedOdometer` for the
+arrival and odometer terms of the recursion. -/
 theorem measurable_wErrOriented (k : ℕ) (x : Site d) :
     Measurable fun ω : Data d => wErrOriented ω.1 ω.2.1 k x := by
   classical

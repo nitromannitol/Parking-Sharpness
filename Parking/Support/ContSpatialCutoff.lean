@@ -1,4 +1,9 @@
-/-
+import Parking.Support.ContValueLipschitz
+import LatticeProb.Prob.BrownianExitTime
+
+/-!
+# The cutoff construction for the continuum spatial value
+
 **The cutoff construction for the `Fin d`-dimensional Brownian optimal-stopping value**
 `Parking.spatialContValue` (`Parking/Support/ContSpatialValue.lean`), the continuum analogue of
 `Parking.Support.SpatialStoppingCutoff`'s cutoff construction for the discrete simple random
@@ -31,8 +36,6 @@ either reward's own measurability. The box is cut at the Pi (sup) norm on `Fin d
 it: the sup norm of a vector is at most its Euclidean norm, coordinatewise, so a sup-norm exit
 is an Euclidean-norm exit, and the library's tail bound applies unchanged.
 -/
-import Parking.Support.ContValueLipschitz
-import LatticeProb.Prob.BrownianExitTime
 
 open MeasureTheory
 open scoped NNReal ENNReal
@@ -72,9 +75,11 @@ complement). -/
 def contCutoffReward (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) (k : ℝ) (y : Fin d → ℝ) : ℝ :=
   if ‖y‖ < A then G k y else 0
 
+/-- Inside the box (`‖y‖ < A`), the cutoff reward equals the true reward. -/
 theorem contCutoffReward_eq_of_lt (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) (k : ℝ) (y : Fin d → ℝ)
     (hy : ‖y‖ < A) : contCutoffReward G A k y = G k y := if_pos hy
 
+/-- Outside the box (`A ≤ ‖y‖`), the cutoff reward vanishes. -/
 theorem contCutoffReward_eq_zero_of_le (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) (k : ℝ) (y : Fin d → ℝ)
     (hy : A ≤ ‖y‖) : contCutoffReward G A k y = 0 := if_neg (not_lt.mpr hy)
 
@@ -86,6 +91,9 @@ theorem abs_contCutoffReward_le (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) 
   · exact hGb k y
   · simpa using hM
 
+/-- The cutoff reward at time `0` is measurable whenever the true reward at time `0` is,
+since it is a piecewise combination of `G 0` and the constant `0` split by the measurable
+condition `‖y‖ < A`. -/
 theorem measurable_contCutoffReward_zero {G : ℝ → (Fin d → ℝ) → ℝ} (A : ℝ)
     (hG0m : Measurable (G 0)) : Measurable (contCutoffReward G A 0) := by
   unfold contCutoffReward
@@ -106,6 +114,9 @@ a Euclidean-norm exit event.** -/
 def contExitEvent {ΩB' : Type*} (B' : ℝ≥0 → ΩB' → EuclideanSpace ℝ (Fin d)) (A T : ℝ) :
     Set ΩB' := {β | ∃ s : ℝ≥0, (s : ℝ) ≤ T ∧ A ≤ ‖B' s β‖}
 
+/-- `contExitEvent B' A T` is measurable, by rewriting it as the library's own
+`∃ s ≤ T.toNNReal, A ≤ ‖B' s β - 0‖` event and applying
+`LatticeProb.measurableSet_exists_le_le_norm`. -/
 theorem measurableSet_contExitEvent {ΩB' : Type*} [MeasurableSpace ΩB']
     (B' : ℝ≥0 → ΩB' → EuclideanSpace ℝ (Fin d))
     (hcont : ∀ ω, Continuous fun s => B' s ω) (hBm : ∀ s, Measurable (B' s)) (A T : ℝ)

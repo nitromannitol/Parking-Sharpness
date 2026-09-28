@@ -1,8 +1,11 @@
-/-
-Pairing opposite finite lists by priority. Every cancelled label has a unique
-partner; cancellation preserves the signed count and leaves at most one sign.
--/
 import LatticeProb.Rank
+
+/-!
+# Pairing opposite finite lists by priority
+
+Pairing opposite finite lists by priority. Every cancelled label has a unique partner;
+cancellation preserves the signed count and leaves at most one sign.
+-/
 
 noncomputable section
 
@@ -20,9 +23,14 @@ def Parking.RankPair (A B : Finset α) (f : α → β) (p q : α) : Prop :=
   p ∈ A ∧ q ∈ B ∧ rankIn A f p = rankIn B f q
 
 omit [DecidableEq α] in
+/-- `rankSurvivors A B f` is a subset of `A`, immediate from its definition as a
+`Finset.filter` of `A`. -/
 theorem Parking.rankSurvivors_subset (A B : Finset α) (f : α → β) :
     Parking.rankSurvivors A B f ⊆ A := Finset.filter_subset _ _
 
+/-- The survivor count `(rankSurvivors A B f).card = A.card - B.card`, from
+`LatticeProb.card_filter_rank_lt` identifying the eliminated labels (rank below `B.card`)
+with the smaller of the two finset sizes. -/
 theorem Parking.card_rankSurvivors (A B : Finset α) (f : α → β) (hf : Set.InjOn f A) :
     (Parking.rankSurvivors A B f).card = A.card - B.card := by
   have h := Finset.card_filter_add_card_filter_not
@@ -34,6 +42,7 @@ theorem Parking.card_rankSurvivors (A B : Finset α) (f : α → β) (hf : Set.I
   omega
 
 omit [DecidableEq α] in
+/-- `RankPair` is symmetric in its two finsets: swapping `A` and `B` swaps the pair. -/
 theorem Parking.rankPair_symm {A B : Finset α} {f : α → β} {p q : α}
     (hpq : Parking.RankPair A B f p q) : Parking.RankPair B A f q p :=
   ⟨hpq.2.1, hpq.1, hpq.2.2.symm⟩
@@ -52,6 +61,8 @@ theorem Parking.existsUnique_rankPair (A B : Finset α) (f : α → β)
   refine ⟨q, ⟨hp, hq, heq.symm⟩, fun q' hq' => ?_⟩
   exact rankIn_injOn hfB hq'.2.1 hq (hq'.2.2.symm.trans heq.symm)
 
+/-- A label that is `RankPair`-paired with an opposite label is not a survivor, since a
+paired rank is strictly below the size of the other finset (`rankIn_lt_card`). -/
 theorem Parking.not_mem_rankSurvivors_of_pair {A B : Finset α} {f : α → β} {p q : α}
     (hpq : Parking.RankPair A B f p q) : p ∉ Parking.rankSurvivors A B f := by
   intro hp

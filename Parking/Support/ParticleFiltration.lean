@@ -1,4 +1,8 @@
-/-
+import Parking.Support.NoiseSplice
+
+/-!
+# The particle-revealing filtration
+
 The filtration that reveals the particles of a finite set of sites one at a time.
 
 Step 2 of `lem:product` (`parking.tex:2382-2409`) fixes the counts, lets `H_i` be
@@ -13,7 +17,6 @@ stage leaves an observable of the counts and of the particles present at the
 sites of `N` unchanged, so the covariance decomposition of
 `Support/SpliceAvg.lean` applies to them.
 -/
-import Parking.Support.NoiseSplice
 
 open MeasureTheory
 
@@ -31,6 +34,8 @@ enumeration. -/
 def prefixSet {α : Type*} (s : Finset α) (i : ℕ) : Set α :=
   {p | ∃ h : p ∈ s, ((s.equivFin ⟨p, h⟩ : Fin s.card) : ℕ) < i}
 
+/-- A label `p` is a particle present at the sites of `N` under counts `a` exactly when its
+site lies in `N` and its index is below the count there, unfolding `particleLabels`. -/
 theorem mem_particleLabels {d : ℕ} {N : Finset (Site d)} {a : Site d → ℤ} {p : Label d} :
     p ∈ particleLabels N a ↔ p.1 ∈ N ∧ p.2 < (a p.1).toNat := by
   simp only [particleLabels, Finset.mem_biUnion, Finset.mem_image, Finset.mem_range]
@@ -40,12 +45,15 @@ theorem mem_particleLabels {d : ℕ} {N : Finset (Site d)} {a : Site d → ℤ} 
   · rintro ⟨h1, h2⟩
     exact ⟨p.1, h1, p.2, h2, rfl⟩
 
+/-- The prefix of length `0` of any finite set is empty. -/
 theorem prefixSet_zero {α : Type*} (s : Finset α) :
     prefixSet s 0 = (∅ : Set α) := by
   ext p
   simp only [prefixSet, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_exists]
   exact fun h => Nat.not_lt_zero _
 
+/-- The prefix of length `s.card` of a finite set `s` is all of `s`, since every element's
+position under the canonical enumeration is below `s.card`. -/
 theorem prefixSet_card {α : Type*} (s : Finset α) :
     prefixSet s s.card = (s : Set α) := by
   ext p
@@ -56,6 +64,8 @@ theorem prefixSet_card {α : Type*} (s : Finset α) :
   · intro h
     exact ⟨h, (s.equivFin ⟨p, h⟩).isLt⟩
 
+/-- `prefixSet s` is monotone in its length: a longer prefix contains every element of a
+shorter one. -/
 theorem prefixSet_mono {α : Type*} (s : Finset α) {i j : ℕ} (hij : i ≤ j) :
     prefixSet s i ⊆ prefixSet s j := by
   intro p hp
@@ -69,22 +79,33 @@ def particleSplice {d : ℕ} (N : Finset (Site d)) (a : Site d → ℤ) (i : ℕ
     (b η : PNoise d) : PNoise d :=
   noiseComb (prefixSet (particleLabels N a) i) b η
 
+/-- Stage-`i` particle splicing is measure preserving for two independent copies of the
+noise, a specialization of `measurePreserving_noiseComb` to the label set
+`prefixSet (particleLabels N a) i`. -/
 theorem measurePreserving_particleSplice {d : ℕ} (hd : 1 ≤ d) (N : Finset (Site d))
     (a : Site d → ℤ) (i : ℕ) :
     MeasurePreserving (fun p : PNoise d × PNoise d => particleSplice N a i p.1 p.2)
       ((noiseLaw d).prod (noiseLaw d)) (noiseLaw d) :=
   measurePreserving_noiseComb hd _
 
+/-- Splicing twice at the same stage `i` is the same as splicing once: the second splice
+along `prefixSet (particleLabels N a) i` reproduces itself, by `noiseComb_noiseComb`
+applied to `subset_refl`. -/
 theorem particleSplice_idem {d : ℕ} (N : Finset (Site d)) (a : Site d → ℤ) (i : ℕ)
     (b η η' : PNoise d) :
     particleSplice N a i (particleSplice N a i b η) η' = particleSplice N a i b η' :=
   noiseComb_noiseComb (subset_refl _) b η η'
 
+/-- Splicing at stage `i` after splicing at stage `i + 1` collapses to splicing at stage `i`
+alone, since `prefixSet (particleLabels N a) i` is contained in the stage-`(i + 1)` prefix,
+by `noiseComb_noiseComb` and `prefixSet_mono`. -/
 theorem particleSplice_step {d : ℕ} (N : Finset (Site d)) (a : Site d → ℤ) (i : ℕ)
     (b η η' : PNoise d) :
     particleSplice N a i (particleSplice N a (i + 1) b η) η' = particleSplice N a i b η' :=
   noiseComb_noiseComb (prefixSet_mono _ (Nat.le_succ i)) b η η'
 
+/-- Stage `0` of the splicing reveals nothing: the prefix of length `0` is empty
+(`prefixSet_zero`), so the splice reduces to the second argument, `η`. -/
 theorem particleSplice_zero {d : ℕ} (N : Finset (Site d)) (a : Site d → ℤ)
     (b η : PNoise d) : particleSplice N a 0 b η = η := by
   unfold particleSplice

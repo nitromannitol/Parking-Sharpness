@@ -1,5 +1,12 @@
-/- Moment bounds for finitely supported linear coefficients. -/
 import Parking.Support.LinearSceneryMoment
+
+/-!
+# Moment bounds for finitely supported linear coefficients
+
+Moment bounds for finitely supported linear coefficients, restating the infinite-sum estimate
+of `Parking.Support.LinearSceneryMoment` as a finite lattice sum once the coefficients vanish
+outside a given finite set `S`, so no nonsummable total needs to be handled.
+-/
 
 noncomputable section
 namespace Parking

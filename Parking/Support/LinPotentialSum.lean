@@ -1,24 +1,25 @@
-/-
-**The explicit finite-sum representation of the linear membrane field `V`.**
+import Parking.Support.LinBox
+
+/-!
+# Explicit finite-sum representation of the linear membrane field
 
 `Parking.linPotential η n x` reads only `η` on the box of radius `n` about `x`
 (`Parking.linPotential_eq_of_eqOn_box`, `Parking/Support/LinBox.lean`) and responds to a
 single unit source exactly by the truncated Green function
-(`Parking.linPotential_single`, `Parking/Support/LinPotential.lean`).  Combining the two by
+(`Parking.linPotential_single`, `Parking/Support/LinPotential.lean`). Combining the two by
 linearity (`Parking.linPotential_add`/`_const_mul`) gives the closed form
 
     V_n(x) = Σ_{z ∈ s} η(z) · g_n(x - z)
 
 for any finite `s` containing the box of radius `n` about `x` — in particular for
-`s = boxFinset x n` itself.  This is the ingredient needed for the covariance
+`s = boxFinset x n` itself. This is the ingredient needed for the covariance
 `Cov(V_n(x), V_m(y))`: expanding the product of two such finite sums and taking expectations
 under an i.i.d. law reduces the covariance to a finite bilinear form, which
 `LatticeProb.iidLaw_map_restrict`, Mathlib's
 `ProbabilityTheory.IndepFun.integral_mul_eq_mul_integral` and
-`LatticeProb.tsum_srwGreen_mul_shift` can then close.  This module supplies only the
+`LatticeProb.tsum_srwGreen_mul_shift` can then close. This module supplies only the
 deterministic finite-sum identity.
 -/
-import Parking.Support.LinBox
 
 noncomputable section
 

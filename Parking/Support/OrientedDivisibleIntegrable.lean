@@ -1,13 +1,17 @@
-/- All polynomial moments of the directed divisible odometer.
+import Parking.Support.OrientedMoments
+import Parking.Support.OrientedFirstMoment
+import Parking.Support.ConfMoments
+import Parking.Support.OrientedFinite
+
+/-!
+# Moments of the directed divisible odometer
+
+All polynomial moments of the directed divisible odometer.
 
 The divisible odometer at a site is at most the absolute scenery of the box it
 reads, and a critical scenery has an exponential moment, so every power of the
 divisible odometer is integrable under the directed law.
 -/
-import Parking.Support.OrientedMoments
-import Parking.Support.OrientedFirstMoment
-import Parking.Support.ConfMoments
-import Parking.Support.OrientedFinite
 
 open LatticeProb (measurable_from_countable')
 
@@ -16,6 +20,9 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- Pushing `orientedLaw d ν` forward under evaluation at a fixed site `z` recovers `ν`,
+since the configuration marginal is the infinite product law and evaluating a product
+measure at one coordinate returns the base measure (`Measure.infinitePi_map_eval`). -/
 theorem orientedLaw_map_conf_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (z : Site d) : (orientedLaw d ν).map (fun ω : Data d => ω.1 z) = ν := by
   have h1 : (fun ω : Data d => ω.1 z)
@@ -24,6 +31,10 @@ theorem orientedLaw_map_conf_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
     orientedLaw_map_conf hd ν]
   exact Measure.infinitePi_map_eval _ z
 
+/-- `|ω.1 z| ^ r` is integrable against `orientedLaw d ν` whenever `ν` has an exponential
+moment, since every power is dominated by a multiple of the exponential
+(`rpow_le_const_mul_exp`) and `orientedLaw_map_conf_eval` transports integrability from
+`ν` to the coordinate map `ω ↦ ω.1 z`. -/
 theorem integrable_oriented_abs_conf_rpow (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν)
@@ -48,9 +59,13 @@ theorem integrable_oriented_abs_conf_rpow (hd : 1 ≤ d) (ν : Measure ℤ)
 scenery over the box. -/
 def absBox (ω : Data d) (x : Site d) (R : ℕ) : ℝ := ∑ z ∈ boxFinset x R, |(ω.1 z : ℝ)|
 
+/-- `absBox` is nonnegative, as a finite sum of absolute values. -/
 theorem absBox_nonneg (ω : Data d) (x : Site d) (R : ℕ) : 0 ≤ absBox ω x R :=
   Finset.sum_nonneg fun _ _ => abs_nonneg _
 
+/-- `absBox ω x R ^ r`, for `r ≥ 1`, is integrable against `orientedLaw d ν`, dominated by
+`(boxFinset x R).card ^ r` times the sum of the integrable terms
+`integrable_oriented_abs_conf_rpow`, via the convexity bound `rpow_sum_le`. -/
 theorem integrable_oriented_absBox_rpow (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν)
@@ -83,6 +98,9 @@ theorem uOriented_le_absBox (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) 
         mul_le_mul_of_nonneg_right (orientedGreen_le_one hd n (z - x)) (abs_nonneg _)
     _ = |(ω.1 z : ℝ)| := one_mul _
 
+/-- Under a `CriticalLaw` hypothesis, `|uOriented (fun y => ω.1 y) n x| ^ r`, for `r ≥ 1`,
+is integrable against `orientedLaw d ν`, dominated by `absBox ω x n ^ r` through
+`uOriented_le_absBox` and the integrability of `integrable_oriented_absBox_rpow`. -/
 theorem integrable_oriented_uOriented_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (x : Site d) :
     Integrable (fun ω : Data d => |uOriented (fun y => (ω.1 y : ℝ)) n x| ^ r)

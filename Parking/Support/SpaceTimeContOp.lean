@@ -2,6 +2,16 @@ import Parking.Support.Continuum
 import LatticeProb.Prob.Scaling.SpaceTimeDerivatives
 import Parking.Support.SpatialTimeDerivative
 
+/-!
+# The spatial heat operator on space-time test functions
+
+This file identifies the spatial Laplacian operator `contOp` applied to a time slice of a
+smooth space-time test function `ψ` with a finite sum of second directional derivatives
+of `ψ` along the coordinate directions, and transfers smoothness, support, and
+integrability properties of `ψ` to `contOp` and to the time derivative of `ψ` through this
+identity.
+-/
+
 open LatticeProb.WhiteNoise (lap)
 
 open MeasureTheory
@@ -40,6 +50,8 @@ theorem tsupport_spaceTime_contOp_subset {ψ : ℝ × (Fin d → ℝ) → ℝ}
       ((tsupport_spaceDeriv_subset (spaceDeriv ψ i) i) h))
   exact hp (by simp [spaceTime_contOp_eq hψ p, hz])
 
+/-- The spatial heat operator of a compactly supported space-time test function is itself
+compactly supported, since its support lies inside that of `ψ`. -/
 theorem hasCompactSupport_spaceTime_contOp {ψ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : IsSpaceTimeTest ψ) :
     HasCompactSupport (fun p : ℝ × (Fin d → ℝ) => contOp d (fun x => ψ (p.1, x)) p.2) :=

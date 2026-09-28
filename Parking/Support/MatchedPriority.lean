@@ -1,5 +1,17 @@
 import Parking.Support.MatchedCounts
 
+/-!
+# Independence from priorities, and restarting the common-table process
+
+The common-table construction never actually uses the priority function `ρ`: counts, holes
+and departures agree for any two choices of `ρ` (`matchedState_counts_priority`). This lets
+the process be restarted from any time `T`: `matchedRestart` packages the signed excess of
+remaining particles over holes at time `T` as a fresh initial field, and
+`matchedState_restart` shows that running the original process for `T + s` rounds agrees
+with running it for `T` rounds and then restarting from `matchedRestart` for `s` more
+rounds, with the departure odometers adding across the split.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -14,7 +26,8 @@ theorem matchedState_counts_priority (η : Site d → ℤ)
   induction t with
   | zero => simp [matchedCount_zero, matchedState]
   | succ t ih =>
-      have ha (x : Site d) : (matchedArrivals η ρ σ t x).card = (matchedArrivals η ρ' σ t x).card := by
+      have ha (x : Site d) :
+          (matchedArrivals η ρ σ t x).card = (matchedArrivals η ρ' σ t x).card := by
         rw [card_matchedArrivals, card_matchedArrivals]
         simp only [arrivalSlots, ih.1]
       refine ⟨fun x => ?_, fun x => ?_, fun x => ?_⟩

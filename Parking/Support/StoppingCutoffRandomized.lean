@@ -1,4 +1,12 @@
-/-
+import Parking.Support.LinPotentialMaximalTime
+import Parking.Support.StoppingCutoffPathwise
+import Parking.Support.Continuum
+import Parking.Support.ThreeShellSum
+import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+/-!
+# The randomized discrete cutoff-to-true limit
+
 **The randomized discrete cutoff-to-true limit for the stopping-value summand.**
 
 The pathwise cutoff comparison `Parking.abs_stoppingSup_sub_cutoffStoppingSup_pathwise`
@@ -31,14 +39,9 @@ reasoning needed for either inequality), and threshold `M₀(R) := n₀(R)·R`. 
 
 Once the pathwise error rate is eventually `< ε`, `{ε < |diff|}` is contained in the exceptional
 event, so the final `Tendsto ... (𝓝 0)`
-(`Parking.tendsto_measure_stoppingSup_sub_cutoffStoppingSup_zero`) follows by the squeeze
-theorem. No `External` is registered or consumed: every theorem here is proved, not cited.
+(`Parking.tendsto_measure_stoppingSup_sub_cutoffStoppingSup_zero`) follows by the squeeze theorem.
+No `External` is registered or consumed: every theorem here is proved, not cited.
 -/
-import Parking.Support.LinPotentialMaximalTime
-import Parking.Support.StoppingCutoffPathwise
-import Parking.Support.Continuum
-import Parking.Support.ThreeShellSum
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal
@@ -69,6 +72,8 @@ def gridSup (η : Site d → ℝ) (z0 : Site d) (n0 A2 : ℕ) : ℝ :=
     ⟨(0, (0 : Site d)), gridSup_finset_nonempty n0 A2⟩
     (fun p : ℕ × Site d => |linPotential η p.1 (z0 + p.2)|)
 
+/-- `Parking.gridSup` is nonnegative, since the sup it defines includes the term at `(0, 0)`,
+which is the absolute value `|linPotential η 0 (z0 + 0)|`. -/
 theorem gridSup_nonneg (η : Site d → ℝ) (z0 : Site d) (n0 A2 : ℕ) : 0 ≤ gridSup η z0 n0 A2 := by
   unfold gridSup
   calc (0 : ℝ) ≤ |linPotential η 0 (z0 + 0)| := abs_nonneg _
@@ -114,6 +119,9 @@ theorem abs_stoppingSup_sub_cutoffStoppingSup_of_gridSup_le
 
 /-! ### Connecting the exceptional event to the maximal inequality's own event -/
 
+/-- `Parking.gridSup` exceeds a threshold `t` exactly when some point of the time-space grid
+does: an unfolding of `Finset.lt_sup'_iff` against the product indexing of
+`Parking.gridSup`. -/
 theorem gridSup_gt_iff (η : Site d → ℝ) (z0 : Site d) (n0 A2 : ℕ) (t : ℝ) :
     t < gridSup η z0 n0 A2 ↔
       ∃ m ∈ Finset.range (n0 + 1), ∃ y ∈ boxFinset (0 : Site d) A2,
@@ -184,7 +192,8 @@ theorem tendsto_pathwiseErrorRate_zero (s : ℝ) (hs : 0 < s) (d : ℕ) :
     simp only [mul_zero] at h2
     simpa [div_eq_mul_inv] using h2
   have hnonneg : ∀ᶠ R : ℝ in atTop,
-      (0 : ℝ) ≤ ((⌊s * R ^ 2⌋₊ : ℝ) * R) * (⌊s * R ^ 2⌋₊ : ℝ) * (d : ℝ) ^ 2 / (⌈R ^ 3⌉₊ : ℝ) ^ 2 := by
+      (0 : ℝ) ≤ ((⌊s * R ^ 2⌋₊ : ℝ) * R) * (⌊s * R ^ 2⌋₊ : ℝ) * (d : ℝ) ^ 2
+        / (⌈R ^ 3⌉₊ : ℝ) ^ 2 := by
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with R hR0
     positivity
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds htail hnonneg hbound

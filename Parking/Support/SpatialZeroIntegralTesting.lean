@@ -1,7 +1,12 @@
-/- Simultaneous testing on a fixed compact subset of the positive region. -/
 import LatticeProb.Prob.Scaling.CompactTesting
 import LatticeProb.Prob.Scaling.CompactTestCover
 import Parking.Support.SpaceTimeContOp
+
+/-!
+# Simultaneous zero-integral testing on the positive region
+
+Simultaneous testing on a fixed compact subset of the positive region.
+-/
 
 open MeasureTheory Set
 noncomputable section
@@ -12,10 +17,14 @@ variable {d : ℕ}
 def spaceTimeResidualTest (ψ : ℝ × (Fin d → ℝ) → ℝ) (p : ℝ × (Fin d → ℝ)) : ℝ :=
   -timeDeriv ψ p - contOp d (fun x => ψ (p.1, x)) p.2
 
+/-- The residual test coefficient `spaceTimeResidualTest ψ` is continuous whenever `ψ` is a
+space-time test function, since both `timeDeriv ψ` and `contOp d (ψ (p.1, ·))` are. -/
 theorem continuous_spaceTimeResidualTest {ψ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : IsSpaceTimeTest ψ) : Continuous (spaceTimeResidualTest ψ) :=
   (contDiff_timeDeriv hψ.1).continuous.neg.sub (contDiff_spaceTime_contOp hψ.1).continuous
 
+/-- The residual test coefficient vanishes outside the support of `ψ`, since both
+`timeDeriv ψ` and the spatial operator `contOp d (ψ (p.1, ·))` vanish there. -/
 theorem spaceTimeResidualTest_eq_zero_of_notMem {ψ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : IsSpaceTimeTest ψ) {p : ℝ × (Fin d → ℝ)} (hp : p ∉ tsupport ψ) :
     spaceTimeResidualTest ψ p = 0 := by
@@ -27,6 +36,9 @@ theorem spaceTimeResidualTest_eq_zero_of_notMem {ψ : ℝ × (Fin d → ℝ) →
       (fun h => hp (tsupport_spaceTime_contOp_subset hψ.1 h))
   simp [spaceTimeResidualTest, ht, hx]
 
+/-- Unfolding `spaceTimeResidualTest` splits its integral against a continuous `u` into the
+negated time-derivative integral and the spatial-operator integral, via `integral_sub`
+applied to the two separately integrable pieces. -/
 theorem integral_spaceTimeResidualTest {u ψ : ℝ × (Fin d → ℝ) → ℝ}
     (hu : Continuous u) (hψ : IsSpaceTimeTest ψ) :
     (∫ p, u p * spaceTimeResidualTest ψ p) =

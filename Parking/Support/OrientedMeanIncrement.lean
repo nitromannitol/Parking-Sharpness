@@ -1,7 +1,12 @@
-/- Unfilled scenery forces an increase in the directed particle mean. -/
 import Parking.Support.OrientedArrivalJoint
 import Parking.Support.OrientedNegativeFactor
 import Parking.Support.NegativeMean
+
+/-!
+# Unfilled scenery forces an increase in the particle mean
+
+Unfilled scenery forces an increase in the directed particle mean.
+-/
 
 noncomputable section
 namespace Parking
@@ -9,6 +14,9 @@ open MeasureTheory LatticeProb
 open scoped Classical
 variable {d : ℕ}
 
+/-- `(k + m).toNat` is at least `k + m + max (-k) 0 * [m = 0]`: when `m = 0` this recovers
+`max k 0 = k + max (-k) 0`, and when `m ≠ 0` the extra term vanishes and `(k + m).toNat`
+is at least `k + m` by `le_max_left`. -/
 theorem toNat_add_lower_with_zero_reward (k : ℤ) (m : ℕ) :
     (k : ℝ) + (m : ℝ) + max (-(k : ℝ)) 0 * (if m = 0 then (1 : ℝ) else 0) ≤
       ((k + (m : ℤ)).toNat : ℝ) := by
@@ -24,6 +32,10 @@ theorem toNat_add_lower_with_zero_reward (k : ℤ) (m : ℕ) :
   · simp only [if_neg hm, mul_zero, add_zero]
     exact le_max_left _ _
 
+/-- The particle mean's increment `meanU (orientedLaw d ν) (n + 1) - meanU (orientedLaw d
+ν) n` is at least the expected negative part `∫ max (-k) 0 ∂ν` times the probability of
+no arrival at the origin by round `n`, obtained by integrating the pointwise bound
+`toNat_add_lower_with_zero_reward` applied to the odometer recursion at the origin. -/
 theorem oriented_mean_increment_noArrival (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) :
     (∫ k : ℤ, max (-(k : ℝ)) 0 ∂ν) *

@@ -1,4 +1,10 @@
-/-
+import Parking.Support.NearDensity
+import Parking.Support.NearTiltInterval
+import Parking.Frozen.CriticalDensity
+
+/-!
+# The logarithmic lower bound above dimension three
+
 The lower bound of `thm:near` in the limit mean, above dimension three
 (`parking.tex:2911-2927`).
 
@@ -14,9 +20,6 @@ horizon `n`.  The horizon `n = ⌈1/δ⌉` makes that loss at most `2K` while ke
 `log n ≥ log(e/δ) - 1`, so half of the critical constant survives once `log(e/δ)` is
 large enough.
 -/
-import Parking.Support.NearDensity
-import Parking.Support.NearTiltInterval
-import Parking.Frozen.CriticalDensity
 
 open MeasureTheory LatticeProb
 open scoped ENNReal

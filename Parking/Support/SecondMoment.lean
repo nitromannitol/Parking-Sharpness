@@ -1,5 +1,8 @@
-/-
-The second moment of the parking odometer at the critical density.
+import Parking.Support.UpperTarget
+import Parking.Support.MomentLimits
+
+/-!
+# The second moment of the parking odometer at the critical density
 
 `eq:critical-moment` bounds the `r`-th moment root of `U_n(0)` for every
 `r ≥ 2`; Steps 2 and 3 of `thm:upper` choose `r = 8` below dimension four and
@@ -9,8 +12,6 @@ the mean by Jensen, as `Parking.exists_target` does, gives the bound the proof
 of `prop:everyone-settles` quotes at `parking.tex:1526-1529`:
 `(E U_n(0)^2)^{1/2} ≤ C (E u_n(0) + log n)`.
 -/
-import Parking.Support.UpperTarget
-import Parking.Support.MomentLimits
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm)
@@ -21,6 +22,11 @@ open MeasureTheory LatticeProb Filter
 
 variable {d : ℕ}
 
+/-- For every `n ≥ 2` there is an exponent `r ≥ 2`, either `8` below dimension four or
+`⌈log(n+1)⌉` above it, at which `U_n(0)^r` is integrable and its `r`-th moment root is
+bounded by `C (meanu (law d ν) n + log n)`, obtained from the critical-moment bound
+`exists_critical_moment` after absorbing the Green-function error terms of
+`upper_error_low`/`upper_error_high` into the mean via the growth lower bound. -/
 theorem exists_rNorm_target (hd : 1 ≤ d) (hBern : Parking.External.Bernstein)
     (hConc : Parking.External.UConcentration)
     (hGrowth : Parking.External.SandpileGrowth) (hGN : Parking.External.GreenNorms)
@@ -88,6 +94,9 @@ theorem exists_rNorm_target (hd : 1 ≤ d) (hBern : Parking.External.Bernstein)
             nlinarith [h1, h2]
 
 
+/-- `E U_n(0)^2 ≤ C (meanu (law d ν) n + log n)^2`, obtained by specializing
+`exists_rNorm_target` at `r = 2` after comparing that moment root with the one at the
+target's own larger exponent `r` through monotonicity of `rNorm` in the exponent. -/
 theorem exists_second_moment (hd : 1 ≤ d) (hBern : Parking.External.Bernstein)
     (hConc : Parking.External.UConcentration)
     (hGrowth : Parking.External.SandpileGrowth) (hGN : Parking.External.GreenNorms)

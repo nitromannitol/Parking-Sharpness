@@ -1,25 +1,3 @@
-/-
-Proposition 11.4 of parking.tex, frozen.  `parking.tex:2844-2860` (label
-`prop:near-divisible`), in the setting of `parking.tex:2588-2598`:
-
-  "For all sufficiently small $\delta>0$,
-   $\E u_\infty^\delta(0)\leq C\delta^{-3}$ for $d=1$, $C\delta^{-1}$ for
-   $d=2$, $C\delta^{-1/3}$ for $d=3$, $C\log(e/\delta)$ for $d\geq4$.
-   The reverse inequality holds when $d\leq4$, and when $d\geq5$ the lower
-   bound is $c[\log(e/\delta)]^{2/d}$.  If in addition $\eta_\delta(0)$ is
-   bounded uniformly in $\delta$, then
-   $\E u_\infty^\delta(0)\asymp[\log(e/\delta)]^{2/d}$ when $d\geq5$."
-
-The four upper rates are `Parking.nearRate`, the function already used by
-`thm:near`.  The mean is read in `ℝ≥0∞` as the supremum of the increasing
-sequence `E u_n^δ(0)`, so that an infinite mean is `⊤` and not a junk value.
-"Bounded uniformly in `δ`" is a common bound on the support of every `ν δ`.
-The results the proof quotes without proving them here enter as explicit
-hypotheses.  Step 1 applies `lem:mean-horizon`, whose own Step 1 cites
-`eq:green-norms` at `parking.tex:2805`, and Step 3 reads the two Green rates
-again at a bounded reference law, so the node carries
-`Parking.External.GreenNorms` as a fourth explicit hypothesis.
--/
 import Parking.Support.NearBounded
 import Parking.External.SandpileGrowth
 import Parking.External.Stopping
@@ -27,6 +5,28 @@ import Parking.External.UConcentration
 import Parking.External.UConcentrationProved
 import Parking.External.GreenNormsProved
 import Parking.Support.Near
+
+/-!
+# The near-critical divisible sandpile mean (frozen)
+
+Proposition 11.4 of parking.tex, frozen. `parking.tex:2844-2860` (label
+`prop:near-divisible`), in the setting of `parking.tex:2588-2598`:
+
+"For all sufficiently small $\delta>0$, $\E u_\infty^\delta(0)\leq C\delta^{-3}$ for $d=1$,
+$C\delta^{-1}$ for $d=2$, $C\delta^{-1/3}$ for $d=3$, $C\log(e/\delta)$ for $d\geq4$. The
+reverse inequality holds when $d\leq4$, and when $d\geq5$ the lower bound is
+$c[\log(e/\delta)]^{2/d}$. If in addition $\eta_\delta(0)$ is bounded uniformly in $\delta$,
+then $\E u_\infty^\delta(0)\asymp[\log(e/\delta)]^{2/d}$ when $d\geq5$."
+
+The four upper rates are `Parking.nearRate`, the function already used by `thm:near`. The
+mean is read in `ℝ≥0∞` as the supremum of the increasing sequence `E u_n^δ(0)`, so that an
+infinite mean is `⊤` and not a junk value. "Bounded uniformly in `δ`" is a common bound on
+the support of every `ν δ`. The results the proof quotes without proving them here enter as
+explicit hypotheses. Step 1 applies `lem:mean-horizon`, whose own Step 1 cites
+`eq:green-norms` at `parking.tex:2805`, and Step 3 reads the two Green rates again at a
+bounded reference law, so the node carries `Parking.External.GreenNorms` as a fourth
+explicit hypothesis.
+-/
 
 open MeasureTheory
 open scoped ENNReal

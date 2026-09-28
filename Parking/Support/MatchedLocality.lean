@@ -1,6 +1,17 @@
 import Parking.Support.MatchedCounts
 import Parking.Support.KernelBridge
 
+/-!
+# Finite propagation speed for the common-table construction
+
+A finite propagation speed (locality) lemma for the common-table (`matched`) construction:
+if two initial fields and two round-noise sequences agree throughout the box of radius
+`R + t` around a site `v` for the first `t` rounds, then the per-round counts, the number
+of holes, and the departure odometer agree at every site of the smaller box of radius `R`.
+The proof inducts on the time horizon `t`, growing the agreement radius by one round at a
+time.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb

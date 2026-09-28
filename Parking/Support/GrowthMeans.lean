@@ -1,8 +1,11 @@
-/-
+import Parking.Frozen.Master
+
+/-!
+# Growth of the mean particle odometer
+
 The growth of the mean particle odometer, obtained by inserting the mean
 sandpile estimates into the master comparison.
 -/
-import Parking.Frozen.Master
 
 noncomputable section
 namespace Parking

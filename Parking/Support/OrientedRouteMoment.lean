@@ -1,11 +1,20 @@
-/- Removing the stack cutoff in the directed routing martingale estimate. -/
 import Parking.Support.OrientedChargeMoment
+
+/-!
+# Removing the stack cutoff in the routing moment estimate
+
+Removing the stack cutoff in the directed routing martingale estimate.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- **The moment bound on the finite (uncut) routing martingale.**  Letting the stack
+cutoff `M` of `exists_oriented_truncated_route_moment` tend to infinity and passing to
+the limit under `integral_le_of_tendsto` gives the same `Lᵖ` bound for the uncut route
+`orientedFiniteRoute`. -/
 theorem exists_oriented_finite_route_moment (hBern : External.Bernstein) :
     ∃ C : ℝ, 0 < C ∧ ∀ (d : ℕ), 1 ≤ d → ∀ (ν : Measure ℤ), CriticalLaw ν →
       ∀ (S : Finset (Site d)) (m l : Site d → ℕ) (n : ℕ), (∀ y ∈ S, m y ≤ n) →
@@ -41,11 +50,12 @@ theorem exists_oriented_finite_route_moment (hBern : External.Bernstein) :
     rwa [← Real.rpow_mul (integral_nonneg fun _ => Real.rpow_nonneg (abs_nonneg _) r),
       one_div, inv_mul_cancel₀ hr0.ne', Real.rpow_one] at h
   have hiF : Integrable (fun z => |orientedFiniteRoute S m l z| ^ r) Q :=
-    integrable_oriented_route_rpow_of_bound hd ν hν S m n hm _ (measurable_orientedFiniteRoute S m l)
-      (abs_orientedFiniteRoute_le hd S m l) (by linarith)
+    integrable_oriented_route_rpow_of_bound hd ν hν S m n hm _
+      (measurable_orientedFiniteRoute S m l) (abs_orientedFiniteRoute_le hd S m l) (by linarith)
   have hiT (M : ℕ) : Integrable (fun z => |orientedTruncatedRoute S m l M z| ^ r) Q :=
-    integrable_oriented_route_rpow_of_bound hd ν hν S m n hm _ (measurable_orientedTruncatedRoute S m l M)
-      (abs_orientedTruncatedRoute_le hd S m l M) (by linarith)
+    integrable_oriented_route_rpow_of_bound hd ν hν S m n hm _
+      (measurable_orientedTruncatedRoute S m l M) (abs_orientedTruncatedRoute_le hd S m l M)
+      (by linarith)
   have hconv : ∀ᵐ z ∂Q, Filter.Tendsto (fun M => |orientedTruncatedRoute S m l M z| ^ r)
       Filter.atTop (nhds (|orientedFiniteRoute S m l z| ^ r)) := by
     filter_upwards [] with z

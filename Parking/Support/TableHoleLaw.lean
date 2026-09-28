@@ -1,5 +1,16 @@
 import Parking.Support.ClippedTable
 
+/-!
+# The hole-count law under the table dynamics
+
+Transfers the marginal law of hole counts from the original process to the table
+process built in `Support/ClippedTable.lean`: `map_tableHole` shows the common-table
+hole count at `(T, x)` has the same law as `H` under the original process, and
+`map_clippedTableHole` extends this to the clipped and flattened dynamics used for
+Kolmogorov moment bounds. `holeProb_eq_clippedTable` reads off the hole survival
+probability at the origin from that clipped law.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -11,7 +22,8 @@ theorem map_tableHole (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν
     ((iidLaw d ν).prod (roundNoiseLaw d)).map
         (fun ω => (matchedState ω.1 0 ω.2 T).holes x) =
       (law d ν).map (fun ω => H ω T x) := by
-  have h := congrArg (fun μ => μ.map (fun O : CountHistory d => O.2.2 (T, x))) (map_tableHistory hd ν)
+  have h := congrArg (fun μ => μ.map (fun O : CountHistory d => O.2.2 (T, x)))
+    (map_tableHistory hd ν)
   have hm : Measurable (fun O : CountHistory d => O.2.2 (T, x)) :=
     (measurable_pi_apply (T, x)).comp (measurable_snd.comp measurable_snd)
   have hs : Measurable (fun ω : Data d => countHistory (Parking.stackObservables ω)) :=
@@ -19,6 +31,8 @@ theorem map_tableHole (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν
   rw [Measure.map_map hm (measurable_tableHistory hd), Measure.map_map hm hs] at h
   exact h
 
+/-- The clipped and flattened hole count at `(T, x)` is measurable in the field and
+the round noise. -/
 theorem measurable_clippedTableHole (hd : 1 ≤ d) (T : ℕ) (x : Site d) :
     Measurable (fun z : (Site d → ℤ) × FlatRoundNoise d =>
       (matchedState (clippedField z.1) 0 (curryRoundNoise z.2) T).holes x) :=
@@ -33,7 +47,8 @@ theorem map_clippedTableHole (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMea
       (law d ν).map (fun ω => H ω T x) := by
   have h := map_tableHole hd ν T x
   have hΨ := measurePreserving_clippedTable hd ν hclip
-  have hm : Measurable (fun ω : (Site d → ℤ) × RoundNoise d => (matchedState ω.1 0 ω.2 T).holes x) :=
+  have hm : Measurable
+      (fun ω : (Site d → ℤ) × RoundNoise d => (matchedState ω.1 0 ω.2 T).holes x) :=
     (measurableState_matchedState ⟨0, hd⟩ Prod.fst (fun _ => 0) Prod.snd
       measurable_fst measurable_const measurable_snd T).2.2.1 x
   rw [← hΨ.map_eq, Measure.map_map hm hΨ.measurable] at h

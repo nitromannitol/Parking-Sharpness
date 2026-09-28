@@ -1,4 +1,8 @@
-/-
+import Parking.Support.RelabelEquiv
+
+/-!
+# The label order under a relabeling that fixes the index zero
+
 The label order under a relabeling that fixes the index zero.
 
 The construction breaks a tie of equal uniform variables by the label order,
@@ -11,8 +15,6 @@ This is the combinatorial input to the argument for `thm:subcritical`: on the
 event that the uniform variables are pairwise distinct, every tie of the
 tagged driver involves the tagged label, whose index is `0`.
 -/
-
-import Parking.Support.RelabelEquiv
 
 open LatticeProb Equiv
 
@@ -128,11 +130,15 @@ def TaggedTies {d : ℕ} (D : PDriver d) : Prop :=
   ∀ (t : ℕ) (p q : Label d), p ≠ q → D.rank (p, t) = D.rank (q, t) →
     p = ((0 : Site d), 0) ∨ q = ((0 : Site d), 0)
 
+/-- Transfers `TaggedTies` across a relabeling: any tie of `D'` between distinct
+labels `p` and `q` forces one of them to carry index `0`, since it corresponds under
+`RelabelDriver` to a tie of `D`, on which `hties` applies. -/
 theorem tagged_ties_index_zero (hD : RelabelDriver x₀ σ D' D) (hσ0 : σ 0 = 0)
     (hties : TaggedTies D) (t : ℕ) (p q : Label d)
     (hne : p ≠ q) (heq : D'.rank (p, t) = D'.rank (q, t)) : p.2 = 0 ∨ q.2 = 0 := by
   rw [hD.rank p t, hD.rank q t] at heq
-  rcases hties t (permLabel x₀ σ p) (permLabel x₀ σ q) (fun h => hne ((permLabelEquiv x₀ σ).injective h)) heq with h | h
+  rcases hties t (permLabel x₀ σ p) (permLabel x₀ σ q)
+    (fun h => hne ((permLabelEquiv x₀ σ).injective h)) heq with h | h
   · exact Or.inl (index_zero_of_permLabel_tagged hσ0 h)
   · exact Or.inr (index_zero_of_permLabel_tagged hσ0 h)
 
@@ -192,6 +198,9 @@ theorem mem_filter_prec_perm_of_ties (hD : RelabelDriver x₀ σ D' D)
       · exact (labelLT_perm_iff_of_fixes_zero hσ0 hexc).mp hlt
 
 
+/-- The precedence filter's cardinality is invariant under the relabeling: the two
+filtered sets correspond bijectively under `permLabelEquiv`, by
+`mem_filter_prec_perm_of_ties`. -/
 theorem card_filter_prec_perm_of_ties (hD : RelabelDriver x₀ σ D' D)
     (hS : RelabelState x₀ σ S' S)
     (hσ : ∀ i, (D.eta x₀).toNat ≤ i → σ i = i) (hσ0 : σ 0 = 0)

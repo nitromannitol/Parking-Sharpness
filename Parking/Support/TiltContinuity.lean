@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TiltCov
+
+/-!
+# Continuity of the tilted mean
+
 Continuity of the tilted mean in the tilting parameter.
 
 `thm:subcritical` (`parking.tex:2493-2497`) needs `δ(0) = -E η(0) > 0` and the
@@ -12,7 +16,6 @@ with the bound `e^{θk}/(θ-s₁) + |k|` of `Support/TiltCov.lean`, uniform for
 `s ∈ [0, s₁]` with `s₁ < θ`.  The tilted mean is their quotient
 (`Parking.integral_tiltLaw`), and the tilt at `0` is the law itself.
 -/
-import Parking.Support.TiltCov
 
 open LatticeProb (hasDerivWithinAt_integral_exp)
 
@@ -27,6 +30,8 @@ theorem tiltLaw_zero {ν : Measure ℤ} [IsProbabilityMeasure ν] : tiltLaw ν 0
   unfold tiltLaw
   simp
 
+/-- `s ↦ ∫ k · e^{sk} dν` is continuous on `[0, s₁]` for `s₁ < θ`, by dominated convergence
+against the integrable dominating function `e^{θk}/(θ-s₁) + |k|` of `abs_mul_exp_le`. -/
 theorem continuousOn_integral_mul_exp {ν : Measure ℤ} [IsProbabilityMeasure ν] {θ : ℝ}
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * k)) ν)
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) {s₁ : ℝ} (hs₁θ : s₁ < θ) :
@@ -55,6 +60,8 @@ theorem continuousOn_integral_mul_exp {ν : Measure ℤ} [IsProbabilityMeasure �
       continuous_const.mul (Real.continuous_exp.comp (continuous_id.mul continuous_const))
     exact (h1.continuousAt.tendsto).mono_left nhdsWithin_le_nhds
 
+/-- `s ↦ ∫ e^{sk} dν` is continuous on `[0, s₁]` for `s₁ < θ`, since it has a derivative
+there (`LatticeProb.hasDerivWithinAt_integral_exp`). -/
 theorem continuousOn_integral_exp {ν : Measure ℤ} [IsProbabilityMeasure ν] {θ : ℝ}
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * k)) ν)
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) {s₁ : ℝ} (hs₁θ : s₁ < θ) :
@@ -69,6 +76,9 @@ theorem continuousOn_integral_exp {ν : Measure ℤ} [IsProbabilityMeasure ν] {
       (Set.Icc 0 s₁) s₀ := hd.continuousWithinAt.mono hsub
   simpa using hc
 
+/-- The drift `s ↦ drift ν s` is continuous on `[0, s₁]` for `s₁ < θ`, being the quotient
+`-(numerator/denominator)` of the two continuous integrals above (`Parking.integral_tiltLaw`
+identifies the tilted mean with this quotient). -/
 theorem continuousOn_drift {ν : Measure ℤ} [IsProbabilityMeasure ν] {θ : ℝ}
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * k)) ν)
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) {s₁ : ℝ} (hs₁θ : s₁ < θ) :

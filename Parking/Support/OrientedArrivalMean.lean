@@ -1,27 +1,37 @@
-/- The conditional mean of arrivals for the directed count recursion. -/
 import Parking.Support.OrientedGivenBound
 import Parking.Support.OrientedInstructionIntegral
 import Parking.Support.FiniteRandomCount
+
+/-!
+# The conditional mean of directed arrivals
+
+The conditional mean of arrivals for the directed count recursion.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The number of arrivals at `y + unit i` from `y` is integrable over the routing
+instructions, with mean `(d : ℝ)⁻¹` times the mean directed odometer at `y`, since each
+instruction independently routes to `y + unit i` with probability `1 / d`. -/
 theorem integral_oriented_arrivals_given (hd : 1 ≤ d) (η : Site d → ℤ)
     (n : ℕ) (y : Site d) (i : Fin d) :
     Integrable (fun σ : Site d × ℕ → Site d =>
       (arrivals σ y (y + unit i) (orientedOdometer η σ n y) : ℝ)) (orientedStackLaw d) ∧
       (∫ σ : Site d × ℕ → Site d,
         (arrivals σ y (y + unit i) (orientedOdometer η σ n y) : ℝ) ∂(orientedStackLaw d)) =
-          (d : ℝ)⁻¹ * ∫ σ : Site d × ℕ → Site d, (orientedOdometer η σ n y : ℝ) ∂(orientedStackLaw d) := by
+          (d : ℝ)⁻¹ * ∫ σ : Site d × ℕ → Site d, (orientedOdometer η σ n y : ℝ)
+            ∂(orientedStackLaw d) := by
   classical
   haveI := orientedStackLaw_isProbability hd
   haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
     fun q => orientedInstructionLaw_isProbability hd q.1
   have hp (j : ℕ) : (orientedStackLaw d).real {σ : Site d × ℕ → Site d | σ (y, j) = y + unit i} =
       (d : ℝ)⁻¹ := by
-    change ((orientedStackLaw d) ((fun σ : Site d × ℕ → Site d => σ (y, j)) ⁻¹' {y + unit i})).toReal = _
+    change ((orientedStackLaw d) ((fun σ : Site d × ℕ → Site d => σ (y, j))
+      ⁻¹' {y + unit i})).toReal = _
     rw [← Measure.map_apply (measurable_pi_apply (y, j)) (measurableSet_singleton _)]
     rw [show (orientedStackLaw d).map (fun σ : Site d × ℕ → Site d => σ (y, j)) =
       orientedInstructionLaw y from Measure.infinitePi_map_eval _ (y, j)]
@@ -44,6 +54,9 @@ theorem integral_oriented_arrivals_given (hd : 1 ≤ d) (η : Site d → ℤ)
   ext j
   simp
 
+/-- The mean directed arrival count at `x` and horizon `n` is the discrete Laplacian
+`orientedOp` of the mean directed odometer, obtained by summing `integral_oriented_arrivals_given`
+over the `d` incoming neighbours of `x`. -/
 theorem integral_orientedArrivalCount_given (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     (∫ σ : Site d × ℕ → Site d, (orientedArrivalCount η σ n x : ℝ) ∂(orientedStackLaw d)) =
       orientedOp (fun y => ∫ σ : Site d × ℕ → Site d,

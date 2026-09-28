@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Pathwise
+
+/-!
+# Lemma 5.1: pathwise comparison of the odometers (frozen)
+
 Lemma 5.1 of parking.tex, frozen.  `parking.tex:976-985` (label
 `lem:pathwise-comparison`):
 
@@ -11,7 +15,6 @@ whose identity the proof uses, the instructions of a realization are neighbours
 of the site carrying them, since `ρ_j(y)` has the law `P(y,·)`
 (`parking.tex:632-636`); without that the identity itself fails.
 -/
-import Parking.Support.Pathwise
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.Frozen.pathwise_comparison (d : ℕ) (hd : 1 ≤ d) (ω : Parking.Data d)

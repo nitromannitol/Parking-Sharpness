@@ -1,4 +1,12 @@
-/-
+import Parking.Support.WalkMaximal
+import Parking.Support.ContSpatialValue
+import LatticeProb.Prob.Scaling.CramerWold
+import LatticeProb.Prob.Scaling.BrownianFdd
+import LatticeProb.Prob.Scaling.WalkCLT
+
+/-!
+# The characteristic-function limit of the rescaled simple random walk
+
 The finite-dimensional characteristic-function limit of the `d`-dimensional simple random
 walk's own rescaled path: the scalar core of `hWalk`, the hypothesis
 `Parking.External.SpatialStoppingStability` needs.  This is the analogue, for the SIMPLE
@@ -45,9 +53,9 @@ sum of logs converging to `-Q/(2d)`; lifting through `Real.exp_sum`/`Real.exp_lo
 
 `one_sub_cos_le_sq_div_two`, `one_sub_cos_nonneg`, `tendsto_nat_floor_div`,
 `sum_sq_indicator` and `sum_range_swap_indicator` are general-purpose real-analysis and
-finite-sum lemmas, no Parking content (`LatticeProb/Prob/Scaling/WalkCLT.lean`).  `tendsto_nat_floor_div`
-and `sum_sq_indicator` match the oriented node's own `TightWalk.lean` lemmas of the same
-mathematical content, since their proofs use nothing about the driving distribution, and
+finite-sum lemmas, no Parking content (`LatticeProb/Prob/Scaling/WalkCLT.lean`).
+`tendsto_nat_floor_div` and `sum_sq_indicator` match the oriented node's own `TightWalk.lean` lemmas
+of the same mathematical content, since their proofs use nothing about the driving distribution, and
 `sum_range_swap_indicator` is the same "successive-increments" swap argument generalized from a
 single weight function to an arbitrary one, used once per coordinate inside the product-formula
 proof.
@@ -76,11 +84,6 @@ modification (`AEMeasurable.mk`) throughout the Cramer-Wold/Portmanteau machiner
 back to the true process by the a.e. equality at the very end (`Measure.map_congr`,
 `integral_congr_ae`), exactly as a modification of a pre-Brownian motion is itself pre-Brownian.
 -/
-import Parking.Support.WalkMaximal
-import Parking.Support.ContSpatialValue
-import LatticeProb.Prob.Scaling.CramerWold
-import LatticeProb.Prob.Scaling.BrownianFdd
-import LatticeProb.Prob.Scaling.WalkCLT
 
 open LatticeProb.Scaling.WalkCLT (sum_sq_indicator tendsto_nat_floor_div)
 
@@ -94,18 +97,21 @@ namespace Parking
 general "active coefficient" `Λ : Fin d → ℝ`**: `∫ b, exp(i·x·Λ(b.1)·sign(b.2)) ∂(stepLaw d)
 = (1/d)·∑ℓ cos(x·Λ(ℓ))`. -/
 theorem spat_integral_stepLaw_cexp (d : ℕ) (hd : 1 ≤ d) (x : ℝ) (Λ : Fin d → ℝ) :
-    ∫ b : Fin d × Bool, Complex.exp (((x * Λ b.1 * (if b.2 then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I)
+    ∫ b : Fin d × Bool,
+        Complex.exp (((x * Λ b.1 * (if b.2 then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I)
         ∂(stepLaw d)
       = ((1 / d : ℝ) * ∑ ℓ : Fin d, Real.cos (x * Λ ℓ) : ℂ) := by
   haveI := stepLaw_isProbability hd
   have hfin : ∀ b : Fin d × Bool,
-      Integrable (fun b' => Complex.exp (((x * Λ b'.1 * (if b'.2 then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I))
+      Integrable (fun b' =>
+        Complex.exp (((x * Λ b'.1 * (if b'.2 then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I))
         (Measure.dirac b) := fun b => integrable_dirac (by simp)
   rw [stepLaw, integral_smul_measure, integral_finsetSum_measure (fun b _ => hfin b)]
   simp only [integral_dirac]
   rw [Complex.real_smul, Fintype.sum_prod_type]
   rw [ENNReal.toReal_inv, ENNReal.toReal_mul, ENNReal.toReal_ofNat, ENNReal.toReal_natCast]
-  have hcos2 : ∀ z : ℂ, Complex.cos z = (Complex.exp (z * Complex.I) + Complex.exp (-z * Complex.I)) / 2 :=
+  have hcos2 : ∀ z : ℂ, Complex.cos z =
+      (Complex.exp (z * Complex.I) + Complex.exp (-z * Complex.I)) / 2 :=
     fun z => Complex.ext rfl rfl
   have hterm : ∀ ℓ : Fin d,
       (∑ s : Bool, Complex.exp (((x * Λ ℓ * (if s then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I))
@@ -125,7 +131,8 @@ theorem spat_integral_stepLaw_cexp (d : ℕ) (hd : 1 ≤ d) (x : ℝ) (Λ : Fin 
       rw [Complex.ofReal_cos]
     rw [hcr] at hkey
     linear_combination -2 * hkey
-  rw [show (∑ x_1 : Fin d, ∑ s : Bool, Complex.exp (((x * Λ x_1 * (if s then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I))
+  rw [show (∑ x_1 : Fin d, ∑ s : Bool,
+        Complex.exp (((x * Λ x_1 * (if s then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I))
       = ∑ ℓ : Fin d, (2 * Real.cos (x * Λ ℓ) : ℂ) from Finset.sum_congr rfl (fun ℓ _ => hterm ℓ)]
   rw [← Finset.mul_sum]
   push_cast
@@ -149,12 +156,14 @@ theorem charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → 
   set k : Fin m → ℕ := fun i => ⌊(n:ℝ)*ts i⌋₊ with hk
   set K : ℕ := ⌊(n:ℝ)*T⌋₊ with hK
   set Λ : ℕ → Fin d → ℝ := fun j ℓ => ∑ i, if j < k i then t i ℓ else 0 with hΛdef
-  have hkK : ∀ i, k i ≤ K := fun i => Nat.floor_mono (mul_le_mul_of_nonneg_left (hts i).2 (Nat.cast_nonneg n))
+  have hkK : ∀ i, k i ≤ K := fun i =>
+    Nat.floor_mono (mul_le_mul_of_nonneg_left (hts i).2 (Nat.cast_nonneg n))
   have hcomb : ∀ p : ℕ → Fin d × Bool,
       (∑ i, ∑ ℓ, t i ℓ * spatialScaledSite n (walkPath (0:Site d) p (k i)) ℓ)
         = (∑ j ∈ Finset.range K, ∑ ℓ : Fin d, Λ j ℓ * coordStep ℓ (p j)) / Real.sqrt n := by
     intro p
-    have hstep : ∀ i ℓ, spatialScaledSite n (walkPath (0:Site d) p (k i)) ℓ = coordSum ℓ (k i) p / Real.sqrt n := by
+    have hstep : ∀ i ℓ, spatialScaledSite n (walkPath (0:Site d) p (k i)) ℓ
+        = coordSum ℓ (k i) p / Real.sqrt n := by
       intro i ℓ; unfold spatialScaledSite; rw [coordSum_eq_walkPath]
     calc ∑ i, ∑ ℓ, t i ℓ * spatialScaledSite n (walkPath (0:Site d) p (k i)) ℓ
         = ∑ i, ∑ ℓ, t i ℓ * (coordSum ℓ (k i) p / Real.sqrt n) :=
@@ -194,7 +203,8 @@ theorem charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → 
     filter_upwards with p
     exact hcombY p
   rw [hmapeq]
-  have hgmeas : ∀ j : ℕ, Measurable (fun b : Fin d × Bool => Λ j b.1 * (if b.2 then (1:ℝ) else -1)) :=
+  have hgmeas : ∀ j : ℕ, Measurable
+      (fun b : Fin d × Bool => Λ j b.1 * (if b.2 then (1:ℝ) else -1)) :=
     fun j => Measurable.of_discrete
   have hcont : Continuous
       (fun x : ℝ => Complex.exp ((↑x : ℂ) * Complex.I)) :=
@@ -212,71 +222,91 @@ theorem charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → 
   simp_rw [hone]
   rw [integral_map hfdep.aemeasurable hcont.aestronglyMeasurable]
   have hexpand : ∀ p : ℕ → Fin d × Bool,
-      Complex.exp (((((∑ j ∈ Finset.range K, Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)) / Real.sqrt n) : ℝ) : ℂ)
+      Complex.exp (((((∑ j ∈ Finset.range K, Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1))
+          / Real.sqrt n) : ℝ) : ℂ)
           * Complex.I)
         = ∏ j ∈ Finset.range K, Complex.exp
-          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) := by
+          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I) := by
     intro p
-    have hcast : ((((∑ j ∈ Finset.range K, Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)) / Real.sqrt n) : ℝ) : ℂ)
-        = ∑ j ∈ Finset.range K, ((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) := by
+    have hcast : ((((∑ j ∈ Finset.range K, Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1))
+        / Real.sqrt n) : ℝ) : ℂ)
+        = ∑ j ∈ Finset.range K, ((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) := by
       rw [Finset.sum_div]
       push_cast
       rfl
     rw [hcast, Finset.sum_mul, Complex.exp_sum]
   simp_rw [hexpand]
   have hIndep : (∫ p, ∏ j ∈ Finset.range K, Complex.exp
-        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d))
+        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d))
       = ∏ j ∈ Finset.range K, ∫ p, Complex.exp
-        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) := by
+        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) := by
     have hind : iIndepFun (fun (j : ℕ) (p : ℕ → Fin d × Bool) =>
-        Complex.exp (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I))
+        Complex.exp (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) * Complex.I))
         (walkLaw d) :=
       iIndepFun_infinitePi (X := fun (j : ℕ) (b : Fin d × Bool) =>
         Complex.exp (((Λ j b.1 * (if b.2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I))
         (fun _ => Measurable.of_discrete)
     have hind' := hind.precomp (g := fun jj : Fin K => (jj : ℕ)) Fin.val_injective
     have hmeas : ∀ jj : Fin K, AEStronglyMeasurable (fun p : ℕ → Fin d × Bool =>
-        Complex.exp (((Λ (jj:ℕ) (p (jj:ℕ)).1 * (if (p (jj:ℕ)).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ)
+        Complex.exp (((Λ (jj:ℕ) (p (jj:ℕ)).1 * (if (p (jj:ℕ)).2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ)
           * Complex.I)) (walkLaw d) :=
       fun jj => ((Measurable.of_discrete (f := fun b : Fin d × Bool =>
-          Complex.exp (((Λ (jj:ℕ) b.1 * (if b.2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I))).comp
+          Complex.exp (((Λ (jj:ℕ) b.1 * (if b.2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I))).comp
         (measurable_pi_apply (jj:ℕ))).aestronglyMeasurable
     have keyL := hind'.integral_fun_prod_eq_prod_integral hmeas
     calc ∫ p, ∏ j ∈ Finset.range K, Complex.exp
-          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d)
+          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d)
         = ∫ p, ∏ jj : Fin K, Complex.exp
-          (((Λ (jj:ℕ) (p (jj:ℕ)).1 * (if (p (jj:ℕ)).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I)
+          (((Λ (jj:ℕ) (p (jj:ℕ)).1 * (if (p (jj:ℕ)).2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I)
           ∂(walkLaw d) := by
           refine integral_congr_ae (Filter.Eventually.of_forall fun p => ?_)
           exact (Fin.prod_univ_eq_prod_range (fun j => Complex.exp
-            (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I)) K).symm
+            (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+                / Real.sqrt n : ℝ) : ℂ) * Complex.I)) K).symm
       _ = ∏ jj : Fin K, ∫ p, Complex.exp
-          (((Λ (jj:ℕ) (p (jj:ℕ)).1 * (if (p (jj:ℕ)).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I)
+          (((Λ (jj:ℕ) (p (jj:ℕ)).1 * (if (p (jj:ℕ)).2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I)
           ∂(walkLaw d) := keyL
       _ = ∏ j ∈ Finset.range K, ∫ p, Complex.exp
-          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) :=
+          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) :=
           Fin.prod_univ_eq_prod_range (fun j => ∫ p, Complex.exp
-            (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d)) K
+            (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+                / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d)) K
   rw [hIndep]
   have hfactor : ∀ j : ℕ, (∫ p, Complex.exp
-        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d))
+        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d))
       = ((1/d:ℝ) * ∑ ℓ : Fin d, Real.cos ((Λ j ℓ) / Real.sqrt n) : ℂ) := by
     intro j
     have hmap : (walkLaw d).map (fun p : ℕ → Fin d × Bool => p j) = stepLaw d :=
       Measure.infinitePi_map_eval _ _
     have hgmeas' : Measurable (fun b : Fin d × Bool =>
-        Complex.exp (((Λ j b.1 * (if b.2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I)) :=
+        Complex.exp (((Λ j b.1 * (if b.2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) * Complex.I)) :=
       Measurable.of_discrete
     have hpull : (∫ b, Complex.exp
           (((Λ j b.1 * (if b.2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I)
           ∂((walkLaw d).map (fun p : ℕ → Fin d × Bool => p j)))
         = ∫ p, Complex.exp
-          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) :=
+          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) :=
       integral_map (measurable_pi_apply j).aemeasurable hgmeas'.aestronglyMeasurable
     rw [hmap] at hpull
     have h1 : (∫ p, Complex.exp
-          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d))
-        = ∫ b, Complex.exp (((Λ j b.1 * (if b.2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I)
+          (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+              / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d))
+        = ∫ b, Complex.exp (((Λ j b.1 * (if b.2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) * Complex.I)
           ∂(stepLaw d) := hpull.symm
     rw [h1]
     have hrw : ∀ b : Fin d × Bool, ((Λ j b.1 * (if b.2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ)
@@ -291,7 +321,8 @@ theorem charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → 
     ring
   rw [show (∏ j ∈ Finset.range K, ((1/d:ℝ) * ∑ ℓ : Fin d, Real.cos ((Λ j ℓ) / Real.sqrt n) : ℂ))
       = ∏ j ∈ Finset.range K, ∫ p, Complex.exp
-        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1) / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) from
+        (((Λ j (p j).1 * (if (p j).2 then (1:ℝ) else -1)
+            / Real.sqrt n : ℝ) : ℂ) * Complex.I) ∂(walkLaw d) from
     Finset.prod_congr rfl fun j _ => (hfactor j).symm]
 
 /-- **The finite-dimensional characteristic function of the rescaled `d`-dimensional simple
@@ -299,11 +330,13 @@ random walk converges, at every linear combination over evaluation times and coo
 to that of `d` independent real Brownian motions of variance rate `1/d`.** The `d`-
 dimensional analogue of `tendsto_charFun_walkFddLaw`; matches, via `Q`, the covariance
 `LatticeProb.IsBrownianSpace`'s own coordinates carry. -/
-theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → ℝ) (ts : Fin m → ℝ) (T : ℝ)
+theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → ℝ)
+    (ts : Fin m → ℝ) (T : ℝ)
     (hts : ∀ i, ts i ∈ Set.Icc (0:ℝ) T) :
     Tendsto (fun n : ℕ => charFun ((walkLaw d).map (fun p => ∑ i, ∑ ℓ, t i ℓ *
         spatialScaledSite n (walkPath (0:Site d) p ⌊(n:ℝ)*ts i⌋₊) ℓ)) (1:ℝ)) atTop
-      (𝓝 (Complex.exp (-((∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * min (ts i) (ts i') : ℝ) : ℂ) / (2*d)))) := by
+      (𝓝 (Complex.exp
+        (-((∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * min (ts i) (ts i') : ℝ) : ℂ) / (2*d)))) := by
   classical
   have hdR : (0:ℝ) < d := by exact_mod_cast hd
   set k : ℕ → Fin m → ℕ := fun n i => ⌊(n:ℝ)*ts i⌋₊ with hk
@@ -324,7 +357,8 @@ theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fi
   have hSnonneg : 0 ≤ S := Finset.sum_nonneg fun ℓ _ => Finset.sum_nonneg fun i _ => abs_nonneg _
   -- 2. exact combinatorial identity for X2 sum
   have hX2sum : ∀ n : ℕ, 0 < n → ∑ j ∈ Finset.range (K n), X2 n j
-      = (1/(2*d):ℝ) * ∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * (((min (k n i) (k n i') : ℕ):ℝ)/n) := by
+      = (1/(2*d):ℝ) * ∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * (((min (k n i) (k n i') : ℕ):ℝ)/n)
+      := by
     intro n hn0
     have hnR : (0:ℝ) < n := by exact_mod_cast hn0
     have hsqn : (Real.sqrt n)^2 = n := Real.sq_sqrt (le_of_lt hnR)
@@ -343,16 +377,19 @@ theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fi
     refine Finset.sum_congr rfl fun i' _ => ?_
     rw [Nat.cast_min, mul_div_assoc]
   -- 3. limit of X2 sum
-  have hX2lim : Tendsto (fun n : ℕ => ∑ j ∈ Finset.range (K n), X2 n j) atTop (𝓝 ((1/(2*d):ℝ)*Q)) := by
+  have hX2lim : Tendsto (fun n : ℕ => ∑ j ∈ Finset.range (K n), X2 n j) atTop
+      (𝓝 ((1/(2*d):ℝ)*Q)) := by
     have heq : (fun n : ℕ => ∑ j ∈ Finset.range (K n), X2 n j) =ᶠ[atTop]
         (fun n : ℕ => (1/(2*d):ℝ) * ∑ ℓ : Fin d, ∑ i, ∑ i',
           t i ℓ * t i' ℓ * (((min (k n i) (k n i') : ℕ):ℝ)/n)) := by
       filter_upwards [eventually_gt_atTop (0:ℕ)] with n hn
       exact hX2sum n hn
     refine Tendsto.congr' heq.symm ?_
-    have hminlim : ∀ i i', Tendsto (fun n : ℕ => (((min (k n i) (k n i') : ℕ):ℝ)/n)) atTop (𝓝 (min (ts i) (ts i'))) := by
+    have hminlim : ∀ i i', Tendsto (fun n : ℕ => (((min (k n i) (k n i') : ℕ):ℝ)/n)) atTop
+        (𝓝 (min (ts i) (ts i'))) := by
       intro i i'
-      have hm : ∀ n : ℕ, ((min (k n i) (k n i') : ℕ):ℝ)/n = (⌊(n:ℝ)*min (ts i) (ts i')⌋₊ : ℝ)/n := by
+      have hm : ∀ n : ℕ, ((min (k n i) (k n i') : ℕ):ℝ)/n
+          = (⌊(n:ℝ)*min (ts i) (ts i')⌋₊ : ℝ)/n := by
         intro n
         congr 2
         rw [← Monotone.map_min Nat.floor_mono, mul_min_of_nonneg (ts i) (ts i') (Nat.cast_nonneg n)]
@@ -473,7 +510,8 @@ theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fi
         linarith [hTermA, h2]
       -- Term B
       have hTermB : |X2 n j - w| ≤ (5/24) * W n * X2 n j := by
-        have hbound1 : ∀ ℓ : Fin d, |1 - Real.cos (Λ n j ℓ / Real.sqrt n) - (Λ n j ℓ / Real.sqrt n)^2/2|
+        have hbound1 : ∀ ℓ : Fin d, |1 - Real.cos (Λ n j ℓ / Real.sqrt n)
+            - (Λ n j ℓ / Real.sqrt n)^2/2|
             ≤ (5/96) * (Λ n j ℓ / Real.sqrt n)^4 := by
           intro ℓ
           have hle1 : |Λ n j ℓ / Real.sqrt n| ≤ 1 := by
@@ -499,7 +537,8 @@ theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fi
           have h2 : (Λ n j ℓ / Real.sqrt n)^2 ≤ (δ n)^2 := by
             calc (Λ n j ℓ / Real.sqrt n)^2 = |Λ n j ℓ / Real.sqrt n|^2 := (sq_abs _).symm
               _ ≤ (δ n)^2 := pow_le_pow_left₀ (abs_nonneg _) h1 2
-          calc (Λ n j ℓ / Real.sqrt n)^4 = (Λ n j ℓ / Real.sqrt n)^2 * (Λ n j ℓ / Real.sqrt n)^2 := by
+          calc (Λ n j ℓ / Real.sqrt n)^4
+              = (Λ n j ℓ / Real.sqrt n)^2 * (Λ n j ℓ / Real.sqrt n)^2 := by
                 ring
             _ ≤ (δ n)^2 * (Λ n j ℓ / Real.sqrt n)^2 := by
                 have h3 : (0:ℝ) ≤ (Λ n j ℓ / Real.sqrt n)^2 := sq_nonneg _
@@ -581,7 +620,8 @@ theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fi
       have hnn2 := hw_nonneg n j
       linarith
   have hrsum : Tendsto (fun n : ℕ => ∑ j ∈ Finset.range (K n),
-      (Real.log ((1/d:ℝ) * ∑ ℓ : Fin d, Real.cos (Λ n j ℓ / Real.sqrt n)) + X2 n j)) atTop (𝓝 0) := by
+      (Real.log ((1/d:ℝ) * ∑ ℓ : Fin d, Real.cos (Λ n j ℓ / Real.sqrt n)) + X2 n j))
+      atTop (𝓝 0) := by
     have hbound : ∀ᶠ n : ℕ in atTop, |∑ j ∈ Finset.range (K n),
         (Real.log ((1/d:ℝ) * ∑ ℓ : Fin d, Real.cos (Λ n j ℓ / Real.sqrt n)) + X2 n j)|
           ≤ 3 * W n * M := by
@@ -675,14 +715,16 @@ theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fi
     (Complex.continuous_ofReal.tendsto _).comp hprodlim
   have hcastprod : ∀ n : ℕ, (∏ j ∈ Finset.range (K n),
       ((1/d:ℝ) * ∑ ℓ : Fin d, Real.cos (Λ n j ℓ / Real.sqrt n) : ℂ))
-      = ((∏ j ∈ Finset.range (K n), (1/d:ℝ) * ∑ ℓ : Fin d, Real.cos (Λ n j ℓ / Real.sqrt n) : ℝ) : ℂ) := by
+      = ((∏ j ∈ Finset.range (K n),
+          (1/d:ℝ) * ∑ ℓ : Fin d, Real.cos (Λ n j ℓ / Real.sqrt n) : ℝ) : ℂ) := by
     intro n
     rw [Complex.ofReal_prod]
     refine Finset.prod_congr rfl fun j _ => ?_
     push_cast
     ring
   have hval : ((Real.exp (-((1/(2*d):ℝ)*Q)) : ℝ) : ℂ)
-      = Complex.exp (-((∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * min (ts i) (ts i') : ℝ) : ℂ) / (2*d)) := by
+      = Complex.exp
+          (-((∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * min (ts i) (ts i') : ℝ) : ℂ) / (2*d)) := by
     rw [Complex.ofReal_exp]
     congr 1
     rw [← hQ]
@@ -690,7 +732,8 @@ theorem tendsto_charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fi
     ring
   have hfinal : Tendsto (fun n : ℕ => ∏ j ∈ Finset.range (K n),
       ((1/d:ℝ) * ∑ ℓ : Fin d, Real.cos (Λ n j ℓ / Real.sqrt n) : ℂ)) atTop
-      (𝓝 (Complex.exp (-((∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * min (ts i) (ts i') : ℝ) : ℂ) / (2*d)))) := by
+      (𝓝 (Complex.exp
+        (-((∑ ℓ : Fin d, ∑ i, ∑ i', t i ℓ * t i' ℓ * min (ts i) (ts i') : ℝ) : ℂ) / (2*d)))) := by
     refine Tendsto.congr' (Filter.Eventually.of_forall fun n => (hcastprod n).symm) ?_
     rw [← hval]
     exact hcastlim

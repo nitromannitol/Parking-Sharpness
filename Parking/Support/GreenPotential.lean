@@ -1,9 +1,16 @@
-/-
-The Green potential and its decrement under one fresh direction.
--/
 import Parking.Support.NearestGreen
 import Parking.Support.RoundHitting
 import LatticeProb.Walk.ExteriorDirichlet
+
+/-!
+# The Green potential and its decrement under one fresh direction
+
+Bounds the full-space Green function `fullGreen d` by its value at the origin, `escapeConst d`
+(`fullGreen_le_escapeConst`), and computes how one freshly revealed step decreases the Green
+potential `fullGreen d (x - y)` by exactly one unit at the coincidence `x = y`: first for a
+single step (`integral_step_green`), then for one fixed entry of an independent round table
+(`integral_table_green`).
+-/
 
 open LatticeProb (measurable_from_countable')
 

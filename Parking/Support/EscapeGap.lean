@@ -2,6 +2,18 @@ import Parking.Support.EscapePotential
 import LatticeProb.Walk.GreenIdentity
 import LatticeProb.Walk.Decomp
 
+/-!
+# A uniform gap in the escape potential
+
+In dimension `d ≥ 3` the escape potential `escapePotential d x y`, the probability that a walk
+from `y` never hits `x`, is bounded uniformly away from zero once `y ≠ x`. `lazyKernel_le_origin`
+records that the lazy transition kernel is maximized at the origin; `fullGreen_gap` uses it to
+isolate the walk's zero-time term and show the full Green's function at the origin exceeds its
+value elsewhere by at least `1/2`; `escapePotential_gap` converts this into the explicit bound
+`1 / (2 * escapeConst d)`, and `integral_step_escapePotential_gap` transports that gap through
+one averaging step of the walk.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section

@@ -1,10 +1,14 @@
-/- Step 3 of the proof of `thm:oriented-walk` (`parking.tex:3317-3337`): the
-particle odometer and the divisible odometer have the same mean to order
-`n^{1/8}[log(n+1)]^{3/4}`, which is `o(n^{1/4})`.
--/
 import Parking.Support.OrientedStepMoments
 import Parking.Support.OrientedMeanBound
 import Parking.Support.OrientedMeanComparison
+
+/-!
+# Step 3 of the oriented walk theorem: matching means to order `o(n^{1/4})`
+
+Step 3 of the proof of `thm:oriented-walk` (`parking.tex:3317-3337`): the
+particle odometer and the divisible odometer have the same mean to order
+`n^{1/8}[log(n+1)]^{3/4}`, which is `o(n^{1/4})`.
+-/
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (young_absorb)

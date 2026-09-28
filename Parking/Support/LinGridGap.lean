@@ -1,21 +1,3 @@
-/-
-**Item (B) of `prop:spatial-scaling`'s Step 1: the grid gap**
-`linHatInterp(confReal w) R (s,x) − barPotential w R s x → 0` in probability.
-
-The proof runs as follows.  The deterministic corner reduction
-`Parking.hatInterpD_eq_corners`/`Parking.abs_hatInterpD_sub_le_of_forall` reduces the gap to a
-union bound, over the fixed-cardinality (`2·2^d`) corner box, of one-corner tail events; each
-corner tail is bounded via `LatticeProb.Scaling.Chebyshev.measure_gt_le_integral_sq_div_sq` with
-the second moment from `Parking.exists_linPotential_increment_moment` (`q := 2`) and the
-mean-zero and integrability facts of `Parking.Support.LinMeanMoment`; the Green two-point,
-two-time difference is bounded via
-`Parking.exists_green_joint_l2_bound`/`exists_green_joint_sup_bound`; the resulting bound is
-UNIFORM over every corner (it depends only on the fixed cardinality data `graphNorm(c-z0) ≤ d`
-and `m - n0 ≤ 1`, not on which particular corner), so the union bound needs no reindexing of the
-`R`-dependent corner Finsets, only `Finset.sum_le_card_nsmul` at their (`R`-independent)
-cardinalities; the bound's own vanishing is `Parking.tendsto_rpow_spatialStepRate_sq_zero`, the
-three-way dimension asymptotic of `Parking/Support/SpatialStepRateAsymptotic.lean`.
--/
 import Parking.Support.LinMeanMoment
 import Parking.Support.LinIncrementMoment
 import Parking.Support.SpatGreenJoint
@@ -24,6 +6,27 @@ import Parking.Support.BarPotential
 import Parking.Support.HatInterpD
 import Parking.Support.LinInterp
 import LatticeProb.Prob.Scaling.Chebyshev
+
+/-!
+# The grid gap of Step 1, item (B)
+
+Item (B) of `prop:spatial-scaling`'s Step 1: the grid gap
+`linHatInterp(confReal w) R (s,x) − barPotential w R s x → 0` in probability.
+
+The proof runs as follows. The deterministic corner reduction
+`Parking.hatInterpD_eq_corners`/`Parking.abs_hatInterpD_sub_le_of_forall` reduces the gap to a
+union bound, over the fixed-cardinality (`2·2^d`) corner box, of one-corner tail events; each
+corner tail is bounded via `LatticeProb.Scaling.Chebyshev.measure_gt_le_integral_sq_div_sq` with
+the second moment from `Parking.exists_linPotential_increment_moment` (`q := 2`) and the
+mean-zero and integrability facts of `Parking.Support.LinMeanMoment`; the Green two-point,
+two-time difference is bounded via
+`Parking.exists_green_joint_l2_bound`/`exists_green_joint_sup_bound`; the resulting bound is
+uniform over every corner (it depends only on the fixed cardinality data `graphNorm(c-z0) ≤ d`
+and `m - n0 ≤ 1`, not on which particular corner), so the union bound needs no reindexing of the
+`R`-dependent corner Finsets, only `Finset.sum_le_card_nsmul` at their (`R`-independent)
+cardinalities; the bound's own vanishing is `Parking.tendsto_rpow_spatialStepRate_sq_zero`, the
+three-way dimension asymptotic of `Parking/Support/SpatialStepRateAsymptotic.lean`.
+-/
 
 noncomputable section
 
@@ -48,6 +51,8 @@ theorem exists_corner_lt_of_lt_abs_hatInterpD_sub {d : ℕ} (V : ℤ → Site d 
 
 /-! ### `⌊sR²⌋₊ → ∞` -/
 
+/-- For `s > 0`, `⌊s·R²⌋₊ → ∞` as `R → ∞`: `tendsto_nat_floor_atTop` composed with `R ↦ s·R²`
+    tending to infinity, itself `tendsto_pow_atTop` scaled by the positive constant `s`. -/
 theorem tendsto_natFloor_mul_sq_atTop {s : ℝ} (hs : 0 < s) :
     Tendsto (fun R : ℝ => (⌊s * R ^ 2⌋₊ : ℕ)) atTop atTop :=
   tendsto_nat_floor_atTop.comp
@@ -55,9 +60,14 @@ theorem tendsto_natFloor_mul_sq_atTop {s : ℝ} (hs : 0 < s) :
 
 /-! ### `l2Norm` and `supAbs` are nonnegative -/
 
+/-- `l2Norm f` is nonnegative, immediate from `positivity` once its definition (a square root
+    of a sum of squares) is unfolded. -/
 theorem l2Norm_nonneg {d : ℕ} (f : Site d → ℝ) : 0 ≤ l2Norm f := by
   unfold l2Norm; positivity
 
+/-- `supAbs f` is nonnegative: when the pointwise range of `|f|` is bounded above,
+    `0 ≤ |f 0| ≤ supAbs f` via `le_ciSup`; otherwise `Real.iSup_of_not_bddAbove` reduces the
+    goal to the junk value `0 ≤ 0`. -/
 theorem supAbs_nonneg {d : ℕ} (f : Site d → ℝ) : 0 ≤ supAbs f := by
   unfold supAbs
   by_cases hbdd : BddAbove (Set.range fun x : Site d => |f x|)
@@ -126,7 +136,8 @@ theorem exists_corner_tail_bound (hd1 : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure �
         rw [sub_zero, show (2:ℝ) = ((2:ℕ):ℝ) by norm_num, Real.rpow_natCast, sq_abs]
       simp_rw [hpt]
     rw [hlhs_eq] at hbound
-    have hnn : (0:ℝ) ≤ ∫ η, (diff η) ^ 2 ∂(iidLaw d (realLaw ν)) := integral_nonneg fun η => sq_nonneg _
+    have hnn : (0:ℝ) ≤ ∫ η, (diff η) ^ 2 ∂(iidLaw d (realLaw ν)) :=
+        integral_nonneg fun η => sq_nonneg _
     have heqpow : (∫ η, (diff η) ^ 2 ∂(iidLaw d (realLaw ν)))
         = ((∫ η, (diff η) ^ 2 ∂(iidLaw d (realLaw ν))) ^ ((2:ℕ)⁻¹ : ℝ)) ^ (2:ℕ) := by
       rw [Real.rpow_inv_natCast_pow hnn (by norm_num)]
@@ -149,7 +160,8 @@ theorem exists_corner_tail_bound (hd1 : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure �
     have hpow_pos : (0:ℝ) < Real.sqrt 2 ^ d := by positivity
     have hle : Real.sqrt 2 ^ d ≤ Real.sqrt (2 * (n0:ℝ)) ^ d :=
       pow_le_pow_left₀ (Real.sqrt_nonneg _) (Real.sqrt_le_sqrt (by nlinarith)) d
-    exact Real.sqrt_le_sqrt (div_le_div_of_nonneg_left (LatticeProb.diagConst_pos d).le hpow_pos hle)
+    exact Real.sqrt_le_sqrt
+        (div_le_div_of_nonneg_left (LatticeProb.diagConst_pos d).le hpow_pos hle)
   have hD2b : LatticeProb.diagConst d / Real.sqrt (n0:ℝ) ^ d ≤ D2 := by
     rw [hD2def]
     have hpow_pos : (0:ℝ) < Real.sqrt (n0:ℝ) ^ d := by positivity
@@ -161,7 +173,8 @@ theorem exists_corner_tail_bound (hd1 : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure �
   have hl2 : l2Norm (fun z => green d m (c - z) - green d n0 (z0 - z))
       ≤ KL2 * (d:ℝ) * spatialStepRate d (n0 + 1) + D1 := by
     refine hl2b.trans ?_
-    have h1 : KL2 * spatialStepRate d m * (graphNorm (c - z0) : ℝ) ≤ KL2 * (d:ℝ) * spatialStepRate d (n0 + 1) := by
+    have h1 : KL2 * spatialStepRate d m * (graphNorm (c - z0) : ℝ)
+        ≤ KL2 * (d:ℝ) * spatialStepRate d (n0 + 1) := by
       have hrateNonneg : 0 ≤ spatialStepRate d m := by
         have := one_le_spatialStepRate hd1 hd3 m; linarith
       calc KL2 * spatialStepRate d m * (graphNorm (c - z0) : ℝ)
@@ -213,7 +226,8 @@ theorem exists_corner_tail_bound (hd1 : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure �
   have hsqfinal : (Cmom * (Real.sqrt 2 * l2Norm (fun z => green d m (c - z) - green d n0 (z0 - z))
       + 2 * supAbs (fun z => green d m (c - z) - green d n0 (z0 - z)))) ^ 2
         ≤ Cmom ^ 2 * (A + B) ^ 2 * (spatialStepRate d (n0 + 1)) ^ 2 := by
-    have hcombine_nonneg : 0 ≤ Real.sqrt 2 * l2Norm (fun z => green d m (c - z) - green d n0 (z0 - z))
+    have hcombine_nonneg : 0 ≤ Real.sqrt 2 *
+        l2Norm (fun z => green d m (c - z) - green d n0 (z0 - z))
         + 2 * supAbs (fun z => green d m (c - z) - green d n0 (z0 - z)) :=
       add_nonneg (mul_nonneg (Real.sqrt_nonneg _) (l2Norm_nonneg _))
         (mul_nonneg (by norm_num) (supAbs_nonneg _))
@@ -252,7 +266,8 @@ theorem exists_corner_tail_bound (hd1 : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure �
     mul_le_mul_of_nonneg_left hint2 (Real.rpow_nonneg hR.le _)
   calc R ^ ((d:ℝ) - 4) * (∫ η, (diff η) ^ 2 ∂(iidLaw d (realLaw ν)))
       ≤ R ^ ((d:ℝ) - 4) * (Cmom ^ 2 * (A + B) ^ 2 * (spatialStepRate d (n0 + 1)) ^ 2) := hbig
-    _ = Cmom ^ 2 * (A + B) ^ 2 / ε ^ 2 * (R ^ ((d:ℝ) - 4) * (spatialStepRate d (n0 + 1)) ^ 2) * ε ^ 2 := by
+    _ = Cmom ^ 2 * (A + B) ^ 2 / ε ^ 2
+        * (R ^ ((d:ℝ) - 4) * (spatialStepRate d (n0 + 1)) ^ 2) * ε ^ 2 := by
         have hεne : ε ≠ 0 := ne_of_gt hε
         field_simp
 

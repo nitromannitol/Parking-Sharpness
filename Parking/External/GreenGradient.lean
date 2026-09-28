@@ -1,28 +1,30 @@
-/-
-External input: the gradient of the truncated Green function of the simple
-random walk in dimension two and above (`parking.tex:1029-1040`, label
-`eq:green-gradient`), which the paper obtains from the first-difference local
-central limit estimate and the Gaussian bound of Lawler-Limic, Section 2.3.
-
-Stated for `2 ≤ d` only.  In dimension one the gradient is computed exactly
-inside the proof of `lem:gamma-sum`, in `Parking/Support/GammaSum.lean`, so
-nothing is assumed there.  The `Prop` enters only as an explicit hypothesis of
-the results whose proofs use it, and `lem:gamma-sum` carries it that way.
-
-It is no longer an assumption.  The shared library proves the bound for the
-truncated Green function of the simple walk, uniformly in the truncation time,
-which is the form the sum of `lem:gamma-sum` needs, and
-`Parking.External.greenGradient` below discharges the `Prop` against it.  The
-route is the lazy walk, whose truncated Green function at horizon `2m` is the
-simple walk's at horizon `m` smoothed by the binomial profile; the parity
-constraint of the simple walk is what makes the transfer, rather than the lazy
-bound itself, the statement to prove.
-
-The constant depends only on the dimension, so it is bound before the
-truncation time and before the sites.
--/
 import Parking.Support.GreenBridge
 import LatticeProb.Walk.SRWGreenGrad
+
+/-!
+# The Green function gradient bound
+
+External input: the gradient of the truncated Green function of the simple random walk in
+dimension two and above (`parking.tex:1029-1040`, label `eq:green-gradient`), which the paper
+obtains from the first-difference local central limit estimate and the Gaussian bound of
+Lawler-Limic, Section 2.3.
+
+Stated for `2 ≤ d` only. In dimension one the gradient is computed exactly inside the proof of
+`lem:gamma-sum`, in `Parking/Support/GammaSum.lean`, so nothing is assumed there. The `Prop`
+enters only as an explicit hypothesis of the results whose proofs use it, and `lem:gamma-sum`
+carries it that way.
+
+It is no longer an assumption. The shared library proves the bound for the truncated Green
+function of the simple walk, uniformly in the truncation time, which is the form the sum of
+`lem:gamma-sum` needs, and `Parking.External.greenGradient` below discharges the `Prop`
+against it. The route is the lazy walk, whose truncated Green function at horizon `2m` is the
+simple walk's at horizon `m` smoothed by the binomial profile; the parity constraint of the
+simple walk is what makes the transfer, rather than the lazy bound itself, the statement to
+prove.
+
+The constant depends only on the dimension, so it is bound before the truncation time and
+before the sites.
+-/
 
 -- FROZEN-STATEMENT-BEGIN
 /-- "For every $m\geq1$, every $y$, and every neighbor $z$ of $y$,

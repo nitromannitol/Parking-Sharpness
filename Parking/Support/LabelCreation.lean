@@ -1,10 +1,13 @@
-/-
+import Parking.Support.DiscrepancyTransport
+import Parking.Support.OppositeMeans
+
+/-!
+# The initial discrepancy label mass
+
 The initial label mass has the expected absolute resampling size and splits
 exactly into surviving and cancelled labels. Independent directions and
 priorities disappear when integrating a function of the configurations.
 -/
-import Parking.Support.DiscrepancyTransport
-import Parking.Support.OppositeMeans
 
 noncomputable section
 
@@ -78,7 +81,8 @@ theorem Parking.discrepancy_initial_mean_split (hd : 1 ≤ d) (ν : Measure ℤ)
         ∂(Parking.coupledLaw d ν p)) +
       ∫⁻ ω : Parking.CoupledData d, ((Parking.discrepancyDead ω.1.1 ω.1.2 ω.2 t).card : ℝ≥0∞)
         ∂(Parking.coupledLaw d ν p) := by
-  have hmN : Measurable fun ω : Parking.CoupledData d => Parking.discrepancySurvivors ω.1.1 ω.1.2 ω.2 t 0 := by
+  have hmN : Measurable fun ω : Parking.CoupledData d =>
+      Parking.discrepancySurvivors ω.1.1 ω.1.2 ω.2 t 0 := by
     simp_rw [Parking.discrepancySurvivors_eq_sum_sentTo]
     exact Finset.measurable_sum _ fun b _ => Parking.measurable_discrepancySentTo hd t 0 b
   have hm : Measurable fun ω : Parking.CoupledData d =>

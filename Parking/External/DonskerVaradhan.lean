@@ -1,20 +1,22 @@
-/-
-External input: the Donsker-Varadhan estimate for the number of distinct sites
-visited by a random walk, which the paper quotes at `parking.tex:117-121` and
-uses in the proof of `thm:subcritical-tail` at `parking.tex:2514-2517`.
-
-M. D. Donsker and S. R. S. Varadhan, *On the number of distinct sites visited by
-a random walk*, Comm. Pure Appl. Math. 32 (1979), 721-747, Theorem 1: for every
-`a > 0` the logarithm of `E exp(-a|R_t|)` is asymptotic to `-k t^{d/(d+2)}` for a
-constant `k > 0` depending on `a` and the dimension.
-
-Assumed here.  It enters only as an explicit hypothesis of the results whose
-proofs use it.  The expectation is an integral of a strictly positive function
-against a probability measure, so it is positive and its logarithm is not the
-junk value `Real.log 0 = 0`; the constant `k` is positive, so an integral read
-as zero would make the assertion false rather than vacuous.
--/
 import Parking.Support.Range
+
+/-!
+# The Donsker-Varadhan range estimate
+
+External input: the Donsker-Varadhan estimate for the number of distinct sites visited by a
+random walk, which the paper quotes at `parking.tex:117-121` and uses in the proof of
+`thm:subcritical-tail` at `parking.tex:2514-2517`.
+
+M. D. Donsker and S. R. S. Varadhan, *On the number of distinct sites visited by a random
+walk*, Comm. Pure Appl. Math. 32 (1979), 721-747, Theorem 1: for every `a > 0` the logarithm
+of `E exp(-a|R_t|)` is asymptotic to `-k t^{d/(d+2)}` for a constant `k > 0` depending on `a`
+and the dimension.
+
+Assumed here. It enters only as an explicit hypothesis of the results whose proofs use it.
+The expectation is an integral of a strictly positive function against a probability measure,
+so it is positive and its logarithm is not the junk value `Real.log 0 = 0`; the constant `k`
+is positive, so an integral read as zero would make the assertion false rather than vacuous.
+-/
 
 open MeasureTheory
 

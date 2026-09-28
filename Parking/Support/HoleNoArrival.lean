@@ -1,5 +1,15 @@
 import Parking.Support.NoArrivalFlag
 
+/-!
+# Survival of a single hole and its independence from far-away data
+
+A single initial hole at `v` survives to time `t` in the common-table matching exactly when
+`noArrivalFlag η ρ σ t v`, the record of whether any active site has yet entered `v`'s
+priority list, is `true`. Since that flag is determined only by data at `v` and the sites
+that could reach it, it agrees between two initial fields that are equal away from `v` and
+both nonpositive at `v`, regardless of what other data (`ρ`, `ρ'`) drives the matching.
+-/
+
 noncomputable section
 namespace Parking
 open LatticeProb
@@ -18,7 +28,8 @@ theorem matchedHole_eq_one_iff_noArrival (η : Site d → ℤ) (v : Site d) (hv 
       rw [matchedHoles_succ, noArrivalFlag, Bool.and_eq_true, decide_eq_true_eq, ← ih]
       omega
 
-/-- Before the first entrance, any two nonpositive capacities at the target give the same dynamics. -/
+/-- Before the first entrance, any two nonpositive capacities at the target give the same
+dynamics. -/
 theorem noArrivalFlag_same_nonpositive_origin (η ζ : Site d → ℤ) (v : Site d)
     (hη : η v ≤ 0) (hζ : ζ v ≤ 0) (he : ∀ x, x ≠ v → η x = ζ x)
     (ρ ρ' : Label d × ℕ → ℝ) (σ : RoundNoise d) (T : ℕ) :
@@ -41,7 +52,8 @@ theorem noArrivalFlag_same_nonpositive_origin (η ζ : Site d → ℤ) (v : Site
     | succ t ih =>
         by_cases hf : noArrivalFlag η ρ σ t v = true
         · have hc := ih.2 hf
-          have hcard (x : Site d) : (matchedArrivals η ρ σ t x).card = (matchedArrivals ζ ρ' σ t x).card := by
+          have hcard (x : Site d) : (matchedArrivals η ρ σ t x).card =
+              (matchedArrivals ζ ρ' σ t x).card := by
             rw [card_matchedArrivals_eq_countArrivals, card_matchedArrivals_eq_countArrivals,
               show matchedCount η ρ σ t = matchedCount ζ ρ' σ t from funext hc.1]
           refine ⟨by rw [noArrivalFlag, noArrivalFlag, ih.1, hcard], fun hnext => ?_⟩

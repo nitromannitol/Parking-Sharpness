@@ -1,5 +1,15 @@
 import Parking.Support.MomentTail
 
+/-!
+# Fourth-power tail from linear moments and a logarithmic mean
+
+Given a family of nonnegative random variables with linear-in-`r` moment norms
+(`rNorm μ r F ≤ C * (m + r) * B`) and a mean parameter `m` that is itself logarithmically
+bounded by a small probability `h`, this file produces an explicit `A` for which the
+probability of exceeding `A * (1 + log (1/h)) * B` decays like `h ^ 4`. The proof chooses
+the exponent `r` proportional to `1 + log (1/h)` and applies Markov's inequality at that `r`.
+-/
+
 open LatticeProb.MomentNorm (rNorm rNorm_nonneg)
 
 noncomputable section
@@ -26,13 +36,15 @@ theorem exists_log_moment_upper_tail (C D : ℝ) (hC : 0 < C) (hD : 0 < D) :
   have ha : 0 < a := by dsimp only [a]; positivity
   have hmb : m + r ≤ (D + 4) * (1 + L) := by dsimp only [r, L] at *; nlinarith
   have hn : rNorm μ r F ≤ C * (D + 4) * (1 + L) * B :=
-    (hb r hr).2.trans ((mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmb hC.le) hB.le).trans_eq (by ring))
+    (hb r hr).2.trans ((mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmb hC.le)
+      hB.le).trans_eq (by ring))
   have he : Real.exp (-1) * a = C * (D + 4) * (1 + L) * B := by
     dsimp only [a, A]
     rw [Real.exp_neg]
     field_simp
   have hratio : rNorm μ r F / a ≤ Real.exp (-1) := (div_le_iff₀ ha).mpr (by rwa [he])
-  have hi : Integrable (fun ω => |F ω| ^ r) μ := by simpa only [abs_of_nonneg (hF _)] using (hb r hr).1
+  have hi : Integrable (fun ω => |F ω| ^ r) μ := by
+    simpa only [abs_of_nonneg (hF _)] using (hb r hr).1
   have ht := measure_gt_le_rNorm_div_rpow μ F hr0 ha hi
   simp only [abs_of_nonneg (hF _)] at ht
   apply ht.trans

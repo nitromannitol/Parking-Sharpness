@@ -1,22 +1,25 @@
-/-
-**The interpolated, rescaled linear membrane field**, `Parking.linHatInterp`: the
-`(d+1)`-dimensional piecewise multilinear interpolation (`Parking.hatInterpD`,
-`Parking/Support/HatInterpD.lean`) of the grid values of BP's own `Z_R`
-(BouRabeePanagiotis2026, page 27, `Z_R(r,w) := R^{d/2-2} Σ_z g_{⌊R²r⌋}(⌊Rw⌋,z)ζ(z)`), from
-the mesh `R^{-2}Z_+ × R^{-1}Z^d`.  This is BP's own `Z_R^{lin}`, "the standard interpolation
-of `Z_R`" their own text names.
-
-The grid field fed to `hatInterpD` is `fun (m:ℤ) (c:Site d) => R^{d/2-2}·linPotential ζ
-m.toNat c`; evaluating `hatInterpD` at the rescaled point `(R²·s, R·x)` reads off exactly
-`Z_R` at the integer grid points nearest `(R²s, Rx)` and interpolates between them, matching
-`Parking.barDivisible`'s own scaling convention (`R^{d/2-2}·u_{⌊sR²⌋}(⌊Rx⌋)`) with `u`
-replaced by the LINEAR field `linPotential` and the floor replaced by genuine interpolation.
-Continuity is immediate from `Parking.continuous_hatInterpD`, general-purpose and already
-proved; nothing new is needed for it.
--/
 import Parking.Support.HatInterpD
 import Parking.Support.LinPotential
 import Mathlib.Topology.ContinuousMap.BoundedCompactlySupported
+
+/-!
+# The interpolated linear membrane field
+
+The interpolated, rescaled linear membrane field `Parking.linHatInterp`: the
+`(d+1)`-dimensional piecewise multilinear interpolation (`Parking.hatInterpD`,
+`Parking/Support/HatInterpD.lean`) of the grid values of BP's own `Z_R`
+(BouRabeePanagiotis2026, page 27, `Z_R(r,w) := R^{d/2-2} Σ_z g_{⌊R²r⌋}(⌊Rw⌋,z)ζ(z)`), from
+the mesh `R^{-2}ℤ_+ × R^{-1}ℤ^d`. This is BP's own `Z_R^{lin}`, "the standard interpolation
+of `Z_R`" their own text names.
+
+The grid field fed to `hatInterpD` is `fun (m : ℤ) (c : Site d) => R^{d/2-2}·linPotential ζ
+m.toNat c`; evaluating `hatInterpD` at the rescaled point `(R²·s, R·x)` reads off exactly
+`Z_R` at the integer grid points nearest `(R²s, Rx)` and interpolates between them, matching
+`Parking.barDivisible`'s own scaling convention (`R^{d/2-2}·u_{⌊sR²⌋}(⌊Rx⌋)`) with `u`
+replaced by the linear field `linPotential` and the floor replaced by genuine interpolation.
+Continuity is immediate from `Parking.continuous_hatInterpD`, general-purpose and already
+proved; nothing new is needed for it.
+-/
 
 noncomputable section
 

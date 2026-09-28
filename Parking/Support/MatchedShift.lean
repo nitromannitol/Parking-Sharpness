@@ -1,9 +1,15 @@
-/-
-Translation covariance of particle rounds and the coupled common-table
-construction, including the priority ranks and auxiliary noise entries.
--/
 import Parking.Support.Matched
 import Parking.Support.Equivariance
+
+/-!
+# Translation covariance of the common-table construction
+
+Translation covariance of particle rounds and the coupled common-table construction,
+including the priority ranks and auxiliary noise entries. Each stage of the particle-driven
+dynamics (candidate sets, ranks, active labels, next positions, arrivals, settling and the
+resulting state) is shown to commute with a shift `v` of the site lattice, once the driver
+data (initial field, moves and ranks) and the common-table noise are shifted correspondingly.
+-/
 
 noncomputable section
 
@@ -22,8 +28,10 @@ variable {v : Site d} {D' D : Parking.PDriver d} {S' S : State d}
 /-- Translation preserves comparisons of the complete priority keys. -/
 theorem Parking.matchKey_shift_lt (v : Site d) (ρ : Label d × ℕ → ℝ)
     (t : ℕ) (p q : Label d) :
-    Parking.matchKey (LatticeProb.shiftRank v ρ) t p < Parking.matchKey (LatticeProb.shiftRank v ρ) t q ↔
-      Parking.matchKey ρ t (LatticeProb.shiftLabel v p) < Parking.matchKey ρ t (LatticeProb.shiftLabel v q) := by
+    Parking.matchKey (LatticeProb.shiftRank v ρ) t p <
+        Parking.matchKey (LatticeProb.shiftRank v ρ) t q ↔
+      Parking.matchKey ρ t (LatticeProb.shiftLabel v p) <
+          Parking.matchKey ρ t (LatticeProb.shiftLabel v q) := by
   simp only [Parking.matchKey, Prod.Lex.toLex_lt_toLex, LatticeProb.shiftRank]
   rw [show labelKey (LatticeProb.shiftLabel v p) < labelKey (LatticeProb.shiftLabel v q) ↔
     labelKey p < labelKey q from LatticeProb.labelLT_shift v p q]
@@ -41,6 +49,10 @@ theorem Parking.rankIn_shift (v : Site d) (ρ : Label d × ℕ → ℝ) (t : ℕ
   intro q _
   exact Parking.matchKey_shift_lt v ρ t q p
 
+/-- The active labels at a translated site, computed from the field shifted by `-v` and a
+shifted state, are the image under the shift embedding of the active labels at the original
+site: this follows from `candidates_shift` after rewriting the filter predicate along
+`hS.active` and `hS.pos`. -/
 theorem Parking.matchActive_shift (η : Site d → ℤ) (hS : LatticeProb.ShiftState v S' S)
     (t : ℕ) (x : Site d) :
     (Parking.matchActive (fun y => η (y + v)) S' t x).map (LatticeProb.shiftLabelEmb v) =
@@ -54,6 +66,9 @@ theorem Parking.matchActive_shift (η : Site d → ℤ) (hS : LatticeProb.ShiftS
   simp only [Function.comp_def, LatticeProb.shiftLabelEmb_apply, hS.active, hS.pos,
     sub_eq_iff_eq_add]
 
+/-- The particle-driven active labels transport the same way as `matchActive_shift`, since
+`pActiveAt` unfolds to `matchActive` at the driver's own field `D'.eta = fun y => D.eta (y + v)`
+given by `hD.eta`. -/
 theorem Parking.pActiveAt_shift (hD : Parking.PShiftDriver v D' D)
     (hS : LatticeProb.ShiftState v S' S) (t : ℕ) (x : Site d) :
     (Parking.pActiveAt D' S' t x).map (LatticeProb.shiftLabelEmb v) =
@@ -62,12 +77,18 @@ theorem Parking.pActiveAt_shift (hD : Parking.PShiftDriver v D' D)
   rw [show D'.eta = fun y => D.eta (y + v) from funext hD.eta]
   exact Parking.matchActive_shift D.eta hS t x
 
+/-- The next position after one step, translated by `v`, equals the next position computed
+from the shifted driver and state, since `pNextPos` reads `hS.active`, `hS.pos` and `hD.move`
+only through the shifted label `LatticeProb.shiftLabel v p`. -/
 theorem Parking.pNextPos_shift (hD : Parking.PShiftDriver v D' D)
     (hS : LatticeProb.ShiftState v S' S) (t : ℕ) (p : Label d) :
     Parking.pNextPos D' S' t p = Parking.pNextPos D S t (LatticeProb.shiftLabel v p) - v := by
   simp only [Parking.pNextPos, hS.active, hS.pos, hD.move]
   split <;> abel
 
+/-- The particle-driven arrivals at a translated site are the image, under the shift
+embedding, of the arrivals at the original site, by the candidate-set translation
+`candidates_shift` applied at horizon `t + 1` together with `pNextPos_shift`. -/
 theorem Parking.pArrivalsAt_shift (hD : Parking.PShiftDriver v D' D)
     (hS : LatticeProb.ShiftState v S' S) (t : ℕ) (x : Site d) :
     (Parking.pArrivalsAt D' S' t x).map (LatticeProb.shiftLabelEmb v) =
@@ -82,6 +103,9 @@ theorem Parking.pArrivalsAt_shift (hD : Parking.PShiftDriver v D' D)
   simp only [Function.comp_def, LatticeProb.shiftLabelEmb_apply, hS.active,
     Parking.pNextPos_shift hD hS, sub_eq_iff_eq_add]
 
+/-- Settling of a label is translation-invariant: the rank comparison among the shifted
+arrivals transports via `rankIn_shift` and `hr : D'.rank = LatticeProb.shiftRank v D.rank`,
+and the hole count at the shifted next position agrees by `hS.holes`. -/
 theorem Parking.pSettles_shift (hD : Parking.PShiftDriver v D' D)
     (hS : LatticeProb.ShiftState v S' S) (t : ℕ) (p : Label d) :
     Parking.pSettles D' S' t p = Parking.pSettles D S t (LatticeProb.shiftLabel v p) := by
@@ -100,6 +124,9 @@ theorem Parking.pSettles_shift (hD : Parking.PShiftDriver v D' D)
   rw [hS.active, hhole]
   simp only [labelLT, Parking.pNextPos_shift hD hS, hcard]
 
+/-- One step of the particle-driven state is a `ShiftState`-preserving translation, assembled
+from `pSettles_shift`, `pNextPos_shift`, `pArrivalsAt_shift` and `pActiveAt_shift` field by
+field. -/
 theorem Parking.pStep_shift (hD : Parking.PShiftDriver v D' D)
     (hS : LatticeProb.ShiftState v S' S) (t : ℕ) :
     LatticeProb.ShiftState v (Parking.pStep D' S' t) (Parking.pStep D S t) where
@@ -129,6 +156,9 @@ def Parking.shiftRoundSlot (v : Site d) : Parking.RoundSlot d → Parking.RoundS
   | Sum.inl (x, j) => Sum.inl (x + v, j)
   | Sum.inr p => Sum.inr (LatticeProb.shiftLabel v p)
 
+/-- The translated round-slot map is injective: the two summands `Sum.inl`/`Sum.inr` stay
+disjoint, and translation of sites (`add_right_cancel`) and of labels
+(`LatticeProb.shiftLabel_injective`) is itself injective on each summand. -/
 theorem Parking.shiftRoundSlot_injective (v : Site d) :
     Function.Injective (Parking.shiftRoundSlot v) := by
   intro p q h
@@ -146,6 +176,8 @@ theorem Parking.shiftRoundSlot_injective (v : Site d) :
       | inl q => cases h
       | inr q => exact congrArg Sum.inr (LatticeProb.shiftLabel_injective v (Sum.inr_injective h))
 
+/-- The common-table noise translated by `v`: at round `t` it reads the original noise `σ`
+at the slot translated back by `shiftRoundSlot v`. -/
 def Parking.shiftRoundNoise (v : Site d) (σ : Parking.RoundNoise d) : Parking.RoundNoise d :=
   fun t q => σ t (Parking.shiftRoundSlot v q)
 
@@ -157,7 +189,8 @@ theorem Parking.matchSlot_shift (η : Site d → ℤ) (ρ : Label d × ℕ → �
       Parking.matchSlot η ρ S t (LatticeProb.shiftLabel v p) := by
   classical
   have hA : (Parking.matchActive (fun y => η (y + v)) S' t (S'.pos p)).map
-      (LatticeProb.shiftLabelEmb v) = Parking.matchActive η S t (S.pos (LatticeProb.shiftLabel v p)) := by
+      (LatticeProb.shiftLabelEmb v) =
+          Parking.matchActive η S t (S.pos (LatticeProb.shiftLabel v p)) := by
     simpa only [hS.pos, sub_add_cancel] using Parking.matchActive_shift η hS t (S'.pos p)
   have hm := Parking.mem_finset_shift v _ _ hA p
   have hr := Parking.rankIn_shift v ρ t _ _ hA p
@@ -188,7 +221,8 @@ theorem Parking.matchedState_shift (v : Site d) (η : Site d → ℤ)
       refine ⟨fun _ => rfl, ?_, fun _ _ => rfl⟩
       intro p k
       change σ k (Parking.shiftRoundSlot v
-        (Parking.matchSlot _ _ _ k p)) = σ k (Parking.matchSlot _ _ _ k (LatticeProb.shiftLabel v p))
+        (Parking.matchSlot _ _ _ k p)) =
+            σ k (Parking.matchSlot _ _ _ k (LatticeProb.shiftLabel v p))
       rw [Parking.matchSlot_shift η ρ ih]
 
 end

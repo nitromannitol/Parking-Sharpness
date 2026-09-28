@@ -1,28 +1,28 @@
-/-
-Proposition 8.1 of parking.tex, frozen.  `parking.tex:1566-1583` (label
-`prop:discrepancy`):
-
-  "Under the assumptions of Theorem 1.2, suppose $d\leq3$.  For $n\geq1$, let
-   $r=2\vee\lceil\log(n+1)\rceil$.  Then
-   $(\E|U_n(0)-u_n(0)|^r)^{1/r}\leq C\,n^{5/8}[\log(n+1)]^{3/4}$ for $d=1$,
-   $C\,n^{1/4}[\log(n+1)]^{5/4}$ for $d=2$, and
-   $C\,n^{1/8}[\log(n+1)]^{3/4}$ for $d=3$.
-   Consequently, for every $\eps>0$, there is $c>0$ such that, for all
-   sufficiently large $n$,
-   $\P(|U_n(0)-u_n(0)|>\eps\E u_n(0))\leq e^{-c(\log n)^2}$."
-
-The exponent `r` is the paper's `2 ∨ ⌈log(n+1)⌉`, read as a real number.  "For
-all sufficiently large `n`" is an explicit threshold.  The moment on the left
-is asserted finite alongside the bound, so that an undefined integral cannot
-satisfy it through its junk value. The proof at `parking.tex:1586-1591`
-uses the collected Green estimates, which enter as an explicit hypothesis.
--/
 import Parking.External.SandpileGrowth
 import Parking.External.Bernstein
 import Parking.External.UConcentration
 import Parking.External.UConcentrationProved
 import Parking.External.GreenNormsProved
 import Parking.Support.DiscrepancyTail
+
+/-!
+# The discrepancy moment and tail bounds (frozen)
+
+Proposition 8.1 of parking.tex, frozen. `parking.tex:1566-1583` (label `prop:discrepancy`):
+
+"Under the assumptions of Theorem 1.2, suppose $d\leq3$. For $n\geq1$, let
+$r=2\vee\lceil\log(n+1)\rceil$. Then $(\E|U_n(0)-u_n(0)|^r)^{1/r}\leq
+C\,n^{5/8}[\log(n+1)]^{3/4}$ for $d=1$, $C\,n^{1/4}[\log(n+1)]^{5/4}$ for $d=2$, and
+$C\,n^{1/8}[\log(n+1)]^{3/4}$ for $d=3$. Consequently, for every $\eps>0$, there is $c>0$
+such that, for all sufficiently large $n$,
+$\P(|U_n(0)-u_n(0)|>\eps\E u_n(0))\leq e^{-c(\log n)^2}$."
+
+The exponent `r` is the paper's `2 ∨ ⌈log(n+1)⌉`, read as a real number. "For all
+sufficiently large `n`" is an explicit threshold. The moment on the left is asserted finite
+alongside the bound, so that an undefined integral cannot satisfy it through its junk value.
+The proof at `parking.tex:1586-1591` uses the collected Green estimates, which enter as an
+explicit hypothesis.
+-/
 
 open MeasureTheory
 

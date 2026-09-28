@@ -1,9 +1,12 @@
-/-
+import Parking.Support.OrientedArrivalLayer
+import Parking.Support.OrientedFiniteRoute
+
+/-!
+# The directed error unrolled by site and round
+
 The directed error at the origin, unrolled as one sum over the sites of the box,
 the rounds and the departure stacks (`parking.tex:3255-3265`).
 -/
-import Parking.Support.OrientedArrivalLayer
-import Parking.Support.OrientedFiniteRoute
 
 noncomputable section
 namespace Parking

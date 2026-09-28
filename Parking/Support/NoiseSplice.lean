@@ -1,19 +1,3 @@
-/-
-The noise of the particle-driven construction, and revealing part of it.
-
-The randomness of the model splits into three independent fields: the counts,
-the walks of the labels and their uniform variables.  The law of the last two is
-`noiseLaw`, and `pDataLaw` is the product of the law of the counts with it, so
-the conditional covariance identity of `Support/CovCond.lean` splits a
-covariance into the covariance of the two conditional means given the counts and
-the mean of the conditional covariance given the counts, which is exactly how
-Step 2 of `lem:product` (`parking.tex:2369-2372`) begins.
-
-Revealing the walks and the uniform variables of a set of labels is `noiseComb`,
-the splicing of BOTH fields along that set, and it is measure preserving for two
-independent copies of the noise, so the martingale decomposition of
-`Support/SpliceAvg.lean` applies to a filtration of such splicings.
--/
 import Parking.Support.PairSplice
 import Parking.Support.Range
 import Parking.Support.Pathwise
@@ -21,6 +5,24 @@ import LatticeProb.Prob.Splice
 import LatticeProb.Invariance
 import Parking.Support.CovCond
 import Parking.Support.RankDistinct
+
+/-!
+# Splicing the particle-driven noise
+
+The noise of the particle-driven construction, and revealing part of it.
+
+The randomness of the model splits into three independent fields: the counts, the walks of
+the labels and their uniform variables. The law of the last two is `noiseLaw`, and
+`pDataLaw` is the product of the law of the counts with it, so the conditional covariance
+identity of `Support/CovCond.lean` splits a covariance into the covariance of the two
+conditional means given the counts and the mean of the conditional covariance given the
+counts, which is exactly how Step 2 of `lem:product` (`parking.tex:2369-2372`) begins.
+
+Revealing the walks and the uniform variables of a set of labels is `noiseComb`, the
+splicing of BOTH fields along that set, and it is measure preserving for two independent
+copies of the noise, so the martingale decomposition of `Support/SpliceAvg.lean` applies
+to a filtration of such splicings.
+-/
 
 open LatticeProb (measurePreserving_pairSplice)
 
@@ -87,6 +89,9 @@ theorem noiseLaw_ae_injective {d : ℕ} (hd : 1 ≤ d) :
   rw [hmap]
   exact rankLaw_ae_injective d
 
+/-- Splicing the noise along `T` is measure preserving for two independent copies of
+`noiseLaw`, combining the measure-preserving splice of the move law and of the rank law
+via `measurePreserving_pairSplice`. -/
 theorem measurePreserving_noiseComb {d : ℕ} (hd : 1 ≤ d) (T : Set (Label d)) :
     MeasurePreserving (fun p : PNoise d × PNoise d => noiseComb T p.1 p.2)
       ((noiseLaw d).prod (noiseLaw d)) (noiseLaw d) := by
@@ -142,6 +147,9 @@ theorem noiseComb_snd_of_mem {d : ℕ} {T : Set (Label d)} {ω η : PNoise d}
     {q : Label d × ℕ} (hq : q.1 ∈ T) : (noiseComb T ω η).2 q = ω.2 q := by
   simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq]
 
+/-- For `T ⊆ T'`, re-splicing along the smaller set `T` erases the intermediate copy `η`
+entirely: `noiseComb T (noiseComb T' b η) η' = noiseComb T b η'`, checked coordinatewise
+by cases on membership in `T` and `T'`. -/
 theorem noiseComb_noiseComb {d : ℕ} {T T' : Set (Label d)} (hTT' : T ⊆ T')
     (b η η' : PNoise d) :
     noiseComb T (noiseComb T' b η) η' = noiseComb T b η' := by
@@ -152,12 +160,17 @@ theorem noiseComb_noiseComb {d : ℕ} {T T' : Set (Label d)} (hTT' : T ⊆ T')
         simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq, hq']
       · simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq]
 
+/-- Splicing along the empty set of labels reads every coordinate from the second
+argument: `noiseComb ∅ b η = η`. -/
 theorem noiseComb_empty {d : ℕ} (b η : PNoise d) :
     noiseComb (∅ : Set (Label d)) b η = η := by
   refine Prod.ext ?_ ?_ <;>
     · funext q
       simp [noiseComb, LatticeProb.comb]
 
+/-- For an `F` that `ReadsParticles`, splicing in an independent noise `η` outside the
+active labels `{p | p.2 < (a p.1).toNat}` leaves `F` unchanged, since `noiseComb_fst_of_mem`
+and `noiseComb_snd_of_mem` show the spliced noise agrees with `b` on exactly those labels. -/
 theorem readsParticles_noiseComb {d : ℕ} {F : PData d → ℝ} (hF : ReadsParticles F)
     (a : Site d → ℤ) (b η : PNoise d) (hb : Function.Injective b.2)
     (hc : Function.Injective (noiseComb {p : Label d | p.2 < (a p.1).toNat} b η).2) :
@@ -180,6 +193,9 @@ the counts are kept and the noise is spliced. -/
 def pDataComb {d : ℕ} (T : Set (Label d)) (ω η : PData d) : PData d :=
   (ω.1, noiseComb T ω.2 η.2)
 
+/-- Splicing the particle-driven data along `T` (keeping the counts, splicing the noise)
+is measure preserving, composing the projection onto the first counts with
+`measurePreserving_noiseComb` after a `measurePreserving_shuffle` of the product. -/
 theorem measurePreserving_pDataComb {d : ℕ} (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] (T : Set (Label d)) :
     MeasurePreserving (fun p : PData d × PData d => pDataComb T p.1 p.2)

@@ -1,21 +1,22 @@
-/-
-Lemma 11.1 of parking.tex, frozen.  `parking.tex:2599-2604` (label
-`lem:near-tilt`), in the setting of `parking.tex:2588-2598` ("let $\eta_\delta$
-satisfy the assumptions of Theorem 1.7, and let $S_t^\delta$ be the expected
-number of particles from the origin not settled by time $t$; let $R_t$ be the
-range through time $t$ of a simple random walk from the origin, independent of
-the model"):
-
-  "For all sufficiently small $\delta>0$ and every $t\geq0$,
-   $S_t^\delta\leq C\E_0e^{-c\delta^2|R_t|}$."
-
-"For all sufficiently small `δ`" is an explicit threshold `δ₁`.  The
-finiteness of the expected number of surviving particles from the origin is
-asserted alongside the bound, so that an undefined integral cannot satisfy it
-through its junk value.
--/
 import Parking.Support.Near
 import Parking.Support.NearTiltInterval
+
+/-!
+# The near-critical tilted survivor bound (frozen)
+
+Lemma 11.1 of parking.tex, frozen. `parking.tex:2599-2604` (label `lem:near-tilt`), in the
+setting of `parking.tex:2588-2598` ("let $\eta_\delta$ satisfy the assumptions of Theorem
+1.7, and let $S_t^\delta$ be the expected number of particles from the origin not settled by
+time $t$; let $R_t$ be the range through time $t$ of a simple random walk from the origin,
+independent of the model"):
+
+"For all sufficiently small $\delta>0$ and every $t\geq0$, $S_t^\delta\leq
+C\E_0e^{-c\delta^2|R_t|}$."
+
+"For all sufficiently small `δ`" is an explicit threshold `δ₁`. The finiteness of the
+expected number of surviving particles from the origin is asserted alongside the bound, so
+that an undefined integral cannot satisfy it through its junk value.
+-/
 
 open MeasureTheory
 

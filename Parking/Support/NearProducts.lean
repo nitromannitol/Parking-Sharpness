@@ -1,4 +1,8 @@
-/-
+import Parking.Support.NearRateBounds
+
+/-!
+# The five products of Step 3, compared with the rate of `eq:near`
+
 The five products of Step 3 of the near-critical upper bounds
 (`parking.tex:2959-2993`), each read at the cutoff `eq:near-cutoff` and compared with
 the rate of `eq:near`.
@@ -15,7 +19,6 @@ left and every power of `log(e/δ)` is absorbed.  From dimension four on the rat
 because each of its two factors is of the order of the square root of that, so the
 product is bounded as a product and never factor by factor.
 -/
-import Parking.Support.NearRateBounds
 
 noncomputable section
 namespace Parking
@@ -55,9 +58,12 @@ def qEnv (d : ℕ) (δ : ℝ) : ℝ := env (pExp d) (qLog d) δ
 
 /-! ### The algebra of the scale -/
 
+/-- `env` at exponent `0` and log-power `0` is identically `1`. -/
 theorem env_one (δ : ℝ) : env 0 0 δ = 1 := by
   rw [env]; norm_num
 
+/-- Squaring `env α k δ` doubles both its exponent and its log-power, via `env_mul`
+applied to `env α k δ * env α k δ`. -/
 theorem env_sq (α : ℝ) (k : ℕ) {δ : ℝ} (hδ0 : 0 < δ) :
     env α k δ ^ 2 = env (2 * α) (2 * k) δ := by
   have h : env α k δ * env α k δ = env (α + α) (k + k) δ := env_mul α α k k hδ0
@@ -98,27 +104,35 @@ theorem env_prod_le {α β α' : ℝ} {k l k' : ℕ} {A B : ℝ} (hA : 0 < A) (h
 
 /-! ### The rate and its square in the scale -/
 
+/-- `Parking.nearRate` is `env` at the exponent `rateExp d` and log-power `rateLog d`,
+read off `Parking.nearRate_eq_env` by cases on `d`. -/
 theorem nearRate_eq (d : ℕ) (δ : ℝ) : Parking.nearRate d δ = env (rateExp d) (rateLog d) δ := by
   rw [Parking.nearRate_eq_env d δ, rateExp, rateLog]
   split_ifs <;> rfl
 
+/-- The square of `Parking.nearRate` in the scale, from `nearRate_eq` and `env_sq`. -/
 theorem nearRate_sq_eq (d : ℕ) {δ : ℝ} (hδ0 : 0 < δ) :
     Parking.nearRate d δ ^ 2 = env (2 * rateExp d) (2 * rateLog d) δ := by
   rw [nearRate_eq d δ, env_sq _ _ hδ0]
 
+/-- `Parking.nearRate d δ ≥ 1` for `0 < δ ≤ 1`, from `nearRate_eq` and `one_le_env`. -/
 theorem one_le_nearRate (d : ℕ) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) :
     1 ≤ Parking.nearRate d δ := by
   rw [nearRate_eq d δ]
   refine one_le_env hδ0 hδ1 ?_
   rw [rateExp]; split_ifs <;> norm_num
 
+/-- `Parking.nearRate` is nonnegative, from `one_le_nearRate`. -/
 theorem nearRate_nonneg (d : ℕ) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) :
     0 ≤ Parking.nearRate d δ := le_trans zero_le_one (one_le_nearRate d hδ0 hδ1)
 
 /-! ### Nonnegativity of the five quantities -/
 
+/-- `rHigh` is nonnegative, from `rHigh_pos`. -/
 theorem rHigh_nonneg (n : ℕ) : (0 : ℝ) ≤ rHigh n := (rHigh_pos n).le
 
+/-- `Parking.External.greenL2Rate` is nonnegative in every dimension case: a nonnegative
+power below dimension four, a square root from dimension four on. -/
 theorem greenL2Rate_nonneg (d n : ℕ) : 0 ≤ Parking.External.greenL2Rate d n := by
   rw [Parking.External.greenL2Rate]
   split_ifs
@@ -128,6 +142,8 @@ theorem greenL2Rate_nonneg (d n : ℕ) : 0 ≤ Parking.External.greenL2Rate d n 
   · exact Real.sqrt_nonneg _
   · norm_num
 
+/-- `Parking.External.greenMaxRate` is nonnegative: a nonnegative power below dimension
+three, a nonnegative logarithm from dimension three on. -/
 theorem greenMaxRate_nonneg (d n : ℕ) : 0 ≤ Parking.External.greenMaxRate d n := by
   rw [Parking.External.greenMaxRate]
   split_ifs
@@ -135,6 +151,8 @@ theorem greenMaxRate_nonneg (d n : ℕ) : 0 ≤ Parking.External.greenMaxRate d 
   · exact Real.log_natCast_nonneg n
   · norm_num
 
+/-- `Parking.phi` is nonnegative: a nonnegative power below dimension four, a nonnegative
+logarithm from dimension four on. -/
 theorem phi_nonneg' (d n : ℕ) : (0 : ℝ) ≤ Parking.phi d (n : ℝ) := by
   have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   rw [Parking.phi]
@@ -219,6 +237,8 @@ theorem rateEnv_eq (d : ℕ) (δ : ℝ) : rateEnv d δ = env (pExp d) (pLog d) �
   rw [rateEnv, pExp, pLog]
   split_ifs <;> rfl
 
+/-- `φ_d(N)` at the cutoff, restated in the `pExp`/`pLog` scale, from
+`exists_phi_le_env` and `rateEnv_eq`. -/
 theorem exists_phi_le_pEnv (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) (δ : ℝ), 0 < δ → δ ≤ 1 →
       ((N : ℝ) ≤ C₀ * cutoffEnv d δ) → Parking.phi d N ≤ C * env (pExp d) (pLog d) δ := by
@@ -280,6 +300,8 @@ theorem exists_sqrtRHigh_greenL2_le (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀
 
 /-! ### The comparisons of exponents, dimension by dimension -/
 
+/-- The exponent comparison behind the first product `r ≤ A R`: `rateExp d` is positive
+below dimension four, and otherwise `rateLog d ≥ 1`, checked dimension by dimension. -/
 theorem cmp_r (d : ℕ) : (0 : ℝ) < rateExp d ∨ ((0 : ℝ) ≤ rateExp d ∧ 1 ≤ rateLog d) := by
   rw [rateExp, rateLog]
   split_ifs
@@ -288,6 +310,8 @@ theorem cmp_r (d : ℕ) : (0 : ℝ) < rateExp d ∨ ((0 : ℝ) ≤ rateExp d ∧
   · left; norm_num
   · right; norm_num
 
+/-- The exponent comparison behind the second product `r κ_d(N) ≤ A R`, checked
+dimension by dimension. -/
 theorem cmp_rkappa (d : ℕ) :
     kExp d < rateExp d ∨ (kExp d ≤ rateExp d ∧ 1 + kLog d ≤ rateLog d) := by
   rw [kExp, kLog, rateExp, rateLog]
@@ -297,6 +321,8 @@ theorem cmp_rkappa (d : ℕ) :
   · left; norm_num
   · right; norm_num
 
+/-- The exponent comparison behind the third product `r κ_d(N) φ_d(N) ≤ A R²`, checked
+dimension by dimension. -/
 theorem cmp_phi (d : ℕ) :
     kExp d + pExp d < 2 * rateExp d ∨
       (kExp d + pExp d ≤ 2 * rateExp d ∧ (1 + kLog d) + pLog d ≤ 2 * rateLog d) := by
@@ -307,6 +333,8 @@ theorem cmp_phi (d : ℕ) :
   · left; norm_num
   · right; norm_num
 
+/-- The exponent comparison behind the fourth product `r κ_d(N) (√r ‖g_N‖₂) ≤ A R²`,
+checked dimension by dimension. -/
 theorem cmp_greenL2 (d : ℕ) :
     kExp d + pExp d < 2 * rateExp d ∨
       (kExp d + pExp d ≤ 2 * rateExp d ∧ (1 + kLog d) + qLog d ≤ 2 * rateLog d) := by
@@ -317,6 +345,8 @@ theorem cmp_greenL2 (d : ℕ) :
   · left; norm_num
   · right; norm_num
 
+/-- The exponent comparison behind the fifth product `r κ_d(N) (r max_x g_N(x)) ≤ A R²`
+and behind `(r κ_d(N))² ≤ A R²`, checked dimension by dimension. -/
 theorem cmp_square (d : ℕ) :
     kExp d + kExp d < 2 * rateExp d ∨
       (kExp d + kExp d ≤ 2 * rateExp d ∧ (1 + kLog d) + (1 + kLog d) ≤ 2 * rateLog d) := by

@@ -1,4 +1,8 @@
-/-
+import Parking.Support.OrientedTerminal
+
+/-!
+# The Lipschitz bound on the oriented stopping value
+
 The discrete optimal-stopping value is `1`-Lipschitz in its terminal reward for
 the supremum norm.
 
@@ -12,7 +16,6 @@ There is no junk value to worry about on the discrete side: a bounded stopping
 rule reads finitely many directions, so its terminal reward is integrable
 whatever the reward field (`Parking.integrable_orientedTerminalReward`).
 -/
-import Parking.Support.OrientedTerminal
 
 open MeasureTheory
 

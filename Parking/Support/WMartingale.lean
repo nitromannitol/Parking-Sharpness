@@ -1,33 +1,31 @@
-/-
-The pieces of `lem:w-martingale` that do not need the exposure filtration:
-the increment bound of the lemma, and the count that collapses its quadratic
-variation.
-
-`greenIncrement d n` is the paper's
-`max_{m<n} max_y max_{z ∼ y} |g_m(z) - (P g_m)(y)|`, and it is a genuine
-supremum rather than a junk value because `g_m` takes values in `[0, m]`, so
-the whole family is bounded by `2n`.  The count is
-`U_s(y) - U_{s-1}(y) = A_{s-1}(y)`: the departures from `y` in round `s` are
-the particles standing there after round `s-1`.
-
-Also here: the block decomposition of the error at the origin with BOTH sums
-finite.  The increment of round `s` at a site outside the box of radius `n-s`
-vanishes, because the truncated Green function vanishes there and at every
-neighbour, so the lattice sum of `parking.tex:1155-1162` is a sum over that
-box; `blockPairs ω n s` collects the instructions first read in round `s` at
-those sites, a finite set for every realization, and distinct rounds read
-distinct instructions.
-
-The block of round `s` is decided before its own instructions are read, which
-is the predictability the martingale of `lem:w-martingale` needs.  It has two
-halves.  `U_{t+1}` is a function of the configuration and of the state after
-round `t`, so overwriting an instruction the odometer has not reached by round
-`t` changes no block up to round `t+1`; and the state near a site after `t`
-rounds reads only the instructions within `2t²` of it, so overwriting an
-instruction further out than that changes no block inside the box either.
--/
 import Parking.Support.ErrorUnroll
 import Parking.Support.Reads
+
+/-!
+# The pieces of `lem:w-martingale` that do not need the exposure filtration
+
+The pieces of `lem:w-martingale` that do not need the exposure filtration: the increment
+bound of the lemma, and the count that collapses its quadratic variation.
+
+`greenIncrement d n` is the paper's `max_{m<n} max_y max_{z ∼ y} |g_m(z) - (P g_m)(y)|`, and
+it is a genuine supremum rather than a junk value because `g_m` takes values in `[0, m]`, so
+the whole family is bounded by `2n`. The count is `U_s(y) - U_{s-1}(y) = A_{s-1}(y)`: the
+departures from `y` in round `s` are the particles standing there after round `s-1`.
+
+Also here: the block decomposition of the error at the origin with both sums finite. The
+increment of round `s` at a site outside the box of radius `n-s` vanishes, because the
+truncated Green function vanishes there and at every neighbour, so the lattice sum of
+`parking.tex:1155-1162` is a sum over that box; `blockPairs ω n s` collects the instructions
+first read in round `s` at those sites, a finite set for every realization, and distinct
+rounds read distinct instructions.
+
+The block of round `s` is decided before its own instructions are read, which is the
+predictability the martingale of `lem:w-martingale` needs. It has two halves. `U_{t+1}` is a
+function of the configuration and of the state after round `t`, so overwriting an
+instruction the odometer has not reached by round `t` changes no block up to round `t+1`;
+and the state near a site after `t` rounds reads only the instructions within `2t²` of it,
+so overwriting an instruction further out than that changes no block inside the box either.
+-/
 
 open LatticeProb (mem_boxFinset_zero_iff supNorm supNorm_le_graphNorm)
 
@@ -41,25 +39,34 @@ variable {d : ℕ}
 
 /-! ### The truncated Green function takes values in `[0, m]` -/
 
+/-- The heat kernel is nonnegative, being the simple random walk's transition
+probability. -/
 theorem heat_nonneg (m : ℕ) (x : Site d) : 0 ≤ heat d m x := by
   rw [heat_eq_srwHeat]; exact LatticeProb.srwHeat_nonneg m x
 
+/-- The heat kernel is at most one, being a probability. -/
 theorem heat_le_one (hd : 1 ≤ d) (m : ℕ) (x : Site d) : heat d m x ≤ 1 := by
   rw [heat_eq_srwHeat]; exact LatticeProb.srwHeat_le_one (by omega) m x
 
+/-- The truncated Green function is nonnegative, being a sum of nonnegative heat kernel
+values. -/
 theorem green_nonneg (m : ℕ) (x : Site d) : 0 ≤ green d m x :=
   Finset.sum_nonneg fun j _ => heat_nonneg j x
 
+/-- The truncated Green function `green d m` is at most `m`, summing `m` terms each at most
+one. -/
 theorem green_le (hd : 1 ≤ d) (m : ℕ) (x : Site d) : green d m x ≤ m := by
   have h := Finset.sum_le_sum (f := fun j => heat d j x) (g := fun _ : ℕ => (1 : ℝ))
     (s := Finset.range m) fun j _ => heat_le_one hd j x
   rw [green]
   simpa using h
 
+/-- The walk average of the truncated Green function is nonnegative. -/
 theorem walkOp_green_nonneg (m : ℕ) (y : Site d) : 0 ≤ walkOp (green d m) y := by
   rw [walkOp_green]
   exact Finset.sum_nonneg fun j _ => heat_nonneg (j + 1) y
 
+/-- The walk average of the truncated Green function `green d m` is at most `m`. -/
 theorem walkOp_green_le (hd : 1 ≤ d) (m : ℕ) (y : Site d) :
     walkOp (green d m) y ≤ m := by
   rw [walkOp_green]
@@ -142,6 +149,8 @@ theorem le_greenIncrement (hd : 1 ≤ d) {n m : ℕ} (hm : m < n) {y z : Site d}
 
 /-! ### The departures of a round are the particles standing there -/
 
+/-- The odometer after `t + 1` rounds is the odometer after `t` rounds plus the departures
+of round `t`. -/
 theorem U_succ (ω : Data d) (t : ℕ) (x : Site d) :
     U ω (t + 1) x = U ω t x + A ω t x :=
   LatticeProb.particleOdometer_succ (toDriver ω) t x
@@ -207,6 +216,8 @@ def blockAt (ω : Data d) (R s : ℕ) : Finset (Site d × ℕ) :=
 /-- The block of round `s` at the radius the increment of that round can see. -/
 def blockPairs (ω : Data d) (n s : ℕ) : Finset (Site d × ℕ) := blockAt ω (n - s) s
 
+/-- Membership in a block: a site in the box whose particle count at the site lies in the
+half-open interval between the odometers of the two rounds. -/
 theorem mem_blockAt {ω : Data d} {R s : ℕ} {q : Site d × ℕ} :
     q ∈ blockAt ω R s ↔
       q.1 ∈ boxFinset (0 : Site d) R ∧ U ω (s - 1) q.1 ≤ q.2 ∧ q.2 < U ω s q.1 := by
@@ -218,11 +229,15 @@ theorem mem_blockAt {ω : Data d} {R s : ℕ} {q : Site d × ℕ} :
   · rintro ⟨hy, h1, h2⟩
     exact ⟨q.1, hy, q.2, ⟨h1, h2⟩, rfl⟩
 
+/-- Membership in the block of round `s` read at the radius `n - s`, the special case
+`R = n - s` of `mem_blockAt`. -/
 theorem mem_blockPairs {ω : Data d} {n s : ℕ} {q : Site d × ℕ} :
     q ∈ blockPairs ω n s ↔
       q.1 ∈ boxFinset (0 : Site d) (n - s) ∧ U ω (s - 1) q.1 ≤ q.2 ∧ q.2 < U ω s q.1 :=
   mem_blockAt
 
+/-- The sum over a block of a function of the pair unwinds to a sum over the box and, at
+each site, over the instruction indices the round reads there. -/
 theorem sum_blockPairs (ω : Data d) (n s : ℕ) (f : Site d × ℕ → ℝ) :
     ∑ q ∈ blockPairs ω n s, f q
       = ∑ y ∈ boxFinset (0 : Site d) (n - s),
@@ -267,6 +282,8 @@ theorem blockAt_disjoint (ω : Data d) (R R' : ℕ) {s s' : ℕ} (hs : 1 ≤ s) 
       particleOdometer_mono (toDriver ω) q.1 (by omega)
     omega
 
+/-- Distinct rounds' blocks, read at the radii `n - s`, are pairwise disjoint: the case
+`R = n - s`, `R' = n - s'` of `blockAt_disjoint`. -/
 theorem blockPairs_disjoint (ω : Data d) (n : ℕ) {s s' : ℕ} (hs : 1 ≤ s) (hs' : 1 ≤ s')
     (h : s ≠ s') : Disjoint (blockPairs ω n s) (blockPairs ω n s') :=
   blockAt_disjoint ω (n - s) (n - s') hs hs' h
@@ -396,11 +413,15 @@ instructions the odometer of round `s` reads inside its own box were all read
 inside the boxes of the earlier rounds. -/
 def blockRad (n s : ℕ) : ℕ := (n - s) * (2 * n * n) + n
 
+/-- The radius `n - s` a round's increment can see is at most the (larger) radius
+`blockRad n s` the exploration reads its block in. -/
 theorem le_blockRad (n s : ℕ) : n - s ≤ blockRad n s := by
   have h : n - s ≤ n := Nat.sub_le n s
   simp only [blockRad]
   omega
 
+/-- The radius of round `s`'s box exceeds the radius of round `s - 1`'s box by more than
+the `2s²` an extra round of the process can reach. -/
 theorem blockRad_step {n s : ℕ} (hs : 1 ≤ s) (hsn : s ≤ n) :
     blockRad n s + 2 * s * s ≤ blockRad n (s - 1) := by
   have hsub : n - (s - 1) = (n - s) + 1 := by omega
@@ -408,6 +429,7 @@ theorem blockRad_step {n s : ℕ} (hs : 1 ≤ s) (hsn : s ≤ n) :
   simp only [blockRad, hsub]
   nlinarith
 
+/-- `blockRad n` is antitone in the round: later rounds are read in smaller boxes. -/
 theorem blockRad_antitone {n s s' : ℕ} (h : s ≤ s') : blockRad n s' ≤ blockRad n s := by
   have : n - s' ≤ n - s := Nat.sub_le_sub_left h n
   simp only [blockRad]
@@ -415,6 +437,8 @@ theorem blockRad_antitone {n s s' : ℕ} (h : s ≤ s') : blockRad n s' ≤ bloc
 
 /-! ### Enlarging the box of a block costs nothing -/
 
+/-- Enlarging the radius of a block's box only adds instructions: `blockPairs`, read at
+radius `n - s`, is a subset of `blockAt` at any larger radius `R`. -/
 theorem blockPairs_subset_blockAt (ω : Data d) (n s R : ℕ) (h : n - s ≤ R) :
     blockPairs ω n s ⊆ blockAt ω R s := by
   intro q hq
@@ -455,10 +479,14 @@ the order in which `lem:w-martingale` reveals them. -/
 def blockPrefix (ω : Data d) (n k : ℕ) : List (Site d × ℕ) :=
   (List.range' 1 k).flatMap fun s => blockList ω n s
 
+/-- Membership in the listed block of round `s` unwinds to membership in the underlying
+finite block. -/
 theorem mem_blockList {ω : Data d} {n s : ℕ} {q : Site d × ℕ} :
     q ∈ blockList ω n s ↔ q ∈ blockAt ω (blockRad n s) s := by
   simp [blockList]
 
+/-- **The list of instructions the exploration reads up to round `k` has no duplicates**:
+within a round the list comes from a finset, and distinct rounds read disjoint blocks. -/
 theorem nodup_blockPrefix (ω : Data d) (n k : ℕ) : (blockPrefix ω n k).Nodup := by
   classical
   refine List.nodup_flatMap.mpr ⟨fun s _ => Finset.nodup_toList _, ?_⟩
@@ -478,6 +506,8 @@ theorem nodup_blockPrefix (ω : Data d) (n k : ℕ) : (blockPrefix ω n k).Nodup
 
 
 
+/-- Membership in the prefix of the blocks up to round `k`: belonging to some round `s`
+between `1` and `k`. -/
 theorem mem_blockPrefix {ω : Data d} {n k : ℕ} {q : Site d × ℕ} :
     q ∈ blockPrefix ω n k ↔ ∃ s, 1 ≤ s ∧ s ≤ k ∧ q ∈ blockAt ω (blockRad n s) s := by
   classical
@@ -489,6 +519,8 @@ theorem mem_blockPrefix {ω : Data d} {n k : ℕ} {q : Site d × ℕ} :
   · rintro ⟨s, h1, h2, hq⟩
     exact ⟨s, List.mem_range'.mpr ⟨s - 1, by omega, by omega⟩, hq⟩
 
+/-- Two realizations whose blocks agree at every round up to `k` have the same prefix of
+the blocks. -/
 theorem blockPrefix_congr {ω ω' : Data d} {n k : ℕ}
     (h : ∀ s, 1 ≤ s → s ≤ k → blockAt ω (blockRad n s) s = blockAt ω' (blockRad n s) s) :
     blockPrefix ω n k = blockPrefix ω' n k := by
@@ -498,6 +530,8 @@ theorem blockPrefix_congr {ω ω' : Data d} {n k : ℕ}
   show blockList ω n (1 + 1 * i) = blockList ω' n (1 + 1 * i)
   rw [blockList, blockList, h (1 + 1 * i) (by omega) (by omega)]
 
+/-- The prefix of the blocks up to round `m` splits as the prefix up to round `k` followed
+by the blocks of the rounds in between, for `k ≤ m`. -/
 theorem blockPrefix_append (ω : Data d) (n : ℕ) {k m : ℕ} (h : k ≤ m) :
     blockPrefix ω n m
       = blockPrefix ω n k ++ (List.range' (1 + k) (m - k)).flatMap (fun s => blockList ω n s) := by
@@ -512,6 +546,7 @@ theorem blockPrefix_append (ω : Data d) (n : ℕ) {k m : ℕ} (h : k ≤ m) :
   congr 2
   omega
 
+/-- The length of the prefix of the blocks is monotone in the round it runs up to. -/
 theorem length_blockPrefix_mono (ω : Data d) (n : ℕ) {k m : ℕ} (h : k ≤ m) :
     (blockPrefix ω n k).length ≤ (blockPrefix ω n m).length := by
   rw [blockPrefix_append ω n h, List.length_append]

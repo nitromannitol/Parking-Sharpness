@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Terminal
+import Parking.Support.ValueLipschitz
+
+/-!
+# The stopping value scales with a positive constant
+
 **The optimal-stopping value scales with a positive constant multiple of the reward.**
 
 Needed for the Dynkin-decomposition rescaling of `Parking.u_eq_potential_add_stoppingSup`:
@@ -6,8 +11,6 @@ Needed for the Dynkin-decomposition rescaling of `Parking.u_eq_potential_add_sto
 since the value-transfer machine (`LatticeProb.ExtendedMapping.extended_continuous_mapping`)
 is applied to the RESCALED reward directly, not to `R^{d/2-2}` times the unscaled value.
 -/
-import Parking.Support.Terminal
-import Parking.Support.ValueLipschitz
 
 open MeasureTheory
 

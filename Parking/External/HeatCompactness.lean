@@ -1,13 +1,16 @@
-/-
-Local compactness of nonnegative classical heat solutions, used in Step 3 of
-`parking.tex:1800-1820`. Standard parabolic interior estimates bound every
-derivative on a compact subset by a local `L¹` norm on a larger compact subset.
-A diagonal subsequence therefore converges smoothly on compact subsets. The
-form below records the locally uniform convergence and smooth classical limit
-needed to identify the derivative of a continuous primitive.
--/
 import Parking.Support.Continuum
 import Mathlib.Topology.UniformSpace.LocallyUniformConvergence
+
+/-!
+# Compactness of classical heat solutions
+
+Local compactness of nonnegative classical heat solutions, used in Step 3 of
+`parking.tex:1800-1820`. Standard parabolic interior estimates bound every derivative on a
+compact subset by a local `L¹` norm on a larger compact subset. A diagonal subsequence
+therefore converges smoothly on compact subsets. The form below records the locally uniform
+convergence and smooth classical limit needed to identify the derivative of a continuous
+primitive.
+-/
 
 open MeasureTheory Filter Topology
 

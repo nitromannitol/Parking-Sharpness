@@ -3,6 +3,17 @@ import Parking.Support.HoleLocality
 import Parking.Support.ProductFactor
 import Parking.Support.RoundBlock
 
+/-!
+# Charging the round hole factor to a finite query set
+
+Rewrites the exponential-tilt hole cost `roundHoleCost`, summed over an entire round's
+query set, as a finite sum over the sites in a box weighted by the `holeKernel` and the
+occupation `A` (`sum_roundQuerySet`, `sum_roundHoleCost_query`), then feeds this into
+`integral_product_factor` to show that the correlation between two matched round means
+at `x` and `z` is controlled, up to the exponential of that finite sum, by the product
+of their individual means (`round_hole_product_factor`).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -52,15 +63,21 @@ theorem round_hole_product_factor (hd : 3 ≤ d) (A H : Site d → ℕ)
     (hzR : boxFinset z (T + 1) ⊆ boxFinset u R) :
     (∫ τ, matchedMeanH (roundSigned A H τ) ρ T x * matchedMeanH (roundSigned A H τ) ρ T z
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) ≤
-      Real.exp ((∑ y ∈ boxFinset u R, holeKernel d x z y * (A y : ℝ)) / (1 / (2 * escapeConst d)) ^ 2) *
-        ((∫ τ, matchedMeanH (roundSigned A H τ) ρ T x ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) *
-          ∫ τ, matchedMeanH (roundSigned A H τ) ρ T z ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) := by
+      Real.exp
+          ((∑ y ∈ boxFinset u R, holeKernel d x z y * (A y : ℝ)) /
+            (1 / (2 * escapeConst d)) ^ 2) *
+        ((∫ τ, matchedMeanH (roundSigned A H τ) ρ T x
+            ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) *
+          ∫ τ, matchedMeanH (roundSigned A H τ) ρ T z
+            ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) := by
   classical
   have hd1 : 1 ≤ d := by omega
   haveI := stepLaw_isProbability hd1
-  have hm (v : Site d) : Measurable (fun ζ : RoundSlot d → Fin d × Bool => matchedMeanH (roundSigned A H ζ) ρ T v) :=
+  have hm (v : Site d) :
+      Measurable (fun ζ : RoundSlot d → Fin d × Bool => matchedMeanH (roundSigned A H ζ) ρ T v) :=
     (measurable_matchedMeanH hd1 ρ T v).comp
-      (measurable_roundSigned (fun _ => A) (fun _ => H) id measurable_const measurable_const measurable_id)
+      (measurable_roundSigned (fun _ => A) (fun _ => H) id measurable_const measurable_const
+        measurable_id)
   have hdep (v : Site d) (hv : boxFinset v (T + 1) ⊆ boxFinset u R)
       (τ τ' : RoundSlot d → Fin d × Bool)
       (he : ∀ q ∈ roundQuerySet u R N, τ q = τ' q) :
@@ -69,7 +86,8 @@ theorem round_hole_product_factor (hd : 3 ≤ d) (A H : Site d → ℕ)
     intro y hy j hj
     exact he _ ((mem_roundQuerySet u R N y j).mpr ⟨hv hy, hj⟩)
   have h := integral_product_factor (fun _ : RoundSlot d => stepLaw d)
-    (fun τ => matchedMeanH (roundSigned A H τ) ρ T x) (fun τ => matchedMeanH (roundSigned A H τ) ρ T z)
+    (fun τ => matchedMeanH (roundSigned A H τ) ρ T x)
+    (fun τ => matchedMeanH (roundSigned A H τ) ρ T z)
     (hm x) (hm z) (H x : ℝ) (H z : ℝ) (Nat.cast_nonneg _)
     (roundMeanH_bound hd1 A H ρ T x) (roundMeanH_bound hd1 A H ρ T z)
     (roundHoleCost d A x z) (fun S q hq τ => round_hole_reveal_section hd A H ρ T x z S q hq τ)

@@ -2,6 +2,17 @@ import Parking.Support.ClippedTable
 import Parking.Support.HorizonSink
 import Parking.Support.WeightedOdometerBounds
 
+/-!
+# The sparse sink field
+
+This file defines `sparseSinkField`, the clipped configuration with a hole at `v` that
+persists through the horizon `T`, obtained by applying `horizonSink` to `clippedField`.
+It records the field's measurability and particle bound, shows it can only decrease the
+matched odometer relative to `clippedField`, and shows the resulting mean odometer
+vanishes at the sink through its horizon and agrees with the unsunk mean odometer outside
+the propagation box of the sink.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -11,6 +22,8 @@ variable {d : ℕ}
 def sparseSinkField (T : ℕ) (v : Site d) (η : Site d → ℤ) : Site d → ℤ :=
   horizonSink (clippedField η) v T
 
+/-- The sparse sink field is measurable, since it updates the measurable `clippedField`
+at the single site `v` to the fixed value forced by `horizonSink`. -/
 theorem measurable_sparseSinkField (T : ℕ) (v : Site d) : Measurable (sparseSinkField T v) := by
   classical
   apply measurable_pi_lambda
@@ -22,14 +35,20 @@ theorem measurable_sparseSinkField (T : ℕ) (v : Site d) : Measurable (sparseSi
   · simpa only [sparseSinkField, horizonSink, Function.update_of_ne hy, Function.comp_def] using
       (measurable_pi_apply y).comp (measurable_clippedField (d := d))
 
+/-- Every site of the sparse sink field carries at most one particle, inherited from the
+single-particle bound on the clipped field. -/
 theorem sparseSinkField_particle_bound (T : ℕ) (v : Site d) (η : Site d → ℤ) (y : Site d) :
     (sparseSinkField T v η y).toNat ≤ 1 :=
   horizonSink_particle_bound (clippedField η) v T (clippedField_particle_bound η) y
 
+/-- The sparse sink field never exceeds the clipped field at any site, since `horizonSink`
+only ever lowers the count at its sink site. -/
 theorem sparseSinkField_le (T : ℕ) (v : Site d) (η : Site d → ℤ) (y : Site d) :
     sparseSinkField T v η y ≤ clippedField η y :=
   horizonSink_le (clippedField η) v T (clipSparse_bounds (η v)).1 y
 
+/-- Away from the sink site `v`, the sparse sink field agrees exactly with the clipped
+field, since `horizonSink` only updates the value at `v`. -/
 theorem sparseSinkField_eq_of_ne (T : ℕ) (v : Site d) (η : Site d → ℤ) (y : Site d) (hy : y ≠ v) :
     sparseSinkField T v η y = clippedField η y := Function.update_of_ne hy _ _
 
@@ -49,6 +68,8 @@ theorem sparseSink_odometer_le (T : ℕ) (v : Site d) (η : Site d → ℤ)
       (matchedState (clippedField η) ρ σ t).departures x :=
   (matched_counts_mono _ _ (sparseSinkField_le T v η) ρ ρ σ t).2.2 x
 
+/-- The mean odometer of the sparse sink field never exceeds the mean odometer of the
+clipped field, by monotonicity of the integral applied to `sparseSink_odometer_le`. -/
 theorem sparseSink_mean_le (hd : 1 ≤ d) (T : ℕ) (v : Site d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) (t : ℕ) (x : Site d) :
     matchedMeanU (sparseSinkField T v η) ρ t x ≤ matchedMeanU (clippedField η) ρ t x :=

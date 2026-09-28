@@ -1,4 +1,9 @@
-/-
+import Parking.Support.UConcBridge
+import Parking.Support.URealMoment
+
+/-!
+# The concentration estimate and moment norm at a real one-site law
+
 The concentration estimate and the moment norm of the sandpile odometer at a
 REAL one-site law.
 
@@ -15,8 +20,6 @@ deviation is controlled by the concentration estimate, and the integrability the
 splitting needs comes from `Parking/Support/URealMoment.lean` through the bound
 `t^r ≤ 1 + t^{⌈r⌉}`.
 -/
-import Parking.Support.UConcBridge
-import Parking.Support.URealMoment
 
 open LatticeProb.MomentNorm (rNorm rNorm_add_le)
 
@@ -28,6 +31,9 @@ open MeasureTheory LatticeProb
 
 variable {d : ℕ}
 
+/-- The external concentration estimate `UConcentration`, read directly at a real
+one-site law `ν` via the kernel identification `kSol_kern`/`kGreen_kern`/`supAbs_green`:
+the `r`-th moment norm of `u η n 0` about its mean obeys the Green-function bound. -/
 theorem exists_uConcReal (hd : 1 ≤ d) (hConc : Parking.External.UConcentration)
     (ν : Measure ℝ) [IsProbabilityMeasure ν] {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun z : ℝ => Real.exp (θ * |z|)) ν) :
@@ -41,6 +47,9 @@ theorem exists_uConcReal (hd : 1 ≤ d) (hConc : Parking.External.UConcentration
   rw [kGreen_kern, supAbs_green] at h
   simpa only [kSol_kern] using h
 
+/-- For `t ≥ 0` and `r ≥ 0`, `t ^ r ≤ 1 + t ^ ⌈r⌉₊`: when `t ≤ 1` the left side is
+already at most `1`, and when `t > 1` the real power `t ^ r` is at most the natural
+power `t ^ ⌈r⌉₊` since `r ≤ ⌈r⌉₊`. -/
 theorem rpow_le_one_add_pow {t : ℝ} (ht : 0 ≤ t) {r : ℝ} (hr : 0 ≤ r) :
     t ^ r ≤ 1 + t ^ (⌈r⌉₊) := by
   by_cases h1 : t ≤ 1
@@ -53,6 +62,9 @@ theorem rpow_le_one_add_pow {t : ℝ} (ht : 0 ≤ t) {r : ℝ} (hr : 0 ≤ r) :
     rw [Real.rpow_natCast] at h3
     linarith
 
+/-- The `r`-th absolute power of `u η n x` is integrable under the i.i.d. law, dominated
+by `1 + u η n x ^ ⌈r⌉₊` via `rpow_le_one_add_pow` and the integer-power integrability
+`integrable_u_pow_iid`. -/
 theorem integrable_u_rpow_iid (hd : 1 ≤ d) (ν : Measure ℝ) [IsProbabilityMeasure ν]
     {r : ℝ} (hr : 0 ≤ r) (hpow : Integrable (fun t : ℝ => max t 0 ^ (⌈r⌉₊)) ν)
     (n : ℕ) (x : Site d) :

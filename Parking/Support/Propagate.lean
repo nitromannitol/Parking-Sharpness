@@ -1,23 +1,24 @@
-/-
-The odometer propagates through the lattice.
-
-The last part of Step 2 of `prop:everyone-settles` (`parking.tex:1541-1547`):
-"Almost surely, the stack at each `y` sends infinitely many instructions to each
-neighbour `x`.  If `U_∞(y) = ∞`, then every instruction at `y` is eventually
-used, so `x` receives infinitely many arrivals.  At most `η(x)⁻ < ∞` of them
-settle at `x`, and every other arrival leads to a departure.  Connectedness of
-`ℤ^d` shows that every site has infinite odometer."
-
-The bookkeeping of that sentence is already `lem:parallel`, which is sealed:
-`U_{n+1}(x) = (η(x) + ∑_{y ∼ x} I_{y,x}(U_n(y)))⁺`, where `I_{y,x}(m)` counts the
-instructions among the first `m` at `y` that point at `x`.  So the arrivals from
-one neighbour alone force the odometer, and the only input left is that the
-stack at `y` points at `x` infinitely often.
--/
 import Parking.Frozen.Parallel
 import Parking.Support.OdometerInfinite
 import Parking.Support.Monotone
 import Parking.Support.Odometer
+
+/-!
+# The odometer propagates through the lattice
+
+The last part of Step 2 of `prop:everyone-settles` (`parking.tex:1541-1547`): "Almost
+surely, the stack at each `y` sends infinitely many instructions to each neighbour `x`.
+If `U_∞(y) = ∞`, then every instruction at `y` is eventually used, so `x` receives
+infinitely many arrivals. At most `η(x)⁻ < ∞` of them settle at `x`, and every other
+arrival leads to a departure. Connectedness of `ℤ^d` shows that every site has infinite
+odometer."
+
+The bookkeeping of that sentence is already `lem:parallel`, which is sealed:
+`U_{n+1}(x) = (η(x) + ∑_{y ∼ x} I_{y,x}(U_n(y)))⁺`, where `I_{y,x}(m)` counts the
+instructions among the first `m` at `y` that point at `x`. So the arrivals from one
+neighbour alone force the odometer, and the only input left is that the stack at `y`
+points at `x` infinitely often.
+-/
 
 noncomputable section
 namespace Parking
@@ -26,6 +27,8 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
+/-- The stack at `y` sends at least `M` instructions to `x` by some finite round `m`, when
+it sends infinitely many instructions to `x` over all rounds. -/
 theorem exists_arrivals_ge {stack : Site d × ℕ → Site d} {y x : Site d}
     (h : {j : ℕ | stack (y, j) = x}.Infinite) (M : ℕ) :
     ∃ m : ℕ, M ≤ LatticeProb.arrivals stack y x m := by
@@ -81,6 +84,7 @@ theorem Ulimit_top_of_nbr {ω : Data d}
 /-- The `ℓ¹` distance on the lattice, as a natural number. -/
 def latDist (x y : Site d) : ℕ := ∑ i : Fin d, (x i - y i).natAbs
 
+/-- Two sites at `latDist` zero are equal, since each coordinate difference must vanish. -/
 theorem latDist_eq_zero {x y : Site d} (h : latDist x y = 0) : x = y := by
   funext i
   have h1 : ∀ i : Fin d, (x i - y i).natAbs = 0 := by

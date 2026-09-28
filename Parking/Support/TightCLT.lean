@@ -1,4 +1,13 @@
-/-
+import Parking.Support.TightBoxLaw
+import Parking.Support.TightCov
+import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
+import Mathlib.Probability.Independence.InfinitePi
+import Mathlib.Probability.Independence.Integration
+import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+
+/-!
+# Scalar characteristic-function engine for the finite-dimensional convergence
+
 The scalar characteristic-function engine for the finite-dimensional convergence of the
 cutoff rewards (`parking.tex:3207-3218`, Stage 2 of the covariance-to-Gaussian step).
 
@@ -34,12 +43,6 @@ characteristic-function machinery for such a sum:
   `logCosEps` and the negligibility hypothesis in place of the walk's automatic `O(1/√n)`
   step size.
 -/
-import Parking.Support.TightBoxLaw
-import Parking.Support.TightCov
-import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.Independence.Integration
-import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 
 open MeasureTheory LatticeProb ProbabilityTheory Filter Complex
 open scoped Topology RealInnerProductSpace InnerProductSpace
@@ -47,6 +50,9 @@ open scoped Topology RealInnerProductSpace InnerProductSpace
 noncomputable section
 namespace Parking
 
+/-- **The one-site variance `σ² = ∫ x² ∂(realLaw ν)` is strictly positive**: if it vanished,
+the coordinate would be `0` almost everywhere, forcing `ν` to be the point mass at `0` and
+contradicting `hν.nonconst`. -/
 theorem realLaw_sq_integral_pos (ν : Measure ℤ) (hν : CriticalLaw ν) :
     0 < ∫ x : ℝ, x ^ 2 ∂(realLaw ν) := by
   haveI := hν.prob
@@ -100,7 +106,8 @@ theorem exists_taylor_charFun_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν) 
   have hσpos : 0 < σ := Real.sqrt_pos.mpr hσ2pos
   have hσsq : σ ^ 2 = σ2 := Real.sq_sqrt hσ2pos.le
   set X : ℝ → ℝ := fun z => σ⁻¹ * z with hX
-  have hXm : AEMeasurable X (realLaw ν) := (continuous_const.mul continuous_id).measurable.aemeasurable
+  have hXm : AEMeasurable X (realLaw ν) :=
+    (continuous_const.mul continuous_id).measurable.aemeasurable
   have hmean : ∫ z : ℝ, z ∂(realLaw ν) = 0 := realLaw_mean ν hν
   have hint2 : Integrable (fun z : ℝ => z ^ 2) (realLaw ν) :=
     (realLaw_memLp_two ν hν).integrable_sq
@@ -175,7 +182,8 @@ theorem charFun_map_weighted_sum_eq_prod_two (ν : Measure ℤ) (hν : CriticalL
     hind'.integral_fun_prod_eq_prod_integral hmeas
   have hmap : ∀ w : Site 2, (iidLaw 2 (realLaw ν)).map (fun η : Site 2 → ℝ => η w) = realLaw ν :=
     fun w => Measure.infinitePi_map_eval _ w
-  have hfactor : ∀ w : Site 2, ∫ η, g w (η w) ∂(iidLaw 2 (realLaw ν)) = charFun (realLaw ν) (t * c w) := by
+  have hfactor : ∀ w : Site 2, ∫ η, g w (η w) ∂(iidLaw 2 (realLaw ν))
+      = charFun (realLaw ν) (t * c w) := by
     intro w
     have h1 : (∫ η, g w (η w) ∂(iidLaw 2 (realLaw ν))) = ∫ b, g w b ∂(realLaw ν) := by
       have hfwd : ∫ b, g w b ∂((iidLaw 2 (realLaw ν)).map (fun η : Site 2 → ℝ => η w))
@@ -198,7 +206,8 @@ theorem charFun_map_weighted_sum_eq_prod_two (ν : Measure ℤ) (hν : CriticalL
     Complex.continuous_exp.comp ((Complex.continuous_ofReal.comp
       (Continuous.inner continuous_id continuous_const)).mul continuous_const)
   have hchar : charFun ((iidLaw 2 (realLaw ν)).map (fun η : Site 2 → ℝ => ∑ w ∈ S, c w * η w)) t
-      = ∫ η, ∏ w : (S : Finset (Site 2)), g (w : Site 2) (η (w : Site 2)) ∂(iidLaw 2 (realLaw ν)) := by
+      = ∫ η, ∏ w : (S : Finset (Site 2)), g (w : Site 2) (η (w : Site 2))
+        ∂(iidLaw 2 (realLaw ν)) := by
     have hmeasSum : AEMeasurable (fun η : Site 2 → ℝ => ∑ w ∈ S, c w * η w)
         (iidLaw 2 (realLaw ν)) :=
       (Finset.measurable_sum S fun w _ =>
@@ -232,6 +241,11 @@ theorem charFun_map_weighted_sum_eq_prod_two (ν : Measure ℤ) (hν : CriticalL
   exact Finset.prod_congr rfl fun w _ => hfactor (w : Site 2)
 
 
+/-- **The quantitative logarithmic expansion of the one-site characteristic function** at `0`:
+for every `ε > 0` there is a neighborhood of `0` on which `charFun (realLaw ν)` is nonzero and
+`Complex.log (charFun (realLaw ν) s)` is within `ε·s²` of `-σ²s²/2`, obtained from
+`exists_taylor_charFun_realLaw`'s second-order expansion via the quantitative logarithm bound
+`Complex.norm_log_one_add_sub_self_le`. -/
 theorem exists_log_charFun_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ s : ℝ, |s| < δ →
       charFun (realLaw ν) s ≠ 0 ∧

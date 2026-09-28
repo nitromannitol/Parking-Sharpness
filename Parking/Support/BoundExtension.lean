@@ -1,13 +1,17 @@
-/-
+import Mathlib
+
+/-!
+# Extending an eventual lower bound to a finite prefix
+
 Extending asymptotic lower bounds across a finite positive prefix.
 -/
-import Mathlib
 
 noncomputable section
 namespace Parking
 open Filter
 
-/-- An eventual multiplicative lower bound extends over a finite positive prefix after shrinking its constant. -/
+/-- An eventual multiplicative lower bound extends over a finite positive prefix after
+shrinking its constant. -/
 theorem extend_positive_lower_bound (f g : ℕ → ℝ) (m : ℕ)
     (hf : ∀ n, m ≤ n → 0 < f n) (hg : ∀ n, m ≤ n → 0 < g n)
     {c : ℝ} (hc : 0 < c) (he : ∀ᶠ n in atTop, c * g n ≤ f n) :

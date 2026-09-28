@@ -3,6 +3,16 @@ import Parking.Support.MeanFieldIntegral
 import Parking.Support.MeanLaplacianOrder
 import Parking.Support.ExteriorBarrier
 
+/-!
+# Mean odometer of the sparse sink process
+
+This file defines `sparseSinkMean`, the expectation over the field law of the matched
+mean odometer of the sparse sink field, and develops its basic properties: it vanishes at
+the sink, is dominated by the stationary mean odometer `meanU`, agrees with it outside the
+propagation box, is superharmonic away from the sink, and is bounded below by the Green
+escape barrier `meanU * (1 - srwGreenInf x / srwGreenInf 0)`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -12,9 +22,13 @@ variable {d : ℕ}
 def sparseSinkMean (p : ℝ) (T : ℕ) (x : Site d) : ℝ :=
   ∫ η, matchedMeanU (sparseSinkField T 0 η) 0 T x ∂(iidLaw d (threePointLaw p))
 
+/-- The sink mean odometer is nonnegative, since it averages the nonnegative matched
+mean odometer over the field law. -/
 theorem sparseSinkMean_nonneg (p : ℝ) (T : ℕ) (x : Site d) : 0 ≤ sparseSinkMean p T x :=
   integral_nonneg fun _ => matchedMeanU_nonneg _ _ _ _
 
+/-- The sink mean odometer vanishes at the sink site `0`, since `sparseSink_mean_zero`
+gives this for every field `η` before the integral is taken. -/
 theorem sparseSinkMean_zero (p : ℝ) (T : ℕ) : sparseSinkMean (d := d) p T 0 = 0 := by
   simp only [sparseSinkMean, sparseSink_mean_zero T 0 _ 0 T le_rfl, integral_zero]
 
@@ -52,7 +66,8 @@ theorem sparseSinkMean_superharmonic (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 
     integrable_matchedMeanU_bounded hd μ (sparseSinkField T 0) (measurable_sparseSinkField T 0)
       1 (sparseSinkField_particle_bound T 0) 0 T y
   have hgi (y : Site d) : Integrable (fun η => g η y) μ :=
-    integrable_matchedMeanU_bounded hd μ clippedField measurable_clippedField 1 clippedField_particle_bound 0 T y
+    integrable_matchedMeanU_bounded hd μ clippedField measurable_clippedField 1
+      clippedField_particle_bound 0 T y
   have hpt (η : Site d → ℤ) : walkOp (f η) x - f η x ≤ walkOp (g η) x - g η x :=
     matchedMeanU_laplacian_mono hd _ _ (sparseSinkField_le T 0 η) 1 (clippedField_particle_bound η)
       0 T x (sparseSinkField_eq_of_ne T 0 η x hx)
@@ -71,7 +86,8 @@ theorem sparseSinkMean_superharmonic (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 
 /-- The mean sink odometer dominates the Green escape barrier. -/
 theorem sparseSinkMean_green_lower (hd : 3 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (T : ℕ) (x : Site d) :
-    meanU (law d (threePointLaw p)) T * (1 - srwGreenInf d x / srwGreenInf d 0) ≤ sparseSinkMean p T x :=
+    meanU (law d (threePointLaw p)) T * (1 - srwGreenInf d x / srwGreenInf d 0) ≤
+      sparseSinkMean p T x :=
   exterior_superharmonic_barrier hd _ _ (integral_nonneg fun _ => Nat.cast_nonneg _)
     (sparseSinkMean_zero p T) (fun y hy => sparseSinkMean_superharmonic (by omega) hp hp4 T y hy)
     T (fun y hy => sparseSinkMean_far (by omega) hp hp4 T y hy) x

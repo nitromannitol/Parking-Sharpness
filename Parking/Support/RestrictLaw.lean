@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Range
+
+/-!
+# Conditioning on the background away from the tilted sites
+
 Conditioning on the randomness away from the tilted sites.
 
 `lem:product` (`parking.tex:2336-2347`) fixes "finitely many sites carrying the
@@ -12,7 +16,6 @@ mean, its integrability and hence its covariance with another such functional
 are the same under `restrictLaw` and under the full product law, where the
 counts, the walks and the uniform variables are three independent fields.
 -/
-import Parking.Support.Range
 
 open MeasureTheory
 
@@ -27,9 +30,13 @@ def keepAt {d : ℕ} (N : Finset (Site d)) (ω₀ ω : PData d) : PData d :=
     (fun q : Label d × ℕ => if q.1.1 ∈ N then ω.2.1 q else ω₀.2.1 q),
     (fun q : Label d × ℕ => if q.1.1 ∈ N then ω.2.2 q else ω₀.2.2 q))
 
+/-- `restrictLaw` is definitionally the pushforward of the full product law
+`pDataLaw` under `keepAt N ω₀`. -/
 theorem restrictLaw_eq_map {d : ℕ} (N : Finset (Site d)) (ν : Measure ℤ) (ω₀ : PData d) :
     restrictLaw d N ν ω₀ = (pDataLaw d ν).map (keepAt N ω₀) := rfl
 
+/-- `keepAt N ω₀` is measurable, since each of its three coordinates is built by
+cases on membership in `N` from a measurable coordinate projection. -/
 theorem measurable_keepAt {d : ℕ} (N : Finset (Site d)) (ω₀ : PData d) :
     Measurable (keepAt N ω₀) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)

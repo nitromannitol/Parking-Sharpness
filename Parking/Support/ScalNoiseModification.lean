@@ -1,4 +1,9 @@
-/-
+import Parking.Support.ContOrientedLimit
+import LatticeProb.Prob.ChentsovPiModification
+
+/-!
+# The jointly continuous modification of the space-time noise field
+
 The jointly continuous modification of the space-time noise field of the
 directed scaling limit (`parking.tex:3207-3218`).
 
@@ -14,10 +19,9 @@ This module records the two steps that do not depend on the increment bound:
 the second moment of an increment of the field, and the passage from the
 Kolmogorov condition to a modification whose sample paths are continuous.
 -/
-import Parking.Support.ContOrientedLimit
-import LatticeProb.Prob.ChentsovPiModification
 
-open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contNoiseTest contZ memLp_contNoiseTest)
+open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contNoiseTest contZ
+  memLp_contNoiseTest)
 
 open MeasureTheory ProbabilityTheory
 open scoped NNReal ENNReal
@@ -81,7 +85,8 @@ def contZProcess (v T : ℝ) : (Fin 2 → ℝ) → contNoiseSpace → ℝ :=
 /-- The pair of two values of the noise field is measurable. -/
 theorem measurablePair_contZ (v T : ℝ) (u u' : Fin 2 → ℝ) :
     Measurable fun ω => (contZ v T (u 0) (u 1) ω, contZ v T (u' 0) (u' 1) ω) :=
-  (LatticeProb.ContinuumStopping.measurable_contZ v T (u 0) (u 1)).prodMk (LatticeProb.ContinuumStopping.measurable_contZ v T (u' 0) (u' 1))
+  (LatticeProb.ContinuumStopping.measurable_contZ v T (u 0) (u 1)).prodMk
+    (LatticeProb.ContinuumStopping.measurable_contZ v T (u' 0) (u' 1))
 
 /-- The Kolmogorov condition for the noise field, assembled from its two
 ingredients: the joint measurability of pairs of values and the increment
@@ -157,7 +162,8 @@ theorem kolmogorovCondition_contZ {v T q : ℝ} (hv : 0 ≤ v) (hq : 0 < q) {C :
       ∫⁻ ω, edist (contZ v T (u 0) (u 1) ω) (contZ v T (v' 0) (v' 1) ω) ^ (2 : ℝ)
         ∂contNoiseLaw ≤ ENNReal.ofReal (2 ^ q * v * C) * edist u v' ^ q := by
   intro u v'
-  have hpt : ∀ ω : contNoiseSpace, edist (contZ v T (u 0) (u 1) ω) (contZ v T (v' 0) (v' 1) ω) ^ (2 : ℝ)
+  have hpt : ∀ ω : contNoiseSpace,
+      edist (contZ v T (u 0) (u 1) ω) (contZ v T (v' 0) (v' 1) ω) ^ (2 : ℝ)
       = ENNReal.ofReal ((contZ v T (u 0) (u 1) ω - contZ v T (v' 0) (v' 1) ω) ^ 2) := by
     intro ω
     rw [edist_dist, Real.dist_eq]
@@ -174,7 +180,8 @@ theorem kolmogorovCondition_contZ {v T q : ℝ} (hv : 0 ≤ v) (hq : 0 < q) {C :
     exact mul_le_mul_of_nonneg_left (hbound (u 0) (u 1) (v' 0) (v' 1)) hv
   have hlin : (∫⁻ ω, edist (contZ v T (u 0) (u 1) ω) (contZ v T (v' 0) (v' 1) ω) ^ (2 : ℝ)
       ∂contNoiseLaw)
-      = ENNReal.ofReal (∫ ω, (contZ v T (u 0) (u 1) ω - contZ v T (v' 0) (v' 1) ω) ^ 2 ∂contNoiseLaw) := by
+      = ENNReal.ofReal (∫ ω, (contZ v T (u 0) (u 1) ω - contZ v T (v' 0) (v' 1) ω) ^ 2
+          ∂contNoiseLaw) := by
     rw [ofReal_integral_eq_lintegral_ofReal
       (integrable_contZ_sub_sq hv T (u 0) (u 1) (v' 0) (v' 1))
       (Filter.Eventually.of_forall fun ω => sq_nonneg _)]
@@ -184,7 +191,8 @@ theorem kolmogorovCondition_contZ {v T q : ℝ} (hv : 0 ≤ v) (hq : 0 < q) {C :
     rw [edist_pi_def, Finset.univ_fin2]
     rw [Finset.sup_insert, Finset.sup_singleton]
     rw [edist_dist, edist_dist, Real.dist_eq, Real.dist_eq]
-    rw [← ENNReal.ofReal_max, ← ENNReal.ofReal_rpow_of_nonneg (le_max_of_le_left (abs_nonneg _)) hq.le]
+    rw [← ENNReal.ofReal_max,
+      ← ENNReal.ofReal_rpow_of_nonneg (le_max_of_le_left (abs_nonneg _)) hq.le]
   have hsum : (|u 0 - v' 0| + |u 1 - v' 1|) ^ q
       ≤ 2 ^ q * (max |u 0 - v' 0| |u 1 - v' 1|) ^ q := by
     set a := |u 0 - v' 0| with ha
@@ -199,7 +207,8 @@ theorem kolmogorovCondition_contZ {v T q : ℝ} (hv : 0 ≤ v) (hq : 0 < q) {C :
     calc (a + b) ^ q ≤ (2 * m) ^ q := Real.rpow_le_rpow (by positivity) hab hq.le
       _ = 2 ^ q * m ^ q := by rw [Real.mul_rpow (by norm_num) h0]
   rw [hlin, hed]
-  have hmid : ENNReal.ofReal (∫ ω, (contZ v T (u 0) (u 1) ω - contZ v T (v' 0) (v' 1) ω) ^ 2 ∂contNoiseLaw)
+  have hmid : ENNReal.ofReal
+      (∫ ω, (contZ v T (u 0) (u 1) ω - contZ v T (v' 0) (v' 1) ω) ^ 2 ∂contNoiseLaw)
       ≤ ENNReal.ofReal (2 ^ q * v * C * (max |u 0 - v' 0| |u 1 - v' 1|) ^ q) := by
     refine ENNReal.ofReal_le_ofReal ?_
     calc ∫ ω, (contZ v T (u 0) (u 1) ω - contZ v T (v' 0) (v' 1) ω) ^ 2 ∂contNoiseLaw

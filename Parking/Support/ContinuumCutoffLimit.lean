@@ -1,4 +1,8 @@
-/-
+import Parking.Support.ContSpatialCutoff
+
+/-!
+# Continuum cutoff limit
+
 **The randomized cutoff-to-true bound for a continuum Brownian optimal-stopping value**, stated
 for an arbitrary `(Fin d → ℝ)`-valued driving process and an arbitrary reward: this module makes
 no reference to `Parking.External.LinearFieldScaling`, the white-noise field `Z`, or any other
@@ -34,11 +38,11 @@ Three independent pieces:
    `Parking.contUc`'s own `fun k y => -Z ω' (s - k) (x + y)`) by a version clamped to `[0,s]` in
    the time argument, without changing the value, so that a within-a-ball bound at a FIXED time
    window becomes a genuine global bound on the clamped reward.
-3. `ae_exists_tendsto_of_summable_step` and `ae_exists_tendsto_contCutoffValue_of_summable_exitTerm`:
+3. `ae_exists_tendsto_of_summable_step` and
+   `ae_exists_tendsto_contCutoffValue_of_summable_exitTerm`:
    the Borel–Cantelli argument itself (fully generic, no continuum-value content at all) and its
    combination with item 1's pairwise bound.
 -/
-import Parking.Support.ContSpatialCutoff
 
 open MeasureTheory Filter Topology
 open scoped NNReal ENNReal

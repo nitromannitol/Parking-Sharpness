@@ -1,4 +1,10 @@
-/-
+import LatticeProb.Prob.FiniteMarginal
+import Parking.Support.ConfMonotone
+import Parking.Support.DensityCompare
+
+/-!
+# Exchangeability of the particles at the origin
+
 Exchangeability of the particles at the origin.
 
 `lem:transport` asserts that, conditionally on `η(0) = k`, the `k` particles at
@@ -14,9 +20,6 @@ settling rule breaks by the label order and which a relabelling does not
 preserve.  Ties are a null event, and `NoTies` is the pathwise hypothesis under
 which the commutation holds.
 -/
-import LatticeProb.Prob.FiniteMarginal
-import Parking.Support.ConfMonotone
-import Parking.Support.DensityCompare
 
 noncomputable section
 
@@ -32,12 +35,14 @@ variable {d : ℕ}
 def relabel (σ : Equiv.Perm ℕ) (p : Label d) : Label d :=
   if p.1 = 0 then (0, σ p.2) else p
 
+/-- `relabel` never moves a label's site coordinate. -/
 theorem relabel_fst (σ : Equiv.Perm ℕ) (p : Label d) : (relabel σ p).1 = p.1 := by
   unfold relabel
   split
   · simp_all
   · rfl
 
+/-- `relabel σ⁻¹` undoes `relabel σ`. -/
 theorem relabel_relabel (σ : Equiv.Perm ℕ) (p : Label d) :
     relabel σ⁻¹ (relabel σ p) = p := by
   unfold relabel
@@ -46,6 +51,7 @@ theorem relabel_relabel (σ : Equiv.Perm ℕ) (p : Label d) :
     exact Prod.ext h.symm (by simp)
   · simp [h]
 
+/-- `relabel σ` undoes `relabel σ⁻¹`, the companion to `relabel_relabel`. -/
 theorem relabel_relabel' (σ : Equiv.Perm ℕ) (p : Label d) :
     relabel σ (relabel σ⁻¹ p) = p := by
   unfold relabel
@@ -54,11 +60,14 @@ theorem relabel_relabel' (σ : Equiv.Perm ℕ) (p : Label d) :
     exact Prod.ext h.symm (by simp)
   · simp [h]
 
+/-- On a label at the origin, `relabel σ` acts as `σ` on the index. -/
 theorem relabel_origin (σ : Equiv.Perm ℕ) (i : ℕ) :
     relabel σ (((0 : Site d), i) : Label d) = (0, σ i) := by
   unfold relabel
   simp
 
+/-- `relabel σ` is injective, since it is left-inverted by `relabel σ⁻¹`
+(`relabel_relabel`). -/
 theorem relabel_injective (σ : Equiv.Perm ℕ) :
     Function.Injective (relabel (d := d) σ) := by
   intro p q h
@@ -116,6 +125,9 @@ def relabelDriver (σ : Equiv.Perm ℕ) (D : LatticeProb.PDriver d) : LatticePro
 def NoTies (D : LatticeProb.PDriver d) : Prop :=
   ∀ (t : ℕ) (p q : Label d), p ≠ q → D.rank (p, t) ≠ D.rank (q, t)
 
+/-- `NoTies` transfers from a driver `D` to `relabelDriver σ D`, since the
+relabelling only permutes which label reads which rank, and `relabel` is
+injective. -/
 theorem noTies_relabel (σ : Equiv.Perm ℕ) {D : LatticeProb.PDriver d} (h : NoTies D) :
     NoTies (relabelDriver σ D) := by
   intro t p q hpq
@@ -337,9 +349,13 @@ origin particles permuted. -/
 def relabelData (σ : Equiv.Perm ℕ) (ω : LatticeProb.PData d) : LatticeProb.PData d :=
   (ω.1, (fun q => ω.2.1 (relabel σ q.1, q.2), fun q => ω.2.2 (relabel σ q.1, q.2)))
 
+/-- Converting relabelled data to a driver gives the same result as relabelling
+the driver of the original data. -/
 theorem toPDriver_relabelData (σ : Equiv.Perm ℕ) (ω : LatticeProb.PData d) :
     LatticeProb.toPDriver (relabelData σ ω) = relabelDriver σ (LatticeProb.toPDriver ω) := rfl
 
+/-- `relabelData σ` is measurable, being built from the coordinate projections
+of `ω.2.1` and `ω.2.2` at the fixed reindexing `(relabel σ q.1, q.2)`. -/
 theorem measurable_relabelData (σ : Equiv.Perm ℕ) :
     Measurable (relabelData (d := d) σ) :=
   measurable_fst.prodMk
@@ -350,12 +366,16 @@ theorem measurable_relabelData (σ : Equiv.Perm ℕ) :
         (measurable_pi_apply (relabel σ q.1, q.2)).comp
           (measurable_snd.comp measurable_snd)))
 
+/-- Applying an injective map `f` to the first coordinate of a pair, leaving
+the second fixed, gives an injective map. -/
 theorem prodMap_fst_injective {α β : Type*} (f : α → α) (hf : Function.Injective f) :
     Function.Injective fun q : α × β => (f q.1, q.2) := by
   intro q₁ q₂ h
   simp only [Prod.mk.injEq] at h
   exact Prod.ext (hf h.1) h.2
 
+/-- `(relabel σ q.1, q.2)` is injective in `q`, from `relabel_injective` and
+`prodMap_fst_injective`. -/
 theorem relabelPair_injective (σ : Equiv.Perm ℕ) :
     Function.Injective fun q : Label d × ℕ => (relabel σ q.1, q.2) :=
   prodMap_fst_injective _ (relabel_injective σ)
@@ -417,6 +437,9 @@ theorem ae_noTies (μ : Measure (Site d → ℤ)) [IsProbabilityMeasure μ] :
 
 /-! ### Exchangeability of the particles at the origin -/
 
+/-- Restricting `P` to `Φ ⁻¹' E` and pushing forward by `G ∘ Φ` equals pushing
+`P` forward by `Φ` then restricting to `E` and pushing forward by `G`, via
+`Measure.restrict_map` and `Measure.map_map`. -/
 theorem map_restrict_comp {A B C : Type*} [MeasurableSpace A] [MeasurableSpace B]
     [MeasurableSpace C] (P : Measure A) {Φ : A → B} (hΦ : Measurable Φ)
     {G : B → C} (hG : Measurable G) {E : Set B} (hE : MeasurableSet E) :
@@ -424,6 +447,8 @@ theorem map_restrict_comp {A B C : Type*} [MeasurableSpace A] [MeasurableSpace B
   rw [Measure.restrict_map hΦ hE, Measure.map_map hG hΦ]
   rfl
 
+/-- If `T` preserves `P` and `E` is `T`-invariant, then `T` preserves the
+restriction `P.restrict E` as well. -/
 theorem map_restrict_of_map_eq {A : Type*} [MeasurableSpace A] (P : Measure A)
     {T : A → A} (hT : Measurable T) (hP : P.map T = P) {E : Set A}
     (hE : MeasurableSet E) (hTE : T ⁻¹' E = E) :

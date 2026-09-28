@@ -1,4 +1,10 @@
-/-
+import Parking.Support.JointStopping
+import Parking.Support.MeanHorizonStep1
+import Parking.Support.Invariance
+
+/-!
+# Stationarity and the a priori bounds of Step 2
+
 Stationarity and the a priori bounds of Step 2 of `lem:mean-horizon`.
 
 Step 2 reads the paper's sentence "the walk is independent of `ξ_δ`, so
@@ -17,9 +23,6 @@ integrating them: that the fifth moment is finite at the recentred scenery
 of `eq:apriori-finite` read along the walk (`blockTerm_bound`), which is what
 makes the block terms integrable in the configuration.
 -/
-import Parking.Support.JointStopping
-import Parking.Support.MeanHorizonStep1
-import Parking.Support.Invariance
 
 open LatticeProb.ConvexOrder (integrable_exp_abs_shiftLaw shiftLaw)
 
@@ -32,6 +35,8 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
+/-- The recentred scenery of a shifted configuration is the shift of the recentred
+scenery. -/
 theorem xi_shiftConf (δ : ℝ) (η : Site d → ℤ) (y : Site d) :
     Parking.xi δ (fun x => η (x + y)) = fun z => Parking.xi δ η (z + y) := rfl
 
@@ -88,6 +93,9 @@ theorem lintegral_prod_u_xi (hd : 1 ≤ d) (δ : ℝ) (ν : Measure ℤ) [IsProb
 
 /-! ### Integrability of the fifth moment of the odometer of the recentred scenery -/
 
+/-- **The odometer's `r`-th moment at the recentred scenery is finite.** Transported from
+the `r`-th moment of the maximum, `integrable_maxPow_of_exp`, along the law transport
+`law_map_xi` between `ξ_δ` and the shift law. -/
 theorem integrable_u_xi_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) (r ℓ : ℕ) (y : Site d) :
@@ -106,6 +114,8 @@ theorem integrable_u_xi_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
 
 /-! ### The a priori bound on a block term -/
 
+/-- The a priori bound `eq:apriori-finite`: `u_ℓ(y; ξ_δ) ≤ ℓ * ∑_{box} |ξ_δ|` when `y` lies
+in a box of radius `t`, via `u_le_mul_posBox` and enlarging the box by `ℓ`. -/
 theorem u_xi_le_boxSum (hd : 1 ≤ d) (δ : ℝ) (η : Site d → ℤ) {t ℓ : ℕ} {y : Site d}
     (hy : y ∈ boxFinset (0 : Site d) t) :
     u (Parking.xi δ η) ℓ y
@@ -119,6 +129,9 @@ theorem u_xi_le_boxSum (hd : 1 ≤ d) (δ : ℝ) (η : Site d → ℤ) {t ℓ : 
   exact Finset.sum_le_sum_of_subset_of_nonneg
     (fun w hw => mem_boxFinset_add hy hw) (fun z _ _ => abs_nonneg _)
 
+/-- **The a priori bound on a block term**, read along a walk that has stayed within `n`
+of the origin: the block term is `0` off the event `{s < σ}`, and otherwise it is bounded
+by `u_xi_le_boxSum` at the enlarged radius `max N (2n)`. -/
 theorem blockTerm_bound (hd : 1 ≤ d) (δ : ℝ) (η : Site d → ℤ)
     {σ : (ℕ → Site d) → ℕ} {n N : ℕ} (hσn : ∀ X, σ X ≤ n) (k : ℕ)
     {X : ℕ → Site d} (hX : ∀ j ≤ n, X j ∈ boxFinset (0 : Site d) n) :

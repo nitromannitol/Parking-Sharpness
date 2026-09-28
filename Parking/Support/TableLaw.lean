@@ -3,6 +3,18 @@ import Parking.Support.MeanLaw
 import Parking.Support.MatchedBellman
 import Parking.Support.UpperTarget
 
+/-!
+# The count history has the original process's law
+
+Packages the departure, hole, and rank-tie counts of a realization into `CountHistory`
+and shows that this packaging, computed from a configuration and a common round table
+(`tableHistory`), has exactly the same marginal law as the original process's count
+history (`map_tableHistory`). Derives from this the marginal law of the table odometer
+(`map_tableOdometer`), its integrability under a first absolute moment on the
+configuration law, and the identity between its conditional mean `matchedMeanU` and the
+original process's mean odometer.
+-/
+
 open LatticeProb (measurable_from_countable' rankLaw_isProbability)
 
 noncomputable section
@@ -13,16 +25,21 @@ variable {d : ℕ}
 /-- Count observables, without the names of individual particles. -/
 abbrev CountHistory (d : ℕ) := (ℕ × Site d → ℕ) × (ℕ × Site d → ℕ) × (ℕ × Site d → ℕ)
 
+/-- Projects the full process observables down to the count triple: departures, holes,
+and rank ties. -/
 def countHistory (O : ProcessObservables d) : CountHistory d := (O.1, O.2.1, O.2.2.1)
 
 /-- Configurations and common tables suffice to construct the entire count history. -/
 def tableHistory (ω : (Site d → ℤ) × RoundNoise d) : CountHistory d :=
   countHistory (matchedObservables ω.1 0 ω.2)
 
+/-- `countHistory` is measurable, being built from coordinate projections alone. -/
 theorem measurable_countHistory : Measurable (countHistory (d := d)) := by
   exact measurable_fst.prodMk ((measurable_fst.comp measurable_snd).prodMk
     (measurable_fst.comp (measurable_snd.comp measurable_snd)))
 
+/-- `tableHistory` is measurable, as `countHistory` composed with the measurable
+construction of `matchedObservables`. -/
 theorem measurable_tableHistory (hd : 1 ≤ d) : Measurable (tableHistory (d := d)) :=
   measurable_countHistory.comp (measurable_matchedObservables ⟨0, hd⟩ Prod.fst (fun _ => 0) Prod.snd
     measurable_fst measurable_const measurable_snd)
@@ -43,8 +60,10 @@ theorem map_tableHistory (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure
     (Ω := Ω) (fun ω => ω.1.1) (fun ω => ω.1.2) Prod.snd
     (measurable_fst.comp measurable_fst) (measurable_snd.comp measurable_fst) measurable_snd
   have h := congrArg (fun μ => μ.map countHistory) (map_matchedObservables hd ν)
-  change Measure.map countHistory (Measure.map (fun ω : Ω => matchedObservables ω.1.1 ω.1.2 ω.2) _) =
-    Measure.map countHistory (Measure.map (fun ω : Data d => Parking.stackObservables ω) (law d ν)) at h
+  change Measure.map countHistory
+      (Measure.map (fun ω : Ω => matchedObservables ω.1.1 ω.1.2 ω.2) _) =
+    Measure.map countHistory
+      (Measure.map (fun ω : Data d => Parking.stackObservables ω) (law d ν)) at h
   have hs : Measurable (fun ω : Data d => Parking.stackObservables ω) :=
     Parking.measurable_stackObservables
   rw [Measure.map_map measurable_countHistory hm,
@@ -78,9 +97,11 @@ theorem map_tableOdometer (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
 /-- The unconditional finite-horizon table odometer is integrable under a first moment. -/
 theorem integrable_tableOdometer (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (T : ℕ) (x : Site d) :
-    Integrable (fun ω : (Site d → ℤ) × RoundNoise d => ((matchedState ω.1 0 ω.2 T).departures x : ℝ))
+    Integrable
+      (fun ω : (Site d → ℤ) × RoundNoise d => ((matchedState ω.1 0 ω.2 T).departures x : ℝ))
       ((iidLaw d ν).prod (roundNoiseLaw d)) := by
-  have hm : Measurable (fun ω : (Site d → ℤ) × RoundNoise d => (matchedState ω.1 0 ω.2 T).departures x) :=
+  have hm : Measurable
+      (fun ω : (Site d → ℤ) × RoundNoise d => (matchedState ω.1 0 ω.2 T).departures x) :=
     (measurable_pi_apply (T, x)).comp (measurable_fst.comp (measurable_tableHistory hd))
   have hmap := map_tableOdometer hd ν T x
   have hcast : Measurable (fun n : ℕ => (n : ℝ)) := measurable_from_countable' _
@@ -96,7 +117,8 @@ theorem integral_matchedMeanU (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
     ∫ η, matchedMeanU η 0 T x ∂(iidLaw d ν) = ∫ ω, (U ω T x : ℝ) ∂(law d ν) := by
   haveI := roundNoiseLaw_isProbability hd
   haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
-  have hm : Measurable (fun ω : (Site d → ℤ) × RoundNoise d => (matchedState ω.1 0 ω.2 T).departures x) :=
+  have hm : Measurable
+      (fun ω : (Site d → ℤ) × RoundNoise d => (matchedState ω.1 0 ω.2 T).departures x) :=
     (measurable_pi_apply (T, x)).comp (measurable_fst.comp (measurable_tableHistory hd))
   have hcast : Measurable (fun n : ℕ => (n : ℝ)) := measurable_from_countable' _
   rw [show (∫ η, matchedMeanU η 0 T x ∂(iidLaw d ν)) =

@@ -1,7 +1,10 @@
-/-
+import Parking.Support.CoupledLaw
+
+/-!
+# The joint law of the configuration and particle odometer
+
 The joint law of the initial configuration and particle odometer.
 -/
-import Parking.Support.CoupledLaw
 
 open LatticeProb (measurable_from_countable')
 
@@ -10,7 +13,8 @@ namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
-/-- The initial configuration and a terminal odometer have the same joint law in both constructions. -/
+/-- The initial configuration and a terminal odometer have the same joint law in both
+constructions. -/
 theorem map_conf_pOdometer (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (x : Site d) :
     (pDataLaw d ν).map (fun ω : Parking.PData d => (ω.1, pOdometer (toPDriver ω) n x)) =

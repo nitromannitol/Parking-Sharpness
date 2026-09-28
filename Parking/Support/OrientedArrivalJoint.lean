@@ -1,6 +1,11 @@
-/- Unconditional arrival means for the directed particle recursion. -/
 import Parking.Support.OrientedArrivalMean
 import Parking.Support.OrientedCountLaw
+
+/-!
+# Unconditional arrival means for the directed recursion
+
+Unconditional arrival means for the directed particle recursion.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -9,6 +14,9 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The directed arrival count at `x` and horizon `n` is integrable jointly over the
+field and the routing instructions, dominated by the sum over neighbours of the
+directed odometer. -/
 theorem integrable_orientedArrivalCount_joint (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) :
     Integrable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
@@ -31,6 +39,8 @@ theorem integrable_orientedArrivalCount_joint (hd : 1 ≤ d) (ν : Measure ℤ) 
       simpa only [arrivals, card_range] using card_filter_le
         (range (orientedOdometer z.1 z.2 n (x - unit i))) (fun j => z.2 (x - unit i, j) = x))
 
+/-- The joint mean of the directed arrival count at `x` and horizon `n` equals the mean
+directed odometer `meanU (orientedLaw d ν) n`. -/
 theorem integral_orientedArrivalCount_joint (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) :
     (∫ z : (Site d → ℤ) × (Site d × ℕ → Site d),
@@ -47,6 +57,8 @@ theorem integral_orientedArrivalCount_joint (hd : 1 ≤ d) (ν : Measure ℤ) (h
     Fintype.card_fin, nsmul_eq_mul]
   exact mul_div_cancel_left₀ _ (ne_of_gt (show (0 : ℝ) < d by exact_mod_cast hd))
 
+/-- The joint mean of the directed odometer at `x` and horizon `n` equals
+`meanU (orientedLaw d ν) n`, independent of `x`. -/
 theorem integral_orientedOdometer_joint (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) :
     (∫ z : (Site d → ℤ) × (Site d × ℕ → Site d),

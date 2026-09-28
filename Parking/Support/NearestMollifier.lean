@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Continuum
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+
+/-!
+# The one-sided time mollifier
+
 The one-sided time mollifier of `parking.tex:1828-1829`, and the space-time test
 functions it builds.
 
@@ -11,9 +17,6 @@ of `ρ_h` is placed to the RIGHT of `s = 1` on purpose: `U` is nondecreasing in
 `ψ_h` then lies inside `{U > 0}` for EVERY `h`, which is what the equation
 requires.  A kernel straddling `s = 1` would not have that property.
 -/
-import Parking.Support.Continuum
-import Mathlib.Analysis.Calculus.BumpFunction.Normed
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 
 open MeasureTheory
 open scoped ENNReal NNReal

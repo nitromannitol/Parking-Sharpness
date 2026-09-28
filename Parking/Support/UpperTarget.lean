@@ -1,4 +1,9 @@
-/-
+import Parking.Support.CriticalLawReal
+import Parking.External.GreenNorms
+
+/-!
+# Steps 2 and 3 of `thm:upper`, and `eq:target`
+
 Steps 2 and 3 of the proof of `thm:upper` (`parking.tex:1459-1475`), and the
 first display `eq:target`.
 
@@ -17,8 +22,6 @@ The elementary comparisons the two steps rest on are collected first:
 `x^{2/r} ≤ e²` when `log x ≤ r`, `log(n+1) ≤ 2 log n` and `log(n+2) ≤ 2 log n`
 for `n ≥ 2`, `log n ≤ n^ε/ε`, and `(n+1)^t ≤ 2^t n^t`.
 -/
-import Parking.Support.CriticalLawReal
-import Parking.External.GreenNorms
 
 open LatticeProb (measurable_from_countable')
 
@@ -32,6 +35,7 @@ variable {d : ℕ}
 
 /-! ### Elementary comparisons -/
 
+/-- If `log x ≤ r` then `x^(2/r) ≤ e²`, since the exponent `(2/r) log x` is then at most `2`. -/
 theorem rpow_two_div_le_exp_two {x r : ℝ} (hx : 1 ≤ x) (hr : 0 < r)
     (hlog : Real.log x ≤ r) : x ^ (2 / r) ≤ Real.exp 2 := by
   have hx0 : (0 : ℝ) < x := lt_of_lt_of_le one_pos hx
@@ -41,6 +45,7 @@ theorem rpow_two_div_le_exp_two {x r : ℝ} (hx : 1 ≤ x) (hr : 0 < r)
   rw [mul_div_assoc']
   exact (div_le_iff₀ hr).mpr (by linarith)
 
+/-- For `n ≥ 2`, `log(n+1) ≤ 2 log n`, since `n + 1 ≤ n²` there. -/
 theorem log_succ_le_two_mul_log {n : ℕ} (hn : 2 ≤ n) :
     Real.log ((n : ℝ) + 1) ≤ 2 * Real.log n := by
   have hn2 : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
@@ -49,6 +54,7 @@ theorem log_succ_le_two_mul_log {n : ℕ} (hn : 2 ≤ n) :
       Real.log_le_log (by linarith) hsq
     _ = 2 * Real.log (n : ℝ) := by rw [Real.log_pow]; norm_num
 
+/-- For `n ≥ 2`, `log(n+2) ≤ 2 log n`, since `n + 2 ≤ n²` there. -/
 theorem log_add_two_le_two_mul_log {n : ℕ} (hn : 2 ≤ n) :
     Real.log ((n : ℝ) + 2) ≤ 2 * Real.log n := by
   have hn2 : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
@@ -57,16 +63,20 @@ theorem log_add_two_le_two_mul_log {n : ℕ} (hn : 2 ≤ n) :
       Real.log_le_log (by linarith) hsq
     _ = 2 * Real.log (n : ℝ) := by rw [Real.log_pow]; norm_num
 
+/-- `log n ≤ 4 n^{1/4}`, from `Real.log_le_rpow_div` at exponent `1/4`. -/
 theorem log_le_four_rpow_quarter (n : ℕ) : Real.log n ≤ 4 * (n : ℝ) ^ ((1 : ℝ) / 4) := by
   calc Real.log n ≤ (n : ℝ) ^ ((1 : ℝ) / 4) / (1 / 4) :=
         Real.log_le_rpow_div (Nat.cast_nonneg n) (by norm_num)
     _ = 4 * (n : ℝ) ^ ((1 : ℝ) / 4) := by ring
 
+/-- `log n ≤ 2 n^{1/2}`, from `Real.log_le_rpow_div` at exponent `1/2`. -/
 theorem log_le_two_rpow_half (n : ℕ) : Real.log n ≤ 2 * (n : ℝ) ^ ((1 : ℝ) / 2) := by
   calc Real.log n ≤ (n : ℝ) ^ ((1 : ℝ) / 2) / (1 / 2) :=
         Real.log_le_rpow_div (Nat.cast_nonneg n) (by norm_num)
     _ = 2 * (n : ℝ) ^ ((1 : ℝ) / 2) := by ring
 
+/-- For `n ≥ 1` and `t ≥ 0`, `(n+1)^t ≤ 2^t n^t`, from `n + 1 ≤ 2n` and monotonicity of `rpow`
+in the base. -/
 theorem rpow_succ_le_two_rpow {n : ℕ} (hn : 1 ≤ n) {t : ℝ} (ht : 0 ≤ t) :
     ((n : ℝ) + 1) ^ t ≤ 2 ^ t * (n : ℝ) ^ t := by
   have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
@@ -75,17 +85,23 @@ theorem rpow_succ_le_two_rpow {n : ℕ} (hn : 1 ≤ n) {t : ℝ} (ht : 0 ≤ t) 
         Real.rpow_le_rpow (by linarith) hle ht
     _ = 2 ^ t * (n : ℝ) ^ t := Real.mul_rpow (by norm_num) (by linarith)
 
+/-- `log 2 ≤ log n` for `n ≥ 2`, by monotonicity of `log`. -/
 theorem log_two_le_log {n : ℕ} (hn : 2 ≤ n) : Real.log 2 ≤ Real.log n := by
   have hn2 : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   exact Real.log_le_log (by norm_num) hn2
 
+/-- `log 2` is positive. -/
 theorem log_two_pos : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
 
+/-- `log n` is positive for `n ≥ 2`, from `log_two_pos` and `log_two_le_log`. -/
 theorem log_pos_of_two_le {n : ℕ} (hn : 2 ≤ n) : (0 : ℝ) < Real.log n :=
   lt_of_lt_of_le log_two_pos (log_two_le_log hn)
 
 /-! ### Jensen: the mean against the `r`-th moment norm -/
 
+/-- Jensen's inequality for the `r`-th moment norm: for `r ≥ 1` and a nonnegative integrable
+`f` with `f^r` also integrable, `∫f ≤ (∫f^r)^{1/r}`, derived from `rpow_integral_le` by taking
+the `1/r`-th power of both sides. -/
 theorem integral_le_rNorm {Ω : Type} [MeasurableSpace Ω] {μ : Measure Ω}
     [IsProbabilityMeasure μ] {f : Ω → ℝ} (hf : ∀ ω, 0 ≤ f ω) (hfi : Integrable f μ)
     {r : ℝ} (hr : 1 ≤ r) (hgi : Integrable (fun ω => f ω ^ r) μ) :
@@ -99,10 +115,15 @@ theorem integral_le_rNorm {Ω : Type} [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-! ### Step 2: the error terms below dimension four -/
 
+/-- Below dimension four, `Parking.External.greenL2Rate` has the closed form
+`n^{(4-d)/4}`, checked case by case on `d ∈ {1, 2, 3}` from its definition. -/
 theorem greenL2Rate_eq_low {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (n : ℕ) :
     Parking.External.greenL2Rate d n = (n : ℝ) ^ ((4 - (d : ℝ)) / 4) := by
   interval_cases d <;> · rw [Parking.External.greenL2Rate]; norm_num
 
+/-- Below dimension four and for `n ≥ 2`, `Parking.External.greenMaxRate d n` is at most
+twice `Parking.External.greenL2Rate d n`, checked case by case on `d ∈ {1, 2, 3}` using
+`log_le_two_rpow_half` in the `d = 2` case. -/
 theorem greenMaxRate_le_greenL2Rate {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) {n : ℕ} (hn : 2 ≤ n) :
     Parking.External.greenMaxRate d n ≤ 2 * Parking.External.greenL2Rate d n := by
   have hn1 : (1 : ℝ) ≤ (n : ℝ) := by
@@ -126,6 +147,10 @@ theorem greenMaxRate_le_greenL2Rate {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) {n 
     have h : (1 : ℝ) ≤ (n : ℝ) ^ ((1 : ℝ) / 4) := Real.one_le_rpow hn1 (by norm_num)
     linarith
 
+/-- Below dimension four and for `n ≥ 2`, `(n+1)^{1/4} κ_d(n)` is at most
+`32 · Parking.External.greenL2Rate d n`, checked case by case on `d ∈ {1, 2, 3}` using
+`rpow_succ_le_two_rpow` and, at `d = 2`, `log_add_two_le_two_mul_log` and
+`log_le_four_rpow_quarter`. -/
 theorem kappa_term_le_greenL2Rate {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) {n : ℕ} (hn : 2 ≤ n) :
     ((n : ℝ) + 1) ^ ((1 : ℝ) / 4) * kappa d n
       ≤ 32 * Parking.External.greenL2Rate d n := by
@@ -188,21 +213,29 @@ theorem kappa_term_le_greenL2Rate {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) {n : 
 /-- `r = 2 ∨ ⌈log(n+1)⌉`, the exponent of Step 3. -/
 def rHigh (n : ℕ) : ℝ := max 2 ((Nat.ceil (Real.log ((n : ℝ) + 1)) : ℕ) : ℝ)
 
+/-- `rHigh n` is at least `2`, being the max of `2` with something. -/
 theorem two_le_rHigh (n : ℕ) : 2 ≤ rHigh n := le_max_left _ _
 
+/-- `rHigh n` is positive, from `two_le_rHigh`. -/
 theorem rHigh_pos (n : ℕ) : 0 < rHigh n := lt_of_lt_of_le (by norm_num) (two_le_rHigh n)
 
+/-- `log(n+1) ≤ rHigh n`, since `rHigh n` is at least the ceiling of `log(n+1)`. -/
 theorem log_le_rHigh (n : ℕ) : Real.log ((n : ℝ) + 1) ≤ rHigh n :=
   le_trans (Nat.le_ceil _) (le_max_right _ _)
 
 /-- The constant of Step 3: `r ≤ (2/log 2 + 2) log n` for `n ≥ 2`. -/
 def rConst : ℝ := 2 / Real.log 2 + 2
 
+/-- `rConst = 2/log 2 + 2` is positive, since `log 2 > 0`. -/
 theorem rConst_pos : 0 < rConst := by
   rw [rConst]
   have := log_two_pos
   positivity
 
+/-- **The exponent `rHigh n` is at most `rConst · log n` for `n ≥ 2`.**  Bounds the ceiling
+in `rHigh`'s definition by `log(n+1) + 1`, then `log(n+1)` by `2 log n`
+(`log_succ_le_two_mul_log`) and the constant `1` by a multiple of `log n` using
+`log_two_le_log`. -/
 theorem rHigh_le_log {n : ℕ} (hn : 2 ≤ n) : rHigh n ≤ rConst * Real.log n := by
   have hlogpos := log_pos_of_two_le hn
   have hlognn : (0 : ℝ) ≤ Real.log ((n : ℝ) + 1) := by
@@ -224,6 +257,10 @@ theorem rHigh_le_log {n : ℕ} (hn : 2 ≤ n) : rHigh n ≤ rConst * Real.log n 
 
 /-! ### The two error bounds -/
 
+/-- **Step 2's error bound below dimension four.**  The three error terms of the moment
+bound at `r = 8` are together at most a constant multiple of `n^{(4-d)/4}`, combining the
+hypothesis `hGN : Parking.External.GreenNorms` with `greenMaxRate_le_greenL2Rate`,
+`kappa_term_le_greenL2Rate` and `greenL2Rate_eq_low`. -/
 theorem upper_error_low {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hGN : Parking.External.GreenNorms) :
     ∃ K : ℝ, 0 < K ∧ ∀ n : ℕ, 2 ≤ n →
@@ -260,6 +297,8 @@ theorem upper_error_low {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
   rw [← greenL2Rate_eq_low hd hd3 n]
   nlinarith [hL, hK, hMrate, hL0, hM0, hrate0, hsqrt8, hcL.le, hcM.le]
 
+/-- From dimension four on, `Parking.External.greenL2Rate d n ≤ 1 + √(log n)`, directly from
+its definition. -/
 theorem greenL2Rate_le_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) :
     Parking.External.greenL2Rate d n ≤ 1 + Real.sqrt (Real.log n) := by
   have hs : (0 : ℝ) ≤ Real.sqrt (Real.log n) := Real.sqrt_nonneg _
@@ -272,13 +311,18 @@ theorem greenL2Rate_le_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) :
   · linarith
   · linarith
 
+/-- From dimension four on, `Parking.External.greenMaxRate d n = 1`, directly from its
+definition. -/
 theorem greenMaxRate_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) :
     Parking.External.greenMaxRate d n = 1 := by
   rw [Parking.External.greenMaxRate, if_neg (by omega : d ≠ 1), if_neg (by omega : d ≠ 2)]
 
+/-- From dimension four on, `κ_d(n) = 1`, directly from `kappa`'s definition. -/
 theorem kappa_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) : kappa d n = 1 := by
   rw [kappa, if_neg (by omega : d ≠ 1), if_neg (by omega : d ≠ 2)]
 
+/-- For `n ≥ 2`, `√(log n) ≤ log n / √(log 2)`, from `√(log 2) ≤ √(log n)`
+(`log_two_le_log`) multiplied through by `√(log n)`. -/
 theorem sqrt_log_le_log {n : ℕ} (hn : 2 ≤ n) :
     Real.sqrt (Real.log n) ≤ Real.log n / Real.sqrt (Real.log 2) := by
   have hlogpos := log_pos_of_two_le hn
@@ -292,6 +336,10 @@ theorem sqrt_log_le_log {n : ℕ} (hn : 2 ≤ n) :
     Real.mul_self_sqrt (le_of_lt hlogpos)
   linarith
 
+/-- **Step 3's error bound from dimension four on.**  The three error terms of the moment
+bound at exponent `rHigh n` are together at most a constant multiple of `log n`, combining
+`hGN : Parking.External.GreenNorms` with `greenL2Rate_le_high`, `greenMaxRate_high`,
+`kappa_high`, `rHigh_le_log`, `sqrt_log_le_log` and `rpow_two_div_le_exp_two`. -/
 theorem upper_error_high {d : ℕ} (hd4 : 4 ≤ d) (hGN : Parking.External.GreenNorms) :
     ∃ K : ℝ, 0 < K ∧ ∀ n : ℕ, 2 ≤ n →
       Real.sqrt (rHigh n) * l2Norm (green d n) + rHigh n * greenMax d n
@@ -373,6 +421,8 @@ theorem upper_error_high {d : ℕ} (hd4 : 4 ≤ d) (hGN : Parking.External.Green
 
 /-! ### The moment bound `eq:critical-moment` -/
 
+/-- A finite exponential moment of `|k|` dominates the exponential moment of `max(k, 0)`,
+since `max(k, 0) ≤ |k|` pointwise. -/
 theorem integrable_expMax_of_expAbs {ν : Measure ℤ} {θ : ℝ} (hθ : 0 < θ)
     (h : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) :
     Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν := by
@@ -383,6 +433,8 @@ theorem integrable_expMax_of_expAbs {ν : Measure ℤ} {θ : ℝ} (hθ : 0 < θ)
   refine Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left ?_ (le_of_lt hθ))
   exact max_le (le_abs_self _) (abs_nonneg _)
 
+/-- `law d ν`, the product of the i.i.d. field law and the stack-rank law, is a probability
+measure whenever `ν` is. -/
 theorem law_isProb (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (law d ν) := by
   haveI := stackRankLaw_isProbability (d := d) hd

@@ -1,4 +1,9 @@
-/-
+import Parking.Support.UpperProof
+import Parking.External.UConcentration
+
+/-!
+# The concentration estimate transported to the parking model
+
 The concentration estimate of `lem:u-concentration` read for the parking model.
 
 `Parking.External.UConcentration` is stated for a general finite-range
@@ -16,8 +21,6 @@ The output is `Parking.exists_uNorm_le`: the `r`-th moment norm of `u_n(0)` is
 at most its mean plus `C(√r ‖g_n‖₂ + r max_x g_n(x))`, which is what Step 1 of
 `thm:upper` is combined with.
 -/
-import Parking.Support.UpperProof
-import Parking.External.UConcentration
 
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm rNorm_add_le)
@@ -35,13 +38,18 @@ variable {d : ℕ}
 /-- The configuration of a realization, read in the reals. -/
 def confReal (ω : Data d) : Site d → ℝ := fun y => ((ω.1 y : ℤ) : ℝ)
 
+/-- The integer-to-real cast is measurable, since `ℤ` is countable. -/
 theorem measurable_intCastReal : Measurable (fun k : ℤ => (k : ℝ)) :=
   measurable_from_countable' _
 
+/-- `confReal` is measurable, as the coordinatewise real cast composed with the
+projection to the underlying configuration. -/
 theorem measurable_confReal : Measurable (fun ω : Data d => confReal ω) :=
   measurable_pi_lambda _ fun y =>
     measurable_intCastReal.comp ((measurable_pi_apply y).comp measurable_fst)
 
+/-- The integer sandpile odometer `uOf` agrees with the real-field odometer `u`
+evaluated at the real-cast configuration `confReal`, by unfolding both recursions. -/
 theorem uOf_eq_u_confReal (ω : Data d) (n : ℕ) (x : Site d) :
     uOf ω n x = u (confReal ω) n x := rfl
 
@@ -75,6 +83,8 @@ theorem integral_confReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
 
 /-! ### The sup norm of the Green function is its maximum -/
 
+/-- The sup norm of the Green function equals its pointwise maximum `greenMax`, since
+the Green function is nonnegative. -/
 theorem supAbs_green (d : ℕ) (n : ℕ) : supAbs (green d n) = greenMax d n := by
   have habs : ∀ x : Site d, |green d n x| = green d n x :=
     fun x => abs_of_nonneg (green_nonneg n x)
@@ -82,6 +92,10 @@ theorem supAbs_green (d : ℕ) (n : ℕ) : supAbs (green d n) = greenMax d n := 
 
 /-! ### The transported concentration estimate -/
 
+/-- The external concentration estimate `UConcentration`, transported along the
+real-cast law `law_map_confReal` and the kernel identification `kSol_kern`/`kGreen_kern`:
+the `r`-th moment norm of `uOf ω n 0 - meanu (law d ν) n` obeys the same Green-function
+bound as the general kernel statement. -/
 theorem exists_uConc (hd : 1 ≤ d) (hConc : Parking.External.UConcentration)
     (ν : Measure ℤ) [IsProbabilityMeasure ν] {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) :
@@ -126,6 +140,9 @@ theorem exists_uConc (hd : 1 ≤ d) (hConc : Parking.External.UConcentration)
 
 /-! ### The `r`-th moment norm of the sandpile odometer -/
 
+/-- The `r`-th moment norm of the sandpile odometer `uOf ω n 0` is at most its mean
+`meanu (law d ν) n` plus the concentration term from `exists_uConc`, by Minkowski's
+inequality (`rNorm_add_le`) splitting `uOf ω n 0` into its mean and its deviation. -/
 theorem exists_uNorm_le (hd : 1 ≤ d) (hConc : Parking.External.UConcentration)
     (ν : Measure ℤ) [IsProbabilityMeasure ν] {θ : ℝ} (hθ : 0 < θ)
     (hexpabs : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν)

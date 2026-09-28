@@ -1,27 +1,29 @@
-/-
-The moments of every order that `prop:w-moment` needs.
-
-The paper's remark after `eq:apriori-finite` is that "whenever `η(0)⁺` has an
-exponential moment, the finite sum on the right has moments of every order".
-That is what this module proves, in the three steps the remark hides.
-
-- A power is dominated by an exponential on the half line:
-  `t^r ≤ C exp(θ t)` for `t ≥ 0`, with `C` depending on `r` and `θ`.  The proof
-  is `1 + s/n ≤ e^{s/n}` raised to the power `n`, which gives `(s/n)^n ≤ e^s`
-  with no series and no Stirling.
-- The configuration at one site has the law `ν`, so the exponential moment of
-  the statement is an exponential moment of every coordinate.
-- The sum over a box is bounded by the box's cardinality times the average, and
-  the power of an average is at most the average of the powers, so a finite sum
-  of coordinates has moments of every order too.
-
-Everything the proof of `prop:w-moment` integrates is then dominated by such a
-sum: the odometer by `eq:apriori-finite`, and the error and its maximal average
-by the pathwise bound of `Parking/Support/WBound.lean`.
--/
 import Parking.Support.WBound
 
 open LatticeProb (measurable_from_countable')
+
+/-!
+# Moments of every order of the configuration
+
+The moments of every order that `prop:w-moment` needs.
+
+The paper's remark after `eq:apriori-finite` is that "whenever `η(0)⁺` has an exponential
+moment, the finite sum on the right has moments of every order". That is what this module
+proves, in the three steps the remark hides.
+
+- A power is dominated by an exponential on the half line: `t^r ≤ C exp(θ t)` for `t ≥ 0`,
+  with `C` depending on `r` and `θ`. The proof is `1 + s/n ≤ e^{s/n}` raised to the power `n`,
+  which gives `(s/n)^n ≤ e^s` with no series and no Stirling.
+- The configuration at one site has the law `ν`, so the exponential moment of the statement
+  is an exponential moment of every coordinate.
+- The sum over a box is bounded by the box's cardinality times the average, and the power of
+  an average is at most the average of the powers, so a finite sum of coordinates has moments
+  of every order too.
+
+Everything the proof of `prop:w-moment` integrates is then dominated by such a sum: the
+odometer by `eq:apriori-finite`, and the error and its maximal average by the pathwise bound
+of `Parking/Support/WBound.lean`.
+-/
 
 noncomputable section
 
@@ -91,6 +93,8 @@ theorem rpow_le_const_mul_exp {r θ : ℝ} (hr : 0 ≤ r) (hθ : 0 < θ) :
 
 /-! ### The law of one coordinate of the configuration -/
 
+/-- The law of one coordinate of the configuration under `law d ν` is `ν` itself, pushed
+forward from the product structure. -/
 theorem law_map_conf_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (z : Site d) :
     (law d ν).map (fun ω : Data d => ω.1 z) = ν := by
@@ -106,6 +110,7 @@ theorem law_map_conf_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
 
 /-! ### Moments of every order at one site -/
 
+/-- The real cast of `k.toNat` equals `max k 0`. -/
 theorem toNat_cast_eq_max (k : ℤ) : (((k.toNat : ℕ) : ℝ)) = max (k : ℝ) 0 := by
   rcases le_total 0 k with h | h
   · rw [max_eq_left (show (0 : ℝ) ≤ (k : ℝ) by exact_mod_cast h)]
@@ -115,6 +120,9 @@ theorem toNat_cast_eq_max (k : ℤ) : (((k.toNat : ℕ) : ℝ)) = max (k : ℝ) 
       Int.toNat_of_nonpos h]
     norm_num
 
+/-- Any nonnegative power of the positive part of one coordinate of the configuration is
+integrable once `η(0)⁺` has an exponential moment, via `rpow_le_const_mul_exp` dominating the
+power by the exponential. -/
 theorem integrable_conf_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
@@ -138,12 +146,15 @@ theorem integrable_conf_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMea
 
 /-! ### Moments of every order of the configuration over a box -/
 
+/-- The natural-number box sum of positive parts is measurable, as a finite sum of measurable
+coordinate functions. -/
 theorem measurable_confBoxNat (x : Site d) (R : ℕ) :
     Measurable fun ω : Data d => (∑ z ∈ boxFinset x R, (ω.1 z).toNat : ℕ) :=
   Finset.measurable_sum _ fun z _ =>
     (measurable_from_countable' fun k : ℤ => k.toNat).comp
       ((measurable_pi_apply z).comp measurable_fst)
 
+/-- `confBox` is measurable, the real cast of `measurable_confBoxNat`. -/
 theorem measurable_confBox (x : Site d) (R : ℕ) :
     Measurable fun ω : Data d => confBox ω x R :=
   (measurable_from_countable' fun m : ℕ => (m : ℝ)).comp (measurable_confBoxNat x R)
@@ -189,6 +200,9 @@ theorem rpow_sum_le {ι : Type} (s : Finset ι) (a : ι → ℝ)
     nlinarith
   exact hle
 
+/-- Any power `r ≥ 1` of the box sum `confBox` is integrable, from `rpow_sum_le` bounding it
+by the box cardinality times the sum of the individual powers, each integrable by
+`integrable_conf_rpow`. -/
 theorem integrable_confBox_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {θ : ℝ} (hθ : 0 < θ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)

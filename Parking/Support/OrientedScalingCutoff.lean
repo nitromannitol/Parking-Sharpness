@@ -1,16 +1,18 @@
-/- `prop:oriented-scaling` from the truncated optimal-stopping problems alone.
+import LatticeProb.WeakLimit
+import Parking.Support.OrientedScalingOne
+
+/-!
+# `prop:oriented-scaling` from the truncated stopping problems
 
 This is the end of the reduction.  `Parking.oriented_scaling_of_weak_one` takes the whole
 frozen proposition down to the weak convergence of the laws of `n^{-1/4} u_n(0)`, and
-`LatticeProb.WeakLimit.exists_weak_limit_of_cutoff` takes that down to the convergence of the truncated
-variables at each fixed spatial cutoff level, which is the level at which the cited stability
-estimate of `parking.tex:3214-3218` can be applied at all.  The uniform bound on the means is
-the mean bound of `thm:oriented`; the uniform `L¹` smallness of the truncation error as the
-cutoff level grows, and the convergence at each fixed level, are what remains to be proved
-about the model.
+`LatticeProb.WeakLimit.exists_weak_limit_of_cutoff` takes that down to the convergence of
+the truncated variables at each fixed spatial cutoff level, which is the level at which
+the cited stability estimate of `parking.tex:3214-3218` can be applied at all.  The
+uniform bound on the means is the mean bound of `thm:oriented`; the uniform `L¹`
+smallness of the truncation error as the cutoff level grows, and the convergence at each
+fixed level, are what remains to be proved about the model.
 -/
-import LatticeProb.WeakLimit
-import Parking.Support.OrientedScalingOne
 
 open LatticeProb.WeakLimit (exists_weak_limit_of_cutoff)
 
@@ -19,6 +21,12 @@ namespace Parking
 open MeasureTheory Filter Topology LatticeProb
 open scoped ENNReal NNReal
 
+/-- **`prop:oriented-scaling` from the convergence of the spatially truncated variables.**
+Given a family `Y A n` approximating `n^{-1/4} u_n(0)` in `L¹` as the cutoff level `A`
+grows uniformly in `n` (`happ`), and weak convergence of `Y A n` in `n` at each fixed `A`
+(`hYconv`), `LatticeProb.WeakLimit.exists_weak_limit_of_cutoff` produces the weak limit of
+`n^{-1/4} u_n(0)` itself, which `oriented_scaling_of_weak_one` then upgrades to the whole
+frozen proposition. -/
 theorem oriented_scaling_of_cutoff (ν : Measure ℤ) (hν : CriticalLaw ν)
     (Y : ℕ → ℕ → Data 2 → ℝ)
     (hY : ∀ A n, Measurable (Y A n)) (hYi : ∀ A n, Integrable (Y A n) (orientedLaw 2 ν))

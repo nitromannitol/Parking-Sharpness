@@ -1,5 +1,14 @@
 import Parking.Support.LayerReward
 
+/-!
+# A submartingale bound from fresh layers
+
+A bounded process whose value at round `n` is dominated by the average of its fresh-layer
+section at round `n + 1` has nondecreasing expectations over the product measure. The proof
+applies `integral_le_of_bounded_layer_sections` to `-V` at each round and telescopes by
+induction on the horizon.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory

@@ -1,5 +1,13 @@
-/- Product integrability from integrable nonnegative section bounds. -/
 import Mathlib
+
+/-!
+# Product integrability from section bounds
+
+Product integrability from integrable nonnegative section bounds: if a nonnegative measurable
+function `F` on a product space has each section `ξ ↦ F(ω, ξ)` integrable with an integrable
+bound `B ω` on the section integrals, then `F` itself is integrable on the product measure and
+its integral is bounded by `∫ B`.
+-/
 
 noncomputable section
 namespace Parking

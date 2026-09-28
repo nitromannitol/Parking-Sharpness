@@ -1,4 +1,10 @@
-/-
+import Parking.Support.ScalDyadicSnell
+import Parking.Support.ScalOrientedChain
+import Parking.Support.ContOrientedLimit
+
+/-!
+# The discharge of `prop:oriented-scaling` from library inputs
+
 The discharge of `prop:oriented-scaling` (`parking.tex:3166-3237`) from library
 inputs and the two further inputs named at the end of this comment.
 
@@ -24,9 +30,6 @@ Dynkin rewriting `Parking.uOriented_eq_potential_add_stoppingSup` are the two
 further inputs of the frozen statement; combining them with the chain above
 discharges the frozen proposition (`Parking/Support/ScalScalingDischarge.lean`).
 -/
-import Parking.Support.ScalDyadicSnell
-import Parking.Support.ScalOrientedChain
-import Parking.Support.ContOrientedLimit
 
 open LatticeProb.ContinuumStopping (contNoiseSpace contStopValue contU measurable_contZ)
 
@@ -72,7 +75,9 @@ theorem oriented_scaling_measurable_clause
     (ΩB : Type) [mB : MeasurableSpace ΩB] [StandardBorelSpace ΩB]
     (PB : Measure ΩB) [IsProbabilityMeasure PB]
     (𝒢 : MeasurableSpace ΩB) (h𝒢 : 𝒢 ≤ mB)
-    (B : ℝ≥0 → ΩB → ℝ) (hB : @Measurable (ℝ≥0 × ΩB) ℝ (@Prod.instMeasurableSpace ℝ≥0 ΩB NNReal.measurableSpace mB) _ fun p => B p.1 p.2)
+    (B : ℝ≥0 → ΩB → ℝ)
+    (hB : @Measurable (ℝ≥0 × ΩB) ℝ
+      (@Prod.instMeasurableSpace ℝ≥0 ΩB NNReal.measurableSpace mB) _ fun p => B p.1 p.2)
     (Y : (Fin 2 → ℝ) → contNoiseSpace → ℝ)
     (hY : Measurable fun p : (Fin 2 → ℝ) × contNoiseSpace => Y p.1 p.2)
     (v T : ℝ) (_hT : 0 < T)

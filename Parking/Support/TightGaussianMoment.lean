@@ -1,4 +1,8 @@
-/-
+import Mathlib
+
+/-!
+# Absolute moments of a Gaussian
+
 The absolute `p`-th moment of a centred real Gaussian, scaling as `σ ^ p` times a
 universal (finite, unnamed) constant.
 
@@ -10,7 +14,6 @@ scales as `σ ^ p` for every `p`, trading moment order for Hölder order. Only t
 FINITENESS of the moment is needed here, not its closed form (no Wick/Gamma-function
 computation), via the pushforward-scaling identity for `gaussianReal`.
 -/
-import Mathlib
 
 noncomputable section
 
@@ -38,6 +41,9 @@ as a finite real number. -/
 def gaussianAbsMoment (p : ℝ≥0) : ℝ :=
   (∫⁻ x : ℝ, ‖x‖ₑ ^ (p : ℝ) ∂(gaussianReal (0 : ℝ) 1)).toReal
 
+/-- `gaussianAbsMoment p`, cast back to `ENNReal` via `ofReal`, recovers the defining lower
+Lebesgue integral exactly, since that integral is finite by
+`lintegral_enorm_rpow_gaussianReal_one_lt_top`. -/
 theorem ofReal_gaussianAbsMoment (p : ℝ≥0) (hp : p ≠ 0) :
     ENNReal.ofReal (gaussianAbsMoment p)
       = ∫⁻ x : ℝ, ‖x‖ₑ ^ (p : ℝ) ∂(gaussianReal (0 : ℝ) 1) :=

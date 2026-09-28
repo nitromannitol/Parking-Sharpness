@@ -1,11 +1,14 @@
-/-
+import Parking.Support.CoupledLaw
+import Parking.Support.CouplingTarget
+import Parking.Support.DiscrepancyBalance
+
+/-!
+# Marginal expectations for the common-table coupling
+
 Nonnegative marginal expectations for the common-table coupling. Both active
 and hole populations at the origin have mean S at zero mean density. The
 pathwise discrepancy count bound therefore gives an upper mean of 4S.
 -/
-import Parking.Support.CoupledLaw
-import Parking.Support.CouplingTarget
-import Parking.Support.DiscrepancyBalance
 
 noncomputable section
 
@@ -21,6 +24,7 @@ def Parking.stackObservables (ω : Parking.Data d) : Parking.ProcessObservables 
     fun ti => (LatticeProb.state (Parking.toDriver ω) ti.1).active ti.2)
 
 
+/-- The process observables of a coupled marginal are measurable. -/
 theorem Parking.measurable_coupledObservables (hd : 1 ≤ d) (b : Bool) :
     Measurable (Parking.coupledObservables (d := d) b) :=
   Parking.measurable_matchedObservables ⟨0, hd⟩
@@ -54,7 +58,8 @@ theorem Parking.lintegral_coupled_active (hd : 1 ≤ d) (ν : Measure ℤ)
         (Parking.matchedCount (Parking.coupledConf b ω.1.1) ω.1.2 ω.2 t 0 : ℝ≥0∞)
         ∂(Parking.coupledLaw d ν p)
       = ∫⁻ ω, (Parking.A ω t 0 : ℝ≥0∞) ∂(Parking.law d ν) :=
-        Parking.lintegral_coupledObservables hd ν hp b (fun O => (O.2.1 (t, 0) : ℝ≥0∞)) (by fun_prop)
+        Parking.lintegral_coupledObservables hd ν hp b
+          (fun O => (O.2.1 (t, 0) : ℝ≥0∞)) (by fun_prop)
     _ = _ := by simpa only [ENNReal.ofReal_natCast] using h.symm
 
 /-- Both marginal hole populations at the origin have mean `S_t` at zero mean density. -/
@@ -86,7 +91,8 @@ theorem Parking.lintegral_coupled_holes (hd : 1 ≤ d) (ν : Measure ℤ)
         ((Parking.matchedState (Parking.coupledConf b ω.1.1) ω.1.2 ω.2 t).holes 0 : ℝ≥0∞)
         ∂(Parking.coupledLaw d ν p)
       = ∫⁻ ω, (Parking.H ω t 0 : ℝ≥0∞) ∂(Parking.law d ν) :=
-        Parking.lintegral_coupledObservables hd ν hp b (fun O => (O.2.2.1 (t, 0) : ℝ≥0∞)) (by fun_prop)
+        Parking.lintegral_coupledObservables hd ν hp b
+          (fun O => (O.2.2.1 (t, 0) : ℝ≥0∞)) (by fun_prop)
     _ = _ := by simpa only [ENNReal.ofReal_natCast] using h.symm
 
 /-- The mean number of live discrepancy labels is at most `4 S_t`. -/
@@ -124,8 +130,10 @@ theorem Parking.lintegral_discrepancyCount_le (hd : 1 ≤ d) (ν : Measure ℤ)
         ∂(Parking.coupledLaw d ν p) := lintegral_mono fun ω => by
           simpa only [Nat.cast_add] using
             (Nat.cast_le (α := ℝ≥0∞)).mpr (Parking.discrepancyCount_le_four ω.1.1 ω.1.2 ω.2 t 0)
-    _ = ENNReal.ofReal (Parking.S (Parking.law d ν) t) + ENNReal.ofReal (Parking.S (Parking.law d ν) t) +
-        ENNReal.ofReal (Parking.S (Parking.law d ν) t) + ENNReal.ofReal (Parking.S (Parking.law d ν) t) := by
+    _ = ENNReal.ofReal (Parking.S (Parking.law d ν) t) +
+        ENNReal.ofReal (Parking.S (Parking.law d ν) t) +
+        ENNReal.ofReal (Parking.S (Parking.law d ν) t) +
+        ENNReal.ofReal (Parking.S (Parking.law d ν) t) := by
       rw [lintegral_add_left (f := fun ω : Parking.CoupledData d =>
           (Parking.matchedCount (Parking.coupledConf true ω.1.1) ω.1.2 ω.2 t 0 : ℝ≥0∞) +
           ((Parking.matchedState (Parking.coupledConf true ω.1.1) ω.1.2 ω.2 t).holes 0 : ℝ≥0∞) +

@@ -1,4 +1,9 @@
-/-
+import Parking.External.SandpileGrowth
+import Sandpile.Support.SceneryBridge
+
+/-!
+# Bridge to the divisible-sandpile odometer
+
 Bridge between Parking's real-field odometer and the divisible-sandpile
 formalization.
 
@@ -9,8 +14,6 @@ conversion.  The law identity below is the corresponding normalization
 `σ = 1 + 2dζ`, and transports the sandpile mean from the centred mass law to
 Parking's i.i.d. scenery law.
 -/
-import Parking.External.SandpileGrowth
-import Sandpile.Support.SceneryBridge
 
 open MeasureTheory ProbabilityTheory
 

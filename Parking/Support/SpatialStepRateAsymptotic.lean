@@ -1,13 +1,16 @@
-/-
-**The dimension-split asymptotic `R^{d-4}·spatialStepRate(d,n0+1)² → 0`**, `1 ≤ d ≤ 3`.
+import Parking.Support.SpatGreenShiftLowDim
+
+/-!
+# The dimension-split step-rate asymptotic
+
+The dimension-split asymptotic `R^{d-4}·spatialStepRate(d,n0+1)² → 0`, `1 ≤ d ≤ 3`.
 
 `Parking.spatialStepRate d n` does NOT vanish as `n → ∞` (`√(2n+3)` at `d=1`,
-`√(1+8log(n+2))` at `d=2`, the constant `√(1+2d·2^{d-1})` at `d=3`), so the grid-gap estimate of
-`prop:spatial-scaling`'s Step 1 needs this explicit three-way asymptotic, not a single uniform
-bound: the `R^{d/2-2}` rescaling's square `R^{d-4}` decays fast enough to dominate
-`spatialStepRate`'s growth in every one of the three dimensions.
+`√(1+8log(n+2))` at `d=2`, the constant `√(1+2d·2^{d-1})` at `d=3`), so the grid-gap
+estimate of `prop:spatial-scaling`'s Step 1 needs this explicit three-way asymptotic,
+not a single uniform bound: the `R^{d/2-2}` rescaling's square `R^{d-4}` decays fast
+enough to dominate `spatialStepRate`'s growth in every one of the three dimensions.
 -/
-import Parking.Support.SpatGreenShiftLowDim
 
 open Filter Topology
 
@@ -125,7 +128,8 @@ theorem tendsto_rpow_sub_four_mul_stepRate_sq_two {s : ℝ} (hs : 0 < s) :
     rw [hexpand]
   have hz1 : Tendsto (fun R : ℝ => R ^ (-(2 : ℝ))) atTop (𝓝 0) :=
     tendsto_rpow_neg_atTop (y := (2:ℝ)) (by norm_num)
-  have hz2 : Tendsto (fun R : ℝ => 16 * Real.sqrt (s * R ^ 2 + 3) * R ^ (-(2 : ℝ))) atTop (𝓝 0) := by
+  have hz2 : Tendsto (fun R : ℝ => 16 * Real.sqrt (s * R ^ 2 + 3) * R ^ (-(2 : ℝ)))
+      atTop (𝓝 0) := by
     -- `√(sR²+3) / R² → 0`: bound `√(sR²+3) ≤ √s·R + 2` for `R` large, then combine.
     have hbound2 : ∀ᶠ R : ℝ in atTop, Real.sqrt (s * R ^ 2 + 3) ≤ Real.sqrt s * R + 2 := by
       filter_upwards [Filter.eventually_ge_atTop (1:ℝ)] with R hR1

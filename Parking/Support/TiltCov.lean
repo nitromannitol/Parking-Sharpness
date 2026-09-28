@@ -1,4 +1,10 @@
-/-
+import Parking.Support.TiltProduct
+import LatticeProb.Prob.ExpFamily
+import Parking.Support.ProductBound
+
+/-!
+# Differentiating the tilted mean
+
 Differentiating the tilted mean in the tilting parameter.
 
 This closes Step 3 of `lem:product` (`parking.tex:2424-2427`).  Writing `S` for
@@ -24,9 +30,6 @@ there, and a two-sided derivative is one of them.  At the endpoint `0` the
 tangent cone is the half-line `[0, ∞)`, not a single direction; spanning, not
 two-sidedness, is what the uniqueness needs.
 -/
-import Parking.Support.TiltProduct
-import LatticeProb.Prob.ExpFamily
-import Parking.Support.ProductBound
 
 open LatticeProb (hasDerivWithinAt_integral_exp mul_exp_le_exp_div)
 
@@ -36,27 +39,38 @@ noncomputable section
 
 namespace Parking
 
+/-- The sum of the counts over a finite set of sites `N` is integrable under `iidLaw`,
+since each single coordinate is (`Parking.integrable_coord`). -/
 theorem integrable_sum_coords {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (N : Finset (Site d)) :
     Integrable (fun a : Site d → ℤ => ∑ x ∈ N, ((a x : ℤ) : ℝ))
       (LatticeProb.iidLaw d ν) :=
   integrable_finsetSum N fun x _ => integrable_coord hint x
 
+/-- The product of the exponential weight over the coordinates of `N` is the exponential of
+the weighted sum of those coordinates. -/
 theorem prod_exp_coords {d : ℕ} (s : ℝ) (N : Finset (Site d)) (a : Site d → ℤ) :
     ∏ y ∈ N, Real.exp (s * ((a y : ℤ) : ℝ))
       = Real.exp (s * ∑ x ∈ N, ((a x : ℤ) : ℝ)) := by
   rw [← Real.exp_sum, Finset.mul_sum]
 
+/-- The sum of the counts over a finite set `N` is measurable, being a finite sum of
+coordinate projections. -/
 theorem measurable_sum_coords {d : ℕ} (N : Finset (Site d)) :
     Measurable (fun a : Site d → ℤ => ∑ x ∈ N, ((a x : ℤ) : ℝ)) :=
   Finset.measurable_sum _ fun y _ =>
     (measurable_int_fun (fun k : ℤ => (k : ℝ))).comp (measurable_pi_apply y)
 
+/-- The sum of the counts over `N` depends on the driving data only through the counts at
+sites of `N`. -/
 theorem dependsOnCounts_sum_coords {d : ℕ} (N : Finset (Site d)) :
     DependsOnCounts N (fun a : Site d → ℤ => ∑ x ∈ N, ((a x : ℤ) : ℝ)) := by
   intro a a' h
   exact Finset.sum_congr rfl fun x hx => by rw [h x hx]
 
+/-- The exponential weight `e^{s ∑_N a_x}` is integrable under `iidLaw`, with mean the
+`N.card`-th power of the single-site exponential moment, by independence
+(`Parking.prod_coords`) and `prod_exp_coords`. -/
 theorem integral_exp_sum_coords {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν] {s : ℝ}
     (hexps : Integrable (fun k : ℤ => Real.exp (s * k)) ν) (N : Finset (Site d)) :
     Integrable (fun a : Site d → ℤ => Real.exp (s * ∑ x ∈ N, ((a x : ℤ) : ℝ)))

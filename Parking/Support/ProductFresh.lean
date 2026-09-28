@@ -1,12 +1,25 @@
 import Parking.Support.ProductSection
 
+/-!
+# Fresh coordinates and conditional expectation in a countable product
+
+This file relates coordinate-restricted measurability and freshness to conditional
+expectation on the countable product space `Π i, X i`. It shows that a functional
+depending only on the coordinates in `S` is measurable for the corresponding coordinate
+sub-sigma-algebra `productCoordAlg`, that the conditional expectation of a functional
+depending on `S` together with one further fresh coordinate `j` reduces to averaging
+over that single coordinate, and that such a functional is a martingale difference when
+its fresh-coordinate average vanishes identically.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {ι : Type*} {X : ι → Type*} [∀ i, MeasurableSpace (X i)] [DecidableEq ι]
 
 omit [DecidableEq ι] in
-/-- A measurable functional reading only a coordinate set is measurable for that coordinate sigma algebra. -/
+/-- A measurable functional reading only a coordinate set is measurable for that
+coordinate sigma algebra. -/
 theorem measurable_of_reads_coordinates (base : Π i, X i) (S : Set ι) [DecidablePred (· ∈ S)]
     (F : (Π i, X i) → ℝ) (hFm : Measurable F)
     (hF : ∀ ω η, (∀ i ∈ S, ω i = η i) → F ω = F η) :

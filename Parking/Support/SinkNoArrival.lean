@@ -2,12 +2,23 @@ import Parking.Support.NoArrivalJoint
 import Parking.Support.NoArrivalSplit
 import Parking.Support.SinkLambdaMoment
 
+/-!
+# Exponential decay of the no-arrival probability at the sink
+
+This file combines the exponential lower-tail bound of `Parking.Support.NoArrivalSplit`
+with the compensator mean bounds of `Parking.Support.SinkCompensatorMean` and the
+neighbor-averaged moment bound of `Parking.Support.SinkLambdaMoment` to show that the
+probability of no entrance to the sink through horizon `T` decays exponentially in the
+ordinary mean odometer `meanU`, uniformly over `p ≤ 1/4` and dimension `d ≥ 5`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
-/-- The probability of no entrance to the sink decays exponentially in the ordinary mean odometer. -/
+/-- The probability of no entrance to the sink decays exponentially in the ordinary mean
+odometer. -/
 theorem exists_sparseSink_noArrival_bound (hBernstein : External.Bernstein) (hd : 5 ≤ d) :
     ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ p : ℝ, 0 < p → p ≤ 1 / 4 → ∀ T : ℕ,
       (((iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d))
@@ -39,17 +50,19 @@ theorem exists_sparseSink_noArrival_bound (hBernstein : External.Bernstein) (hd 
     measurable_const (measurable_curryRoundNoise.comp measurable_snd) T 0
   have hiW : Integrable (fun z => if F z then Real.exp (sparseSinkLambda T z) else 0) μ :=
     Integrable.of_bound hW.aestronglyMeasurable _ (ae_of_all _ fun z =>
-      noArrivalWeight_bound hd1 _ 1 (sparseSinkField_particle_bound T 0 z.1) 0 (curryRoundNoise z.2) T 0)
+      noArrivalWeight_bound hd1 _ 1 (sparseSinkField_particle_bound T 0 z.1) 0
+        (curryRoundNoise z.2) T 0)
   have hIW : (∫ z, if F z then Real.exp (sparseSinkLambda T z) else 0 ∂μ) ≤ 1 :=
     integral_noArrivalWeight_prod_le_one hd1 (iidLaw d (threePointLaw p)) (sparseSinkField T 0)
       (measurable_sparseSinkField T 0) 1 (sparseSinkField_particle_bound T 0) 0 T 0
-  have hs := measure_flag_le_lower_tail μ F (sparseSinkLambda T) hF (measurable_sparseSinkLambda hd1 T)
-    hiW hIW (m / (2 * escapeConst d))
+  have hs := measure_flag_le_lower_tail μ F (sparseSinkLambda T) hF
+    (measurable_sparseSinkLambda hd1 T) hiW hIW (m / (2 * escapeConst d))
   have hTail := htail μ inferInstance (sparseSinkLambda T) m b hm
     (sparseSink_compensator_mean_bounds (by omega) hp hp4 T).1
     (fun r hr => integrable_abs_rpow_bounded μ (fun z => sparseSinkLambda T z - b)
       ((measurable_sparseSinkLambda hd1 T).sub_const b) _
-      (fun z => (abs_sub _ _).trans (add_le_add (sparseSinkLambda_bound hd1 T z) (le_refl _))) (by linarith))
+      (fun z => (abs_sub _ _).trans (add_le_add (sparseSinkLambda_bound hd1 T z) (le_refl _)))
+      (by linarith))
     (fun r hr => hmoment p hp hp4 T r hr)
   have he₁ : Real.exp (-c * m) ≤ Real.exp (-c' * m) := by
     apply Real.exp_le_exp.mpr

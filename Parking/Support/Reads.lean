@@ -1,4 +1,11 @@
-/-
+import LatticeProb.ReadIndex
+import Parking.Support.Measurability
+import Parking.Support.Deferred
+import Parking.Support.Parallel
+
+/-!
+# Which instructions are read
+
 Which instructions a realization of the stack construction has read.
 
 `Parking.Support.Deferred` cuts the instructions a state depends on by their
@@ -15,10 +22,6 @@ was proved measurable in `Parking.Support.Measurability`; the index is the sum
 of the odometer at the position, read at a variable site, and the number of
 co-departing particles with a smaller label.
 -/
-import LatticeProb.ReadIndex
-import Parking.Support.Measurability
-import Parking.Support.Deferred
-import Parking.Support.Parallel
 
 open LatticeProb (measurable_eval_var measurable_from_countable')
 

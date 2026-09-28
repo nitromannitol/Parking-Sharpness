@@ -1,4 +1,10 @@
-/-
+import Parking.Support.ScalSpatialSnell
+import LatticeProb.Prob.CondExpParam
+import Parking.Support.Continuum
+
+/-!
+# The measurability of the limit object of `prop:spatial-scaling`
+
 The measurability of the limit object of `prop:spatial-scaling`
 (`parking.tex:1694-1752`).
 
@@ -23,9 +29,6 @@ on the cited inputs `Parking.External.SandpileGrowth`,
 `Parking.External.Bernstein` and `Parking.External.UConcentration`, which the
 frozen statement already carries as hypotheses.
 -/
-import Parking.Support.ScalSpatialSnell
-import LatticeProb.Prob.CondExpParam
-import Parking.Support.Continuum
 
 open LatticeProb.ContinuumStopping (contNoiseSpace)
 

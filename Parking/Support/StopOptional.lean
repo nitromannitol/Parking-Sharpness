@@ -1,4 +1,9 @@
-/-
+import Parking.Support.StoppingValue
+import Parking.Support.LinPotential
+
+/-!
+# Optional stopping for the simple random walk
+
 Optional stopping for the simple random walk: the expected reward of a
 bounded stopping rule is the linear potential at the start minus the
 expected stopped potential.
@@ -14,8 +19,6 @@ so that `u_n(x) = V_n(x) + sup_{σ ≤ n} E_x[-V_{n-σ}(X_σ)]`, BP's Lemma 2.5
 `Parking/Support/OrientedStopOptional.lean`, with `walkOp`/`walkPath`/
 `linPotential` in place of `orientedOp`/`orientedPath`/`orientedPotential`.
 -/
-import Parking.Support.StoppingValue
-import Parking.Support.LinPotential
 
 open MeasureTheory
 
@@ -32,6 +35,9 @@ def stopTerminal (η : Site d → ℝ) (n : ℕ) (x : Site d)
     (σ : (ℕ → Fin d × Bool) → ℕ) (p : ℕ → Fin d × Bool) : ℝ :=
   linPotential η (n - σ p) (walkPath x p (σ p))
 
+/-- `stopTerminal` only depends on the path up to time `n`: if `σ` is a stopping time
+bounded by `n` and two paths agree before time `n`, they give the same stopped
+potential. -/
 theorem stopTerminal_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d)
     {p q : ℕ → Fin d × Bool} (h : ∀ i, i < n → p i = q i) :
@@ -41,6 +47,9 @@ theorem stopTerminal_congr {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
   unfold stopTerminal
   rw [hsame, walkPath_congr x (fun i hi => h i (lt_of_lt_of_le hi hle))]
 
+/-- `stopTerminal η n x σ` is integrable against `walkLaw d`, since by `stopTerminal_congr`
+it depends only on the first `n` coordinates of the path, so
+`integrable_of_finite_dependence` applies. -/
 theorem integrable_stopTerminal (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool) → ℕ}
     (hσ : IsStoppingTimeLE n σ) (η : Site d → ℝ) (x : Site d) :
     Integrable (stopTerminal η n x σ) (walkLaw d) :=

@@ -1,4 +1,14 @@
-/-
+import Parking.Support.LinIncrementConcentration
+import Parking.Support.LinMeanMoment
+import Parking.Support.LinTimeShift
+import Parking.Support.SpatGreenShift
+import Parking.Support.GreenIncrement
+import Parking.Support.MatchedUniform
+import LatticeProb.Prob.Scaling.MinProduct
+
+/-!
+# The discrete maximal inequality for the linear field
+
 **The discrete maximal inequality for the linear membrane field over a growing box.**
 
 The discrete cutoff-to-true bound `Parking.abs_stoppingSup_sub_cutoffStoppingSup_le'`
@@ -27,24 +37,17 @@ lower bounds too (`Parking.l2Norm_green_pos`/`supAbs_green_pos`, from the diagon
 `L ≤ B` on a POSITIVE `L` gives `r²/B² ≤ r²/L²`, which would be false at the Lean junk value
 `L = 0`.
 
-The union bound (`Parking.exists_linPotential_maximal_tail`) folds the two `d`-dependent kernel-
-norm constants into a single rate via `LatticeProb.Scaling.MinProduct.min_mul_min_le` (an arithmetic
-fact with no repository-specific object in its statement, so it lives in the library under `LatticeProb/Prob/Scaling/`),
-producing the clean schematic form
+The union bound (`Parking.exists_linPotential_maximal_tail`) folds the two `d`-dependent
+kernel-norm constants into a single rate via `LatticeProb.Scaling.MinProduct.min_mul_min_le`
+(an arithmetic fact with no repository-specific object in its statement, so it lives in the
+library under `LatticeProb/Prob/Scaling/`), producing the clean schematic form
 `C · (2A+1)^d · exp(-c · min(M²/n², M/n))` for the box `boxFinset 0 A` (`A : ℕ`, cardinality
-`Parking.card_boxFinset`), `n ≥ 1`, `M > 0`.  The raw exceedance threshold this licenses is
+`Parking.card_boxFinset`), `n ≥ 1`, `M > 0`. The raw exceedance threshold this licenses is
 `M = Θ(n·√(d log A))`: for `n = ⌊sR²⌋₊ ~ R²` and `A = A(R)` any polynomial in `R`, taking
 `M(R) := n·√((d+1)·log(A(R))/c)` makes `C·(2A+1)^d·exp(-c·M²/n²) = O(A^{-1}) → 0`, which is
 consistent with the cutoff-error rate `n0·d²/A²`: a polynomial-degree choice of `A(R)` beats it
 once `A(R)` grows fast enough relative to `n0 ~ R²`.
 -/
-import Parking.Support.LinIncrementConcentration
-import Parking.Support.LinMeanMoment
-import Parking.Support.LinTimeShift
-import Parking.Support.SpatGreenShift
-import Parking.Support.GreenIncrement
-import Parking.Support.MatchedUniform
-import LatticeProb.Prob.Scaling.MinProduct
 
 noncomputable section
 
@@ -56,10 +59,15 @@ variable {d : ℕ}
 
 /-! ### The truncated Green function at horizon `0` is identically zero -/
 
+/-- The truncated Green function at horizon `0` is identically zero, unfolding its defining
+    empty sum. -/
 theorem green_zero_eq (w : Site d) : green d 0 w = 0 := by unfold green; simp
 
 /-! ### The diagonal term `green d n 0 ≥ 1`, for `n ≥ 1` -/
 
+/-- For `n ≥ 1`, the diagonal term `green d n 0 ≥ 1`: the heat kernel is nonnegative at every
+    step, and the `j = 0` term alone already contributes `heat d 0 0 = 1`, via
+    `Finset.single_le_sum`. -/
 theorem one_le_green_zero (n : ℕ) (hn : 1 ≤ n) : (1 : ℝ) ≤ green d n (0 : Site d) := by
   unfold green
   have h0 : (0 : ℕ) ∈ Finset.range n := Finset.mem_range.mpr hn
@@ -101,6 +109,8 @@ theorem supAbs_green_pos (n : ℕ) (hn : 1 ≤ n) (x : Site d) :
 
 /-! ### The exact single-spike norm at horizon `1` -/
 
+/-- At horizon `1`, `green d 1 (x - ·)` is the single spike `green_one_apply`, so its `l2Norm`
+    collapses to `Real.sqrt 1 = 1` via `tsum_ite_eq`. -/
 theorem l2Norm_green_one_eq (x : Site d) : l2Norm (fun z => green d 1 (x - z)) = 1 := by
   have hpt : ∀ z : Site d, green d 1 (x - z) = if z = x then (1 : ℝ) else 0 := by
     intro z; rw [green_one_apply]
@@ -114,6 +124,8 @@ theorem l2Norm_green_one_eq (x : Site d) : l2Norm (fun z => green d 1 (x - z)) =
   rw [hsq, tsum_ite_eq x (fun _ => (1 : ℝ))]
   exact Real.sqrt_one
 
+/-- At horizon `1`, `green d 1 (x - ·)` is the single spike `green_one_apply`, so its `supAbs`
+    equals `1`: bounded above by `1` pointwise, and attained at `z = x`. -/
 theorem supAbs_green_one_eq (x : Site d) : supAbs (fun z => green d 1 (x - z)) = 1 := by
   have hpt : ∀ z : Site d, green d 1 (x - z) = if z = x then (1 : ℝ) else 0 := by
     intro z; rw [green_one_apply]
@@ -133,6 +145,9 @@ theorem supAbs_green_one_eq (x : Site d) : supAbs (fun z => green d 1 (x - z)) =
     have heq : |green d 1 (x - x)| = 1 := by rw [hpt x]; simp
     rw [heq] at hx; exact hx
 
+/-- Since `boxFinset x 1 ⊆ boxFinset x n` for `n ≥ 1` (the box radius is monotone in the
+    horizon), a site outside the larger box `boxFinset x n` is also outside the horizon-`1`
+    box `boxFinset x 1`. -/
 theorem notMem_boxFinset_one_of_notMem_boxFinset_n {n : ℕ} (hn : 1 ≤ n) {x z : Site d}
     (hz : z ∉ boxFinset x n) : z ∉ boxFinset x 1 := by
   intro hmem; apply hz
@@ -197,7 +212,8 @@ theorem supAbs_green_le (hd1 : 1 ≤ d) (n : ℕ) (hn : 1 ≤ n) (x : Site d) :
   have hdiffb := exists_green_time_shift_sup_bound hd0 (le_refl 1) hn x
   simp only [Nat.cast_one, Real.sqrt_one, one_pow] at hdiffb
   have hbase := supAbs_green_one_eq x
-  have hcomb : supAbs (fun z => green d n (x - z)) ≤ ((n : ℝ) - 1) * LatticeProb.diagConst d + 1 := by
+  have hcomb : supAbs (fun z => green d n (x - z))
+      ≤ ((n : ℝ) - 1) * LatticeProb.diagConst d + 1 := by
     calc supAbs (fun z => green d n (x - z))
         ≤ supAbs (fun z => green d n (x - z) - green d 1 (x - z))
             + supAbs (fun z => green d 1 (x - z)) := htri

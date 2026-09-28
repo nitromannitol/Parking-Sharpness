@@ -1,4 +1,10 @@
-/-
+import Parking.Support.TightKolmogorov
+import Parking.Support.TightBoxMoment
+import LatticeProb.Prob.ChentsovPiModification
+
+/-!
+# The `Yfield` dyadic-chaining moment bound
+
 The estimate to which `happ` reduces (see `Parking/Support/TightGYBoxBound.lean`) is a bound,
 UNIFORM IN `n`, on `E_η[‖Parking.boxRewardMap 1 h1 A hA n η‖^2]`, i.e. on the `L^2` moment of the
 supremum of the box-clamped rescaled reward field over the whole cutoff box.  Neither the
@@ -32,9 +38,6 @@ The route here is the classical Kolmogorov-Chentsov dyadic-chaining moment bound
 4. **Convert.** Lyapunov's inequality (`E[X^2] ≤ (E[X^p])^{2/p}` for `p ≥ 2`) turns the `L^p`
    bound into the `L^2` bound `happ` needs.
 -/
-import Parking.Support.TightKolmogorov
-import Parking.Support.TightBoxMoment
-import LatticeProb.Prob.ChentsovPiModification
 
 open MeasureTheory LatticeProb Filter Topology
 
@@ -50,6 +53,7 @@ def boxLo (A : ℝ) : Fin 2 → ℝ := ![0, -(2 * A)]
 /-- The upper corner of the cutoff box, matching `Parking.orientedBox 1 A`. -/
 def boxHi (A : ℝ) : Fin 2 → ℝ := ![1, 2 * A]
 
+/-- **`Parking.boxLo A ≤ Parking.boxHi A` coordinatewise**, from `0 ≤ A`. -/
 theorem boxLo_le_boxHi {A : ℝ} (hA : 0 ≤ A) : boxLo A ≤ boxHi A := by
   intro i
   unfold boxLo boxHi
@@ -57,6 +61,7 @@ theorem boxLo_le_boxHi {A : ℝ} (hA : 0 ≤ A) : boxLo A ≤ boxHi A := by
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Fin.mk_zero, Fin.mk_one] <;>
     linarith
 
+/-- **`Parking.orientedBox 1 A` is definitionally the interval `Set.Icc (boxLo A) (boxHi A)`.** -/
 theorem mem_orientedBox_iff_mem_Icc {A : ℝ} (u : Fin 2 → ℝ) :
     u ∈ orientedBox 1 A ↔ u ∈ Set.Icc (boxLo A) (boxHi A) := by
   rfl
@@ -69,21 +74,27 @@ the box itself. -/
 def Yfield (A : ℝ) (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) (v : Fin 2 → ℝ) : ℝ :=
   orientedBoxReward 1 n η (LatticeProb.boxClamp (boxLo A) (boxHi A) (boxLo_le_boxHi hA) v)
 
+/-- **`Yfield` is continuous**, being `Parking.orientedBoxReward` precomposed with the
+continuous clamping map `LatticeProb.boxClamp`. -/
 theorem continuous_Yfield {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) :
     Continuous (Yfield A hA n η) :=
   (continuous_orientedBoxReward 1 n η).comp
     (LatticeProb.continuous_boxClamp (boxLo A) (boxHi A) (boxLo_le_boxHi hA))
 
+/-- **`Yfield` is measurable in the scenery, at every fixed point `v`.** -/
 theorem measurable_Yfield {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (v : Fin 2 → ℝ) :
     Measurable fun η : Site 2 → ℝ => Yfield A hA n η v :=
   measurable_orientedBoxReward 1 n
     (LatticeProb.boxClamp (boxLo A) (boxHi A) (boxLo_le_boxHi hA) v)
 
+/-- **`Yfield` agrees with `Parking.orientedBoxReward` on the box itself**, since clamping a
+point already in the box is the identity (`LatticeProb.boxClamp_eq`). -/
 theorem Yfield_eq_of_mem {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) {v : Fin 2 → ℝ}
     (hv : v ∈ orientedBox 1 A) : Yfield A hA n η v = orientedBoxReward 1 n η v := by
   unfold Yfield
   rw [LatticeProb.boxClamp_eq (boxLo_le_boxHi hA) hv]
 
+/-- **The clamped point always lands back in the box**, by `LatticeProb.boxClamp_mem`. -/
 theorem boxClamp_mem_orientedBox {A : ℝ} (hA : 0 ≤ A) (v : Fin 2 → ℝ) :
     LatticeProb.boxClamp (boxLo A) (boxHi A) (boxLo_le_boxHi hA) v ∈ orientedBox 1 A :=
   LatticeProb.boxClamp_mem (boxLo A) (boxHi A) (boxLo_le_boxHi hA) v
@@ -135,6 +146,8 @@ every direction, at every grid point of the level-`m`, radius-`(m+1)` box. -/
 def levelPairs (m : ℕ) : Finset ((Fin 2 → ℤ) × Fin 2) :=
   (LatticeProb.boxIdx (m + 1) m) ×ˢ (Finset.univ : Finset (Fin 2))
 
+/-- **`Parking.levelPairs` is nonempty**: the origin index paired with any fixed direction
+always lies in the level-`m` box. -/
 theorem levelPairs_nonempty (m : ℕ) : (levelPairs m).Nonempty := by
   refine ⟨(0, 0), ?_⟩
   rw [levelPairs, Finset.mem_product]
@@ -150,6 +163,7 @@ def levelIncTerm (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ)
   |Yfield A hA n η (LatticeProb.gridPt m (idx.1 + Pi.single idx.2 1)) -
     Yfield A hA n η (LatticeProb.gridPt m idx.1)|
 
+/-- **`Parking.levelIncTerm` is nonnegative**, being an absolute value. -/
 theorem levelIncTerm_nonneg (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ)
     (idx : (Fin 2 → ℤ) × Fin 2) : 0 ≤ levelIncTerm A hA n m η idx :=
   abs_nonneg _
@@ -159,12 +173,15 @@ well-defined for EVERY realization — no almost-sure argument is used to constr
 def levelInc (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ) : ℝ :=
   (levelPairs m).sup' (levelPairs_nonempty m) (levelIncTerm A hA n m η)
 
+/-- **`Parking.levelInc` is nonnegative**, since it is a `Finset.sup'` of the nonnegative
+`Parking.levelIncTerm` terms. -/
 theorem levelInc_nonneg (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ) :
     0 ≤ levelInc A hA n m η := by
   obtain ⟨idx, hidx⟩ := (levelPairs_nonempty m)
   exact le_trans (levelIncTerm_nonneg A hA n m η idx)
     (Finset.le_sup' (levelIncTerm A hA n m η) hidx)
 
+/-- **`Parking.levelInc` unfolds to its defining `Finset.sup'`.** -/
 theorem levelInc_eq_sup' (A : ℝ) (hA : 0 ≤ A) (n m : ℕ) (η : Site 2 → ℝ) :
     levelInc A hA n m η = (levelPairs m).sup' (levelPairs_nonempty m)
       (levelIncTerm A hA n m η) := rfl
@@ -193,6 +210,8 @@ theorem dist_gridPt_step (m : ℕ) (j : Fin 2 → ℤ) (i : Fin 2) :
   have h2 := congrArg ENNReal.toReal h
   rwa [ENNReal.toReal_ofReal dist_nonneg, ENNReal.toReal_ofReal (by positivity)] at h2
 
+/-- **A polynomial-times-`4^m` upper bound on the cardinality of `Parking.levelPairs`**, from
+`LatticeProb.card_boxIdx_level_le` and the two coordinate directions of `Fin 2`. -/
 theorem card_levelPairs_le (m : ℕ) :
     ((levelPairs m).card : ℝ) ≤ 2 * (3 ^ 2 * ((m : ℝ) + 1) ^ 2 * (2 ^ 2) ^ m) := by
   unfold levelPairs

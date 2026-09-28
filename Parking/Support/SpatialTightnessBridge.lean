@@ -1,4 +1,12 @@
-/- The equicontinuity clause of `prop:spatial-scaling` in the form the
+import Parking.Support.Continuum
+import Parking.Support.UBound
+import Parking.Support.WBound
+import LatticeProb.Prob.FddTight
+
+/-!
+# The tightness bridge for the space-time field
+
+The equicontinuity clause of `prop:spatial-scaling` in the form the
 finite-dimensional-to-functional bridge of the library consumes.
 
 The clause bounds the probability that the rescaled divisible odometer oscillates
@@ -8,10 +16,6 @@ points exist, and that event is contained in the first: on a bounded set the
 rescaled field reads finitely many lattice sites, so the oscillation is a genuine
 supremum and not the junk value of an unbounded family.
 -/
-import Parking.Support.Continuum
-import Parking.Support.UBound
-import Parking.Support.WBound
-import LatticeProb.Prob.FddTight
 
 noncomputable section
 namespace Parking
@@ -36,6 +40,10 @@ theorem exists_radius_of_isCompact (K : Set (ℝ × (Fin d → ℝ))) (hK : IsCo
       _ ≤ max C 0 := le_trans h (le_max_left _ _)
 
 
+/-- For a space-time point `p` bounded by `C` in time and in each spatial coordinate,
+`|barDivisible w R p.1 p.2|` is bounded by `R ^ (d/2 - 2)` times the discrete horizon
+`⌊C * R ^ 2⌋₊` times a `confBox` supremum over the enclosing box, via `uOf_le_confBox`
+and monotonicity of `confBox`. -/
 theorem abs_barDivisible_le (hd : 1 ≤ d) (w : Data d) {R : ℝ} (hR : 0 ≤ R)
     {C : ℝ} (_hC : 0 ≤ C) {p : ℝ × (Fin d → ℝ)} (hp1 : |p.1| ≤ C) (hp2 : ∀ i, |p.2 i| ≤ C) :
     |barDivisible w R p.1 p.2|

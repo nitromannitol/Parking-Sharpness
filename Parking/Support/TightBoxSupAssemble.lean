@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightBoxSupBaseSum
+import Parking.Support.TightBoxSupBaseZero
+import Parking.Support.TightBoxSupTailMoment
+import Parking.Support.TightBoxSupTelescope
+
+/-!
+# Assembling the three-piece box-supremum bound
+
 Assembles `TightBoxSupBase.lean`/`TightBoxSupBaseMoment.lean`/`TightBoxSupBaseSum.lean`/
 `TightBoxSupBaseZero.lean`/`TightBoxSupTailMoment.lean` into a bound, a.e. and for EVERY point
 of the cutoff box simultaneously, of `|Yfield|` by a sum of three pieces whose `p`-th moment is
@@ -13,10 +20,6 @@ chain to `Yfield(z)` via `Parking.ae_abs_Yfield_sub_dtruncPi_le`) and with
             ≤ 2·dtail(levelInc, R) + 2·Σ_{k<R} levelIncFixed(R, k+1) + level0Max(R).
 The right side does not depend on `z`, so it bounds the SUPREMUM over the whole box.
 -/
-import Parking.Support.TightBoxSupBaseSum
-import Parking.Support.TightBoxSupBaseZero
-import Parking.Support.TightBoxSupTailMoment
-import Parking.Support.TightBoxSupTelescope
 
 open MeasureTheory LatticeProb Filter Topology
 
@@ -30,6 +33,8 @@ def yfieldSup3 (A : ℝ) (hA : 0 ≤ A) (R n : ℕ) (η : Site 2 → ℝ) : ℝ 
   level0Max A hA R n η + 2 * (∑ k ∈ Finset.range R, levelIncFixed A hA R n (k + 1) η) +
     2 * LatticeProb.dtail (fun m => levelInc A hA n m η) R
 
+/-- **`yfieldSup3` is nonnegative**, being a sum of the nonnegative `level0Max`, a sum of
+nonnegative `levelIncFixed` terms, and a nonnegative `LatticeProb.dtail` term. -/
 theorem yfieldSup3_nonneg (A : ℝ) (hA : 0 ≤ A) (R n : ℕ) (η : Site 2 → ℝ) :
     0 ≤ yfieldSup3 A hA R n η := by
   unfold yfieldSup3

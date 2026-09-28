@@ -1,6 +1,17 @@
 import Parking.Support.ProductTower
 import Parking.Support.CenteredVariance
 
+/-!
+# Revealing one coordinate of a partial integral
+
+The effect of revealing one fresh coordinate `j` of a bounded functional `F` on its
+partial integral `partialInt`: resampling an omitted coordinate leaves the partial
+integral unchanged, the reveal difference equals the fresh-coordinate section centered at
+its own average, and a uniform bound together with a conditional second-moment bound on
+that section give the predictable bound and predictable-variance bound of a martingale
+difference sequence.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb

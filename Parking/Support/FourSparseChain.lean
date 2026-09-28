@@ -1,9 +1,16 @@
-/-
-The sparse dimension-four ratio from the critical lower bound and convex comparison.
--/
 import Parking.Support.SparseCompare
 import Parking.Support.DensitySequence
 import Parking.Frozen.CorCritical
+
+/-!
+# The sparse dimension-four ratio, from the critical lower bound and convex comparison
+
+Chains a logarithmic lower bound on the divisible odometer mean (`Parking.Frozen.cor_critical`)
+against a logarithmic upper bound on the sparse particle odometer mean
+(`exists_meanu_sparse_upper`) through the elementary ratio lemma
+`eventually_ratio_ge_log_scale`, to produce the uniform dimension-four ratio bound
+`four_sparse_of_growth` used by `Parking.Frozen.four_sparse`.
+-/
 
 noncomputable section
 namespace Parking

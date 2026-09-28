@@ -1,6 +1,17 @@
 import Parking.Support.MatchedBounds
 import Parking.Support.SingleInfluence
 
+/-!
+# Mean odometer and single-particle Lipschitz bounds
+
+This file defines the mean odometer `matchedMeanU`, obtained by averaging the matched
+odometer over the round-noise law, and transfers the single-particle influence bounds of
+`Parking.Support.SingleInfluence` to it by linearity of the integral. It derives that
+raising one coordinate of the initial configuration by an integer amount changes the mean
+odometer monotonically and by at most that many multiples of the full Green's function,
+and concludes a Lipschitz bound in the initial value at a single site.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -17,7 +28,8 @@ theorem matchedMeanU_addParticle (hd : 3 ≤ d) (η : Site d → ℤ)
       matchedMeanU (addParticle v η) ρ T x - matchedMeanU η ρ T x ≤ fullGreen d (v - x) := by
   have hd1 : 1 ≤ d := by omega
   unfold matchedMeanU
-  rw [← integral_sub (integrable_matchedOdometer hd1 _ _ _ _) (integrable_matchedOdometer hd1 _ _ _ _)]
+  rw [← integral_sub (integrable_matchedOdometer hd1 _ _ _ _)
+    (integrable_matchedOdometer hd1 _ _ _ _)]
   constructor
   · apply integral_nonneg
     intro σ
@@ -26,6 +38,8 @@ theorem matchedMeanU_addParticle (hd : 3 ≤ d) (η : Site d → ℤ)
     exact Finset.sum_nonneg fun t _ => by unfold discrepancyDeparture; split <;> positivity
   · exact integral_singleAddition_odometer_difference_le hd η v ρ T x
 
+/-- Adding a particle at `v` to a configuration already fixed to the value `k` at `v` is the
+same as fixing `v` to `k + 1` directly, since `addParticle` only increments that one site. -/
 theorem addParticle_update_self (η : Site d → ℤ) (v : Site d) (k : ℤ) :
     addParticle v (Function.update η v k) = Function.update η v (k + 1) := by
   classical

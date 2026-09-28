@@ -1,6 +1,15 @@
 import Parking.Support.NoArrivalWeight
 import Parking.Support.MomentLowerTail
 
+/-!
+# A Chernoff-style split for a no-arrival event
+
+`measure_flag_le_lower_tail` bounds the probability of a no-arrival event `F` by the
+probability that its compensator `L` falls below a threshold `a`, plus an exponential
+Chernoff correction `exp(-a)`, given only that `exp(L)` restricted to `F` has expectation
+at most one. The proof compares the indicator functions pointwise and integrates.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory
@@ -41,7 +50,8 @@ theorem measure_flag_le_lower_tail {Ω : Type} [MeasurableSpace Ω]
         (mul_nonneg (Real.exp_pos _).le (hW ω))
   have h := integral_mono hiS (hiB.add (hi.const_mul (Real.exp (-a)))) hp
   change (∫ ω, S.indicator (fun _ => (1 : ℝ)) ω ∂μ) ≤
-    ∫ ω, B.indicator (fun _ => (1 : ℝ)) ω + Real.exp (-a) * (if F ω then Real.exp (L ω) else 0) ∂μ at h
+    ∫ ω, B.indicator (fun _ => (1 : ℝ)) ω +
+      Real.exp (-a) * (if F ω then Real.exp (L ω) else 0) ∂μ at h
   rw [integral_add hiB (hi.const_mul _), integral_const_mul, integral_indicator_const (1 : ℝ) hS,
     integral_indicator_const (1 : ℝ) hB] at h
   simp only [smul_eq_mul, mul_one] at h

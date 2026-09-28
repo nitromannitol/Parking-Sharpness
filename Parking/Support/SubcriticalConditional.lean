@@ -1,4 +1,9 @@
-/-
+import Parking.Support.SubcriticalGraftStep3
+import Parking.Support.NoiseSplice
+
+/-!
+# From the prescribed origin to the conditional survival probability
+
 From the prescribed origin to the conditional survival probability
 (`parking.tex:2434-2455`).
 
@@ -21,8 +26,6 @@ the prescription, over the copy carrying the origin then gives the conditional
 bound, the chance of `{η(0) = k}` appearing exactly as the denominator of the
 conditional probability.
 -/
-import Parking.Support.SubcriticalGraftStep3
-import Parking.Support.NoiseSplice
 
 open LatticeProb (measurePreserving_pairSplice)
 
@@ -48,6 +51,7 @@ def unshiftOrigin (ω : PData d) : PData d :=
 /-- The uniform variables of the bottom particle at the origin. -/
 def originRankOf (ω : PData d) : ℕ → ℝ := fun s => ω.2.2 ((((0 : Site d), 0) : Label d), s)
 
+/-- Removing the bottom particle at the origin drops the count there by one. -/
 @[simp] theorem unshiftOrigin_eta_zero (ω : PData d) :
     (unshiftOrigin ω).1 (0 : Site d) = ω.1 (0 : Site d) - 1 := by
   simp [unshiftOrigin]
@@ -145,6 +149,8 @@ theorem unshiftOrigin_graftOrigin (ω₁ ω : PData d) :
     · simp [unshiftOrigin, graftOrigin, hq]
     · simp [unshiftOrigin, graftOrigin, hq]
 
+/-- The bottom particle's uniform variables at the origin are read off the first
+(grafted-in) copy alone, unaffected by what is spliced on top. -/
 theorem originRankOf_graftOrigin (ω₁ ω : PData d) :
     originRankOf (graftOrigin ω₁ ω) = originRankOf ω₁ := by
   funext s
@@ -171,6 +177,9 @@ theorem originRank_unshiftOrigin (ω : PData d) :
     have hii : i - 1 + 1 = i := Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero hi)
     rw [if_pos rfl, hii]
 
+/-- The prescription `originRank` carries at `unshiftOrigin ω`, together with the bottom
+particle's own uniforms, is injective as soon as `ω`'s own uniform-variable family is, by
+`originRank_unshiftOrigin`. -/
 theorem injective_originRank_unshiftOrigin {ω : PData d} (h : Function.Injective ω.2.2) :
     Function.Injective (originRank (originRankOf ω) (unshiftOrigin ω)) := by
   rw [originRank_unshiftOrigin]
@@ -183,6 +192,8 @@ theorem injective_originRank_unshiftOrigin {ω : PData d} (h : Function.Injectiv
   rw [h5, h4]
 
 
+/-- Grafting twice at the origin only remembers the last graft: `graftOrigin` overwrites
+the origin data of its first argument entirely. -/
 theorem graftOrigin_graftOrigin_left (a b c : PData d) :
     graftOrigin (graftOrigin a b) c = graftOrigin a c := by
   refine Prod.ext ?_ (Prod.ext ?_ ?_)
@@ -193,6 +204,8 @@ theorem graftOrigin_graftOrigin_left (a b c : PData d) :
   · funext q
     by_cases hq : q.1.1 = (0 : Site d) <;> simp [graftOrigin, hq]
 
+/-- Grafting at the origin only reads the origin data of its first argument, so replacing
+the second argument by `graftOrigin b c` does not change the result. -/
 theorem graftOrigin_graftOrigin_right (a b c : PData d) :
     graftOrigin a (graftOrigin b c) = graftOrigin a c := by
   refine Prod.ext ?_ (Prod.ext ?_ ?_)
@@ -222,6 +235,8 @@ def condObs (w : ℕ → Fin d × Bool) (k : ℕ) (t : ℕ) : PData d → ℝ :=
       (pState (toPDriver ω') t).active ((0 : Site d), 0) = true}
     (fun _ => (1 : ℝ)) (setMoves w ω)
 
+/-- `Parking.survivalGivenWalk` unfolds to the average of `condObs` divided by the chance
+of `{η(0) = k}`, definitionally. -/
 theorem survivalGivenWalk_eq (d : ℕ) (ν : Measure ℤ) (k : ℕ) (t : ℕ)
     (w : ℕ → Fin d × Bool) :
     survivalGivenWalk d ν k t w
@@ -261,6 +276,10 @@ theorem condObs_eq (w : ℕ → Fin d × Bool) (k : ℕ) (t : ℕ) (ω : PData d
       Set.indicator_of_notMem (show ω ∉ {ω' : PData d | ω'.1 (0 : Site d) = (k : ℤ)} from h1)]
     norm_num
 
+/-- On a spliced realization, `condObs` factors as the indicator of `{η(0) = k}` read off
+the grafted-in copy `ω₁`, times the grafted survival observable of
+`Support/SubcriticalGraftStep3.lean` reading the rest from `ω`, by `condObs_eq` and
+`unshiftOrigin_graftOrigin`. -/
 theorem condObs_graftOrigin (w : ℕ → Fin d × Bool) (k : ℕ) (t : ℕ) (ω₁ ω : PData d) :
     condObs w k t (graftOrigin ω₁ ω)
       = Set.indicator {ω' : PData d | ω'.1 (0 : Site d) = (k : ℤ)} (fun _ => (1 : ℝ)) ω₁
@@ -281,6 +300,8 @@ theorem condObs_graftOrigin (w : ℕ → Fin d × Bool) (k : ℕ) (t : ℕ) (ω�
         Set.indicator_of_notMem (show ω₁ ∉ {ω' : PData d | ω'.1 (0 : Site d) = (k : ℤ)} from h)]
 
 
+/-- Splicing at the origin, `graftOrigin`, is a measurable function of the pair of
+realizations it splices, each coordinate being a measurable case split on the origin. -/
 theorem measurable_graftOrigin_pair :
     Measurable fun p : PData d × PData d => graftOrigin p.1 p.2 := by
   classical
@@ -304,6 +325,8 @@ theorem measurable_graftOrigin_pair :
     · simpa [graftOrigin, hq] using
         (measurable_snd.snd.snd.eval : Measurable fun p : PData d × PData d => p.2.2.2 q)
 
+/-- Overwriting the bottom particle's moves at the origin with the prescribed walk `w`,
+`setMoves w`, is measurable. -/
 theorem measurable_setMoves (w : ℕ → Fin d × Bool) : Measurable (setMoves (d := d) w) := by
   classical
   refine Measurable.prodMk measurable_fst

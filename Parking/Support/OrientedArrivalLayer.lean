@@ -1,15 +1,23 @@
-/- The directed layer average of the arrival count, unrolled over the routing instructions. -/
 import Parking.Support.OrientedRouteOp
 import Parking.Support.OrientedFreshness
 import Parking.Support.BoxTranslation
 import Parking.Support.OrientedErrorRoute
 import Parking.Support.OrientedFiniteRoute
+
+/-!
+# The directed layer average, unrolled over routing instructions
+
+The directed layer average of the arrival count, unrolled over the routing instructions.
+-/
+
 noncomputable section
 
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The route sum over all departure sites and instruction indices below the odometer
+there, weighted by the layer function at the routed destination, is summable. -/
 theorem summable_orientedRouteSum (η : Site d → ℤ) (σ : Site d × ℕ → Site d)
     (hσ : ∀ q : Site d × ℕ, ∃ i : Fin d, σ q = q.1 + unit i) (k m : ℕ) :
     Summable fun y : Site d => ∑ j ∈ Finset.range (orientedOdometer η σ k y),
@@ -26,6 +34,9 @@ theorem summable_orientedRouteSum (η : Site d → ℤ) (σ : Site d × ℕ → 
   intro i
   simpa using h i
 
+/-- The layer average of the directed arrival count unrolls into a sum, over departure
+sites and instruction indices below the odometer there, of the layer function evaluated
+at the routed destination. -/
 theorem orientedLayerAverage_arrival_eq (η : Site d → ℤ) (σ : Site d × ℕ → Site d)
     (hσ : ∀ q : Site d × ℕ, ∃ i : Fin d, σ q = q.1 + unit i) (k m : ℕ) :
     (∑' z : Site d, orientedLayer d m z * (orientedArrivalCount η σ k z : ℝ)) =
@@ -71,7 +82,8 @@ theorem orientedLayerAverage_arrival_eq (η : Site d → ℤ) (σ : Site d × �
     rw [← (Equiv.subRight (unit i)).summable_iff]
     refine (hsum i).congr fun z => ?_
     show _ = ∑ j ∈ Finset.range (orientedOdometer η σ k (z - unit i)),
-        orientedLayer d m (z - unit i + unit i) * (if σ (z - unit i, j) = z - unit i + unit i then (1 : ℝ) else 0)
+        orientedLayer d m (z - unit i + unit i) *
+          (if σ (z - unit i, j) = z - unit i + unit i then (1 : ℝ) else 0)
     simp only [sub_add_cancel]
   rw [← Summable.tsum_finsetSum (fun i _ => hsum2 i)]
   refine tsum_congr fun y => ?_
@@ -83,11 +95,15 @@ theorem orientedLayerAverage_arrival_eq (η : Site d → ℤ) (σ : Site d × �
   rw [Finset.sum_eq_single i₀]
   · simp
   · intro i _ hi
-    have hne : y + unit i₀ ≠ y + unit i := fun h => hi (unit_injective (add_left_cancel h : unit i₀ = unit i)).symm
+    have hne : y + unit i₀ ≠ y + unit i :=
+      fun h => hi (unit_injective (add_left_cancel h : unit i₀ = unit i)).symm
     rw [if_neg hne, mul_zero]
   · intro h
     exact absurd (Finset.mem_univ i₀) h
 
+/-- The layer average of the directed noise equals the route sum of the per-instruction
+routing discrepancy `orientedRouteDisc`, obtained by subtracting the unrolled arrival
+identity from its averaged form. -/
 theorem orientedLayerAverage_noise_eq (η : Site d → ℤ) (σ : Site d × ℕ → Site d)
     (hσ : ∀ q : Site d × ℕ, ∃ i : Fin d, σ q = q.1 + unit i) (k m : ℕ) :
     (∑' z : Site d, orientedLayer d m z * orientedNoise η σ k z) =
@@ -121,6 +137,8 @@ theorem orientedLayerAverage_noise_eq (η : Site d → ℤ) (σ : Site d × ℕ 
   rw [orientedRouteDisc]
 
 
+/-- The directed error at the origin is a sum over rounds `k < n` of the route sum of
+the routing discrepancy at layer `n - (k + 1)`. -/
 theorem wErrOriented_eq_routeSum (η : Site d → ℤ) (σ : Site d × ℕ → Site d)
     (hσ : ∀ q : Site d × ℕ, ∃ i : Fin d, σ q = q.1 + unit i) (n : ℕ) :
     wErrOriented η σ n 0 = ∑ k ∈ Finset.range n,

@@ -1,4 +1,10 @@
-/- The endgame of `parking.tex:1822-1848` assembled from the clauses of
+import Parking.Support.NearestBallEvent
+import Parking.Support.NearestLimit
+
+/-!
+# Assembling the spatial-scaling endgame
+
+The endgame of `parking.tex:1822-1848` assembled from the clauses of
 `prop:spatial-scaling`.
 
 The joint finite-dimensional clause is projected twice, once onto finitely many
@@ -7,8 +13,6 @@ pair.  The ball event comes from the net argument; the signed pair is read off
 the same convergence by one clamp.  Together they give the positive test event
 of `Parking.nearest_of_positive_test_events`.
 -/
-import Parking.Support.NearestBallEvent
-import Parking.Support.NearestLimit
 
 noncomputable section
 namespace Parking
@@ -27,6 +31,7 @@ def clampBcf (a η : ℝ) (hη : 0 < η) : BoundedContinuousFunction ℝ ℝ :=
     rw [Real.dist_eq, abs_le]
     constructor <;> linarith⟩⟩
 
+/-- `clampBcf a η hη` evaluates to `clampAt a η` pointwise, by definitional unfolding. -/
 theorem clampBcf_apply (a η : ℝ) (hη : 0 < η) (t : ℝ) : clampBcf a η hη t = clampAt a η t := rfl
 
 /-- The finite-dimensional clause of `prop:spatial-scaling`, projected onto finitely many
@@ -84,6 +89,8 @@ theorem spatial_fdd_signedPair (ν : Measure ℤ)
     (fun i => Fin.elim0 i) (fun _ => hφ) (fun i => Fin.elim0 i)
     (F.compContinuous ⟨fun z => z.2.2.2 0, by fun_prop⟩)
 
+/-- `clampBcf a η hη ∘ X` is integrable under a probability measure `P`, dominated by the
+constant `1` since `clampAt` takes values in `[0, 1]`. -/
 theorem integrable_clampBcf {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     [IsProbabilityMeasure P] {a η : ℝ} (hη : 0 < η) (X : Ω → ℝ) (hX : Measurable X) :
     Integrable (fun w => clampBcf a η hη (X w)) P := by

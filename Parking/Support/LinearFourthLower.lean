@@ -1,11 +1,23 @@
-/- A uniform first-moment lower bound for centered iid linear combinations. -/
 import Parking.Support.SecondFourthMean
 import Parking.Support.LinearMoment
+
+/-!
+# A uniform first-moment lower bound for centered iid linear combinations
+
+A uniform first-moment lower bound for centered iid linear combinations. The second moment of
+a finite linear combination of i.i.d. mean-zero, finite-fourth-moment coordinates has the
+expected closed form, and combined with a fourth-moment upper bound this yields, via the
+second-fourth-moment comparison of `Parking.Support.SecondFourthMean`, a lower bound on
+`E[|∑ a i * ξ i|]` uniform in the coefficients `a`.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory ProbabilityTheory LatticeProb Finset
 
+/-- `E[(∑ a i * ξ i) ^ 2] = E[ξ ^ 2] * ∑ a i ^ 2` for a finite i.i.d. mean-zero family with a
+finite fourth moment, via `integral_sq_finsetSum` applied to the independent mean-zero
+summands `a i * ξ i`. -/
 theorem integral_sq_linear_sum_pi (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (h4 : Integrable (fun z : ℝ => z ^ 4) μ) (hmean : ∫ z : ℝ, z ∂μ = 0)
     (N : ℕ) (a : Fin N → ℝ) :
@@ -35,6 +47,10 @@ theorem integral_sq_linear_sum_pi (μ : Measure ℝ) [IsProbabilityMeasure μ]
     simpa only [id_eq, mul_pow, integral_const_mul] using hh
   simpa only [he, ← sum_mul, mul_comm] using hsq
 
+/-- Produces `c > 0` uniform in `N` and `a` with `c * √(∑ a i ^ 2) ≤ E[|∑ a i * ξ i|]`, from a
+positive second moment and a finite fourth moment, combining `integral_sq_linear_sum_pi`, a
+fourth-moment bound from `exists_linear_moment_bound`, and the second-fourth comparison
+`abs_mean_lower_of_second_fourth`. -/
 theorem exists_linear_abs_mean_lower (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (h4 : Integrable (fun z : ℝ => z ^ 4) μ) (hmean : ∫ z : ℝ, z ∂μ = 0)
     (hvar : 0 < ∫ z : ℝ, z ^ 2 ∂μ) :

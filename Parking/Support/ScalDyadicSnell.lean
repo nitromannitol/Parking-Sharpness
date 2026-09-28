@@ -1,4 +1,9 @@
-/-
+import Parking.Support.ScalNoiseModification
+import LatticeProb.Prob.CondExpParam
+
+/-!
+# The dyadic Snell recursion for continuum optimal stopping
+
 The dyadic Snell recursion of the continuum optimal-stopping value of
 `prop:oriented-scaling` (`parking.tex:3219-3237`).
 
@@ -18,8 +23,6 @@ multi-parameter Kolmogorov-Chentsov theorem.  Reading the reward from the raw
 field `contZ` would not do: `contZ` is the coercion of an `L²` element, chosen
 separately at each space-time point, so it has no joint regularity at all.
 -/
-import Parking.Support.ScalNoiseModification
-import LatticeProb.Prob.CondExpParam
 
 open LatticeProb.ContinuumStopping (contNoiseSpace contStopValue)
 
@@ -283,7 +286,8 @@ theorem abs_dyadicSnellRecY_le_of_condExp_le {ΩB : Type*} [mB : MeasurableSpace
     refine abs_le.mpr ⟨?_, ?_⟩
     · exact le_max_iff.mpr (Or.inl (abs_le.mp (by simpa [dyadicRewardY, abs_neg] using hYb _ ω)).1)
     · exact max_le (abs_le.mp (by simpa [dyadicRewardY, abs_neg] using hYb _ ω)).2
-        (abs_le.mp (hcond (2 ^ m - (j + 1)) (dyadicSnellRecY (mB := mB) PB 𝒢 Y B m j) ω (fun β => ih ω β) β)).2
+        (abs_le.mp (hcond (2 ^ m - (j + 1)) (dyadicSnellRecY (mB := mB) PB 𝒢 Y B m j) ω
+          (fun β => ih ω β) β)).2
 
 /-- **The dyadic Snell recursion is bounded pointwise, uniformly in the depth**,
 when the conditional expectation is bounded pointwise. -/
@@ -423,6 +427,9 @@ def dyadicRewardSpatial {d : ℕ} {ΩB : Type*} (Y : (Fin d → ℝ) → contNoi
     (B : ℝ≥0 → ΩB → Fin d → ℝ) (m k : ℕ) : contNoiseSpace × ΩB → ℝ :=
   fun p => -Y (B (Real.toNNReal ((k : ℝ) / 2 ^ m)) p.2) p.1
 
+/-- The library's jointly measurable representative of the conditional expectation
+`E[r(·, β) | 𝒢]`, extracted from `LatticeProb.exists_measurable_condExp_param` by
+`Classical.choose`. -/
 def condExpParamRep {ΩB : Type*} [mB : MeasurableSpace ΩB] [StandardBorelSpace ΩB]
     (PB : Measure ΩB) [IsFiniteMeasure PB] (𝒢 : MeasurableSpace ΩB) (h𝒢 : 𝒢 ≤ mB)
     (r : contNoiseSpace × ΩB → ℝ)
@@ -432,6 +439,10 @@ def condExpParamRep {ΩB : Type*} [mB : MeasurableSpace ΩB] [StandardBorelSpace
   Classical.choose (LatticeProb.exists_measurable_condExp_param
     (Ω := contNoiseSpace) (ΩB := ΩB) (mΩ := inferInstance) (mB := mB) PB 𝒢 h𝒢 r _hr hint)
 
+/-- The conditional-expectation operator as a total function on
+`contNoiseSpace × ΩB → ℝ`: it returns the library's jointly measurable representative
+`condExpParamRep` when `r` is jointly measurable and fibrewise integrable, and the zero
+function otherwise. -/
 noncomputable def condExpParamOp {ΩB : Type*} [mB : MeasurableSpace ΩB] [StandardBorelSpace ΩB]
     (PB : Measure ΩB) [IsFiniteMeasure PB] (𝒢 : MeasurableSpace ΩB) (h𝒢 : 𝒢 ≤ mB) :
     (contNoiseSpace × ΩB → ℝ) → contNoiseSpace × ΩB → ℝ :=
@@ -443,6 +454,9 @@ noncomputable def condExpParamOp {ΩB : Type*} [mB : MeasurableSpace ΩB] [Stand
       condExpParamRep (mB := mB) PB 𝒢 h𝒢 r h.1 h.2
     else 0
 
+/-- `condExpParamOp` is jointly measurable for every jointly measurable `r`: in the
+branch where `r` is also fibrewise integrable this is the defining measurability of the
+library's representative, and otherwise `condExpParamOp` reduces to the zero function. -/
 theorem measurable_condExpParamOp_all {ΩB : Type*} [mB : MeasurableSpace ΩB] [StandardBorelSpace ΩB]
     (PB : Measure ΩB) [IsFiniteMeasure PB] (𝒢 : MeasurableSpace ΩB) (h𝒢 : 𝒢 ≤ mB)
     (r : contNoiseSpace × ΩB → ℝ)

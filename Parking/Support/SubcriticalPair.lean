@@ -1,4 +1,12 @@
-/-
+import Parking.Support.RelabelEquiv
+import Parking.Support.ReadsPresent
+import Parking.Support.DeleteCompare
+import Parking.Frozen.OneParticle
+import Parking.Frozen.TaggedMonotonicity
+
+/-!
+# The pair `(F, Z)` of `thm:subcritical`
+
 The pair `(F, Z)` of the proof of `thm:subcritical` (`parking.tex:2449-2462`).
 
 "Prescribe the `k` particles at the origin and temporarily condition on all
@@ -25,11 +33,6 @@ one other, and the site-major label order decides such a tie by data a
 relabeling of the particles present at a site never moves
 (`Support/SubcriticalRelabel.lean`).
 -/
-import Parking.Support.RelabelEquiv
-import Parking.Support.ReadsPresent
-import Parking.Support.DeleteCompare
-import Parking.Frozen.OneParticle
-import Parking.Frozen.TaggedMonotonicity
 
 noncomputable section
 
@@ -43,6 +46,7 @@ variable {d : ℕ}
 def rangeFinset (x : Site d) (p : ℕ → Fin d × Bool) (t : ℕ) : Finset (Site d) :=
   (Finset.range (t + 1)).image fun j => walkPath x p j
 
+/-- `rangeCard` is by definition the cardinality of `rangeFinset`. -/
 theorem rangeCard_eq_card (x : Site d) (p : ℕ → Fin d × Bool) (t : ℕ) :
     rangeCard x p t = (rangeFinset x p t).card := rfl
 

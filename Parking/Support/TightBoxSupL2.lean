@@ -1,10 +1,13 @@
-/-
+import Parking.Support.TightBoxSupSup3Moment
+
+/-!
+# The Lyapunov `L^p → L²` step
+
 The Lyapunov `L^p → L²` step (task item (c)'s completion): from `Parking.
 exists_yfieldSup3_moment`'s bound `E[yfieldSup3^p] ≤ D·(R+1)²`, Jensen's inequality at the
 concave map `t ↦ t^(2/p)` (`Real.concaveOn_rpow`, `ConcaveOn.le_map_integral`, both already in
 Mathlib) gives `E[yfieldSup3²] ≤ (D·(R+1)²)^(2/p)`.
 -/
-import Parking.Support.TightBoxSupSup3Moment
 
 open MeasureTheory LatticeProb Filter Topology
 

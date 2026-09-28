@@ -1,4 +1,9 @@
-/-
+import Parking.Support.TightHappTerminal
+import Parking.Support.OrientedCutoffValuePot
+
+/-!
+# The master bound between the rescaled odometer and `Y`
+
 Assembles `Parking.abs_orientedTerminalValue_Ftrue_sub_Fcut_le` into the master bound: for
 every scale `n ≥ 1` and every scenery `η`, the RESCALED odometer at the origin and `Parking.Y`'s
 potential-inclusive value differ by at most the integral of the bad-event bound
@@ -7,8 +12,6 @@ potential-inclusive value differ by at most the integral of the bad-event bound
 origin evaluation cancel exactly, leaving the difference of the two terminal-reward stopping
 values that `Parking.abs_orientedStoppingSup_sub_le_of_terminal` bounds.
 -/
-import Parking.Support.TightHappTerminal
-import Parking.Support.OrientedCutoffValuePot
 
 open LatticeProb.BoxClamp (boxPoint rewardBox rewardOfBox)
 
@@ -20,6 +23,9 @@ namespace Parking
 
 /-! ### `BddAbove` of the two terminal-value sets -/
 
+/-- The terminal values of the rescaled true reward `FtrueScaled` are bounded above, since they
+equal `n ^ (-1/4)` times the terminal values of the unscaled reward `FtrueReward`, which attain
+the least upper bound `uOriented η n 0 - orientedPotential η n 0`. -/
 theorem bddAbove_orientedTerminalValues_FtrueScaled (η : Site 2 → ℝ) (n : ℕ) :
     BddAbove (orientedTerminalValues 2 (FtrueScaled η n) n 0) := by
   have hraw : IsLUB (orientedTerminalValues 2 (FtrueReward η n) n 0)
@@ -28,6 +34,9 @@ theorem bddAbove_orientedTerminalValues_FtrueScaled (η : Site 2 → ℝ) (n : �
   exact bddAbove_orientedTerminalValues_const_mul
     (Real.rpow_nonneg (Nat.cast_nonneg n) _) (FtrueReward η n) n 0 hraw.bddAbove
 
+/-- The terminal values of the box-clamped reward `FcutReward` are bounded above by
+`‖boxRewardMap 1 A hA n η‖`, since `Parking.abs_rewardOfBox_orientedScaledSite_le` bounds every
+value of the clamped reward, at every time and site, by that norm. -/
 theorem bddAbove_orientedTerminalValues_FcutReward {A : ℝ} (hA : 0 ≤ A) (n : ℕ)
     (η : Site 2 → ℝ) :
     BddAbove (orientedTerminalValues 2 (FcutReward hA n η) n 0) :=
@@ -38,6 +47,9 @@ theorem bddAbove_orientedTerminalValues_FcutReward {A : ℝ} (hA : 0 ≤ A) (n :
 
 /-! ### The two stopping-sup identities -/
 
+/-- The stopping supremum of the rescaled true reward `FtrueScaled` equals `n ^ (-1/4)` times the
+Dynkin-decomposition difference `uOriented η n 0 - orientedPotential η n 0`, via
+`Parking.orientedStoppingSup_potential`. -/
 theorem orientedStoppingSup_FtrueScaled_eq (η : Site 2 → ℝ) (n : ℕ) :
     orientedStoppingSup 2 (FtrueScaled η n) n 0
       = (n : ℝ) ^ (-(1 : ℝ) / 4) * (uOriented η n 0 - orientedPotential η n 0) := by
@@ -46,9 +58,13 @@ theorem orientedStoppingSup_FtrueScaled_eq (η : Site 2 → ℝ) (n : ℕ) :
   congr 1
   exact orientedStoppingSup_potential (by norm_num) η n 0
 
+/-- The stopping supremum of the box-clamped reward `FcutReward` equals `Parking.
+orientedCutoffValue` applied to the same box-reward map, by unfolding `orientedCutoffValue` at
+horizon `T = 1`, where `⌊n * 1⌋₊ = n`. -/
 theorem orientedStoppingSup_FcutReward_eq {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) :
     orientedStoppingSup 2 (FcutReward hA n η) n 0
-      = orientedCutoffValue (T := 1) (zero_le_one) hA n (boxRewardMap 1 (zero_le_one) A hA n η) := by
+      = orientedCutoffValue (T := 1) (zero_le_one) hA n
+          (boxRewardMap 1 (zero_le_one) A hA n η) := by
   have hfl : ⌊(n : ℝ) * 1⌋₊ = n := by rw [mul_one, Nat.floor_natCast]
   unfold orientedCutoffValue
   rw [hfl]
@@ -56,6 +72,11 @@ theorem orientedStoppingSup_FcutReward_eq {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η
 
 /-! ### `Fcut`'s reward at the origin -/
 
+/-- At time `k = 0` and the origin, the box-clamped reward `FcutReward` exactly equals the
+rescaled true reward `-(n ^ (-1/4)) * orientedPotential η n 0`, since the origin at time `0`
+lies within the box's admissible range and so no clamping occurs there
+(`Parking.rewardOfBox_boxRewardMap_eq_orientedGridReward` combined with
+`Parking.Ftrue_eq_orientedGridReward`). -/
 theorem FcutReward_zero_zero_eq {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (hn : 1 ≤ n) (η : Site 2 → ℝ) :
     FcutReward hA n η 0 (0 : Site 2) = -(n : ℝ) ^ (-(1 : ℝ) / 4) * orientedPotential η n 0 := by
   have hz : orientedLayerIndex (0 : Site 2) = ((0 : ℕ) : ℤ) := by simp [orientedLayerIndex]
@@ -73,6 +94,9 @@ theorem FcutReward_zero_zero_eq {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (hn : 1 ≤ n
   rw [← hid]
   ring
 
+/-- `Parking.orientedCutoffValuePot`'s value differs from the plain `Parking.orientedCutoffValue`
+by exactly `n ^ (-1/4) * orientedPotential η n 0`, the origin's own reward as computed by
+`FcutReward_zero_zero_eq`. -/
 theorem orientedCutoffValuePot_eq {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (hn : 1 ≤ n) (η : Site 2 → ℝ) :
     orientedCutoffValuePot (zero_le_one) hA n (boxRewardMap 1 (zero_le_one) A hA n η)
       = orientedCutoffValue (zero_le_one) hA n (boxRewardMap 1 (zero_le_one) A hA n η)

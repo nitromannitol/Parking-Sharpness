@@ -1,13 +1,21 @@
-/- Applying the cited kernel concentration estimate to the directed divisible recursion. -/
 import Parking.Support.OrientedAllNorms
 import Parking.Support.OrientedLaw
 import Parking.Support.OrientedFinite
+
+/-!
+# Kernel concentration for the directed divisible recursion
+
+Applying the cited kernel concentration estimate to the directed divisible recursion.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
+/-- The kernel-concentration coefficient `orientedKappa d n` is nonnegative in every
+branch of its case split: a `positivity` term, `Real.log` of a quantity `≥ 1`, or a
+numeral. -/
 theorem orientedKappa_nonneg (d n : ℕ) : 0 ≤ orientedKappa d n := by
   unfold orientedKappa
   split_ifs
@@ -15,6 +23,11 @@ theorem orientedKappa_nonneg (d n : ℕ) : 0 ≤ orientedKappa d n := by
   · exact Real.log_nonneg (by have : (0 : ℝ) ≤ n := Nat.cast_nonneg n; linarith)
   · norm_num
 
+/-- Given the external kernel concentration hypothesis `UConcentration` and an
+exponential-moment i.i.d. law `μ`, the centered directed divisible odometer `uOriented`
+obeys a Rosenthal-type bound `C * (√(r * orientedKappa d n) + r)` on its centered
+`r`-th moment, with `C` built from the Green's function rates of
+`exists_orientedGreen_sq_rates`. -/
 theorem exists_uOriented_centered_bound (hd : 2 ≤ d) (hConc : Parking.External.UConcentration)
     (μ : Measure ℝ) [IsProbabilityMeasure μ] {θ : ℝ} (hθ : 0 < θ)
     (he : Integrable (fun z : ℝ => Real.exp (θ * |z|)) μ) :
@@ -46,6 +59,9 @@ theorem exists_uOriented_centered_bound (hd : 2 ≤ d) (hConc : Parking.External
       mul_nonneg (Real.sqrt_nonneg D) hr0]
   exact h.trans ((mul_le_mul_of_nonneg_left h3 hA.le).trans_eq (by ring))
 
+/-- Transports `exists_uOriented_centered_bound` from the i.i.d. real-valued setting to
+the critical oriented law `orientedLaw d ν`, using `realLaw_expMoment` for the
+exponential moment and `integral_oriented_confReal` to identify the two integrals. -/
 theorem exists_oriented_centered_bound (hd : 2 ≤ d) (hConc : Parking.External.UConcentration)
     (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n → ∀ r : ℝ, 2 ≤ r →

@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightInterp
+import Parking.Support.TightReward
+import LatticeProb.Prob.Scaling.PolyGrowth
+import LatticeProb.KolmogorovChentsov
+
+/-!
+# The uniform Kolmogorov moment bound of the box reward field
+
 The uniform Kolmogorov moment bound of the rescaled reward field on the box
 (`parking.tex:3207-3218`).
 
@@ -23,12 +30,11 @@ their cells and the two-point grid moment bound; pairs within a cell are read
 off the Lipschitz constants of the interpolation weights and the partition of
 unity.
 -/
-import Parking.Support.TightInterp
-import Parking.Support.TightReward
-import LatticeProb.Prob.Scaling.PolyGrowth
-import LatticeProb.KolmogorovChentsov
 
-open LatticeProb.KolmogorovChentsov (abs_add_add_rpow_le abs_floor_sub_half_floor_sub_le abs_floor_sub_le abs_intFloor_sub_le abs_intFloor_sub_le_two abs_sum_rpow_le le_rpow_half_of_rpow_two_div_le rpow_neg_half_rpow_half rpow_quarter_mul_rpow_neg_quarter sqrt_rpow_half_mul_rpow_neg_quarter toNat_cast_real)
+open LatticeProb.KolmogorovChentsov (abs_add_add_rpow_le abs_floor_sub_half_floor_sub_le
+    abs_floor_sub_le abs_intFloor_sub_le abs_intFloor_sub_le_two abs_sum_rpow_le
+    le_rpow_half_of_rpow_two_div_le rpow_neg_half_rpow_half rpow_quarter_mul_rpow_neg_quarter
+    sqrt_rpow_half_mul_rpow_neg_quarter toNat_cast_real)
 
 open MeasureTheory LatticeProb LatticeProb.Scaling.PolyGrowth
 

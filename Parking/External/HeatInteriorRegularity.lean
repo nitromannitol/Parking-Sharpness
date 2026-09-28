@@ -1,10 +1,12 @@
-/-
-Classical interior regularity for the heat operator `(2d)⁻¹Δ` on open subsets
-of positive space-time, used in Step 3 of `parking.tex:1800-1820`. A continuous
-weak solution has a smooth representative which agrees with it pointwise and
-solves the equation classically.
--/
 import Parking.Support.Continuum
+
+/-!
+# Interior regularity for the heat operator
+
+Classical interior regularity for the heat operator `(2d)⁻¹Δ` on open subsets of positive
+space-time, used in Step 3 of `parking.tex:1800-1820`. A continuous weak solution has a
+smooth representative which agrees with it pointwise and solves the equation classically.
+-/
 
 open MeasureTheory
 

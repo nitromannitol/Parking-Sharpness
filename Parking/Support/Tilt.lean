@@ -1,4 +1,9 @@
-/-
+import Parking.Support.Range
+import Parking.Support.Cov
+
+/-!
+# The tilted one-site law
+
 The tilted one-site law as a density.
 
 Section 9 of `parking.tex` (`parking.tex:2318-2335`) tilts the law of the count
@@ -7,8 +12,6 @@ against it is an integral against `ν` of the observable times `e^{λ k}`, divid
 by the normalization; this is the form in which the derivative of
 `parking.tex:2424-2427` is computed.
 -/
-import Parking.Support.Range
-import Parking.Support.Cov
 
 open MeasureTheory
 

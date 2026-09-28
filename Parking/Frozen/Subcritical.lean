@@ -1,4 +1,8 @@
-/-
+import Parking.Support.SubcriticalJointBound
+
+/-!
+# Theorem 10.3: subcritical survival decay (frozen)
+
 Theorem 10.3 of parking.tex, frozen.  `parking.tex:2434-2447` (label
 `thm:subcritical`), in the setting of `parking.tex:2287-2335`:
 
@@ -18,7 +22,6 @@ prescribing the moves of the label `(0,0)`, which is what
 `survivalGivenWalk` does; the bound then holds for every prescribed walk.
 `E_0` is an average over the walk alone.
 -/
-import Parking.Support.SubcriticalJointBound
 
 open MeasureTheory
 

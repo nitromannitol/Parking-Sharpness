@@ -1,9 +1,14 @@
-/- Step 2 of the oriented walk theorem, lower half: the directed particle mean
-dominates the directed divisible mean, which grows like `n^{1/4}`
-(`parking.tex:3305-3310`). -/
 import Parking.Support.DensitySequence
 import Parking.Support.OrientedLowerRates
 import Parking.Support.OrientedMeanComparison
+
+/-!
+# Oriented walk, step 2, lower half
+
+Step 2 of the oriented walk theorem, lower half: the directed particle mean
+dominates the directed divisible mean, which grows like `n^{1/4}`
+(`parking.tex:3305-3310`).
+-/
 
 noncomputable section
 namespace Parking

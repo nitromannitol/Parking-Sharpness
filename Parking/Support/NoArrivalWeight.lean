@@ -1,24 +1,43 @@
 import Parking.Support.ArrivalCompensator
 import Parking.Support.RoundNoArrival
 
+/-!
+# The no-arrival exponential weight
+
+`noArrivalWeight η ρ σ t x` is the no-arrival indicator `noArrivalFlag` multiplied by the
+exponential of the entrance compensator `arrivalCompensator`: the per-site weight whose
+one-step supermartingale property (`noArrivalWeight_section`) drives the no-arrival
+supermartingale bound in `NoArrivalExponential.lean`. This file records its value at time
+`0`, its measurability, a uniform exponential bound, and that one-step inequality.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
 /-- The no-arrival indicator multiplied by the exponential of the entrance compensator. -/
-def noArrivalWeight (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (t : ℕ) (x : Site d) : ℝ :=
+def noArrivalWeight (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d)
+    (t : ℕ) (x : Site d) : ℝ :=
   if noArrivalFlag η ρ σ t x then Real.exp (arrivalCompensator η ρ σ t x) else 0
 
-theorem noArrivalWeight_zero (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (x : Site d) :
+/-- `noArrivalWeight` at time `0` equals `1`, since `noArrivalFlag` starts true and the
+compensator vanishes by `arrivalCompensator_zero`. -/
+theorem noArrivalWeight_zero (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d)
+    (x : Site d) :
     noArrivalWeight η ρ σ 0 x = 1 := by
   simp [noArrivalWeight, noArrivalFlag, arrivalCompensator_zero]
 
-theorem measurable_noArrivalWeight (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (t : ℕ) (x : Site d) :
+/-- `fun σ => noArrivalWeight η ρ σ t x` is measurable, as an `ite` on the measurable set
+where `noArrivalFlag` holds, combined with the measurable exponential of the compensator. -/
+theorem measurable_noArrivalWeight (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
+    (t : ℕ) (x : Site d) :
     Measurable (fun σ : RoundNoise d => noArrivalWeight η ρ σ t x) := by
   exact Measurable.ite ((measurable_noArrivalFlag hd η ρ t x) (measurableSet_singleton true))
     (measurable_arrivalCompensator hd η ρ t x).exp measurable_const
 
+/-- The weight is bounded in norm by `exp(t * (2t+1)^d * K)` when `η` is bounded by `K`,
+via the compensator bound `arrivalCompensator_bound`. -/
 theorem noArrivalWeight_bound (hd : 1 ≤ d) (η : Site d → ℤ) (K : ℕ)
     (hη : ∀ y, (η y).toNat ≤ K) (ρ : Label d × ℕ → ℝ) (σ : RoundNoise d) (t : ℕ) (x : Site d) :
     ‖noArrivalWeight η ρ σ t x‖ ≤ Real.exp ((t * ((2 * t + 1) ^ d * K) : ℕ) : ℝ) := by
@@ -45,7 +64,8 @@ theorem noArrivalWeight_section (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label
     rw [matchedState_update η ρ σ t t τ le_rfl]
     rfl
   by_cases hf : noArrivalFlag η ρ σ t x = true
-  · have he (τ : RoundSlot d → Fin d × Bool) : noArrivalWeight η ρ (Function.update σ t τ) (t + 1) x =
+  · have he (τ : RoundSlot d → Fin d × Bool) : noArrivalWeight η ρ (Function.update σ t τ)
+        (t + 1) x =
         Real.exp (c + b) * (if (countArrivals A τ x).card = 0 then (1 : ℝ) else 0) := by
       unfold noArrivalWeight
       rw [noArrivalFlag, noArrivalFlag_update η ρ σ t t τ le_rfl, hf]
@@ -55,13 +75,15 @@ theorem noArrivalWeight_section (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label
       by_cases hz : (countArrivals A τ x).card = 0 <;> simp [hz, c, b]
     simp_rw [he]
     rw [integral_const_mul, noArrivalWeight, if_pos hf]
-    have h := mul_le_mul_of_nonneg_left (integral_noArrivals_le_exp hd A x) (Real.exp_pos (c + b)).le
+    have h := mul_le_mul_of_nonneg_left (integral_noArrivals_le_exp hd A x)
+      (Real.exp_pos (c + b)).le
     apply h.trans_eq
     rw [← Real.exp_add]
     congr 1
     dsimp only [c, b]
     ring
-  · have he (τ : RoundSlot d → Fin d × Bool) : noArrivalWeight η ρ (Function.update σ t τ) (t + 1) x = 0 := by
+  · have he (τ : RoundSlot d → Fin d × Bool) : noArrivalWeight η ρ (Function.update σ t τ)
+        (t + 1) x = 0 := by
       unfold noArrivalWeight
       rw [noArrivalFlag, noArrivalFlag_update η ρ σ t t τ le_rfl]
       simp [hf]

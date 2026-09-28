@@ -1,9 +1,12 @@
-/-
-Summable logarithmic tails and almost-sure convergence.
--/
 import Parking.Support.MomentTail
 import Mathlib.Analysis.PSeries
 import Mathlib.MeasureTheory.OuterMeasure.BorelCantelli
+
+/-!
+# Summable logarithmic tails
+
+Summable logarithmic tails and almost-sure convergence.
+-/
 
 noncomputable section
 namespace Parking

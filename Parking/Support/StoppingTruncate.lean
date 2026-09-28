@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Walk
+
+/-!
+# Truncating a stopping rule to a smaller horizon
+
 **Truncating a stopping rule to a smaller horizon is again a stopping rule for that smaller
 horizon.**
 
@@ -13,7 +17,6 @@ event is a separate step; it needs a walk-displacement estimate,
 `Parking.measureReal_sup_walkPath_graphNorm_le` (`Parking/Support/WalkMaximal.lean`), and is not
 carried out in this module.
 -/
-import Parking.Support.Walk
 
 noncomputable section
 

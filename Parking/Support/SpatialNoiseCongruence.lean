@@ -1,11 +1,18 @@
-/- Coordinatewise versions preserve the white-noise laws. -/
 import Parking.Support.SpatialResidualAlgebra
+
+/-!
+# Coordinatewise versions preserve the white-noise laws
+-/
 
 open MeasureTheory ProbabilityTheory Filter Topology
 noncomputable section
 namespace Parking
 variable {d : ℕ}
 
+/-- If `W'` agrees almost everywhere with `W` on every test function, then `W'` also
+satisfies `IsSpatialWhiteNoise d v Q`: linearity, the `L²`-normalization/mean clause,
+the covariance clause, and the Gaussian-marginal clause of `hW` all transfer through the
+a.e. equalities `heq`. -/
 theorem isSpatialWhiteNoise_congr {Ω : Type} [MeasurableSpace Ω]
     {Q : Measure Ω} {v : ℝ} {W W' : ((Fin d → ℝ) → ℝ) → Ω → ℝ}
     (hW : IsSpatialWhiteNoise d v Q W)

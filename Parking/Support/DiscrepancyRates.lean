@@ -1,7 +1,14 @@
-/-
-The logarithmic moment exponent and the critical U moment below dimension four.
--/
 import Parking.Support.UpperTarget
+
+/-!
+# The logarithmic moment exponent and the low-dimensional critical moment
+
+The logarithmic moment exponent `rHigh n` and the critical moment of `U` below dimension four.
+`sqrt_rHigh_le_quarter` and `rHigh_kappa_le_low` compare `rHigh n` and the product `rHigh n *
+kappa d n` against explicit powers of `n`, and `exists_U_rHigh_low` combines these with the
+Green-function norm hypotheses to bound the `rHigh n`-moment of `U` by `sqrt (rHigh n) * n ^
+((4 - d) / 4)`.
+-/
 
 noncomputable section
 namespace Parking
@@ -43,6 +50,8 @@ theorem rHigh_kappa_le_low {d n : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (hn : 2 �
         (n : ℝ) ^ ((4 - (d : ℝ)) / 4)) := hm
     _ = _ := by ring
 
+/-- `Parking.External.greenMaxRate` is bounded by `kappa` in every dimension `1 ≤ d ≤ 3`, by
+case analysis on `d`, with `d = 2` handled by monotonicity of `Real.log`. -/
 theorem greenMaxRate_le_kappa {d n : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (hn : 2 ≤ n) :
     Parking.External.greenMaxRate d n ≤ kappa d n := by
   interval_cases d

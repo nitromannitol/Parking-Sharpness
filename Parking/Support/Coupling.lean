@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Parallel
+
+/-!
+# The one-particle coupling
+
 The one-particle coupling of `parking.tex`, Section 3: the process started from
 `η` beside the process started from `η` with one more particle at `x₀`, every
 other particle keeping its walk and its uniform variables.
@@ -15,7 +19,6 @@ second either; and the holes, which shrink by the number of arrivals, stay
 below.  Nothing in the argument reads the order on the labels beyond the fact
 that both processes break ties by the same rule.
 -/
-import Parking.Support.Parallel
 
 noncomputable section
 
@@ -27,6 +30,7 @@ variable {d : ℕ}
 
 /-! ### The candidate restriction is lossless for the particle process -/
 
+/-- Each coordinate of a single step vector changes by at most `1`. -/
 theorem abs_stepVec_le_one (b : Fin d × Bool) (i : Fin d) : |stepVec b i| ≤ 1 := by
   unfold stepVec
   by_cases hb : b.2
@@ -39,6 +43,8 @@ theorem abs_stepVec_le_one (b : Fin d × Bool) (i : Fin d) : |stepVec b i| ≤ 1
     · subst hij; simp [unit, Pi.single_eq_same]
     · simp [unit, Pi.single_eq_of_ne hij]
 
+/-- After `t` rounds, a label's position has moved from its starting site by at
+most `t` in each coordinate, by induction on `t` using `abs_stepVec_le_one`. -/
 theorem abs_pPos_sub_start_le (D : PDriver d) (t : ℕ) (p : Label d) (i : Fin d) :
     |(pState D t).pos p i - p.1 i| ≤ (t : ℤ) := by
   induction t with
@@ -59,6 +65,8 @@ theorem abs_pPos_sub_start_le (D : PDriver d) (t : ℕ) (p : Label d) (i : Fin d
         _ ≤ 1 + (t : ℤ) := by linarith
         _ = ((t + 1 : ℕ) : ℤ) := by push_cast; ring
 
+/-- If a label is active at time `t`, it was already active at time `0`, since
+activity can only be lost during the recursion, never gained. -/
 theorem pActive_le (D : PDriver d) (p : Label d) :
     ∀ t : ℕ, (pState D t).active p = true → (pState D 0).active p = true := by
   intro t
@@ -70,11 +78,16 @@ theorem pActive_le (D : PDriver d) (p : Label d) :
       simp only [pState, pStep, decide_eq_true_eq] at hh
       exact hh.1
 
+/-- An active label's index is below the initial particle count at its site,
+by `pActive_le` reduced to the initial state. -/
 theorem lt_toNat_of_pActive {D : PDriver d} {t : ℕ} {p : Label d}
     (h : (pState D t).active p = true) : p.2 < (D.eta p.1).toNat := by
   have := pActive_le D p t h
   simpa [pState, initial] using this
 
+/-- `p` belongs to the active particles `pActiveAt D (pState D t) t y` iff it is
+active at time `t` and stands at `y`, the candidate condition being automatic
+from `abs_pPos_sub_start_le`. -/
 theorem mem_pActiveAt_iff (D : PDriver d) (t : ℕ) (y : Site d) (p : Label d) :
     p ∈ pActiveAt D (pState D t) t y
       ↔ ((pState D t).active p = true ∧ (pState D t).pos p = y) := by
@@ -86,6 +99,9 @@ theorem mem_pActiveAt_iff (D : PDriver d) (t : ℕ) (y : Site d) (p : Label d) :
   rw [hp.2] at this
   rwa [abs_sub_comm]
 
+/-- `p` belongs to the arrivals `pArrivalsAt D (pState D t) t x` iff it is active
+at time `t` and its next position is `x`, the candidate condition again being
+automatic from the one-step displacement bound. -/
 theorem mem_pArrivalsAt_iff (D : PDriver d) (t : ℕ) (x : Site d) (p : Label d) :
     p ∈ pArrivalsAt D (pState D t) t x
       ↔ ((pState D t).active p = true ∧ pNextPos D (pState D t) t p = x) := by
@@ -115,6 +131,8 @@ theorem mem_pArrivalsAt_iff (D : PDriver d) (t : ℕ) (x : Site d) (p : Label d)
 def pSettledAt (D : PDriver d) (t : ℕ) (x : Site d) : Finset (Label d) :=
   (pArrivalsAt D (pState D t) t x).filter fun p => pSettles D (pState D t) t p
 
+/-- The particles that settle at `x` in round `t + 1` are among the arrivals
+there. -/
 theorem pSettledAt_subset' (D : PDriver d) (t : ℕ) (x : Site d) :
     pSettledAt D t x ⊆ pArrivalsAt D (pState D t) t x := Finset.filter_subset _ _
 
@@ -133,6 +151,9 @@ theorem pSettledAt_eq (D : PDriver d) (t : ℕ) (x : Site d) :
   simp only [decide_eq_true_eq, hp'.1, true_and]
   simp only [prec, pHoleCount]
 
+/-- The number of arrivals at `x` that settle is `min(arrivals, holes)`, applying
+`card_filter_countLT_lt` to the total, irreflexive, transitive priority order
+`prec`. -/
 theorem card_pSettledAt (h : LabelOrder d) (D : PDriver d) (t : ℕ) (x : Site d) :
     (pSettledAt D t x).card
       = min ((pArrivalsAt D (pState D t) t x).card) (pHoleCount D t x) := by
@@ -140,6 +161,9 @@ theorem card_pSettledAt (h : LabelOrder d) (D : PDriver d) (t : ℕ) (x : Site d
   exact card_filter_countLT_lt (prec_irrefl h D.rank t) (prec_trans h D.rank t)
     (prec_total h D.rank t) _
 
+/-- If `η ≤ η'` pointwise, the candidate labels for `y` at round `r` under `η`
+are a subset of those under `η'`, since a larger configuration only admits more
+label indices at each site. -/
 theorem candidates_mono {η η' : Site d → ℤ} (h : ∀ x, η x ≤ η' x) (y : Site d) (r : ℕ) :
     candidates η y r ⊆ candidates η' y r := by
   intro p hp
@@ -148,29 +172,40 @@ theorem candidates_mono {η η' : Site d → ℤ} (h : ∀ x, η x ≤ η' x) (y
   obtain ⟨x, hx, i, hi, rfl⟩ := hp
   exact ⟨x, hx, i, lt_of_lt_of_le hi (Int.toNat_le_toNat (h x)), rfl⟩
 
+/-- Adding one particle at `x₀` can only increase the configuration pointwise. -/
 theorem le_addParticle (x₀ : Site d) (η : Site d → ℤ) (x : Site d) :
     η x ≤ addParticle x₀ η x := by
   unfold addParticle; split <;> omega
 
+/-- An active label's next position is its current position plus the step
+vector of its move instruction. -/
 theorem pNextPos_of_active (D : PDriver d) (S : State d) (t : ℕ) (p : Label d)
     (h : S.active p = true) : pNextPos D S t p = S.pos p + stepVec (D.move (p, t)) := by
   simp [pNextPos, h]
 
+/-- A label is active at `t + 1` iff it was active at `t` and did not settle in
+round `t`. -/
 theorem pActive_succ_iff (D : PDriver d) (t : ℕ) (p : Label d) :
     (pState D (t + 1)).active p = true
       ↔ ((pState D t).active p = true ∧ pSettles D (pState D t) t p = false) := by
   simp [pState, pStep]
 
+/-- `pState D (t + 1)`'s position at `p` unfolds to `pNextPos D (pState D t) t p`,
+by definition of the recursion. -/
 theorem pPos_succ (D : PDriver d) (t : ℕ) (p : Label d) :
     (pState D (t + 1)).pos p = pNextPos D (pState D t) t p := rfl
 
+/-- The hole count at `x` after round `t + 1` is the hole count at `t` minus the
+number of arrivals there, by definition of the recursion. -/
 theorem pHoles_succ (D : PDriver d) (t : ℕ) (x : Site d) :
     (pState D (t + 1)).holes x
       = (pState D t).holes x - (pArrivalsAt D (pState D t) t x).card := rfl
 
+/-- Adding a particle to a driver does not change its move instructions. -/
 theorem addParticleDriver_move (x₀ : Site d) (D : PDriver d) :
     (addParticleDriver x₀ D).move = D.move := rfl
 
+/-- Adding a particle to a driver does not change its priority order. -/
 theorem addParticleDriver_rank (x₀ : Site d) (D : PDriver d) :
     (addParticleDriver x₀ D).rank = D.rank := rfl
 

@@ -1,4 +1,10 @@
-/-
+import Parking.Support.TightWalkMaximal
+import Parking.Support.TightBoxLaw
+import Parking.Support.OrientedMaxMoment
+
+/-!
+# Exactness of the hat interpolation at the walk's own grid points
+
 The hat-interpolation-at-grid-points exactness of `Parking.oriented_scaling_of_cutoff`'s
 `happ` hypothesis, and the walk-position/box-membership correspondence it needs.
 
@@ -15,9 +21,6 @@ condition is then identified, via `Parking.orientedScaledSite`'s definition and
 event that the rescaled walk's coordinate-difference partial sum exits `[-4A√n, 4A√n]`
 before time `n`.
 -/
-import Parking.Support.TightWalkMaximal
-import Parking.Support.TightBoxLaw
-import Parking.Support.OrientedMaxMoment
 
 open LatticeProb.BoxClamp (boxPoint rewardOfBox)
 

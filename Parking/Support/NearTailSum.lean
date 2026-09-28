@@ -1,4 +1,11 @@
-/-
+import Parking.Support.CriticalChain
+import Parking.Support.MassTransport
+import Parking.Support.Transport
+import Parking.Support.Measurability
+
+/-!
+# The limit mean odometer as a sum of survivor counts
+
 The mean odometer at the limit horizon as a sum of survivor counts
 (`parking.tex:2593-2598`).
 
@@ -11,10 +18,6 @@ supremum of the finite means.  `eq:transport` then reads each finite mean as a s
 of survivor counts, and a bound on the tail of that sum which is uniform in the
 upper limit bounds the limit mean.
 -/
-import Parking.Support.CriticalChain
-import Parking.Support.MassTransport
-import Parking.Support.Transport
-import Parking.Support.Measurability
 
 open LatticeProb (measurable_from_countable')
 

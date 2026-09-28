@@ -1,6 +1,14 @@
-/- Centered finite sums under independent coordinate laws. -/
 import Parking.Support.LinearSceneryMoment
 import LatticeProb.Prob.MapPi
+
+/-!
+# Moments of centered sums under independent coordinate laws
+
+Centered finite sums under independent coordinate laws: a common centered one-coordinate law
+with a `p`-th moment, `p ≥ 2`, transports through `exists_linear_moment_infinitePi` to give a
+uniform `√(S.card)`-type moment bound for the sum over any finite index subset `S` of an
+independent family with that common law.
+-/
 
 noncomputable section
 namespace Parking
@@ -19,7 +27,8 @@ theorem exists_centered_sum_moment {ι α : Type*} [MeasurableSpace α]
   let ν := μ.map f
   haveI : IsProbabilityMeasure ν := Measure.isProbabilityMeasure_map hf.aemeasurable
   have hνmom : Integrable (fun z : ℝ => |z| ^ p) ν :=
-    (integrable_map_measure (measurable_abs.pow_const p).aestronglyMeasurable hf.aemeasurable).mpr hmom
+    (integrable_map_measure (measurable_abs.pow_const p).aestronglyMeasurable
+      hf.aemeasurable).mpr hmom
   have hνmean : (∫ z : ℝ, z ∂ν) = 0 := by
     exact (integral_map (μ := μ) (φ := f) (f := fun z : ℝ => z)
       hf.aemeasurable measurable_id.aestronglyMeasurable).trans hmean

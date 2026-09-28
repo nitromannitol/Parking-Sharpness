@@ -1,5 +1,14 @@
 import Parking.Support.HoleKernel
 
+/-!
+# The hole kernel obeys the Green bubble decay bound
+
+Transfers the Green function bubble bound `fullGreen_bubble_bound` to the scenery weight
+`(1 - escapePotential d x y) * (1 - escapePotential d z y)` and, after averaging over a
+single step, to the hole kernel `holeKernel`: both sum, over any finite set of sites, to at
+most `C * (1 + graphNorm (x - z))^(4 - d)`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
@@ -26,7 +35,8 @@ theorem exists_holeKernel_sum_bound (hd : 5 ≤ d) :
         C * (1 + (graphNorm (x - z) : ℝ)) ^ (4 - (d : ℝ)) := by
     apply (Finset.sum_le_sum (fun y _ => mul_le_mul (hq x y) (hq z y)
       (sub_nonneg.mpr (escapePotential_bounds hd3 z y).2) (fullGreen_nonneg d _))).trans
-    exact ((hb x z).1.sum_le_tsum S (fun y _ => mul_nonneg (fullGreen_nonneg d _) (fullGreen_nonneg d _))).trans (hb x z).2
+    exact ((hb x z).1.sum_le_tsum S (fun y _ =>
+        mul_nonneg (fullGreen_nonneg d _) (fullGreen_nonneg d _))).trans (hb x z).2
   refine ⟨C, hC, fun x z S => ⟨hfinite x z S, ?_⟩⟩
   have he (a : Fin d × Bool) (w y : Site d) :
       escapePotential d w (y + stepVec a) = escapePotential d (w - stepVec a) y := by
@@ -34,7 +44,8 @@ theorem exists_holeKernel_sum_bound (hd : 5 ≤ d) :
     congr 3
     abel
   have hstep (a : Fin d × Bool) :
-      (∑ y ∈ S, (1 - escapePotential d x (y + stepVec a)) * (1 - escapePotential d z (y + stepVec a))) ≤
+      (∑ y ∈ S, (1 - escapePotential d x (y + stepVec a)) *
+          (1 - escapePotential d z (y + stepVec a))) ≤
         C * (1 + (graphNorm (x - z) : ℝ)) ^ (4 - (d : ℝ)) := by
     simp only [he]
     have h := hfinite (x - stepVec a) (z - stepVec a) S

@@ -1,4 +1,8 @@
-/-
+import Parking.Basic
+
+/-!
+# The simple random walk and its stopping problem
+
 The simple random walk that Sections 3 to 5 of `parking.tex` run beside the
 particle system, its bounded optimal stopping problem, and the truncated
 Green function.
@@ -20,7 +24,6 @@ How the paper's objects are modelled here:
   `g_m(x) = ∑_{j<m} P^j(0,x)`; `gamma d m y` is the paper's `Γ_m(y)`.
 - `kappa d n` is `κ_d(n)`.
 -/
-import Parking.Basic
 
 open MeasureTheory
 open scoped ENNReal

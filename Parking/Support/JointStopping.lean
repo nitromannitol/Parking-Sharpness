@@ -1,4 +1,8 @@
-/-
+import Parking.Support.StoppingBlocks
+
+/-!
+# Joint measurability for Step 2 of the mean-horizon lemma
+
 Joint measurability of the quantities of Step 2 of `lem:mean-horizon`.
 
 The lemma's stopping rule `σ` is a stopping time of the walk for each
@@ -10,7 +14,6 @@ and those range over a COUNTABLE set, so the joint measurability follows from
 gives joint measurability of `(η, y) ↦ η y` and of `(η, y) ↦ u_ℓ(y; ξ_δ)`,
 which are the other two shapes Step 2 integrates.
 -/
-import Parking.Support.StoppingBlocks
 
 noncomputable section
 
@@ -24,6 +27,8 @@ variable {d : ℕ}
 def pathTrunc (n : ℕ) (a : Fin (n + 1) → Site d) : ℕ → Site d :=
   fun j => if h : j < n + 1 then a ⟨j, h⟩ else 0
 
+/-- `pathTrunc n` recovers the path `X` at every index `j ≤ n`, since `j` then falls
+within the truncated range. -/
 theorem pathTrunc_eq (n : ℕ) (X : ℕ → Site d) {j : ℕ} (hj : j ≤ n) :
     pathTrunc n (fun i : Fin (n + 1) => X i) j = X j := by
   rw [pathTrunc, dif_pos (by omega : j < n + 1)]
@@ -57,26 +62,37 @@ theorem measurable_uncurry_stopping {σ : (Site d → ℤ) → (ℕ → Site d) 
 
 /-! ### Joint measurability of the quantities of Step 2 -/
 
+/-- Evaluation `(η, y) ↦ η y` is jointly measurable, via
+`measurable_from_prod_countable_left` over the countable lattice `Site d`. -/
 theorem measurable_eval_pair {α : Type*} [MeasurableSpace α] [MeasurableSingletonClass α] :
     Measurable (fun p : (Site d → α) × Site d => p.1 p.2) :=
   measurable_from_prod_countable_left (fun y => measurable_pi_apply y)
 
+/-- The recentred scenery `(η, y) ↦ Parking.xi δ η y` is jointly measurable,
+following `measurable_eval_pair`. -/
 theorem measurable_xi_pair (δ : ℝ) :
     Measurable (fun p : (Site d → ℤ) × Site d => Parking.xi δ p.1 p.2) := by
   have h : Measurable (fun p : (Site d → ℤ) × Site d => ((p.1 p.2 : ℤ) : ℝ)) :=
     measurable_intCastReal.comp measurable_eval_pair
   simpa only [Parking.xi] using h.add_const δ
 
+/-- The recentred scenery field `η ↦ Parking.xi δ η` is measurable as a function of
+the configuration alone. -/
 theorem measurable_xiField (δ : ℝ) :
     Measurable (fun η : Site d → ℤ => Parking.xi δ η) :=
   measurable_pi_lambda _ fun y =>
     (measurable_intCastReal.comp (measurable_pi_apply y)).add_const δ
 
+/-- The odometer `(η, y) ↦ u (Parking.xi δ η) ℓ y` at horizon `ℓ` is jointly
+measurable, via `measurable_from_prod_countable_left` and `measurable_u_eval`. -/
 theorem measurable_u_xi_pair (δ : ℝ) (ℓ : ℕ) :
     Measurable (fun p : (Site d → ℤ) × Site d => u (Parking.xi δ p.1) ℓ p.2) :=
   measurable_from_prod_countable_left
     (fun y => (measurable_u_eval ℓ y).comp (measurable_xiField δ))
 
+/-- The stopped sum `∑_{j<σ} ξ_δ(η, X_j)` is jointly measurable in `(η, X)`, by
+rewriting it as a finite case split on the value of the bounded stopping time `σ`,
+each branch a finite sum of the jointly measurable `measurable_xi_pair` terms. -/
 theorem measurable_rewardSum {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ}
     (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η)) {n : ℕ} (hσn : ∀ η X, σ η X ≤ n)
     (hm : ∀ X, Measurable fun η => σ η X) (δ : ℝ) :
@@ -99,6 +115,9 @@ theorem measurable_rewardSum {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ
   exact (measurable_xi_pair (d := d) δ).fun_comp
     (measurable_fst.prodMk ((measurable_pi_apply j).comp measurable_snd))
 
+/-- The one-block reward `if s < σ then u (Parking.xi δ η) ℓ (X s) else 0` is jointly
+measurable, combining the measurable stopping event `s < σ` with
+`measurable_u_xi_pair`. -/
 theorem measurable_blockTerm {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ}
     (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η)) {n : ℕ} (hσn : ∀ η X, σ η X ≤ n)
     (hm : ∀ X, Measurable fun η => σ η X) (δ : ℝ) (s ℓ : ℕ) :
@@ -111,6 +130,8 @@ theorem measurable_blockTerm {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ
 
 /-! ### Integrability of a function of one coordinate -/
 
+/-- Reading one coordinate `η z` of the i.i.d. field preserves integrability of `f`,
+since evaluation at `z` pushes `iidLaw d ν` forward to `ν` measure-preservingly. -/
 theorem integrable_eval_iid {α : Type*} [MeasurableSpace α] (ν : Measure α)
     [IsProbabilityMeasure ν] {f : α → ℝ} (hf : Integrable f ν) (z : Site d) :
     Integrable (fun η : Site d → α => f (η z)) (LatticeProb.iidLaw d ν) := by
@@ -118,6 +139,8 @@ theorem integrable_eval_iid {α : Type*} [MeasurableSpace α] (ν : Measure α)
     unfold LatticeProb.iidLaw; infer_instance
   exact (measurePreserving_eval_infinitePi (fun _ : Site d => ν) z).integrable_comp_of_integrable hf
 
+/-- The sum of `|ξ_δ(η, z)|` over a finite box is integrable, as a finite sum of the
+coordinatewise integrable terms from `integrable_eval_iid`. -/
 theorem integrable_boxSum_xi (δ : ℝ) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => ((k : ℝ))) ν) (t : ℕ) :
     Integrable (fun η : Site d → ℤ => ∑ z ∈ boxFinset (0 : Site d) t, |Parking.xi δ η z|)

@@ -1,21 +1,3 @@
-/-
-The parking model of `parking.tex` and its divisible-sandpile analogue.
-
-How the paper's objects are modelled here (`parking.tex`, Sections 1 and 3):
-
-- The particle–hole process, its labelled particles, the instruction stacks
-  and the uniform variables are `LatticeProb.ParticleHole`.  A realization is
-  driven by the triple `(η, stack, rank)`; the law of the triple is the product
-  of the i.i.d. law of `η`, the stack law of the walk, and independent uniforms.
-- `U_n(x)` is the number of departures from `x` in the first `n` rounds,
-  `A_t(x)` the active particles at `x` after round `t`, and `S_t` the expected
-  number of particles started at the origin still active after round `t`.
-- The divisible sandpile odometer is `u_{n+1} = (η + P u_n)⁺` with `u_0 = 0`,
-  for the simple random walk operator `P`; the oriented version uses the
-  transpose kernel `P⃗(x, x - e_i) = 1/d`, as Remark 3.1 of the paper requires.
-- `U_∞(x)` is the supremum of `U_n(x)` in `ℕ∞`, so that a site which never
-  stops receiving particles has the value `⊤` and not a junk one.
--/
 import LatticeProb.Site
 import LatticeProb.IID
 import LatticeProb.ParticleHole
@@ -23,6 +5,26 @@ import LatticeProb.Rank
 import LatticeProb.ParticleHoleLemmas
 import LatticeProb.Walk.SRW
 import LatticeProb.Walk.Shells
+
+/-!
+# The parking model
+
+The parking model of `parking.tex` and its divisible-sandpile analogue, modelled here as
+follows (`parking.tex`, Sections 1 and 3).
+
+- The particle-hole process, its labelled particles, the instruction stacks and the uniform
+  variables are `LatticeProb.ParticleHole`. A realization is driven by the triple
+  `(η, stack, rank)`; the law of the triple is the product of the i.i.d. law of `η`, the stack
+  law of the walk, and independent uniforms.
+- `U_n(x)` is the number of departures from `x` in the first `n` rounds, `A_t(x)` the active
+  particles at `x` after round `t`, and `S_t` the expected number of particles started at the
+  origin still active after round `t`.
+- The divisible sandpile odometer is `u_{n+1} = (η + P u_n)⁺` with `u_0 = 0`, for the simple
+  random walk operator `P`; the oriented version uses the transpose kernel
+  `P⃗(x, x - e_i) = 1/d`, as Remark 3.1 of the paper requires.
+- `U_∞(x)` is the supremum of `U_n(x)` in `ℕ∞`, so that a site which never stops receiving
+  particles has the value `⊤` and not a junk one.
+-/
 
 open MeasureTheory
 open scoped ENNReal

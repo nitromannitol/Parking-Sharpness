@@ -1,4 +1,11 @@
-/- `prop:oriented-scaling` from the convergence in distribution at a single time.
+import Parking.Support.OrientedScalingReduced
+import Parking.Support.ScalParabolicScaling
+import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
+
+/-!
+# `prop:oriented-scaling` from convergence at a single time
+
+`prop:oriented-scaling` from the convergence in distribution at a single time.
 
 The frozen statement (`parking.tex:3166-3174`) asserts the convergence in distribution of
 `n^{-1/4} u_{⌊nT⌋}(0)` for EVERY `T > 0`, together with the parabolic self-similarity
@@ -18,9 +25,6 @@ self-similarity clause an identity of pushforwards under the same map.
 The whole proposition therefore rests on ONE analytic statement: that the laws of
 `n^{-1/4} u_n(0)` converge weakly on the line.  Everything else is soft.
 -/
-import Parking.Support.OrientedScalingReduced
-import Parking.Support.ScalParabolicScaling
-import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 
 noncomputable section
 namespace Parking
@@ -173,7 +177,8 @@ theorem selfsimilar_of_weak (ν : Measure ℤ) (hν : CriticalLaw ν)
   haveI := hQ
   intro T hT
   set L : Measure ℝ := Q.map (Uc 1) with hLdef
-  haveI hL : IsProbabilityMeasure L := Measure.isProbabilityMeasure_map (hmeas 1 one_pos).aemeasurable
+  haveI hL : IsProbabilityMeasure L :=
+    Measure.isProbabilityMeasure_map (hmeas 1 one_pos).aemeasurable
   have hint : ∀ F : BoundedContinuousFunction ℝ ℝ, ∫ x, F x ∂L = ∫ ω, F (Uc 1 ω) ∂Q := by
     intro F
     rw [hLdef, integral_map (hmeas 1 one_pos).aemeasurable F.continuous.aestronglyMeasurable]
@@ -203,6 +208,10 @@ theorem selfsimilar_of_weak (ν : Measure ℤ) (hν : CriticalLaw ν)
       ((F.continuous.comp (continuous_const.mul continuous_id)).aestronglyMeasurable)
   rw [hA, hB, heq, hC]
 
+/-- **`prop:oriented-scaling` from the convergence in distribution at time one.**  A single
+weak limit `L` of the laws of `n^{-1/4} u_n(0)` gives, via `tendsto_weak_horizon` at every
+rescaled horizon `⌊nT⌋` and `selfsimilar_of_weak` for the self-similarity clause, the whole
+frozen proposition through `oriented_scaling_of_weak`. -/
 theorem oriented_scaling_of_weak_one (ν : Measure ℤ) (hν : CriticalLaw ν)
     (L : Measure ℝ) (hL : IsProbabilityMeasure L)
     (hone : ∀ F : BoundedContinuousFunction ℝ ℝ,

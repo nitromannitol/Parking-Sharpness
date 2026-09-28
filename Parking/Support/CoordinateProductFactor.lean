@@ -1,10 +1,21 @@
-/- A fresh product coordinate factors from an independent background and unrevealed observations. -/
 import Parking.Support.CoordinateFactor
+
+/-!
+# Factoring a fresh coordinate on a product space
+
+This extends `CoordinateFactor` from a bare coordinate space to a product `Ω × (Π i, X i)`.
+An integrand `F` on the product that is invariant under overwriting coordinate `q` of the
+second factor with a fixed value `b` still factors against any observable `g` of that
+coordinate, with the background factor `Ω` carried along unchanged.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 
+/-- If `F : Ω × (Π i, X i) → ℝ` does not change when coordinate `q` is overwritten with `b`,
+then `E[F * g(σ q)] = E[F] * E[g]`, obtained from `integral_mul_coordinate_of_update_invariant`
+after conditioning on the background variable `η` via `integral_prod`. -/
 theorem integral_mul_coordinate_prod_of_update_invariant {Ω ι : Type*} {X : ι → Type*}
     [MeasurableSpace Ω] [DecidableEq ι] [∀ i, MeasurableSpace (X i)]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (P : ∀ i, Measure (X i))

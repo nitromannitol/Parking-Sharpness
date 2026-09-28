@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Walk
+
+/-!
+# The error field, its maximal average, and conditional expectations
+
 The error field `w` of `eq:error-recursion`, its maximal average `w^\star`,
 and the conditional expectations given the initial configuration that
 Sections 3 and 4 of `parking.tex` use.
@@ -15,7 +19,6 @@ Sections 3 and 4 of `parking.tex` use.
 - `shiftConf v` is the translation of a configuration by `v`; a law is
   translation invariant when it is invariant under every `shiftConf`.
 -/
-import Parking.Support.Walk
 
 open MeasureTheory
 open scoped ENNReal

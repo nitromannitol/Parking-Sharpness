@@ -1,12 +1,22 @@
-/- Convolution expansion of the directed routing error. -/
 import Parking.Support.OrientedRouting
 import Parking.Support.OrientedRoutingCoordinate
+
+/-!
+# Convolution expansion of the directed routing error
+
+Convolution expansion of the directed routing error.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The accumulated directed routing error after `n` rounds is the sum, over rounds `k <
+n`, of the layer average of that round's noise `orientedNoise η σ k`, taken at the
+remaining depth `n - (k + 1)`: unfolding `orientedError`'s recursion and pushing the
+directed averaging operator through the sum with `orientedOp_sum` reindexes it into this
+single convolution. -/
 theorem orientedError_eq_layers (η : Site d → ℤ) (σ : Site d × ℕ → Site d) (n : ℕ) (x : Site d) :
     orientedError η σ n x = ∑ k ∈ range n,
       orientedLayerAverage (orientedNoise η σ k) (n - (k + 1)) x := by
@@ -25,6 +35,9 @@ theorem orientedError_eq_layers (η : Site d → ℤ) (σ : Site d × ℕ → Si
     congr 1
     exact sum_congr rfl fun k hk => by rw [he k hk, orientedLayerAverage_succ]
 
+/-- The layer average of `f` at depth `l`, evaluated at the origin, is the sum over all
+sites `y` of the layer weight `orientedLayer d l y` times `f y`, since averaging at `x =
+0` reads the layer weight directly at `y`. -/
 theorem orientedLayerAverage_at_zero (f : Site d → ℝ) (l : ℕ) :
     orientedLayerAverage f l 0 = ∑' y : Site d, orientedLayer d l y * f y := by
   simp only [orientedLayerAverage, zero_add]

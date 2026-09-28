@@ -32,6 +32,8 @@ def Parking.discrepancyAt (c : Site d → ℤ × ℤ) (S : State d) (t : ℕ) (x
 def Parking.discrepancyMoveCount (a b : Site d → ℕ) (x : Site d) : ℕ :=
   (a x - b x) + (b x - a x)
 
+/-- A label present at its current site moves this round exactly when its priority rank there
+is below the surplus count `discrepancyMoveCount a b`. -/
 def Parking.discrepancyMoving (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (a b : Site d → ℕ) (S : State d) (t : ℕ) (p : Label d) : Prop :=
   p ∈ Parking.discrepancyAt c S t (S.pos p) ∧
@@ -48,6 +50,9 @@ def Parking.discrepancySlot (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ →
       rankIn (Parking.discrepancyAt c S t (S.pos p)) (Parking.matchKey ρ 0) p)
   else Sum.inr p
 
+/-- `discrepancySlot` is injective: two moving labels at the same site are separated by the
+injectivity of `rankIn`, and moving and waiting labels land in the disjoint `Sum.inl`/`Sum.inr`
+classes. -/
 theorem Parking.discrepancySlot_injective (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (a b : Site d → ℕ) (S : State d) (t : ℕ) :
     Function.Injective (Parking.discrepancySlot c ρ a b S t) := by
@@ -65,6 +70,8 @@ theorem Parking.discrepancySlot_injective (c : Site d → ℤ × ℤ) (ρ : Labe
       (Nat.add_left_cancel hrank)
   · exact Sum.inr_injective hpq
 
+/-- A label's position after the round: it steps by the table entry at its `discrepancySlot`
+when it moves, and stays put otherwise. -/
 def Parking.discrepancyNextPos (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (a b : Site d → ℕ) (τ : Parking.RoundSlot d → Fin d × Bool)
     (S : State d) (t : ℕ) (p : Label d) : Site d := by
@@ -80,6 +87,8 @@ def Parking.discrepancyArrivals (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ
   (candidates (Parking.discrepancyConf c) x (t + 1)).filter fun p =>
     S.active p ∧ Parking.discrepancyNextPos c ρ a b τ S t p = x
 
+/-- The arrivals of one sign at a site: `discrepancyArrivals` restricted to labels with
+`discrepancySign c p = sgn`. -/
 def Parking.discrepancyArrivalsSign (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (a b : Site d → ℕ) (τ : Parking.RoundSlot d → Fin d × Bool)
     (S : State d) (t : ℕ) (x : Site d) (sgn : Bool) : Finset (Label d) :=
@@ -111,6 +120,7 @@ def Parking.discrepancyState (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ �
       (Parking.matchedCount (Parking.coupledConf true c) ρ σ t)
       (σ t) (Parking.discrepancyState c ρ σ t) t
 
+/-- The live labels of one sign at a site: `discrepancyAt` restricted to `discrepancySign`. -/
 def Parking.discrepancyAtSign (c : Site d → ℤ × ℤ) (S : State d)
     (t : ℕ) (x : Site d) (sgn : Bool) : Finset (Label d) :=
   (Parking.discrepancyAt c S t x).filter fun p => Parking.discrepancySign c p = sgn
@@ -156,6 +166,8 @@ theorem Parking.discrepancyAtSign_step (c : Site d → ℤ × ℤ)
     rw [hpos, hsign]
     exact hp
 
+/-- The cardinality form of `discrepancyAtSign_step`, via `card_rankSurvivors`: the surviving
+count of one sign is the arrival count of that sign minus the opposite sign's arrival count. -/
 theorem Parking.card_discrepancyAtSign_step (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (a b : Site d → ℕ)
     (τ : Parking.RoundSlot d → Fin d × Bool) (S : State d) (t : ℕ) (x : Site d)
@@ -177,6 +189,8 @@ theorem Parking.discrepancyAtSign_step_empty_or_empty (c : Site d → ℤ × ℤ
   exact Parking.rankSurvivors_empty_or_empty _ _ _
     (Parking.matchKey_injective ρ 0).injOn (Parking.matchKey_injective ρ 0).injOn
 
+/-- A label active after a step was already active before it, by unfolding the two nested
+`Finset.mem_filter` conditions defining `discrepancyStep`'s `active` field. -/
 theorem Parking.discrepancyStep_active_imp (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (a b : Site d → ℕ)
     (τ : Parking.RoundSlot d → Fin d × Bool) (S : State d) (t : ℕ) (p : Label d)
@@ -218,6 +232,9 @@ theorem Parking.abs_discrepancyPos_sub_start_le (c : Site d → ℤ × ℤ)
         _ ≤ 1 + (t : ℤ) := add_le_add hstep ih
         _ = ((t + 1 : ℕ) : ℤ) := by omega
 
+/-- A label lies in `discrepancyAt` at time `t` and site `x` iff it is active there, since its
+label index is automatically below the candidate bound by
+`abs_discrepancyPos_sub_start_le`. -/
 theorem Parking.mem_discrepancyAt_iff (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (t : ℕ) (x : Site d) (p : Label d) :
     p ∈ Parking.discrepancyAt c (Parking.discrepancyState c ρ σ t) t x ↔

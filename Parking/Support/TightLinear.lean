@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightCLT
+
+/-!
+# The linear decomposition of the box reward in the scenery
+
 The linear decomposition of `Parking.orientedBoxReward` in the scenery
 (`parking.tex:3207-3218`, Stage 2 of the covariance-to-Gaussian step).
 
@@ -13,7 +17,6 @@ and extends it to a WEIGHTED SUM of finitely many box points, which is what
 the finite-dimensional characteristic-function bridge of `TightCLT.lean`
 consumes.
 -/
-import Parking.Support.TightCLT
 
 open MeasureTheory LatticeProb Finset
 

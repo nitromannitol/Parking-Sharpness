@@ -1,25 +1,26 @@
-/-
-Monotonicity of the odometer and of the hole counts in the configuration, for
-the stack construction.
+import Parking.Support.MassTransport
+
+/-!
+# Monotonicity of the odometer in the configuration
+
+Monotonicity of the odometer and of the hole counts in the configuration, for the stack
+construction.
 
 The parallel identity turns the odometer into a closed recursion,
 
     U_{t+1}(x) = (η(x) + ∑_{y ∼ x} I_{y,x}(U_t(y)))⁺,
 
-in which `I_{y,x}` is nondecreasing in its argument.  Both sides are therefore
-nondecreasing in `η` and in `U_t`, so raising the configuration raises the
-odometer at every site and at every time, with the same instruction stacks.
-The hole counts are what is left of the initial holes after the arrivals, so
-they move the other way.
+in which `I_{y,x}` is nondecreasing in its argument.  Both sides are therefore nondecreasing
+in `η` and in `U_t`, so raising the configuration raises the odometer at every site and at
+every time, with the same instruction stacks. The hole counts are what is left of the initial
+holes after the arrivals, so they move the other way.
 
-The activity counts do NOT follow: `A_t(x)` is a difference of odometers, and
-raising the configuration at a site shifts which instruction every later
-departure from that site reads, so the trajectories of everything downstream
-change.  That is why the couplings of `lem:one-particle` and
-`lem:tagged-monotonicity` are stated for the particle-driven construction of
-`Parking/Support/Particle.lean`.
+The activity counts do NOT follow: `A_t(x)` is a difference of odometers, and raising the
+configuration at a site shifts which instruction every later departure from that site reads,
+so the trajectories of everything downstream change.  That is why the couplings of
+`lem:one-particle` and `lem:tagged-monotonicity` are stated for the particle-driven
+construction of `Parking/Support/Particle.lean`.
 -/
-import Parking.Support.MassTransport
 
 noncomputable section
 
@@ -31,6 +32,8 @@ open LatticeProb Finset
 
 variable {d : ℕ}
 
+/-- The number of arrivals at `x` from `y` by round `m` is monotone in `m`, since it counts
+a filtered subset of `Finset.range m` and `Finset.range` grows with its bound. -/
 theorem arrivals_mono (σ : Site d × ℕ → Site d) (y x : Site d) {m m' : ℕ} (h : m ≤ m') :
     arrivals σ y x m ≤ arrivals σ y x m' := by
   refine Finset.card_le_card (Finset.filter_subset_filter _ ?_)

@@ -1,4 +1,9 @@
-/- The directed error field regrouped by INSTRUCTION.
+import Parking.Support.OrientedCumulative
+import Parking.Support.OrientedUnroll
+import Parking.Support.OrientedParticleMoment
+
+/-!
+# The directed error field regrouped by instruction
 
 `Parking.wErrOriented_eq_sum_finiteRoute` writes the directed error at the origin
 as a sum over ROUNDS, each round contributing the routing discrepancies of every
@@ -11,9 +16,6 @@ so the rounds at which an instruction is alive form a final segment of
 `{0, …, n-1}`, and reflecting the round index turns it into the initial segment
 `{0, …, alive - 1}` of horizons.
 -/
-import Parking.Support.OrientedCumulative
-import Parking.Support.OrientedUnroll
-import Parking.Support.OrientedParticleMoment
 
 noncomputable section
 namespace Parking
@@ -40,6 +42,8 @@ theorem filter_range_eq_range_card {n : ℕ} (P : ℕ → Prop) [DecidablePred P
 def orientedAlive (η : Site d → ℤ) (σ : Site d × ℕ → Site d) (n : ℕ) (y : Site d) (j : ℕ) : ℕ :=
   ((range n).filter fun m => j < orientedOdometer η σ (n - 1 - m) y).card
 
+/-- The number of alive rounds `orientedAlive η σ n y j` for instruction `(y, j)` before
+horizon `n` is at most `n`, since it counts a subset of `range n`. -/
 theorem orientedAlive_le (η : Site d → ℤ) (σ : Site d × ℕ → Site d) (n : ℕ) (y : Site d)
     (j : ℕ) : orientedAlive η σ n y j ≤ n := by
   refine le_trans (card_filter_le _ _) ?_

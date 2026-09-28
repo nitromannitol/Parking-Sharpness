@@ -1,7 +1,10 @@
-/-
+import LatticeProb.Prob.Splice
+
+/-!
+# Almost-sure properties under atom updates
+
 Almost-sure properties under finite updates to positive-mass atoms.
 -/
-import LatticeProb.Prob.Splice
 
 noncomputable section
 namespace Parking

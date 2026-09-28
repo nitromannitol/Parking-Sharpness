@@ -1,20 +1,23 @@
-/- Convergence in distribution together with a uniform `L^r` bound gives convergence
-of the means.
-
-This is the soft step between the convergence in distribution of
-`n^{-1/4} u⃗_n(0)` and the last clause of `prop:oriented-scaling`
-(`parking.tex:3166-3174`), the limit `n^{-1/4} E u⃗_n(0) → μ`.  Convergence in
-distribution sees only bounded continuous test functions, so it says nothing about
-means by itself; a uniform `L^r` bound with `r > 1` supplies the modulus `C M^{1-r}`
-for the error made by truncating at the level `M`, uniformly over the family, and
-the two are combined by the usual three-term estimate.  On the side of the limit the
-same truncation error tends to zero by dominated convergence, and the nonnegativity
-of the limit, which that step needs, is read off from the convergence in
-distribution itself at a single test function.
--/
 import Parking.Support.Continuum
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+/-!
+# Convergence of the means under a uniform moment bound
+
+Convergence in distribution together with a uniform `L^r` bound gives convergence of the
+means.
+
+This is the soft step between the convergence in distribution of `n^{-1/4} u⃗_n(0)` and the
+last clause of `prop:oriented-scaling` (`parking.tex:3166-3174`), the limit
+`n^{-1/4} E u⃗_n(0) → μ`.  Convergence in distribution sees only bounded continuous test
+functions, so it says nothing about means by itself; a uniform `L^r` bound with `r > 1`
+supplies the modulus `C M^{1-r}` for the error made by truncating at the level `M`, uniformly
+over the family, and the two are combined by the usual three-term estimate.  On the side of
+the limit the same truncation error tends to zero by dominated convergence, and the
+nonnegativity of the limit, which that step needs, is read off from the convergence in
+distribution itself at a single test function.
+-/
 
 open MeasureTheory Filter Topology
 
@@ -37,6 +40,7 @@ noncomputable def truncBdd (M : ℝ) : BoundedContinuousFunction ℝ ℝ :=
       rw [Real.dist_eq, abs_le]
       constructor <;> linarith)
 
+/-- The bounded continuous function `truncBdd M` acts pointwise as `y ↦ 0 ⊔ (y ⊓ M)`. -/
 @[simp] theorem truncBdd_apply (M y : ℝ) : truncBdd M y = max 0 (min y M) := rfl
 
 /-- The clamp of `-y` into `[0,1]`: a bounded continuous function that vanishes
@@ -53,16 +57,23 @@ noncomputable def belowZero : BoundedContinuousFunction ℝ ℝ :=
       rw [Real.dist_eq, abs_le]
       constructor <;> linarith)
 
+/-- The bounded continuous function `belowZero` acts pointwise as `y ↦ 0 ⊔ (1 ⊓ (-y))`. -/
 @[simp] theorem belowZero_apply (y : ℝ) : belowZero y = max 0 (min 1 (-y)) := rfl
 
+/-- `belowZero` is nonnegative everywhere, from the outer `max 0`. -/
 theorem belowZero_nonneg (y : ℝ) : 0 ≤ belowZero y := le_max_left _ _
 
+/-- `belowZero` is bounded above by `1`, from the inner `min 1`. -/
 theorem belowZero_le_one (y : ℝ) : belowZero y ≤ 1 := max_le zero_le_one (min_le_left _ _)
 
+/-- `belowZero` vanishes on the nonnegative half-line: for `y ≥ 0`, `-y ≤ 0 ≤ 1`, so the
+inner `min` is nonpositive and the outer `max 0` collapses it to `0`. -/
 theorem belowZero_eq_zero_of_nonneg {y : ℝ} (hy : 0 ≤ y) : belowZero y = 0 := by
   rw [belowZero_apply, max_eq_left_iff]
   exact (min_le_right _ _).trans (by linarith)
 
+/-- Conversely, if `belowZero y = 0` then `y ≥ 0`: otherwise `min 1 (-y) > 0` would make the
+outer `max 0` strictly positive. -/
 theorem nonneg_of_belowZero_eq_zero {y : ℝ} (h : belowZero y = 0) : 0 ≤ y := by
   by_contra hy
   have hy : y < 0 := not_le.mp hy

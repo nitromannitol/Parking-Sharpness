@@ -1,25 +1,25 @@
-/-
-Comparing two configurations under a translation invariant coupling.
-
-`lem:density-compare` has two halves and they use the two constructions.
-
-The upper bound is the mass transport identity together with Lemma 3.6: the
-expected survivor count at the origin is the expected activity there, which is
-the mean of the configuration plus the expected number of unfilled holes.  The
-hole counts are antitone in the configuration for FIXED instruction stacks
-(`Parking.H_antitone`), so under the coupling, run with one family of stacks
-and uniform variables, the hole term can only decrease.
-
-The lower bound has no such pathwise form in the stack construction, because
-the activity is a difference of odometers and raising the configuration shifts
-which instruction every later departure reads.  In the particle-driven
-construction it is `Parking.pSurvivorsFrom_mono`, and the two constructions
-have the same law by `Parking.constructionsAgree_conf`, which is what carries
-the inequality back.
--/
 import Parking.Support.ConfMonotone
 import Parking.Support.ActivityHoles
 import Parking.Support.Monotone
+
+/-!
+# Density comparison under a coupling
+
+Comparing two configurations under a translation invariant coupling. `lem:density-compare` has
+two halves and they use the two constructions.
+
+The upper bound is the mass transport identity together with Lemma 3.6: the expected survivor
+count at the origin is the expected activity there, which is the mean of the configuration plus
+the expected number of unfilled holes. The hole counts are antitone in the configuration for
+FIXED instruction stacks (`Parking.H_antitone`), so under the coupling, run with one family of
+stacks and uniform variables, the hole term can only decrease.
+
+The lower bound has no such pathwise form in the stack construction, because the activity is a
+difference of odometers and raising the configuration shifts which instruction every later
+departure reads. In the particle-driven construction it is `Parking.pSurvivorsFrom_mono`, and
+the two constructions have the same law by `Parking.constructionsAgree_conf`, which is what
+carries the inequality back.
+-/
 
 open LatticeProb (measurable_from_countable' measurable_of_countable_partition)
 
@@ -47,6 +47,8 @@ def survOf (t : ℕ) (y : Site d)
       (ℕ × Label d → Bool))) : ℕ :=
   ((Finset.range (z.1 y).toNat).filter fun i => z.2.2.2.2 (t, (y, i))).card
 
+/-- `survOf` is measurable: it factors through the countable value `z.1 y`, and on each fiber
+it is a finite sum of indicators of the label-membership predicate `z.2.2.2.2`. -/
 theorem measurable_survOf (t : ℕ) (y : Site d) : Measurable (survOf (d := d) t y) := by
   classical
   refine measurable_of_countable_partition (fun z => z.1 y)
@@ -65,14 +67,19 @@ theorem measurable_survOf (t : ℕ) (y : Site d) : Measurable (survOf (d := d) t
     ((measurable_pi_apply (t, (y, i))).comp
       (measurable_snd.comp (measurable_snd.comp (measurable_snd.comp measurable_snd))))
 
+/-- The real-valued cast of `survOf` is measurable, by `measurable_survOf`. -/
 theorem measurable_survOf_real (t : ℕ) (y : Site d) :
     Measurable fun z => (survOf (d := d) t y z : ℝ) :=
   (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (measurable_survOf t y)
 
+/-- The stack construction's survivor count is `survOf` applied to the configuration and its
+stack observables. -/
 theorem survivorsFrom_eq_survOf (ω : Data d) (t : ℕ) (y : Site d) :
     LatticeProb.survivorsFrom (toDriver ω) t y
       = survOf t y (ω.1, LatticeProb.stackObservables ω) := rfl
 
+/-- The particle-driven construction's survivor count is `survOf` applied to the configuration
+and its particle observables. -/
 theorem pSurvivorsFrom_eq_survOf (ω : LatticeProb.PData d) (t : ℕ) (y : Site d) :
     pSurvivorsFrom (LatticeProb.toPDriver ω) t y
       = survOf t y (ω.1, LatticeProb.pObservables ω) := rfl
@@ -124,6 +131,8 @@ theorem survivors_transfer (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
 
 variable {R : Type*} [MeasurableSpace R]
 
+/-- Pushing a coupling `Q` of two configuration laws, extended by an independent factor `RL`,
+forward along the first marginal and `RL` recovers `μ.prod RL`. -/
 theorem map_coupling_fst (Q : Measure ((Site d → ℤ) × (Site d → ℤ)))
     [IsProbabilityMeasure Q] (RL : Measure R) [IsProbabilityMeasure RL]
     {μ : Measure (Site d → ℤ)} (hfst : Q.map Prod.fst = μ) :
@@ -132,6 +141,7 @@ theorem map_coupling_fst (Q : Measure ((Site d → ℤ) × (Site d → ℤ)))
       = Prod.map Prod.fst id := rfl
   rw [hrw, ← Measure.map_prod_map _ _ measurable_fst measurable_id, hfst, Measure.map_id]
 
+/-- The analogue of `map_coupling_fst` for the coupling's second marginal. -/
 theorem map_coupling_snd (Q : Measure ((Site d → ℤ) × (Site d → ℤ)))
     [IsProbabilityMeasure Q] (RL : Measure R) [IsProbabilityMeasure RL]
     {μ' : Measure (Site d → ℤ)} (hsnd : Q.map Prod.snd = μ') :
@@ -158,6 +168,7 @@ theorem translationInvariant_of_coupling {Q : Measure ((Site d → ℤ) × (Site
         rw [Measure.map_map measurable_fst hm]; rfl
     _ = μ := by rw [hQti v, hfst]
 
+/-- The analogue of `translationInvariant_of_coupling` for the second marginal `μ'`. -/
 theorem translationInvariant_of_coupling' {Q : Measure ((Site d → ℤ) × (Site d → ℤ))}
     {μ' : Measure (Site d → ℤ)} (hsnd : Q.map Prod.snd = μ')
     (hQti : ∀ v : Site d, Q.map (fun c => (shiftConf v c.1, shiftConf v c.2)) = Q) :
@@ -177,6 +188,9 @@ theorem translationInvariant_of_coupling' {Q : Measure ((Site d → ℤ) × (Sit
 
 /-! ### The two comparisons -/
 
+/-- **The lower-bound half of `lem:density-compare`.** Under a translation invariant coupling
+with `c.1 ≤ c.2` almost surely, the survivor density `S` is monotone in the configuration law,
+transferred through the particle-driven construction via `pSurvivorsFrom_mono`. -/
 theorem S_mono_of_coupling (hd : 1 ≤ d) {μ μ' : Measure (Site d → ℤ)}
     [IsProbabilityMeasure μ] [IsProbabilityMeasure μ']
     {Q : Measure ((Site d → ℤ) × (Site d → ℤ))} [IsProbabilityMeasure Q]
@@ -252,6 +266,9 @@ theorem S_mono_of_coupling (hd : 1 ≤ d) {μ μ' : Measure (Site d → ℤ)}
     (D' := LatticeProb.toPDriver ((p.1.2, p.2) : LatticeProb.PData d)) rfl rfl hp t 0
   exact (Nat.cast_le (α := ℝ)).mpr hle
 
+/-- **The upper-bound half of `lem:density-compare`.** Under the same coupling, the mean hole
+count `H` is antitone in the configuration, since `H_antitone` holds pathwise for fixed
+instruction stacks. -/
 theorem H_mean_mono_of_coupling (hd : 1 ≤ d) {μ μ' : Measure (Site d → ℤ)}
     [IsProbabilityMeasure μ] [IsProbabilityMeasure μ']
     {Q : Measure ((Site d → ℤ) × (Site d → ℤ))} [IsProbabilityMeasure Q]

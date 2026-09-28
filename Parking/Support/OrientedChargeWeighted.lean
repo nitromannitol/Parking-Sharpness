@@ -1,15 +1,18 @@
-/-
-The charge-weighted moment of the directed odometer: the weights are the
-suprema of the directed layer variances, whose total over the box of radius `n`
-is at most one (`parking.tex:3270-3277`), and translation invariance makes every
-`U_n(y)` carry the moment of `U_n(0)`.
--/
 import Parking.Support.OrientedTelescope
 import Parking.Support.OrientedChargeMoment
 import Parking.Support.WeightedMoment
 import Parking.Support.OrientedMoments
 import Parking.Support.OrientedParticleMoment
 import Parking.Support.OrientedLaw
+
+/-!
+# Charge-weighted odometer moment bound
+
+The charge-weighted moment of the directed odometer: the weights are the
+suprema of the directed layer variances, whose total over the box of radius `n`
+is at most one (`parking.tex:3270-3277`), and translation invariance makes every
+`U_n(y)` carry the moment of `U_n(0)`.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -18,6 +21,11 @@ namespace Parking
 open MeasureTheory LatticeProb Finset
 variable {d : ℕ}
 
+/-- The `p`-th moment of the `⨆ m, orientedGamma d m`-weighted sum of odometers
+`U ω n y` over the box of radius `n` is bounded by the `p`-th moment of `U ω n 0`
+alone, since the weights are nonnegative and sum to at most one over the box
+(`sum_orientedGammaSup_box_le_one`) while every `U ω n y` has the same `p`-th
+moment as `U ω n 0` by translation invariance. -/
 theorem oriented_charge_weighted_moment (hd : 2 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) {p : ℝ} (hp : 1 ≤ p) :
     (∫ ω : Data d, (∑ y ∈ boxFinset (0 : Site d) n,

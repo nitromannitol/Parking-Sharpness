@@ -1,6 +1,11 @@
-/- The directed Green increment as a sum of one-layer routing discrepancies. -/
 import Parking.Support.OrientedPotential
 import Parking.Support.OrientedRoutingCoordinate
+
+/-!
+# Directed Green increment as a sum of routing discrepancies
+
+The directed Green increment as a sum of one-layer routing discrepancies.
+-/
 
 noncomputable section
 namespace Parking

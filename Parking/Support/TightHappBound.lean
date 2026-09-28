@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightStoppingHomog
+import Parking.Support.TightStoppingCompare
+import Parking.Support.TightHappExact
+import Parking.Support.TightGYBoxBound
+
+/-!
+# The per-scenery comparison for `happ`
+
 The per-scenery comparison `happ` needs, carried out in full: a bound on
 `|n^{-1/4} u⃗_n(0) - Y' A n η|` (the potential-inclusive form of `Parking.Y`, read directly at
 the scenery `η` rather than at the driving data `w`), UNIFORM over the scenery, in terms of the
@@ -20,10 +27,6 @@ there by the sum of the two UNCONDITIONAL bounds (`Parking.abs_orientedGridRewar
 `Parking.abs_rewardOfBox_orientedScaledSite_le`) — giving a bound that is the SAME for every rule,
 exactly the hypothesis `Parking.abs_orientedStoppingSup_sub_le_of_terminal` needs.
 -/
-import Parking.Support.TightStoppingHomog
-import Parking.Support.TightStoppingCompare
-import Parking.Support.TightHappExact
-import Parking.Support.TightGYBoxBound
 
 open LatticeProb.BoxClamp (rewardOfBox)
 
@@ -41,6 +44,8 @@ measureReal_sup_walkPartialSum_sq_le` bounds. -/
 def walkBad (n : ℕ) (A : ℝ) : Set (ℕ → Fin 2 × Bool) :=
   {p | ∃ k ≤ n, 4 * A * Real.sqrt n ≤ |walkPartialSum k p|}
 
+/-- `walkBad n A` is measurable, being a finite union over `k ≤ n` of the measurable sets
+where `Parking.walkPartialSum k` exceeds the threshold `4A√n` in absolute value. -/
 theorem measurableSet_walkBad (n : ℕ) (A : ℝ) : MeasurableSet (walkBad n A) := by
   have heq : walkBad n A = ⋃ k ∈ Finset.range (n + 1),
       {p : ℕ → Fin 2 × Bool | 4 * A * Real.sqrt n ≤ |walkPartialSum k p|} := by

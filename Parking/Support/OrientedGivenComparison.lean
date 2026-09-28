@@ -1,12 +1,21 @@
-/- The directed particle mean dominates the divisible odometer for fixed scenery. -/
 import Parking.Support.OrientedArrivalMean
 import Parking.Support.OrientedPotential
+
+/-!
+# Directed particle mean dominates the divisible odometer
+
+The directed particle mean dominates the divisible odometer for fixed scenery.
+-/
 
 noncomputable section
 namespace Parking
 open MeasureTheory LatticeProb
 variable {d : ℕ}
 
+/-- The divisible odometer `uOriented (fun y => η y) n x` is at most the mean, over the
+stack law, of the particle odometer `orientedOdometer η σ n x`, proved by induction using
+the arrival-count mean identity `integral_orientedArrivalCount_given` and monotonicity of
+`orientedOp`. -/
 theorem uOriented_le_mean_orientedOdometer (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     uOriented (fun y => (η y : ℝ)) n x ≤
       ∫ σ : Site d × ℕ → Site d, (orientedOdometer η σ n x : ℝ) ∂(orientedStackLaw d) := by

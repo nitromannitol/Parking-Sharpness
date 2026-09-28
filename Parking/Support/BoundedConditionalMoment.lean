@@ -1,5 +1,15 @@
 import Parking.Support.ProductMoment
 
+/-!
+# Moments of a bounded nonnegative function and its conditional roots
+
+Two elementary integrability facts about a bounded nonnegative measurable function `F`: every
+nonnegative real power of `F` is integrable against a finite measure, and, for `F` on a
+product space, the `1/r`-th root of the `p`-th conditional moment of `F` over one factor is
+itself measurable in the other factor and uniformly bounded by `(B ^ p) ^ (1 / r)`, where `B`
+bounds `F`.
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory

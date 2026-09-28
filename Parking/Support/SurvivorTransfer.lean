@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TaggedSurvivor
+
+/-!
+# `F Z = 0` transferred to the realization without the tagged particle
+
 `F Z = 0` for the paper's `Z` (`parking.tex:2463-2467`).
 
 "On `{F = 1}`, particle 1 fills no hole, so removing it does not change the holes
@@ -16,7 +20,6 @@ particle that is still active changes no hole count.  The relabeling is the only
 step that reads the uniform variables, and it asks for the pairwise distinctness
 of the ones the tagged realization carries, which holds almost surely.
 -/
-import Parking.Support.TaggedSurvivor
 
 open LatticeProb Finset
 
@@ -30,6 +33,7 @@ variable {d : ℕ}
 def taggedData (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : PData d) : PData d :=
   (addParticle 0 ω.1, taggedMove w ω.2.1, taggedRank rk ω.2.2)
 
+/-- The tagged driver is definitionally the ordinary driver built from `taggedData`. -/
 theorem taggedDriver_eq_toPDriver (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : PData d) :
     taggedDriver w rk ω = toPDriver (taggedData w rk ω) := rfl
 
@@ -40,6 +44,7 @@ def liftUp (c i : ℕ) : ℕ := if i < c then i + 1 else if i = c then 0 else i
 /-- The inverse of `Parking.liftUp`. -/
 def liftDown (c j : ℕ) : ℕ := if j = 0 then c else if j ≤ c then j - 1 else j
 
+/-- `liftDown` is a left inverse of `liftUp`. -/
 theorem liftDown_liftUp (c i : ℕ) : liftDown c (liftUp c i) = i := by
   unfold liftUp liftDown
   by_cases h1 : i < c
@@ -51,6 +56,8 @@ theorem liftDown_liftUp (c i : ℕ) : liftDown c (liftUp c i) = i := by
     · rw [if_neg h1, if_neg h2, if_neg (show ¬ (i = 0) by omega),
         if_neg (show ¬ (i ≤ c) by omega)]
 
+/-- `liftDown` is a right inverse of `liftUp`, so together they form the permutation
+`liftCycle`. -/
 theorem liftUp_liftDown (c j : ℕ) : liftUp c (liftDown c j) = j := by
   unfold liftUp liftDown
   by_cases h1 : j = 0
@@ -67,8 +74,10 @@ pushing `0, …, c - 1` up by one, and fixes every index above `c`. -/
 def liftCycle (c : ℕ) : Equiv.Perm ℕ :=
   ⟨liftUp c, liftDown c, liftDown_liftUp c, liftUp_liftDown c⟩
 
+/-- `liftCycle` acts as `liftUp` on the underlying function. -/
 theorem liftCycle_apply (c i : ℕ) : liftCycle c i = liftUp c i := rfl
 
+/-- `liftCycle c` fixes every index strictly above `c`. -/
 theorem liftCycle_fixes (c : ℕ) : ∀ i, c + 1 ≤ i → liftCycle c i = i := by
   intro i hi
   rw [liftCycle_apply, liftUp, if_neg (show ¬ (i < c) by omega),
@@ -79,9 +88,13 @@ origin, so that the labels below it are exactly the particles of `ω`. -/
 def swapData (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : PData d) : PData d :=
   relabelAt 0 (liftCycle (ω.1 0).toNat) (taggedData w rk ω)
 
+/-- The configuration component of `swapData` is unchanged by the relabeling: it is
+exactly `ω`'s configuration with the tagged particle added at the origin. -/
 theorem swapData_fst (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : PData d) :
     (swapData w rk ω).1 = addParticle 0 ω.1 := rfl
 
+/-- Deleting the top label at the origin from `swapData` restores `ω`'s configuration,
+since that label is exactly the particle `taggedData` added. -/
 theorem delAt_swapData_fst (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : PData d) :
     (delAt 0 (swapData w rk ω)).1 = ω.1 := by
   funext x
@@ -92,6 +105,9 @@ theorem delAt_swapData_fst (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : 
   · rw [if_neg hx]
     simp only [addParticle, if_neg hx]
 
+/-- `liftCycle (ω.1 0).toNat` fixes every label index at or above the particle count
+at the origin of `taggedData w rk ω`, by `liftCycle_fixes` and that this count is
+`(ω.1 0).toNat + 1`. -/
 theorem liftCycle_fixes_taggedData (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : PData d)
     (hη : (0 : ℤ) ≤ ω.1 0) :
     ∀ i, ((taggedData w rk ω).1 0).toNat ≤ i → liftCycle (ω.1 0).toNat i = i := by

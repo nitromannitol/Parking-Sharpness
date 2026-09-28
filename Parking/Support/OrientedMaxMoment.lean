@@ -1,6 +1,11 @@
-/- The directed walk maximum has the one-quarter moment growth. -/
 import Parking.Support.FinitePathMoment
 import Parking.Support.OrientedPathMax
+
+/-!
+# One-quarter moment growth of the directed walk maximum
+
+The directed walk maximum has the one-quarter moment growth.
+-/
 
 open LatticeProb.MomentNorm (rNorm)
 
@@ -8,6 +13,10 @@ noncomputable section
 namespace Parking
 open LatticeProb MeasureTheory Finset
 
+/-- In dimension `2`, for `r > 4` and a centered scenery law `μ` with an `r`-th absolute
+moment, the `r`-norm of the potential maximum along the auxiliary walk is at most
+`C * n ^ (1/4)`, transferred from the increment bound `exists_oriented_potential_increment`
+via `exists_finitePathMax_moment` applied to the potential-along-the-walk process. -/
 theorem exists_orientedMax_moment (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (r : ℝ) (hr : 4 < r) (hmom : Integrable (fun z : ℝ => |z| ^ r) μ)
     (hmean : ∫ z : ℝ, z ∂μ = 0) :

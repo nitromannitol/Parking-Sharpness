@@ -1,4 +1,13 @@
-/-
+import Parking.External.SandpileGrowth
+import Parking.External.Bernstein
+import Parking.External.UConcentration
+import Parking.Support.ScalOrientedScalingChain
+import Parking.Support.ScalSpatialScalingChain
+import Parking.Support.ScalWhiteNoise
+
+/-!
+# The discharge of the two scaling propositions from their inputs
+
 The discharge of the two scaling propositions from their inputs.
 
 `prop:oriented-scaling` (`parking.tex:3166-3174`) and `prop:spatial-scaling`
@@ -24,12 +33,6 @@ The sources, clause by clause:
 Nothing here edits a frozen statement; the theorems only repackage the frozen
 clauses as hypotheses and reassemble them.
 -/
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.Support.ScalOrientedScalingChain
-import Parking.Support.ScalSpatialScalingChain
-import Parking.Support.ScalWhiteNoise
 
 open LatticeProb.ContinuumStopping (contNoiseSpace contStopValue)
 
@@ -210,7 +213,8 @@ theorem spatial_scaling_measurable_clause_of_library {d : ℕ} {ΩB : Type*}
         atTop (𝓝 (Uc ω s x))) :
     ∀ s x, Measurable fun ω => Uc ω s x := by
   intro s x
-  exact measurable_spatialValue_of_library (mB := mB) PB 𝒢 h𝒢 Y hY B hB (fun ω => Uc ω s x) (hlim s x)
+  exact measurable_spatialValue_of_library (mB := mB) PB 𝒢 h𝒢 Y hY B hB
+    (fun ω => Uc ω s x) (hlim s x)
 
 
 /-- **The oriented measurability clause of `prop:oriented-scaling` from the library chain.** -/

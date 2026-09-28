@@ -1,8 +1,13 @@
-/- The unused scenery at the arrival layer factors from the no-arrival event. -/
 import Parking.Support.OrientedFreshness
 import Parking.Support.FiniteRandomCount
 import Parking.Support.DensitySequence
 import Parking.Support.LinearFirstMoment
+
+/-!
+# The unused scenery factors from the no-arrival event
+
+The unused scenery at the arrival layer factors from the no-arrival event.
+-/
 
 noncomputable section
 namespace Parking
@@ -10,6 +15,10 @@ open MeasureTheory ProbabilityTheory LatticeProb
 open scoped Classical
 variable {d : ℕ}
 
+/-- Given a fixed stack `σ`, the integral of `max (-η x) 0` against the no-arrival
+indicator at `x` factors as the product of `∫ max (-k) 0 ∂ν` and the probability of no
+arrival, since `η x` is independent of the arrival count at `x`
+(`orientedArrivalCount_indep_conf_coord`). -/
 theorem integral_oriented_noArrival_negative_given (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (σ : Site d × ℕ → Site d) (n : ℕ) (x : Site d) :
     (∫ η : Site d → ℤ, max (-(η x : ℝ)) 0 *
@@ -23,7 +32,8 @@ theorem integral_oriented_noArrival_negative_given (ν : Measure ℤ) [IsProbabi
   have hind := (orientedArrivalCount_indep_conf_coord ν σ n x x le_rfl).symm.comp hf hg
   have h := hind.integral_fun_mul_eq_mul_integral
     (hf.comp (measurable_pi_apply x)).aestronglyMeasurable
-    (hg.comp (measurable_orientedArrivalCount _ _ measurable_id measurable_const n x)).aestronglyMeasurable
+    (hg.comp
+      (measurable_orientedArrivalCount _ _ measurable_id measurable_const n x)).aestronglyMeasurable
   simp only [Function.comp_apply] at h
   have hmean : (∫ η : Site d → ℤ, f (η x) ∂(iidLaw d ν)) = ∫ k, f k ∂ν :=
     (integral_comp_mp (measurePreserving_eval_infinitePi (fun _ : Site d => ν) x)
@@ -32,12 +42,16 @@ theorem integral_oriented_noArrival_negative_given (ν : Measure ℤ) [IsProbabi
   rw [h, hmean]
   congr 1
   have hN : MeasurableSet {η : Site d → ℤ | orientedArrivalCount η σ n x = 0} :=
-    (measurable_orientedArrivalCount _ _ measurable_id measurable_const n x) (measurableSet_singleton 0)
+    (measurable_orientedArrivalCount _ _ measurable_id measurable_const n x)
+      (measurableSet_singleton 0)
   apply Eq.trans ?_ (integral_event_indicator (iidLaw d ν) hN)
   apply integral_congr_ae
   exact Filter.Eventually.of_forall fun η => by
     by_cases hz : orientedArrivalCount η σ n x = 0 <;> simp [g, hz]
 
+/-- The joint integrand `max (-z.1 x) 0 * [orientedArrivalCount z.1 z.2 n x = 0]` is
+integrable against the product law `(iidLaw d ν).prod (orientedStackLaw d)`, dominated by
+the integrable function `|z.1 x|` pulled back along `Prod.fst`. -/
 theorem integrable_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measure ℤ)
     (hν : CriticalLaw ν) (n : ℕ) (x : Site d) :
     Integrable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) => max (-(z.1 x : ℝ)) 0 *
@@ -52,9 +66,11 @@ theorem integrable_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measur
   have hdom := hηI.comp_fst (orientedStackLaw d)
   have hmN : MeasurableSet {z : (Site d → ℤ) × (Site d × ℕ → Site d) |
       orientedArrivalCount z.1 z.2 n x = 0} :=
-    (measurable_orientedArrivalCount _ _ measurable_fst measurable_snd n x) (measurableSet_singleton 0)
+    (measurable_orientedArrivalCount _ _ measurable_fst measurable_snd n x)
+      (measurableSet_singleton 0)
   refine hdom.mono' ((by fun_prop : Measurable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
-    max (-(z.1 x : ℝ)) 0)).mul (Measurable.ite hmN measurable_const measurable_const)).aestronglyMeasurable
+    max (-(z.1 x : ℝ)) 0)).mul
+      (Measurable.ite hmN measurable_const measurable_const)).aestronglyMeasurable
     (Filter.Eventually.of_forall fun z => ?_)
   by_cases hz : orientedArrivalCount z.1 z.2 n x = 0
   · rw [if_pos hz, mul_one, Real.norm_eq_abs, abs_of_nonneg (le_max_right _ _)]
@@ -62,6 +78,10 @@ theorem integrable_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measur
   · simp only [if_neg hz, mul_zero, norm_zero]
     exact abs_nonneg _
 
+/-- The joint version of `integral_oriented_noArrival_negative_given`: integrating the
+product form over the joint law and using Fubini to integrate out the stack coordinate
+first, applying the given-stack identity pointwise in `σ`, recovers the same
+factorization for the no-arrival probability under the joint law. -/
 theorem integral_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measure ℤ)
     (hν : CriticalLaw ν) (n : ℕ) (x : Site d) :
     (∫ z : (Site d → ℤ) × (Site d × ℕ → Site d), max (-(z.1 x : ℝ)) 0 *
@@ -79,15 +99,17 @@ theorem integral_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measure 
   congr 1
   let E : Set ((Site d → ℤ) × (Site d × ℕ → Site d)) :=
     {z | orientedArrivalCount z.1 z.2 n x = 0}
-  have hE : MeasurableSet E := (measurable_orientedArrivalCount _ _ measurable_fst measurable_snd n x)
-    (measurableSet_singleton 0)
+  have hE : MeasurableSet E :=
+    (measurable_orientedArrivalCount _ _ measurable_fst measurable_snd n x)
+      (measurableSet_singleton 0)
   rw [← integral_indicator_one (μ := (iidLaw d ν).prod (orientedStackLaw d)) hE]
   change _ = ∫ z, Set.indicator E (fun _ => (1 : ℝ)) z ∂((iidLaw d ν).prod (orientedStackLaw d))
   rw [integral_prod_symm _ ((integrable_const (1 : ℝ)).indicator hE)]
   apply integral_congr_ae
   exact Filter.Eventually.of_forall fun σ => by
     have hm : MeasurableSet {η : Site d → ℤ | orientedArrivalCount η σ n x = 0} :=
-      (measurable_orientedArrivalCount _ _ measurable_id measurable_const n x) (measurableSet_singleton 0)
+      (measurable_orientedArrivalCount _ _ measurable_id measurable_const n x)
+        (measurableSet_singleton 0)
     apply (integral_event_indicator (μ := iidLaw d ν) hm).symm.trans
     apply integral_congr_ae
     exact Filter.Eventually.of_forall fun η => by

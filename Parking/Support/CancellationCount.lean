@@ -1,11 +1,13 @@
-/-
-Finite cancellation counts for the discrepancy coupling. Every lost label has
-an opposite partner born within twice the horizon. The jointly measurable
-pair counts satisfy the conditional random-walk bound with the initial data
-and priorities fixed.
--/
 import Parking.Support.DiscrepancyFresh
 import Parking.Support.DiscrepancyBalance
+
+/-!
+# Finite cancellation counts for the discrepancy coupling
+
+Finite cancellation counts for the discrepancy coupling. Every lost label has an opposite
+partner born within twice the horizon. The jointly measurable pair counts satisfy the
+conditional random-walk bound with the initial data and priorities fixed.
+-/
 
 noncomputable section
 
@@ -30,6 +32,8 @@ theorem Parking.exists_discrepancyCancelledBy (c : Site d → ℤ × ℤ) (ρ : 
       · obtain ⟨q, s, hs, hq⟩ := ih (by simpa only [Bool.not_eq_true] using hT)
         exact ⟨q, s, by omega, hq⟩
 
+/-- `discrepancyCancelledBy` is symmetric in its two labels, via `discrepancyCancelledAt_symm`
+at the witnessing time. -/
 theorem Parking.discrepancyCancelledBy_symm (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (T : ℕ) (p q : Label d)
     (hpq : Parking.discrepancyCancelledBy c ρ σ T p q) :
@@ -49,6 +53,8 @@ theorem Parking.discrepancyCancelledBy_initial (c : Site d → ℤ × ℤ) (ρ :
   · simpa [Parking.discrepancyState, initial] using Parking.discrepancyState_active_le c ρ σ p t ha
   · simpa [Parking.discrepancyState, initial] using Parking.discrepancyState_active_le c ρ σ q t hb
 
+/-- Cancelled labels carry opposite signs, transported from `discrepancyCancelledAt_sign` at
+the witnessing time. -/
 theorem Parking.discrepancyCancelledBy_sign (c : Site d → ℤ × ℤ) (ρ : Label d × ℕ → ℝ)
     (σ : Parking.RoundNoise d) (T : ℕ) (p q : Label d)
     (hpq : Parking.discrepancyCancelledBy c ρ σ T p q) :
@@ -101,7 +107,8 @@ theorem Parking.measurable_discrepancyCancelledAt (i₀ : Fin d)
     ((Parking.measurable_coupledConf false).comp hc) hρ hσ t
   have hb : Measurable b := Parking.measurable_matchedCount i₀ _ ρ σ
     ((Parking.measurable_coupledConf true).comp hc) hρ hσ t
-  have hS : Parking.MeasurableState S := Parking.measurableState_discrepancyState i₀ c ρ σ hc hρ hσ t
+  have hS : Parking.MeasurableState S :=
+    Parking.measurableState_discrepancyState i₀ c ρ σ hc hρ hσ t
   have hτ : Measurable τ := (measurable_pi_apply t).comp hσ
   have hn := (Parking.measurableState_discrepancyState i₀ c ρ σ hc hρ hσ (t + 1)).2.1 p
   have hs := Parking.measurable_discrepancySign c hc p
@@ -129,6 +136,8 @@ theorem Parking.measurable_discrepancyCancelledAt (i₀ : Fin d)
     rankIn (A ω) (Parking.matchKey (ρ ω) 0) p = rankIn (B ω) (Parking.matchKey (ρ ω) 0) q
   fun_prop
 
+/-- The cancellation-by-horizon-`T` relation is measurable, as a countable union over
+witnessing times of the jointly measurable `discrepancyCancelledAt` events. -/
 theorem Parking.measurable_discrepancyCancelledBy (i₀ : Fin d)
     (c : Ω → Site d → ℤ × ℤ) (ρ : Ω → Label d × ℕ → ℝ) (σ : Ω → Parking.RoundNoise d)
     (hc : Measurable c) (hρ : Measurable ρ) (hσ : Measurable σ) (T : ℕ) (p q : Label d) :
@@ -189,7 +198,8 @@ theorem Parking.card_discrepancyDead_le (c : Site d → ℤ × ℤ) (ρ : Label 
           (fun z => (Parking.discrepancyCancelledPairs c ρ σ T z).image Prod.snd)).card :=
         Finset.card_le_card hsub
     _ ≤ ∑ z ∈ boxFinset (0 : Site d) (2 * T),
-        ((Parking.discrepancyCancelledPairs c ρ σ T z).image Prod.snd).card := Finset.card_biUnion_le
+        ((Parking.discrepancyCancelledPairs c ρ σ T z).image Prod.snd).card :=
+          Finset.card_biUnion_le
     _ ≤ _ := Finset.sum_le_sum fun z _ => Finset.card_image_le
 
 /-- There are no cancellations between labels created at the origin. -/
@@ -213,7 +223,8 @@ theorem Parking.measurable_discrepancyCancelledPairs {Ω : Type*} [MeasurableSpa
       ((measurable_pi_apply x).comp (Parking.measurable_discrepancyConf c hc))
   apply measurable_finset_iff.mpr
   intro ji
-  simp only [Parking.discrepancyCancelledPairs, Finset.mem_filter, Finset.product_eq_sprod, Finset.mem_product, Finset.mem_range]
+  simp only [Parking.discrepancyCancelledPairs, Finset.mem_filter, Finset.product_eq_sprod,
+    Finset.mem_product, Finset.mem_range]
   have hcan := Parking.measurable_discrepancyCancelledBy i₀ c ρ σ hc hρ hσ T (z, ji.1) (0, ji.2)
   fun_prop
 
@@ -222,6 +233,8 @@ def Parking.discrepancyOppositePairs (c : Site d → ℤ × ℤ) (z : Site d) : 
   if Parking.discrepancySign c (z, 0) = Parking.discrepancySign c (0, 0) then 0 else
     (Parking.discrepancyConf c z).toNat * (Parking.discrepancyConf c 0).toNat
 
+/-- If two sites carry the same sign, no pair of their labels can cancel, since cancellation
+forces opposite signs (`discrepancyCancelledBy_sign`). -/
 theorem Parking.discrepancyCancelledPairs_empty_of_sign (c : Site d → ℤ × ℤ)
     (ρ : Label d × ℕ → ℝ) (σ : Parking.RoundNoise d) (T : ℕ) (z : Site d)
     (hs : Parking.discrepancySign c (z, 0) = Parking.discrepancySign c (0, 0)) :
@@ -272,17 +285,20 @@ theorem Parking.lintegral_discrepancyCancelledPairs_le (hd : 1 ≤ d)
         intro he
         exact hz (congrArg Prod.fst he)
       calc ∫⁻ σ, f ji σ ∂(Parking.roundNoiseLaw d)
-          ≤ (Parking.roundNoiseLaw d) {σ | Parking.discrepancyCancelledBy c ρ σ T (z, ji.1) (0, ji.2)} :=
+          ≤ (Parking.roundNoiseLaw d)
+              {σ | Parking.discrepancyCancelledBy c ρ σ T (z, ji.1) (0, ji.2)} :=
             lintegral_indicator_one_le _
         _ ≤ _ := by
-          simpa only [sub_zero] using Parking.discrepancy_cancel_prob_le hd c ρ (z, ji.1) (0, ji.2) hpq T
+          simpa only [sub_zero] using
+            Parking.discrepancy_cancel_prob_le hd c ρ (z, ji.1) (0, ji.2) hpq T
     simp_rw [heq]
     rw [lintegral_finsetSum I (fun ji _ => hm ji)]
     calc ∑ ji ∈ I, ∫⁻ σ, f ji σ ∂(Parking.roundNoiseLaw d)
         ≤ ∑ _ji ∈ I, (Parking.walkLaw d) {r | ∃ s ≤ 2 * T, Parking.walkPath z r s = 0} :=
           Finset.sum_le_sum fun ji _ => hb ji
       _ = _ := by
-        simp only [Finset.sum_const, nsmul_eq_mul, I, Finset.product_eq_sprod, Finset.card_product, Finset.card_range,
+        simp only [Finset.sum_const, nsmul_eq_mul, I, Finset.product_eq_sprod,
+          Finset.card_product, Finset.card_range,
           Parking.discrepancyOppositePairs, if_neg hs, Nat.cast_mul]
 
 end

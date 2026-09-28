@@ -1,11 +1,13 @@
-/-
-A coordinate-measurable choice of the smooth time derivative. The choice uses
-forward difference quotients, so no measurable selection of smooth representatives
-is required. The strong minimum principle supplies strict positivity.
--/
 import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
 import LatticeProb.Prob.Scaling.TimeIntegration
 import Parking.Support.SpatialStrictDerivative
+
+/-!
+# A coordinate-measurable choice of the smooth time derivative
+
+The choice uses forward difference quotients, so no measurable selection of smooth
+representatives is required. The strong minimum principle supplies strict positivity.
+-/
 
 open MeasureTheory
 
@@ -39,7 +41,8 @@ theorem exists_spatial_measurable_derivative
         ∀ s x, 0 < Uc ω s x → 0 < v ω s x) := by
   let v : Ω → ℝ → (Fin d → ℝ) → ℝ := fun ω s x =>
     LatticeProb.Scaling.TimeDerivative.value (fun t => Uc ω t x) s
-  refine ⟨v, fun s x => LatticeProb.Scaling.TimeDerivative.measurable_value (fun t => hUcmeas t x) s, ?_⟩
+  refine ⟨v, fun s x =>
+    LatticeProb.Scaling.TimeDerivative.measurable_value (fun t => hUcmeas t x) s, ?_⟩
   filter_upwards [hregular] with ω hω
   obtain ⟨w, hw, hderiv, hheat⟩ := hω
   have heq : ∀ p : ℝ × (Fin d → ℝ), 0 < Uc ω p.1 p.2 → v ω p.1 p.2 = w p := by

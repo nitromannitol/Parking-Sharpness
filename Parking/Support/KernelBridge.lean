@@ -1,4 +1,10 @@
-/-
+import Parking.Support.Kernel
+import Parking.Support.Pathwise
+import Parking.Support.WBound
+
+/-!
+# The walk as a lattice kernel
+
 The simple random walk read as a lattice kernel.
 
 `lem:u-concentration` is stated in `parking.tex` for an arbitrary finite-range
@@ -10,9 +16,6 @@ lattice kernel of range one, its operator is the walk operator, the recursion it
 drives is the divisible sandpile odometer, and its truncated Green function is
 `g_n`.
 -/
-import Parking.Support.Kernel
-import Parking.Support.Pathwise
-import Parking.Support.WBound
 
 open LatticeProb (supNorm)
 
@@ -28,18 +31,24 @@ variable {d : ℕ}
 
 /-! ### The kernel of the walk -/
 
+/-- `kern d y x` is nonnegative: it is either `0` or the positive reciprocal `(2d)⁻¹`. -/
 theorem kern_nonneg (d : ℕ) (y x : Site d) : 0 ≤ kern d y x := by
   rw [kern]
   by_cases h : x ∈ nbrFinset y
   · rw [if_pos h]; positivity
   · rw [if_neg h]
 
+/-- `kern d y x` vanishes off the neighbor set `nbrFinset y`, directly from its `if`
+definition. -/
 theorem kern_eq_zero_of_notMem {y x : Site d} (h : x ∉ nbrFinset y) : kern d y x = 0 := by
   rw [kern, if_neg h]
 
+/-- Every neighbor of `x` lies in the sup-distance-`1` box around `x`. -/
 theorem nbrFinset_subset_box (x : Site d) : nbrFinset x ⊆ boxFinset x 1 :=
   fun _ h => mem_boxFinset_one_of_nbr h
 
+/-- `kern` is invariant under simultaneously shifting both arguments by `v`, since shifting
+preserves membership in `nbrFinset`. -/
 theorem kern_shift (v y x : Site d) : kern d (y + v) (x + v) = kern d y x := by
   classical
   rw [kern, kern]
@@ -53,6 +62,9 @@ theorem kern_shift (v y x : Site d) : kern d (y + v) (x + v) = kern d y x := by
     obtain ⟨z, hz, hzv⟩ := hc
     exact h (by rwa [add_right_cancel hzv] at hz)
 
+/-- `kern d` is a lattice kernel of range `1`: it combines `kern_nonneg`, the support bound
+`nbrFinset_subset_box`, `sum_kern_eq_one` for the stochasticity clause, and `kern_shift` for
+translation invariance. -/
 theorem isLatticeKernel_kern (hd : 1 ≤ d) : IsLatticeKernel 1 (kern d) := by
   classical
   refine ⟨kern_nonneg d, ?_, ?_, ?_⟩
@@ -77,6 +89,8 @@ theorem isLatticeKernel_kern (hd : 1 ≤ d) : IsLatticeKernel 1 (kern d) := by
 
 /-! ### The operator, the recursion and the Green function -/
 
+/-- The kernel operator `kOp 1 (kern d)` agrees with `walkOp`, since `kern` restricted to
+`boxFinset x 1` collapses to the uniform `(2d)⁻¹` weight on `nbrFinset x`. -/
 theorem kOp_kern (f : Site d → ℝ) (x : Site d) :
     kOp 1 (kern d) f x = walkOp f x := by
   classical
@@ -90,6 +104,8 @@ theorem kOp_kern (f : Site d → ℝ) (x : Site d) :
   rw [kOp, hrestrict, Finset.sum_congr rfl hval, ← Finset.mul_sum,
     walkOp_eq_nbrFinset, div_eq_inv_mul]
 
+/-- The kernel recursion `kSol 1 (kern d)` coincides with the divisible sandpile odometer `u`,
+by induction on `n` using `kOp_kern` to match the two recursion steps. -/
 theorem kSol_kern (η : Site d → ℝ) (n : ℕ) :
     kSol 1 (kern d) η n = u η n := by
   induction n with
@@ -101,6 +117,8 @@ theorem kSol_kern (η : Site d → ℝ) (n : ℕ) :
       have hR : u η (n + 1) x = max 0 (η x + walkOp (u η n) x) := rfl
       rw [hL, hR, ih, kOp_kern]
 
+/-- The `j`-th iterate `kIter 1 (kern d) j` equals the heat kernel `heat d j`, by induction on
+`j` matching each step to `walkOp` via `nbrFinset_symm` and the uniform `(2d)⁻¹` weight. -/
 theorem kIter_kern (j : ℕ) : kIter 1 (kern d) j = heat d j := by
   classical
   induction j with
@@ -123,6 +141,8 @@ theorem kIter_kern (j : ℕ) : kIter 1 (kern d) j = heat d j := by
       rw [hrestrict, Finset.sum_congr rfl hval, ← Finset.mul_sum,
         walkOp_eq_nbrFinset, div_eq_inv_mul]
 
+/-- The truncated Green function `kGreen 1 (kern d) n` equals `green d n`, by summing
+`kIter_kern` over `j < n`. -/
 theorem kGreen_kern (n : ℕ) : kGreen 1 (kern d) n = green d n := by
   funext z
   rw [kGreen, green]

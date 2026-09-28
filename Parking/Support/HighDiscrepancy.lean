@@ -1,9 +1,12 @@
-/-
-Logarithmic bounds for the high-dimensional absolute discrepancy.
--/
 import Parking.Support.AbsoluteMeanPos
 import Parking.Support.HighMeanLimits
 import Parking.Support.BoundExtension
+
+/-!
+# Logarithmic bounds for the high-dimensional absolute discrepancy
+
+Logarithmic bounds for the high-dimensional absolute discrepancy.
+-/
 
 noncomputable section
 namespace Parking
@@ -29,7 +32,8 @@ theorem integral_abs_discrepancy_bounds (hd : 1 ≤ d) (ν : Measure ℤ) [IsPro
     calc
       |(U ω n 0 : ℝ) - uOf ω n 0| ≤ |(U ω n 0 : ℝ)| + |uOf ω n 0| := abs_sub _ _
       _ = (U ω n 0 : ℝ) + uOf ω n 0 := by
-        rw [abs_of_nonneg (Nat.cast_nonneg _), abs_of_nonneg (show 0 ≤ uOf ω n 0 from u_real_nonneg _ _ _)]
+        rw [abs_of_nonneg (Nat.cast_nonneg _),
+          abs_of_nonneg (show 0 ≤ uOf ω n 0 from u_real_nonneg _ _ _)]
 
 /-- In high dimensions both the particle mean and its absolute discrepancy grow like log n. -/
 theorem high_mean_discrepancy_bounds (hd : 1 ≤ d) (hd5 : 5 ≤ d)

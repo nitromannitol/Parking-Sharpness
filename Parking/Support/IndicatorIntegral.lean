@@ -1,20 +1,32 @@
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
+/-!
+# Integrating a 0/1 indicator function
+
+Two elementary lemmas about the function `fun ω => if P ω then 1 else 0` for a
+measurable event `P`: it is integrable on any finite measure (`integrable_ite_one_zero`),
+and its integral equals the real measure of the event `{ω | P ω}`
+(`integral_ite_one_zero`, which needs no finiteness hypothesis).
+-/
+
 noncomputable section
 namespace Parking
 open MeasureTheory
 
 variable {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
 
+/-- The 0/1 indicator of a measurable event is integrable, bounded by the constant `1`. -/
 theorem integrable_ite_one_zero (P : Ω → Prop) [DecidablePred P]
     (hP : MeasurableSet {ω | P ω}) : Integrable (fun ω => if P ω then (1 : ℝ) else 0) μ := by
-  apply Integrable.of_bound (Measurable.ite hP measurable_const measurable_const).aestronglyMeasurable 1
+  apply Integrable.of_bound
+    (Measurable.ite hP measurable_const measurable_const).aestronglyMeasurable 1
   apply ae_of_all
   intro ω
   split_ifs <;> norm_num
 
 omit [IsFiniteMeasure μ] in
-
+/-- The integral of the 0/1 indicator of a measurable event `P` is the real-valued
+measure of `{ω | P ω}`. -/
 theorem integral_ite_one_zero (P : Ω → Prop) [DecidablePred P]
     (hP : MeasurableSet {ω | P ω}) :
     (∫ ω, if P ω then (1 : ℝ) else 0 ∂μ) = (μ {ω | P ω}).toReal := by

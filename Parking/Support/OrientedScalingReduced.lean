@@ -1,4 +1,10 @@
-/- `prop:oriented-scaling` reduced to its analytic clauses.
+import Parking.Support.OrientedMeanLimit
+import Parking.Support.OrientedTwoLower
+
+/-!
+# `prop:oriented-scaling` reduced to its analytic clauses
+
+`prop:oriented-scaling` reduced to its analytic clauses.
 
 The frozen statement (`parking.tex:3166-3174`) asserts seven things about the limiting
 value: its measurability, the convergence in distribution to it, its self-similarity, its
@@ -10,8 +16,6 @@ uniform bound in `L^8` makes the family uniformly integrable, the mean bound of
 bound makes the limiting mean positive.  What is left, and only that, is the measurability
 of the limiting value, the convergence in distribution itself, and the self-similarity.
 -/
-import Parking.Support.OrientedMeanLimit
-import Parking.Support.OrientedTwoLower
 
 open LatticeProb (measurable_from_countable')
 

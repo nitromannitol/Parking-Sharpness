@@ -1,4 +1,8 @@
-/-
+import Parking.Support.Relabel
+
+/-!
+# Equivariance under relabeling
+
 The equivariance of the particle-driven construction under relabeling the
 particles at one site.
 
@@ -15,7 +19,6 @@ where the uniform variables are pairwise distinct that clause never fires, so th
 equivariance holds there; the set of realizations with a repeated uniform
 variable is null.
 -/
-import Parking.Support.Relabel
 
 noncomputable section
 
@@ -44,12 +47,15 @@ def permLabelEquiv (x₀ : Site d) (σ : Equiv.Perm ℕ) : Equiv.Perm (Label d) 
     · subst h; simp only [permLabel, Equiv.apply_symm_apply, if_pos]
     · simp only [permLabel, if_neg h]
 
+/-- `permLabelEquiv` applies as `permLabel`. -/
 @[simp] theorem permLabelEquiv_apply (x₀ : Site d) (σ : Equiv.Perm ℕ) (p : Label d) :
     permLabelEquiv x₀ σ p = permLabel x₀ σ p := rfl
 
+/-- The inverse of `permLabelEquiv` is `permLabel` for the inverse permutation. -/
 @[simp] theorem permLabelEquiv_symm_apply (x₀ : Site d) (σ : Equiv.Perm ℕ) (p : Label d) :
     (permLabelEquiv x₀ σ).symm p = permLabel x₀ σ.symm p := rfl
 
+/-- `permLabel` leaves the site component of a label unchanged. -/
 @[simp] theorem permLabel_fst (x₀ : Site d) (σ : Equiv.Perm ℕ) (p : Label d) :
     (permLabel x₀ σ p).1 = p.1 := rfl
 
@@ -316,7 +322,8 @@ theorem pActiveCount_relabelAt (t : ℕ) (x : Site d) :
 /-- Relabeling the particles present at a site leaves the odometer alone. -/
 theorem pOdometer_relabelAt (t : ℕ) (x : Site d) :
     pOdometer (toPDriver (relabelAt x₀ σ ω)) t x = pOdometer (toPDriver ω) t x :=
-  (pState_perm (relabelDriver_relabelAt x₀ σ ω) hσ (tieInvariant_relabelAt x₀ σ hinj) t).departures x
+  (pState_perm (relabelDriver_relabelAt x₀ σ ω) hσ
+    (tieInvariant_relabelAt x₀ σ hinj) t).departures x
 
 end Realization
 

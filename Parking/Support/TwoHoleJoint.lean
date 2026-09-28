@@ -2,6 +2,17 @@ import Parking.Support.TwoHoleWeight
 import Parking.Support.SceneryHoleProduct
 import Parking.Support.ClippedRoundMean
 
+/-!
+# The discounted two-hole joint event
+
+This file assembles the joint two-hole event out of the per-site round-noise weight
+`twoHoleLoad` and the discount factor `twoHoleDiscount` that penalizes it, and bounds the
+expectation of the discounted event, `integral_twoHoleDiscount_le`, by the product of the
+scenery factor from `scenery_hole_product_factor` and the square of the single-hole
+probability `holeProb`. The clipped round mean supplies the pointwise bound used to pass
+from the round-noise integral to the field integral.
+-/
+
 open LatticeProb (measurable_from_countable')
 
 noncomputable section
@@ -13,10 +24,15 @@ variable {d : ℕ}
 def twoHoleLoad (T : ℕ) (x z u : Site d) (R : ℕ) (ω : (Site d → ℤ) × RoundNoise d) : ℝ :=
   ∑ y ∈ boxFinset u R, holeKernel d x z y * clippedRoundU T y ω
 
+/-- `twoHoleLoad` is nonnegative, being a sum of products of the nonnegative
+`holeKernel` weight with the nonnegative `clippedRoundU` term. -/
 theorem twoHoleLoad_nonneg (hd : 3 ≤ d) (T : ℕ) (x z u : Site d) (R : ℕ)
     (ω : (Site d → ℤ) × RoundNoise d) : 0 ≤ twoHoleLoad T x z u R ω :=
-  Finset.sum_nonneg fun y _ => mul_nonneg (holeKernel_nonneg hd x z y) (clippedRoundU_bounds T y ω).1
+  Finset.sum_nonneg fun y _ =>
+    mul_nonneg (holeKernel_nonneg hd x z y) (clippedRoundU_bounds T y ω).1
 
+/-- `twoHoleLoad` is measurable, as a finite sum of the measurable functions
+`clippedRoundU T y` scaled by the constant `holeKernel d x z y`. -/
 theorem measurable_twoHoleLoad (hd : 1 ≤ d) (T : ℕ) (x z u : Site d) (R : ℕ) :
     Measurable (twoHoleLoad T x z u R) := by
   apply Finset.measurable_sum
@@ -28,22 +44,32 @@ def twoHoleDiscount (T : ℕ) (x z u : Site d) (R : ℕ) (ω : (Site d → ℤ) 
   ((clippedRoundH T x ω : ℝ) * (clippedRoundH T z ω : ℝ)) *
     Real.exp (-(twoHoleLoad T x z u R ω / (1 / (2 * escapeConst d)) ^ 2))
 
+/-- `twoHoleDiscount` takes values in `[0, 1]`: the two indicator factors are each at
+most `1` by `clippedRoundH_le_one`, and the exponential factor is at most `1` because
+its exponent `-(twoHoleLoad / (1 / (2 * escapeConst d)) ^ 2)` is nonpositive by
+`twoHoleLoad_nonneg`. -/
 theorem twoHoleDiscount_bounds (hd : 3 ≤ d) (T : ℕ) (x z u : Site d) (R : ℕ)
-    (ω : (Site d → ℤ) × RoundNoise d) : 0 ≤ twoHoleDiscount T x z u R ω ∧ twoHoleDiscount T x z u R ω ≤ 1 := by
+    (ω : (Site d → ℤ) × RoundNoise d) :
+    0 ≤ twoHoleDiscount T x z u R ω ∧ twoHoleDiscount T x z u R ω ≤ 1 := by
   have hx : (clippedRoundH T x ω : ℝ) ≤ 1 := by exact_mod_cast clippedRoundH_le_one T x ω
   have hz : (clippedRoundH T z ω : ℝ) ≤ 1 := by exact_mod_cast clippedRoundH_le_one T z ω
   have hc : Real.exp (-(twoHoleLoad T x z u R ω / (1 / (2 * escapeConst d)) ^ 2)) ≤ 1 :=
-    Real.exp_le_one_iff.mpr (neg_nonpos.mpr (div_nonneg (twoHoleLoad_nonneg hd T x z u R ω) (sq_nonneg _)))
+    Real.exp_le_one_iff.mpr
+      (neg_nonpos.mpr (div_nonneg (twoHoleLoad_nonneg hd T x z u R ω) (sq_nonneg _)))
   refine ⟨mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) (Real.exp_pos _).le, ?_⟩
   have hp : (clippedRoundH T x ω : ℝ) * (clippedRoundH T z ω : ℝ) ≤ 1 :=
     (mul_le_mul hx hz (Nat.cast_nonneg _) (by norm_num)).trans_eq (one_mul _)
   exact (mul_le_mul hp hc (Real.exp_pos _).le (by norm_num)).trans_eq (one_mul _)
 
+/-- `twoHoleDiscount` is measurable, as a product of the measurable indicator factors
+`clippedRoundH T x` and `clippedRoundH T z` with the measurable exponential of the
+negated, scaled `twoHoleLoad`. -/
 theorem measurable_twoHoleDiscount (hd : 1 ≤ d) (T : ℕ) (x z u : Site d) (R : ℕ) :
     Measurable (twoHoleDiscount T x z u R) := by
   have hm (y : Site d) : Measurable (fun ω => (clippedRoundH T y ω : ℝ)) :=
     (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (measurable_clippedRoundH hd T y)
-  exact ((hm x).mul (hm z)).mul (Real.measurable_exp.comp ((measurable_twoHoleLoad hd T x z u R).div_const _).neg)
+  exact ((hm x).mul (hm z)).mul
+    (Real.measurable_exp.comp ((measurable_twoHoleLoad hd T x z u R).div_const _).neg)
 
 /-- The scenery and instruction factors together control the discounted two-hole event. -/
 theorem integral_twoHoleDiscount_le (hd : 3 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
@@ -63,19 +89,24 @@ theorem integral_twoHoleDiscount_le (hd : 3 ≤ d) (ν : Measure ℤ) [IsProbabi
         exact (twoHoleDiscount_bounds hd T x z u R ω).2)
   have hgm (y : Site d) : Measurable (fun η : Site d → ℤ => matchedMeanH (clippedField η) 0 T y) :=
     (measurable_matchedMeanH hd1 0 T y).comp measurable_clippedField
-  have hgi : Integrable (fun η => matchedMeanH (clippedField η) 0 T x * matchedMeanH (clippedField η) 0 T z) (iidLaw d ν) :=
+  have hgi : Integrable
+      (fun η => matchedMeanH (clippedField η) 0 T x * matchedMeanH (clippedField η) 0 T z)
+      (iidLaw d ν) :=
     Integrable.of_bound ((hgm x).mul (hgm z)).aestronglyMeasurable 1
       (ae_of_all _ fun η => by
-        rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (clippedMeanH_bounds hd1 η 0 T x).1 (clippedMeanH_bounds hd1 η 0 T z).1)]
+        rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (clippedMeanH_bounds hd1 η 0 T x).1
+          (clippedMeanH_bounds hd1 η 0 T z).1)]
         exact (mul_le_mul (clippedMeanH_bounds hd1 η 0 T x).2 (clippedMeanH_bounds hd1 η 0 T z).2
           (clippedMeanH_bounds hd1 η 0 T z).1 (by norm_num)).trans_eq (one_mul _))
   have hpoint (η : Site d → ℤ) : (∫ σ, twoHoleDiscount T x z u R (η, σ) ∂(roundNoiseLaw d)) ≤
       matchedMeanH (clippedField η) 0 T x * matchedMeanH (clippedField η) 0 T z :=
-    integral_twoHole_discount_le hd (clippedField η) 1 (clippedField_particle_bound η) 0 T x z u R hxR hzR
+    integral_twoHole_discount_le hd (clippedField η) 1 (clippedField_particle_bound η)
+      0 T x z u R hxR hzR
   have h := integral_mono hi.integral_prod_left hgi hpoint
   rw [← integral_prod _ hi] at h
   apply h.trans
   have hs := scenery_hole_product_factor hd ν 0 T x z u hxz R hxR hzR
-  rw [integral_clippedMeanH_eq_holeProb hd1 ν hclip T x, integral_clippedMeanH_eq_holeProb hd1 ν hclip T z] at hs
+  rw [integral_clippedMeanH_eq_holeProb hd1 ν hclip T x,
+    integral_clippedMeanH_eq_holeProb hd1 ν hclip T z] at hs
   simpa only [pow_two] using hs
 end Parking

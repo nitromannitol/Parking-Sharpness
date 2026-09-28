@@ -1,4 +1,12 @@
-/- The mass transport identity for the directed walk.
+import Parking.Support.MassTransport
+import Parking.Support.OrientedInvariance
+import Parking.Support.OrientedInstructionSupport
+import Parking.Support.OrientedLaw
+import Parking.Support.JointStopping
+import Parking.Support.DensitySequence
+
+/-!
+# The mass-transport identity for the directed walk
 
 Lemma 3.5 of `parking.tex` is proved in `Parking.mean_activity_eq_survivors` for the law
 of the simple random walk.  Its proof uses only three properties of the driving law: the
@@ -9,12 +17,6 @@ monotonicity of `S`, is what the last paragraph of Step 3 of the proof of
 `thm:oriented-walk` (`parking.tex:3339-3346`) uses to pass from the asymptotic of the mean
 to the asymptotic of the activity.
 -/
-import Parking.Support.MassTransport
-import Parking.Support.OrientedInvariance
-import Parking.Support.OrientedInstructionSupport
-import Parking.Support.OrientedLaw
-import Parking.Support.JointStopping
-import Parking.Support.DensitySequence
 
 open LatticeProb (measurable_from_countable')
 

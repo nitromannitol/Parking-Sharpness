@@ -1,4 +1,11 @@
-/-
+import Parking.Support.HatInterpD
+import Mathlib.Topology.ContinuousMap.BoundedCompactlySupported
+import Mathlib.MeasureTheory.Constructions.BorelSpace.Metrizable
+import Mathlib.Topology.UniformSpace.HeineCantor
+
+/-!
+# Measurability of a cutoff continuous random field
+
 **Measurability of a cutoff continuous random field as a random element of the space of
 bounded continuous functions.**
 
@@ -38,10 +45,6 @@ and mentions no Parking-specific object.  It imports only Mathlib and
 `LatticeProb.Site` and `Parking.Support.TightInterp` (a module that imports only Mathlib).  The
 main theorem applies unchanged to the field of the divisible-sandpile scaling limit.
 -/
-import Parking.Support.HatInterpD
-import Mathlib.Topology.ContinuousMap.BoundedCompactlySupported
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Metrizable
-import Mathlib.Topology.UniformSpace.HeineCantor
 
 noncomputable section
 
@@ -60,6 +63,8 @@ samples on `R⁻²ℤ × R⁻¹ℤ^d`), at the real point `p`: `Parking.hatInter
 def meshInterpV (V : ℤ → Site d → ℝ) (R : ℝ) (p : ℝ × (Fin d → ℝ)) : ℝ :=
   Parking.hatInterpD V (R ^ 2 * p.1, fun i => R * p.2 i)
 
+/-- `meshInterpV V R` is continuous in the point argument, being `Parking.hatInterpD`
+precomposed with the continuous rescaling map. -/
 theorem continuous_meshInterpV (V : ℤ → Site d → ℝ) (R : ℝ) : Continuous (meshInterpV V R) := by
   unfold meshInterpV
   exact (Parking.continuous_hatInterpD _).comp
@@ -75,6 +80,8 @@ def sampleMesh (f : ℝ × (Fin d → ℝ) → ℝ) (R : ℝ) : ℤ → Site d �
 def meshInterp (f : ℝ × (Fin d → ℝ) → ℝ) (R : ℝ) (p : ℝ × (Fin d → ℝ)) : ℝ :=
   meshInterpV (sampleMesh f R) R p
 
+/-- `meshInterp f R` is continuous, being `meshInterpV` applied to `f`'s own mesh
+sample. -/
 theorem continuous_meshInterp (f : ℝ × (Fin d → ℝ) → ℝ) (R : ℝ) :
     Continuous (meshInterp f R) :=
   continuous_meshInterpV _ R
@@ -204,7 +211,8 @@ theorem measurable_cutoffBC_meshInterp {Ω' : Type*} [MeasurableSpace Ω']
     (R : ℝ) (χ : ℝ × (Fin d → ℝ) → ℝ) (hχ1 : Continuous χ) (hχ2 : HasCompactSupport χ)
     [MeasurableSpace (BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ)]
     [BorelSpace (BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ)] :
-    Measurable (fun ω' => cutoffBC χ (meshInterp (Z ω') R) hχ1 hχ2 (continuous_meshInterp _ R)) := by
+    Measurable (fun ω' => cutoffBC χ (meshInterp (Z ω') R) hχ1 hχ2
+        (continuous_meshInterp _ R)) := by
   classical
   obtain ⟨R0, _hR0nn, hbound⟩ := exists_mesh_bound d R χ hχ2
   set Tbox := meshTimeBox R0 with hTbox
@@ -316,7 +324,8 @@ theorem tendsto_cutoffBC_meshInterp {f : ℝ × (Fin d → ℝ) → ℝ} (hf : C
   obtain ⟨r, hr0, hrsub⟩ := hχ2.isBounded.subset_closedBall_lt 0 ((0 : ℝ), (0 : Fin d → ℝ))
   set K' := Metric.closedBall ((0 : ℝ), (0 : Fin d → ℝ)) (r + 1) with hK'
   have hK'compact : IsCompact K' := isCompact_closedBall _ _
-  have hUC : UniformContinuousOn f K' := hK'compact.uniformContinuousOn_of_continuous hf.continuousOn
+  have hUC : UniformContinuousOn f K' :=
+      hK'compact.uniformContinuousOn_of_continuous hf.continuousOn
   obtain ⟨δ, hδ0, hδ⟩ := Metric.uniformContinuousOn_iff_le.mp hUC ε' hε'0
   set δ' := min δ 1 with hδ'
   have hδ'0 : 0 < δ' := lt_min hδ0 one_pos
@@ -399,7 +408,8 @@ theorem tendsto_cutoffBC_meshInterp {f : ℝ × (Fin d → ℝ) → ℝ} (hf : C
       show |f x - f p| ≤ ε'
       exact this
     have hfp : |meshInterp f R p - f p| ≤ ε' := by
-      have := Parking.abs_hatInterpD_sub_le_of_forall (sampleMesh f R) (R ^ 2 * p.1, fun i => R * p.2 i)
+      have := Parking.abs_hatInterpD_sub_le_of_forall (sampleMesh f R)
+          (R ^ 2 * p.1, fun i => R * p.2 i)
         (f p) ε' hcorner
       exact this
     have hχp : |χ p| ≤ Mχ :=

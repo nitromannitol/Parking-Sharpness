@@ -1,4 +1,8 @@
-/-
+import Parking.Support.TightBoxSupBase
+
+/-!
+# Moment bound for the fixed-radius dyadic increment
+
 The `p`-th moment of `Parking.levelIncFixed R n m η` (`TightBoxSupBase.lean`'s fixed-radius
 dyadic increment), bounded uniformly in the scale `n`, for a FIXED radius `R` at every level `m`
 — the polynomial-in-`R` (not exponential-in-`m`) analogue of `TightBoxSupMoment.lean`'s
@@ -6,7 +10,6 @@ dyadic increment), bounded uniformly in the scale `n`, for a FIXED radius `R` at
 (`Parking.levelPairsFixed R m` in place of `Parking.levelPairs m`) and its EXACT cardinality
 `LatticeProb.card_boxIdx (R + 1) m = (2 * ((R + 1) * 2 ^ m) + 1) ^ 2`.
 -/
-import Parking.Support.TightBoxSupBase
 
 open MeasureTheory LatticeProb Filter Topology
 
@@ -14,6 +17,8 @@ noncomputable section
 
 namespace Parking
 
+/-- **`Parking.levelIncFixed` is measurable in the scenery**, as a finite `Finset.sup'` of
+measurable functions built from `measurable_Yfield`. -/
 theorem measurable_levelIncFixed (A : ℝ) (hA : 0 ≤ A) (R n m : ℕ) :
     Measurable (fun η : Site 2 → ℝ => levelIncFixed A hA R n m η) := by
   have heq : (fun η : Site 2 → ℝ => levelIncFixed A hA R n m η) =
@@ -28,6 +33,8 @@ theorem measurable_levelIncFixed (A : ℝ) (hA : 0 ≤ A) (R n m : ℕ) :
     (LatticeProb.gridPt m (idx.1 + Pi.single idx.2 1))).sub
     (measurable_Yfield hA n (LatticeProb.gridPt m idx.1))).abs
 
+/-- **The exact cardinality of `Parking.levelPairsFixed`**, computed from
+`LatticeProb.card_boxIdx` and the two coordinate directions of `Fin 2`. -/
 theorem card_levelPairsFixed (R m : ℕ) :
     ((levelPairsFixed R m).card : ℝ) = 2 * (2 * (((R : ℝ) + 1) * 2 ^ m) + 1) ^ 2 := by
   unfold levelPairsFixed

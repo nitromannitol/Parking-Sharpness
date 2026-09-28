@@ -1,4 +1,11 @@
-/- The activity asymptotic of the directed walk, and `thm:oriented-walk` reduced to the
+import Parking.Support.OrientedWalkReduced
+import Parking.Support.OrientedTransport
+import Parking.Support.MonotoneDensity
+
+/-!
+# The directed activity asymptotic from the mean alone
+
+The activity asymptotic of the directed walk, and `thm:oriented-walk` reduced to the
 scaling constant alone.
 
 The last paragraph of Step 3 (`parking.tex:3339-3346`) derives `S⃗_t ∼ (μ/4)t^{-3/4}` from
@@ -7,9 +14,6 @@ the directed law and the monotone density step, that derivation is carried out h
 the activity asymptotic ceases to be an input of the theorem: what is left of
 `thm:oriented-walk` is the constant `μ` of `prop:oriented-scaling` and nothing else.
 -/
-import Parking.Support.OrientedWalkReduced
-import Parking.Support.OrientedTransport
-import Parking.Support.MonotoneDensity
 
 noncomputable section
 namespace Parking

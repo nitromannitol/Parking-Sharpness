@@ -1,26 +1,25 @@
-/-
-The ingredients of Step 3 of `prop:near-divisible` (`parking.tex:2896-2911`) that
-do not depend on the mean horizon lemma.
-
-Step 3 reads: "Choose `B` so that `|ξ_δ(0)| ≤ B` almost surely for every
-sufficiently small `δ`.  Since `ξ_δ(0)` has mean zero, it is dominated in convex
-order by `Bχ`.  Applying the coordinatewise convex comparison to `u_m(0;·)^2`,
-then using Theorem thm:BP and Lemma lem:u-concentration, gives
-`(E u_m(0;ξ_δ)^2)^{1/2} ≤ C[log(m+2)]^{2/d}`.  Repeating Step 2 of
-lem:mean-horizon with `q = 2` bounds the expected reward of a stopping time of
-mean `M` by `C[log(M+2)]^{2/d}`."
-
-Two things are proved here.  First, the convex comparison the step opens with:
-a mean zero law supported in `[-B,B]` is below the two point law at `±B` in
-convex order, because a convex function is below its chord on `[-B,B]` and the
-chord has the same mean.  Second, the arithmetic of the rate
-`ψ_d(s) = [log(s+2)]^{2/d}`: it is nonnegative and nondecreasing, it satisfies
-`ψ_d(M+2) ≤ 3ψ_d(M)`, and the dyadic series `∑_j 2^{-4j/5} ψ_d(2^j N)` is at
-most a constant times `ψ_d(N)`.  Those are exactly the three properties of the
-scale that the block decomposition of `lem:mean-horizon` consumes, so they are
-what a version of that lemma at this rate needs.
--/
 import Parking.Support.NearHorizon
+
+/-!
+# The rate `ψ_d` of Step 3 of `prop:near-divisible`
+
+The ingredients of Step 3 of `prop:near-divisible` (`parking.tex:2896-2911`) that do not
+depend on the mean horizon lemma. Step 3 reads: "Choose `B` so that `|ξ_δ(0)| ≤ B` almost
+surely for every sufficiently small `δ`. Since `ξ_δ(0)` has mean zero, it is dominated in
+convex order by `Bχ`. Applying the coordinatewise convex comparison to `u_m(0;·)^2`, then
+using Theorem thm:BP and Lemma lem:u-concentration, gives
+`(E u_m(0;ξ_δ)^2)^{1/2} ≤ C[log(m+2)]^{2/d}`. Repeating Step 2 of lem:mean-horizon with
+`q = 2` bounds the expected reward of a stopping time of mean `M` by `C[log(M+2)]^{2/d}`."
+
+Two things are proved here. First, the convex comparison the step opens with: a mean zero
+law supported in `[-B,B]` is below the two point law at `±B` in convex order, because a
+convex function is below its chord on `[-B,B]` and the chord has the same mean. Second,
+the arithmetic of the rate `ψ_d(s) = [log(s+2)]^{2/d}`: it is nonnegative and
+nondecreasing, it satisfies `ψ_d(M+2) ≤ 3ψ_d(M)`, and the dyadic series
+`∑_j 2^{-4j/5} ψ_d(2^j N)` is at most a constant times `ψ_d(N)`. Those are exactly the
+three properties of the scale that the block decomposition of `lem:mean-horizon`
+consumes, so they are what a version of that lemma at this rate needs.
+-/
 
 open LatticeProb.ConvexOrder (integrable_real_lipschitz integral_twoPointLaw twoPointLaw)
 
@@ -87,29 +86,38 @@ theorem convex_integral_le_twoPointLaw {μ : Measure ℝ} [IsProbabilityMeasure 
 /-- The rate of Step 3 of `prop:near-divisible`: `[log(s+2)]^{2/d}`. -/
 def psi (d : ℕ) (s : ℝ) : ℝ := Real.log (s + 2) ^ ((2:ℝ) / d)
 
+/-- `log 2 ≤ log(s+2)` for `s ≥ 0`, by monotonicity of `log` on `2 ≤ s + 2`. -/
 theorem log_two_le_log_add_two {s : ℝ} (hs : 0 ≤ s) : Real.log 2 ≤ Real.log (s + 2) :=
   Real.log_le_log (by norm_num) (by linarith)
 
+/-- `log(s+2) ≥ 1` once `s ≥ 1`, since then `s + 2 ≥ 3 > e`. -/
 theorem one_le_logAddTwo_real {s : ℝ} (hs : 1 ≤ s) : (1:ℝ) ≤ Real.log (s + 2) := by
   rw [Real.le_log_iff_exp_le (by linarith)]
   nlinarith [Real.exp_one_lt_d9]
 
+/-- `log(s+2) ≥ 0` for `s ≥ 0`, since `s + 2 ≥ 2 ≥ 1`. -/
 theorem log_add_two_nonneg {s : ℝ} (hs : 0 ≤ s) : (0:ℝ) ≤ Real.log (s + 2) :=
   le_trans (Real.log_nonneg (by norm_num)) (log_two_le_log_add_two hs)
 
+/-- The rate `psi d s` is nonnegative for `s ≥ 0`, being an `rpow` of a nonnegative base. -/
 theorem psi_nonneg (d : ℕ) {s : ℝ} (hs : 0 ≤ s) : 0 ≤ psi d s :=
   Real.rpow_nonneg (log_add_two_nonneg hs) _
 
+/-- The rate `psi d` is nondecreasing on `[0, ∞)`, from the monotonicity of `log` and of
+`rpow` in a nonnegative base. -/
 theorem psi_mono (d : ℕ) {s t : ℝ} (hs : 0 ≤ s) (hst : s ≤ t) : psi d s ≤ psi d t :=
   Real.rpow_le_rpow (log_add_two_nonneg hs)
     (Real.log_le_log (by linarith) (by linarith)) (by positivity)
 
+/-- `2^{2/d} ≤ 2` once `d ≥ 2`, since the exponent `2/d` is at most `1`. -/
 theorem two_rpow_le_two {d : ℕ} (hd2 : 2 ≤ d) : (2:ℝ) ^ ((2:ℝ) / d) ≤ 2 := by
   have hdR : (2:ℝ) ≤ (d:ℝ) := by exact_mod_cast hd2
   have h := Real.rpow_le_rpow_of_exponent_le (by norm_num : (1:ℝ) ≤ 2)
     (show (2:ℝ) / d ≤ 1 by rw [div_le_one (by linarith)]; linarith)
   rwa [Real.rpow_one] at h
 
+/-- **`ψ_d(M+2) ≤ 3ψ_d(M)`.** From `log(M+4) ≤ 2 log(M+2)` (since `M+4 ≤ (M+2)^2`) and
+`2^{2/d} ≤ 2`. -/
 theorem psi_add_two_le (d : ℕ) (hd2 : 2 ≤ d) {M : ℝ} (hM : 0 ≤ M) :
     psi d (M + 2) ≤ 3 * psi d M := by
   have hlog : Real.log (M + 2 + 2) ≤ 2 * Real.log (M + 2) := by
@@ -127,6 +135,8 @@ theorem psi_add_two_le (d : ℕ) (hd2 : 2 ≤ d) {M : ℝ} (hM : 0 ≤ M) :
   have hpsi0 : 0 ≤ psi d M := psi_nonneg d hM
   nlinarith [hstep, hsplit.le, hsplit.ge, h2, hpsi0]
 
+/-- The rate at a dyadic multiple `2^j N` is controlled by the rate at `N`, with a factor
+growing only linearly in `j`: `ψ_d(2^j N) ≤ (j log 2 + 1)^{2/d} ψ_d(N)`. -/
 theorem psi_two_pow_le (d : ℕ) (hd2 : 2 ≤ d) (j : ℕ) {N : ℝ} (hN : 1 ≤ N) :
     psi d (2 ^ j * N) ≤ ((j : ℝ) * Real.log 2 + 1) ^ ((2:ℝ) / d) * psi d N := by
   have hk : (1 : ℝ) ≤ (2:ℝ) ^ j := one_le_pow₀ (by norm_num)
@@ -148,6 +158,7 @@ theorem psi_two_pow_le (d : ℕ) (hd2 : 2 ≤ d) (j : ℕ) {N : ℝ} (hN : 1 ≤
     Real.rpow_le_rpow hnn h3 (by positivity)
   rwa [Real.mul_rpow (by linarith) (log_add_two_nonneg (by linarith))] at hrp
 
+/-- For `x ≥ 1` and `d ≥ 2`, `x^{2/d} ≤ x`, since the exponent `2/d` is at most `1`. -/
 theorem rpow_le_self_of_one_le {d : ℕ} (hd2 : 2 ≤ d) {x : ℝ} (hx : 1 ≤ x) :
     x ^ ((2:ℝ) / d) ≤ x := by
   have hdR : (2:ℝ) ≤ (d:ℝ) := by exact_mod_cast hd2

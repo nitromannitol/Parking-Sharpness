@@ -1,4 +1,11 @@
-/-
+import Parking.Support.SpatWBarDivisibleJointMeasurable
+import Parking.Support.NearestBallEvent
+import LatticeProb.Prob.Scaling.Slutsky
+import Mathlib.MeasureTheory.Measure.Portmanteau
+
+/-!
+# Pairing convergence of `barDivisible` to `Uc`
+
 The LOCALLY-UNIFORM-IN-PROBABILITY convergence of `barDivisible` to `Uc` on compacts, in the
 "pairing" form the rest of the assembly consumes: for a fixed positive time `t`, a fixed compact
 spatial set `K`, and a fixed continuous test function `h`,
@@ -49,10 +56,6 @@ identity between two separate eliminations of the same hypothesis:
    `LatticeProb.Scaling.Slutsky.tendstoInDistribution_of_tendsto_integral` needs to conclude
    `TendstoInDistribution`.
 -/
-import Parking.Support.SpatWBarDivisibleJointMeasurable
-import Parking.Support.NearestBallEvent
-import LatticeProb.Prob.Scaling.Slutsky
-import Mathlib.MeasureTheory.Measure.Portmanteau
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open LatticeProb.Scaling.BoundedFunctionalLift
@@ -106,6 +109,10 @@ theorem tendstoInDistribution_barDivisible_fdd {Ω : Type} [MeasurableSpace Ω] 
 /-! ### Step 2: the spatial equicontinuity of `barDivisible(\cdot,t,\cdot)` from the joint
 space-time clause -/
 
+/-- The purely spatial equicontinuity-in-probability of `barDivisible(\cdot,t,\cdot)` on a
+compact set `K`, at a fixed time `t > 0`, obtained by specializing the External's joint
+space-time equicontinuity hypothesis `hequicont` at the space-time compact `{t} ×ˢ K` and using
+that the product-metric distance from `(t,z)` to `(t,y)` equals `dist z y`. -/
 theorem htight_barDivisible_fixedTime
     (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure (law d ν)]
     (hequicont : ∀ K : Set (ℝ × (Fin d → ℝ)), IsCompact K → (∀ p ∈ K, 0 < p.1) → ∀ ε : ℝ, 0 < ε →

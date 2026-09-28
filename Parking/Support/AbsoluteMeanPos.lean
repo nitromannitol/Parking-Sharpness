@@ -1,8 +1,11 @@
-/-
-Strict positivity of the absolute odometer discrepancy at every horizon at least two.
--/
 import Parking.Support.OdometerRandomness
 import Parking.Support.ParticleConfLaw
+
+/-!
+# Positivity of the absolute discrepancy
+
+Strict positivity of the absolute odometer discrepancy at every horizon at least two.
+-/
 
 open LatticeProb (measurable_from_countable')
 
@@ -11,7 +14,8 @@ namespace Parking
 open MeasureTheory
 variable {d : ℕ}
 
-/-- The absolute particle/divisible discrepancy has strictly positive mean at every horizon at least two. -/
+/-- The absolute particle/divisible discrepancy has strictly positive mean at every horizon
+    at least two. -/
 theorem integral_abs_discrepancy_pos (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (hn : 2 ≤ n) :
     0 < ∫ ω, |(U ω n 0 : ℝ) - uOf ω n 0| ∂(law d ν) := by

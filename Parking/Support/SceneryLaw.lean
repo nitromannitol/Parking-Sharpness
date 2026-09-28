@@ -2,6 +2,17 @@ import Parking.Support.SceneryFinite
 import Parking.Support.SparseLaw
 import LatticeProb.Prob.FiniteMarginal
 
+/-!
+# The scenery moment bound under a general prior law
+
+This file transfers the finite-box subgaussian bound of `Parking.Support.SceneryFinite`
+to the full infinite field, using that the finite-marginal law of any coordinate agrees
+with `ν` and that clipping is a.e. trivial under any law satisfying the sparse three-point
+condition. It then specializes to the three-point law itself, giving the uniform
+square-root moment bound on the scenery contribution to the odometer that the paper's
+upper bound uses.
+-/
+
 open LatticeProb (measurable_from_countable')
 open LatticeProb.MomentNorm (rNorm)
 
@@ -43,7 +54,8 @@ theorem exists_matchedMeanU_subgaussian (hd : 5 ≤ d) :
   have ha : ∀ᵐ η ∂(iidLaw d ν), ∀ y, clipSparse (η y) = η y := by
     apply ae_all_iff.mpr
     intro y
-    exact (measurePreserving_eval_infinitePi (fun _ : Site d => ν) y).quasiMeasurePreserving.ae hclip
+    exact (measurePreserving_eval_infinitePi
+      (fun _ : Site d => ν) y).quasiMeasurePreserving.ae hclip
   have he : ∀ᵐ η ∂(iidLaw d ν), f (S.restrict η) = matchedMeanU η 0 T x := by
     filter_upwards [ha] with η hη
     apply matchedMeanU_agree_box
@@ -65,7 +77,8 @@ theorem exists_matchedMeanU_subgaussian (hd : 5 ≤ d) :
   dsimp only [Function.comp_def]
   rw [hη, hm]
 
-/-- The scenery contribution has the paper's square-root moment bound, uniformly in the sparse law. -/
+/-- The scenery contribution has the paper's square-root moment bound, uniformly in the
+sparse law. -/
 theorem exists_sparse_scenery_moment (hd : 5 ≤ d) :
     ∃ C : ℝ, 0 < C ∧ ∀ p : ℝ, 0 < p → p ≤ 1 / 4 → ∀ (T : ℕ) (x : Site d) (r : ℝ), 2 ≤ r →
       Integrable (fun η : Site d → ℤ => |matchedMeanU η 0 T x -

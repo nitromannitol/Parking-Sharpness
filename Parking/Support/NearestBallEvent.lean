@@ -1,4 +1,10 @@
-/- The ball event of `parking.tex:1833-1835`: with limiting probability at least
+import Parking.Support.SpatialTightnessBridge
+import Parking.Support.NearestContinuumPositivity
+
+/-!
+# The ball event of `parking.tex:1833-1835`
+
+The ball event of `parking.tex:1833-1835`: with limiting probability at least
 `1-ε` the parking odometer is positive on the lattice ball of radius `rR`.
 
 The three convergence clauses of `prop:spatial-scaling` give it through a finite
@@ -10,8 +16,6 @@ closeness clause transfers the bound to the parking odometer.  Every supremum
 in those clauses is a genuine supremum because the rescaled fields read finitely
 many lattice sites on a compact set.
 -/
-import Parking.Support.SpatialTightnessBridge
-import Parking.Support.NearestContinuumPositivity
 
 noncomputable section
 namespace Parking
@@ -143,10 +147,14 @@ theorem abs_barDivisible_sub_le (hd : 1 ≤ d) (w : Data d) {R : ℝ} (hR : 0 �
       ≤ |barDivisible w R z.1 z.2| + |barDivisible w R y.1 y.2| := abs_sub _ _
     _ ≤ 2 * B := by linarith [hbd z hz, hbd y hy]
 
+/-- `w ↦ barDivisible w R s x` is measurable, being a constant multiple of the measurable
+divisible odometer `uOf`. -/
 theorem measurable_barDivisible (R s : ℝ) (x : Fin d → ℝ) :
     Measurable fun w : Data d => barDivisible w R s x :=
   (measurable_uOf _ _).const_mul _
 
+/-- `w ↦ barOdometer w R s x` is measurable, being a constant multiple of the natural-cast of
+the measurable parking odometer `U`. -/
 theorem measurable_barOdometer (R s : ℝ) (x : Fin d → ℝ) :
     Measurable fun w : Data d => barOdometer w R s x :=
   ((measurable_from_nat (f := fun n : ℕ => (n : ℝ))).comp (measurable_U _ _)).const_mul _
@@ -154,6 +162,8 @@ theorem measurable_barOdometer (R s : ℝ) (x : Fin d → ℝ) :
 /-- The closed `ℓ¹` ball of the continuum picture. -/
 def ellOneBall (d : ℕ) (r : ℝ) : Set (Fin d → ℝ) := {x | (∑ i, |x i|) ≤ r}
 
+/-- `ellOneBall d r` is compact, being closed (as the sublevel set of a continuous function)
+and bounded (contained in the closed Euclidean ball of radius `r` since `‖x‖_∞ ≤ ‖x‖_1`). -/
 theorem isCompact_ellOneBall (d : ℕ) (r : ℝ) : IsCompact (ellOneBall d r) := by
   apply Metric.isCompact_of_isClosed_isBounded
   · exact isClosed_le (by fun_prop) continuous_const
@@ -165,15 +175,19 @@ theorem isCompact_ellOneBall (d : ℕ) (r : ℝ) : IsCompact (ellOneBall d r) :=
     · rw [Real.norm_eq_abs]
       exact (Finset.single_le_sum (fun j _ => abs_nonneg (x j)) (Finset.mem_univ i)).trans hx
 
+/-- The origin lies in `ellOneBall d r` whenever `r ≥ 0`, since its `ℓ¹` norm is `0`. -/
 theorem zero_mem_ellOneBall {d : ℕ} {r : ℝ} (hr : 0 ≤ r) : (0 : Fin d → ℝ) ∈ ellOneBall d r := by
   simp [ellOneBall, hr]
 
 /-- The space-time slice at time one over the `ℓ¹` ball. -/
 def timeOneSlice (d : ℕ) (r : ℝ) : Set (ℝ × (Fin d → ℝ)) := {(1 : ℝ)} ×ˢ ellOneBall d r
 
+/-- `timeOneSlice d r` is compact, as the product of the singleton `{1}` with the compact
+`ellOneBall d r`. -/
 theorem isCompact_timeOneSlice (d : ℕ) (r : ℝ) : IsCompact (timeOneSlice d r) :=
   isCompact_singleton.prod (isCompact_ellOneBall d r)
 
+/-- Every point of `timeOneSlice d r` has time coordinate `1 > 0`. -/
 theorem timeOneSlice_pos {d : ℕ} {r : ℝ} : ∀ p ∈ timeOneSlice d r, 0 < p.1 := by
   rintro ⟨s, x⟩ ⟨hs, -⟩
   simp only [Set.mem_singleton_iff] at hs
@@ -182,23 +196,30 @@ theorem timeOneSlice_pos {d : ℕ} {r : ℝ} : ∀ p ∈ timeOneSlice d r, 0 < p
 /-- The clamp that rises from `0` at level `a-η` to `1` at level `a`. -/
 def clampAt (a η t : ℝ) : ℝ := min 1 (max 0 ((t - (a - η)) / η))
 
+/-- `clampAt a η t ≥ 0`, since it is a `min` with `1` of a quantity that is itself a `max`
+with `0`. -/
 theorem clampAt_nonneg (a η t : ℝ) (_hη : 0 < η) : 0 ≤ clampAt a η t := by
   unfold clampAt
   exact le_min zero_le_one (le_max_left _ _)
 
+/-- `clampAt a η t ≤ 1`, immediate from the outer `min 1 _` in its definition. -/
 theorem clampAt_le_one (a η t : ℝ) : clampAt a η t ≤ 1 := min_le_left _ _
 
+/-- `clampAt a η t = 1` once `t ≥ a`, since then `(t - (a - η)) / η ≥ 1`. -/
 theorem clampAt_eq_one {a η t : ℝ} (hη : 0 < η) (h : a ≤ t) : clampAt a η t = 1 := by
   unfold clampAt
   have h1 : (1 : ℝ) ≤ (t - (a - η)) / η := by
     rw [le_div_iff₀ hη]; linarith
   exact min_eq_left (le_max_of_le_right h1)
 
+/-- `clampAt a η t = 0` once `t ≤ a - η`, since then `(t - (a - η)) / η ≤ 0`. -/
 theorem clampAt_eq_zero {a η t : ℝ} (hη : 0 < η) (h : t ≤ a - η) : clampAt a η t = 0 := by
   unfold clampAt
   have h1 : (t - (a - η)) / η ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hη.le
   rw [max_eq_left h1, min_eq_right zero_le_one]
 
+/-- `clampAt a η` is continuous, as a `min`/`max` composition of continuous affine and
+constant functions. -/
 theorem continuous_clampAt (a η : ℝ) : Continuous (clampAt a η) := by
   unfold clampAt; fun_prop
 
@@ -218,34 +239,46 @@ def netTest (k : ℕ) (a η : ℝ) (hη : 0 < η) : BoundedContinuousFunction (F
       rw [Real.dist_eq, abs_le]
       constructor <;> linarith⟩⟩
 
+/-- Unfolds `netTest` to its underlying function, the product of the coordinatewise
+clamps. -/
 theorem netTest_apply (k : ℕ) (a η : ℝ) (hη : 0 < η) (y : Fin k → ℝ) :
     netTest k a η hη y = ∏ j, clampAt a η (y j) := rfl
 
+/-- `netTest k a η hη y ≥ 0`, as a product of the nonnegative clamps `clampAt_nonneg`. -/
 theorem netTest_nonneg (k : ℕ) (a η : ℝ) (hη : 0 < η) (y : Fin k → ℝ) :
     0 ≤ netTest k a η hη y := by
   rw [netTest_apply]
   exact Finset.prod_nonneg fun j _ => clampAt_nonneg a η _ hη
 
+/-- `netTest k a η hη y ≤ 1`, as a product of clamps each in `[0, 1]`. -/
 theorem netTest_le_one (k : ℕ) (a η : ℝ) (hη : 0 < η) (y : Fin k → ℝ) :
     netTest k a η hη y ≤ 1 := by
   rw [netTest_apply]
   exact Finset.prod_le_one (fun j _ => clampAt_nonneg a η _ hη) (fun j _ => clampAt_le_one a η _)
 
+/-- `netTest k a η hη y = 1` once every coordinate `y j ≥ a`, since then every factor
+`clampAt a η (y j)` equals `1`. -/
 theorem netTest_eq_one {k : ℕ} {a η : ℝ} (hη : 0 < η) {y : Fin k → ℝ} (h : ∀ j, a ≤ y j) :
     netTest k a η hη y = 1 := by
   rw [netTest_apply]
   exact Finset.prod_eq_one fun j _ => clampAt_eq_one hη (h j)
 
+/-- `netTest k a η hη y = 0` once some coordinate `y j ≤ a - η`, since that one factor of the
+product vanishes by `clampAt_eq_zero`. -/
 theorem netTest_eq_zero {k : ℕ} {a η : ℝ} (hη : 0 < η) {y : Fin k → ℝ} {j : Fin k}
     (h : y j ≤ a - η) : netTest k a η hη y = 0 := by
   rw [netTest_apply]
   exact Finset.prod_eq_zero (Finset.mem_univ j) (clampAt_eq_zero hη h)
 
+/-- `w ↦ netTest k a η hη (fun j => X j w)` is measurable, as the continuous `netTest`
+composed with the measurable tuple `X`. -/
 theorem measurable_netTest {Ω : Type*} [MeasurableSpace Ω] {k : ℕ} {a η : ℝ} (hη : 0 < η)
     (X : Fin k → Ω → ℝ) (hX : ∀ j, Measurable (X j)) :
     Measurable fun w => netTest k a η hη (fun j => X j w) :=
   (netTest k a η hη).continuous.measurable.comp (measurable_pi_lambda _ hX)
 
+/-- `w ↦ netTest k a η hη (fun j => X j w)` is integrable against any probability measure,
+being measurable and bounded between `0` and the constant `1`. -/
 theorem integrable_netTest {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     [IsProbabilityMeasure P] {k : ℕ} {a η : ℝ} (hη : 0 < η)
     (X : Fin k → Ω → ℝ) (hX : ∀ j, Measurable (X j)) :
@@ -255,6 +288,8 @@ theorem integrable_netTest {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
   rw [Real.norm_eq_abs, abs_of_nonneg (netTest_nonneg k a η hη _)]
   exact netTest_le_one k a η hη _
 
+/-- The real measure of an event `E` is at most the integral of an integrable nonnegative
+function `f` that is `≥ 1` on `E`, by comparing `f` to the indicator of `E`. -/
 theorem measureReal_le_integral {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) [IsProbabilityMeasure P] (f : Ω → ℝ) (hfi : Integrable f P)
     (h0 : ∀ w, 0 ≤ f w) (E : Set Ω) (hE : MeasurableSet E)
@@ -270,6 +305,8 @@ theorem measureReal_le_integral {Ω : Type*} [MeasurableSpace Ω]
         rw [integral_indicator_const (1 : ℝ) hE]; simp [measureReal_def]
     _ ≤ ∫ w, f w ∂P := integral_mono hind hfi hle
 
+/-- The integral of an integrable function `f` that is `≤ 1` and vanishes off an event `E` is
+at most the real measure of `E`, by comparing `f` to the indicator of `E`. -/
 theorem integral_le_measureReal {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) [IsProbabilityMeasure P] (f : Ω → ℝ) (hfi : Integrable f P)
     (h1 : ∀ w, f w ≤ 1) (E : Set Ω) (hE : MeasurableSet E)
@@ -431,6 +468,10 @@ theorem eventually_ball_barOdometer_pos (hd : 1 ≤ d) (ν : Measure ℤ)
 theorem ellOneBall_mono {d : ℕ} {r s : ℝ} (h : r ≤ s) : ellOneBall d r ⊆ ellOneBall d s :=
   fun _ hx => le_trans hx h
 
+/-- A radius `r` and level `a` for which the continuum field `Uc` at time `1` stays above `a`
+on the whole `ℓ¹` ball of radius `r`, outside probability `ε`: taking `A n` to be the event
+that `Uc ω 1 · ≥ 1/(n+1)` throughout `ellOneBall d (1/(n+1))`, the a.e.\ positivity hypothesis
+covers the space by `⋃ n, A n`, so some `A n` has measure at least `1 - ε`. -/
 theorem exists_radius_level {d : ℕ} {Ω : Type*} [MeasurableSpace Ω]
     (Q : Measure Ω) [IsProbabilityMeasure Q] (Uc : Ω → ℝ → (Fin d → ℝ) → ℝ)
     (hct : ∀ ω, Continuous fun x : Fin d → ℝ => Uc ω 1 x)

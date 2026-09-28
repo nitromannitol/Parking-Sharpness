@@ -1,4 +1,9 @@
-/-
+import Parking.Basic
+import Parking.Support.Continuum
+
+/-!
+# Spatial fixed-time tightness of the rescaled odometer (frozen)
+
 External input: the equicontinuity in probability, at each fixed time, of the
 rescaled divisible odometer, which is the content of Theorem 1.3(i)(b) of
 Bou-Rabee and Panagiotis, *Quantitative explosion and percolation of the
@@ -73,8 +78,6 @@ transfer for the full odometer, are exactly what make it true), not
 satisfiable by a junk value at either side.  Checked at the paper's own model,
 `Z^d` with an i.i.d. critical scenery.
 -/
-import Parking.Basic
-import Parking.Support.Continuum
 
 open MeasureTheory
 

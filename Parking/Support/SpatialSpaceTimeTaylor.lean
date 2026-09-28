@@ -1,6 +1,11 @@
-/- Uniform consistency of the lattice generator on space-time test functions. -/
 import Parking.Support.SpatWWalkTaylor
 import Parking.Support.SpaceTimeContOp
+
+/-!
+# Space-time Taylor consistency
+
+Uniform consistency of the lattice generator on space-time test functions.
+-/
 
 open Set Filter Topology LatticeProb
 open LatticeProb.Scaling.SpaceTimeDerivatives
@@ -21,6 +26,10 @@ theorem uniformContinuous_spaceTime_lapTerm {ψ : ℝ × (Fin d → ℝ) → ℝ
   exact hc.uniformContinuous_of_continuous
     (contDiff_spaceDeriv (contDiff_spaceDeriv hψ.1 i) i).continuous
 
+/-- Given `ε > 0`, there is `δ > 0` such that updating a coordinate `z i` to a value
+`t` within `δ` of it changes `lapTerm (fun x => ψ (s, x)) i` by less than `ε`,
+uniformly in the time `s` and base point `z`, by uniform continuity of the joint
+second-derivative map `uniformContinuous_spaceTime_lapTerm`. -/
 theorem exists_spaceTime_lapTerm_update_modulus {ψ : ℝ × (Fin d → ℝ) → ℝ}
     (hψ : IsSpaceTimeTest ψ) {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ (s : ℝ) (z : Fin d → ℝ) (i : Fin d) (t : ℝ),
@@ -88,6 +97,9 @@ theorem exists_spaceTime_walkOp_taylor_modulus (hd : 1 ≤ d)
     _ = (d : ℝ) * (2 * ε) := by simp
     _ ≤ ε * (4 * d) := by nlinarith
 
+/-- For every `ε > 0`, the discrete generator consistency error is eventually, as
+`R → ∞`, bounded by `ε` uniformly in the time `s` and site `y`, by combining the
+modulus `exists_spaceTime_walkOp_taylor_modulus` with `1 / R → 0`. -/
 theorem eventually_spaceTime_walkOp_taylor_error_le (hd : 1 ≤ d)
     {ψ : ℝ × (Fin d → ℝ) → ℝ} (hψ : IsSpaceTimeTest ψ) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ R : ℝ in atTop, ∀ (s : ℝ) (y : Site d),

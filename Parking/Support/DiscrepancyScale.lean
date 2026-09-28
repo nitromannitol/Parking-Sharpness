@@ -1,7 +1,14 @@
-/-
-The three explicit discrepancy rates and their power saving over the mean.
--/
 import Parking.Support.UpperTarget
+
+/-!
+# The three explicit discrepancy rates
+
+`discrepancyRate d n` is the dimension-dependent rate `n ^ (5/8) log(n+1) ^ (3/4)`,
+`n ^ (1/4) log(n+1) ^ (5/4)` or `n ^ (1/8) log(n+1) ^ (3/4)` for `d = 1`, `d = 2` and `d ≥ 3`
+respectively. It is positive, dominates and is dominated by explicit powers of `n` and
+`log(n+1)` uniformly in `d`, and `discrepancyRate_le_power` shows every one of the three rates
+saves a positive power over the mean odometer scale.
+-/
 
 noncomputable section
 namespace Parking
@@ -12,18 +19,23 @@ def discrepancyRate (d n : ℕ) : ℝ :=
   else if d = 2 then (n : ℝ) ^ ((1 : ℝ) / 4) * Real.log ((n : ℝ) + 1) ^ ((5 : ℝ) / 4)
   else (n : ℝ) ^ ((1 : ℝ) / 8) * Real.log ((n : ℝ) + 1) ^ ((3 : ℝ) / 4)
 
+/-- `discrepancyRate d n` is positive for `n ≥ 1`, by splitting on the defining `if`s and
+`positivity`. -/
 theorem discrepancyRate_pos (d : ℕ) {n : ℕ} (hn : 1 ≤ n) : 0 < discrepancyRate d n := by
   have hn0 : 0 < (n : ℝ) := by exact_mod_cast (by omega : 0 < n)
   have hL0 : 0 < Real.log ((n : ℝ) + 1) := Real.log_pos (by linarith)
   unfold discrepancyRate
   split_ifs <;> positivity
 
+/-- For `n ≥ 2`, `log(n+1) ≥ 1`, since `n + 1 ≥ 3` already exceeds `Real.exp 1`. -/
 theorem one_le_log_succ {n : ℕ} (hn : 2 ≤ n) : 1 ≤ Real.log ((n : ℝ) + 1) := by
   have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
   rw [Real.le_log_iff_exp_le (by linarith)]
   have := Real.exp_one_lt_d9
   linarith
 
+/-- The quarter power of `log(n+1)` is bounded by `4 ^ (1/4) * n ^ (1/8)`, by raising
+`log_succ_le_two_mul_log` and `log_le_two_rpow_half` to the `1/4` power. -/
 theorem log_quarter_le_eighth {n : ℕ} (hn : 2 ≤ n) :
     Real.log ((n : ℝ) + 1) ^ ((1 : ℝ) / 4) ≤
       4 ^ ((1 : ℝ) / 4) * (n : ℝ) ^ ((1 : ℝ) / 8) := by
@@ -37,6 +49,8 @@ theorem log_quarter_le_eighth {n : ℕ} (hn : 2 ≤ n) :
   norm_num at h
   exact h
 
+/-- The `d = 3` rate `n ^ (1/8) * log(n+1) ^ (3/4)` lower-bounds `discrepancyRate d n` in every
+dimension, by case splitting on the defining `if`s and comparing exponents. -/
 theorem eighth_log_le_discrepancyRate (d : ℕ) {n : ℕ} (hn : 2 ≤ n) :
     (n : ℝ) ^ ((1 : ℝ) / 8) * Real.log ((n : ℝ) + 1) ^ ((3 : ℝ) / 4) ≤
       discrepancyRate d n := by
@@ -51,6 +65,8 @@ theorem eighth_log_le_discrepancyRate (d : ℕ) {n : ℕ} (hn : 2 ≤ n) :
       (Real.rpow_nonneg (by linarith) _) (Real.rpow_nonneg (by linarith) _)
   · exact le_rfl
 
+/-- `log(n+1) ≤ 4 ^ (1/4) * discrepancyRate d n`, splitting `log(n+1)` into its quarter and
+three-quarter powers via `log_quarter_le_eighth` and `eighth_log_le_discrepancyRate`. -/
 theorem log_le_discrepancyRate (d : ℕ) {n : ℕ} (hn : 2 ≤ n) :
     Real.log ((n : ℝ) + 1) ≤ 4 ^ ((1 : ℝ) / 4) * discrepancyRate d n := by
   have hL0 : 0 < Real.log ((n : ℝ) + 1) := zero_lt_one.trans_le (one_le_log_succ hn)

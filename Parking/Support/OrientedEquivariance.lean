@@ -1,5 +1,3 @@
-/- Translation equivariance of the directed odometer and error field, and the
-translation invariance of the moments of the directed error. -/
 import Parking.Support.OrientedOdometer
 import Parking.Support.OrientedError
 import Parking.Support.OrientedMeasurability
@@ -7,6 +5,13 @@ import Parking.Support.Equivariance
 import Parking.Support.ActivityHoles
 import Parking.Support.OrientedInvariance
 import Parking.Support.OrientedParticleMoment
+
+/-!
+# Translation equivariance of the directed odometer and error field
+
+Translation equivariance of the directed odometer and error field, and the
+translation invariance of the moments of the directed error.
+-/
 
 open LatticeProb (shiftStack)
 

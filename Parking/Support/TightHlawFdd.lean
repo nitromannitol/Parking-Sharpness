@@ -1,4 +1,11 @@
-/-
+import Parking.Support.TightFddAssembly
+import Parking.Support.TightHlawLift
+import Parking.Support.TightNoiseModification
+import Parking.Support.TightEquicont
+
+/-!
+# `hfdd` and `htight` for the box-reward field
+
 The finite-dimensional convergence in law (`hfdd`) and the equicontinuity in probability
 (`htight`) of the rescaled box-reward field, read at box points through `Parking.boxToFin`,
 against the everywhere-continuous noise modification `Parking.Support.TightNoiseModification`'s
@@ -17,10 +24,6 @@ conjunction of a.e. equalities is again an a.e. equality of the vector-valued fu
 increase distances (`Parking.dist_boxToFin_le`): a pair of box points closer than `δ` reads as
 a pair of plane points closer than `δ`.
 -/
-import Parking.Support.TightFddAssembly
-import Parking.Support.TightHlawLift
-import Parking.Support.TightNoiseModification
-import Parking.Support.TightEquicont
 
 open LatticeProb.BoxClamp (rewardBox)
 open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace contZ)
