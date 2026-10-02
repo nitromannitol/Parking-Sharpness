@@ -12,10 +12,9 @@ shared library `LatticeProb`, under the hypotheses displayed in their frozen
 declarations, with no added axiom and no `sorry`, for every node in state
 `SEALED` below.  Cited inputs are proposition-valued predicates in
 `Parking/External/`, carried as explicit hypotheses together with each
-theorem's own hypotheses; two of them have themselves been proved, inside
-this repository, rather than left as bare hypotheses, and are marked
-accordingly.  `CORRESPONDENCE.md` records the correspondence with the paper
-and `PROOF.md` describes the proof and the Lean tree.
+theorem's own hypotheses; two of them are proved inside this repository and
+are marked accordingly.  `CORRESPONDENCE.md` records the correspondence with
+the paper and `PROOF.md` describes the proof and the Lean tree.
 
 ## Environment
 
@@ -47,7 +46,7 @@ python3 tools/certificate.py --check
 closure of exactly `propext, Classical.choice, Quot.sound` is classical
 mathematics and nothing more; those three are Lean's own, not ours.  A
 closure containing `sorryAx` means the statement is not proved; below, that
-is expected exactly at the two nodes whose state is not `SEALED`.
+is expected exactly at the nodes whose state is not `SEALED`.
 
 | # | node | Lean name | state | paper | axiom closure |
 |---|---|---|---|---|---|
@@ -116,8 +115,7 @@ is expected exactly at the two nodes whose state is not `SEALED`.
 
 All 49 theorem declarations with a clean closure have axiom closures
 contained in the three classical axioms; the 49 theorem nodes in state
-`SEALED` are exactly these.  0 theorem node(s) are not yet
-sealed and carry `sorryAx` as shown.  The 11 external definitions in
+`SEALED` are exactly these.  The 11 external definitions in
 state `FROZEN` are not proved here and supply no closure of their own; the
 2 in state `SEALED` are proved by the companion theorem named
 above. A clean closure for a `definition` node's own export reports only
@@ -222,13 +220,8 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 
 - The cited theorems in `Parking/External/` (the rows marked *assumed*
   above) are not proved here; each statement that uses one carries it as an
-  explicit hypothesis. Two of the twelve have been discharged by a proof in
-  this repository or the shared library, and are marked *proved* instead.
-- `prop-spatial-scaling` and `prop-oriented-scaling` are `DRAFT_SORRY`:
-  their statement is frozen and registered, and no proof exists yet.
-  `thm-oriented-walk` and `thm-nearest` are `CONDITIONAL`: their own proof
-  carries no `sorry`, but it applies one of those two draft nodes, so their
-  axiom closure carries `sorryAx` until that node is sealed.
+  explicit hypothesis. Two of the 13 are proved in this repository
+  or the shared library, and are marked *proved* instead.
 - The proof ideas and the related work of the paper's introduction are
   outside the formalization.
 

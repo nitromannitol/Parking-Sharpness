@@ -11,8 +11,10 @@ abstract: >-
   tail with exponent d/(d+2) (Theorem 1.1); together with the quenched odometer
   comparison, the nearest hole and particle, near criticality and the oriented
   walk (Theorems 1.4 to 1.8) and every lemma and proposition behind them.
-  Eighteen results the paper quotes from the literature are taken as explicit
-  hypotheses.  The development contains no sorry and no custom axiom.
+  Eleven results the paper quotes from the literature are taken as explicit
+  hypotheses.  The development contains no sorry and no custom axiom; each of
+  the eight Mathlib-only comparator challenges contains one intentional
+  statement-level sorry whose completed solution is checked separately.
 type: software
 authors:
   - family-names: Bou-Rabee

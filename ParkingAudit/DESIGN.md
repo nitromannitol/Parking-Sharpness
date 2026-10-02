@@ -26,11 +26,11 @@ challenge does not use (for instance the continuum objects in the challenges
 that do not mention the scaling limit); they do not enter that theorem's
 dependency closure.
 
-The vocabulary was collected mechanically: starting from the types of the
+The vocabulary is collected mechanically: starting from the types of the
 eight theorems of `Parking/MainTheorems.lean`, every constant of the
-namespaces `Parking`, `LatticeProb` and `Sandpile` was followed through the
+namespaces `Parking`, `LatticeProb` and `Sandpile` is followed through the
 values of definitions and the constructors of structures, and each constant
-reached was copied from its source file.  No `Sandpile` constant is reached.
+reached is copied from its source file.  No `Sandpile` constant is reached.
 
 ## 1. Definitionally shared vocabulary
 
@@ -120,7 +120,7 @@ library.
   in the statements depends on the library beyond what the vocabulary
   displays; a reader still has to check the vocabulary against the paper.
 
-## 7. Uncertainties
+## 7. Remaining points
 
 - **U1 (instance environments).**  The solutions import both the repository
   and the vocabulary.  The one instance the vocabulary declares, the
@@ -128,10 +128,9 @@ library.
   library.  `ParkingAudit/StatementRegression.lean` checks that no solution statement
   picked up a repository or library constant, in particular not the library's
   instance.
-- **U2 (resolved).**  `leanprover/comparator` was run on these pairs on
-  2026-09-24, at commit `9c18636`, and every pair passed with the Lean kernel
-  and again with the independent nanoda kernel.  See
-  [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) for the full results and the
+- **U2 (comparator).**  `leanprover/comparator` passes on every pair, with the
+  Lean kernel and again with the independent nanoda kernel.  See
+  [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) for the results and the
   reproduction steps.  The local regression compares the solution types with
   the challenge-environment types up to the auxiliary proof lemmas that a
   `def` abstracts; the comparator's own closure check is stricter.

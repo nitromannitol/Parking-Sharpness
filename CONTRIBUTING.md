@@ -35,10 +35,28 @@ A few practical notes for working with this development:
   changed freely.
 
 - **Model-independent lemmas** belong in the shared library
-  `Lattice-Probability`, which this repository imports; the former
-  `Parking/Generic/` is now the library's `LatticeProb/Prob/Scaling/`.  Do not
-  add a local copy of a library declaration.
+  `Lattice-Probability`, which this repository imports; its scaling-limit
+  toolkit is `LatticeProb/Prob/Scaling/`.  Do not add a local copy of a library
+  declaration.
 
 - **The main results** are in `Parking/MainTheorems.lean`; the axiom audit is
   `lake build Parking.Meta.AxiomsAudit`, and the comparator surface is
   `lake build ParkingAudit`.
+
+## Elaboration policy for new files
+
+These rules keep the elaboration of new files cheap and predictable.
+
+- Close arithmetic goals with named monotonicity lemmas and `calc`, not with
+  `nlinarith`.  When a nonlinear fact is needed, hoist it into a small `private`
+  lemma over abstract real variables, so that the proof of the main goal only
+  instantiates it.
+- Never call `nlinarith` on a goal that contains `Real.rpow` or `Real.exp`
+  terms.  State the needed inequality over abstract real variables, as above,
+  and apply it to the `rpow` and `exp` terms, so that they never enter a numeric
+  tactic.
+- Before `ring` or `field_simp` on an expression built with `set`, run
+  `clear_value` on the bound names; otherwise the let-bodies are unfolded inside
+  the tactic.
+- Keep Lean files under 1500 lines.
+- Never run `lake clean` (see the notes above).

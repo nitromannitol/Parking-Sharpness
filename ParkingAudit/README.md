@@ -27,7 +27,7 @@ lattice kernels and Green functions; the continuum objects of the scaling
 limits (test functions, the heat operator, spatial white noise and its Green
 pairing, Brownian optimal-stopping values); the oriented walk and its stopping
 problem; the critical-scale model of the cited lower-tail estimate; and the
-fourteen cited results the eight theorems use.
+eight cited results the eight theorems use.
 
 ## What Is Checked
 
@@ -159,10 +159,9 @@ challenge statement and depends only on `propext`, `Classical.choice` and
 `Quot.sound`.
 
 **Status.**  All eight solutions build, and the statement regression and the
-axiom prints pass locally.  `leanprover/comparator` was run on these pairs on
-2026-09-27, at commit `81b30f2`, and every pair passed with the Lean kernel
-and again with the independent nanoda kernel.  See
-[`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) for the full results and the steps
-to reproduce them.  The workflow
+axiom prints pass locally.  `leanprover/comparator` passes on every pair, with
+the Lean kernel and again with the independent nanoda kernel.  See
+[`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) for the results and the steps to
+reproduce them.  The workflow
 [`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml) runs
 it on request.

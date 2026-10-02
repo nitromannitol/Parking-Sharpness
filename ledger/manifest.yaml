@@ -359,7 +359,7 @@ nodes:
   - id: ext-variance-scale
     version: 2
     kind: theorem
-    source: parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240); cited result, now proved here from the shared library Lattice-Probability (LatticeProb.Walk.VarianceScale, LatticeProb.Walk.Correlation, LatticeProb.Walk.WindowD4)
+    source: parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240); proved from the shared library Lattice-Probability (LatticeProb.Walk.VarianceScale, LatticeProb.Walk.Correlation, LatticeProb.Walk.WindowD4)
     file: Parking/External/VarianceScale.lean
     export: Parking.External.varianceScale
     state: SEALED
@@ -490,7 +490,7 @@ nodes:
   - id: ext-binomial-local-clt
     version: 3
     kind: theorem
-    source: parking.tex:3207-3218 (discharged from LatticeProb.BinomialLCLT.exists_binomPMF_localCLT)
+    source: parking.tex:3207-3218 (proved from LatticeProb.BinomialLCLT.exists_binomPMF_localCLT)
     file: Parking/External/BinomialLocalCLTProved.lean
     export: Parking.External.binomialLocalCLT
     state: SEALED
@@ -523,7 +523,7 @@ nodes:
   - id: ext-critical-scale-lower-tail
     version: 4
     kind: theorem
-    source: parking.tex:1822-1848 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720); proved outright from the statement's own VarianceScale and MultivariateBerryEsseen hypotheses, no longer assumed
+    source: parking.tex:1822-1848 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720); proved outright from the statement's own VarianceScale and MultivariateBerryEsseen hypotheses
     file: Parking/External/CriticalScaleLowerTailProved.lean
     export: Parking.External.criticalScaleLowerTail
     state: SEALED
@@ -534,7 +534,7 @@ nodes:
   - id: ext-srw-local-clt
     version: 2
     kind: theorem
-    source: parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8)); proved from the sibling repository's local central limit theorem via the heat-kernel identification, no longer assumed
+    source: parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8)); proved from the local central limit theorem of the divisible sandpile formalization, Sandpile.External.localCLT, via the heat-kernel identification
     file: Parking/External/SRWLocalCLTBridge.lean
     export: Parking.External.srwLocalCLT
     state: SEALED
@@ -556,7 +556,7 @@ nodes:
   - id: ext-heat-strong-minimum
     version: 4
     kind: theorem
-    source: parking.tex:1800-1820 (prop:spatial-scaling, Step 4, strong minimum principle); proved from the shared library strong minimum principle of Nirenberg 1953 Theorem 1, no longer assumed
+    source: parking.tex:1800-1820 (prop:spatial-scaling, Step 4, strong minimum principle); proved from the shared library strong minimum principle of Nirenberg 1953 Theorem 1
     file: Parking/External/HeatStrongMinimumProved.lean
     export: Parking.External.heatStrongMinimum
     state: SEALED

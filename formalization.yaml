@@ -1,8 +1,24 @@
-version: "v0.3"
+version: "v0.4"
 
 project:
   name: "Parking-Sharpness"
+  description: >-
+    A Lean 4 / Mathlib formalization of "Sharpness and critical scaling of
+    parking" (Bou-Rabee and Panagiotis): at the critical density the expected
+    particle odometer of the parking process on Z^d is comparable to the
+    expected divisible sandpile odometer plus log n (Theorem 1.2), hence of
+    order n^((4-d)/4) for d <= 3 and log n for d >= 4 (Corollary 1.3), and
+    below the critical density the settling time has a stretched-exponential
+    tail with exponent d/(d+2) (Theorem 1.1).  It also formalizes the quenched
+    comparison of the two odometers (Theorem 1.4), the nearest hole and
+    particle (Theorems 1.5 and 1.6), near criticality (Theorem 1.7) and the
+    oriented walk (Theorem 1.8), with every lemma and proposition behind them;
+    eleven results the paper quotes from the literature are carried as explicit
+    hypotheses of the theorems that use them.  The eight main theorems are
+    independently checked using the ParkingAudit/ comparator pairs.
   authors:
+    - "Ahmed Bou-Rabee"
+  responsible_maintainers:
     - "Ahmed Bou-Rabee"
   license: "Apache-2.0"
 
@@ -14,9 +30,33 @@ sources:
     id: "arXiv:2609.02820"
     url: "https://arxiv.org/abs/2609.02820"
     type: "preprint"
+    relationship: "formalizes"
+    note: >-
+      The paper under formalization.  Every theorem, lemma, proposition and
+      corollary of the paper is formalized, following paper/parking.tex, which
+      is arXiv:2609.02820v1 with the corrections listed in
+      paper/CHANGES_FROM_ARXIV.md; see status.scope for the scope boundary and
+      fidelity.divergences for the differences from the paper.
     license: ""                 # TODO(author): the license under which the paper is published
     author_contacted: "n/a"     # the formalizer is an author of the source
     prior_work: ""
+
+related_formalizations:
+  - id: "https://github.com/nitromannitol/Lattice-Probability"
+    relationship: "builds-on"
+    note: >-
+      The shared library Lattice-Probability (LatticeProb): the lattice, the
+      simple random walk and its Green functions, the particle-hole process
+      and the toolkits for results that do not depend on the parking model.
+      Pinned git dependency at commit 9d44b4d4670df393bb86ac5a4e042f215001cddf.
+  - id: "https://github.com/nitromannitol/Divisible-Sandpile-Percolation"
+    relationship: "builds-on"
+    note: >-
+      The formalization (Sandpile) of the divisible sandpile paper that this
+      paper quotes its growth estimate from.  Pinned git dependency at commit
+      cd8b15a32d00b1eec48f8747339e2d0cfaa73a21; the growth of the mean
+      divisible sandpile odometer is proved from it under that formalization's
+      own three continuum assumptions.
 
 status:
   scope: >-
@@ -48,6 +88,8 @@ status:
     stated in full in Parking/MainTheorems.lean; all eight are additionally
     restated over a Mathlib-only vocabulary for the Lean comparator (ParkingAudit/).
   sorry_count: 0
+  sorry_count_scope: "Parking production library only"
+  comparator_challenge_sorry_count: 8
   sorry_in_definitions: 0
   axioms:
     - "propext"
@@ -60,114 +102,164 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/SubcriticalTail/comparator.json"
       literature_dependencies:
-        - "Donsker and Varadhan 1979, Theorem 1, the range estimate (Parking.External.DonskerVaradhanRange), hypothesis"
+        - statement: "the range estimate (Parking.External.DonskerVaradhanRange), carried as an explicit hypothesis"
+          source: "Donsker and Varadhan 1979, Theorem 1"
     - declaration: "Parking.master"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Master/comparator.json"
       literature_dependencies:
-        - "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94), the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), hypothesis"
-        - "Pinelis, Theorems 4.1 and 3.3, the martingale moment and Bernstein inequalities (Parking.External.Bernstein), hypothesis"
+        - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.growth"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Growth/comparator.json"
       literature_dependencies:
-        - "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94), the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), hypothesis"
-        - "Pinelis, Theorems 4.1 and 3.3, the martingale moment and Bernstein inequalities (Parking.External.Bernstein), hypothesis"
+        - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.trichotomy"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Trichotomy/comparator.json"
       literature_dependencies:
-        - "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94), the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), hypothesis"
-        - "Pinelis, Theorems 4.1 and 3.3, the martingale moment and Bernstein inequalities (Parking.External.Bernstein), hypothesis"
+        - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.nearest"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Nearest/comparator.json"
       literature_dependencies:
-        - "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94), the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), hypothesis"
-        - "Pinelis, Theorems 4.1 and 3.3, the martingale moment and Bernstein inequalities (Parking.External.Bernstein), hypothesis"
-        - "Bou-Rabee and Panagiotis, Theorem 1.3(i)(b), the parabolic scaling limit of the divisible odometer with the scenery retained (Parking.External.SpatialOdometerScaling), hypothesis"
-        - "classical interior regularity for the heat operator (Parking.External.HeatInteriorRegularity), hypothesis"
-        - "classical parabolic compactness for the heat operator (Parking.External.HeatCompactness), hypothesis"
-        - "Raic, Theorem 1.1, the multivariate Berry-Esseen comparison (Parking.External.MultivariateBerryEsseen), hypothesis"
+        - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
+        - statement: "the parabolic scaling limit of the divisible odometer with the scenery retained (Parking.External.SpatialOdometerScaling), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3(i)(b)"
+        - statement: "classical interior regularity for the heat operator (Parking.External.HeatInteriorRegularity), carried as an explicit hypothesis"
+        - statement: "classical parabolic compactness for the heat operator (Parking.External.HeatCompactness), carried as an explicit hypothesis"
+        - statement: "the multivariate Berry-Esseen comparison (Parking.External.MultivariateBerryEsseen), carried as an explicit hypothesis"
+          source: "Raic, Theorem 1.1"
     - declaration: "Parking.nearest_counterexample"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/NearestCounterexample/comparator.json"
       literature_dependencies:
-        - "Pinelis, Theorems 4.1 and 3.3, the martingale moment and Bernstein inequalities (Parking.External.Bernstein), hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.near"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Near/comparator.json"
       literature_dependencies:
-        - "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94), the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), hypothesis"
-        - "Pinelis, Theorems 4.1 and 3.3, the martingale moment and Bernstein inequalities (Parking.External.Bernstein), hypothesis"
+        - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.oriented_walk"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/OrientedWalk/comparator.json"
       literature_dependencies:
-        - "Pinelis, Theorems 4.1 and 3.3, the martingale moment and Bernstein inequalities (Parking.External.Bernstein), hypothesis"
-        - "the cutoff and stability estimates of the parabolic scaling limit, in the shape of Coquet and Toldo, Theorem 3 and Corollary 4 (Parking.External.OrientedStoppingStability), hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
+        - statement: "the cutoff and stability estimates of the parabolic scaling limit (Parking.External.OrientedStoppingStability), carried as an explicit hypothesis"
+          source: "in the shape of Coquet and Toldo, Theorem 3 and Corollary 4"
     - declaration: "ParkingAudit.subcritical_tail"
       file: "ParkingAudit/SubcriticalTail/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/SubcriticalTail/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.subcritical_tail, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the range estimate (ParkingAudit.External.DonskerVaradhanRange, the restatement of Parking.External.DonskerVaradhanRange over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Donsker and Varadhan 1979, Theorem 1"
     - declaration: "ParkingAudit.master"
       file: "ParkingAudit/Master/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Master/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.master, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.growth"
       file: "ParkingAudit/Growth/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Growth/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.growth, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.trichotomy"
       file: "ParkingAudit/Trichotomy/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Trichotomy/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.trichotomy, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.nearest"
       file: "ParkingAudit/Nearest/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Nearest/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.nearest, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
+        - statement: "the parabolic scaling limit of the divisible odometer with the scenery retained (ParkingAudit.External.SpatialOdometerScaling, the restatement of Parking.External.SpatialOdometerScaling over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3(i)(b)"
+        - statement: "classical interior regularity for the heat operator (ParkingAudit.External.HeatInteriorRegularity, the restatement of Parking.External.HeatInteriorRegularity over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "classical parabolic compactness for the heat operator (ParkingAudit.External.HeatCompactness, the restatement of Parking.External.HeatCompactness over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the multivariate Berry-Esseen comparison (ParkingAudit.External.MultivariateBerryEsseen, the restatement of Parking.External.MultivariateBerryEsseen over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Raic, Theorem 1.1"
     - declaration: "ParkingAudit.nearest_counterexample"
       file: "ParkingAudit/NearestCounterexample/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/NearestCounterexample/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.nearest_counterexample, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.near"
       file: "ParkingAudit/Near/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/Near/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.near, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.oriented_walk"
       file: "ParkingAudit/OrientedWalk/Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/OrientedWalk/comparator.json"
-      literature_dependencies: ["the same hypotheses as Parking.oriented_walk, restated over the Mathlib-only vocabulary"]
+      literature_dependencies:
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "Pinelis, Theorems 4.1 and 3.3"
+        - statement: "the cutoff and stability estimates of the parabolic scaling limit (ParkingAudit.External.OrientedStoppingStability, the restatement of Parking.External.OrientedStoppingStability over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+          source: "in the shape of Coquet and Toldo, Theorem 3 and Corollary 4"
 
 automation:
   methods:
@@ -185,81 +277,44 @@ automation:
         - "gpt-6-luna"
         - "gpt-5.6-luna"
       framework: >-
-        Claude Code (Anthropic) as the supervising harness and, through its
-        subagents, the main proving harness; Codex CLI (OpenAI) for
-        gpt-6-astra (run_astra.sh); Kimi Code CLI for kimi-code/k3-256k;
-        scripted API agent loops (glm_general.py) for the DeepSeek and GLM
-        generals; scripted API fan-outs (glm_lean.py, glm_ask.py) for the
-        compile-filtered proof candidates and statement audits
+        Claude Code (Anthropic) and Codex CLI (OpenAI) agentic coding harnesses,
+        Kimi Code CLI, and scripted API agent loops and fan-outs for the
+        DeepSeek and GLM models; most code by the Claude models
       tool_setup: >-
         Lake builds under leanprover/lean4:v4.32.0 with Mathlib at revision
         81a5d257c8e410db227a6665ed08f64fea08e997, Lattice-Probability at
-        commit 9d44b4d and Divisible-Sandpile-Percolation at commit
-        cd8b15a3.  Division of labour: claude-fable-5-1 (Claude Code), the
-        supervising session, set up the frozen-statement scaffold
-        (2026-09-06), recorded the author's statement-level decisions, merged the agents'
-        branches and synchronized the documents; claude-opus-5, as Claude Code
-        subagents working in shifts (2026-09-06 to 2026-09-14), wrote most of
-        the model, the statements and the proofs and sealed most of the
-        paper's results; gpt-6-astra (Codex CLI) worked on the coupling behind
-        the critical density lemma (2026-09-08, reasoning max), and four
-        parallel runs and two follow-ups (reasoning xhigh, then high) proved
-        the spatial scaling proposition and Theorem 1.5, consolidated the
-        competing branches of that proof, and audited it for fidelity
-        (2026-09-17 and 2026-09-18); deepseek-v4.1-flash generals (thinking
-        low) wrote support modules for the oriented scaling proposition
-        (2026-09-11 to 2026-09-14); a glm-5.3 general drafted moment and shift
-        lemmas for the spatial scaling proposition (2026-09-14 and
-        2026-09-15); kimi-code/k3-256k (Kimi Code CLI) checked and committed
-        those lemmas and wrote the covariance algebra of the oriented
-        potential (2026-09-15 and 2026-09-16); claude-sonnet-5, as Claude Code
-        subagents (2026-09-16 to 2026-09-19), audited statements, wrote support
-        lemmas for the two scaling propositions and prepared the release;
-        glm-5.3-flash and deepseek-v4.1-flash drafted compile-filtered proof
-        candidates for short goals, and glm-5.3 audited statements for the
-        Opus agents; claude-opus-5-5 wrote Parking/MainTheorems.lean, the
-        comparator surface ParkingAudit/, the assumptions generator's treatment of
-        conditional proofs and this release documentation (2026-09-23 and
-        2026-09-24).  A frozen-statement manifest (ledger/manifest.yaml) pins
-        each registered statement by the SHA-256 of its text, and the tools/
-        checkers verify the hashes, the axiom closure of every node, a
-        warning-free build, the paper anchors, clause and exponent counts, and
-        quantifier order.  The Lean comparator (leanprover/comparator) was run
-        on the ParkingAudit pairs on 2026-09-27, at commit 81b30f2, and every pair
-        passed with the Lean kernel and again with the independent nanoda
-        kernel; see ParkingAudit/COMPARATOR_RUNS.md for the results and reproduction
-        steps.  .github/workflows/comparator.yml runs it on request.
-        Final pass (2026-09-26 and 2026-09-27): a claude-opus-5-5 general in
-        Claude Code dispatched claude-sonnet-5 subagents, which proved further
-        cited inputs and removed them as hypotheses, updated the Audit surface
-        and re-ran the comparator; gpt-6-luna and gpt-5.6-luna (Codex CLI) were
-        commissioned for some proofs; the release pins Lattice-Probability at
-        commit 9d44b4d4670df393bb86ac5a4e042f215001cddf.
+        commit 9d44b4d4670df393bb86ac5a4e042f215001cddf and
+        Divisible-Sandpile-Percolation at commit
+        cd8b15a32d00b1eec48f8747339e2d0cfaa73a21.  A frozen-statement manifest
+        (ledger/manifest.yaml) pins each registered statement by the SHA-256 of
+        its text, and the tools/ checkers verify the hashes, the axiom closure
+        of every node, a warning-free build, the paper anchors, clause and
+        exponent counts, and quantifier order.  The Lean comparator
+        (leanprover/comparator) checks the eight ParkingAudit pairs with the
+        Lean kernel and again with the independent nanoda kernel; see
+        ParkingAudit/COMPARATOR_RUNS.md for the results and reproduction steps.
+        .github/workflows/comparator.yml runs it on request.
       cost:
-        wall_time: >-
-          about eighteen days of calendar time (2026-09-06 to 2026-09-24): the
-          statements frozen on 2026-09-06, every paper statement sealed by
-          2026-09-18, the proved form of the sandpile growth input on
-          2026-09-19, and the comparator surface on 2026-09-24
+        wall_time: "about eighteen days of calendar time"
         spend_usd: "not tracked (subscription and API accounts)"
         hardware: "a 20-thread Intel i9-9900X / 125 GB RAM Ubuntu machine"
       prompting_notes: >-
-        Human-directed agent work, supervised by the author, with the author's
-        statement-level decisions recorded.  Every statement was
+        Human-directed agent work, closely supervised by the author, with the
+        author's statement-level decisions recorded.  Every statement was
         pinned before its proof was attempted, and proofs were accepted only
         through the manifest and axiom gates.
   spend_usd: "not tracked (subscription and API accounts)"
   notes: >-
     All Lean code in this repository was written by the listed models under the
-    supervision of the author.  Every proof is checked by the Lean kernel and
-    Mathlib; the verified library contains no sorry and no custom axiom.  The
-    results the paper quotes without proof enter as explicit hypotheses, not
-    axioms.  The Mathlib-only comparator challenge files
+    close supervision of the author.  Every proof is checked by the Lean kernel
+    and Mathlib; the verified library contains no sorry and no custom axiom.
+    The results the paper quotes without proof enter as explicit hypotheses,
+    not axioms.  The Mathlib-only comparator challenge files
     (ParkingAudit/*/Challenge.lean) each contain exactly one intentional
     statement-level sorry (the theorem body), which is filled by the
-    corresponding ParkingAudit/*/Solution.lean.  The dependencies Lattice-Probability
-    and Divisible-Sandpile-Percolation are separate formalizations, not written
-    for this repository.
+    corresponding ParkingAudit/*/Solution.lean.  The dependencies
+    Lattice-Probability and Divisible-Sandpile-Percolation are separate
+    formalizations, not written for this repository.
 
 fidelity:
   divergences: >-
@@ -279,7 +334,7 @@ fidelity:
     is expressed by three convergence clauses; the limit of
     prop:oriented-scaling is asserted to exist rather than characterized; and
     the Brownian optimal-stopping values range over rules with integrable
-    payoff.  The eighteen cited results enter as hypotheses whose Lean
+    payoff.  The eleven cited results enter as hypotheses whose Lean
     statements are in ASSUMPTIONS.md; that they render the cited theorems
     faithfully is a reading, not a check.
 
@@ -289,11 +344,10 @@ review:
     - "Ahmed Bou-Rabee"
   notes: >-
     Correctness of every proof is guaranteed by the Lean kernel and Mathlib (no
-    sorry, no custom axiom).  The author made the statement-level
-    decisions recorded during development.  The statements were additionally
-    audited by GLM-5.3 auditors, by the Claude Opus 5 and Claude Sonnet 5
-    agents, and by a read-only gpt-6-astra fidelity audit during development.
-    This is not external peer review.
+    sorry, no custom axiom).  The statement-level decisions were made by the
+    author and recorded.  The statements were additionally audited by agents
+    (GLM-5.3, Claude Opus 5, Claude Sonnet 5, and gpt-6-astra, whose audit was
+    read-only).  This is not external peer review.
 
 alignment:
   namespace: "Parking"
@@ -343,7 +397,7 @@ alignment:
       module: "Parking.Frozen"
       status: "proved"
       note: "One node per statement; the table of CORRESPONDENCE.md gives each Lean name, paper location and state."
-    - source: "Cited results (eighteen, listed in ASSUMPTIONS.md)"
+    - source: "Cited results (eleven, listed in ASSUMPTIONS.md)"
       lean: "Parking.External.*"
       module: "Parking.External"
       status: "assumed"
