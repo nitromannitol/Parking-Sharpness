@@ -6,12 +6,12 @@ import LatticeProb.Graph.ZdRepresentation
 
 The optimal stopping representation of the divisible sandpile odometer, which
 `parking.tex` quotes at `parking.tex:876-884` (label `lem:stopping`) from
-Bou-Rabee, Panagiotis, Rossignol and Sun, Theorem 3.2 there, multiplied by `2d`
+Bou-Rabee, Peres and Sava-Huss, Theorem 3.2 there, multiplied by `2d`
 to match the normalization used here.
 
-It was assumed.  It is now proved in the shared library, on a general graph and
-then on the lattice, and `Parking.External.stopping` discharges it, so every
-node that carries it as a hypothesis can be given the theorem.
+It is proved in the shared library, on a general graph and then on the lattice,
+and `Parking.External.stopping` supplies it, so every node that carries it as a
+hypothesis can be given the theorem.
 
 A stopping time bounded by `n` for the natural filtration of the walk is
 `LatticeProb.IsWalkStopping`: whether it takes the value `k` is settled by the

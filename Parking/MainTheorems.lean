@@ -19,7 +19,7 @@ Each theorem below restates its certified counterpart in `Parking/Frozen/` and i
 `exact` of it, so the statements displayed in this file are the certified ones.  The one change
 is in Theorems 1.4 and 1.7: the certified statements `Parking.Frozen.trichotomy` and
 `Parking.Frozen.near` take the optimal stopping representation of the divisible sandpile
-odometer (`External.Stopping`, quoted from Bou-Rabee, Panagiotis, Rossignol and Sun) as a
+odometer (`External.Stopping`, quoted from Bou-Rabee, Peres and Sava-Huss) as a
 hypothesis, and here it is discharged by `Parking.External.stopping`, which proves it from the
 shared library.  The remaining hypotheses named `External.*` are results the paper cites without
 proof; they are assumed, not proved, and are listed with their statements in `ASSUMPTIONS.md`.
