@@ -159,6 +159,6 @@ imported into one module, because each pair has its own copy of the vocabulary.
   would differ from the challenge statement in the comparator's closure check.
 - **U2 (comparator).**  `leanprover/comparator` passes on every pair, with the
   Lean kernel and again with the independent nanoda kernel.
-- **U3 (vocabulary size).**  The vocabulary is about 1,200 lines, because the
+- **U3 (vocabulary size).**  The vocabulary is about 1,000 lines, because the
   cited results of Theorems 1.5 and 1.8 are stated over the continuum objects
   of the scaling limits.  Most of it is read only by those two challenges.
