@@ -14,9 +14,10 @@ require «divisible_sandpile» from git
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4" @ "81a5d257c8e410db227a6665ed08f64fea08e997"
 
-/-- The comparator audit surface (`ParkingAudit/*/Challenge.lean`, `ParkingAudit/*/Solution.lean`
-and `ParkingAudit/Support/`).  Not a default target: it builds only on demand
-(`lake build ParkingAudit`), so the ordinary build of `Parking` is unchanged. -/
+/-- The comparator audit surface (`ParkingAudit/*/Challenge.lean`,
+`ParkingAudit/*/SolutionBasic.lean`, `ParkingAudit/*/Solution.lean` and `ParkingAudit/Support/`).
+Not a default target: it builds only on demand (`lake build ParkingAudit`), so the ordinary build
+of `Parking` is unchanged. -/
 lean_lib «ParkingAudit» where
   globs := #[.submodules `ParkingAudit]
   leanOptions := #[

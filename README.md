@@ -185,15 +185,14 @@ them.  In summary:
   walk, lattice kernels and Green functions; the continuum objects of the scaling limits; the
   critical-scale model of the cited lower-tail estimate; and the cited results it assumes) and
   contains one intentional statement-level `sorry`, which the corresponding `Solution.lean`
-  fills from the library through the bridges in `ParkingAudit/Support/`.  All eight solutions
-  build and depend only on `propext`, `Classical.choice` and `Quot.sound`, and
-  `ParkingAudit/StatementRegression.lean` checks locally that each solution statement is
-  exactly the challenge statement and mentions no constant of `Parking`, `LatticeProb` or
-  `Sandpile`.  The configurations in `ParkingAudit/*/comparator.json` are for
-  [`leanprover/comparator`](https://github.com/leanprover/comparator), which confirms that
-  the two statements have identical elaborated types and that the proof reduces to the three
-  standard axioms; every pair passed with the Lean kernel and again with the independent
-  nanoda kernel.  See [`ParkingAudit/README.md`](ParkingAudit/README.md) and
+  fills from the library through its own bridge in `ParkingAudit/Support/`.  All eight
+  solutions build and depend only on `propext`, `Classical.choice` and `Quot.sound`.  The
+  configurations in `ParkingAudit/*/comparator.json` are for
+  [`leanprover/comparator`](https://github.com/leanprover/comparator), which checks each
+  solution statement against its challenge, confirms that the two statements have identical
+  elaborated types and that the proof reduces to the three standard axioms; every pair passed
+  with the Lean kernel and again with the independent nanoda kernel.  See
+  [`ParkingAudit/README.md`](ParkingAudit/README.md) and
   [`ParkingAudit/COMPARATOR_RUNS.md`](ParkingAudit/COMPARATOR_RUNS.md); the workflow
   [`.github/workflows/comparator.yml`](.github/workflows/comparator.yml) runs the comparator
   on request.
@@ -241,7 +240,6 @@ lake build           # compile the project
 ```bash
 lake build Parking.Meta.AxiomsAudit   # print the axioms of the eight main theorems
 lake build ParkingAudit               # the comparator challenges and solutions
-lake build ParkingAudit.StatementRegression
 ```
 
 To use the library, `import Parking` pulls in the whole development; the main results are in
@@ -281,8 +279,12 @@ Parking/
   Meta/               AxiomsAudit.lean
   Basic.lean          the model: the law, the odometers U and u, their means, graphNorm
 Parking.lean          the root module (imports the whole library)
-ParkingAudit/         Mathlib-only comparator challenges and solutions, with README.md,
-                      DESIGN.md and COMPARATOR_RUNS.md
+ParkingAudit/         Mathlib-only comparator challenges and solutions
+  README.md           what each comparator pair checks
+  DESIGN.md           how the pairs are built: vocabulary, bridges
+  COMPARATOR_RUNS.md  the comparator pins and results
+  <Pair>/             Challenge.lean, SolutionBasic.lean, Solution.lean, comparator.json
+  Support/            one bridge per pair, identifying the vocabulary with the library
 ASSUMPTIONS.md        the cited results assumed, with their Lean statements (generated)
 CORRESPONDENCE.md     paper ↔ Lean: conventions, cited inputs, formulation choices, node table
 PROOF.md              the proofs section by section and the Lean tree that carries them

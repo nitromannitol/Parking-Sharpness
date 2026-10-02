@@ -10,18 +10,18 @@
 #   bash ParkingAudit/check_standalone.sh --vocabulary
 # The second form checks that the vocabulary block between VOCABULARY-BEGIN and
 # VOCABULARY-END is byte-identical in every ParkingAudit/*/Challenge.lean and in
-# ParkingAudit/Support/ParkingVocabulary.lean.
+# ParkingAudit/*/SolutionBasic.lean.
 set -u
 cd "$(dirname "$0")/.."
 if [ "${1:-}" = "--vocabulary" ]; then
   block() { sed -n '/^-- VOCABULARY-BEGIN$/,/^-- VOCABULARY-END$/p' "$1"; }
-  REF=$(block ParkingAudit/Support/ParkingVocabulary.lean | sha256sum | cut -d' ' -f1)
   RC=0
-  for f in ParkingAudit/*/Challenge.lean; do
-    H=$(block "$f" | sha256sum | cut -d' ' -f1)
-    if [ "$H" = "$REF" ]; then echo "identical  $f"; else echo "DIFFERENT  $f"; RC=1; fi
+  for c in ParkingAudit/*/Challenge.lean; do
+    d="$(dirname "$c")/SolutionBasic.lean"
+    H1=$(block "$c" | sha256sum | cut -d' ' -f1)
+    H2=$(block "$d" | sha256sum | cut -d' ' -f1)
+    if [ "$H1" = "$H2" ]; then echo "identical  $c  $d"; else echo "DIFFERENT  $c  $d"; RC=1; fi
   done
-  echo "vocabulary sha256=$REF rc=$RC"
   exit $RC
 fi
 SRC="$1"

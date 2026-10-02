@@ -1,4 +1,4 @@
-# Audit Comparator Surface
+# ParkingAudit Comparator Surface
 
 This directory contains Mathlib-only comparator challenges for the eight main
 theorems of the formalization of *Sharpness and critical scaling of parking*
@@ -112,19 +112,14 @@ copied as `Classical.decRel`.
 
 ## Solutions
 
-Each `Solution.lean` imports the repository together with
-`ParkingAudit/Support/ParkingVocabulary.lean`, a verbatim copy of the vocabulary block that
-imports only Mathlib, and proves the byte-identical statement from the
-corresponding theorem of `Parking/MainTheorems.lean` through the bridges in
-`ParkingAudit/Support/Bridge.lean` (see [`DESIGN.md`](DESIGN.md)).
-
-`ParkingAudit/StatementRegression.lean` is a local check of the statement-identity
-part of the comparator: it elaborates each statement in the challenge
-environment (`ParkingAudit/Support/Statements.lean`, which imports only Mathlib and
-the vocabulary), checks that each solution theorem has exactly that type and
-the same universe parameters, and that it mentions no constant of the
-namespaces `Parking`, `LatticeProb` or `Sandpile`, and prints the axioms of
-each solution theorem.
+Each pair has four files: `Challenge.lean`, `SolutionBasic.lean`, `Solution.lean` and
+`comparator.json`.  `SolutionBasic.lean` is a verbatim, mechanical copy of the vocabulary block of
+the pair's `Challenge.lean`, and imports only Mathlib.  `Solution.lean` imports the repository
+together with the pair's `SolutionBasic.lean` and its bridge
+`ParkingAudit/Support/<Pair>Bridge.lean`, and proves the byte-identical statement from the
+corresponding theorem of `Parking/MainTheorems.lean` (see [`DESIGN.md`](DESIGN.md)).  The
+comparator checks each solution statement against its challenge, and the dependency closure
+against Mathlib.
 
 The audit modules live under the root `ParkingAudit`, and the library's own audit
 surface under `LatticeProbAudit`, so the two cannot collide.
@@ -137,7 +132,7 @@ The comparator configurations permit only
 ["propext", "Quot.sound", "Classical.choice"]
 ```
 
-and set `enable_nanoda: false`.  Each challenge elaborates standalone against
+and enable the nanoda replay.  Each challenge elaborates standalone against
 this repository's Mathlib toolchain, e.g.
 
 ```bash
@@ -145,23 +140,25 @@ bash ParkingAudit/check_standalone.sh ParkingAudit/Master/Challenge.lean
 bash ParkingAudit/check_standalone.sh --vocabulary
 ```
 
-with expected outcome `rc=0` and exactly one `declaration uses 'sorry'`
-warning per challenge; the second command checks that the vocabulary block is
-the same in every challenge and in `ParkingAudit/Support/ParkingVocabulary.lean`.  The
-solutions and the regression build with
+with expected outcome `rc=0` and exactly one `declaration uses 'sorry'` warning per challenge;
+the second command checks that the vocabulary block of each challenge is byte-identical to that
+of its `SolutionBasic.lean`.  The solutions build with
 
 ```bash
-lake build ParkingAudit.StatementRegression
+lake build ParkingAudit
 ```
 
-which prints, for each of the eight theorems, that it is identical to the
-challenge statement and depends only on `propext`, `Classical.choice` and
-`Quot.sound`.
+Then, with `leanprover/comparator`, `lean4export` (at the toolchain's tag), `landrun` and
+`nanoda` built at the pins of [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md), from the repository
+root:
 
-**Status.**  All eight solutions build, and the statement regression and the
-axiom prints pass locally.  `leanprover/comparator` passes on every pair, with
-the Lean kernel and again with the independent nanoda kernel.  See
-[`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) for the results and the steps to
-reproduce them.  The workflow
-[`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml) runs
-it on request.
+```bash
+COMPARATOR_LANDRUN=<landrun> COMPARATOR_LEAN4EXPORT=<lean4export> COMPARATOR_NANODA=<nanoda_bin> \
+  lake env <comparator>/.lake/build/bin/comparator ParkingAudit/<Pair>/comparator.json
+```
+
+**Status.**  All eight solutions build.  `leanprover/comparator` passes on every pair, with
+the Lean kernel and again with the independent nanoda kernel.
+[`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) records the pins, the results and the reproduction
+steps.  The workflow [`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml)
+runs it on request.

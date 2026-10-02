@@ -1,16 +1,16 @@
 import Mathlib
 import Parking.MainTheorems
-import ParkingAudit.Support.ParkingVocabulary
-import ParkingAudit.Support.Bridge
+import ParkingAudit.Near.SolutionBasic
+import ParkingAudit.Support.NearBridge
 
 /-!
 # Solution: Near
 
-The challenge module `ParkingAudit/Near/Challenge.lean` imports only Mathlib and states the
-theorem with one intentional `sorry`. This solution imports the repository together with
-`ParkingAudit.Support.ParkingVocabulary`, a verbatim copy of the challenge's vocabulary, and
-proves the byte-identical statement from `Parking.near` through the bridges in
-`ParkingAudit/Support/Bridge.lean`: the statement is reverted, every vocabulary constant that is
+The challenge module `ParkingAudit/Near/Challenge.lean` imports only Mathlib and states the theorem
+with one intentional `sorry`. This solution imports the repository together with
+`ParkingAudit.Near.SolutionBasic`, a verbatim copy of the challenge's vocabulary, and proves the
+byte-identical statement from `Parking.near` through the bridge lemmas in
+`ParkingAudit/Support/NearBridge.lean`: the statement is reverted, every vocabulary constant that is
 not definitionally its counterpart is rewritten to the repository's, and the result is closed by
 `Parking.near`.
 -/

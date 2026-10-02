@@ -1,0 +1,117 @@
+import Mathlib
+import Parking.MainTheorems
+import ParkingAudit.Trichotomy.SolutionBasic
+
+/-!
+# Bridge for `Trichotomy`: Mathlib-only vocabulary to the repository
+
+The challenge vocabulary (`ParkingAudit/Trichotomy/SolutionBasic.lean`, a verbatim copy of the
+vocabulary block of `ParkingAudit/Trichotomy/Challenge.lean`, namespace `ParkingAudit`) is a
+statement-level copy of the repository definitions and of the definitions it uses from
+`Lattice-Probability`. A plain definition over shared Mathlib types (`law`, `walkLaw`, `contOp`,
+`contValue`, …) unfolds to the same term as its counterpart, and the solution uses it
+definitionally. The declarations below are those that the statement of `Trichotomy` depends on and
+that are not of that kind:
+
+* the particle–hole process: `Driver` and `State` are new structures, converted field by field
+  (`toDriverLP`, `toStateLP`), and its state is a new recursive definition, identified with the
+  library's by induction on the round (`state_eq`);
+* the recursive definition `u`, which is defined anew and equal to its counterpart by induction on
+  the recursion variable;
+* the propositional structure `CriticalLaw`, a new inductive type, proved equivalent to its
+  counterpart field by field;
+* the definitions built on these (`U`, `meanU`, `uOf` and `meanu`), whose equality follows by
+  unfolding and rewriting;
+* the cited-result propositions that the statement takes as hypotheses (`External.SandpileGrowth`
+  and `External.Bernstein`), each equal to the repository's, by `rfl` or by rewriting with the
+  declarations above.
+
+Each equality is stated between the constants themselves, so that it rewrites every occurrence in a
+statement.
+-/
+
+namespace ParkingAudit.Bridge
+
+open MeasureTheory
+
+/-! ### The particle–hole process -/
+
+section Process
+
+variable {d : ℕ}
+
+/-- A vocabulary driver as a library driver. -/
+def toDriverLP (D : ParkingAudit.Driver d) : LatticeProb.Driver d := ⟨D.eta, D.stack, D.rank⟩
+
+/-- A vocabulary state as a library state. -/
+def toStateLP (S : ParkingAudit.State d) : LatticeProb.State d :=
+  ⟨S.active, S.pos, S.holes, S.departures⟩
+
+theorem state_eq (D : ParkingAudit.Driver d) :
+    ∀ t, toStateLP (ParkingAudit.state D t) = LatticeProb.state (toDriverLP D) t
+  | 0 => rfl
+  | t + 1 => by
+    show toStateLP (ParkingAudit.step D (ParkingAudit.state D t) t)
+      = LatticeProb.step (toDriverLP D) (LatticeProb.state (toDriverLP D) t) t
+    rw [← state_eq D t]
+    rfl
+
+theorem state_data (ω : ParkingAudit.Data d) (t : ℕ) :
+    LatticeProb.state (Parking.toDriver ω) t
+      = toStateLP (ParkingAudit.state (ParkingAudit.toDriver ω) t) :=
+  (state_eq (ParkingAudit.toDriver ω) t).symm
+
+theorem U_eq : @ParkingAudit.U = @Parking.U := by
+  funext d ω n x
+  show _ = (LatticeProb.state (Parking.toDriver ω) n).departures x
+  rw [state_data]
+  rfl
+
+theorem meanU_eq : @ParkingAudit.meanU = @Parking.meanU := by
+  delta ParkingAudit.meanU
+  rw [U_eq]
+  rfl
+
+end Process
+
+/-! ### The divisible sandpile odometers -/
+
+theorem u_eq : @ParkingAudit.u = @Parking.u := by
+  funext d η n
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    funext x
+    show max 0 (η x + ParkingAudit.walkOp (ParkingAudit.u η n) x)
+      = max 0 (η x + LatticeProb.walkOp (Parking.u η n) x)
+    rw [ih]
+    rfl
+
+theorem uOf_eq : @ParkingAudit.uOf = @Parking.uOf := by
+  delta ParkingAudit.uOf
+  rw [u_eq]
+  rfl
+
+theorem meanu_eq : @ParkingAudit.meanu = @Parking.meanu := by
+  delta ParkingAudit.meanu
+  rw [uOf_eq]
+  rfl
+
+/-! ### The two propositional structures -/
+
+theorem criticalLaw_eq : @ParkingAudit.CriticalLaw = @Parking.CriticalLaw := by
+  funext ν
+  exact propext ⟨fun h => ⟨h.prob, h.nonconst, h.mean, h.expMoment⟩,
+    fun h => ⟨h.prob, h.nonconst, h.mean, h.expMoment⟩⟩
+
+/-! ### The cited results -/
+
+theorem sandpileGrowth_eq :
+    ParkingAudit.External.SandpileGrowth = Parking.External.SandpileGrowth := by
+  delta ParkingAudit.External.SandpileGrowth ParkingAudit.External.meanSandpileReal
+  rw [u_eq]
+  rfl
+
+theorem bernstein_eq : ParkingAudit.External.Bernstein = Parking.External.Bernstein := rfl
+
+end ParkingAudit.Bridge
