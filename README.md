@@ -311,7 +311,7 @@ the name the statement uses.
 
 ## How this was built
 
-The Lean code was written mostly by Claude (Fable 5.1, Opus 5, Opus 5.5 and Sonnet 5), with contributions by OpenAI's gpt-6-astra, gpt-6-luna and gpt-5.6-luna, DeepSeek-v4.1-flash, GLM-5.3, GLM-5.3-flash and Kimi k3, under the close supervision of the author; models, tooling and cost are disclosed in [`formalization.yaml`](formalization.yaml), following the [mathlib-initiative](https://github.com/mathlib-initiative/formalization.yaml) standard.
+The Lean code was written mostly by Claude (Fable 5.1, Opus 5, Opus 5.5 and Sonnet 5), with contributions by OpenAI's gpt-6-astra, gpt-6-luna and gpt-5.6-luna, DeepSeek-v4.1-flash, GLM-5.3, GLM-5.3-flash and Kimi k3, under the close supervision of the author; models, tooling, cost and review status are disclosed in [`formalization.yaml`](formalization.yaml), following the [mathlib-initiative](https://github.com/mathlib-initiative/formalization.yaml) standard.
 
 ## Authors, citation, acknowledgements
 

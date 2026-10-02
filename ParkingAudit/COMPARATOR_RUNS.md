@@ -1,6 +1,6 @@
 # Comparator runs
 
-The official `leanprover/comparator` was run on every pair in this directory, against the current statements and the Lattice-Probability revision pinned in `lake-manifest.json`, on a local machine (Linux 6.17). Each pair was checked twice: once with the Lean kernel, and once more with the independent `nanoda` kernel enabled (a temporary copy of `comparator.json` with `"enable_nanoda": true`). The committed configurations keep `enable_nanoda` false so that a reproduction needs only three tools.
+The official `leanprover/comparator` was run on every pair in this directory, against the statements in this repository and the Lattice-Probability revision pinned in `lake-manifest.json`, on a local machine (Linux 6.17). Each pair was checked twice: once with the Lean kernel, and once more with the independent `nanoda` kernel enabled (a temporary copy of `comparator.json` with `"enable_nanoda": true`). The committed configurations keep `enable_nanoda` false so that a reproduction needs only three tools.
 
 | Tool | Revision |
 |---|---|

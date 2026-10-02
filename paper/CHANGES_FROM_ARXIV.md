@@ -40,7 +40,7 @@ Corrected:
 
 The coupling gives each particle its own walk, which the stack construction of Section 2 does
 not do: adding a particle at a site changes which instruction every later departure from that
-site reads.  The statement now names the construction it is made in.  Lemma 2.4
+site reads.  The statement names the construction it is made in.  Lemma 2.4
 (`lem:tagged-monotonicity`) is stated in the coupling of Lemma 2.3 and so is made in the same
 construction.
 
@@ -88,7 +88,7 @@ Corrected:
 
 Lemma 2.3 compares the two processes in the construction in which each particle has its own
 walk, while $S_t$ is defined through the stack construction, where $A_t$ is not a monotone
-function of $\eta$.  The proof now makes the comparison in the first construction and
+function of $\eta$.  The proof makes the comparison in the first construction and
 transfers the expectations through the equality of the two laws.
 
 ## 5. After Lemma 4.5, `lem:bernstein` (lines 1190-1193)
