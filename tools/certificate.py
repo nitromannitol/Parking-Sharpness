@@ -148,8 +148,9 @@ def build() -> str:
     # whenever any node's closure carries `sorryAx`, which is the normal,
     # expected state of a `DRAFT_SORRY` or `CONDITIONAL` node.  The per-node
     # checks below ask the sharper question this certificate needs -- does
-    # every `SEALED` node have a clean closure, and does every clean closure
-    # belong to a `SEALED` node -- against the axiom closures fetched directly
+    # every `SEALED` or `PROVED` node have a clean closure, and does every
+    # clean closure belong to a `SEALED` or `PROVED` node -- against the axiom
+    # closures fetched directly
     # below, and raise on the first node where the manifest and the closure
     # disagree.
     # check_warnings.py, run above, is the authority on which build warnings
@@ -164,8 +165,8 @@ def build() -> str:
         got = {a.strip() for a in ax[export].split(",") if a.strip()}
         return got - CLASSICAL
 
-    sealed = sum(n["kind"] == "theorem" and n["state"] == "SEALED" for n in nodes)
-    open_theorems = [n for n in theorems if n["state"] != "SEALED"]
+    sealed = sum(n["kind"] == "theorem" and n["state"] in ("SEALED", "PROVED") for n in nodes)
+    open_theorems = [n for n in theorems if n["state"] not in ("SEALED", "PROVED")]
     draft_theorems = [n for n in open_theorems if n["state"] == "DRAFT_SORRY"]
     conditional_theorems = [n for n in open_theorems if n["state"] == "CONDITIONAL"]
     frozen_only = sum(n["kind"] == "definition" and n["state"] == "FROZEN" for n in nodes)
@@ -189,7 +190,7 @@ def build() -> str:
     A("The paper's registered statements are proved in Lean 4 from Mathlib and the")
     A("shared library `LatticeProb`, under the hypotheses displayed in their frozen")
     A("declarations, with no added axiom and no `sorry`, for every node in state")
-    A("`SEALED` below.  Cited inputs are proposition-valued predicates in")
+    A("`SEALED` or `PROVED` below.  Cited inputs are proposition-valued predicates in")
     A("`Parking/External/`, carried as explicit hypotheses together with each")
     A("theorem's own hypotheses; two of them are proved inside this repository and")
     A("are marked accordingly.  `CORRESPONDENCE.md` records the correspondence with")
@@ -232,7 +233,7 @@ def build() -> str:
     A("closure of exactly `propext, Classical.choice, Quot.sound` is classical")
     A("mathematics and nothing more; those three are Lean's own, not ours.  A")
     A("closure containing `sorryAx` means the statement is not proved; below, that")
-    A("is expected exactly at the nodes whose state is not `SEALED`.")
+    A("is expected exactly at the nodes whose state is not `SEALED` or `PROVED`.")
     A("")
     A("| # | node | Lean name | state | paper | axiom closure |")
     A("|---|---|---|---|---|---|")
@@ -251,21 +252,21 @@ def build() -> str:
             else:
                 verdict = "assumed (a cited theorem, stated as a proposition)"
         elif not extra:
-            if n["state"] != "SEALED":
+            if n["state"] not in ("SEALED", "PROVED"):
                 raise RuntimeError(
                     f"{n['id']}: axiom closure is clean but manifest state is {n['state']}")
             verdict = "classical only"
             clean += 1
         else:
-            if n["state"] == "SEALED":
+            if n["state"] in ("SEALED", "PROVED"):
                 raise RuntimeError(
-                    f"{n['id']}: manifest state is SEALED but axiom closure carries {sorted(extra)}")
+                    f"{n['id']}: manifest state is {n['state']} but axiom closure carries {sorted(extra)}")
             verdict = "**" + ", ".join(sorted(extra)) + "**"
         A(f"| {i} | `{n['id']}` | `{e}` | `{n['state']}` | {paper_label(n['source'])} | {verdict} |")
     A("")
     A(f"All {clean} theorem declarations with a clean closure have axiom closures")
     A(f"contained in the three classical axioms; the {sealed} theorem nodes in state")
-    A(f"`SEALED` are exactly these.  The {frozen_only} external definitions in")
+    A(f"`SEALED` or `PROVED` are exactly these.  The {frozen_only} external definitions in")
     A("state `FROZEN` are not proved here and supply no closure of their own; the")
     A(f"{len(DISCHARGED)} in state `SEALED` are proved by the companion theorem named")
     A("above. A clean closure for a `definition` node's own export reports only")

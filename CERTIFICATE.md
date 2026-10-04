@@ -10,7 +10,7 @@ not edit it by hand.
 The paper's registered statements are proved in Lean 4 from Mathlib and the
 shared library `LatticeProb`, under the hypotheses displayed in their frozen
 declarations, with no added axiom and no `sorry`, for every node in state
-`SEALED` below.  Cited inputs are proposition-valued predicates in
+`SEALED` or `PROVED` below.  Cited inputs are proposition-valued predicates in
 `Parking/External/`, carried as explicit hypotheses together with each
 theorem's own hypotheses; two of them are proved inside this repository and
 are marked accordingly.  `CORRESPONDENCE.md` records the correspondence with
@@ -25,7 +25,7 @@ the paper and `PROOF.md` describes the proof and the Lean tree.
 | Paper (`paper/parking.tex`) SHA-256 | `4aa03aee7c30e24bffc9a4e8220f775b5c71706e694dcd9bcffc865c8135d3a0` |
 | Build | succeeded, 10371 jobs |
 | Build warnings | 0 |
-| Generated | 2026-09-27 |
+| Generated | 2026-10-04 |
 
 ## Reproducing it
 
@@ -46,76 +46,76 @@ python3 tools/certificate.py --check
 closure of exactly `propext, Classical.choice, Quot.sound` is classical
 mathematics and nothing more; those three are Lean's own, not ours.  A
 closure containing `sorryAx` means the statement is not proved; below, that
-is expected exactly at the nodes whose state is not `SEALED`.
+is expected exactly at the nodes whose state is not `SEALED` or `PROVED`.
 
 | # | node | Lean name | state | paper | axiom closure |
 |---|---|---|---|---|---|
 | 1 | `ext-bernstein` | `Parking.External.Bernstein` | `FROZEN` | `lem:bernstein` | assumed (a cited theorem, stated as a proposition) |
-| 2 | `lem-tagged-monotonicity` | `Parking.Frozen.tagged_monotonicity` | `SEALED` | `lem:tagged-monotonicity` | classical only |
-| 3 | `lem-parallel` | `Parking.Frozen.parallel` | `SEALED` | `lem:parallel` | classical only |
-| 4 | `lem-one-particle` | `Parking.Frozen.one_particle` | `SEALED` | `lem:one-particle` | classical only |
-| 5 | `lem-pathwise-comparison` | `Parking.Frozen.pathwise_comparison` | `SEALED` | `lem:pathwise-comparison` | classical only |
+| 2 | `lem-tagged-monotonicity` | `Parking.Frozen.tagged_monotonicity` | `PROVED` | `lem:tagged-monotonicity` | classical only |
+| 3 | `lem-parallel` | `Parking.Frozen.parallel` | `PROVED` | `lem:parallel` | classical only |
+| 4 | `lem-one-particle` | `Parking.Frozen.one_particle` | `PROVED` | `lem:one-particle` | classical only |
+| 5 | `lem-pathwise-comparison` | `Parking.Frozen.pathwise_comparison` | `PROVED` | `lem:pathwise-comparison` | classical only |
 | 6 | `ext-stopping` | `Parking.External.Stopping` | `SEALED` | `lem:stopping` | proved (companion `Parking.External.stopping`, classical only) |
-| 7 | `lem-deferred` | `Parking.Frozen.deferred` | `SEALED` | `lem:deferred` | classical only |
-| 8 | `thm-comparison` | `Parking.Frozen.comparison` | `SEALED` | `thm:comparison` | classical only |
-| 9 | `lem-activity-holes` | `Parking.Frozen.activity_holes` | `SEALED` | `lem:activity-holes` | classical only |
-| 10 | `lem-shift` | `Parking.Frozen.shift` | `SEALED` | `lem:shift` | classical only |
-| 11 | `lem-nearest-close-pair` | `Parking.Frozen.nearest_close_pair` | `SEALED` | `lem:nearest-close-pair` | classical only |
-| 12 | `lem-gamma-sum` | `Parking.Frozen.gamma_sum` | `SEALED` | `lem:gamma-sum` | classical only |
+| 7 | `lem-deferred` | `Parking.Frozen.deferred` | `PROVED` | `lem:deferred` | classical only |
+| 8 | `thm-comparison` | `Parking.Frozen.comparison` | `PROVED` | `thm:comparison` | classical only |
+| 9 | `lem-activity-holes` | `Parking.Frozen.activity_holes` | `PROVED` | `lem:activity-holes` | classical only |
+| 10 | `lem-shift` | `Parking.Frozen.shift` | `PROVED` | `lem:shift` | classical only |
+| 11 | `lem-nearest-close-pair` | `Parking.Frozen.nearest_close_pair` | `PROVED` | `lem:nearest-close-pair` | classical only |
+| 12 | `lem-gamma-sum` | `Parking.Frozen.gamma_sum` | `PROVED` | `lem:gamma-sum` | classical only |
 | 13 | `ext-green-gradient` | `Parking.External.GreenGradient` | `SEALED` | `eq:green-gradient` | proved (companion `Parking.External.greenGradient`, classical only) |
-| 14 | `lem-exposure` | `Parking.Frozen.exposure` | `SEALED` | `lem:exposure` | classical only |
-| 15 | `lem-density-compare` | `Parking.Frozen.density_compare` | `SEALED` | `lem:density-compare` | classical only |
-| 16 | `lem-transport` | `Parking.Frozen.transport` | `SEALED` | `lem:transport` | classical only |
-| 17 | `lem-range-lower` | `Parking.Frozen.range_lower` | `SEALED` | `lem:range-lower` | classical only |
-| 18 | `lem-w-martingale` | `Parking.Frozen.w_martingale` | `SEALED` | `lem:w-martingale` | classical only |
-| 19 | `lem-critical-density` | `Parking.Frozen.critical_density` | `SEALED` | `lem:critical-density` | classical only |
-| 20 | `cor-critical` | `Parking.Frozen.cor_critical` | `SEALED` | `cor:critical` | classical only |
-| 21 | `thm-four-sparse` | `Parking.Frozen.four_sparse` | `SEALED` | `thm:four-sparse` | classical only |
-| 22 | `lem-nearest-one-point` | `Parking.Frozen.nearest_one_point` | `SEALED` | `lem:nearest-one-point` | classical only |
-| 23 | `prop-nearest-two-hole` | `Parking.Frozen.nearest_two_hole` | `SEALED` | `prop:nearest-two-hole` | classical only |
-| 24 | `thm-nearest-counterexample` | `Parking.Frozen.nearest_counterexample` | `SEALED` | `thm:nearest-counterexample` | classical only |
+| 14 | `lem-exposure` | `Parking.Frozen.exposure` | `PROVED` | `lem:exposure` | classical only |
+| 15 | `lem-density-compare` | `Parking.Frozen.density_compare` | `PROVED` | `lem:density-compare` | classical only |
+| 16 | `lem-transport` | `Parking.Frozen.transport` | `PROVED` | `lem:transport` | classical only |
+| 17 | `lem-range-lower` | `Parking.Frozen.range_lower` | `PROVED` | `lem:range-lower` | classical only |
+| 18 | `lem-w-martingale` | `Parking.Frozen.w_martingale` | `PROVED` | `lem:w-martingale` | classical only |
+| 19 | `lem-critical-density` | `Parking.Frozen.critical_density` | `PROVED` | `lem:critical-density` | classical only |
+| 20 | `cor-critical` | `Parking.Frozen.cor_critical` | `PROVED` | `cor:critical` | classical only |
+| 21 | `thm-four-sparse` | `Parking.Frozen.four_sparse` | `PROVED` | `thm:four-sparse` | classical only |
+| 22 | `lem-nearest-one-point` | `Parking.Frozen.nearest_one_point` | `PROVED` | `lem:nearest-one-point` | classical only |
+| 23 | `prop-nearest-two-hole` | `Parking.Frozen.nearest_two_hole` | `PROVED` | `prop:nearest-two-hole` | classical only |
+| 24 | `thm-nearest-counterexample` | `Parking.Frozen.nearest_counterexample` | `PROVED` | `thm:nearest-counterexample` | classical only |
 | 25 | `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | `FROZEN` | lines 117-121 | assumed (a cited theorem, stated as a proposition) |
-| 26 | `prop-resolvent` | `Parking.Frozen.resolvent` | `SEALED` | `prop:resolvent` | classical only |
+| 26 | `prop-resolvent` | `Parking.Frozen.resolvent` | `PROVED` | `prop:resolvent` | classical only |
 | 27 | `ext-oriented-stopping-stability` | `Parking.External.OrientedStoppingStability` | `FROZEN` | lines 3214-3218 | assumed (a cited theorem, stated as a proposition) |
-| 28 | `lem-product` | `Parking.Frozen.product` | `SEALED` | `lem:product` | classical only |
-| 29 | `thm-subcritical` | `Parking.Frozen.subcritical` | `SEALED` | `thm:subcritical` | classical only |
-| 30 | `thm-subcritical-tail` | `Parking.Frozen.subcritical_tail` | `SEALED` | `thm:subcritical-tail` | classical only |
-| 31 | `lem-near-tilt` | `Parking.Frozen.near_tilt` | `SEALED` | `lem:near-tilt` | classical only |
-| 32 | `ext-variance-scale` | `Parking.External.varianceScale` | `SEALED` | lines 1822-1848 | classical only |
+| 28 | `lem-product` | `Parking.Frozen.product` | `PROVED` | `lem:product` | classical only |
+| 29 | `thm-subcritical` | `Parking.Frozen.subcritical` | `PROVED` | `thm:subcritical` | classical only |
+| 30 | `thm-subcritical-tail` | `Parking.Frozen.subcritical_tail` | `PROVED` | `thm:subcritical-tail` | classical only |
+| 31 | `lem-near-tilt` | `Parking.Frozen.near_tilt` | `PROVED` | `lem:near-tilt` | classical only |
+| 32 | `ext-variance-scale` | `Parking.External.varianceScale` | `PROVED` | lines 1822-1848 | classical only |
 | 33 | `ext-multivariate-berry-esseen` | `Parking.External.MultivariateBerryEsseen` | `FROZEN` | lines 1822-1848 | assumed (a cited theorem, stated as a proposition) |
 | 34 | `ext-spatial-fixed-time-tightness` | `Parking.External.SpatialFixedTimeTightness` | `FROZEN` | `i` | assumed (a cited theorem, stated as a proposition) |
 | 35 | `ext-spatial-stopping-stability` | `Parking.External.SpatialStoppingStability` | `FROZEN` | lines 1756-1767 | assumed (a cited theorem, stated as a proposition) |
-| 36 | `thm-oriented` | `Parking.Frozen.oriented` | `SEALED` | `thm:oriented` | classical only |
-| 37 | `prop-w-moment` | `Parking.Frozen.w_moment` | `SEALED` | `prop:w-moment` | classical only |
+| 36 | `thm-oriented` | `Parking.Frozen.oriented` | `PROVED` | `thm:oriented` | classical only |
+| 37 | `prop-w-moment` | `Parking.Frozen.w_moment` | `PROVED` | `prop:w-moment` | classical only |
 | 38 | `ext-heat-compactness` | `Parking.External.HeatCompactness` | `FROZEN` | lines 1800-1820 | assumed (a cited theorem, stated as a proposition) |
 | 39 | `ext-spatial-odometer-scaling` | `Parking.External.SpatialOdometerScaling` | `FROZEN` | `i` | assumed (a cited theorem, stated as a proposition) |
 | 40 | `ext-linear-field-scaling` | `Parking.External.LinearFieldScaling` | `FROZEN` | lines 1756-1767 | assumed (a cited theorem, stated as a proposition) |
 | 41 | `ext-heat-interior-regularity` | `Parking.External.HeatInteriorRegularity` | `FROZEN` | lines 1800-1820 | assumed (a cited theorem, stated as a proposition) |
 | 42 | `ext-sandpile-growth` | `Parking.External.SandpileGrowth` | `FROZEN` | `thm:BP` | assumed (a cited theorem, stated as a proposition) |
-| 43 | `ext-sandpile-growth-proved` | `Parking.External.sandpileGrowth` | `SEALED` | `thm:BP` | classical only |
-| 44 | `ext-binomial-local-clt` | `Parking.External.binomialLocalCLT` | `SEALED` | lines 3207-3218 | classical only |
-| 45 | `prop-oriented-scaling` | `Parking.Frozen.oriented_scaling` | `SEALED` | `prop:oriented-scaling` | classical only |
-| 46 | `ext-green-norms` | `Parking.External.greenNorms` | `SEALED` | `eq:green-norms` | classical only |
-| 47 | `ext-critical-scale-lower-tail` | `Parking.External.criticalScaleLowerTail` | `SEALED` | lines 1822-1848 | classical only |
-| 48 | `ext-srw-local-clt` | `Parking.External.srwLocalCLT` | `SEALED` | lines 1756-1767 | classical only |
-| 49 | `ext-u-concentration` | `Parking.External.uConcentration` | `SEALED` | `lem:u-concentration` | classical only |
-| 50 | `ext-heat-strong-minimum` | `Parking.External.heatStrongMinimum` | `SEALED` | lines 1800-1820 | classical only |
-| 51 | `thm-master` | `Parking.Frozen.master` | `SEALED` | `thm:master` | classical only |
-| 52 | `cor-growth` | `Parking.Frozen.growth` | `SEALED` | `cor:growth` | classical only |
-| 53 | `prop-discrepancy` | `Parking.Frozen.discrepancy` | `SEALED` | `prop:discrepancy` | classical only |
-| 54 | `thm-trichotomy` | `Parking.Frozen.trichotomy` | `SEALED` | `thm:trichotomy` | classical only |
-| 55 | `prop-everyone-settles` | `Parking.Frozen.everyone_settles` | `SEALED` | `prop:everyone-settles` | classical only |
-| 56 | `lem-mean-horizon` | `Parking.Frozen.mean_horizon` | `SEALED` | `lem:mean-horizon` | classical only |
-| 57 | `prop-near-divisible` | `Parking.Frozen.near_divisible` | `SEALED` | `prop:near-divisible` | classical only |
-| 58 | `thm-near` | `Parking.Frozen.near` | `SEALED` | `thm:near` | classical only |
-| 59 | `thm-upper` | `Parking.Frozen.upper` | `SEALED` | `thm:upper` | classical only |
-| 60 | `thm-oriented-walk` | `Parking.Frozen.oriented_walk` | `SEALED` | `thm:oriented-walk` | classical only |
-| 61 | `prop-spatial-scaling` | `Parking.Frozen.spatial_scaling` | `SEALED` | `prop:spatial-scaling` | classical only |
-| 62 | `thm-nearest` | `Parking.Frozen.nearest` | `SEALED` | `thm:nearest` | classical only |
+| 43 | `ext-sandpile-growth-proved` | `Parking.External.sandpileGrowth` | `PROVED` | `thm:BP` | classical only |
+| 44 | `ext-binomial-local-clt` | `Parking.External.binomialLocalCLT` | `PROVED` | lines 3207-3218 | classical only |
+| 45 | `prop-oriented-scaling` | `Parking.Frozen.oriented_scaling` | `PROVED` | `prop:oriented-scaling` | classical only |
+| 46 | `ext-green-norms` | `Parking.External.greenNorms` | `PROVED` | `eq:green-norms` | classical only |
+| 47 | `ext-critical-scale-lower-tail` | `Parking.External.criticalScaleLowerTail` | `PROVED` | lines 1822-1848 | classical only |
+| 48 | `ext-srw-local-clt` | `Parking.External.srwLocalCLT` | `PROVED` | lines 1756-1767 | classical only |
+| 49 | `ext-u-concentration` | `Parking.External.uConcentration` | `PROVED` | `lem:u-concentration` | classical only |
+| 50 | `ext-heat-strong-minimum` | `Parking.External.heatStrongMinimum` | `PROVED` | lines 1800-1820 | classical only |
+| 51 | `thm-master` | `Parking.Frozen.master` | `PROVED` | `thm:master` | classical only |
+| 52 | `cor-growth` | `Parking.Frozen.growth` | `PROVED` | `cor:growth` | classical only |
+| 53 | `prop-discrepancy` | `Parking.Frozen.discrepancy` | `PROVED` | `prop:discrepancy` | classical only |
+| 54 | `thm-trichotomy` | `Parking.Frozen.trichotomy` | `PROVED` | `thm:trichotomy` | classical only |
+| 55 | `prop-everyone-settles` | `Parking.Frozen.everyone_settles` | `PROVED` | `prop:everyone-settles` | classical only |
+| 56 | `lem-mean-horizon` | `Parking.Frozen.mean_horizon` | `PROVED` | `lem:mean-horizon` | classical only |
+| 57 | `prop-near-divisible` | `Parking.Frozen.near_divisible` | `PROVED` | `prop:near-divisible` | classical only |
+| 58 | `thm-near` | `Parking.Frozen.near` | `PROVED` | `thm:near` | classical only |
+| 59 | `thm-upper` | `Parking.Frozen.upper` | `PROVED` | `thm:upper` | classical only |
+| 60 | `thm-oriented-walk` | `Parking.Frozen.oriented_walk` | `PROVED` | `thm:oriented-walk` | classical only |
+| 61 | `prop-spatial-scaling` | `Parking.Frozen.spatial_scaling` | `PROVED` | `prop:spatial-scaling` | classical only |
+| 62 | `thm-nearest` | `Parking.Frozen.nearest` | `PROVED` | `thm:nearest` | classical only |
 
 All 49 theorem declarations with a clean closure have axiom closures
 contained in the three classical axioms; the 49 theorem nodes in state
-`SEALED` are exactly these.  The 11 external definitions in
+`SEALED` or `PROVED` are exactly these.  The 11 external definitions in
 state `FROZEN` are not proved here and supply no closure of their own; the
 2 in state `SEALED` are proved by the companion theorem named
 above. A clean closure for a `definition` node's own export reports only

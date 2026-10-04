@@ -54,13 +54,20 @@ def surface_table(nodes: list[dict]) -> str:
 
 def status_block(nodes: list[dict]) -> str:
     counts = Counter(n["state"] for n in nodes)
-    sealed, frozen = counts["SEALED"], counts["FROZEN"]
+    proved = counts["PROVED"] + counts["SEALED"]
+    proved_theorems = counts["PROVED"]
+    sealed_defs = counts["SEALED"]
+    frozen = counts["FROZEN"]
     draft = [n["id"] for n in nodes if n["state"] == "DRAFT_SORRY"]
     # State what is actually true.  Claiming a clean axiom closure while a
     # `DRAFT_SORRY` node exists is exactly the drift these blocks exist to stop.
     body = (
-        f"The {sealed} sealed nodes are machine-checked and no sealed node's\n"
+        f"The {proved} proved nodes are machine-checked and no proved node's\n"
         f"axiom closure contains `sorryAx`.")
+    if sealed_defs:
+        body += (
+            f"  The {sealed_defs} `SEALED` nodes are proved `definition` nodes,\n"
+            f"sealed by the companion theorem named in `CERTIFICATE.md`.")
     if frozen:
         body += (
             f"  The {frozen} `FROZEN` nodes are cited results, stated in\n"
@@ -72,8 +79,9 @@ def status_block(nodes: list[dict]) -> str:
             f"  Still open: {which},\n"
             f"whose statement is frozen and whose proof is a registered `sorry`.")
     return (
-        f"Status: **{len(nodes)} registered statements: {sealed} `SEALED`, "
-        f"proved here, and {frozen} `FROZEN`, cited results that are assumed.**  "
+        f"Status: **{len(nodes)} registered statements: {proved_theorems} `PROVED`, "
+        f"{sealed_defs} `SEALED` (definition nodes proved by companion theorems), "
+        f"and {frozen} `FROZEN`, cited results that are assumed.**  "
         f"{body}  Run\n"
         f"`python3 tools/check_axioms.py` to confirm.  Counts here are generated\n"
         f"from `ledger/manifest.yaml` by `python3 tools/sync_docs.py`; do not\n"

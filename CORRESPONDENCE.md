@@ -440,66 +440,66 @@ the two main theorems discharge it.
 | id | Lean | paper | state |
 |---|---|---|---|
 | `ext-bernstein` | `Parking.External.Bernstein` | `parking.tex:1175-1188`, `lem:bernstein` | FROZEN |
-| `lem-tagged-monotonicity` | `Parking.Frozen.tagged_monotonicity` | `parking.tex:714-719`, `lem:tagged-monotonicity` | SEALED |
-| `lem-parallel` | `Parking.Frozen.parallel` | `parking.tex:647-653`, `lem:parallel` | SEALED |
-| `lem-one-particle` | `Parking.Frozen.one_particle` | `parking.tex:682-692`, `lem:one-particle` | SEALED |
-| `lem-pathwise-comparison` | `Parking.Frozen.pathwise_comparison` | `parking.tex:976-985`, `lem:pathwise-comparison` | SEALED |
+| `lem-tagged-monotonicity` | `Parking.Frozen.tagged_monotonicity` | `parking.tex:714-719`, `lem:tagged-monotonicity` | PROVED |
+| `lem-parallel` | `Parking.Frozen.parallel` | `parking.tex:647-653`, `lem:parallel` | PROVED |
+| `lem-one-particle` | `Parking.Frozen.one_particle` | `parking.tex:682-692`, `lem:one-particle` | PROVED |
+| `lem-pathwise-comparison` | `Parking.Frozen.pathwise_comparison` | `parking.tex:976-985`, `lem:pathwise-comparison` | PROVED |
 | `ext-stopping` | `Parking.External.Stopping` | `parking.tex:876-884`, `lem:stopping` | SEALED |
-| `lem-deferred` | `Parking.Frozen.deferred` | `parking.tex:659-667`, `lem:deferred` | SEALED |
-| `thm-comparison` | `Parking.Frozen.comparison` | `parking.tex:889-895`, `thm:comparison` | SEALED |
-| `lem-activity-holes` | `Parking.Frozen.activity_holes` | `parking.tex:776-782`, `lem:activity-holes` | SEALED |
-| `lem-shift` | `Parking.Frozen.shift` | `parking.tex:3047-3052`, `lem:shift` | SEALED |
-| `lem-nearest-close-pair` | `Parking.Frozen.nearest_close_pair` | `parking.tex:2199-2204`, `lem:nearest-close-pair` | SEALED |
-| `lem-gamma-sum` | `Parking.Frozen.gamma_sum` | `parking.tex:1057-1062`, `lem:gamma-sum` | SEALED |
+| `lem-deferred` | `Parking.Frozen.deferred` | `parking.tex:659-667`, `lem:deferred` | PROVED |
+| `thm-comparison` | `Parking.Frozen.comparison` | `parking.tex:889-895`, `thm:comparison` | PROVED |
+| `lem-activity-holes` | `Parking.Frozen.activity_holes` | `parking.tex:776-782`, `lem:activity-holes` | PROVED |
+| `lem-shift` | `Parking.Frozen.shift` | `parking.tex:3047-3052`, `lem:shift` | PROVED |
+| `lem-nearest-close-pair` | `Parking.Frozen.nearest_close_pair` | `parking.tex:2199-2204`, `lem:nearest-close-pair` | PROVED |
+| `lem-gamma-sum` | `Parking.Frozen.gamma_sum` | `parking.tex:1057-1062`, `lem:gamma-sum` | PROVED |
 | `ext-green-gradient` | `Parking.External.GreenGradient` | `parking.tex:1030-1034`, `eq:green-gradient` | SEALED |
-| `lem-exposure` | `Parking.Frozen.exposure` | `parking.tex:1107-1115`, `lem:exposure` | SEALED |
-| `lem-density-compare` | `Parking.Frozen.density_compare` | `parking.tex:811-821`, `lem:density-compare` | SEALED |
-| `lem-transport` | `Parking.Frozen.transport` | `parking.tex:741-753`, `lem:transport` | SEALED |
-| `lem-range-lower` | `Parking.Frozen.range_lower` | `parking.tex:2295-2303`, `lem:range-lower` | SEALED |
-| `lem-w-martingale` | `Parking.Frozen.w_martingale` | `parking.tex:1135-1148`, `lem:w-martingale` | SEALED |
-| `lem-critical-density` | `Parking.Frozen.critical_density` | `parking.tex:1255-1263`, `lem:critical-density` | SEALED |
-| `cor-critical` | `Parking.Frozen.cor_critical` | `parking.tex:1354-1361`, `cor:critical` | SEALED |
-| `thm-four-sparse` | `Parking.Frozen.four_sparse` | `parking.tex:1601-1610`, `thm:four-sparse` | SEALED |
-| `lem-nearest-one-point` | `Parking.Frozen.nearest_one_point` | `parking.tex:1882-1891`, `lem:nearest-one-point` | SEALED |
-| `prop-nearest-two-hole` | `Parking.Frozen.nearest_two_hole` | `parking.tex:2025-2032`, `prop:nearest-two-hole` | SEALED |
-| `thm-nearest-counterexample` | `Parking.Frozen.nearest_counterexample` | `parking.tex:289-302`, `thm:nearest-counterexample` | SEALED |
+| `lem-exposure` | `Parking.Frozen.exposure` | `parking.tex:1107-1115`, `lem:exposure` | PROVED |
+| `lem-density-compare` | `Parking.Frozen.density_compare` | `parking.tex:811-821`, `lem:density-compare` | PROVED |
+| `lem-transport` | `Parking.Frozen.transport` | `parking.tex:741-753`, `lem:transport` | PROVED |
+| `lem-range-lower` | `Parking.Frozen.range_lower` | `parking.tex:2295-2303`, `lem:range-lower` | PROVED |
+| `lem-w-martingale` | `Parking.Frozen.w_martingale` | `parking.tex:1135-1148`, `lem:w-martingale` | PROVED |
+| `lem-critical-density` | `Parking.Frozen.critical_density` | `parking.tex:1255-1263`, `lem:critical-density` | PROVED |
+| `cor-critical` | `Parking.Frozen.cor_critical` | `parking.tex:1354-1361`, `cor:critical` | PROVED |
+| `thm-four-sparse` | `Parking.Frozen.four_sparse` | `parking.tex:1601-1610`, `thm:four-sparse` | PROVED |
+| `lem-nearest-one-point` | `Parking.Frozen.nearest_one_point` | `parking.tex:1882-1891`, `lem:nearest-one-point` | PROVED |
+| `prop-nearest-two-hole` | `Parking.Frozen.nearest_two_hole` | `parking.tex:2025-2032`, `prop:nearest-two-hole` | PROVED |
+| `thm-nearest-counterexample` | `Parking.Frozen.nearest_counterexample` | `parking.tex:289-302`, `thm:nearest-counterexample` | PROVED |
 | `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | parking.tex:117-121 (Theorem 1 of Donsker-Varadhan 1979, cited for eq:sharpness and used at parking.tex:2514-2517) | FROZEN |
-| `prop-resolvent` | `Parking.Frozen.resolvent` | `parking.tex:2643-2663`, `prop:resolvent` | SEALED |
+| `prop-resolvent` | `Parking.Frozen.resolvent` | `parking.tex:2643-2663`, `prop:resolvent` | PROVED |
 | `ext-oriented-stopping-stability` | `Parking.External.OrientedStoppingStability` | parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling) | FROZEN |
-| `lem-product` | `Parking.Frozen.product` | `parking.tex:2336-2347`, `lem:product` | SEALED |
-| `thm-subcritical` | `Parking.Frozen.subcritical` | `parking.tex:2434-2447`, `thm:subcritical` | SEALED |
-| `thm-subcritical-tail` | `Parking.Frozen.subcritical_tail` | `parking.tex:123-135`, `thm:subcritical-tail` | SEALED |
-| `lem-near-tilt` | `Parking.Frozen.near_tilt` | `parking.tex:2599-2604`, `lem:near-tilt` | SEALED |
-| `ext-variance-scale` | `Parking.External.varianceScale` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240); proved from the shared library Lattice-Probability (LatticeProb.Walk.VarianceScale, LatticeProb.Walk.Correlation, LatticeProb.Walk.WindowD4) | SEALED |
+| `lem-product` | `Parking.Frozen.product` | `parking.tex:2336-2347`, `lem:product` | PROVED |
+| `thm-subcritical` | `Parking.Frozen.subcritical` | `parking.tex:2434-2447`, `thm:subcritical` | PROVED |
+| `thm-subcritical-tail` | `Parking.Frozen.subcritical_tail` | `parking.tex:123-135`, `thm:subcritical-tail` | PROVED |
+| `lem-near-tilt` | `Parking.Frozen.near_tilt` | `parking.tex:2599-2604`, `lem:near-tilt` | PROVED |
+| `ext-variance-scale` | `Parking.External.varianceScale` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240); proved from the shared library Lattice-Probability (LatticeProb.Walk.VarianceScale, LatticeProb.Walk.Correlation, LatticeProb.Walk.WindowD4) | PROVED |
 | `ext-multivariate-berry-esseen` | `Parking.External.MultivariateBerryEsseen` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1770-1782, quoted from Raic Theorem 1.1) | FROZEN |
 | `ext-spatial-fixed-time-tightness` | `Parking.External.SpatialFixedTimeTightness` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP Theorem 1.3(i)(b)) | FROZEN |
 | `ext-spatial-stopping-stability` | `Parking.External.SpatialStoppingStability` | parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling) | FROZEN |
-| `thm-oriented` | `Parking.Frozen.oriented` | `parking.tex:3072-3085`, `thm:oriented` | SEALED |
-| `prop-w-moment` | `Parking.Frozen.w_moment` | `parking.tex:1202-1215`, `prop:w-moment` | SEALED |
+| `thm-oriented` | `Parking.Frozen.oriented` | `parking.tex:3072-3085`, `thm:oriented` | PROVED |
+| `prop-w-moment` | `Parking.Frozen.w_moment` | `parking.tex:1202-1215`, `prop:w-moment` | PROVED |
 | `ext-heat-compactness` | `Parking.External.HeatCompactness` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, classical parabolic compactness) | FROZEN |
 | `ext-spatial-odometer-scaling` | `Parking.External.SpatialOdometerScaling` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP Theorem 1.3(i)(b), sandpile.tex:206-235) | FROZEN |
 | `ext-linear-field-scaling` | `Parking.External.LinearFieldScaling` | parking.tex:1756-1767 (prop:spatial-scaling, BP Proposition 4.3, page 27) | FROZEN |
 | `ext-heat-interior-regularity` | `Parking.External.HeatInteriorRegularity` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, hypoelliptic interior regularity) | FROZEN |
 | `ext-sandpile-growth` | `Parking.External.SandpileGrowth` | `parking.tex:929-943`, `thm:BP` | FROZEN |
-| `ext-sandpile-growth-proved` | `Parking.External.sandpileGrowth` | `parking.tex:929-943`, `thm:BP` | SEALED |
-| `ext-binomial-local-clt` | `Parking.External.binomialLocalCLT` | parking.tex:3207-3218 (proved from LatticeProb.BinomialLCLT.exists_binomPMF_localCLT) | SEALED |
-| `prop-oriented-scaling` | `Parking.Frozen.oriented_scaling` | `parking.tex:3166-3174`, `prop:oriented-scaling` | SEALED |
-| `ext-green-norms` | `Parking.External.greenNorms` | `parking.tex:1383-1400`, `eq:green-norms` | SEALED |
-| `ext-critical-scale-lower-tail` | `Parking.External.criticalScaleLowerTail` | parking.tex:1822-1848 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720); proved outright from the statement's own VarianceScale and MultivariateBerryEsseen hypotheses | SEALED |
-| `ext-srw-local-clt` | `Parking.External.srwLocalCLT` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8)); proved from the local central limit theorem of the divisible sandpile formalization, Sandpile.External.localCLT, via the heat-kernel identification | SEALED |
-| `ext-u-concentration` | `Parking.External.uConcentration` | `parking.tex:1402-1413`, `lem:u-concentration` | SEALED |
-| `ext-heat-strong-minimum` | `Parking.External.heatStrongMinimum` | parking.tex:1800-1820 (prop:spatial-scaling, Step 4, strong minimum principle); proved from the shared library strong minimum principle of Nirenberg 1953 Theorem 1 | SEALED |
-| `thm-master` | `Parking.Frozen.master` | `parking.tex:159-168`, `thm:master` | SEALED |
-| `cor-growth` | `Parking.Frozen.growth` | `parking.tex:174-188`, `cor:growth` | SEALED |
-| `prop-discrepancy` | `Parking.Frozen.discrepancy` | `parking.tex:1566-1583`, `prop:discrepancy` | SEALED |
-| `thm-trichotomy` | `Parking.Frozen.trichotomy` | `parking.tex:207-238`, `thm:trichotomy` | SEALED |
-| `prop-everyone-settles` | `Parking.Frozen.everyone_settles` | `parking.tex:1501-1509`, `prop:everyone-settles` | SEALED |
-| `lem-mean-horizon` | `Parking.Frozen.mean_horizon` | `parking.tex:2779-2785`, `lem:mean-horizon` | SEALED |
-| `prop-near-divisible` | `Parking.Frozen.near_divisible` | `parking.tex:2844-2860`, `prop:near-divisible` | SEALED |
-| `thm-near` | `Parking.Frozen.near` | `parking.tex:314-335`, `thm:near` | SEALED |
-| `thm-upper` | `Parking.Frozen.upper` | `parking.tex:1418-1431`, `thm:upper` | SEALED |
-| `thm-oriented-walk` | `Parking.Frozen.oriented_walk` | `parking.tex:363-380`, `thm:oriented-walk` | SEALED |
-| `prop-spatial-scaling` | `Parking.Frozen.spatial_scaling` | `parking.tex:1694-1752`, `prop:spatial-scaling` | SEALED |
-| `thm-nearest` | `Parking.Frozen.nearest` | `parking.tex:266-275`, `thm:nearest` | SEALED |
+| `ext-sandpile-growth-proved` | `Parking.External.sandpileGrowth` | `parking.tex:929-943`, `thm:BP` | PROVED |
+| `ext-binomial-local-clt` | `Parking.External.binomialLocalCLT` | parking.tex:3207-3218 (proved from LatticeProb.BinomialLCLT.exists_binomPMF_localCLT) | PROVED |
+| `prop-oriented-scaling` | `Parking.Frozen.oriented_scaling` | `parking.tex:3166-3174`, `prop:oriented-scaling` | PROVED |
+| `ext-green-norms` | `Parking.External.greenNorms` | `parking.tex:1383-1400`, `eq:green-norms` | PROVED |
+| `ext-critical-scale-lower-tail` | `Parking.External.criticalScaleLowerTail` | parking.tex:1822-1848 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720); proved outright from the statement's own VarianceScale and MultivariateBerryEsseen hypotheses | PROVED |
+| `ext-srw-local-clt` | `Parking.External.srwLocalCLT` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8)); proved from the local central limit theorem of the divisible sandpile formalization, Sandpile.External.localCLT, via the heat-kernel identification | PROVED |
+| `ext-u-concentration` | `Parking.External.uConcentration` | `parking.tex:1402-1413`, `lem:u-concentration` | PROVED |
+| `ext-heat-strong-minimum` | `Parking.External.heatStrongMinimum` | parking.tex:1800-1820 (prop:spatial-scaling, Step 4, strong minimum principle); proved from the shared library strong minimum principle of Nirenberg 1953 Theorem 1 | PROVED |
+| `thm-master` | `Parking.Frozen.master` | `parking.tex:159-168`, `thm:master` | PROVED |
+| `cor-growth` | `Parking.Frozen.growth` | `parking.tex:174-188`, `cor:growth` | PROVED |
+| `prop-discrepancy` | `Parking.Frozen.discrepancy` | `parking.tex:1566-1583`, `prop:discrepancy` | PROVED |
+| `thm-trichotomy` | `Parking.Frozen.trichotomy` | `parking.tex:207-238`, `thm:trichotomy` | PROVED |
+| `prop-everyone-settles` | `Parking.Frozen.everyone_settles` | `parking.tex:1501-1509`, `prop:everyone-settles` | PROVED |
+| `lem-mean-horizon` | `Parking.Frozen.mean_horizon` | `parking.tex:2779-2785`, `lem:mean-horizon` | PROVED |
+| `prop-near-divisible` | `Parking.Frozen.near_divisible` | `parking.tex:2844-2860`, `prop:near-divisible` | PROVED |
+| `thm-near` | `Parking.Frozen.near` | `parking.tex:314-335`, `thm:near` | PROVED |
+| `thm-upper` | `Parking.Frozen.upper` | `parking.tex:1418-1431`, `thm:upper` | PROVED |
+| `thm-oriented-walk` | `Parking.Frozen.oriented_walk` | `parking.tex:363-380`, `thm:oriented-walk` | PROVED |
+| `prop-spatial-scaling` | `Parking.Frozen.spatial_scaling` | `parking.tex:1694-1752`, `prop:spatial-scaling` | PROVED |
+| `thm-nearest` | `Parking.Frozen.nearest` | `parking.tex:266-275`, `thm:nearest` | PROVED |
 
 <!-- FROZEN-SURFACE-END -->

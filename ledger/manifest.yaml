@@ -8,7 +8,12 @@
 # States: DRAFT_SORRY (statement frozen, proof is a registered `sorry`),
 #         FROZEN (a statement with no proof obligation here, such as a cited
 #           result taken as a hypothesis),
-#         SEALED (a proof exists and its axiom closure is clean).
+#         SEALED (a proof exists and its axiom closure is clean; for a
+#           `definition` node this means the companion theorem named in
+#           CERTIFICATE.md is clean, since a definition has no proof of its own),
+#         PROVED (a `SEALED` theorem promoted after the independent audit of
+#           2026-10-04; `tools/certificate.py` and `tools/sync_docs.py` count it
+#           as proved exactly as before).
 
 version: 1
 source_pin:
@@ -32,7 +37,7 @@ nodes:
     source: parking.tex:714-719 (label lem:tagged-monotonicity)
     file: Parking/Frozen/TaggedMonotonicity.lean
     export: Parking.Frozen.tagged_monotonicity
-    state: SEALED
+    state: PROVED
     frozen_sha256: 839cf2a4b0fc1915fc56d25140603a39b1d22678e474c7fad4fe7ebbb7813fb3
     provider: Parking.Frozen.tagged_monotonicity
     approved: "2026-09-06"
@@ -43,7 +48,7 @@ nodes:
     source: parking.tex:647-653 (label lem:parallel)
     file: Parking/Frozen/Parallel.lean
     export: Parking.Frozen.parallel
-    state: SEALED
+    state: PROVED
     frozen_sha256: ee000c2b7ec706b4f32ff4a5059cdd6e38438d920f437f4cd092312cf1bd44ec
     provider: Parking.Frozen.parallel
     approved: "2026-09-06"
@@ -54,7 +59,7 @@ nodes:
     source: parking.tex:682-692 (label lem:one-particle)
     file: Parking/Frozen/OneParticle.lean
     export: Parking.Frozen.one_particle
-    state: SEALED
+    state: PROVED
     frozen_sha256: bdcb454c0bcecd8cf2864cdd618aa51d43b0dd162dc862fd834ec9882d88aaff
     provider: Parking.Frozen.one_particle
     approved: "2026-09-06"
@@ -65,7 +70,7 @@ nodes:
     source: parking.tex:976-985 (label lem:pathwise-comparison)
     file: Parking/Frozen/PathwiseComparison.lean
     export: Parking.Frozen.pathwise_comparison
-    state: SEALED
+    state: PROVED
     frozen_sha256: 915149f5d65bc6b8d1fa9861b133ea97fab7889ca86689141bdaf6cf6455c266
     provider: Parking.Frozen.pathwise_comparison
     approved: "2026-09-06"
@@ -87,7 +92,7 @@ nodes:
     source: parking.tex:659-667 (label lem:deferred)
     file: Parking/Frozen/Deferred.lean
     export: Parking.Frozen.deferred
-    state: SEALED
+    state: PROVED
     frozen_sha256: e4984c1e6330387bca5665fe675d68516549cabec6d207182e59213c7af18240
     provider: Parking.Frozen.deferred
     approved: "2026-09-06"
@@ -98,7 +103,7 @@ nodes:
     source: parking.tex:889-895 (label thm:comparison)
     file: Parking/Frozen/Comparison.lean
     export: Parking.Frozen.comparison
-    state: SEALED
+    state: PROVED
     frozen_sha256: cba4b60e269bfc28ea466b7f369ce531a36d99ea5e3a103a6e41f11c86db499d
     provider: Parking.Frozen.comparison
     approved: "2026-09-06"
@@ -109,7 +114,7 @@ nodes:
     source: parking.tex:776-782 (label lem:activity-holes)
     file: Parking/Frozen/ActivityHoles.lean
     export: Parking.Frozen.activity_holes
-    state: SEALED
+    state: PROVED
     frozen_sha256: 365a9628b28180cb58ed3d8828bbf94e377d2dd0362c8fe0b155ff7e09954052
     provider: Parking.Frozen.activity_holes
     approved: "2026-09-06"
@@ -120,7 +125,7 @@ nodes:
     source: parking.tex:3047-3052 (label lem:shift)
     file: Parking/Frozen/Shift.lean
     export: Parking.Frozen.shift
-    state: SEALED
+    state: PROVED
     frozen_sha256: 2d8951806eb077073b6f182baa74013a1992982ea62fd5a7b2e6f72f02b6d951
     provider: Parking.Frozen.shift
     approved: "2026-09-06"
@@ -131,7 +136,7 @@ nodes:
     source: parking.tex:2199-2204 (label lem:nearest-close-pair)
     file: Parking/Frozen/NearestClosePair.lean
     export: Parking.Frozen.nearest_close_pair
-    state: SEALED
+    state: PROVED
     frozen_sha256: 1a2588c5c66410e9fd0aff6c7f477c8c46eaa4ef8fe49970fa209d7504007288
     provider: Parking.Frozen.nearest_close_pair
     approved: "2026-09-06"
@@ -142,7 +147,7 @@ nodes:
     source: parking.tex:1057-1062 (label lem:gamma-sum)
     file: Parking/Frozen/GammaSum.lean
     export: Parking.Frozen.gamma_sum
-    state: SEALED
+    state: PROVED
     frozen_sha256: 692c19d009a8409875839f82436d7074482d48dd1e17c3a87163c889dc36c5a5
     provider: Parking.Frozen.gamma_sum
     approved: "2026-09-06"
@@ -164,7 +169,7 @@ nodes:
     source: parking.tex:1107-1115 (label lem:exposure)
     file: Parking/Frozen/Exposure.lean
     export: Parking.Frozen.exposure
-    state: SEALED
+    state: PROVED
     frozen_sha256: deba2db53944b19ca4eed91c4d6f789a208153d286b29ce83b1a602a23d5aed3
     provider: Parking.Frozen.exposure
     approved: "2026-09-06"
@@ -175,7 +180,7 @@ nodes:
     source: parking.tex:811-821 (label lem:density-compare)
     file: Parking/Frozen/DensityCompare.lean
     export: Parking.Frozen.density_compare
-    state: SEALED
+    state: PROVED
     frozen_sha256: 3bafe868c95ca2cc78df469dad40bc17036ae2e6e2052e98e5e3ce7ac4e9cc96
     provider: Parking.Frozen.density_compare
     approved: "2026-09-07"
@@ -186,7 +191,7 @@ nodes:
     source: parking.tex:741-753 (label lem:transport)
     file: Parking/Frozen/Transport.lean
     export: Parking.Frozen.transport
-    state: SEALED
+    state: PROVED
     frozen_sha256: d87638fae420f9e5fc99c76f576675788433806d8409d291fafc0bbfe023c10a
     provider: Parking.Frozen.transport
     approved: "2026-09-07"
@@ -197,7 +202,7 @@ nodes:
     source: parking.tex:2295-2303 (label lem:range-lower)
     file: Parking/Frozen/RangeLower.lean
     export: Parking.Frozen.range_lower
-    state: SEALED
+    state: PROVED
     frozen_sha256: 9cfd7baa9db0461bf36d698689dfa67ac0f9cbe6a1bb11c60571325f6d119983
     provider: Parking.Frozen.range_lower
     approved: "2026-09-07"
@@ -208,7 +213,7 @@ nodes:
     source: parking.tex:1135-1148 (label lem:w-martingale)
     file: Parking/Frozen/WMartingale.lean
     export: Parking.Frozen.w_martingale
-    state: SEALED
+    state: PROVED
     frozen_sha256: 19085718db23e23209170003e6e975ce7af8f9eb04d9057db68fd5d2bc608082
     provider: Parking.Frozen.w_martingale
     approved: "2026-09-07"
@@ -219,7 +224,7 @@ nodes:
     source: parking.tex:1255-1263 (label lem:critical-density)
     file: Parking/Frozen/CriticalDensity.lean
     export: Parking.Frozen.critical_density
-    state: SEALED
+    state: PROVED
     frozen_sha256: 4fd9afa48921b4bf2018aa051fdba74b19897b07946ee002ba036e2530d140da
     provider: Parking.Frozen.critical_density
     approved: "2026-09-08"
@@ -230,7 +235,7 @@ nodes:
     source: parking.tex:1354-1361 (label cor:critical)
     file: Parking/Frozen/CorCritical.lean
     export: Parking.Frozen.cor_critical
-    state: SEALED
+    state: PROVED
     frozen_sha256: b6c5c668802bd803f4141f55904e91d8f932d2802fc84be4710e46e88d342fd5
     provider: Parking.Frozen.cor_critical
     approved: "2026-09-08"
@@ -241,7 +246,7 @@ nodes:
     source: parking.tex:1601-1610 (label thm:four-sparse)
     file: Parking/Frozen/FourSparse.lean
     export: Parking.Frozen.four_sparse
-    state: SEALED
+    state: PROVED
     frozen_sha256: 9a2e26a6ed6aa94be415e6a2f6b8fb52e15e6cf462dfcc8f4cb1c3d6f52e2a48
     provider: Parking.Frozen.four_sparse
     approved: "2026-09-08"
@@ -252,7 +257,7 @@ nodes:
     source: parking.tex:1882-1891 (label lem:nearest-one-point)
     file: Parking/Frozen/NearestOnePoint.lean
     export: Parking.Frozen.nearest_one_point
-    state: SEALED
+    state: PROVED
     frozen_sha256: ad47a2d8c2e972a16d012a10af516cdc05393b88fe5a1cd72714c7822425d071
     provider: Parking.Frozen.nearest_one_point
     approved: "2026-09-08"
@@ -263,7 +268,7 @@ nodes:
     source: parking.tex:2025-2032 (label prop:nearest-two-hole)
     file: Parking/Frozen/NearestTwoHole.lean
     export: Parking.Frozen.nearest_two_hole
-    state: SEALED
+    state: PROVED
     frozen_sha256: 151a6b9ac7eb06f8a517fd8ea192a9a8180a30e32fde1ac9f58df2a1ddbcda5c
     provider: Parking.Frozen.nearest_two_hole
     approved: "2026-09-08"
@@ -274,7 +279,7 @@ nodes:
     source: parking.tex:289-302 (label thm:nearest-counterexample)
     file: Parking/Frozen/NearestCounterexample.lean
     export: Parking.Frozen.nearest_counterexample
-    state: SEALED
+    state: PROVED
     frozen_sha256: 4edb5724164ff3f61a2e6f33ddd93e1e1879dd7a37253d163a2e568c74a78987
     provider: Parking.Frozen.nearest_counterexample
     approved: "2026-09-08"
@@ -296,7 +301,7 @@ nodes:
     source: parking.tex:2643-2663 (label prop:resolvent)
     file: Parking/Frozen/Resolvent.lean
     export: Parking.Frozen.resolvent
-    state: SEALED
+    state: PROVED
     frozen_sha256: 904a892b5eb0c60d3b5f46918ea0554afefae252290a309362a97d3333a5363b
     provider: Parking.Frozen.resolvent
     approved: "2026-09-10"
@@ -318,7 +323,7 @@ nodes:
     source: parking.tex:2336-2347 (label lem:product)
     file: Parking/Frozen/Product.lean
     export: Parking.Frozen.product
-    state: SEALED
+    state: PROVED
     frozen_sha256: 392b048bfd4663cfadbe590a17abefc0c755213a60698da1d2bbbb452a08f12a
     provider: Parking.Frozen.product
     approved: "2026-09-11"
@@ -329,7 +334,7 @@ nodes:
     source: parking.tex:2434-2447 (label thm:subcritical)
     file: Parking/Frozen/Subcritical.lean
     export: Parking.Frozen.subcritical
-    state: SEALED
+    state: PROVED
     frozen_sha256: 4c7507c1091e653f1b747a06d1904f33f5e82f4c7365bcec0c8931fc390be950
     provider: Parking.Frozen.subcritical
     approved: "2026-09-12"
@@ -340,7 +345,7 @@ nodes:
     source: parking.tex:123-135 (label thm:subcritical-tail)
     file: Parking/Frozen/SubcriticalTail.lean
     export: Parking.Frozen.subcritical_tail
-    state: SEALED
+    state: PROVED
     frozen_sha256: e712ea0a1a96aa7a7a17e8ef1442bf6d1032ead517a7d344b8834c997dae4138
     provider: Parking.Frozen.subcritical_tail
     approved: "2026-09-12"
@@ -351,7 +356,7 @@ nodes:
     source: parking.tex:2599-2604 (label lem:near-tilt)
     file: Parking/Frozen/NearTilt.lean
     export: Parking.Frozen.near_tilt
-    state: SEALED
+    state: PROVED
     frozen_sha256: 53b268f22492b9a63b9dedbc45dd7e2be3fc2e8a9945e0036053d022279f372c
     provider: Parking.Frozen.near_tilt
     approved: "2026-09-12"
@@ -362,7 +367,7 @@ nodes:
     source: parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240); proved from the shared library Lattice-Probability (LatticeProb.Walk.VarianceScale, LatticeProb.Walk.Correlation, LatticeProb.Walk.WindowD4)
     file: Parking/External/VarianceScale.lean
     export: Parking.External.varianceScale
-    state: SEALED
+    state: PROVED
     frozen_sha256: 5ad03a7dbc301ede04678dd9bcf379e7ec8c2b56ce36c83f773c6daa854b1ab0
     provider: Parking.External.varianceScale
     approved: "2026-09-25"
@@ -406,7 +411,7 @@ nodes:
     source: parking.tex:3072-3085 (label thm:oriented)
     file: Parking/Frozen/Oriented.lean
     export: Parking.Frozen.oriented
-    state: SEALED
+    state: PROVED
     frozen_sha256: 8ae751db70d9861676a438b36775eb8ac512779db25209095fc10934e6eae2f2
     provider: Parking.Frozen.oriented
     approved: "2026-09-17"
@@ -417,7 +422,7 @@ nodes:
     source: parking.tex:1202-1215 (label prop:w-moment)
     file: Parking/Frozen/WMoment.lean
     export: Parking.Frozen.w_moment
-    state: SEALED
+    state: PROVED
     frozen_sha256: ddde27a9a9b8ee94a38ac0fe2bfa7103ced6eba69b883f493f20e12fb1cbb535
     provider: Parking.Frozen.w_moment
 
@@ -482,7 +487,7 @@ nodes:
     source: parking.tex:929-943 (label thm:BP); proved from the divisible sandpile formalization rather than assumed, modulo the three continuum inputs that formalization itself assumes
     file: Parking/External/SandpileGrowthProved.lean
     export: Parking.External.sandpileGrowth
-    state: SEALED
+    state: PROVED
     frozen_sha256: bd913fdcd168ef2387445166f62509244e7d87fa92072980ef3b4189dd94e254
     provider: Parking.External.sandpileGrowth
     approved: "2026-09-26"
@@ -493,7 +498,7 @@ nodes:
     source: parking.tex:3207-3218 (proved from LatticeProb.BinomialLCLT.exists_binomPMF_localCLT)
     file: Parking/External/BinomialLocalCLTProved.lean
     export: Parking.External.binomialLocalCLT
-    state: SEALED
+    state: PROVED
     frozen_sha256: ee97bed17735cd5eb5a558342738d1436f6f7b1bf4f2b18c910a2a56b2e4875b
     provider: Parking.External.binomialLocalCLT
     approved: "2026-09-26"
@@ -504,7 +509,7 @@ nodes:
     source: parking.tex:3166-3174 (label prop:oriented-scaling; binomial LCLT hypothesis discharged)
     file: Parking/Frozen/OrientedScaling.lean
     export: Parking.Frozen.oriented_scaling
-    state: SEALED
+    state: PROVED
     frozen_sha256: d90fd89c7cbb286fac1ed47a97b7cbcc2bcb9b5e2f4723063e5957f49b6d640d
     provider: Parking.Frozen.oriented_scaling
     approved: "2026-09-26"
@@ -515,7 +520,7 @@ nodes:
     source: parking.tex:1383-1400 (label eq:green-norms); no longer assumed, discharged from LatticeProb.Walk.VarianceScale and LatticeProb.Walk.SRWGreenSup, with the max-norm lower bound proved here from LatticeProb.Walk.SRWDiag.exists_srwHeat_diag_lower
     file: Parking/External/GreenNormsProved.lean
     export: Parking.External.greenNorms
-    state: SEALED
+    state: PROVED
     frozen_sha256: b3b650d756d9f8218c5f50ebea09861e8c7b459b4a1dae1cd95682bcb7ab0e34
     provider: Parking.External.greenNorms
     approved: "2026-09-26"
@@ -526,7 +531,7 @@ nodes:
     source: parking.tex:1822-1848 (the critical-scale lower tail estimate of Bou-Rabee-Panagiotis, sandpile.tex:1696-1720); proved outright from the statement's own VarianceScale and MultivariateBerryEsseen hypotheses
     file: Parking/External/CriticalScaleLowerTailProved.lean
     export: Parking.External.criticalScaleLowerTail
-    state: SEALED
+    state: PROVED
     frozen_sha256: 5653f1d4fcb7df65fc6bfa43a6e283bed798a75f7cd6a78924bbecb733aa07d3
     provider: Parking.External.criticalScaleLowerTail
     approved: "2026-09-27"
@@ -537,7 +542,7 @@ nodes:
     source: parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP eq. (25), citing Lawler-Limic Thm 2.1.3 Eq. (2.8)); proved from the local central limit theorem of the divisible sandpile formalization, Sandpile.External.localCLT, via the heat-kernel identification
     file: Parking/External/SRWLocalCLTBridge.lean
     export: Parking.External.srwLocalCLT
-    state: SEALED
+    state: PROVED
     frozen_sha256: e5ec13cee5a5a6f90b0aaa7e8ec6351dc9e22c49827305b88452c30d25182f46
     provider: Parking.External.srwLocalCLT
     approved: "2026-09-27"
@@ -548,7 +553,7 @@ nodes:
     source: parking.tex:1402-1413 (label lem:u-concentration, quoted from BP Remark 3.4); proved outright from the coordinate-Lipschitz bound with the Green function as weights and the library's weighted exponential concentration, no longer assumed
     file: Parking/External/UConcentrationProved.lean
     export: Parking.External.uConcentration
-    state: SEALED
+    state: PROVED
     frozen_sha256: bad8609416d0b1a54c0482b313694c8f3974b12104a5e8ba02e9f5e5eb3a4be8
     provider: Parking.External.uConcentration
     approved: "2026-09-27"
@@ -559,7 +564,7 @@ nodes:
     source: parking.tex:1800-1820 (prop:spatial-scaling, Step 4, strong minimum principle); proved from the shared library strong minimum principle of Nirenberg 1953 Theorem 1
     file: Parking/External/HeatStrongMinimumProved.lean
     export: Parking.External.heatStrongMinimum
-    state: SEALED
+    state: PROVED
     frozen_sha256: e00ed4b883e8b685cb5fa85d5eb6476e6d1b2de62127d3c6775652a869235e10
     provider: Parking.External.heatStrongMinimum
     approved: "2026-09-27"
@@ -570,7 +575,7 @@ nodes:
     source: parking.tex:159-168 (label thm:master); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/Master.lean
     export: Parking.Frozen.master
-    state: SEALED
+    state: PROVED
     frozen_sha256: 5c61e58f3c26c9676c32158f4f7a27a0bfc8487d0d696bda8e44cb8c9726224e
     provider: Parking.Frozen.master
     approved: "2026-09-27"
@@ -581,7 +586,7 @@ nodes:
     source: parking.tex:174-188 (label cor:growth); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/Growth.lean
     export: Parking.Frozen.growth
-    state: SEALED
+    state: PROVED
     frozen_sha256: d1da411ce4edb3c61a1e43d3461c5fde454e68ffe39f5ceda220466ea45414fa
     provider: Parking.Frozen.growth
     approved: "2026-09-27"
@@ -592,7 +597,7 @@ nodes:
     source: parking.tex:1566-1583 (label prop:discrepancy); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/Discrepancy.lean
     export: Parking.Frozen.discrepancy
-    state: SEALED
+    state: PROVED
     frozen_sha256: bf2a8090dcc44e729ebf0ccdff43a6f2676ae0adaad2c023683a5003f8a68f4c
     provider: Parking.Frozen.discrepancy
     approved: "2026-09-27"
@@ -603,7 +608,7 @@ nodes:
     source: parking.tex:207-238 (label thm:trichotomy); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/Trichotomy.lean
     export: Parking.Frozen.trichotomy
-    state: SEALED
+    state: PROVED
     frozen_sha256: 44d2c93d31c0c17bb2726330f1486138ad80514f9aa1875d0d79da8c5ff36239
     provider: Parking.Frozen.trichotomy
     approved: "2026-09-27"
@@ -614,7 +619,7 @@ nodes:
     source: parking.tex:1501-1509 (label prop:everyone-settles); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/EveryoneSettles.lean
     export: Parking.Frozen.everyone_settles
-    state: SEALED
+    state: PROVED
     frozen_sha256: 830a4c0ff559f5447716ac9da3b43e0b8dc13b6e2106c44e1ce217f73c75c6b0
     provider: Parking.Frozen.everyone_settles
     approved: "2026-09-27"
@@ -625,7 +630,7 @@ nodes:
     source: parking.tex:2779-2785 (label lem:mean-horizon); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/MeanHorizon.lean
     export: Parking.Frozen.mean_horizon
-    state: SEALED
+    state: PROVED
     frozen_sha256: 6926d5da22d72c7279aabddf848e96799375c655fc22a0e8f519e174cddc9b2c
     provider: Parking.Frozen.mean_horizon
     approved: "2026-09-27"
@@ -636,7 +641,7 @@ nodes:
     source: parking.tex:2844-2860 (label prop:near-divisible); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/NearDivisible.lean
     export: Parking.Frozen.near_divisible
-    state: SEALED
+    state: PROVED
     frozen_sha256: 0a66e2a630ac012e90900b5b264d3dd297be2bee2a72649a9502e9e527b718a6
     provider: Parking.Frozen.near_divisible
     approved: "2026-09-27"
@@ -647,7 +652,7 @@ nodes:
     source: parking.tex:314-335 (label thm:near); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/Near.lean
     export: Parking.Frozen.near
-    state: SEALED
+    state: PROVED
     frozen_sha256: 3cfbdef34edf26b68b42fd592f3c539666231efe0e541460abca96e34bf350c3
     provider: Parking.Frozen.near
     approved: "2026-09-27"
@@ -658,7 +663,7 @@ nodes:
     source: parking.tex:1418-1431 (label thm:upper); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/Upper.lean
     export: Parking.Frozen.upper
-    state: SEALED
+    state: PROVED
     frozen_sha256: 4fd27b4c786aaaec3fde52cb928b0383b1df8d58ca056f5e17152ca8ddeafbad
     provider: Parking.Frozen.upper
     approved: "2026-09-27"
@@ -669,7 +674,7 @@ nodes:
     source: parking.tex:363-380 (label thm:oriented-walk; binomial LCLT hypothesis discharged); the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration
     file: Parking/Frozen/OrientedWalk.lean
     export: Parking.Frozen.oriented_walk
-    state: SEALED
+    state: PROVED
     frozen_sha256: 72bc687530f00063c740a0cda60862370b3314efbdb74a347315d0f0a0995bfe
     provider: Parking.Frozen.oriented_walk
     approved: "2026-09-27"
@@ -680,7 +685,7 @@ nodes:
     source: parking.tex:1694-1752 (label prop:spatial-scaling); the GreenNorms hypothesis is dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration; the HeatStrongMinimum hypothesis is likewise dropped, discharged internally from Parking.External.heatStrongMinimum
     file: Parking/Frozen/SpatialScaling.lean
     export: Parking.Frozen.spatial_scaling
-    state: SEALED
+    state: PROVED
     frozen_sha256: e02373648e37d71919ca0cce7cf96e63fc91a1215183d40c718fa74dc570c077
     provider: Parking.Frozen.spatial_scaling
     approved: "2026-09-27"
@@ -691,7 +696,7 @@ nodes:
     source: parking.tex:266-275 (label thm:nearest); the VarianceScale hypothesis is dropped, discharged internally from Parking.External.varianceScale; the GreenNorms hypothesis is likewise dropped, discharged internally from Parking.External.greenNorms; the UConcentration hypothesis is likewise dropped, discharged internally from Parking.External.uConcentration; the HeatStrongMinimum hypothesis is likewise dropped, discharged internally from Parking.External.heatStrongMinimum; the CriticalScaleLowerTail hypothesis is likewise dropped, discharged internally from Parking.External.criticalScaleLowerTail
     file: Parking/Frozen/Nearest.lean
     export: Parking.Frozen.nearest
-    state: SEALED
+    state: PROVED
     frozen_sha256: 15b063f0bbef52bec0962640dc4f5f757a34ccab2c08c824601938b029868ccc
     provider: Parking.Frozen.nearest
     approved: "2026-09-27"
