@@ -231,7 +231,7 @@ import Parking.Support.ProductConditioning
 import Parking.Support.BoundedProduct
 import Parking.Support.SceneryField
 import Parking.Support.ProductFinite
-import Parking.Support.SubgaussianMoment
+import Parking.Support.SubgaussianMomentNorm
 import Parking.Support.SceneryFinite
 import Parking.Support.TableLaw
 import Parking.Support.SceneryLaw

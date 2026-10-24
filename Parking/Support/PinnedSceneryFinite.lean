@@ -1,6 +1,6 @@
 import Parking.Support.PinnedSceneryField
 import Parking.Support.ProductFinite
-import Parking.Support.SubgaussianMoment
+import Parking.Support.SubgaussianMomentNorm
 
 /-!
 # A uniform subgaussian bound for the pinned box field
