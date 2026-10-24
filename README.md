@@ -1,11 +1,14 @@
-# Parking-Sharpness
+# Sharpness and critical scaling of parking
 
 A machine-checked **Lean 4** formalization of the paper
-[*Sharpness and critical scaling of parking*](https://arxiv.org/abs/2609.02820)
-(Ahmed Bou-Rabee and Christoforos Panagiotis, arXiv:2609.02820), built on
-[`mathlib`](https://github.com/leanprover-community/mathlib4), the shared library
-[`Lattice-Probability`](https://github.com/nitromannitol/Lattice-Probability) (`LatticeProb`),
-and [`Divisible-Sandpile-Percolation`](https://github.com/nitromannitol/Divisible-Sandpile-Percolation)
+
+> Ahmed Bou-Rabee and Christoforos Panagiotis,
+> [*Sharpness and critical scaling of parking*](https://arxiv.org/abs/2609.02820),
+> arXiv:2609.02820.
+
+The development is built on [mathlib](https://github.com/leanprover-community/mathlib4), the shared library
+[Lattice-Probability](https://github.com/nitromannitol/Lattice-Probability) (`LatticeProb`), and
+[Divisible-Sandpile-Percolation](https://github.com/nitromannitol/Divisible-Sandpile-Percolation)
 (`Sandpile`), the formalization of the divisible sandpile paper this one quotes its growth
 estimate from.
 
@@ -13,8 +16,8 @@ Every theorem, lemma, proposition and corollary of the paper is formalized and p
 results the paper quotes from the literature without proof enter as explicit hypotheses of the
 theorems that use them.
 
-[![CI](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/build.yml/badge.svg)](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/build.yml)
-[![Comparator audit](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/comparator.yml/badge.svg)](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/comparator.yml)
+[![CI](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/build.yml)
+[![Comparator audit](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/comparator.yml/badge.svg?branch=main)](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/comparator.yml)
 
 ## What is proved
 
