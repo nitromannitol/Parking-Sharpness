@@ -37,7 +37,7 @@ sources:
       is arXiv:2609.02820v1 with the corrections listed in
       paper/CHANGES_FROM_ARXIV.md; see status.scope for the scope boundary and
       fidelity.divergences for the differences from the paper.
-    license: ""                 # TODO(author): the license under which the paper is published
+    license: "arXiv non-exclusive distribution license 1.0"
     author_contacted: "n/a"     # the formalizer is an author of the source
     prior_work: ""
 
