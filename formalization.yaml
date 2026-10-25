@@ -375,3 +375,6 @@ acknowledgements: >-
   Mathlib, Lake, the shared library Lattice-Probability, the formalization
   Divisible-Sandpile-Percolation of the divisible sandpile paper, and
   leanprover/comparator.
+
+classification:
+  arxiv: ["math.PR"]
