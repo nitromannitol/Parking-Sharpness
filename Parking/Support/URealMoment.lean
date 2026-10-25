@@ -1,10 +1,14 @@
-import Parking.Support.UMoment
-import LatticeProb.Prob.ConvexOrder
-import LatticeProb.Prob.Laplace
-import LatticeProb.Prob.ExpTail
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
+module
+
+public import Parking.Support.UMoment
+public import LatticeProb.Prob.ConvexOrder
+public import LatticeProb.Prob.Laplace
+public import LatticeProb.Prob.ExpTail
+public import Parking.Support.CriticalLawReal
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+
+@[expose] public section
 
 /-!
 # Moments of the odometer at a real one-site law

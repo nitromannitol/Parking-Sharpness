@@ -1,5 +1,9 @@
-import Parking.Support.IsolatedHoles
-import Parking.Support.BoxTranslation
+module
+
+public import Parking.Support.IsolatedHoles
+public import Parking.Support.BoxTranslation
+
+@[expose] public section
 
 /-!
 # Equivariance of the isolated-hole predicates under translation

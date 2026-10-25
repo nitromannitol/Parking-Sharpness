@@ -1,4 +1,8 @@
-import Parking.Support.OrientedTerminal
+module
+
+public import Parking.Support.OrientedTerminal
+
+@[expose] public section
 
 /-!
 # The Lipschitz bound on the oriented stopping value

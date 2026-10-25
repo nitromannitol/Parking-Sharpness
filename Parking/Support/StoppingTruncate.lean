@@ -1,4 +1,8 @@
-import Parking.Support.Walk
+module
+
+public import Parking.Support.Walk
+
+@[expose] public section
 
 /-!
 # Truncating a stopping rule to a smaller horizon

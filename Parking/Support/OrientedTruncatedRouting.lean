@@ -1,6 +1,10 @@
-import Parking.Support.OrientedRoutingCoordinate
-import Parking.Support.CoordinateMartingale
-import Parking.Support.SortedEnumeration
+module
+
+public import Parking.Support.OrientedRoutingCoordinate
+public import Parking.Support.CoordinateMartingale
+public import Parking.Support.SortedEnumeration
+
+@[expose] public section
 
 /-!
 # Oriented truncated routing

@@ -1,6 +1,10 @@
-import Parking.Support.SpatWWalkGrid
-import Parking.Support.SceneryCenter
-import Parking.Frozen.Growth
+module
+
+public import Parking.Support.SpatWWalkGrid
+public import Parking.Support.SceneryCenter
+public import Parking.Frozen.Growth
+
+@[expose] public section
 
 /-!
 # Local rescaled odometer mass

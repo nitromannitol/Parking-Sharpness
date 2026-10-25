@@ -1,5 +1,9 @@
-import Parking.External.HeatStrongMinimum
-import LatticeProb.Analysis.HeatStrongMinimum
+module
+
+public import Parking.External.HeatStrongMinimum
+public import LatticeProb.Analysis.HeatStrongMinimum
+
+@[expose] public section
 
 /-!
 # The strong minimum principle, proved

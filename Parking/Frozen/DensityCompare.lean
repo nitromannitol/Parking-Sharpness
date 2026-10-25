@@ -1,4 +1,8 @@
-import Parking.Support.DensityCompare
+module
+
+public import Parking.Support.DensityCompare
+
+@[expose] public section
 
 /-!
 # Monotonicity of the survivor density under a coupling (frozen)

@@ -1,4 +1,8 @@
-import Parking.Support.MatchedCounts
+module
+
+public import Parking.Support.MatchedCounts
+
+@[expose] public section
 
 /-!
 # Independence from priorities, and restarting the common-table process

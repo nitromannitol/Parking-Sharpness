@@ -1,6 +1,10 @@
-import Parking.Support.Continuum
-import Parking.Support.Terminal
-import Parking.Support.UConcBridge
+module
+
+public import Parking.Support.Continuum
+public import Parking.Support.Terminal
+public import Parking.Support.UConcBridge
+
+@[expose] public section
 
 /-!
 # The linear-potential summand of the rescaled odometer

@@ -1,5 +1,9 @@
-import Parking.Support.UpperTarget
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+module
+
+public import Parking.Support.UpperTarget
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+@[expose] public section
 
 /-!
 # Real moment norms, logarithm domination and logarithmic-exponent tail bounds

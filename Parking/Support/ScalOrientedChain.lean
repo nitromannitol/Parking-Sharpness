@@ -1,6 +1,10 @@
-import Parking.Support.ScalNoiseModification
-import Parking.Support.ContStopGeneral
-import Parking.External.OrientedStoppingStability
+module
+
+public import Parking.Support.ScalNoiseModification
+public import Parking.Support.ContStopGeneral
+public import Parking.External.OrientedStoppingStability
+
+@[expose] public section
 
 /-!
 # The chain of `prop:oriented-scaling`, from what the repository has and what it is owed

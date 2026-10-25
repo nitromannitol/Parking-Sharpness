@@ -1,5 +1,9 @@
-import Parking.Support.OrientedRoutingCoordinate
-import Parking.Support.OrientedInstructionIntegral
+module
+
+public import Parking.Support.OrientedRoutingCoordinate
+public import Parking.Support.OrientedInstructionIntegral
+
+@[expose] public section
 
 /-!
 # Cumulative routing discrepancy of one instruction

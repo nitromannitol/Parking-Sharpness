@@ -1,4 +1,8 @@
-import Parking.Support.Particle
+module
+
+public import Parking.Support.Particle
+
+@[expose] public section
 
 /-!
 # Reading only the particles present

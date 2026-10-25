@@ -1,4 +1,8 @@
-import Parking.Support.Oriented
+module
+
+public import Parking.Support.Oriented
+
+@[expose] public section
 
 /-!
 # Lemma 12.1: the layer-shift energy identity (frozen)

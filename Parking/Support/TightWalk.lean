@@ -1,11 +1,15 @@
-import Parking.Support.ContOrientedLimit
-import Parking.Support.Pathwise
-import Parking.Support.OrientedScaling
-import Mathlib.MeasureTheory.Measure.LevyConvergence
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.Independence.Integration
-import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
-import LatticeProb.Prob.Scaling.WalkCLT
+module
+
+public import Parking.Support.ContOrientedLimit
+public import Parking.Support.Pathwise
+public import Parking.Support.OrientedScaling
+public import Mathlib.MeasureTheory.Measure.LevyConvergence
+public import Mathlib.Probability.Independence.InfinitePi
+public import Mathlib.Probability.Independence.Integration
+public import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
+public import LatticeProb.Prob.Scaling.WalkCLT
+
+@[expose] public section
 
 /-!
 # Finite-dimensional distributions of the rescaled oriented walk

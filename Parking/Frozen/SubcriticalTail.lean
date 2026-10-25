@@ -1,6 +1,10 @@
-import Parking.Basic
-import Parking.External.DonskerVaradhan
-import Parking.Support.TailTwoSided
+module
+
+public import Parking.Basic
+public import Parking.External.DonskerVaradhan
+public import Parking.Support.TailTwoSided
+
+@[expose] public section
 
 /-!
 # Theorem 1.1: the two-sided subcritical tail (frozen)

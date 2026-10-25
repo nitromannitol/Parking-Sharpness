@@ -1,7 +1,11 @@
-import Parking.Support.Near
-import Parking.Support.RangeHitting
-import Parking.Support.RangeLower
-import Parking.Support.Cov
+module
+
+public import Parking.Support.Near
+public import Parking.Support.RangeHitting
+public import Parking.Support.RangeLower
+public import Parking.Support.Cov
+
+@[expose] public section
 
 /-!
 # Range quantities of the subcritical tail

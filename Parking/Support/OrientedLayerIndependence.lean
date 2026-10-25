@@ -1,5 +1,9 @@
-import Parking.Support.OrientedFreshness
-import Parking.Support.CoordinateErasure
+module
+
+public import Parking.Support.OrientedFreshness
+public import Parking.Support.CoordinateErasure
+
+@[expose] public section
 
 /-!
 # Independence from upper-layer stacks and scenery

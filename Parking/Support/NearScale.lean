@@ -1,4 +1,8 @@
-import Parking.Support.NearEnv
+module
+
+public import Parking.Support.NearEnv
+
+@[expose] public section
 
 /-!
 # The scale `env` under powers and logarithms

@@ -1,5 +1,9 @@
-import Parking.Support.LinearExponential
-import Parking.Support.LinearMoment
+module
+
+public import Parking.Support.LinearExponential
+public import Parking.Support.LinearMoment
+
+@[expose] public section
 
 /-!
 # Exponential moments on finite coordinate sets of an infinite product

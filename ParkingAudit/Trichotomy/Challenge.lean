@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Theorem 1.4 (`thm:trichotomy`): comparator challenge

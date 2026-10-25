@@ -1,5 +1,9 @@
-import Parking.Support.Near
-import Parking.Support.NearTiltInterval
+module
+
+public import Parking.Support.Near
+public import Parking.Support.NearTiltInterval
+
+@[expose] public section
 
 /-!
 # The near-critical tilted survivor bound (frozen)

@@ -1,5 +1,9 @@
-import Mathlib.Probability.Moments.SubGaussian
-import Mathlib.MeasureTheory.Constructions.Pi
+module
+
+public import Mathlib.Probability.Moments.SubGaussian
+public import Mathlib.MeasureTheory.Constructions.Pi
+
+@[expose] public section
 
 /-!
 # A bounded-differences subgaussian moment bound
@@ -19,7 +23,7 @@ variable {X : Type*} [MeasurableSpace X]
 /-- Consing a coordinate onto a finite tuple is measurable. -/
 theorem measurable_cons_tuple {n : ℕ} :
     Measurable (fun p : X × (Fin n → X) => (Fin.cons p.1 p.2 : Fin (n + 1) → X)) := by
-  refine measurable_pi_lambda _ fun i => ?_
+  refine measurable_pi_iff.mpr fun i => ?_
   refine Fin.cases ?_ (fun j => ?_) i
   · exact measurable_fst
   · exact (measurable_pi_apply j).comp measurable_snd

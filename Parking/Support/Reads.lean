@@ -1,7 +1,11 @@
-import LatticeProb.ReadIndex
-import Parking.Support.Measurability
-import Parking.Support.Deferred
-import Parking.Support.Parallel
+module
+
+public import LatticeProb.ReadIndex
+public import Parking.Support.Measurability
+public import Parking.Support.Deferred
+public import Parking.Support.Parallel
+
+@[expose] public section
 
 /-!
 # Which instructions are read

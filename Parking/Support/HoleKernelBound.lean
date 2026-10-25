@@ -1,4 +1,8 @@
-import Parking.Support.HoleKernel
+module
+
+public import Parking.Support.HoleKernel
+
+@[expose] public section
 
 /-!
 # The hole kernel obeys the Green bubble decay bound

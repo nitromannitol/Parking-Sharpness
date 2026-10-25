@@ -1,7 +1,11 @@
-import Parking.Support.OrientedMoments
-import Parking.Support.OrientedFirstMoment
-import Parking.Support.ConfMoments
-import Parking.Support.OrientedFinite
+module
+
+public import Parking.Support.OrientedMoments
+public import Parking.Support.OrientedFirstMoment
+public import Parking.Support.ConfMoments
+public import Parking.Support.OrientedFinite
+
+@[expose] public section
 
 /-!
 # Moments of the directed divisible odometer

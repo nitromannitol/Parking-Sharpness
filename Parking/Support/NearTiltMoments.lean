@@ -1,6 +1,10 @@
-import Parking.Support.Near
-import Parking.Support.TiltInterval
-import Parking.Support.SubcriticalJointBound
+module
+
+public import Parking.Support.Near
+public import Parking.Support.TiltInterval
+public import Parking.Support.SubcriticalJointBound
+
+@[expose] public section
 
 /-!
 # Near-tilt moment estimates

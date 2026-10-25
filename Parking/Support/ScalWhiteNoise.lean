@@ -1,6 +1,10 @@
-import Parking.Support.Continuum
-import LatticeProb.Gauss.WhiteNoise
-import LatticeProb.Gauss.Brownian
+module
+
+public import Parking.Support.Continuum
+public import LatticeProb.Gauss.WhiteNoise
+public import LatticeProb.Gauss.Brownian
+
+@[expose] public section
 
 /-!
 # The canonical spatial white noise of the scaling limit

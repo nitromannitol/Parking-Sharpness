@@ -1,4 +1,8 @@
-import Parking.Support.SpatWBarDivisibleJointMeasurable
+module
+
+public import Parking.Support.SpatWBarDivisibleJointMeasurable
+
+@[expose] public section
 
 /-!
 # Joint measurability of the space-time field

@@ -1,5 +1,9 @@
-import Parking.Support.SinkGreenMoment
-import Parking.Support.OnePointMoment
+module
+
+public import Parking.Support.SinkGreenMoment
+public import Parking.Support.OnePointMoment
+
+@[expose] public section
 
 /-!
 # Instruction-noise moment bound for the sink odometer

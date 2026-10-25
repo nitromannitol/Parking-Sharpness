@@ -1,4 +1,8 @@
-import Parking.Support.UpperStep
+module
+
+public import Parking.Support.UpperStep
+
+@[expose] public section
 
 /-!
 # Oriented Young absorption

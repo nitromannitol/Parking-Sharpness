@@ -1,5 +1,9 @@
-import Parking.Support.Measurability
-import LatticeProb.Walk.SRW
+module
+
+public import Parking.Support.Measurability
+public import LatticeProb.Walk.SRW
+
+@[expose] public section
 
 /-!
 # The hole-closer event as a measurable set

@@ -1,4 +1,8 @@
-import Parking.Support.OrientedOdometer
+module
+
+public import Parking.Support.OrientedOdometer
+
+@[expose] public section
 
 /-!
 # Measurability and unread-layer invariance of the odometer

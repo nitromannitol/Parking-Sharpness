@@ -1,4 +1,8 @@
-import Parking.Support.NearestGeometry
+module
+
+public import Parking.Support.NearestGeometry
+
+@[expose] public section
 
 /-!
 # The positive test event

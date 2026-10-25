@@ -1,6 +1,10 @@
-import Parking.Support.JointBlocks
-import Parking.Support.MeanHorizonStep1
-import Parking.Support.PhiSum
+module
+
+public import Parking.Support.JointBlocks
+public import Parking.Support.MeanHorizonStep1
+public import Parking.Support.PhiSum
+
+@[expose] public section
 
 /-!
 # The proof of `lem:mean-horizon`

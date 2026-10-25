@@ -1,4 +1,8 @@
-import Parking.Support.Matched
+module
+
+public import Parking.Support.Matched
+
+@[expose] public section
 
 /-!
 # Counts in the common-table construction

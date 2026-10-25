@@ -1,6 +1,10 @@
-import Parking.Support.CenteredSumMoment
-import Parking.Support.OrientedMaximum
-import Parking.Support.OrientedBinomial
+module
+
+public import Parking.Support.CenteredSumMoment
+public import Parking.Support.OrientedMaximum
+public import Parking.Support.OrientedBinomial
+
+@[expose] public section
 
 /-!
 # Directed coordinate count moments

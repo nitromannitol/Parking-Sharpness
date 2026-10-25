@@ -1,4 +1,8 @@
-import Parking.Support.GreenBridge
+module
+
+public import Parking.Support.GreenBridge
+
+@[expose] public section
 
 /-!
 # Mass, second moment, and tail bound of the one-dimensional kernel

@@ -1,6 +1,10 @@
-import Parking.Support.GrowthMeans
-import Parking.Support.GrowthSequence
-import Parking.Support.DensitySequence
+module
+
+public import Parking.Support.GrowthMeans
+public import Parking.Support.GrowthSequence
+public import Parking.Support.DensitySequence
+
+@[expose] public section
 
 /-!
 # The growth corollary

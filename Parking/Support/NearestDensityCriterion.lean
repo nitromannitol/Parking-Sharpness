@@ -1,7 +1,11 @@
-import Parking.Support.IsolatedDensity
-import Parking.Support.SafeDensity
-import Parking.Support.IsolationUnion
-import Parking.Support.SparseActivity
+module
+
+public import Parking.Support.IsolatedDensity
+public import Parking.Support.SafeDensity
+public import Parking.Support.IsolationUnion
+public import Parking.Support.SparseActivity
+
+@[expose] public section
 
 /-!
 # The pair-sum density criterion

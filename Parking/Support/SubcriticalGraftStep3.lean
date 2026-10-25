@@ -1,5 +1,9 @@
-import Parking.Support.GraftRankAe
-import Parking.Support.SubcriticalStep3
+module
+
+public import Parking.Support.GraftRankAe
+public import Parking.Support.SubcriticalStep3
+
+@[expose] public section
 
 /-!
 # Steps 2 and 3 of `thm:subcritical` with the origin prescribed

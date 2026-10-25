@@ -1,5 +1,9 @@
-import Parking.Support.FlatNoise
-import Parking.Support.MeanLaw
+module
+
+public import Parking.Support.FlatNoise
+public import Parking.Support.MeanLaw
+
+@[expose] public section
 
 /-!
 # Flattening the round noise preserves the odometer mean

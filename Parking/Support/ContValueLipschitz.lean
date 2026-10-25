@@ -1,4 +1,8 @@
-import Parking.Support.ContSpatialValue
+module
+
+public import Parking.Support.ContSpatialValue
+
+@[expose] public section
 
 /-!
 # Lipschitz continuity of the continuum stopping value

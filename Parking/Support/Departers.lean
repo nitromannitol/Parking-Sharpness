@@ -1,3 +1,5 @@
+module
+
 /-
 Infinitely many distinct particles leave a site with an infinite odometer.
 
@@ -10,7 +12,9 @@ and the odometer at `x` would stop growing.  A particle standing at `x` and
 still active leaves `x`, because an instruction points at a neighbour and no
 site is its own neighbour.
 -/
-import Parking.Support.StackHits
+public import Parking.Support.StackHits
+
+@[expose] public section
 
 noncomputable section
 namespace Parking

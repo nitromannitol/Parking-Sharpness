@@ -1,4 +1,8 @@
-import Parking.Support.ClippedTable
+module
+
+public import Parking.Support.ClippedTable
+
+@[expose] public section
 
 open LatticeProb.MomentNorm (rNorm)
 

@@ -1,5 +1,9 @@
-import Parking.Support.NearestEvents
-import Parking.Support.Invariance
+module
+
+public import Parking.Support.NearestEvents
+public import Parking.Support.Invariance
+
+@[expose] public section
 
 /-!
 # The probability endgame

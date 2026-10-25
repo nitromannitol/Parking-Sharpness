@@ -1,5 +1,9 @@
-import Parking.Support.TightLinear
-import Parking.Support.TightBoxCov
+module
+
+public import Parking.Support.TightLinear
+public import Parking.Support.TightBoxCov
+
+@[expose] public section
 
 /-!
 # The finite-dimensional characteristic-function limit of the box reward field

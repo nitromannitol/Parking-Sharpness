@@ -1,5 +1,9 @@
-import Parking.Support.Terminal
-import Parking.Support.ValueLipschitz
+module
+
+public import Parking.Support.Terminal
+public import Parking.Support.ValueLipschitz
+
+@[expose] public section
 
 /-!
 # The stopping value scales with a positive constant

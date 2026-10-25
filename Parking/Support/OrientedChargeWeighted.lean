@@ -1,9 +1,13 @@
-import Parking.Support.OrientedTelescope
-import Parking.Support.OrientedChargeMoment
-import Parking.Support.WeightedMoment
-import Parking.Support.OrientedMoments
-import Parking.Support.OrientedParticleMoment
-import Parking.Support.OrientedLaw
+module
+
+public import Parking.Support.OrientedTelescope
+public import Parking.Support.OrientedChargeMoment
+public import Parking.Support.WeightedMoment
+public import Parking.Support.OrientedMoments
+public import Parking.Support.OrientedParticleMoment
+public import Parking.Support.OrientedLaw
+
+@[expose] public section
 
 /-!
 # Charge-weighted odometer moment bound

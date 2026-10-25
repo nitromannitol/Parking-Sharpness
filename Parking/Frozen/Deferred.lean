@@ -1,4 +1,8 @@
-import Parking.Support.DeferredIntegral
+module
+
+public import Parking.Support.DeferredIntegral
+
+@[expose] public section
 
 /-!
 # The deferred-instruction lemma (frozen)

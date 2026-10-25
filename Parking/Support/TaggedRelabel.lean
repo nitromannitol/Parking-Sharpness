@@ -1,4 +1,8 @@
-import Parking.Support.RelabelEquiv
+module
+
+public import Parking.Support.RelabelEquiv
+
+@[expose] public section
 
 /-!
 # The label order under a relabeling that fixes the index zero

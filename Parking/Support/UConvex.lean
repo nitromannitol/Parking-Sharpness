@@ -1,5 +1,9 @@
-import Parking.Support.UBound
-import Mathlib.Analysis.Convex.Function
+module
+
+public import Parking.Support.UBound
+public import Mathlib.Analysis.Convex.Function
+
+@[expose] public section
 
 /-!
 # Convexity of the divisible sandpile odometer

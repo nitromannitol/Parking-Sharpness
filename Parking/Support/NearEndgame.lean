@@ -1,9 +1,13 @@
-import Parking.Support.NearProducts
-import Parking.Support.NearBridge
-import Parking.Support.NearRouting
-import Parking.Support.NearLowerLog
-import Parking.Support.NearParticle
-import Parking.Frozen.NearDivisible
+module
+
+public import Parking.Support.NearProducts
+public import Parking.Support.NearBridge
+public import Parking.Support.NearRouting
+public import Parking.Support.NearLowerLog
+public import Parking.Support.NearParticle
+public import Parking.Frozen.NearDivisible
+
+@[expose] public section
 
 /-!
 # The arithmetic endgame of the near-critical upper bounds

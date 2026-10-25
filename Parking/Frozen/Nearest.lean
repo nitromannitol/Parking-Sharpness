@@ -1,8 +1,12 @@
-import Parking.Support.NearestFromSpatial
-import Parking.External.GreenNormsProved
-import Parking.External.UConcentrationProved
-import Parking.External.HeatStrongMinimumProved
-import Parking.External.CriticalScaleLowerTailProved
+module
+
+public import Parking.Support.NearestFromSpatial
+public import Parking.External.GreenNormsProved
+public import Parking.External.UConcentrationProved
+public import Parking.External.HeatStrongMinimumProved
+public import Parking.External.CriticalScaleLowerTailProved
+
+@[expose] public section
 
 /-!
 # Vanishing chance the origin is nearer a hole than a particle, `d ≤ 3` (frozen)

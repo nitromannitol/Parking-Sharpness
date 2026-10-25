@@ -1,4 +1,8 @@
-import Parking.Support.MatchedMeanBalance
+module
+
+public import Parking.Support.MatchedMeanBalance
+
+@[expose] public section
 
 /-!
 # The no-arrival flag

@@ -1,4 +1,8 @@
-import Parking.Support.SpatCLT
+module
+
+public import Parking.Support.SpatCLT
+
+@[expose] public section
 
 /-!
 # Filter form of the triangular-array characteristic-function CLT

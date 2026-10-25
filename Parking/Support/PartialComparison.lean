@@ -1,4 +1,8 @@
-import Parking.Support.PartialInvariant
+module
+
+public import Parking.Support.PartialInvariant
+
+@[expose] public section
 
 /-!
 # Comparisons under partial integration

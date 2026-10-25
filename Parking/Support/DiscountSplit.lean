@@ -1,5 +1,9 @@
-import Mathlib.MeasureTheory.Integral.Bochner.Set
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+module
+
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+
+@[expose] public section
 
 /-!
 # Discount split

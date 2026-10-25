@@ -1,9 +1,13 @@
-import Parking.Support.NearEnv
-import Parking.Support.NearMoment
-import Parking.Support.UConcBridge
-import Parking.Support.NearLower
-import Parking.Support.UConcReal
-import Parking.Support.XiLaw
+module
+
+public import Parking.Support.NearEnv
+public import Parking.Support.NearMoment
+public import Parking.Support.UConcBridge
+public import Parking.Support.NearLower
+public import Parking.Support.UConcReal
+public import Parking.Support.XiLaw
+
+@[expose] public section
 
 /-!
 # The particle-law odometer moment against the recentred odometer moment

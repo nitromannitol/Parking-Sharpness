@@ -1,5 +1,9 @@
-import Parking.Support.UpperProof
-import Parking.External.UConcentration
+module
+
+public import Parking.Support.UpperProof
+public import Parking.External.UConcentration
+
+@[expose] public section
 
 /-!
 # The concentration estimate transported to the parking model
@@ -45,7 +49,7 @@ theorem measurable_intCastReal : Measurable (fun k : ℤ => (k : ℝ)) :=
 /-- `confReal` is measurable, as the coordinatewise real cast composed with the
 projection to the underlying configuration. -/
 theorem measurable_confReal : Measurable (fun ω : Data d => confReal ω) :=
-  measurable_pi_lambda _ fun y =>
+  measurable_pi_iff.mpr fun y =>
     measurable_intCastReal.comp ((measurable_pi_apply y).comp measurable_fst)
 
 /-- The integer sandpile odometer `uOf` agrees with the real-field odometer `u`
@@ -64,7 +68,7 @@ theorem law_map_confReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure
       = (fun η : Site d → ℤ => fun y => ((η y : ℤ) : ℝ)) ∘ (Prod.fst : Data d → (Site d → ℤ)) :=
     rfl
   have hmeas : Measurable (fun η : Site d → ℤ => fun y => ((η y : ℤ) : ℝ)) :=
-    measurable_pi_lambda _ fun y => measurable_intCastReal.comp (measurable_pi_apply y)
+    measurable_pi_iff.mpr fun y => measurable_intCastReal.comp (measurable_pi_apply y)
   have hfst : (law d ν).map (Prod.fst : Data d → (Site d → ℤ)) = LatticeProb.iidLaw d ν :=
     dataLaw_map_fst hd (LatticeProb.iidLaw d ν)
   rw [hcomp, ← Measure.map_map hmeas measurable_fst, hfst, LatticeProb.iidLaw,

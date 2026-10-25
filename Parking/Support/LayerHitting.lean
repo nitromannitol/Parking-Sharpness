@@ -1,5 +1,9 @@
-import Parking.Support.LayerLaw
-import LatticeProb.Walk.HitProb
+module
+
+public import Parking.Support.LayerLaw
+public import LatticeProb.Walk.HitProb
+
+@[expose] public section
 
 /-!
 # A finite-horizon hitting bound from fresh layers

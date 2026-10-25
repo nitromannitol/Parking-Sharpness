@@ -1,5 +1,9 @@
-import Parking.Support.LinearSceneryMoment
-import LatticeProb.Prob.MapPi
+module
+
+public import Parking.Support.LinearSceneryMoment
+public import LatticeProb.Prob.MapPi
+
+@[expose] public section
 
 /-!
 # Moments of centered sums under independent coordinate laws

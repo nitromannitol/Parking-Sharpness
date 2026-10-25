@@ -1,4 +1,8 @@
-import Parking.Support.OrientedStoppingValue
+module
+
+public import Parking.Support.OrientedStoppingValue
+
+@[expose] public section
 
 /-!
 # Optional stopping for the oriented walk

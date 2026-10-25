@@ -1,6 +1,10 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.SubcriticalTail.SolutionBasic
+module
+
+public import Mathlib
+public import Parking.Frozen.SubcriticalTail
+public import ParkingAudit.SubcriticalTail.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `SubcriticalTail`: Mathlib-only vocabulary to the repository

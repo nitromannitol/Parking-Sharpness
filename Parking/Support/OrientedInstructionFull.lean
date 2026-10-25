@@ -1,4 +1,8 @@
-import Parking.Support.OrientedInstructionMoment
+module
+
+public import Parking.Support.OrientedInstructionMoment
+
+@[expose] public section
 
 /-!
 # Removing the stack cutoff from the instruction estimate

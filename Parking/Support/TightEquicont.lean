@@ -1,5 +1,9 @@
-import Parking.Support.TightKolmogorov
-import LatticeProb.Prob.KolmogorovBound
+module
+
+public import Parking.Support.TightKolmogorov
+public import LatticeProb.Prob.KolmogorovBound
+
+@[expose] public section
 
 /-!
 # Equicontinuity and boundedness in probability of the reward field

@@ -1,5 +1,9 @@
-import Parking.Support.TableReads
-import Parking.Support.MatchedUniform
+module
+
+public import Parking.Support.TableReads
+public import Parking.Support.MatchedUniform
+
+@[expose] public section
 
 /-!
 # Moment and martingale bounds for the table reveal increments

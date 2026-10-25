@@ -1,6 +1,10 @@
-import Parking.Support.TableMomentBounds
-import Parking.Support.RoundEnumerationSum
-import Parking.Support.GreenSquareSum
+module
+
+public import Parking.Support.TableMomentBounds
+public import Parking.Support.RoundEnumerationSum
+public import Parking.Support.GreenSquareSum
+
+@[expose] public section
 
 /-!
 # The Green-weighted odometer bounds the predictable variance

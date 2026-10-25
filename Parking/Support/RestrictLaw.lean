@@ -1,4 +1,8 @@
-import Parking.Support.Range
+module
+
+public import Parking.Support.Range
+
+@[expose] public section
 
 /-!
 # Conditioning on the background away from the tilted sites
@@ -40,16 +44,16 @@ cases on membership in `N` from a measurable coordinate projection. -/
 theorem measurable_keepAt {d : ℕ} (N : Finset (Site d)) (ω₀ : PData d) :
     Measurable (keepAt N ω₀) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
-  · refine measurable_pi_lambda _ fun x => ?_
+  · refine measurable_pi_iff.mpr fun x => ?_
     by_cases hx : x ∈ N
     · simpa [hx] using (measurable_fst.eval : Measurable fun ω : PData d => ω.1 x)
     · simp [hx]
-  · refine measurable_pi_lambda _ fun q => ?_
+  · refine measurable_pi_iff.mpr fun q => ?_
     by_cases hq : q.1.1 ∈ N
     · simpa [hq] using
         (measurable_snd.fst.eval : Measurable fun ω : PData d => ω.2.1 q)
     · simp [hq]
-  · refine measurable_pi_lambda _ fun q => ?_
+  · refine measurable_pi_iff.mpr fun q => ?_
     by_cases hq : q.1.1 ∈ N
     · simpa [hq] using
         (measurable_snd.snd.eval : Measurable fun ω : PData d => ω.2.2 q)

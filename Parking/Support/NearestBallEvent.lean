@@ -1,5 +1,9 @@
-import Parking.Support.SpatialTightnessBridge
-import Parking.Support.NearestContinuumPositivity
+module
+
+public import Parking.Support.SpatialTightnessBridge
+public import Parking.Support.NearestContinuumPositivity
+
+@[expose] public section
 
 /-!
 # The ball event of `parking.tex:1833-1835`

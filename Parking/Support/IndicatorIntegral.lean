@@ -1,4 +1,8 @@
-import Mathlib.MeasureTheory.Integral.Bochner.Set
+module
+
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+
+@[expose] public section
 
 /-!
 # Integrating a 0/1 indicator function

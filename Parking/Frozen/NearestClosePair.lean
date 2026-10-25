@@ -1,4 +1,8 @@
-import Parking.Support.ClosePair
+module
+
+public import Parking.Support.ClosePair
+
+@[expose] public section
 
 /-!
 # The two-hole close-pair bound (frozen)

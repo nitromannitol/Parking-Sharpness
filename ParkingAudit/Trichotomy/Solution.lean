@@ -1,7 +1,11 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Trichotomy.SolutionBasic
-import ParkingAudit.Support.TrichotomyBridge
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Trichotomy.SolutionBasic
+public import ParkingAudit.Support.TrichotomyBridge
+
+@[expose] public section
 
 /-!
 # Solution: Trichotomy

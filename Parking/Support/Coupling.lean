@@ -1,4 +1,8 @@
-import Parking.Support.Parallel
+module
+
+public import Parking.Support.Parallel
+
+@[expose] public section
 
 /-!
 # The one-particle coupling

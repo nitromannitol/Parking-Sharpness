@@ -1,4 +1,8 @@
-import Parking.Support.TightEquicont
+module
+
+public import Parking.Support.TightEquicont
+
+@[expose] public section
 
 /-!
 # Uniform box-reward moment bound

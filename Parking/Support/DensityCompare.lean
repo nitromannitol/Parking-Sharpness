@@ -1,6 +1,10 @@
-import Parking.Support.ConfMonotone
-import Parking.Support.ActivityHoles
-import Parking.Support.Monotone
+module
+
+public import Parking.Support.ConfMonotone
+public import Parking.Support.ActivityHoles
+public import Parking.Support.Monotone
+
+@[expose] public section
 
 /-!
 # Density comparison under a coupling

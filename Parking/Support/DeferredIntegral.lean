@@ -1,7 +1,11 @@
-import Parking.Support.Measurability
-import Parking.Support.Deferred
-import LatticeProb.Prob.Coordinate
-import LatticeProb.Invariance
+module
+
+public import Parking.Support.Measurability
+public import Parking.Support.Deferred
+public import LatticeProb.Prob.Coordinate
+public import LatticeProb.Invariance
+
+@[expose] public section
 
 /-!
 # The second clause of `lem:deferred`
@@ -157,7 +161,7 @@ theorem nbrProj_update (i₀ : Fin d) (σ : Site d × ℕ → Site d) (q₀ : Si
 /-- `nbrProj i₀` is measurable. -/
 theorem measurable_nbrProj (i₀ : Fin d) :
     Measurable fun σ : Site d × ℕ → Site d => nbrProj i₀ σ := by
-  refine measurable_pi_lambda _ fun q => ?_
+  refine measurable_pi_iff.mpr fun q => ?_
   refine Measurable.ite ?_ (measurable_pi_apply q) measurable_const
   exact (measurable_pi_apply q) (Finset.measurableSet _)
 

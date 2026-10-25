@@ -1,5 +1,9 @@
-import Parking.Support.OrthantCube
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+module
+
+public import Parking.Support.OrthantCube
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+@[expose] public section
 
 /-!
 # Shell bounds for the two-hole exponent

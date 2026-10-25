@@ -1,6 +1,10 @@
-import Parking.Support.HorizonSink
-import Parking.Support.RoundMeanField
-import Parking.Support.DiscrepancyMeas
+module
+
+public import Parking.Support.HorizonSink
+public import Parking.Support.RoundMeanField
+public import Parking.Support.DiscrepancyMeas
+
+@[expose] public section
 
 /-!
 # Integrability of the common-table counts

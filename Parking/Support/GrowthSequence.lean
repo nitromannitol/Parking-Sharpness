@@ -1,5 +1,9 @@
-import Parking.Support.UpperTarget
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+module
+
+public import Parking.Support.UpperTarget
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+@[expose] public section
 
 /-!
 # Growth of antitone sequences from their partial sums

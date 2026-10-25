@@ -1,4 +1,8 @@
-import Parking.Support.TightHappBound
+module
+
+public import Parking.Support.TightHappBound
+
+@[expose] public section
 
 /-!
 # The per-`σ` terminal-reward bound

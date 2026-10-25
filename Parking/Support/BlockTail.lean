@@ -1,4 +1,8 @@
-import Parking.Support.RangeTail
+module
+
+public import Parking.Support.RangeTail
+
+@[expose] public section
 
 /-!
 # The geometric lower tail of the range

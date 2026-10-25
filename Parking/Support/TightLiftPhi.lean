@@ -1,4 +1,8 @@
-import Parking.Support.TightHlawLift
+module
+
+public import Parking.Support.TightHlawLift
+
+@[expose] public section
 
 /-!
 # The McShane lift `liftPhi` of a bounded Lipschitz functional

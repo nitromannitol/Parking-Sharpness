@@ -1,6 +1,10 @@
-import Parking.Support.SpatWWalkGrid
-import Parking.Support.SpatWDivisiblePairing
-import LatticeProb.Prob.Scaling.WeightedIntegral
+module
+
+public import Parking.Support.SpatWWalkGrid
+public import Parking.Support.SpatWDivisiblePairing
+public import LatticeProb.Prob.Scaling.WeightedIntegral
+
+@[expose] public section
 
 /-!
 # Middle approximation

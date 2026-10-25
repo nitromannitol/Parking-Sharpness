@@ -1,6 +1,10 @@
-import Parking.Support.SingleMean
-import Parking.Support.MatchedPriority
-import Parking.Support.MatchedLaw
+module
+
+public import Parking.Support.SingleMean
+public import Parking.Support.MatchedPriority
+public import Parking.Support.MatchedLaw
+
+@[expose] public section
 
 /-!
 # The conditional mean odometer as a particle-driver expectation

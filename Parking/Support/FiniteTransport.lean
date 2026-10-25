@@ -1,4 +1,8 @@
-import Parking.Support.MassTransport
+module
+
+public import Parking.Support.MassTransport
+
+@[expose] public section
 
 /-!
 # A finite-range mass transport principle for the driving law

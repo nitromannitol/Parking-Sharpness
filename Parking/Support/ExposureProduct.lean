@@ -1,6 +1,10 @@
-import Parking.Support.Exposure
-import Parking.Support.DeferredIntegral
-import LatticeProb.Prob.Exposure
+module
+
+public import Parking.Support.Exposure
+public import Parking.Support.DeferredIntegral
+public import LatticeProb.Prob.Exposure
+
+@[expose] public section
 
 /-!
 # The exposure product rule

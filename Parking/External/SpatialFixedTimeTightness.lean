@@ -1,5 +1,9 @@
-import Parking.Basic
-import Parking.Support.Continuum
+module
+
+public import Parking.Basic
+public import Parking.Support.Continuum
+
+@[expose] public section
 
 /-!
 # Spatial fixed-time tightness of the rescaled odometer (frozen)

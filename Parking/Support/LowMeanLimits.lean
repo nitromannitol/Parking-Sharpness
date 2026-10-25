@@ -1,5 +1,9 @@
-import Parking.Support.DiscrepancyLimits
-import Parking.Support.MeanPos
+module
+
+public import Parking.Support.DiscrepancyLimits
+public import Parking.Support.MeanPos
+
+@[expose] public section
 
 /-!
 # Low-dimensional mean ratio and scaling limit

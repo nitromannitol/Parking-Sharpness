@@ -1,6 +1,10 @@
-import Parking.Support.SubharmonicMaximum
-import Parking.Support.NearestGreen
-import LatticeProb.Walk.ExteriorDirichlet
+module
+
+public import Parking.Support.SubharmonicMaximum
+public import Parking.Support.NearestGreen
+public import LatticeProb.Walk.ExteriorDirichlet
+
+@[expose] public section
 
 /-!
 # Exterior barrier comparison

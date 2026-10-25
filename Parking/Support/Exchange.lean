@@ -1,6 +1,10 @@
-import LatticeProb.Prob.FiniteMarginal
-import Parking.Support.ConfMonotone
-import Parking.Support.DensityCompare
+module
+
+public import LatticeProb.Prob.FiniteMarginal
+public import Parking.Support.ConfMonotone
+public import Parking.Support.DensityCompare
+
+@[expose] public section
 
 /-!
 # Exchangeability of the particles at the origin
@@ -313,7 +317,7 @@ theorem rankLaw_ne (a b : Label d × ℕ) (hab : a ≠ b) :
       fin_cases i <;> fin_cases j <;> simp_all
     have h2 := LatticeProb.infinitePi_map_comp (ι := Label d × ℕ) U (κ := Fin 2) ![a, b] hv
     have hf2 : Measurable fun (r : Label d × ℕ → ℝ) (i : Fin 2) => r (![a, b] i) :=
-      measurable_pi_lambda _ fun i => measurable_pi_apply (![a, b] i)
+      measurable_pi_iff.mpr fun i => measurable_pi_apply (![a, b] i)
     calc (LatticeProb.rankLaw d).map (fun r => ((r a, r b) : ℝ × ℝ))
         = ((Measure.infinitePi fun _ : Label d × ℕ => U).map
             (fun (r : Label d × ℕ → ℝ) (i : Fin 2) => r (![a, b] i))).map
@@ -359,10 +363,10 @@ of `ω.2.1` and `ω.2.2` at the fixed reindexing `(relabel σ q.1, q.2)`. -/
 theorem measurable_relabelData (σ : Equiv.Perm ℕ) :
     Measurable (relabelData (d := d) σ) :=
   measurable_fst.prodMk
-    ((measurable_pi_lambda _ fun q =>
+    ((measurable_pi_iff.mpr fun q =>
       (measurable_pi_apply (relabel σ q.1, q.2)).comp
         (measurable_fst.comp measurable_snd)).prodMk
-      (measurable_pi_lambda _ fun q =>
+      (measurable_pi_iff.mpr fun q =>
         (measurable_pi_apply (relabel σ q.1, q.2)).comp
           (measurable_snd.comp measurable_snd)))
 
@@ -400,10 +404,10 @@ theorem map_pLaw_relabelData (hd : 1 ≤ d) (σ : Equiv.Perm ℕ)
     infinitePi_map_inj _ _ (relabelPair_injective σ)
   have hmm : Measurable fun (f : Label d × ℕ → Site d) (q : Label d × ℕ) =>
       f (relabel σ q.1, q.2) :=
-    measurable_pi_lambda _ fun q => measurable_pi_apply (relabel σ q.1, q.2)
+    measurable_pi_iff.mpr fun q => measurable_pi_apply (relabel σ q.1, q.2)
   have hmr : Measurable fun (f : Label d × ℕ → ℝ) (q : Label d × ℕ) =>
       f (relabel σ q.1, q.2) :=
-    measurable_pi_lambda _ fun q => measurable_pi_apply (relabel σ q.1, q.2)
+    measurable_pi_iff.mpr fun q => measurable_pi_apply (relabel σ q.1, q.2)
   show ((μ.prod ((LatticeProb.moveLaw d).prod (LatticeProb.rankLaw d))).map
     (Prod.map id (Prod.map
       (fun (f : Label d × ℕ → Site d) (q : Label d × ℕ) => f (relabel σ q.1, q.2))
@@ -480,7 +484,7 @@ theorem exchangeable_particle (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
   have hTA : relabelData (d := d) σ ⁻¹' A = A := rfl
   have hG : Measurable fun ω : LatticeProb.PData d => fun q : ℕ × ℕ =>
       (LatticeProb.pState (LatticeProb.toPDriver ω) q.1).active (0, q.2) :=
-    measurable_pi_lambda _ fun q => (measurable_pState (d := d) q.1).1 (0, q.2)
+    measurable_pi_iff.mpr fun q => (measurable_pState (d := d) q.1).1 (0, q.2)
   have hstep : ((pLaw d μ).restrict A).map (relabelData σ) = (pLaw d μ).restrict A :=
     map_restrict_of_map_eq _ (measurable_relabelData σ)
       (map_pLaw_relabelData hd σ μ) hAmeas hTA
@@ -530,7 +534,7 @@ theorem exchangeable_origin (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
       ((ℕ × Site d → ℕ) × (ℕ × Site d → ℕ) × (ℕ × Site d → ℕ) × (ℕ × Label d → Bool)) =>
       fun q : ℕ × ℕ => z.2.2.2.2 (q.1, ((0 : Site d), τ q.2)) := by
     intro τ
-    refine measurable_pi_lambda _ fun q => ?_
+    refine measurable_pi_iff.mpr fun q => ?_
     exact (measurable_pi_apply (q.1, ((0 : Site d), τ q.2))).comp
       (measurable_snd.comp (measurable_snd.comp (measurable_snd.comp measurable_snd)))
   have hΦ : Measurable fun ω : Data d => (ω.1, LatticeProb.stackObservables ω) :=

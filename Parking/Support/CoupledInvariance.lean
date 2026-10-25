@@ -1,6 +1,10 @@
-import Parking.Support.MatchedShift
-import Parking.Support.CoupledLaw
-import Parking.Support.Invariance
+module
+
+public import Parking.Support.MatchedShift
+public import Parking.Support.CoupledLaw
+public import Parking.Support.Invariance
+
+@[expose] public section
 
 /-!
 # Translation invariance of the coupling input

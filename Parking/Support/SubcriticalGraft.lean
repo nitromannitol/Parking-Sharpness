@@ -1,6 +1,10 @@
-import Parking.Support.GraftOrigin
-import Parking.Support.SubcriticalInvariance
-import Parking.Support.SubcriticalStep2
+module
+
+public import Parking.Support.GraftOrigin
+public import Parking.Support.SubcriticalInvariance
+public import Parking.Support.SubcriticalStep2
+
+@[expose] public section
 
 /-!
 # The subcritical pair with the origin prescribed

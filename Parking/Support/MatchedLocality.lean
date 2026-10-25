@@ -1,5 +1,9 @@
-import Parking.Support.MatchedCounts
-import Parking.Support.KernelBridge
+module
+
+public import Parking.Support.MatchedCounts
+public import Parking.Support.KernelBridge
+
+@[expose] public section
 
 /-!
 # Finite propagation speed for the common-table construction

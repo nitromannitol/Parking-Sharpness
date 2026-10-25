@@ -1,5 +1,9 @@
-import Parking.Support.Walk
-import LatticeProb.Graph.ZdRepresentation
+module
+
+public import Parking.Support.Walk
+public import LatticeProb.Graph.ZdRepresentation
+
+@[expose] public section
 
 /-!
 # The optimal-stopping representation of the odometer

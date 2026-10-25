@@ -1,7 +1,11 @@
-import Parking.Support.Continuum
-import Parking.External.OrientedStoppingStability
-import Parking.External.BinomialLocalCLTProved
-import Parking.Support.TightHappFinal
+module
+
+public import Parking.Support.Continuum
+public import Parking.External.OrientedStoppingStability
+public import Parking.External.BinomialLocalCLTProved
+public import Parking.Support.TightHappFinal
+
+@[expose] public section
 
 /-!
 # Proposition 12.3: oriented scaling

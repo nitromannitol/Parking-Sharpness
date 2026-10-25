@@ -1,5 +1,9 @@
-import Parking.Support.RoundBlock
-import Parking.Support.RevealPrefix
+module
+
+public import Parking.Support.RoundBlock
+public import Parking.Support.RevealPrefix
+
+@[expose] public section
 
 /-!
 # A fixed enumeration of the round query rectangle

@@ -1,5 +1,9 @@
-import Parking.Support.Range
-import Parking.Support.Cov
+module
+
+public import Parking.Support.Range
+public import Parking.Support.Cov
+
+@[expose] public section
 
 /-!
 # The tilted one-site law

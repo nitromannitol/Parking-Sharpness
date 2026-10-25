@@ -1,5 +1,9 @@
-import Parking.Support.CoordinateProductFactor
-import Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic
+module
+
+public import Parking.Support.CoordinateProductFactor
+public import Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic
+
+@[expose] public section
 
 /-!
 # Conditional averaging of a fresh coordinate

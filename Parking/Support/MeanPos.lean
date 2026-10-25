@@ -1,5 +1,9 @@
-import Parking.Support.MasterChain
-import Parking.Support.DensitySequence
+module
+
+public import Parking.Support.MasterChain
+public import Parking.Support.DensitySequence
+
+@[expose] public section
 
 /-!
 # Positivity of the mean odometer

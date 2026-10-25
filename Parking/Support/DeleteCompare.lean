@@ -1,3 +1,5 @@
+module
+
 /-
 The deleted-particle comparison functionals of Step 2.
 
@@ -10,8 +12,10 @@ symmetric in the particles present, and after it the label `(x, i)` is not read
 at all.  That is exactly what the two increment bounds of
 `Support/SpliceAvg.lean` ask of a comparison functional.
 -/
-import Parking.Support.RelabelLaw
-import Parking.Support.ParticleSum
+public import Parking.Support.RelabelLaw
+public import Parking.Support.ParticleSum
+
+@[expose] public section
 
 open MeasureTheory
 

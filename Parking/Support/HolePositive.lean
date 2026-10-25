@@ -1,8 +1,12 @@
-import Parking.Support.TableHoleLaw
-import Parking.Support.HoleNoArrival
-import Parking.Support.HorizonSink
-import Parking.Support.AtomUpdate
-import Parking.Support.ClosePair
+module
+
+public import Parking.Support.TableHoleLaw
+public import Parking.Support.HoleNoArrival
+public import Parking.Support.HorizonSink
+public import Parking.Support.AtomUpdate
+public import Parking.Support.ClosePair
+
+@[expose] public section
 
 /-!
 # Strict positivity of the sparse surviving-hole probability

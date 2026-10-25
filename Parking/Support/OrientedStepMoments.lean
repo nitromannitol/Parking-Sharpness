@@ -1,9 +1,13 @@
-import Parking.Support.OrientedMomentRecursion
-import Parking.Support.OrientedConcentration
-import Parking.Support.OrientedTwoMean
-import Parking.Support.OrientedLogMean
-import Parking.Support.UpperTarget
-import Parking.Support.ProductLift
+module
+
+public import Parking.Support.OrientedMomentRecursion
+public import Parking.Support.OrientedConcentration
+public import Parking.Support.OrientedTwoMean
+public import Parking.Support.OrientedLogMean
+public import Parking.Support.UpperTarget
+public import Parking.Support.ProductLift
+
+@[expose] public section
 
 /-!
 # Moment inequalities for the oriented walk theorem

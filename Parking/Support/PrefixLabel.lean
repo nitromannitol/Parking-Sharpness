@@ -1,4 +1,8 @@
-import Parking.Support.ParticleFiltration
+module
+
+public import Parking.Support.ParticleFiltration
+
+@[expose] public section
 
 /-!
 # Prefix labels for the particle filtration

@@ -1,9 +1,13 @@
-import Parking.Support.MeanUniformInt
-import Parking.Support.OrientedDivisibleMoment
-import Parking.Support.OrientedDivisibleIntegrable
-import Parking.Support.OrientedLaw
-import Parking.Support.OrientedTwoMean
-import Parking.Support.ScalParabolicScaling
+module
+
+public import Parking.Support.MeanUniformInt
+public import Parking.Support.OrientedDivisibleMoment
+public import Parking.Support.OrientedDivisibleIntegrable
+public import Parking.Support.OrientedLaw
+public import Parking.Support.OrientedTwoMean
+public import Parking.Support.ScalParabolicScaling
+
+@[expose] public section
 
 /-!
 # The mean clause of the scaling proposition from weak convergence

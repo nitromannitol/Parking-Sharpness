@@ -1,5 +1,9 @@
-import Parking.Support.OrientedFreshness
-import Parking.Support.WBound
+module
+
+public import Parking.Support.OrientedFreshness
+public import Parking.Support.WBound
+
+@[expose] public section
 
 /-!
 # Integrable directed odometers for a fixed scenery

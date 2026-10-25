@@ -1,6 +1,10 @@
-import Parking.Support.SpatWBarDivisibleJointMeasurable
-import Parking.Support.NearestBallEvent
-import LatticeProb.Prob.Scaling.FddBlockTightness
+module
+
+public import Parking.Support.SpatWBarDivisibleJointMeasurable
+public import Parking.Support.NearestBallEvent
+public import LatticeProb.Prob.Scaling.FddBlockTightness
+
+@[expose] public section
 
 /-!
 # Joint convergence of odometer pairings with a finite block

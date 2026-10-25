@@ -1,5 +1,9 @@
-import Parking.Frozen.CriticalDensity
-import Parking.Support.CriticalChain
+module
+
+public import Parking.Frozen.CriticalDensity
+public import Parking.Support.CriticalChain
+
+@[expose] public section
 
 /-!
 # The critical corollary (frozen)

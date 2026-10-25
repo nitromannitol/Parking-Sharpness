@@ -1,6 +1,10 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Trichotomy.SolutionBasic
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Trichotomy.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `Trichotomy`: Mathlib-only vocabulary to the repository

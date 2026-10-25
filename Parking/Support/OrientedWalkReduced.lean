@@ -1,9 +1,13 @@
-import Parking.Support.OrientedStepThree
-import Parking.Support.OrientedTwoLower
-import Parking.Support.OrientedTwoUpper
-import Parking.Support.OrientedLogBounds
-import Parking.Support.OrientedRatio
-import Parking.Support.OrientedLowerRates
+module
+
+public import Parking.Support.OrientedStepThree
+public import Parking.Support.OrientedTwoLower
+public import Parking.Support.OrientedTwoUpper
+public import Parking.Support.OrientedLogBounds
+public import Parking.Support.OrientedRatio
+public import Parking.Support.OrientedLowerRates
+
+@[expose] public section
 
 /-!
 # Oriented walk reduced to the scaling limit

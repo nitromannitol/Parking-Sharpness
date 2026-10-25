@@ -1,5 +1,9 @@
-import Parking.Support.FieldMeasurability
-import Parking.External.LinearFieldScaling
+module
+
+public import Parking.Support.FieldMeasurability
+public import Parking.External.LinearFieldScaling
+
+@[expose] public section
 
 /-!
 # Instantiation of `FieldMeasurability` for the linear field

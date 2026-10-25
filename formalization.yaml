@@ -29,7 +29,7 @@ sources:
       - "Christoforos Panagiotis"
     id: "arXiv:2609.02820"
     url: "https://arxiv.org/abs/2609.02820"
-    type: "preprint"
+    type: paper
     relationship: "formalizes"
     note: >-
       The paper under formalization.  Every theorem, lemma, proposition and
@@ -48,7 +48,7 @@ related_formalizations:
       The shared library Lattice-Probability (LatticeProb): the lattice, the
       simple random walk and its Green functions, the particle-hole process
       and the toolkits for results that do not depend on the parking model.
-      Pinned git dependency at commit 9d44b4d4670df393bb86ac5a4e042f215001cddf.
+      Pinned git dependency at commit 46c6e5ab28dad997e91dea051ce274d39635b9f2.
   - id: "https://github.com/nitromannitol/Divisible-Sandpile-Percolation"
     relationship: "builds-on"
     note: >-

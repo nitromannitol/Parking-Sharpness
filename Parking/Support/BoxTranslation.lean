@@ -1,4 +1,8 @@
-import Parking.Support.OrthantCube
+module
+
+public import Parking.Support.OrthantCube
+
+@[expose] public section
 
 /-!
 # Translation and symmetry of the box membership relation

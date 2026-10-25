@@ -1,6 +1,10 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Nearest.SolutionBasic
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Nearest.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `Nearest`: Mathlib-only vocabulary to the repository

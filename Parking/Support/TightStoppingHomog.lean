@@ -1,5 +1,9 @@
-import Parking.Support.OrientedTerminal
-import LatticeProb.Prob.Scaling.OptimalStopping
+module
+
+public import Parking.Support.OrientedTerminal
+public import LatticeProb.Prob.Scaling.OptimalStopping
+
+@[expose] public section
 
 /-!
 # Homogeneity of the stopping value

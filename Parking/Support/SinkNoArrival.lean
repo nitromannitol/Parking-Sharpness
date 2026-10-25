@@ -1,6 +1,10 @@
-import Parking.Support.NoArrivalJoint
-import Parking.Support.NoArrivalSplit
-import Parking.Support.SinkLambdaMoment
+module
+
+public import Parking.Support.NoArrivalJoint
+public import Parking.Support.NoArrivalSplit
+public import Parking.Support.SinkLambdaMoment
+
+@[expose] public section
 
 /-!
 # Exponential decay of the no-arrival probability at the sink

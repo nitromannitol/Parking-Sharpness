@@ -1,5 +1,9 @@
-import Parking.Support.WQuadratic
-import Parking.External.GreenGradient
+module
+
+public import Parking.Support.WQuadratic
+public import Parking.External.GreenGradient
+
+@[expose] public section
 
 /-!
 # The increment bound `eq:increment`

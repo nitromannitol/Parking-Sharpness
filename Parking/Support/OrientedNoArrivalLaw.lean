@@ -1,6 +1,10 @@
-import Parking.Support.OrientedIncomingSlots
-import Parking.Support.CountableFiberIntegral
-import Parking.Support.OrientedGivenBound
+module
+
+public import Parking.Support.OrientedIncomingSlots
+public import Parking.Support.CountableFiberIntegral
+public import Parking.Support.OrientedGivenBound
+
+@[expose] public section
 
 /-!
 # Exact no-arrival probability from fresh instructions

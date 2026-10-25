@@ -1,8 +1,12 @@
-import Parking.Support.LinPotentialMaximalTime
-import Parking.Support.StoppingCutoffPathwise
-import Parking.Support.Continuum
-import Parking.Support.ThreeShellSum
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+module
+
+public import Parking.Support.LinPotentialMaximalTime
+public import Parking.Support.StoppingCutoffPathwise
+public import Parking.Support.Continuum
+public import Parking.Support.ThreeShellSum
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+@[expose] public section
 
 /-!
 # The randomized discrete cutoff-to-true limit

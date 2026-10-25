@@ -1,5 +1,9 @@
-import Parking.Support.HoleCost
-import Parking.Support.LayerSubmartingale
+module
+
+public import Parking.Support.HoleCost
+public import Parking.Support.LayerSubmartingale
+
+@[expose] public section
 
 /-!
 # The two-hole weight supermartingale

@@ -1,5 +1,9 @@
-import LatticeProb.Prob.Scaling.SymmetricTaylor
-import Parking.Support.Continuum
+module
+
+public import LatticeProb.Prob.Scaling.SymmetricTaylor
+public import Parking.Support.Continuum
+
+@[expose] public section
 
 /-!
 # Discrete walk operator's continuum Taylor limit

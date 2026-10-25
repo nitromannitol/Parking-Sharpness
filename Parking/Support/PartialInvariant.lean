@@ -1,4 +1,8 @@
-import Parking.Support.ProductReveal
+module
+
+public import Parking.Support.ProductReveal
+
+@[expose] public section
 
 /-!
 # Coordinate invariance under partial integration

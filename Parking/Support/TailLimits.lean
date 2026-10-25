@@ -1,6 +1,10 @@
-import Parking.Support.MomentTail
-import Mathlib.Analysis.PSeries
-import Mathlib.MeasureTheory.OuterMeasure.BorelCantelli
+module
+
+public import Parking.Support.MomentTail
+public import Mathlib.Analysis.PSeries
+public import Mathlib.MeasureTheory.OuterMeasure.BorelCantelli
+
+@[expose] public section
 
 /-!
 # Summable logarithmic tails

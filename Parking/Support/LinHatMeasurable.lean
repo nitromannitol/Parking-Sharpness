@@ -1,8 +1,12 @@
-import Parking.Support.HatInterpD
-import Parking.Support.LinPotentialSum
-import Parking.Support.LinInterp
-import Parking.Support.UConcBridge
-import Parking.Basic
+module
+
+public import Parking.Support.HatInterpD
+public import Parking.Support.LinPotentialSum
+public import Parking.Support.LinInterp
+public import Parking.Support.UConcBridge
+public import Parking.Basic
+
+@[expose] public section
 
 /-!
 # Measurability of the cutoff interpolated linear field

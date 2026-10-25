@@ -1,6 +1,10 @@
-import LatticeProb.Prob.Scaling.CompactTesting
-import LatticeProb.Prob.Scaling.CompactTestCover
-import Parking.Support.SpaceTimeContOp
+module
+
+public import LatticeProb.Prob.Scaling.CompactTesting
+public import LatticeProb.Prob.Scaling.CompactTestCover
+public import Parking.Support.SpaceTimeContOp
+
+@[expose] public section
 
 /-!
 # Simultaneous zero-integral testing on the positive region

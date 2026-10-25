@@ -1,4 +1,8 @@
-import Parking.MainTheorems
+module
+
+public import Parking.MainTheorems
+
+@[expose] public section
 
 /-!
 # Axioms audit

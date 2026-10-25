@@ -1,10 +1,14 @@
-import Parking.Support.OrientedWStarMoment
-import Parking.Support.OrientedDivisibleIntegrable
-import Parking.Support.OrientedInstructionFull
-import Parking.Support.OrientedError
-import Parking.Support.UpperStep
-import Parking.Support.OrientedMoments
-import Parking.Support.NearTailSum
+module
+
+public import Parking.Support.OrientedWStarMoment
+public import Parking.Support.OrientedDivisibleIntegrable
+public import Parking.Support.OrientedInstructionFull
+public import Parking.Support.OrientedError
+public import Parking.Support.UpperStep
+public import Parking.Support.OrientedMoments
+public import Parking.Support.NearTailSum
+
+@[expose] public section
 
 /-!
 # The moment recursion for the directed particle odometer

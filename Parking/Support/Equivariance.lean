@@ -1,5 +1,9 @@
-import Parking.Support.Measurability
-import LatticeProb.Equivariance
+module
+
+public import Parking.Support.Measurability
+public import LatticeProb.Equivariance
+
+@[expose] public section
 
 /-!
 # Translation equivariance of the particle-hole process

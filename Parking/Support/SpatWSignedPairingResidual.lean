@@ -1,5 +1,9 @@
-import Parking.Support.SpatWMiddlePairingError
-import Parking.Support.SpatWPairingTransfer
+module
+
+public import Parking.Support.SpatWMiddlePairingError
+public import Parking.Support.SpatWPairingTransfer
+
+@[expose] public section
 
 /-!
 # Signed-density residual relative to the divisible pairing

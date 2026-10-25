@@ -1,4 +1,8 @@
-import Parking.Frozen.CorCritical
+module
+
+public import Parking.Frozen.CorCritical
+
+@[expose] public section
 
 /-!
 # The mean odometer diverges

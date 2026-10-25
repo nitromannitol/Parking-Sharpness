@@ -1,4 +1,8 @@
-import Parking.Support.SubcriticalJointBound
+module
+
+public import Parking.Support.SubcriticalJointBound
+
+@[expose] public section
 
 /-!
 # Theorem 10.3: subcritical survival decay (frozen)

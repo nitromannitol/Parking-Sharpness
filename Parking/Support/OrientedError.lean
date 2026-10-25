@@ -1,5 +1,9 @@
-import Parking.Support.OrientedMaximum
-import Parking.Support.OrientedOdometer
+module
+
+public import Parking.Support.OrientedMaximum
+public import Parking.Support.OrientedOdometer
+
+@[expose] public section
 
 /-!
 # Directed particle error field

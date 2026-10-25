@@ -1,5 +1,9 @@
-import Parking.Support.NoArrivalExponential
-import Parking.Support.FlatNoise
+module
+
+public import Parking.Support.NoArrivalExponential
+public import Parking.Support.FlatNoise
+
+@[expose] public section
 
 /-!
 # Joint measurability across a mixed initial field

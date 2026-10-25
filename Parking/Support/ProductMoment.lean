@@ -1,4 +1,8 @@
-import Parking.Support.BoundedMoment
+module
+
+public import Parking.Support.BoundedMoment
+
+@[expose] public section
 
 /-!
 # The moment norm on a product measure

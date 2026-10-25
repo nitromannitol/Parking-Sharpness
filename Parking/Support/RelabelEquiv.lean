@@ -1,4 +1,8 @@
-import Parking.Support.Relabel
+module
+
+public import Parking.Support.Relabel
+
+@[expose] public section
 
 /-!
 # Equivariance under relabeling

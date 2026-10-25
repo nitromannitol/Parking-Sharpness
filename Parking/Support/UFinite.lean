@@ -1,6 +1,10 @@
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import LatticeProb.Prob.FiniteMarginal
+module
+
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+public import LatticeProb.Prob.FiniteMarginal
+
+@[expose] public section
 
 /-!
 # Finite dependence and convex comparison of sandpile odometers

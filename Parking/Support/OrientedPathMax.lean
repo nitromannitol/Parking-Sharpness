@@ -1,4 +1,8 @@
-import Parking.Support.OrientedIncrement
+module
+
+public import Parking.Support.OrientedIncrement
+
+@[expose] public section
 
 /-!
 # The directed maximum as a maximum over path times

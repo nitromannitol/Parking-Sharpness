@@ -1,7 +1,11 @@
-import Parking.Support.SinkField
-import Parking.Support.MeanFieldIntegral
-import Parking.Support.MeanLaplacianOrder
-import Parking.Support.ExteriorBarrier
+module
+
+public import Parking.Support.SinkField
+public import Parking.Support.MeanFieldIntegral
+public import Parking.Support.MeanLaplacianOrder
+public import Parking.Support.ExteriorBarrier
+
+@[expose] public section
 
 /-!
 # Mean odometer of the sparse sink process

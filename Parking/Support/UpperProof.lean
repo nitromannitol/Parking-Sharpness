@@ -1,5 +1,9 @@
-import Parking.Support.UpperStep
-import Parking.Support.UBound
+module
+
+public import Parking.Support.UpperStep
+public import Parking.Support.UBound
+
+@[expose] public section
 
 /-!
 # Step 1 of `thm:upper`: assembly

@@ -1,6 +1,10 @@
-import Parking.Support.LinInterp
-import Parking.External.SRWLocalCLT
-import Parking.Support.Continuum
+module
+
+public import Parking.Support.LinInterp
+public import Parking.External.SRWLocalCLT
+public import Parking.Support.Continuum
+
+@[expose] public section
 
 /-!
 # The linear membrane field scaling limit

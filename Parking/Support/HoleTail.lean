@@ -1,7 +1,11 @@
-import Parking.Support.SinkNoArrival
-import Parking.Support.HoleBounds
-import Parking.Support.LogFromTail
-import Parking.Support.CriticalMeanDiverges
+module
+
+public import Parking.Support.SinkNoArrival
+public import Parking.Support.HoleBounds
+public import Parking.Support.LogFromTail
+public import Parking.Support.CriticalMeanDiverges
+
+@[expose] public section
 
 /-!
 # Sparse hole probability decays exponentially

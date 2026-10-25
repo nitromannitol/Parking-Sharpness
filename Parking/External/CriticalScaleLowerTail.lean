@@ -1,5 +1,9 @@
-import Parking.External.VarianceScale
-import Parking.External.MultivariateBerryEsseen
+module
+
+public import Parking.External.VarianceScale
+public import Parking.External.MultivariateBerryEsseen
+
+@[expose] public section
 
 /-!
 # The critical-scale lower tail estimate

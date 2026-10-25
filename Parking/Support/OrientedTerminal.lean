@@ -1,4 +1,8 @@
-import Parking.Support.OrientedStopOptional
+module
+
+public import Parking.Support.OrientedStopOptional
+
+@[expose] public section
 
 /-!
 # The terminal-reward form of oriented stopping

@@ -1,5 +1,9 @@
-import Parking.Support.StoppingValue
-import Parking.Support.LinPotential
+module
+
+public import Parking.Support.StoppingValue
+public import Parking.Support.LinPotential
+
+@[expose] public section
 
 /-!
 # Optional stopping for the simple random walk

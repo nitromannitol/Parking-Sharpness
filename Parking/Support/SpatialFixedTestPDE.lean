@@ -1,7 +1,11 @@
-import Parking.Support.SpatialResidualCutoff
-import Parking.Support.SpatialSpaceTimeFunctional
-import Parking.Support.SpatialResidualAlgebra
-import Parking.Support.SpatialVanishingDistance
+module
+
+public import Parking.Support.SpatialResidualCutoff
+public import Parking.Support.SpatialSpaceTimeFunctional
+public import Parking.Support.SpatialResidualAlgebra
+public import Parking.Support.SpatialVanishingDistance
+
+@[expose] public section
 
 /-!
 # Fixed-test identification of the continuum heat equation

@@ -1,6 +1,10 @@
-import Parking.Support.RoundMeanField
-import Parking.Support.ProductReveal
-import Parking.Support.InstructionUnused
+module
+
+public import Parking.Support.RoundMeanField
+public import Parking.Support.ProductReveal
+public import Parking.Support.InstructionUnused
+
+@[expose] public section
 
 /-!
 # Averaging the unrevealed entries preserves the Green influence

@@ -1,7 +1,11 @@
-import Parking.Support.HatInterpD
-import Mathlib.Topology.ContinuousMap.BoundedCompactlySupported
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Metrizable
-import Mathlib.Topology.UniformSpace.HeineCantor
+module
+
+public import Parking.Support.HatInterpD
+public import Mathlib.Topology.ContinuousMap.BoundedCompactlySupported
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Metrizable
+public import Mathlib.Topology.UniformSpace.HeineCantor
+
+@[expose] public section
 
 /-!
 # Measurability of a cutoff continuous random field

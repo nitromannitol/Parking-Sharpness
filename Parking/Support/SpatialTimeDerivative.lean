@@ -1,6 +1,10 @@
-import LatticeProb.WhiteNoise
-import Parking.Support.Continuum
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+module
+
+public import LatticeProb.WhiteNoise
+public import Parking.Support.Continuum
+public import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+
+@[expose] public section
 
 /-!
 # Time differentiation cancels the time-independent source

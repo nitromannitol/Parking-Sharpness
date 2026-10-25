@@ -1,4 +1,8 @@
-import Parking.Support.NearestCriticalModel
+module
+
+public import Parking.Support.NearestCriticalModel
+
+@[expose] public section
 
 /-!
 # The multivariate Berry-Esseen orthant bound

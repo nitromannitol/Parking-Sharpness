@@ -1,5 +1,9 @@
-import Parking.Support.GammaSum
-import Parking.Support.DeferredIntegral
+module
+
+public import Parking.Support.GammaSum
+public import Parking.Support.DeferredIntegral
+
+@[expose] public section
 
 /-!
 # The error field as one increment per instruction

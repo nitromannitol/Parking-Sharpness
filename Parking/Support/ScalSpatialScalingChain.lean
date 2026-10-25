@@ -1,6 +1,10 @@
-import Parking.Support.ScalSpatialSnell
-import LatticeProb.Prob.CondExpParam
-import Parking.Support.Continuum
+module
+
+public import Parking.Support.ScalSpatialSnell
+public import LatticeProb.Prob.CondExpParam
+public import Parking.Support.Continuum
+
+@[expose] public section
 
 /-!
 # The measurability of the limit object of `prop:spatial-scaling`

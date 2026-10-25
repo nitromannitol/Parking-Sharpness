@@ -1,4 +1,8 @@
-import Parking.Support.SpatGreenShiftLowDim
+module
+
+public import Parking.Support.SpatGreenShiftLowDim
+
+@[expose] public section
 
 /-!
 # The dimension-split step-rate asymptotic

@@ -1,8 +1,12 @@
-import Parking.Support.Filtration
-import Parking.Support.Measurability
-import Parking.Support.Comparison
-import Parking.Support.Parallel
-import Parking.Support.ActivityHoles
+module
+
+public import Parking.Support.Filtration
+public import Parking.Support.Measurability
+public import Parking.Support.Comparison
+public import Parking.Support.Parallel
+public import Parking.Support.ActivityHoles
+
+@[expose] public section
 
 /-!
 # What the exposure filtration determines

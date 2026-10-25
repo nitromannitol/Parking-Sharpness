@@ -1,6 +1,10 @@
-import Parking.Support.CoordinateFiltration
-import Parking.Support.CoordinateConditional
-import Parking.Support.BernsteinRange
+module
+
+public import Parking.Support.CoordinateFiltration
+public import Parking.Support.CoordinateConditional
+public import Parking.Support.BernsteinRange
+
+@[expose] public section
 
 /-!
 # Bounded predictable products of revealed coordinates

@@ -1,6 +1,10 @@
-import Parking.Support.MeanPos
-import Parking.Support.GrowthMeans
-import Parking.Frozen.FourSparse
+module
+
+public import Parking.Support.MeanPos
+public import Parking.Support.GrowthMeans
+public import Parking.Frozen.FourSparse
+
+@[expose] public section
 
 /-!
 # Dimension-four mean ratios: bounded per law, unbounded uniformly

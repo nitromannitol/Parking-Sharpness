@@ -1,4 +1,8 @@
-import Parking.Support.MatchedCounts
+module
+
+public import Parking.Support.MatchedCounts
+
+@[expose] public section
 
 /-!
 # The signed field of a round, with one instruction suppressed

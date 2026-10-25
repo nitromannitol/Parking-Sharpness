@@ -1,4 +1,8 @@
-import Parking.Support.LayerHitting
+module
+
+public import Parking.Support.LayerHitting
+
+@[expose] public section
 
 /-!
 # Rewards paid by a potential across fresh layers

@@ -1,8 +1,12 @@
-import Parking.Support.GreenBridge
-import Parking.Support.Range
-import Parking.Support.GammaSum
-import LatticeProb.Walk.GreenPointwise
-import LatticeProb.Walk.HitProb
+module
+
+public import Parking.Support.GreenBridge
+public import Parking.Support.Range
+public import Parking.Support.GammaSum
+public import LatticeProb.Walk.GreenPointwise
+public import LatticeProb.Walk.HitProb
+
+@[expose] public section
 
 /-!
 # Green-function identities and bubble decay

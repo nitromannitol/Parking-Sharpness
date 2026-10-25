@@ -1,6 +1,10 @@
-import Parking.Support.MatchedCounts
-import Parking.Support.KernelBridge
-import Parking.Support.MatchedUniform
+module
+
+public import Parking.Support.MatchedCounts
+public import Parking.Support.KernelBridge
+public import Parking.Support.MatchedUniform
+
+@[expose] public section
 
 /-!
 # Locality from finitely many used noise entries

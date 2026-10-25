@@ -1,7 +1,11 @@
-import Parking.Support.Range
-import Parking.External.Bernstein
-import Parking.Support.ThreePointLaw
-import Parking.Support.NearestTwoHoleProof
+module
+
+public import Parking.Support.Range
+public import Parking.External.Bernstein
+public import Parking.Support.ThreePointLaw
+public import Parking.Support.NearestTwoHoleProof
+
+@[expose] public section
 
 /-!
 # The two-hole joint bound, `d ≥ 5` (frozen)

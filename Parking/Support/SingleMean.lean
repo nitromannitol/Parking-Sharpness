@@ -1,5 +1,9 @@
-import Parking.Support.MatchedBounds
-import Parking.Support.SingleInfluence
+module
+
+public import Parking.Support.MatchedBounds
+public import Parking.Support.SingleInfluence
+
+@[expose] public section
 
 /-!
 # Mean odometer and single-particle Lipschitz bounds

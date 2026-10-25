@@ -1,4 +1,8 @@
-import Parking.Support.CoordinateFactor
+module
+
+public import Parking.Support.CoordinateFactor
+
+@[expose] public section
 
 /-!
 # Factoring a fresh coordinate on a product space

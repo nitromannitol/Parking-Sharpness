@@ -1,6 +1,10 @@
-import Parking.Support.OrientedScalingReduced
-import Parking.Support.ScalParabolicScaling
-import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
+module
+
+public import Parking.Support.OrientedScalingReduced
+public import Parking.Support.ScalParabolicScaling
+public import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
+
+@[expose] public section
 
 /-!
 # `prop:oriented-scaling` from convergence at a single time

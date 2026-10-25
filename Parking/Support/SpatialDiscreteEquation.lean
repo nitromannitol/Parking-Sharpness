@@ -1,5 +1,9 @@
-import Parking.Basic
-import LatticeProb.Prob.Scaling.DiscreteTesting
+module
+
+public import Parking.Basic
+public import LatticeProb.Prob.Scaling.DiscreteTesting
+
+@[expose] public section
 
 /-!
 # Testing the divisible recursion on its positive set

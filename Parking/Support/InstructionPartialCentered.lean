@@ -1,4 +1,8 @@
-import Parking.Support.InstructionPartial
+module
+
+public import Parking.Support.InstructionPartial
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 

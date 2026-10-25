@@ -1,8 +1,12 @@
-import Parking.Support.GammaSum
-import Parking.Support.LinTimeShift
-import Parking.Support.Odometer
-import Parking.External.GreenGradient
-import LatticeProb.Walk.GreenPointwise
+module
+
+public import Parking.Support.GammaSum
+public import Parking.Support.LinTimeShift
+public import Parking.Support.Odometer
+public import Parking.External.GreenGradient
+public import LatticeProb.Walk.GreenPointwise
+
+@[expose] public section
 
 /-!
 # Space-direction two-point Green function comparison

@@ -1,4 +1,8 @@
-import Parking.Support.Odometer
+module
+
+public import Parking.Support.Odometer
+
+@[expose] public section
 
 /-!
 # Lemma 3.1: the parallel toppling recursion

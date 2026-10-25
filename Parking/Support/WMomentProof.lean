@@ -1,8 +1,12 @@
-import Parking.Support.WStarMoment
-import Parking.Support.GreenIncrement
-import Parking.Frozen.WMartingale
-import Parking.Frozen.GammaSum
-import Parking.External.Bernstein
+module
+
+public import Parking.Support.WStarMoment
+public import Parking.Support.GreenIncrement
+public import Parking.Frozen.WMartingale
+public import Parking.Frozen.GammaSum
+public import Parking.External.Bernstein
+
+@[expose] public section
 
 /-!
 # The proof of `prop:w-moment`

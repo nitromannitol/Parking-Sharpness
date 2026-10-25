@@ -1,7 +1,11 @@
-import Parking.Support.PredictableCoordinate
-import Parking.Support.OrientedInstructionSum
-import Parking.Support.OrientedSupCharge
-import Parking.Support.SortedEnumeration
+module
+
+public import Parking.Support.PredictableCoordinate
+public import Parking.Support.OrientedInstructionSum
+public import Parking.Support.OrientedSupCharge
+public import Parking.Support.SortedEnumeration
+
+@[expose] public section
 
 /-!
 # Moment bound for the directed error by instruction

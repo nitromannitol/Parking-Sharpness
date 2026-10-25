@@ -1,7 +1,11 @@
-import Parking.Support.IntegerLinearLower
-import Parking.Support.LinearLowerLift
-import Parking.Support.OrientedFirstMoment
-import Parking.Support.OrientedLaw
+module
+
+public import Parking.Support.IntegerLinearLower
+public import Parking.Support.LinearLowerLift
+public import Parking.Support.OrientedFirstMoment
+public import Parking.Support.OrientedLaw
+
+@[expose] public section
 
 /-!
 # The divisible mean dominates the linear potential's square norm

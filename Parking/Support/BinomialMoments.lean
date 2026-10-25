@@ -1,5 +1,9 @@
-import Parking.Support.BinomialConvolution
-import LatticeProb.Prob.ConvexOrder
+module
+
+public import Parking.Support.BinomialConvolution
+public import LatticeProb.Prob.ConvexOrder
+
+@[expose] public section
 
 /-!
 # Centered moments of the fair binomial law

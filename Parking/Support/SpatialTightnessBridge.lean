@@ -1,7 +1,11 @@
-import Parking.Support.Continuum
-import Parking.Support.UBound
-import Parking.Support.WBound
-import LatticeProb.Prob.FddTight
+module
+
+public import Parking.Support.Continuum
+public import Parking.Support.UBound
+public import Parking.Support.WBound
+public import LatticeProb.Prob.FddTight
+
+@[expose] public section
 
 /-!
 # The tightness bridge for the space-time field

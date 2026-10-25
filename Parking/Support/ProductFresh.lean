@@ -1,4 +1,8 @@
-import Parking.Support.ProductSection
+module
+
+public import Parking.Support.ProductSection
+
+@[expose] public section
 
 /-!
 # Fresh coordinates and conditional expectation in a countable product

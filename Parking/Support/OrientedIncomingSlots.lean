@@ -1,6 +1,10 @@
-import Parking.Support.OrientedLayerIndependence
-import Parking.Support.OrientedInstructionIntegral
-import LatticeProb.Prob.Exposure
+module
+
+public import Parking.Support.OrientedLayerIndependence
+public import Parking.Support.OrientedInstructionIntegral
+public import LatticeProb.Prob.Exposure
+
+@[expose] public section
 
 /-!
 # Finite family of incoming instructions

@@ -1,7 +1,11 @@
-import Parking.Support.TightBoxSupBaseMoment
-import LatticeProb.WeightedJensen
-import Parking.Support.TightBoxSupTail
-import LatticeProb.Prob.Scaling.PolyGrowth
+module
+
+public import Parking.Support.TightBoxSupBaseMoment
+public import LatticeProb.WeightedJensen
+public import Parking.Support.TightBoxSupTail
+public import LatticeProb.Prob.Scaling.PolyGrowth
+
+@[expose] public section
 
 /-!
 # Finite-range geometric-tail sum for the fixed-radius increment

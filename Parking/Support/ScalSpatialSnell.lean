@@ -1,4 +1,8 @@
-import Parking.Support.ScalDyadicSnell
+module
+
+public import Parking.Support.ScalDyadicSnell
+
+@[expose] public section
 
 /-!
 # The spatial dyadic Snell recursion

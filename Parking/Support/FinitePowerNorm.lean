@@ -1,5 +1,9 @@
-import Parking.Support.UpperStep
-import LatticeProb.Prob.LpSmooth
+module
+
+public import Parking.Support.UpperStep
+public import LatticeProb.Prob.LpSmooth
+
+@[expose] public section
 
 /-!
 # Finite power norms

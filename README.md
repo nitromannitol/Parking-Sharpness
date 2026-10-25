@@ -199,9 +199,9 @@ them.  In summary:
   [`ParkingAudit/COMPARATOR_RUNS.md`](ParkingAudit/COMPARATOR_RUNS.md); the workflow
   [`.github/workflows/comparator.yml`](.github/workflows/comparator.yml) runs the comparator
   on relevant changes to `main` or by manual dispatch.
-- **Pinned toolchain.** Lean `v4.32.0`, `mathlib` at revision
-  `81a5d257c8e410db227a6665ed08f64fea08e997`, `Lattice-Probability` at commit
-  `9d44b4d4670df393bb86ac5a4e042f215001cddf` and `Divisible-Sandpile-Percolation` at commit
+- **Pinned toolchain.** Lean `v4.35.0-rc2`, `mathlib` at revision
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55`, `Lattice-Probability` at commit
+  `46c6e5ab28dad997e91dea051ce274d39635b9f2` and `Divisible-Sandpile-Percolation` at commit
   `cd8b15a32d00b1eec48f8747339e2d0cfaa73a21`, recorded in
   [`lean-toolchain`](lean-toolchain), [`lakefile.lean`](lakefile.lean) and
   [`lake-manifest.json`](lake-manifest.json).
@@ -231,7 +231,7 @@ formalization.  The comparator surface `ParkingAudit/` is not counted.
 
 The project uses [`elan`](https://github.com/leanprover/elan) (the Lean toolchain manager) and
 Lake.  The toolchain is pinned in [`lean-toolchain`](lean-toolchain)
-(`leanprover/lean4:v4.32.0`), so `elan` installs the right Lean version automatically, and the
+(`leanprover/lean4:v4.35.0-rc2`), so `elan` installs the right Lean version automatically, and the
 dependencies are pinned to commits in `lakefile.lean` and
 [`lake-manifest.json`](lake-manifest.json); `lake` fetches them, and there is nothing to clone
 by hand.
@@ -351,3 +351,13 @@ Comparator configuration to check. It records the dispatched commit and runs wit
 minimum, source-module, Challenge-closure, licensing and metadata requirements before
 dispatch. A passing preflight is advisory; it is separate from submission, editorial
 review and a public registry record.
+
+The selected Palomar preflight checks `ParkingAudit/SubcriticalTail/comparator.json`
+(Theorem 1.1). Its existing Donsker–Varadhan input remains an explicit hypothesis.
+Comparator Solution and bridge import the original frozen subcritical-tail theorem
+directly, the exact theorem used by the public wrapper. This selected closure does
+not import the separately pinned divisible-sandpile dependency; it remains pinned
+for other project results. Every selected Challenge vocabulary declaration is
+retained, with blank lines removed to meet the line cap. Module interfaces and
+existing proof API calls use the supported toolchain; mathematical definitions
+and frozen statements are retained. Other configurations have separate scopes.

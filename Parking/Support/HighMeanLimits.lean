@@ -1,5 +1,9 @@
-import Parking.Support.MeanPos
-import Parking.Support.GrowthMeans
+module
+
+public import Parking.Support.MeanPos
+public import Parking.Support.GrowthMeans
+
+@[expose] public section
 
 /-!
 # High-dimensional limits of the divisible mean

@@ -1,6 +1,10 @@
-import Parking.Support.TableBernstein
-import Parking.Support.BoundedConditionalMoment
-import Parking.Support.ProductLift
+module
+
+public import Parking.Support.TableBernstein
+public import Parking.Support.BoundedConditionalMoment
+public import Parking.Support.ProductLift
+
+@[expose] public section
 
 /-!
 # The table moment bound over a random initial field

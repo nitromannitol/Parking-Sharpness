@@ -1,10 +1,14 @@
-import Parking.Support.LinIncrementConcentration
-import Parking.Support.LinMeanMoment
-import Parking.Support.LinTimeShift
-import Parking.Support.SpatGreenShift
-import Parking.Support.GreenIncrement
-import Parking.Support.MatchedUniform
-import LatticeProb.Prob.Scaling.MinProduct
+module
+
+public import Parking.Support.LinIncrementConcentration
+public import Parking.Support.LinMeanMoment
+public import Parking.Support.LinTimeShift
+public import Parking.Support.SpatGreenShift
+public import Parking.Support.GreenIncrement
+public import Parking.Support.MatchedUniform
+public import LatticeProb.Prob.Scaling.MinProduct
+
+@[expose] public section
 
 /-!
 # The discrete maximal inequality for the linear field

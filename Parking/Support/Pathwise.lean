@@ -1,6 +1,10 @@
-import Parking.Support.OneParticle
-import Parking.Support.Error
-import LatticeProb.Prob.InfinitePiSplit
+module
+
+public import Parking.Support.OneParticle
+public import Parking.Support.Error
+public import LatticeProb.Prob.InfinitePiSplit
+
+@[expose] public section
 
 /-!
 # Lemma 5.1: the corrected odometer stays within `w^\star`
@@ -241,7 +245,7 @@ theorem measurable_of_finite_dependence (hd : 1 ≤ d) (n : ℕ)
     refine (h _ _ fun i hi => ?_).symm
     simp only [he, dif_pos hi]
   rw [hfac]
-  exact Measurable.of_discrete.comp (measurable_pi_lambda _ fun i => measurable_pi_apply _)
+  exact Measurable.of_discrete.comp (measurable_pi_iff.mpr fun i => measurable_pi_apply _)
 
 /-- `wMax ω n x` is measurable, by `measurable_of_finite_dependence` applied to its
 finite dependence on the first `n` directions (`wMax_congr`). -/

@@ -1,5 +1,9 @@
-import Parking.Support.SpatGreenShiftLowDim
-import Parking.Support.LinTimeShift
+module
+
+public import Parking.Support.SpatGreenShiftLowDim
+public import Parking.Support.LinTimeShift
+
+@[expose] public section
 
 /-!
 # Joint space-time comparison of the truncated Green function

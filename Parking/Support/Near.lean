@@ -1,5 +1,9 @@
-import Parking.Support.Range
-import LatticeProb.Prob.NearFamily
+module
+
+public import Parking.Support.Range
+public import LatticeProb.Prob.NearFamily
+
+@[expose] public section
 
 /-!
 # Near-critical hypotheses and rate quantities

@@ -1,4 +1,8 @@
-import Parking.Support.TiltCov
+module
+
+public import Parking.Support.TiltCov
+
+@[expose] public section
 
 /-!
 # Continuity of the tilted mean

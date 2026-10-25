@@ -1,5 +1,9 @@
-import Parking.Support.Matched
-import Parking.Support.Equivariance
+module
+
+public import Parking.Support.Matched
+public import Parking.Support.Equivariance
+
+@[expose] public section
 
 /-!
 # Translation covariance of the common-table construction

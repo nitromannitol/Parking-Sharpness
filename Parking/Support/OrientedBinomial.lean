@@ -1,5 +1,9 @@
-import Parking.Support.OrientedLayer
-import Parking.Support.Oriented
+module
+
+public import Parking.Support.OrientedLayer
+public import Parking.Support.Oriented
+
+@[expose] public section
 
 /-!
 # The binomial identification of the directed layers in dimension two

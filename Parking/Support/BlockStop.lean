@@ -1,9 +1,13 @@
-import Parking.Support.Walk
-import LatticeProb.Walk.Markov
-import LatticeProb.Graph.ZdRepresentation
-import Parking.External.Stopping
-import Parking.Support.UFinite
-import Parking.Support.UMoment
+module
+
+public import Parking.Support.Walk
+public import LatticeProb.Walk.Markov
+public import LatticeProb.Graph.ZdRepresentation
+public import Parking.External.Stopping
+public import Parking.Support.UFinite
+public import Parking.Support.UMoment
+
+@[expose] public section
 
 /-!
 # The block decomposition of Step 2

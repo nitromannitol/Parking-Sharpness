@@ -1,4 +1,8 @@
-import Parking.Support.TightCovHeat
+module
+
+public import Parking.Support.TightCovHeat
+
+@[expose] public section
 
 /-!
 # The continuum overlap kernel

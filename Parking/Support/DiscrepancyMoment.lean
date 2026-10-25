@@ -1,5 +1,9 @@
-import Parking.Support.DiscrepancyNorm
-import Parking.Support.DiscrepancyScale
+module
+
+public import Parking.Support.DiscrepancyNorm
+public import Parking.Support.DiscrepancyScale
+
+@[expose] public section
 
 /-!
 # Discrepancy moment bounds

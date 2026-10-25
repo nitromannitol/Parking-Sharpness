@@ -1,5 +1,9 @@
-import Parking.Support.MeanPos
-import Parking.Support.AtomUpdate
+module
+
+public import Parking.Support.MeanPos
+public import Parking.Support.AtomUpdate
+
+@[expose] public section
 
 /-!
 # Positive atoms of the initial and direction laws

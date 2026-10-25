@@ -1,5 +1,9 @@
-import Parking.Support.MatchedUniform
-import Parking.Support.MeanLocality
+module
+
+public import Parking.Support.MatchedUniform
+public import Parking.Support.MeanLocality
+
+@[expose] public section
 
 /-!
 # Bounding and measuring the current-round signed field

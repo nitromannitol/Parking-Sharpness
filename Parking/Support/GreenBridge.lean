@@ -1,5 +1,9 @@
-import Parking.Support.Walk
-import LatticeProb.Walk.SRW
+module
+
+public import Parking.Support.Walk
+public import LatticeProb.Walk.SRW
+
+@[expose] public section
 
 /-!
 # The truncated Green function of this repository is the library's

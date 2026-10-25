@@ -1,10 +1,14 @@
-import Parking.Support.SpatialTightnessBridge
-import Parking.Support.UDivisibleShift
-import Parking.Support.MeanuGrowthBounds
-import Parking.Support.BoxTranslation
-import Parking.Support.MatchedUniform
-import Parking.Frozen.Discrepancy
-import Parking.Support.NearestLimit
+module
+
+public import Parking.Support.SpatialTightnessBridge
+public import Parking.Support.UDivisibleShift
+public import Parking.Support.MeanuGrowthBounds
+public import Parking.Support.BoxTranslation
+public import Parking.Support.MatchedUniform
+public import Parking.Frozen.Discrepancy
+public import Parking.Support.NearestLimit
+
+@[expose] public section
 
 /-!
 # The vanishing-distance clause of spatial scaling

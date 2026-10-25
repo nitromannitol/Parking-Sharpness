@@ -1,5 +1,9 @@
-import Parking.Support.GreenBridge
-import LatticeProb.Walk.SRWGreenGrad
+module
+
+public import Parking.Support.GreenBridge
+public import LatticeProb.Walk.SRWGreenGrad
+
+@[expose] public section
 
 /-!
 # The Green function gradient bound

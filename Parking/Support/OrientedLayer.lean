@@ -1,4 +1,8 @@
-import Parking.Support.OrientedKernel
+module
+
+public import Parking.Support.OrientedKernel
+
+@[expose] public section
 
 /-!
 # Probability mass and disjoint support of the oriented layers

@@ -1,4 +1,8 @@
-import Parking.Support.Kernel
+module
+
+public import Parking.Support.Kernel
+
+@[expose] public section
 
 /-!
 # The U-concentration estimate

@@ -1,6 +1,10 @@
-import Parking.Support.SceneryField
-import Parking.Support.ProductFinite
-import Parking.Support.SubgaussianMomentNorm
+module
+
+public import Parking.Support.SceneryField
+public import Parking.Support.ProductFinite
+public import Parking.Support.SubgaussianMomentNorm
+
+@[expose] public section
 
 /-!
 # A uniform subgaussian bound for finite sceneries

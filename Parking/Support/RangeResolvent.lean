@@ -1,5 +1,9 @@
-import Parking.Support.BlockTail
-import Parking.Support.RoundHitting
+module
+
+public import Parking.Support.BlockTail
+public import Parking.Support.RoundHitting
+
+@[expose] public section
 
 /-!
 # The resolvent bound on the range

@@ -1,4 +1,8 @@
-import Parking.Support.ProductMoment
+module
+
+public import Parking.Support.ProductMoment
+
+@[expose] public section
 
 /-!
 # Moment-norm lemmas for products

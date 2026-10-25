@@ -1,7 +1,11 @@
-import Parking.Support.OrientedTerminal
-import Parking.Support.OrientedScaling
-import Parking.Support.ContStopGeneral
-import Parking.Support.SpatialCutoff
+module
+
+public import Parking.Support.OrientedTerminal
+public import Parking.Support.OrientedScaling
+public import Parking.Support.ContStopGeneral
+public import Parking.Support.SpatialCutoff
+
+@[expose] public section
 
 /-!
 # Oriented optimal-stopping stability (frozen external input)

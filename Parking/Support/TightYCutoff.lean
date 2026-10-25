@@ -1,6 +1,10 @@
-import Parking.Support.TightBoxLaw
-import Parking.Support.OrientedCutoffValuePot
-import Parking.Support.OrientedLaw
+module
+
+public import Parking.Support.TightBoxLaw
+public import Parking.Support.OrientedCutoffValuePot
+public import Parking.Support.OrientedLaw
+
+@[expose] public section
 
 /-!
 # The cutoff value `Y` and its measurability and integrability

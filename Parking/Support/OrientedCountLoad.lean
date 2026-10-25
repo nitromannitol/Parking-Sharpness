@@ -1,4 +1,8 @@
-import Parking.Support.OrientedCountMoment
+module
+
+public import Parking.Support.OrientedCountMoment
+
+@[expose] public section
 
 /-!
 # Directed count load moments

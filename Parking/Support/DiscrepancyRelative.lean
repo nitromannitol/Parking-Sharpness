@@ -1,5 +1,9 @@
-import Parking.Support.DiscrepancyMoment
-import Parking.Support.MomentTail
+module
+
+public import Parking.Support.DiscrepancyMoment
+public import Parking.Support.MomentTail
+
+@[expose] public section
 
 /-!
 # The relative discrepancy norm

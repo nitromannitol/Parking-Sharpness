@@ -1,4 +1,8 @@
-import Parking.Support.MeanHorizonStep1
+module
+
+public import Parking.Support.MeanHorizonStep1
+
+@[expose] public section
 
 /-!
 # The centered moment bound at every exponent

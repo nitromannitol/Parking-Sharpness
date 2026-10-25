@@ -1,8 +1,12 @@
-import Parking.Support.RelabelEquiv
-import Parking.Support.ReadsPresent
-import Parking.Support.DeleteCompare
-import Parking.Frozen.OneParticle
-import Parking.Frozen.TaggedMonotonicity
+module
+
+public import Parking.Support.RelabelEquiv
+public import Parking.Support.ReadsPresent
+public import Parking.Support.DeleteCompare
+public import Parking.Frozen.OneParticle
+public import Parking.Frozen.TaggedMonotonicity
+
+@[expose] public section
 
 /-!
 # The pair `(F, Z)` of `thm:subcritical`

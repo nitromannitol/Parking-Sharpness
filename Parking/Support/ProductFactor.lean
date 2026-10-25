@@ -1,5 +1,9 @@
-import Parking.Support.ProductReveal
-import LatticeProb.Prob.Coordinate
+module
+
+public import Parking.Support.ProductReveal
+public import LatticeProb.Prob.Coordinate
+
+@[expose] public section
 
 /-!
 # Factorizing a bounded product expectation across reveals

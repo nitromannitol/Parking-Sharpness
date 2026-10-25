@@ -1,5 +1,9 @@
-import Parking.Support.CriticalQuadratic
-import LatticeProb.Prob.MapPi
+module
+
+public import Parking.Support.CriticalQuadratic
+public import LatticeProb.Prob.MapPi
+
+@[expose] public section
 
 /-!
 # Step 1 of `lem:critical-density`: the resampled configuration

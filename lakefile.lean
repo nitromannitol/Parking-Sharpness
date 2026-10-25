@@ -5,14 +5,14 @@ open Lake DSL
 package «parking_sharpness» where
 
 require «lattice-probability» from git
-  "https://github.com/nitromannitol/Lattice-Probability.git" @ "9d44b4d4670df393bb86ac5a4e042f215001cddf"
+  "https://github.com/nitromannitol/Lattice-Probability.git" @ "46c6e5ab28dad997e91dea051ce274d39635b9f2"
 
 require «divisible_sandpile» from git
   "https://github.com/nitromannitol/Divisible-Sandpile-Percolation.git" @
     "cd8b15a32d00b1eec48f8747339e2d0cfaa73a21"
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4" @ "81a5d257c8e410db227a6665ed08f64fea08e997"
+  "https://github.com/leanprover-community/mathlib4" @ "065356127b1dc0016f66b7283ce0ce2c4055aa55"
 
 /-- The comparator audit surface (`ParkingAudit/*/Challenge.lean`,
 `ParkingAudit/*/SolutionBasic.lean`, `ParkingAudit/*/Solution.lean` and `ParkingAudit/Support/`).

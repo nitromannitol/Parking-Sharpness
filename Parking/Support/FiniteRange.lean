@@ -1,4 +1,8 @@
-import Parking.Support.Coupling
+module
+
+public import Parking.Support.Coupling
+
+@[expose] public section
 
 /-!
 # Finite range of dependence for the particle-driven construction

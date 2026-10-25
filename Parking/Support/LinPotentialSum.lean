@@ -1,4 +1,8 @@
-import Parking.Support.LinBox
+module
+
+public import Parking.Support.LinBox
+
+@[expose] public section
 
 /-!
 # Explicit finite-sum representation of the linear membrane field

@@ -1,5 +1,9 @@
-import Parking.Support.DiscrepancyFresh
-import Parking.Support.DiscrepancyBalance
+module
+
+public import Parking.Support.DiscrepancyFresh
+public import Parking.Support.DiscrepancyBalance
+
+@[expose] public section
 
 /-!
 # Finite cancellation counts for the discrepancy coupling

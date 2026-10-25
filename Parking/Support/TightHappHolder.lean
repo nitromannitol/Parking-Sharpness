@@ -1,5 +1,9 @@
-import Parking.Support.TightHappTerminal
-import LatticeProb.Prob.Scaling.Holder
+module
+
+public import Parking.Support.TightHappTerminal
+public import LatticeProb.Prob.Scaling.Holder
+
+@[expose] public section
 
 /-!
 # Hölder's inequality for the bad-event integral

@@ -1,6 +1,10 @@
-import Parking.Support.OrientedPathMax
-import Parking.Support.OrientedMaximum
-import Parking.Support.Lp
+module
+
+public import Parking.Support.OrientedPathMax
+public import Parking.Support.OrientedMaximum
+public import Parking.Support.Lp
+
+@[expose] public section
 
 /-!
 # Jensen for the directed maximal walk average

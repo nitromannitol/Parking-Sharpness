@@ -1,8 +1,12 @@
-import Parking.External.UConcentration
-import Parking.Support.SubGaussianMoment
-import Parking.Support.FinsetReindex
-import Parking.Support.LinBox
-import LatticeProb.Prob.FiniteMarginal
+module
+
+public import Parking.External.UConcentration
+public import Parking.Support.SubGaussianMoment
+public import Parking.Support.FinsetReindex
+public import Parking.Support.LinBox
+public import LatticeProb.Prob.FiniteMarginal
+
+@[expose] public section
 
 /-!
 # The U-concentration estimate, proved

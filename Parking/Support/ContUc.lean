@@ -1,5 +1,9 @@
-import Parking.Support.ContSpatialValue
-import Parking.Support.ContValueLipschitz
+module
+
+public import Parking.Support.ContSpatialValue
+public import Parking.Support.ContValueLipschitz
+
+@[expose] public section
 
 /-!
 # The continuum spatial value field `Uc`

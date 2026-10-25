@@ -1,6 +1,10 @@
-import Parking.Support.Ergodic
-import Parking.Support.StackHits
-import Parking.Support.OdometerInfinite
+module
+
+public import Parking.Support.Ergodic
+public import Parking.Support.StackHits
+public import Parking.Support.OdometerInfinite
+
+@[expose] public section
 
 /-!
 # Every odometer is infinite

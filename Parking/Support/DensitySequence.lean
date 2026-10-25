@@ -1,10 +1,14 @@
+module
+
 /-
 Survivor density decreases in time. A critical law has the first moment
 needed to compare its expectations by pointwise monotonicity.
 -/
-import Parking.Frozen.Transport
-import Parking.Frozen.CriticalDensity
-import Parking.Support.UpperTarget
+public import Parking.Frozen.Transport
+public import Parking.Frozen.CriticalDensity
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 

@@ -1,7 +1,11 @@
-import Parking.Support.TaggedRankAe
-import Parking.Support.SubcriticalStep1
-import Parking.Support.TiltContinuity
-import LatticeProb.Prob.DiffIneq
+module
+
+public import Parking.Support.TaggedRankAe
+public import Parking.Support.SubcriticalStep1
+public import Parking.Support.TiltContinuity
+public import LatticeProb.Prob.DiffIneq
+
+@[expose] public section
 
 /-!
 # Step 3 of `thm:subcritical`: integrating the differential inequality

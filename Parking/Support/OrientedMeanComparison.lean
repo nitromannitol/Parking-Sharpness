@@ -1,6 +1,10 @@
-import Parking.Support.OrientedGivenComparison
-import Parking.Support.OrientedCountLaw
-import Parking.Support.OrientedFinite
+module
+
+public import Parking.Support.OrientedGivenComparison
+public import Parking.Support.OrientedCountLaw
+public import Parking.Support.OrientedFinite
+
+@[expose] public section
 
 /-!
 # The divisible mean is bounded by the particle mean

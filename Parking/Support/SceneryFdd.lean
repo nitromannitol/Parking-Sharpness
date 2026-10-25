@@ -1,10 +1,14 @@
-import Parking.Support.SpatCLTFilter
-import LatticeProb.Prob.Scaling.CramerWoldFilter
-import LatticeProb.Walk.RiemannLattice
-import Parking.Support.Continuum
-import Parking.Support.Measurability
-import Parking.Support.ScalWhiteNoise
-import Parking.Support.UConcBridge
+module
+
+public import Parking.Support.SpatCLTFilter
+public import LatticeProb.Prob.Scaling.CramerWoldFilter
+public import LatticeProb.Walk.RiemannLattice
+public import Parking.Support.Continuum
+public import Parking.Support.Measurability
+public import Parking.Support.ScalWhiteNoise
+public import Parking.Support.UConcBridge
+
+@[expose] public section
 
 /-!
 # Finite-dimensional convergence of the rescaled scenery pairings

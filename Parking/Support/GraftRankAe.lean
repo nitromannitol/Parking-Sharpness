@@ -1,5 +1,9 @@
-import Parking.Support.SubcriticalGraftStep1
-import Parking.Support.TaggedRankAe
+module
+
+public import Parking.Support.SubcriticalGraftStep1
+public import Parking.Support.TaggedRankAe
+
+@[expose] public section
 
 /-!
 # Almost-sure distinctness of the tagged uniform variables with the origin prescribed

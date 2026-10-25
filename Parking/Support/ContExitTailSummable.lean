@@ -1,4 +1,8 @@
-import Parking.Support.ContSpatialCutoff
+module
+
+public import Parking.Support.ContSpatialCutoff
+
+@[expose] public section
 
 /-!
 # Summability of the exit-tail series

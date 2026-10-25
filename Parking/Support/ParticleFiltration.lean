@@ -1,4 +1,8 @@
-import Parking.Support.NoiseSplice
+module
+
+public import Parking.Support.NoiseSplice
+
+@[expose] public section
 
 /-!
 # The particle-revealing filtration

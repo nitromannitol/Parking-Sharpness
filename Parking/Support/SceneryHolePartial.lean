@@ -1,5 +1,9 @@
-import Parking.Support.SceneryHole
-import Parking.Support.PartialComparison
+module
+
+public import Parking.Support.SceneryHole
+public import Parking.Support.PartialComparison
+
+@[expose] public section
 
 /-!
 # The relative hole comparison under a partial field reveal

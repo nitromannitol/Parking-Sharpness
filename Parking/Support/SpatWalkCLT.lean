@@ -1,8 +1,12 @@
-import Parking.Support.WalkMaximal
-import Parking.Support.ContSpatialValue
-import LatticeProb.Prob.Scaling.CramerWold
-import LatticeProb.Prob.Scaling.BrownianFdd
-import LatticeProb.Prob.Scaling.WalkCLT
+module
+
+public import Parking.Support.WalkMaximal
+public import Parking.Support.ContSpatialValue
+public import LatticeProb.Prob.Scaling.CramerWold
+public import LatticeProb.Prob.Scaling.BrownianFdd
+public import LatticeProb.Prob.Scaling.WalkCLT
+
+@[expose] public section
 
 /-!
 # The characteristic-function limit of the rescaled simple random walk

@@ -1,4 +1,8 @@
-import Parking.Support.ActivityHoles
+module
+
+public import Parking.Support.ActivityHoles
+
+@[expose] public section
 
 /-!
 # The mass transport principle

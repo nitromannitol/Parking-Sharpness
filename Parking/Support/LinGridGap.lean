@@ -1,11 +1,15 @@
-import Parking.Support.LinMeanMoment
-import Parking.Support.LinIncrementMoment
-import Parking.Support.SpatGreenJoint
-import Parking.Support.SpatialStepRateAsymptotic
-import Parking.Support.BarPotential
-import Parking.Support.HatInterpD
-import Parking.Support.LinInterp
-import LatticeProb.Prob.Scaling.Chebyshev
+module
+
+public import Parking.Support.LinMeanMoment
+public import Parking.Support.LinIncrementMoment
+public import Parking.Support.SpatGreenJoint
+public import Parking.Support.SpatialStepRateAsymptotic
+public import Parking.Support.BarPotential
+public import Parking.Support.HatInterpD
+public import Parking.Support.LinInterp
+public import LatticeProb.Prob.Scaling.Chebyshev
+
+@[expose] public section
 
 /-!
 # The grid gap of Step 1, item (B)

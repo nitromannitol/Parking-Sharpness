@@ -1,5 +1,9 @@
-import Parking.External.SandpileGrowth
-import Sandpile.Support.SceneryBridge
+module
+
+public import Parking.External.SandpileGrowth
+public import Sandpile.Support.SceneryBridge
+
+@[expose] public section
 
 /-!
 # Bridge to the divisible-sandpile odometer

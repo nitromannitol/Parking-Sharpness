@@ -1,5 +1,9 @@
-import Parking.Support.PhiSum
-import Parking.Support.Near
+module
+
+public import Parking.Support.PhiSum
+public import Parking.Support.Near
+
+@[expose] public section
 
 /-!
 # The optimization over the mean horizon of Step 1

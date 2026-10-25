@@ -1,8 +1,12 @@
-import Parking.Support.SpatWMartingaleVariance
-import Parking.Support.SpatWJointLaw
-import Parking.Support.LinHatMeasurable
-import Parking.Support.NearestEvents
-import LatticeProb.Prob.Scaling.Slutsky
+module
+
+public import Parking.Support.SpatWMartingaleVariance
+public import Parking.Support.SpatWJointLaw
+public import Parking.Support.LinHatMeasurable
+public import Parking.Support.NearestEvents
+public import LatticeProb.Prob.Scaling.Slutsky
+
+@[expose] public section
 
 /-!
 # The scenery-side export for the joint spatial-scaling assembly

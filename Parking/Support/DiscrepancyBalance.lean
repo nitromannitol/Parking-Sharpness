@@ -1,4 +1,8 @@
-import Parking.Support.DiscrepancyLabels
+module
+
+public import Parking.Support.DiscrepancyLabels
+
+@[expose] public section
 
 /-!
 # Discrepancy balance

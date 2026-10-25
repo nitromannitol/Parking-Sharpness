@@ -1,4 +1,8 @@
-import Parking.Support.CoupledLaw
+module
+
+public import Parking.Support.CoupledLaw
+
+@[expose] public section
 
 /-!
 # Transferring the hole-count law between the two constructions
@@ -41,7 +45,7 @@ theorem map_conf_pHoleCount (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeas
   let recode : Parking.PData d → LatticeProb.PData d :=
     fun ω => (ω.1, (fun q => stepVec (ω.2.1 q)), ω.2.2)
   have hrec : Measurable recode := measurable_fst.prodMk
-    ((measurable_pi_lambda _ fun q => (measurable_from_countable' stepVec).comp
+    ((measurable_pi_iff.mpr fun q => (measurable_from_countable' stepVec).comp
       ((measurable_pi_apply q).comp (measurable_fst.comp measurable_snd))).prodMk
       (measurable_snd.comp measurable_snd))
   have hmap : (Parking.pDataLaw d ν).map recode = LatticeProb.pDataLaw d ν :=

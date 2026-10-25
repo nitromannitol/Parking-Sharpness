@@ -1,4 +1,8 @@
-import Parking.Support.SpatialCellIntegral
+module
+
+public import Parking.Support.SpatialCellIntegral
+
+@[expose] public section
 
 /-!
 # A fixed positive-time compact set contains the parabolic test coefficients

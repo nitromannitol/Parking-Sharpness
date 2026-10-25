@@ -1,5 +1,9 @@
-import Parking.Support.OnePointMoment
-import Parking.Support.HoleTail
+module
+
+public import Parking.Support.OnePointMoment
+public import Parking.Support.HoleTail
+
+@[expose] public section
 
 /-!
 # Assembling the sparse one-point estimates

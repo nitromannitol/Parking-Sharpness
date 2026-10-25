@@ -1,4 +1,8 @@
-import LatticeProb.Prob.Splice
+module
+
+public import LatticeProb.Prob.Splice
+
+@[expose] public section
 
 /-!
 # Almost-sure properties under atom updates

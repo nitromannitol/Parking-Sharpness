@@ -1,4 +1,8 @@
-import Parking.Support.OrientedSceneryMoment
+module
+
+public import Parking.Support.OrientedSceneryMoment
+
+@[expose] public section
 
 /-!
 # The rescaled convolved potential field

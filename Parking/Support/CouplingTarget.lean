@@ -1,7 +1,11 @@
-import Parking.Support.ResamplePairs
-import Parking.Support.RangeHitting
-import Parking.Frozen.ActivityHoles
-import Parking.Support.CriticalChain
+module
+
+public import Parking.Support.ResamplePairs
+public import Parking.Support.RangeHitting
+public import Parking.Frozen.ActivityHoles
+public import Parking.Support.CriticalChain
+
+@[expose] public section
 
 /-!
 # What Steps 1 and 2 of `lem:critical-density` owe the proof

@@ -1,7 +1,11 @@
-import Parking.Support.SpatMoment
-import Parking.Support.UConcBridge
-import Parking.Support.NearBridge
-import Parking.Support.CriticalLawReal
+module
+
+public import Parking.Support.SpatMoment
+public import Parking.Support.UConcBridge
+public import Parking.Support.NearBridge
+public import Parking.Support.CriticalLawReal
+
+@[expose] public section
 
 /-!
 # Site-uniform moment norm of the data-law odometer

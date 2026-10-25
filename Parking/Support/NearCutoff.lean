@@ -1,5 +1,9 @@
-import Parking.Support.NearEnv
-import Parking.Support.NearTail
+module
+
+public import Parking.Support.NearEnv
+public import Parking.Support.NearTail
+
+@[expose] public section
 
 /-!
 # The cutoff `eq:near-cutoff` in the scale `env`

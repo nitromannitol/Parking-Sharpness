@@ -1,10 +1,14 @@
-import Parking.Support.TwoHoleLoadMoment
-import Parking.Support.LogMomentTail
-import Parking.Support.TwoHoleConstants
-import Parking.Support.DiscountSplit
-import Parking.Support.HoleKernelBound
-import Parking.Support.HoleTail
-import LatticeProb.Walk.RangeSecond
+module
+
+public import Parking.Support.TwoHoleLoadMoment
+public import Parking.Support.LogMomentTail
+public import Parking.Support.TwoHoleConstants
+public import Parking.Support.DiscountSplit
+public import Parking.Support.HoleKernelBound
+public import Parking.Support.HoleTail
+public import LatticeProb.Walk.RangeSecond
+
+@[expose] public section
 
 /-!
 # The two-hole estimate

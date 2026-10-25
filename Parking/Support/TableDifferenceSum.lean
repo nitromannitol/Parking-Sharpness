@@ -1,8 +1,12 @@
-import Parking.Support.TableDifference
-import Parking.Support.RoundDifferenceSum
-import Parking.Support.FutureValue
-import Parking.Support.BlockSum
-import Parking.Support.MatchedUniform
+module
+
+public import Parking.Support.TableDifference
+public import Parking.Support.RoundDifferenceSum
+public import Parking.Support.FutureValue
+public import Parking.Support.BlockSum
+public import Parking.Support.MatchedUniform
+
+@[expose] public section
 
 /-!
 # The table martingale sums to the odometer deviation

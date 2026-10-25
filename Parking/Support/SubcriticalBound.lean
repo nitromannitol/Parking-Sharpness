@@ -1,4 +1,8 @@
-import Parking.Support.SubcriticalConditional
+module
+
+public import Parking.Support.SubcriticalConditional
+
+@[expose] public section
 
 /-!
 # `thm:subcritical`: the drift positivity and the range bound

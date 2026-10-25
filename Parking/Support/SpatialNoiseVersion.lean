@@ -1,7 +1,11 @@
-import Parking.Support.SpatialResidualAlgebra
-import Parking.Support.SpatialNoiseCongruence
-import LatticeProb.Prob.Scaling.CompactPositivity
-import LatticeProb.Prob.Scaling.MeasurableLocalChoice
+module
+
+public import Parking.Support.SpatialResidualAlgebra
+public import Parking.Support.SpatialNoiseCongruence
+public import LatticeProb.Prob.Scaling.CompactPositivity
+public import LatticeProb.Prob.Scaling.MeasurableLocalChoice
+
+@[expose] public section
 
 /-!
 # A measurable source representative compatible with all local weak tests

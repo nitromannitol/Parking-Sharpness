@@ -1,4 +1,8 @@
-import Parking.Support.DeferredIntegral
+module
+
+public import Parking.Support.DeferredIntegral
+
+@[expose] public section
 
 open LatticeProb (instructionLaw_isProbability measurable_from_countable' rankLaw_isProbability)
 

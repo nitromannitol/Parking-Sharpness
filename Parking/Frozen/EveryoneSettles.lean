@@ -1,12 +1,16 @@
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
-import Parking.Support.Error
-import Parking.Support.Settles
-import Parking.Support.AllInfinite
-import Parking.Support.Departers
+module
+
+public import Parking.External.SandpileGrowth
+public import Parking.External.Bernstein
+public import Parking.External.UConcentration
+public import Parking.External.UConcentrationProved
+public import Parking.External.GreenNormsProved
+public import Parking.Support.Error
+public import Parking.Support.Settles
+public import Parking.Support.AllInfinite
+public import Parking.Support.Departers
+
+@[expose] public section
 
 /-!
 # Almost-sure termination of every particle and hole (frozen)

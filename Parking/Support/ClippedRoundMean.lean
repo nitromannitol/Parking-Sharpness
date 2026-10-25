@@ -1,5 +1,9 @@
-import Parking.Support.ClippedRoundLaw
-import Parking.Support.Invariance
+module
+
+public import Parking.Support.ClippedRoundLaw
+public import Parking.Support.Invariance
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 

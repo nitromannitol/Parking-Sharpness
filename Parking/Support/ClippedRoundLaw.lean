@@ -1,5 +1,9 @@
-import Parking.Support.TableHoleLaw
-import Parking.Support.SceneryHole
+module
+
+public import Parking.Support.TableHoleLaw
+public import Parking.Support.SceneryHole
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 

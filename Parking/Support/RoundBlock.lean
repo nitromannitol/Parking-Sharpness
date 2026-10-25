@@ -1,6 +1,10 @@
-import Parking.Support.RoundMeanField
-import Parking.Support.ProductDoob
-import Parking.Support.ProductTower
+module
+
+public import Parking.Support.RoundMeanField
+public import Parking.Support.ProductDoob
+public import Parking.Support.ProductTower
+
+@[expose] public section
 
 /-!
 # Localizing the round mean to a finite query set

@@ -1,4 +1,8 @@
-import Parking.Support.BlockMoments
+module
+
+public import Parking.Support.BlockMoments
+
+@[expose] public section
 
 /-!
 # The block averages of Step 2

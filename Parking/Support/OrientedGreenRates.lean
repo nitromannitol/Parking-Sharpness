@@ -1,6 +1,10 @@
-import Parking.Support.OrientedLayerBounds
-import Parking.Support.OrientedNormPositive
-import Parking.Support.CriticalReduction
+module
+
+public import Parking.Support.OrientedLayerBounds
+public import Parking.Support.OrientedNormPositive
+public import Parking.Support.CriticalReduction
+
+@[expose] public section
 
 /-!
 # Directed Green square norm growth rates

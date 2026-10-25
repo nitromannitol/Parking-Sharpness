@@ -1,6 +1,10 @@
-import Parking.Support.SpatialResidualEstimate
-import Parking.Support.SpatialSceneryAlgebra
-import LatticeProb.Prob.Scaling.LocalResidual
+module
+
+public import Parking.Support.SpatialResidualEstimate
+public import Parking.Support.SpatialSceneryAlgebra
+public import LatticeProb.Prob.Scaling.LocalResidual
+
+@[expose] public section
 
 /-!
 # Vanishing mean of the cutoff residual test

@@ -1,5 +1,9 @@
-import Parking.Support.DyadicEnvelope
-import Parking.Support.DyadicFactor
+module
+
+public import Parking.Support.DyadicEnvelope
+public import Parking.Support.DyadicFactor
+
+@[expose] public section
 
 /-!
 # Moment control of the dyadic envelope

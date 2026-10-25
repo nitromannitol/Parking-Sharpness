@@ -1,5 +1,9 @@
-import Parking.Support.HoleRelative
-import Parking.Support.ClippedTable
+module
+
+public import Parking.Support.HoleRelative
+public import Parking.Support.ClippedTable
+
+@[expose] public section
 
 /-!
 # The clipped future hole mean at one updated coordinate

@@ -1,6 +1,10 @@
-import Parking.Support.CriticalLawReal
-import Parking.Support.MeanPos
-import Parking.Support.CriticalChain
+module
+
+public import Parking.Support.CriticalLawReal
+public import Parking.Support.MeanPos
+public import Parking.Support.CriticalChain
+
+@[expose] public section
 
 /-!
 # Growth of the mean divisible odometer alone

@@ -1,6 +1,10 @@
-import Parking.Support.RoundMeanField
-import Parking.Support.RoundHitting
-import Parking.Support.BoundedMoment
+module
+
+public import Parking.Support.RoundMeanField
+public import Parking.Support.RoundHitting
+public import Parking.Support.BoundedMoment
+
+@[expose] public section
 
 /-!
 # The mean number of arrivals at a site

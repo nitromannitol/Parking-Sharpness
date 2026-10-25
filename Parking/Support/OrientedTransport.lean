@@ -1,9 +1,13 @@
-import Parking.Support.MassTransport
-import Parking.Support.OrientedInvariance
-import Parking.Support.OrientedInstructionSupport
-import Parking.Support.OrientedLaw
-import Parking.Support.JointStopping
-import Parking.Support.DensitySequence
+module
+
+public import Parking.Support.MassTransport
+public import Parking.Support.OrientedInvariance
+public import Parking.Support.OrientedInstructionSupport
+public import Parking.Support.OrientedLaw
+public import Parking.Support.JointStopping
+public import Parking.Support.DensitySequence
+
+@[expose] public section
 
 /-!
 # The mass-transport identity for the directed walk

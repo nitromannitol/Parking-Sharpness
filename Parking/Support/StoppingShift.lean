@@ -1,4 +1,8 @@
-import Parking.Support.Terminal
+module
+
+public import Parking.Support.Terminal
+
+@[expose] public section
 
 /-!
 # Shifting the stopping value to the origin

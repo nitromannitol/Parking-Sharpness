@@ -1,5 +1,9 @@
-import Parking.Support.OrientedKernel
-import Parking.Support.OrientedLaw
+module
+
+public import Parking.Support.OrientedKernel
+public import Parking.Support.OrientedLaw
+
+@[expose] public section
 
 /-!
 # Integrals and atom masses for a directed particle instruction

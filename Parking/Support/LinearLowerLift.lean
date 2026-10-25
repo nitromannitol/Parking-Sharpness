@@ -1,4 +1,8 @@
-import Parking.Support.LinearMoment
+module
+
+public import Parking.Support.LinearMoment
+
+@[expose] public section
 
 /-!
 # Transport of a finite linear lower bound to an infinite field

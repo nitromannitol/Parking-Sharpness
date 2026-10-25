@@ -1,4 +1,8 @@
-import LatticeProb.Prob.Splice
+module
+
+public import LatticeProb.Prob.Splice
+
+@[expose] public section
 
 /-!
 # Independent input tables revealed one round at a time

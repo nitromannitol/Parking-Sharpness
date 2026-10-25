@@ -1,5 +1,9 @@
-import Parking.Support.WMomentProof
-import LatticeProb.MomentNorm
+module
+
+public import Parking.Support.WMomentProof
+public import LatticeProb.MomentNorm
+
+@[expose] public section
 
 /-!
 # The analytic core of Step 1 of `thm:upper`

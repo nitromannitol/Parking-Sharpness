@@ -1,8 +1,12 @@
-import Parking.Support.LinearFourthLower
-import LatticeProb.Prob.LinearConvex
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import Parking.Support.SparseParameter
+module
+
+public import Parking.Support.LinearFourthLower
+public import LatticeProb.Prob.LinearConvex
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+public import Parking.Support.SparseParameter
+
+@[expose] public section
 
 /-!
 # First-moment lower bound for linear combinations

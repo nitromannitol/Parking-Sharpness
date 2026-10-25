@@ -1,6 +1,10 @@
-import Mathlib.Probability.HasLaw
-import Mathlib.Probability.Independence.Integration
-import Mathlib.MeasureTheory.Constructions.Pi
+module
+
+public import Mathlib.Probability.HasLaw
+public import Mathlib.Probability.Independence.Integration
+public import Mathlib.MeasureTheory.Constructions.Pi
+
+@[expose] public section
 
 /-!
 # The covariance of a finite linear combination of i.i.d. mean-zero coordinates

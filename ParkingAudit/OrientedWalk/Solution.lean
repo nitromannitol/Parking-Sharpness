@@ -1,7 +1,11 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.OrientedWalk.SolutionBasic
-import ParkingAudit.Support.OrientedWalkBridge
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.OrientedWalk.SolutionBasic
+public import ParkingAudit.Support.OrientedWalkBridge
+
+@[expose] public section
 
 /-!
 # Solution: OrientedWalk

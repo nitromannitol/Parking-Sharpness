@@ -1,4 +1,8 @@
-import Parking.Support.Pathwise
+module
+
+public import Parking.Support.Pathwise
+
+@[expose] public section
 
 /-!
 # Lemma 5.1: pathwise comparison of the odometers (frozen)

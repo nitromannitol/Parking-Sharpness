@@ -1,6 +1,10 @@
-import Parking.Support.OrientedAllNorms
-import Parking.Support.OrientedLaw
-import Parking.Support.OrientedFinite
+module
+
+public import Parking.Support.OrientedAllNorms
+public import Parking.Support.OrientedLaw
+public import Parking.Support.OrientedFinite
+
+@[expose] public section
 
 /-!
 # Kernel concentration for the directed divisible recursion

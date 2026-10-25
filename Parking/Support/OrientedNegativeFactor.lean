@@ -1,7 +1,11 @@
-import Parking.Support.OrientedFreshness
-import Parking.Support.FiniteRandomCount
-import Parking.Support.DensitySequence
-import Parking.Support.LinearFirstMoment
+module
+
+public import Parking.Support.OrientedFreshness
+public import Parking.Support.FiniteRandomCount
+public import Parking.Support.DensitySequence
+public import Parking.Support.LinearFirstMoment
+
+@[expose] public section
 
 /-!
 # The unused scenery factors from the no-arrival event

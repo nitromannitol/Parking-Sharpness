@@ -1,8 +1,12 @@
-import Parking.Support.OrientedRouteOp
-import Parking.Support.OrientedFreshness
-import Parking.Support.BoxTranslation
-import Parking.Support.OrientedErrorRoute
-import Parking.Support.OrientedFiniteRoute
+module
+
+public import Parking.Support.OrientedRouteOp
+public import Parking.Support.OrientedFreshness
+public import Parking.Support.BoxTranslation
+public import Parking.Support.OrientedErrorRoute
+public import Parking.Support.OrientedFiniteRoute
+
+@[expose] public section
 
 /-!
 # The directed layer average, unrolled over routing instructions

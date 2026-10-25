@@ -1,4 +1,8 @@
-import Parking.Support.ProductLift
+module
+
+public import Parking.Support.ProductLift
+
+@[expose] public section
 
 open LatticeProb.MomentNorm (rNorm)
 

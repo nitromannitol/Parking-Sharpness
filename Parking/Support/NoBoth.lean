@@ -1,4 +1,8 @@
-import Parking.Support.Reads
+module
+
+public import Parking.Support.Reads
+
+@[expose] public section
 
 /-!
 # No site carries both an active particle and an unfilled hole

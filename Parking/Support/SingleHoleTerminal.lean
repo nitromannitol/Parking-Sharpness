@@ -1,5 +1,9 @@
-import Parking.Support.SingleAddition
-import Parking.Support.EscapePotential
+module
+
+public import Parking.Support.SingleAddition
+public import Parking.Support.EscapePotential
+
+@[expose] public section
 
 /-!
 # The terminal hole-count comparison under one added particle

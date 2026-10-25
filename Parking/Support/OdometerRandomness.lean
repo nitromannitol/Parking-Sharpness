@@ -1,6 +1,10 @@
-import Parking.Support.AtomUpdate
-import Parking.Support.LastMove
-import Parking.Support.PositiveAtom
+module
+
+public import Parking.Support.AtomUpdate
+public import Parking.Support.LastMove
+public import Parking.Support.PositiveAtom
+
+@[expose] public section
 
 /-!
 # Conditional randomness of the particle odometer

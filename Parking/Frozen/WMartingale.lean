@@ -1,4 +1,8 @@
-import Parking.Support.WQuadratic
+module
+
+public import Parking.Support.WQuadratic
+
+@[expose] public section
 
 /-!
 # Lemma 5.4: the w-martingale decomposition (frozen)

@@ -1,12 +1,16 @@
-import Parking.Support.UConcReal
-import Parking.Support.MeanPos
-import Parking.Support.GreenPhi
-import Parking.Support.XiLaw
-import Parking.Support.UMoment
-import Parking.Support.URealMoment
-import Parking.External.SandpileGrowth
-import Parking.External.GreenNorms
-import LatticeProb.Prob.NearFamily
+module
+
+public import Parking.Support.UConcReal
+public import Parking.Support.MeanPos
+public import Parking.Support.GreenPhi
+public import Parking.Support.XiLaw
+public import Parking.Support.UMoment
+public import Parking.Support.URealMoment
+public import Parking.External.SandpileGrowth
+public import Parking.External.GreenNorms
+public import LatticeProb.Prob.NearFamily
+
+@[expose] public section
 
 /-!
 # Step 1 of `lem:mean-horizon`

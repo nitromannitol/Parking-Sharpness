@@ -1,6 +1,10 @@
-import Parking.Support.OrientedComparison
-import Parking.Support.OrientedCountLaw
-import Parking.Support.OrientedOdometer
+module
+
+public import Parking.Support.OrientedComparison
+public import Parking.Support.OrientedCountLaw
+public import Parking.Support.OrientedOdometer
+
+@[expose] public section
 
 /-!
 # The particle mean bounded by the divisible mean plus two errors

@@ -1,5 +1,9 @@
-import Parking.Support.Invariance
-import Parking.Support.Comparison
+module
+
+public import Parking.Support.Invariance
+public import Parking.Support.Comparison
+
+@[expose] public section
 
 /-!
 # The averaged identities of Section 3

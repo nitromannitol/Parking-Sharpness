@@ -1,11 +1,15 @@
-import Parking.Support.OrientedInstructionSum
-import Parking.Support.OrientedMaxRpow
-import Parking.Support.OrientedMaxMeanRpow
-import Parking.Support.OrientedEquivariance
-import Parking.Support.OrientedPathBox
-import Parking.Support.OrientedFiniteRoute
-import Parking.Support.OrientedParticleMoment
-import Parking.Support.OrientedMeasurability
+module
+
+public import Parking.Support.OrientedInstructionSum
+public import Parking.Support.OrientedMaxRpow
+public import Parking.Support.OrientedMaxMeanRpow
+public import Parking.Support.OrientedEquivariance
+public import Parking.Support.OrientedPathBox
+public import Parking.Support.OrientedFiniteRoute
+public import Parking.Support.OrientedParticleMoment
+public import Parking.Support.OrientedMeasurability
+
+@[expose] public section
 
 /-!
 # The second display of the oriented moment estimate

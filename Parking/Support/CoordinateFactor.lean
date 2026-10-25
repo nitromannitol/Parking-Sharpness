@@ -1,4 +1,8 @@
-import LatticeProb.Prob.Coordinate
+module
+
+public import LatticeProb.Prob.Coordinate
+
+@[expose] public section
 
 /-!
 # Factoring against an updated coordinate

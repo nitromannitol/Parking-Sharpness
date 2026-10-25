@@ -1,9 +1,13 @@
-import Parking.Support.ExposureProduct
-import Parking.Support.ErrorUnroll
-import Parking.Support.UpperTarget
-import Parking.Support.Equivariance
-import Parking.Support.Invariance
-import LatticeProb.Prob.Scaling.CondExpPartition
+module
+
+public import Parking.Support.ExposureProduct
+public import Parking.Support.ErrorUnroll
+public import Parking.Support.UpperTarget
+public import Parking.Support.Equivariance
+public import Parking.Support.Invariance
+public import LatticeProb.Prob.Scaling.CondExpPartition
+
+@[expose] public section
 
 /-!
 # Martingale core: single- and double-instruction conditional means

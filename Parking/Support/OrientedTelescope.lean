@@ -1,5 +1,9 @@
-import Parking.Support.OrientedLayerBounds
-import Parking.Support.OrientedVariance
+module
+
+public import Parking.Support.OrientedLayerBounds
+public import Parking.Support.OrientedVariance
+
+@[expose] public section
 
 /-!
 # Oriented telescope

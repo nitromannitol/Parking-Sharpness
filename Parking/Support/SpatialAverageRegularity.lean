@@ -1,7 +1,11 @@
-import Parking.Support.SpatialDifferenceTests
-import LatticeProb.Prob.Scaling.TimeAverage
-import LatticeProb.Prob.Scaling.LocalTimeIntegration
-import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
+module
+
+public import Parking.Support.SpatialDifferenceTests
+public import LatticeProb.Prob.Scaling.TimeAverage
+public import LatticeProb.Prob.Scaling.LocalTimeIntegration
+public import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
+
+@[expose] public section
 
 /-! Smooth time derivatives obtained by averaging the homogeneous time increments. -/
 

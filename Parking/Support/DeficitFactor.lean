@@ -1,4 +1,8 @@
-import Mathlib.Probability.Moments.Covariance
+module
+
+public import Mathlib.Probability.Moments.Covariance
+
+@[expose] public section
 
 /-!
 # Deficit-factor covariance bounds

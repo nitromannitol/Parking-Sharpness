@@ -1,6 +1,10 @@
-import Parking.Support.SceneryHoleFactor
-import Parking.Support.HoleLocality
-import Parking.Support.ProductFactor
+module
+
+public import Parking.Support.SceneryHoleFactor
+public import Parking.Support.HoleLocality
+public import Parking.Support.ProductFactor
+
+@[expose] public section
 
 /-!
 # Accumulating the scenery correlation factor over a box

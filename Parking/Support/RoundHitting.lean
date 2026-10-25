@@ -1,8 +1,12 @@
-import Parking.Support.RoundFresh
-import Parking.Support.LayerHitting
-import Parking.Support.UBound
-import Parking.Support.RangeHitting
-import LatticeProb.Prob.MapPi
+module
+
+public import Parking.Support.RoundFresh
+public import Parking.Support.LayerHitting
+public import Parking.Support.UBound
+public import Parking.Support.RangeHitting
+public import LatticeProb.Prob.MapPi
+
+@[expose] public section
 
 /-!
 # Two-particle hitting comparison across rounds
@@ -100,7 +104,7 @@ theorem Parking.walkLaw_hitZero_eq (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
   haveI : NeZero d := ⟨by omega⟩
   haveI := Parking.stepLaw_isProbability hd
   let M : (ℕ → Fin d × Bool) → ℕ → Site d := fun p n => Parking.stepVec (p n)
-  have hM : Measurable M := measurable_pi_lambda _ fun n =>
+  have hM : Measurable M := measurable_pi_iff.mpr fun n =>
     (measurable_of_countable Parking.stepVec).comp (measurable_pi_apply n)
   have hMLaw : (Parking.walkLaw d).map M =
       Measure.infinitePi fun _ : ℕ => LatticeProb.incLaw d := by
@@ -113,7 +117,7 @@ theorem Parking.walkLaw_hitZero_eq (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
       funext fun p => funext fun t => Parking.walkPath_eq_sitePath x p t
     rw [heq, ← Measure.map_map (LatticeProb.measurable_sitePath x) hM, hMLaw]
     rfl
-  have hm : Measurable (Parking.walkPath x) := measurable_pi_lambda _ fun t =>
+  have hm : Measurable (Parking.walkPath x) := measurable_pi_iff.mpr fun t =>
     Parking.measurable_walkPath x t
   rw [← LatticeProb.siteWalkLaw_hitOriginBy hd t x, ← hpath,
     Measure.map_apply hm (LatticeProb.measurableSet_hitOriginBy t)]

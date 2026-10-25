@@ -1,5 +1,9 @@
-import Parking.Support.TightFdd
-import Parking.Support.ContOrientedLimit
+module
+
+public import Parking.Support.TightFdd
+public import Parking.Support.ContOrientedLimit
+
+@[expose] public section
 
 /-!
 # Finite-dimensional characteristic function of `contZ`

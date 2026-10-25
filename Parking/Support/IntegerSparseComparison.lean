@@ -1,7 +1,11 @@
-import LatticeProb.Prob.IntegerConvexMinorant
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import Parking.Support.SparseLaw
+module
+
+public import LatticeProb.Prob.IntegerConvexMinorant
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+public import Parking.Support.SparseLaw
+
+@[expose] public section
 
 /-!
 # A sparse three-point law is a convex-order minorant

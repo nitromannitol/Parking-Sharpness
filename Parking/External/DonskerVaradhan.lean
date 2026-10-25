@@ -1,4 +1,8 @@
-import Parking.Support.Range
+module
+
+public import Parking.Support.Range
+
+@[expose] public section
 
 /-!
 # The Donsker-Varadhan range estimate

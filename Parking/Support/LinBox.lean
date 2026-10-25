@@ -1,5 +1,9 @@
-import Parking.Support.LinPotential
-import Parking.Support.UFinite
+module
+
+public import Parking.Support.LinPotential
+public import Parking.Support.UFinite
+
+@[expose] public section
 
 /-!
 # Locality and finite-dimensional regularity of `V`

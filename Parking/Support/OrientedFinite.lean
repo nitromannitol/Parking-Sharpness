@@ -1,4 +1,8 @@
-import Parking.Support.OrientedPotential
+module
+
+public import Parking.Support.OrientedPotential
+
+@[expose] public section
 
 /-!
 # Finite support and measurability for the oriented kernel

@@ -1,7 +1,11 @@
-import Parking.Support.HoleCloserEvent
-import Parking.Support.NearestHoleFilled
-import Parking.Support.NoBoth
-import Parking.Support.Continuum
+module
+
+public import Parking.Support.HoleCloserEvent
+public import Parking.Support.NearestHoleFilled
+public import Parking.Support.NoBoth
+public import Parking.Support.Continuum
+
+@[expose] public section
 
 /-!
 # Pathwise geometry for the nearest-hole comparison

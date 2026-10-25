@@ -1,9 +1,13 @@
-import Parking.Support.NearestTwoHoleProof
-import Parking.Support.NearestPairSum
-import Parking.Support.MovingCutoff
-import Parking.Support.FloorVolume
-import Parking.Support.NearestDensityCriterion
-import Parking.Support.HoleTail
+module
+
+public import Parking.Support.NearestTwoHoleProof
+public import Parking.Support.NearestPairSum
+public import Parking.Support.MovingCutoff
+public import Parking.Support.FloorVolume
+public import Parking.Support.NearestDensityCriterion
+public import Parking.Support.HoleTail
+
+@[expose] public section
 
 /-!
 # The nearest-hole counterexample in dimension at least five

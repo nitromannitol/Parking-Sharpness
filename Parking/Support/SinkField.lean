@@ -1,6 +1,10 @@
-import Parking.Support.ClippedTable
-import Parking.Support.HorizonSink
-import Parking.Support.WeightedOdometerBounds
+module
+
+public import Parking.Support.ClippedTable
+public import Parking.Support.HorizonSink
+public import Parking.Support.WeightedOdometerBounds
+
+@[expose] public section
 
 /-!
 # The sparse sink field

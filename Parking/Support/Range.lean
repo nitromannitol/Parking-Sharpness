@@ -1,4 +1,8 @@
-import Parking.Support.Particle
+module
+
+public import Parking.Support.Particle
+
+@[expose] public section
 
 /-!
 # The range, the tilted one-site law, and the conditional quantities of Sections 7 to 9

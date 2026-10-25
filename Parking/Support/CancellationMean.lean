@@ -1,5 +1,9 @@
-import Parking.Support.OppositeMeans
-import Parking.Support.DiscrepancyTransport
+module
+
+public import Parking.Support.OppositeMeans
+public import Parking.Support.DiscrepancyTransport
+
+@[expose] public section
 
 /-!
 # Averaging the cancellation count

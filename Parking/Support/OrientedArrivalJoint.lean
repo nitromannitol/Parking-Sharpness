@@ -1,5 +1,9 @@
-import Parking.Support.OrientedArrivalMean
-import Parking.Support.OrientedCountLaw
+module
+
+public import Parking.Support.OrientedArrivalMean
+public import Parking.Support.OrientedCountLaw
+
+@[expose] public section
 
 /-!
 # Unconditional arrival means for the directed recursion

@@ -1,6 +1,10 @@
-import Parking.Support.NearestGreen
-import Parking.Support.RoundHitting
-import Parking.Support.GreenPotential
+module
+
+public import Parking.Support.NearestGreen
+public import Parking.Support.RoundHitting
+public import Parking.Support.GreenPotential
+
+@[expose] public section
 
 /-!
 # A uniform bound on finite sums of the squared Green function

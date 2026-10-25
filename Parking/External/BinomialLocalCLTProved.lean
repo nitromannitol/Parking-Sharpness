@@ -1,5 +1,9 @@
-import Parking.External.BinomialLocalCLT
-import LatticeProb.Walk.BinomialLocalCLT
+module
+
+public import Parking.External.BinomialLocalCLT
+public import LatticeProb.Walk.BinomialLocalCLT
+
+@[expose] public section
 
 /-!
 # The one-dimensional local CLT, proved

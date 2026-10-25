@@ -1,6 +1,10 @@
-import Parking.Support.UConcReal
-import Parking.Support.BlockTools
-import Parking.Support.SpatShift
+module
+
+public import Parking.Support.UConcReal
+public import Parking.Support.BlockTools
+public import Parking.Support.SpatShift
+
+@[expose] public section
 
 /-!
 # Site-uniform moment norm of the scenery odometer

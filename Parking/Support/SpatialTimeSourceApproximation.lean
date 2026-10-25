@@ -1,6 +1,10 @@
-import Parking.Support.SpatialSceneryL1
-import Parking.Support.SpaceTimeProjection
-import LatticeProb.Prob.Scaling.TimeTestQuadrature
+module
+
+public import Parking.Support.SpatialSceneryL1
+public import Parking.Support.SpaceTimeProjection
+public import LatticeProb.Prob.Scaling.TimeTestQuadrature
+
+@[expose] public section
 
 /-!
 # Temporal quadrature of the scenery source

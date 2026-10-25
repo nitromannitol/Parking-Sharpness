@@ -1,5 +1,9 @@
-import Parking.Support.Propagate
-import Parking.Support.DeferredIntegral
+module
+
+public import Parking.Support.Propagate
+public import Parking.Support.DeferredIntegral
+
+@[expose] public section
 
 /-!
 # Every stack hits each neighbour infinitely often

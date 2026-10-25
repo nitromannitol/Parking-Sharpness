@@ -1,7 +1,11 @@
-import Parking.Frozen.Parallel
-import Parking.Support.OdometerInfinite
-import Parking.Support.Monotone
-import Parking.Support.Odometer
+module
+
+public import Parking.Frozen.Parallel
+public import Parking.Support.OdometerInfinite
+public import Parking.Support.Monotone
+public import Parking.Support.Odometer
+
+@[expose] public section
 
 /-!
 # The odometer propagates through the lattice

@@ -1,6 +1,10 @@
-import Parking.Support.LinearExponentialLift
-import Parking.Support.OrientedFinite
-import Parking.Support.OrientedLogNorm
+module
+
+public import Parking.Support.LinearExponentialLift
+public import Parking.Support.OrientedFinite
+public import Parking.Support.OrientedLogNorm
+
+@[expose] public section
 
 /-!
 # Exponential moments of directed potentials

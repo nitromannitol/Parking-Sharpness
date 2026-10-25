@@ -1,6 +1,10 @@
-import Parking.Support.OrientedTruncatedRouting
-import Parking.Support.OrientedParticleMoment
-import Parking.Support.WeightedMoment
+module
+
+public import Parking.Support.OrientedTruncatedRouting
+public import Parking.Support.OrientedParticleMoment
+public import Parking.Support.WeightedMoment
+
+@[expose] public section
 
 /-!
 # Full finite-site routing sum

@@ -1,4 +1,8 @@
-import Parking.Support.NoArrivalFlag
+module
+
+public import Parking.Support.NoArrivalFlag
+
+@[expose] public section
 
 /-!
 # Survival of a single hole and its independence from far-away data

@@ -1,6 +1,10 @@
-import Parking.Support.ConfMoments
-import Mathlib.Probability.Moments.Variance
-import Mathlib.Analysis.MeanInequalitiesPow
+module
+
+public import Parking.Support.ConfMoments
+public import Mathlib.Probability.Moments.Variance
+public import Mathlib.Analysis.MeanInequalitiesPow
+
+@[expose] public section
 
 /-!
 # General `L^p` facts used by the moment bound

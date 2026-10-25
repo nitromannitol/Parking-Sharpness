@@ -1,7 +1,11 @@
-import Parking.Support.OrthantCube
-import Parking.Support.HoleCloserEvent
-import Parking.Support.NoBoth
-import Parking.Support.Equivariance
+module
+
+public import Parking.Support.OrthantCube
+public import Parking.Support.HoleCloserEvent
+public import Parking.Support.NoBoth
+public import Parking.Support.Equivariance
+
+@[expose] public section
 
 /-!
 # Isolated holes and their safe orthant

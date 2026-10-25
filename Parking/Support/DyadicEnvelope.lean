@@ -1,4 +1,8 @@
-import Parking.Support.FinitePowerNorm
+module
+
+public import Parking.Support.FinitePowerNorm
+
+@[expose] public section
 
 /-!
 # The dyadic bisection envelope

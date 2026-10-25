@@ -1,4 +1,8 @@
-import Parking.Support.BinomialConvolution
+module
+
+public import Parking.Support.BinomialConvolution
+
+@[expose] public section
 
 /-!
 # Delayed binomial layers and shift energy

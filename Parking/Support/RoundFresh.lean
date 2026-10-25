@@ -1,4 +1,8 @@
-import Parking.Support.MatchedLaw
+module
+
+public import Parking.Support.MatchedLaw
+
+@[expose] public section
 
 /-!
 # Freshness of two predictable table selections
@@ -78,7 +82,7 @@ theorem Parking.map_predictable_roundPairs (hd : 1 ≤ d)
   classical
   haveI := Parking.stepLaw_isProbability hd
   apply Parking.map_layers
-  · refine measurable_pi_lambda _ fun n => ?_
+  · refine measurable_pi_iff.mpr fun n => ?_
     have hrev : Measurable (Parking.reverseDirection (d := d)) := measurable_from_countable' _
     exact (LatticeProb.measurable_eval_var _ ((measurable_pi_apply n).comp hi)
       (fun σ q => σ n q) (fun q => (measurable_pi_apply q).comp (measurable_pi_apply n))).prodMk

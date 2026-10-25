@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupTail
+module
+
+public import Parking.Support.TightBoxSupTail
+
+@[expose] public section
 
 /-!
 # A.e. summability of the dyadic increment tail

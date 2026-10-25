@@ -1,5 +1,9 @@
-import Parking.Support.DiscrepancyBalance
-import Parking.Support.DiscrepancyFresh
+module
+
+public import Parking.Support.DiscrepancyBalance
+public import Parking.Support.DiscrepancyFresh
+
+@[expose] public section
 
 /-!
 # A single added particle produces at most one persistent positive discrepancy

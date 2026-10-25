@@ -1,5 +1,9 @@
-import Parking.Support.OrientedArrivalLayer
-import Parking.Support.OrientedFiniteRoute
+module
+
+public import Parking.Support.OrientedArrivalLayer
+public import Parking.Support.OrientedFiniteRoute
+
+@[expose] public section
 
 /-!
 # The directed error unrolled by site and round

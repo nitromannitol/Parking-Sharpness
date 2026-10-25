@@ -1,4 +1,8 @@
-import Parking.Support.OrientedPathMax
+module
+
+public import Parking.Support.OrientedPathMax
+
+@[expose] public section
 
 /-!
 # The oriented walk as a path measure and stopping problem

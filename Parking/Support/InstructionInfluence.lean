@@ -1,6 +1,10 @@
-import Parking.Support.CenteredVariance
-import Parking.Support.InstructionField
-import Parking.Support.SingleMean
+module
+
+public import Parking.Support.CenteredVariance
+public import Parking.Support.InstructionField
+public import Parking.Support.SingleMean
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 

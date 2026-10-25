@@ -1,6 +1,10 @@
-import Parking.Support.HoleLawTransfer
-import Parking.Support.SubcriticalHoleMean
-import Parking.Support.HoleObsIntegrable
+module
+
+public import Parking.Support.HoleLawTransfer
+public import Parking.Support.SubcriticalHoleMean
+public import Parking.Support.HoleObsIntegrable
+
+@[expose] public section
 
 /-!
 # The first inequality of Step 1 of `thm:subcritical`

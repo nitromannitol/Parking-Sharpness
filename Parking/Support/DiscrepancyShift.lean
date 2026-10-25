@@ -1,5 +1,9 @@
-import Parking.Support.MatchedShift
-import Parking.Support.DiscrepancyLabels
+module
+
+public import Parking.Support.MatchedShift
+public import Parking.Support.DiscrepancyLabels
+
+@[expose] public section
 
 /-!
 # Translation covariance of persistent discrepancy labels

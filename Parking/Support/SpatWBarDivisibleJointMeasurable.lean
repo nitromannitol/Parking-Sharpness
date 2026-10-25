@@ -1,5 +1,9 @@
-import Parking.Support.SpatWDivisiblePairing
-import Parking.Support.Measurability
+module
+
+public import Parking.Support.SpatWDivisiblePairing
+public import Parking.Support.Measurability
+
+@[expose] public section
 
 /-!
 # Joint measurability of the rescaled divisible odometer

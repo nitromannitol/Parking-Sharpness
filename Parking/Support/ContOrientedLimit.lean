@@ -1,8 +1,12 @@
-import LatticeProb.ContinuumHeatKernel
-import Parking.Support.Continuum
-import LatticeProb.Gauss.WhiteNoise
-import LatticeProb.Gauss.BrownianCont
-import LatticeProb.ContinuumNoiseField
+module
+
+public import LatticeProb.ContinuumHeatKernel
+public import Parking.Support.Continuum
+public import LatticeProb.Gauss.WhiteNoise
+public import LatticeProb.Gauss.BrownianCont
+public import LatticeProb.ContinuumNoiseField
+
+@[expose] public section
 
 /-!
 # The limit random variable `U(T)` of the directed scaling limit

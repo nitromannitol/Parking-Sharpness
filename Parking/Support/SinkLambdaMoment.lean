@@ -1,6 +1,10 @@
-import Parking.Support.SinkCenteredMoment
-import Parking.Support.AverageMoment
-import Parking.Support.SinkCompensatorMean
+module
+
+public import Parking.Support.SinkCenteredMoment
+public import Parking.Support.AverageMoment
+public import Parking.Support.SinkCompensatorMean
+
+@[expose] public section
 
 /-!
 # Neighbor-averaged moment bound for the sink entrance count

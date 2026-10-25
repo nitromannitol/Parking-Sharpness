@@ -1,6 +1,10 @@
-import Parking.Support.LinPotentialMaximal
-import Parking.Support.SpatialStoppingCutoff
-import Parking.Support.StoppingShift
+module
+
+public import Parking.Support.LinPotentialMaximal
+public import Parking.Support.SpatialStoppingCutoff
+public import Parking.Support.StoppingShift
+
+@[expose] public section
 
 /-!
 # The pathwise cutoff-to-true bound for the stopping-value summand

@@ -1,4 +1,8 @@
-import Parking.Support.WStarBound
+module
+
+public import Parking.Support.WStarBound
+
+@[expose] public section
 
 /-!
 # The second display of `prop:w-moment`

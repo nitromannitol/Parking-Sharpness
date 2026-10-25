@@ -1,7 +1,11 @@
-import Parking.Support.PrefixLabel
-import Parking.Support.DeleteCompare
-import Parking.Support.SpliceAvg
-import Parking.Support.Cov
+module
+
+public import Parking.Support.PrefixLabel
+public import Parking.Support.DeleteCompare
+public import Parking.Support.SpliceAvg
+public import Parking.Support.Cov
+
+@[expose] public section
 
 /-!
 # One step of the particle filtration of Step 2
@@ -44,7 +48,7 @@ theorem noiseLaw_isProbability {d : ℕ} (hd : 1 ≤ d) : IsProbabilityMeasure (
 theorem measurable_delAt {d : ℕ} (x : Site d) : Measurable (fun ω : PData d => delAt x ω) := by
   unfold delAt
   refine Measurable.prodMk ?_ measurable_snd
-  refine measurable_pi_lambda _ fun y => ?_
+  refine measurable_pi_iff.mpr fun y => ?_
   show Measurable fun ω : PData d => if y = x then ω.1 y - 1 else ω.1 y
   by_cases hy : y = x
   · have he : (fun ω : PData d => if y = x then ω.1 y - 1 else ω.1 y)

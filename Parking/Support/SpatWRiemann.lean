@@ -1,8 +1,12 @@
-import Parking.Support.SpatWLocalMass
-import Parking.Support.SpatialVanishingDistance
-import LatticeProb.Walk.RiemannLattice
-import Parking.Support.Continuum
-import Parking.Support.Measurability
+module
+
+public import Parking.Support.SpatWLocalMass
+public import Parking.Support.SpatialVanishingDistance
+public import LatticeProb.Walk.RiemannLattice
+public import Parking.Support.Continuum
+public import Parking.Support.Measurability
+
+@[expose] public section
 
 /-!
 # Riemann discretization via local rescaled odometer mass

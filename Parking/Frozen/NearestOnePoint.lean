@@ -1,7 +1,11 @@
-import Parking.Support.NearestOnePointProof
-import Parking.Support.Range
-import Parking.External.Bernstein
-import Parking.Support.ThreePointLaw
+module
+
+public import Parking.Support.NearestOnePointProof
+public import Parking.Support.Range
+public import Parking.External.Bernstein
+public import Parking.Support.ThreePointLaw
+
+@[expose] public section
 
 /-!
 # The one-point moment and hole-probability bounds, `d ≥ 5` (frozen)

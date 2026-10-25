@@ -1,3 +1,5 @@
+module
+
 /-
 Lemma 3.3 of `parking.tex`: adding one particle to the configuration changes
 the state by exactly one active particle at one site, or by exactly one
@@ -28,7 +30,9 @@ of the first, and the two counts decide which case holds:
 Where exactly one particle is left over, `eq_insert_of_card_succ` names it, and
 nothing in the argument has to say which particle that is.
 -/
-import Parking.Support.Coupling
+public import Parking.Support.Coupling
+
+@[expose] public section
 
 /-!
 # Lemma 3.3: the one-particle coupling discrepancy

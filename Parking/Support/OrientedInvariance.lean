@@ -1,5 +1,9 @@
-import Parking.Support.OrientedLaw
-import Parking.Support.Invariance
+module
+
+public import Parking.Support.OrientedLaw
+public import Parking.Support.Invariance
+
+@[expose] public section
 
 /-!
 # Translation invariance of the directed particle law

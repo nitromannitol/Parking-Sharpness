@@ -1,7 +1,11 @@
-import Parking.Support.TightCovGreen
-import Parking.Support.TightOverlap
-import Parking.Support.TightWalk
-import Parking.External.BinomialLocalCLT
+module
+
+public import Parking.Support.TightCovGreen
+public import Parking.Support.TightOverlap
+public import Parking.Support.TightWalk
+public import Parking.External.BinomialLocalCLT
+
+@[expose] public section
 
 /-!
 # The covariance limit of the rescaled grid reward field

@@ -1,6 +1,10 @@
-import Parking.Support.Invariance
-import LatticeProb.Prob.PiSum
-import LatticeProb.Prob.Translation
+module
+
+public import Parking.Support.Invariance
+public import LatticeProb.Prob.PiSum
+public import LatticeProb.Prob.Translation
+
+@[expose] public section
 
 /-!
 # Ergodicity of translations on the driving data

@@ -1,7 +1,11 @@
-import Parking.Support.OrientedTwoLower
-import Parking.Support.OrientedTwoUpper
-import Parking.Support.OrientedLogBounds
-import Parking.Support.OrientedRatio
+module
+
+public import Parking.Support.OrientedTwoLower
+public import Parking.Support.OrientedTwoUpper
+public import Parking.Support.OrientedLogBounds
+public import Parking.Support.OrientedRatio
+
+@[expose] public section
 
 /-!
 # Oriented walk assembly

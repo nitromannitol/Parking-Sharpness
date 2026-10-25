@@ -1,6 +1,10 @@
-import Parking.Support.Kernel
-import Parking.Support.Pathwise
-import Parking.Support.WBound
+module
+
+public import Parking.Support.Kernel
+public import Parking.Support.Pathwise
+public import Parking.Support.WBound
+
+@[expose] public section
 
 /-!
 # The walk as a lattice kernel

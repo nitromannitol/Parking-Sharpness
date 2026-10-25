@@ -1,6 +1,10 @@
-import Parking.Support.SubcriticalInvariance
-import Parking.Support.HoleObsIntegrable
-import Parking.Support.TiltCov
+module
+
+public import Parking.Support.SubcriticalInvariance
+public import Parking.Support.HoleObsIntegrable
+public import Parking.Support.TiltCov
+
+@[expose] public section
 
 /-!
 # Step 2 of `thm:subcritical`

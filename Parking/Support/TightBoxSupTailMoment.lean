@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupChain
+module
+
+public import Parking.Support.TightBoxSupChain
+
+@[expose] public section
 
 /-!
 # The integral tail-moment bound

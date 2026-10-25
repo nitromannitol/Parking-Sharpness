@@ -1,7 +1,11 @@
-import Parking.Support.TightInterp
-import Parking.Support.TightReward
-import LatticeProb.Prob.Scaling.PolyGrowth
-import LatticeProb.KolmogorovChentsov
+module
+
+public import Parking.Support.TightInterp
+public import Parking.Support.TightReward
+public import LatticeProb.Prob.Scaling.PolyGrowth
+public import LatticeProb.KolmogorovChentsov
+
+@[expose] public section
 
 /-!
 # The uniform Kolmogorov moment bound of the box reward field

@@ -1,4 +1,8 @@
-import Parking.Support.OrientedPotential
+module
+
+public import Parking.Support.OrientedPotential
+
+@[expose] public section
 
 /-!
 # Measurable walk maxima and the upper comparison

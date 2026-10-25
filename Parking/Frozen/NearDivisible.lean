@@ -1,10 +1,14 @@
-import Parking.Support.NearBounded
-import Parking.External.SandpileGrowth
-import Parking.External.Stopping
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
-import Parking.Support.Near
+module
+
+public import Parking.Support.NearBounded
+public import Parking.External.SandpileGrowth
+public import Parking.External.Stopping
+public import Parking.External.UConcentration
+public import Parking.External.UConcentrationProved
+public import Parking.External.GreenNormsProved
+public import Parking.Support.Near
+
+@[expose] public section
 
 /-!
 # The near-critical divisible sandpile mean (frozen)

@@ -1,7 +1,11 @@
-import Parking.Support.SpatialParabolicSupport
-import Parking.Support.SpatialSpaceTimeMass
-import Parking.Support.SpatialZeroIntegralTesting
-import LatticeProb.Prob.Scaling.CompactPairing
+module
+
+public import Parking.Support.SpatialParabolicSupport
+public import Parking.Support.SpatialSpaceTimeMass
+public import Parking.Support.SpatialZeroIntegralTesting
+public import LatticeProb.Prob.Scaling.CompactPairing
+
+@[expose] public section
 
 /-!
 # The weak residual estimate

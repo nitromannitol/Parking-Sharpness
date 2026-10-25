@@ -1,4 +1,8 @@
-import Parking.Support.CountSite
+module
+
+public import Parking.Support.CountSite
+
+@[expose] public section
 
 /-!
 # Revealing counts one site at a time
@@ -62,7 +66,7 @@ theorem avgAt_dependsOnCounts {d : ℕ} {ν : Measure ℤ} {N : Finset (Site d)}
 /-- Updating one coordinate is measurable in the new value. -/
 theorem measurable_update_const {d : ℕ} (a : Site d → ℤ) (x : Site d) :
     Measurable (fun k : ℤ => Function.update a x k) := by
-  refine measurable_pi_lambda _ fun y => ?_
+  refine measurable_pi_iff.mpr fun y => ?_
   by_cases hy : y = x
   · subst hy
     simp only [Function.update_self]

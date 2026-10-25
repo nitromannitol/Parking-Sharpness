@@ -1,6 +1,10 @@
-import Parking.Support.OrientedPathMax
-import Parking.Support.OrientedMaximum
-import Parking.Support.WStarMoment
+module
+
+public import Parking.Support.OrientedPathMax
+public import Parking.Support.OrientedMaximum
+public import Parking.Support.WStarMoment
+
+@[expose] public section
 
 /-!
 # The `r`-th power of the maximum is at most a sum of `r`-th powers

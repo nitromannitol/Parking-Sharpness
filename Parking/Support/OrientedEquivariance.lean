@@ -1,10 +1,14 @@
-import Parking.Support.OrientedOdometer
-import Parking.Support.OrientedError
-import Parking.Support.OrientedMeasurability
-import Parking.Support.Equivariance
-import Parking.Support.ActivityHoles
-import Parking.Support.OrientedInvariance
-import Parking.Support.OrientedParticleMoment
+module
+
+public import Parking.Support.OrientedOdometer
+public import Parking.Support.OrientedError
+public import Parking.Support.OrientedMeasurability
+public import Parking.Support.Equivariance
+public import Parking.Support.ActivityHoles
+public import Parking.Support.OrientedInvariance
+public import Parking.Support.OrientedParticleMoment
+
+@[expose] public section
 
 /-!
 # Translation equivariance of the directed odometer and error field

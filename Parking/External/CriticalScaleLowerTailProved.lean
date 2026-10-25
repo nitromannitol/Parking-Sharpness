@@ -1,9 +1,13 @@
-import Parking.External.CriticalScaleLowerTail
-import Parking.Support.NearestCriticalNormalization
-import Parking.External.VarianceScale
-import LatticeProb.Walk.ExteriorDirichlet
-import Parking.Support.MeanPos
-import Sandpile.Support.CriticalAssembly
+module
+
+public import Parking.External.CriticalScaleLowerTail
+public import Parking.Support.NearestCriticalNormalization
+public import Parking.External.VarianceScale
+public import LatticeProb.Walk.ExteriorDirichlet
+public import Parking.Support.MeanPos
+public import Sandpile.Support.CriticalAssembly
+
+@[expose] public section
 
 /-!
 # The critical-scale lower tail estimate, proved

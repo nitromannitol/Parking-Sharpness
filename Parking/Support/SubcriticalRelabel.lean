@@ -1,4 +1,8 @@
-import Parking.Support.SubcriticalPair
+module
+
+public import Parking.Support.SubcriticalPair
+
+@[expose] public section
 
 /-!
 # Relabeling equivariance of the tagged construction

@@ -1,4 +1,8 @@
-import Parking.Support.SingleAddition
+module
+
+public import Parking.Support.SingleAddition
+
+@[expose] public section
 
 /-!
 # The moving discrepancy's fresh instruction

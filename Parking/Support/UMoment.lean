@@ -1,12 +1,16 @@
-import Parking.Support.UFinite
-import LatticeProb.Prob.ConvexOrder
-import LatticeProb.Prob.Laplace
-import LatticeProb.Prob.ExpTail
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+module
+
+public import Parking.Support.UFinite
+public import LatticeProb.Prob.ConvexOrder
+public import LatticeProb.Prob.Laplace
+public import LatticeProb.Prob.ExpTail
+public import Parking.Support.CriticalLawReal
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+public import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+
+@[expose] public section
 
 /-!
 # The convex comparison extended to hinges and moments

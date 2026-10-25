@@ -1,4 +1,8 @@
-import Parking.Support.OdometerLower
+module
+
+public import Parking.Support.OdometerLower
+
+@[expose] public section
 
 /-!
 # The origin's odometer is infinite with positive probability

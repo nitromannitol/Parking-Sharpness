@@ -1,5 +1,9 @@
-import Parking.Support.Continuum
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+module
+
+public import Parking.Support.Continuum
+public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+
+@[expose] public section
 
 /-!
 # A test function in a prescribed `ℓ¹` ball

@@ -1,6 +1,10 @@
-import Parking.Support.RoundDifference
-import Parking.Support.FlatNoise
-import Parking.Support.ProductFresh
+module
+
+public import Parking.Support.RoundDifference
+public import Parking.Support.FlatNoise
+public import Parking.Support.ProductFresh
+
+@[expose] public section
 
 /-!
 # The chronological table-reveal increment

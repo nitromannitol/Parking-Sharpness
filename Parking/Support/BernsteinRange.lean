@@ -1,5 +1,9 @@
-import Parking.External.Bernstein
-import Parking.Support.BlockSum
+module
+
+public import Parking.External.Bernstein
+public import Parking.Support.BlockSum
+
+@[expose] public section
 
 /-!
 # Bernstein's inequality indexed from zero

@@ -1,4 +1,8 @@
-import Parking.Support.CriticalLawReal
+module
+
+public import Parking.Support.CriticalLawReal
+
+@[expose] public section
 
 /-!
 # Positive variance excludes a point mass

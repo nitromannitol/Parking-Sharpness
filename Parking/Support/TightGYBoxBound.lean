@@ -1,5 +1,9 @@
-import Parking.Support.TightBoxLaw
-import Parking.Support.OrientedCutoffValue
+module
+
+public import Parking.Support.TightBoxLaw
+public import Parking.Support.OrientedCutoffValue
+
+@[expose] public section
 
 /-!
 # Reduction of `happ` to a box-supremum moment bound

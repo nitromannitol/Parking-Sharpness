@@ -1,7 +1,11 @@
-import Parking.Support.Equivariance
-import Parking.Support.DiscrepancyTail
-import Parking.Support.WBound
-import Parking.Support.UBound
+module
+
+public import Parking.Support.Equivariance
+public import Parking.Support.DiscrepancyTail
+public import Parking.Support.WBound
+public import Parking.Support.UBound
+
+@[expose] public section
 
 /-!
 # Translation covariance and shift-invariance of the discrepancy

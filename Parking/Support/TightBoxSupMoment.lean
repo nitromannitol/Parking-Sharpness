@@ -1,6 +1,10 @@
-import Parking.Support.TightKolmogorov
-import Parking.Support.TightBoxMoment
-import LatticeProb.Prob.ChentsovPiModification
+module
+
+public import Parking.Support.TightKolmogorov
+public import Parking.Support.TightBoxMoment
+public import LatticeProb.Prob.ChentsovPiModification
+
+@[expose] public section
 
 /-!
 # The `Yfield` dyadic-chaining moment bound

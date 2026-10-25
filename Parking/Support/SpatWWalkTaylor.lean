@@ -1,5 +1,9 @@
-import Parking.Support.SpatWTaylorLap
-import LatticeProb.Prob.Scaling.LatticeTaylor
+module
+
+public import Parking.Support.SpatWTaylorLap
+public import LatticeProb.Prob.Scaling.LatticeTaylor
+
+@[expose] public section
 
 /-!
 # Rescaled lattice walk generator versus the continuum Laplacian

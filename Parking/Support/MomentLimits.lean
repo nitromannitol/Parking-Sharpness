@@ -1,5 +1,9 @@
-import Parking.Support.UpperStep
-import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
+module
+
+public import Parking.Support.UpperStep
+public import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
+
+@[expose] public section
 
 /-!
 # Moment norms, exponents and deterministic normalization

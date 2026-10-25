@@ -1,7 +1,11 @@
-import Parking.Support.CriticalChain
-import Parking.Support.MassTransport
-import Parking.Support.Transport
-import Parking.Support.Measurability
+module
+
+public import Parking.Support.CriticalChain
+public import Parking.Support.MassTransport
+public import Parking.Support.Transport
+public import Parking.Support.Measurability
+
+@[expose] public section
 
 /-!
 # The limit mean odometer as a sum of survivor counts

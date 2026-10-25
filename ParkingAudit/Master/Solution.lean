@@ -1,7 +1,11 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Master.SolutionBasic
-import ParkingAudit.Support.MasterBridge
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Master.SolutionBasic
+public import ParkingAudit.Support.MasterBridge
+
+@[expose] public section
 
 /-!
 # Solution: Master

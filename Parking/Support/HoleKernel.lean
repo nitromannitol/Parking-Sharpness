@@ -1,4 +1,8 @@
-import Parking.Support.EscapeGap
+module
+
+public import Parking.Support.EscapeGap
+
+@[expose] public section
 
 /-!
 # The two-target hole kernel

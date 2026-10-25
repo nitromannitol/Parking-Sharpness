@@ -1,5 +1,9 @@
-import Parking.Support.MeanPos
-import Parking.Support.LinearFirstMoment
+module
+
+public import Parking.Support.MeanPos
+public import Parking.Support.LinearFirstMoment
+
+@[expose] public section
 
 /-!
 # Positive negative part of a critical law

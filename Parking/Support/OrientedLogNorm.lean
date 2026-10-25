@@ -1,4 +1,8 @@
-import Parking.Support.OrientedGreenRates
+module
+
+public import Parking.Support.OrientedGreenRates
+
+@[expose] public section
 
 /-!
 # A uniform logarithmic bound on the Green square norm

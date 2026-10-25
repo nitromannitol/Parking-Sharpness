@@ -1,6 +1,10 @@
-import Parking.Support.EscapePotential
-import LatticeProb.Walk.GreenIdentity
-import LatticeProb.Walk.Decomp
+module
+
+public import Parking.Support.EscapePotential
+public import LatticeProb.Walk.GreenIdentity
+public import LatticeProb.Walk.Decomp
+
+@[expose] public section
 
 /-!
 # A uniform gap in the escape potential

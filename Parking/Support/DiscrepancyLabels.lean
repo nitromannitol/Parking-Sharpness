@@ -1,3 +1,5 @@
+module
+
 /-
 Persistent discrepancy labels. Fixed priorities assign labels to surplus
 instruction entries and pair opposite arrivals for cancellation. Labels keep
@@ -5,9 +7,11 @@ their sign and priority when their carriers change, move at speed at most one,
 and never return after removal. The finite candidate sets retain every live
 label.
 -/
-import Parking.Support.CancelByRank
-import Parking.Support.CoupledLaw
-import Parking.Support.MatchedCounts
+public import Parking.Support.CancelByRank
+public import Parking.Support.CoupledLaw
+public import Parking.Support.MatchedCounts
+
+@[expose] public section
 
 noncomputable section
 

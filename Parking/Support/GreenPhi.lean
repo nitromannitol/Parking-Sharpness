@@ -1,5 +1,9 @@
-import Parking.Support.PhiSum
-import Parking.External.GreenNorms
+module
+
+public import Parking.Support.PhiSum
+public import Parking.External.GreenNorms
+
+@[expose] public section
 
 /-!
 # The Green rates of `eq:green-norms` against the scale `φ_d`

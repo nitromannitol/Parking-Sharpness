@@ -1,4 +1,8 @@
-import Parking.Support.MatchedBellman
+module
+
+public import Parking.Support.MatchedBellman
+
+@[expose] public section
 
 /-!
 # The conditional future odometer as a bounded martingale

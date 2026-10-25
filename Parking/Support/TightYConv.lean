@@ -1,7 +1,11 @@
-import Parking.Support.TightYCutoff
-import Parking.Support.TightHlawAssembly
-import Parking.External.OrientedStoppingStability
-import Parking.Support.OrientedCutoffValuePot
+module
+
+public import Parking.Support.TightYCutoff
+public import Parking.Support.TightHlawAssembly
+public import Parking.External.OrientedStoppingStability
+public import Parking.Support.OrientedCutoffValuePot
+
+@[expose] public section
 
 /-!
 # `hYconv`, parametrized by its three ingredients

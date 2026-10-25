@@ -1,5 +1,9 @@
-import Parking.Support.SpatWTaylor
-import Parking.Support.SpatWSignedDecomp
+module
+
+public import Parking.Support.SpatWTaylor
+public import Parking.Support.SpatWSignedDecomp
+
+@[expose] public section
 
 /-!
 # Taylor remainder for the signed-density middle term

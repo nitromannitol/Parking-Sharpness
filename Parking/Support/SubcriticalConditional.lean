@@ -1,5 +1,9 @@
-import Parking.Support.SubcriticalGraftStep3
-import Parking.Support.NoiseSplice
+module
+
+public import Parking.Support.SubcriticalGraftStep3
+public import Parking.Support.NoiseSplice
+
+@[expose] public section
 
 /-!
 # From the prescribed origin to the conditional survival probability
@@ -306,19 +310,19 @@ theorem measurable_graftOrigin_pair :
     Measurable fun p : PData d × PData d => graftOrigin p.1 p.2 := by
   classical
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
-  · refine measurable_pi_lambda _ fun x => ?_
+  · refine measurable_pi_iff.mpr fun x => ?_
     by_cases hx : x = (0 : Site d)
     · simpa [graftOrigin, hx] using
         (measurable_fst.fst.eval : Measurable fun p : PData d × PData d => p.1.1 x)
     · simpa [graftOrigin, hx] using
         (measurable_snd.fst.eval : Measurable fun p : PData d × PData d => p.2.1 x)
-  · refine measurable_pi_lambda _ fun q => ?_
+  · refine measurable_pi_iff.mpr fun q => ?_
     by_cases hq : q.1.1 = (0 : Site d)
     · simpa [graftOrigin, hq] using
         (measurable_fst.snd.fst.eval : Measurable fun p : PData d × PData d => p.1.2.1 q)
     · simpa [graftOrigin, hq] using
         (measurable_snd.snd.fst.eval : Measurable fun p : PData d × PData d => p.2.2.1 q)
-  · refine measurable_pi_lambda _ fun q => ?_
+  · refine measurable_pi_iff.mpr fun q => ?_
     by_cases hq : q.1.1 = (0 : Site d)
     · simpa [graftOrigin, hq] using
         (measurable_fst.snd.snd.eval : Measurable fun p : PData d × PData d => p.1.2.2 q)
@@ -331,7 +335,7 @@ theorem measurable_setMoves (w : ℕ → Fin d × Bool) : Measurable (setMoves (
   classical
   refine Measurable.prodMk measurable_fst
     (Measurable.prodMk ?_ (measurable_snd.comp measurable_snd))
-  refine measurable_pi_lambda _ fun q => ?_
+  refine measurable_pi_iff.mpr fun q => ?_
   by_cases hq : q.1 = ((0 : Site d), 0)
   · simp [hq]
   · simpa [setMoves, hq] using

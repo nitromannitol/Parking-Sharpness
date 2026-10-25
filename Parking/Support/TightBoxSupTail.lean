@@ -1,3 +1,5 @@
+module
+
 /-
 The geometric-tail moment bound on the dyadic increments of `Parking.Yfield`, from
 `Parking/Support/TightBoxSupMoment.lean`'s `exists_levelInc_moment`.  The per-level moment
@@ -13,9 +15,11 @@ combines with the weighted-Jensen ratio `r ^ (1 - p)` (at `r := jensenRatio p`) 
 geometric ratio `θ = 2 ^ (3 - p / 4) < 1`, making the resulting series
 `Σ_k (k + 1) ^ 2 * θ ^ k` summable (`LatticeProb.summable_polynomial_geometric`).
 -/
-import Parking.Support.TightBoxSupMoment
-import LatticeProb.Prob.Scaling.PolyGrowth
-import LatticeProb.WeightedJensen
+public import Parking.Support.TightBoxSupMoment
+public import LatticeProb.Prob.Scaling.PolyGrowth
+public import LatticeProb.WeightedJensen
+
+@[expose] public section
 
 open LatticeProb.WeightedJensen (jensenRatio jensenRatio_lt_one jensenRatio_pos
     jensenRatio_rpow_one_sub jensenRatio_rpow_one_sub_mul_lt_one

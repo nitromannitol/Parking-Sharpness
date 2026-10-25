@@ -1,4 +1,8 @@
-import Parking.Support.LogFromTail
+module
+
+public import Parking.Support.LogFromTail
+
+@[expose] public section
 
 /-!
 # A uniform constant for the two-hole tail bound

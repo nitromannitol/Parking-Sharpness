@@ -1,5 +1,9 @@
-import Parking.Support.WeightedOdometerBounds
-import Parking.Support.ProductLift
+module
+
+public import Parking.Support.WeightedOdometerBounds
+public import Parking.Support.ProductLift
+
+@[expose] public section
 
 /-!
 # Splitting the table moment norm across the field and the noise

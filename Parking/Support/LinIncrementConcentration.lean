@@ -1,7 +1,11 @@
-import Parking.Support.LinBox
-import Parking.Support.FinsetReindex
-import LatticeProb.Prob.WeightedConc
-import LatticeProb.Walk.GreenPointwise
+module
+
+public import Parking.Support.LinBox
+public import Parking.Support.FinsetReindex
+public import LatticeProb.Prob.WeightedConc
+public import LatticeProb.Walk.GreenPointwise
+
+@[expose] public section
 
 /-!
 # Two-point, two-time concentration of the linear field

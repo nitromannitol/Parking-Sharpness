@@ -1,5 +1,9 @@
-import Parking.Support.OrientedSiteRound
-import Parking.Support.OrientedFiniteRoute
+module
+
+public import Parking.Support.OrientedSiteRound
+public import Parking.Support.OrientedFiniteRoute
+
+@[expose] public section
 
 /-!
 # Oriented unroll

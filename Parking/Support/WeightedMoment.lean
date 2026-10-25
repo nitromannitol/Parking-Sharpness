@@ -1,4 +1,8 @@
-import Parking.Support.Lp
+module
+
+public import Parking.Support.Lp
+
+@[expose] public section
 
 /-!
 # Weighted moment bound

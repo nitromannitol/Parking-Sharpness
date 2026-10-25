@@ -1,5 +1,9 @@
-import Parking.Support.ClosePair
-import Parking.Support.CriticalLawReal
+module
+
+public import Parking.Support.ClosePair
+public import Parking.Support.CriticalLawReal
+
+@[expose] public section
 
 /-!
 # Three-point law integrability and criticality

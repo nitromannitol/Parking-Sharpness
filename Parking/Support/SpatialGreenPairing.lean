@@ -1,5 +1,9 @@
-import Parking.External.LinearFieldScaling
-import Mathlib.MeasureTheory.Function.L2Space
+module
+
+public import Parking.External.LinearFieldScaling
+public import Mathlib.MeasureTheory.Function.L2Space
+
+@[expose] public section
 
 /-!
 # The finite-time Green field as the `L²` extension of spatial white noise

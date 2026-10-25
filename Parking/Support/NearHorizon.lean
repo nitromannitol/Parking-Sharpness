@@ -1,5 +1,9 @@
-import Parking.Support.NearStep1
-import Parking.Support.NearOptimize
+module
+
+public import Parking.Support.NearStep1
+public import Parking.Support.NearOptimize
+
+@[expose] public section
 
 /-!
 # Optimizing over the horizon

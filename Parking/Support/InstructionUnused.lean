@@ -1,5 +1,9 @@
-import Parking.Support.InstructionInfluence
-import Parking.Support.MeanLocality
+module
+
+public import Parking.Support.InstructionInfluence
+public import Parking.Support.MeanLocality
+
+@[expose] public section
 
 /-!
 # Unused instructions and instructions far from the origin

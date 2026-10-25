@@ -1,5 +1,9 @@
-import Parking.Support.OrientedCountLaw
-import Parking.Support.Monotone
+module
+
+public import Parking.Support.OrientedCountLaw
+public import Parking.Support.Monotone
+
+@[expose] public section
 
 /-!
 # Directed odometer moments

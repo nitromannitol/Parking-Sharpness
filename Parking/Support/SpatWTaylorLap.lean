@@ -1,6 +1,10 @@
-import Parking.Support.Continuum
-import LatticeProb.WhiteNoise
-import LatticeProb.Prob.Scaling.TaylorSecondDiff
+module
+
+public import Parking.Support.Continuum
+public import LatticeProb.WhiteNoise
+public import LatticeProb.Prob.Scaling.TaylorSecondDiff
+
+@[expose] public section
 
 /-!
 # Coordinate Taylor identities for the continuum Laplacian

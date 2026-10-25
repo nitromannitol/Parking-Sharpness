@@ -1,4 +1,8 @@
-import Parking.Support.MassTransport
+module
+
+public import Parking.Support.MassTransport
+
+@[expose] public section
 
 /-!
 # Monotonicity of the odometer in the configuration

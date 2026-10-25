@@ -1,4 +1,8 @@
-import Parking.Support.SpatWMartingaleVariance
+module
+
+public import Parking.Support.SpatWMartingaleVariance
+
+@[expose] public section
 
 /-!
 # Spatial local mass

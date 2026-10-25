@@ -1,10 +1,14 @@
-import Parking.Support.PairSplice
-import Parking.Support.Range
-import Parking.Support.Pathwise
-import LatticeProb.Prob.Splice
-import LatticeProb.Invariance
-import Parking.Support.CovCond
-import Parking.Support.RankDistinct
+module
+
+public import Parking.Support.PairSplice
+public import Parking.Support.Range
+public import Parking.Support.Pathwise
+public import LatticeProb.Prob.Splice
+public import LatticeProb.Invariance
+public import Parking.Support.CovCond
+public import Parking.Support.RankDistinct
+
+@[expose] public section
 
 /-!
 # Splicing the particle-driven noise

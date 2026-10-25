@@ -1,4 +1,8 @@
-import Parking.Support.TightMoment
+module
+
+public import Parking.Support.TightMoment
+
+@[expose] public section
 
 /-!
 # The remaining-horizon reward field

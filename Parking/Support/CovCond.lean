@@ -1,4 +1,8 @@
-import Parking.Support.Cov
+module
+
+public import Parking.Support.Cov
+
+@[expose] public section
 
 /-!
 # The conditional covariance identity

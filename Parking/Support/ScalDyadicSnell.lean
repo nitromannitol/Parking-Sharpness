@@ -1,5 +1,9 @@
-import Parking.Support.ScalNoiseModification
-import LatticeProb.Prob.CondExpParam
+module
+
+public import Parking.Support.ScalNoiseModification
+public import LatticeProb.Prob.CondExpParam
+
+@[expose] public section
 
 /-!
 # The dyadic Snell recursion for continuum optimal stopping

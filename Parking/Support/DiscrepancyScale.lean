@@ -1,4 +1,8 @@
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # The three explicit discrepancy rates

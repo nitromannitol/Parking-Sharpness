@@ -1,7 +1,11 @@
-import Parking.Support.TightField
-import Parking.Support.OrientedSceneryMoment
-import Parking.Support.CriticalLawReal
-import Parking.Support.ConfMoments
+module
+
+public import Parking.Support.TightField
+public import Parking.Support.OrientedSceneryMoment
+public import Parking.Support.CriticalLawReal
+public import Parking.Support.ConfMoments
+
+@[expose] public section
 
 /-!
 # Increment moments of the rescaled potential

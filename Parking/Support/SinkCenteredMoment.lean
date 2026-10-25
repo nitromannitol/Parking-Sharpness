@@ -1,6 +1,10 @@
-import Parking.Support.SinkNoiseMoment
-import Parking.Support.SinkSceneryLaw
-import Parking.Support.CenteredProductMoment
+module
+
+public import Parking.Support.SinkNoiseMoment
+public import Parking.Support.SinkSceneryLaw
+public import Parking.Support.CenteredProductMoment
+
+@[expose] public section
 
 /-!
 # Centered moment bound for the sparse sink odometer

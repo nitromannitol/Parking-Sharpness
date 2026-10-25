@@ -1,5 +1,9 @@
-import Parking.Support.ArrivalCompensator
-import Parking.Support.RoundNoArrival
+module
+
+public import Parking.Support.ArrivalCompensator
+public import Parking.Support.RoundNoArrival
+
+@[expose] public section
 
 /-!
 # The no-arrival exponential weight

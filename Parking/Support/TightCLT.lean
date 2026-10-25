@@ -1,9 +1,13 @@
-import Parking.Support.TightBoxLaw
-import Parking.Support.TightCov
-import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.Independence.Integration
-import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+module
+
+public import Parking.Support.TightBoxLaw
+public import Parking.Support.TightCov
+public import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
+public import Mathlib.Probability.Independence.InfinitePi
+public import Mathlib.Probability.Independence.Integration
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+
+@[expose] public section
 
 /-!
 # Scalar characteristic-function engine for the finite-dimensional convergence

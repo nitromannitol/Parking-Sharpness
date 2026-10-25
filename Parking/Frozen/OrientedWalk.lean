@@ -1,6 +1,10 @@
-import Parking.Support.OrientedActivity
-import Parking.Frozen.OrientedScaling
-import Parking.External.UConcentrationProved
+module
+
+public import Parking.Support.OrientedActivity
+public import Parking.Frozen.OrientedScaling
+public import Parking.External.UConcentrationProved
+
+@[expose] public section
 
 /-!
 # Theorem 1.8: the oriented walk

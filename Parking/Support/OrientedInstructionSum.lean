@@ -1,6 +1,10 @@
-import Parking.Support.OrientedCumulative
-import Parking.Support.OrientedUnroll
-import Parking.Support.OrientedParticleMoment
+module
+
+public import Parking.Support.OrientedCumulative
+public import Parking.Support.OrientedUnroll
+public import Parking.Support.OrientedParticleMoment
+
+@[expose] public section
 
 /-!
 # The directed error field regrouped by instruction

@@ -1,5 +1,9 @@
-import Parking.Support.IsolatedMeasurable
-import Parking.Support.IsolatedShift
+module
+
+public import Parking.Support.IsolatedMeasurable
+public import Parking.Support.IsolatedShift
+
+@[expose] public section
 
 /-!
 # Transporting mass from isolated holes to nearby active sites

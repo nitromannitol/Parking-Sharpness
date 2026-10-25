@@ -1,11 +1,15 @@
-import Parking.Support.SandpileBridge
-import Sandpile.External.VarianceScaleProved
-import Sandpile.External.GreenBoundsHighProved
-import Sandpile.Frozen.MeanGrowthLow
-import Sandpile.Frozen.MeanGrowthFour
-import Sandpile.Frozen.HighFirstOrder
-import Sandpile.Support.CrudeIncrement
-import Sandpile.Frozen.DGT4HeightUpperTail
+module
+
+public import Parking.Support.SandpileBridge
+public import Sandpile.External.VarianceScaleProved
+public import Sandpile.External.GreenBoundsHighProved
+public import Sandpile.Frozen.MeanGrowthLow
+public import Sandpile.Frozen.MeanGrowthFour
+public import Sandpile.Frozen.HighFirstOrder
+public import Sandpile.Support.CrudeIncrement
+public import Sandpile.Frozen.DGT4HeightUpperTail
+
+@[expose] public section
 
 /-!
 # The sandpile growth input, discharged

@@ -1,4 +1,8 @@
-import Parking.Support.WBound
+module
+
+public import Parking.Support.WBound
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 

@@ -1,5 +1,9 @@
-import Parking.Support.Kernel
-import LatticeProb.Walk.BinomLaw
+module
+
+public import Parking.Support.Kernel
+public import LatticeProb.Walk.BinomLaw
+
+@[expose] public section
 
 /-!
 # The oriented walk: layer laws and the binomial law in dimension two

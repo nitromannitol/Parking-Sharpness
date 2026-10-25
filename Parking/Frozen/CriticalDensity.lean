@@ -1,4 +1,8 @@
-import Parking.Support.CouplingProof
+module
+
+public import Parking.Support.CouplingProof
+
+@[expose] public section
 
 /-!
 # The critical density lemma (frozen)

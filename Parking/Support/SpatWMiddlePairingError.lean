@@ -1,8 +1,12 @@
-import Parking.Support.SpatWTaylorRemainder
-import Parking.Support.SpatWRiemann
-import LatticeProb.WhiteNoise
-import Parking.Support.Continuum
-import LatticeProb.Prob.Scaling.VanishingMassError
+module
+
+public import Parking.Support.SpatWTaylorRemainder
+public import Parking.Support.SpatWRiemann
+public import LatticeProb.WhiteNoise
+public import Parking.Support.Continuum
+public import LatticeProb.Prob.Scaling.VanishingMassError
+
+@[expose] public section
 
 /-!
 # Middle pairing error

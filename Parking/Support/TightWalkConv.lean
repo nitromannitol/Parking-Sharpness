@@ -1,8 +1,12 @@
-import Parking.Support.TightWalk
-import LatticeProb.ContinuumQuarterBrownian
-import Parking.Support.ContOrientedLimit
-import LatticeProb.Prob.Scaling.CramerWold
-import Mathlib.MeasureTheory.Measure.Portmanteau
+module
+
+public import Parking.Support.TightWalk
+public import LatticeProb.ContinuumQuarterBrownian
+public import Parking.Support.ContOrientedLimit
+public import LatticeProb.Prob.Scaling.CramerWold
+public import Mathlib.MeasureTheory.Measure.Portmanteau
+
+@[expose] public section
 
 /-!
 # `hWalk` via Cramér-Wold

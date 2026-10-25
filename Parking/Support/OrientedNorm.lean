@@ -1,6 +1,10 @@
-import Parking.Support.OrientedBinomial
-import Parking.Support.BinomialNorm
-import Parking.Support.OrientedVariance
+module
+
+public import Parking.Support.OrientedBinomial
+public import Parking.Support.BinomialNorm
+public import Parking.Support.OrientedVariance
+
+@[expose] public section
 
 /-!
 # Green norms and departure-increment bounds

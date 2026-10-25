@@ -1,7 +1,11 @@
-import Parking.Support.WMartingale
-import Parking.Support.Agree
-import Parking.Support.Exposure
-import LatticeProb.Prob.Exploration
+module
+
+public import Parking.Support.WMartingale
+public import Parking.Support.Agree
+public import Parking.Support.Exposure
+public import LatticeProb.Prob.Exploration
+
+@[expose] public section
 
 /-!
 # The exploration of `lem:w-martingale`
@@ -241,7 +245,7 @@ def explObs (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (
 being measurable by `measurable_U_of_stack`. -/
 theorem measurable_explObs (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (n : ℕ) :
     Measurable (explObs i₀ η ρ n) :=
-  measurable_pi_lambda _ fun s => measurable_pi_lambda _ fun y =>
+  measurable_pi_iff.mpr fun s => measurable_pi_iff.mpr fun y =>
     measurable_U_of_stack i₀ η ρ s.val y.val
 
 /-- `explIdx` is measurable in the stack, being determined by the table of odometers
@@ -322,7 +326,7 @@ theorem measurable_wExplIdx (i₀ : Fin d) (n i : ℕ) : Measurable (wExplIdx i�
     (fun p : ConfRank d × (Site d × ℕ → Site d) =>
       fun (s : Fin n) (y : {y : Site d // y ∈ boxFinset (0 : Site d) (blockRad n 1)}) =>
         U ((p.1.1, nbrProj i₀ p.2, p.1.2) : Data d) s.val y.val)
-    (measurable_pi_lambda _ fun s => measurable_pi_lambda _ fun y =>
+    (measurable_pi_iff.mpr fun s => measurable_pi_iff.mpr fun y =>
       (measurable_U s.val y.val).comp
         ((measurable_fst.comp measurable_fst).prodMk
           (((measurable_nbrProj i₀).comp measurable_snd).prodMk
@@ -347,7 +351,7 @@ theorem measurable_wRevealed (i₀ : Fin d) (n : ℕ) :
     Measurable fun p : ConfRank d × (Site d × ℕ → Site d) =>
       LatticeProb.revealed (explIdx i₀ p.1.1 p.1.2 n) (wG i₀) p.2 := by
   classical
-  refine measurable_pi_lambda _ fun i => ?_
+  refine measurable_pi_iff.mpr fun i => ?_
   refine measurable_of_countable_partition (wExplIdx i₀ n i) (measurable_wExplIdx i₀ n i) _
     (fun q p => wG i₀ q (p.2 q))
     (fun q => (measurable_wG i₀ q).comp ((measurable_pi_apply q).comp measurable_snd))
@@ -620,7 +624,7 @@ theorem measurable_wIncObs (i₀ : Fin d) (n i : ℕ) : Measurable (wIncObs i₀
     measurable_fst.prodMk
       (((measurable_nbrProj i₀).comp (measurable_fst.comp measurable_snd)).prodMk
         (measurable_snd.comp measurable_snd))
-  refine (measurable_pi_lambda _ fun s : Fin n => measurable_pi_lambda _
+  refine (measurable_pi_iff.mpr fun s : Fin n => measurable_pi_lambda _
     fun y : {y : Site d // y ∈ boxFinset (0 : Site d) (blockRad n 1)} =>
       (measurable_U s.val y.val).comp hproj).prodMk
     ((measurable_wPair i₀ n i).prodMk ?_)

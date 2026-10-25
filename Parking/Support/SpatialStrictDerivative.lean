@@ -1,7 +1,11 @@
-import Parking.External.HeatStrongMinimum
-import LatticeProb.Prob.Scaling.HeatPositivity
-import LatticeProb.Prob.Scaling.BackwardPositivity
-import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
+module
+
+public import Parking.External.HeatStrongMinimum
+public import LatticeProb.Prob.Scaling.HeatPositivity
+public import LatticeProb.Prob.Scaling.BackwardPositivity
+public import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
+
+@[expose] public section
 
 /-!
 # Strict positivity of the time derivative from the strong minimum principle

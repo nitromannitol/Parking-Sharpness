@@ -1,4 +1,8 @@
-import Parking.Support.OrientedValueLipschitz
+module
+
+public import Parking.Support.OrientedValueLipschitz
+
+@[expose] public section
 
 /-!
 # A σ-uniform stopping-value comparison

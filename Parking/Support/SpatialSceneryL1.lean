@@ -1,5 +1,9 @@
-import Parking.Support.SpatWSceneryFdd
-import Parking.Support.SpatWMartingaleVariance
+module
+
+public import Parking.Support.SpatWSceneryFdd
+public import Parking.Support.SpatWMartingaleVariance
+
+@[expose] public section
 
 /-!
 # First-moment control of the scenery pairing

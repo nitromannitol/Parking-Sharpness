@@ -1,5 +1,9 @@
-import Parking.Support.OrientedLaw
-import Parking.Support.Exposure
+module
+
+public import Parking.Support.OrientedLaw
+public import Parking.Support.Exposure
+
+@[expose] public section
 
 /-!
 # Almost sure forward support of the directed instructions

@@ -1,7 +1,11 @@
-import Parking.Support.SpatWBarDivisibleJointMeasurable
-import Parking.Support.NearestBallEvent
-import LatticeProb.Prob.Scaling.Slutsky
-import Mathlib.MeasureTheory.Measure.Portmanteau
+module
+
+public import Parking.Support.SpatWBarDivisibleJointMeasurable
+public import Parking.Support.NearestBallEvent
+public import LatticeProb.Prob.Scaling.Slutsky
+public import Mathlib.MeasureTheory.Measure.Portmanteau
+
+@[expose] public section
 
 /-!
 # Pairing convergence of `barDivisible` to `Uc`

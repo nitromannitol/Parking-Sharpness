@@ -1,5 +1,9 @@
-import Parking.Support.OneSiteExponential
-import Mathlib.MeasureTheory.Integral.Pi
+module
+
+public import Parking.Support.OneSiteExponential
+public import Mathlib.MeasureTheory.Integral.Pi
+
+@[expose] public section
 
 /-!
 # Exponential moments of finite independent linear combinations

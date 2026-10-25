@@ -1,5 +1,9 @@
-import Parking.Support.OrientedError
-import Parking.Support.OrientedRoutingUnroll
+module
+
+public import Parking.Support.OrientedError
+public import Parking.Support.OrientedRoutingUnroll
+
+@[expose] public section
 
 /-!
 # Directed error field as a routing error

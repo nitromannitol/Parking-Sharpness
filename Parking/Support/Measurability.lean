@@ -1,6 +1,10 @@
-import Parking.Support.Transport
-import LatticeProb.Invariance
-import LatticeProb.Prob.CountableMeasurable
+module
+
+public import Parking.Support.Transport
+public import LatticeProb.Invariance
+public import LatticeProb.Prob.CountableMeasurable
+
+@[expose] public section
 
 /-!
 # Measurability from a countable partition
@@ -50,7 +54,7 @@ instance instMeasurableSingletonPi (s : Finset (Site d)) :
 /-- Restricting the initial field to a finite set of sites is a measurable operation. -/
 theorem measurable_restrict_eta (s : Finset (Site d)) :
     Measurable fun ω : Data d => (fun x : s => ω.1 (x : Site d)) :=
-  measurable_pi_lambda _ fun x => (measurable_pi_apply (x : Site d)).comp measurable_fst
+  measurable_pi_iff.mpr fun x => (measurable_pi_apply (x : Site d)).comp measurable_fst
 
 /-- The candidate set computed from the configuration on the box alone. -/
 def candidatesOf (z : Site d) (r : ℕ) (c : ↥(boxFinset z r) → ℤ) :

@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupSup3Moment
+module
+
+public import Parking.Support.TightBoxSupSup3Moment
+
+@[expose] public section
 
 /-!
 # The Lyapunov `L^p → L²` step

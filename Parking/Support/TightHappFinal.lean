@@ -1,19 +1,23 @@
-import Parking.Support.TightHappStopping
-import Parking.Support.TightHappJensen
-import Parking.Support.TightHappCauchySchwarz
-import Parking.Support.OrientedTwoMean
-import Parking.Support.OrientedLaw
-import Parking.Support.TightYCutoff
-import LatticeProb.Prob.ConvexOrder
-import LatticeProb.Prob.Laplace
-import LatticeProb.Prob.ExpTail
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import Parking.Support.OrientedMeanLimit
-import Parking.Support.OrientedScalingCutoff
-import Parking.Support.TightYConvFinal
-import Parking.Support.ConfMoments
+module
+
+public import Parking.Support.TightHappStopping
+public import Parking.Support.TightHappJensen
+public import Parking.Support.TightHappCauchySchwarz
+public import Parking.Support.OrientedTwoMean
+public import Parking.Support.OrientedLaw
+public import Parking.Support.TightYCutoff
+public import LatticeProb.Prob.ConvexOrder
+public import LatticeProb.Prob.Laplace
+public import LatticeProb.Prob.ExpTail
+public import Parking.Support.CriticalLawReal
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+public import Parking.Support.OrientedMeanLimit
+public import Parking.Support.OrientedScalingCutoff
+public import Parking.Support.TightYConvFinal
+public import Parking.Support.ConfMoments
+
+@[expose] public section
 
 /-!
 # The final assembly of `happ`

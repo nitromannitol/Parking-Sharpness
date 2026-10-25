@@ -1,5 +1,9 @@
-import Parking.Support.HoleSinkLaw
-import Parking.Support.HolePositive
+module
+
+public import Parking.Support.HoleSinkLaw
+public import Parking.Support.HolePositive
+
+@[expose] public section
 
 /-!
 # Monotonicity and boundedness of the surviving-hole probability

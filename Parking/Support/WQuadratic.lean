@@ -1,4 +1,8 @@
-import Parking.Support.WCondExp
+module
+
+public import Parking.Support.WCondExp
+
+@[expose] public section
 
 /-!
 # The quadratic variation of the martingale

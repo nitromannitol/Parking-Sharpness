@@ -1,4 +1,8 @@
-import Parking.Support.SpatWSceneryFdd
+module
+
+public import Parking.Support.SpatWSceneryFdd
+
+@[expose] public section
 
 /-!
 # Deterministic decomposition of the signed pair

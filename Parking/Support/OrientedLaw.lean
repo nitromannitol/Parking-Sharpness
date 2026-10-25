@@ -1,4 +1,8 @@
-import Parking.Support.CriticalLawReal
+module
+
+public import Parking.Support.CriticalLawReal
+
+@[expose] public section
 
 /-!
 # Probability and scenery marginals of the oriented parking law

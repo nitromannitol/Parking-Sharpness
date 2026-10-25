@@ -1,5 +1,9 @@
-import Parking.Support.WalkMaximal
-import Parking.Support.StoppingShift
+module
+
+public import Parking.Support.WalkMaximal
+public import Parking.Support.StoppingShift
+
+@[expose] public section
 
 /-!
 # Shift invariance and the excursion decomposition of the walk

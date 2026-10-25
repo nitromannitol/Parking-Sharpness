@@ -1,8 +1,12 @@
-import Parking.Frozen.WMoment
-import Parking.Frozen.PathwiseComparison
-import Parking.Support.UpperTarget
-import Parking.Support.NearTailSum
-import Parking.Support.NearTiltInterval
+module
+
+public import Parking.Frozen.WMoment
+public import Parking.Frozen.PathwiseComparison
+public import Parking.Support.UpperTarget
+public import Parking.Support.NearTailSum
+public import Parking.Support.NearTiltInterval
+
+@[expose] public section
 
 /-!
 # The mean routing gap

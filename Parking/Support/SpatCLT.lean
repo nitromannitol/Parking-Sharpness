@@ -1,9 +1,13 @@
-import Parking.Support.LinPotentialSum
-import Parking.Support.CriticalLawReal
-import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.Independence.Integration
-import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+module
+
+public import Parking.Support.LinPotentialSum
+public import Parking.Support.CriticalLawReal
+public import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
+public import Mathlib.Probability.Independence.InfinitePi
+public import Mathlib.Probability.Independence.Integration
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+
+@[expose] public section
 
 /-!
 # The scalar characteristic-function engine for spatial CLT

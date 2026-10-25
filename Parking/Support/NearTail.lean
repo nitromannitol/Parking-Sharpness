@@ -1,11 +1,15 @@
-import Parking.Support.NearTailSum
-import Parking.Support.NearLowerLog
-import Parking.Frozen.NearTilt
-import Parking.Frozen.Resolvent
-import Parking.Support.SubcriticalJointBound
-import Parking.Support.NearDensity
-import Parking.Support.Invariance
-import Parking.Support.NearTiltInterval
+module
+
+public import Parking.Support.NearTailSum
+public import Parking.Support.NearLowerLog
+public import Parking.Frozen.NearTilt
+public import Parking.Frozen.Resolvent
+public import Parking.Support.SubcriticalJointBound
+public import Parking.Support.NearDensity
+public import Parking.Support.Invariance
+public import Parking.Support.NearTiltInterval
+
+@[expose] public section
 
 /-!
 # Step 1 of the upper bounds of `thm:near`: the tail sum from the cutoff

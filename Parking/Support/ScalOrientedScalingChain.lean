@@ -1,6 +1,10 @@
-import Parking.Support.ScalDyadicSnell
-import Parking.Support.ScalOrientedChain
-import Parking.Support.ContOrientedLimit
+module
+
+public import Parking.Support.ScalDyadicSnell
+public import Parking.Support.ScalOrientedChain
+public import Parking.Support.ContOrientedLimit
+
+@[expose] public section
 
 /-!
 # The discharge of `prop:oriented-scaling` from library inputs

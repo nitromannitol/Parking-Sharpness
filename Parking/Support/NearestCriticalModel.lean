@@ -1,8 +1,12 @@
-import Parking.Basic
-import LatticeProb.Walk.LatticeGreen
-import Mathlib.Probability.Distributions.Gaussian.Multivariate
-import LatticeProb.Walk.Correlation
-import LatticeProb.Walk.VarianceScale
+module
+
+public import Parking.Basic
+public import LatticeProb.Walk.LatticeGreen
+public import Mathlib.Probability.Distributions.Gaussian.Multivariate
+public import LatticeProb.Walk.Correlation
+public import LatticeProb.Walk.VarianceScale
+
+@[expose] public section
 
 /-!
 # The mass normalization of the cited critical lower-tail theorem

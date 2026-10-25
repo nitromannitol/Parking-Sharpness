@@ -1,5 +1,9 @@
-import Parking.Support.IsolatedMeasurable
-import Parking.Support.IndicatorIntegral
+module
+
+public import Parking.Support.IsolatedMeasurable
+public import Parking.Support.IndicatorIntegral
+
+@[expose] public section
 
 /-!
 # A unit hole is isolated or paired with another hole

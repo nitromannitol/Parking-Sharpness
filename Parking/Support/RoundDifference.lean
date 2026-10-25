@@ -1,6 +1,10 @@
-import Parking.Support.InstructionPartialCentered
-import Parking.Support.RoundPartialMeas
-import Parking.Support.RevealPrefix
+module
+
+public import Parking.Support.InstructionPartialCentered
+public import Parking.Support.RoundPartialMeas
+public import Parking.Support.RevealPrefix
+
+@[expose] public section
 
 /-!
 # The current-round reveal difference

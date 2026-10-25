@@ -1,6 +1,10 @@
-import Parking.Support.SpatialSpaceTimeMeasurable
-import Parking.Support.MeanuGrowthBounds
-import Parking.Support.UDivisibleShift
+module
+
+public import Parking.Support.SpatialSpaceTimeMeasurable
+public import Parking.Support.MeanuGrowthBounds
+public import Parking.Support.UDivisibleShift
+
+@[expose] public section
 
 /-!
 # Uniform first moments of the space-time field

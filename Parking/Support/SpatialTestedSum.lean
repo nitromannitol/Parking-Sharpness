@@ -1,5 +1,9 @@
-import Parking.Support.SpatialParabolicTest
-import Parking.Support.SpatialTimeSourceApproximation
+module
+
+public import Parking.Support.SpatialParabolicTest
+public import Parking.Support.SpatialTimeSourceApproximation
+
+@[expose] public section
 
 /-!
 # Spatial integration of the weak recursion

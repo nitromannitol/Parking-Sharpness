@@ -1,5 +1,9 @@
-import Parking.Support.OrientedChargeMoment
-import Parking.Support.OrientedTelescope
+module
+
+public import Parking.Support.OrientedChargeMoment
+public import Parking.Support.OrientedTelescope
+
+@[expose] public section
 
 /-!
 # Oriented sup-charge

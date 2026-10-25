@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupBase
+module
+
+public import Parking.Support.TightBoxSupBase
+
+@[expose] public section
 
 /-!
 # Moment bound for the fixed-radius dyadic increment

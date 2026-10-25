@@ -1,5 +1,9 @@
-import Parking.Support.SpatialTightnessBridge
-import LatticeProb.Prob.Scaling.BoundedFunctionalLift
+module
+
+public import Parking.Support.SpatialTightnessBridge
+public import LatticeProb.Prob.Scaling.BoundedFunctionalLift
+
+@[expose] public section
 
 /-!
 # Building blocks for the barDivisible pairing convergence

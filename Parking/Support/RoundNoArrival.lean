@@ -1,5 +1,9 @@
-import Parking.Support.IncomingSlots
-import Parking.Support.CoordinateProductIntegral
+module
+
+public import Parking.Support.IncomingSlots
+public import Parking.Support.CoordinateProductIntegral
+
+@[expose] public section
 
 /-!
 # No-arrival probability bound via entry avoidance

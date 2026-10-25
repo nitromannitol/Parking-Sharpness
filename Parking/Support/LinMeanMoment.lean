@@ -1,7 +1,11 @@
-import Parking.Support.LinCovarianceGlue
-import Parking.Support.LinearFirstMoment
-import Parking.Support.CriticalLawReal
-import Parking.Support.LinIncrementConcentration
+module
+
+public import Parking.Support.LinCovarianceGlue
+public import Parking.Support.LinearFirstMoment
+public import Parking.Support.CriticalLawReal
+public import Parking.Support.LinIncrementConcentration
+
+@[expose] public section
 
 /-!
 # Mean and second-moment integrability of the linear field

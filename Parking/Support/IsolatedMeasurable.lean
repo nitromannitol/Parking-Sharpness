@@ -1,4 +1,8 @@
-import Parking.Support.IsolatedHoles
+module
+
+public import Parking.Support.IsolatedHoles
+
+@[expose] public section
 
 /-!
 # Measurability of the isolated-hole predicates

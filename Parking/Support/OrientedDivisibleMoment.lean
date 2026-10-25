@@ -1,4 +1,8 @@
-import Parking.Support.OrientedMaxMoment
+module
+
+public import Parking.Support.OrientedMaxMoment
+
+@[expose] public section
 
 /-!
 # Two-dimensional directed divisible process moments

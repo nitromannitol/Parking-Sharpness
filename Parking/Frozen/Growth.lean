@@ -1,9 +1,13 @@
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
-import Parking.Support.GrowthChain
+module
+
+public import Parking.External.SandpileGrowth
+public import Parking.External.Bernstein
+public import Parking.External.UConcentration
+public import Parking.External.UConcentrationProved
+public import Parking.External.GreenNormsProved
+public import Parking.Support.GrowthChain
+
+@[expose] public section
 
 /-!
 # The growth corollary (frozen)

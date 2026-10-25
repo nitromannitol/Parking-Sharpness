@@ -1,6 +1,10 @@
-import Parking.Support.TwoHoleWeight
-import Parking.Support.SceneryHoleProduct
-import Parking.Support.ClippedRoundMean
+module
+
+public import Parking.Support.TwoHoleWeight
+public import Parking.Support.SceneryHoleProduct
+public import Parking.Support.ClippedRoundMean
+
+@[expose] public section
 
 /-!
 # The discounted two-hole joint event

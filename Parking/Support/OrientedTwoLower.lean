@@ -1,6 +1,10 @@
-import Parking.Support.DensitySequence
-import Parking.Support.OrientedLowerRates
-import Parking.Support.OrientedMeanComparison
+module
+
+public import Parking.Support.DensitySequence
+public import Parking.Support.OrientedLowerRates
+public import Parking.Support.OrientedMeanComparison
+
+@[expose] public section
 
 /-!
 # Oriented walk, step 2, lower half

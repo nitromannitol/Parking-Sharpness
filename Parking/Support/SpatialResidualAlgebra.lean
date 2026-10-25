@@ -1,5 +1,9 @@
-import Parking.Support.SpatialZeroIntegralTesting
-import LatticeProb.Prob.Scaling.SpaceTimeDerivativeAlgebra
+module
+
+public import Parking.Support.SpatialZeroIntegralTesting
+public import LatticeProb.Prob.Scaling.SpaceTimeDerivativeAlgebra
+
+@[expose] public section
 
 /-!
 # Algebra of the weak heat residual

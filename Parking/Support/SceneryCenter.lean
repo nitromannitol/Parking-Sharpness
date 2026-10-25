@@ -1,6 +1,10 @@
-import Parking.Support.SceneryLaw
-import Parking.Support.TableLaw
-import Parking.Support.WMomentProof
+module
+
+public import Parking.Support.SceneryLaw
+public import Parking.Support.TableLaw
+public import Parking.Support.WMomentProof
+
+@[expose] public section
 
 /-!
 # Centering the conditional table mean

@@ -1,6 +1,10 @@
-import Parking.Support.OrientedOdometerMeasurable
-import Parking.Support.OrientedMoments
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.OrientedOdometerMeasurable
+public import Parking.Support.OrientedMoments
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # Marginal identities for the directed count law

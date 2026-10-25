@@ -1,4 +1,8 @@
-import Parking.Basic
+module
+
+public import Parking.Basic
+
+@[expose] public section
 
 /-!
 # The martingale Bernstein inequalities

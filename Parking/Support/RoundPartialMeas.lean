@@ -1,5 +1,9 @@
-import Parking.Support.RoundMeanField
-import Parking.Support.ProductTower
+module
+
+public import Parking.Support.RoundMeanField
+public import Parking.Support.ProductTower
+
+@[expose] public section
 
 /-!
 # Measurability and a uniform bound for the partial round mean

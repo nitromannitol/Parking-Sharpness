@@ -1,5 +1,9 @@
-import Parking.Support.SecondFourthMean
-import Parking.Support.LinearMoment
+module
+
+public import Parking.Support.SecondFourthMean
+public import Parking.Support.LinearMoment
+
+@[expose] public section
 
 /-!
 # A uniform first-moment lower bound for centered iid linear combinations

@@ -1,4 +1,8 @@
-import Parking.Support.Pathwise
+module
+
+public import Parking.Support.Pathwise
+
+@[expose] public section
 
 /-!
 # Pathwise identities behind the averaged transport statements

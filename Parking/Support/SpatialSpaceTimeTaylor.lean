@@ -1,5 +1,9 @@
-import Parking.Support.SpatWWalkTaylor
-import Parking.Support.SpaceTimeContOp
+module
+
+public import Parking.Support.SpatWWalkTaylor
+public import Parking.Support.SpaceTimeContOp
+
+@[expose] public section
 
 /-!
 # Space-time Taylor consistency

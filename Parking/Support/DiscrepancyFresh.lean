@@ -1,5 +1,9 @@
-import Parking.Support.DiscrepancyMeas
-import Parking.Support.RoundHitting
+module
+
+public import Parking.Support.DiscrepancyMeas
+public import Parking.Support.RoundHitting
+
+@[expose] public section
 
 /-!
 # Discrepancy freshness and pair cancellation
@@ -116,7 +120,7 @@ theorem Parking.discrepancyPair_hit_le (hd : 1 ≤ d) (c : Site d → ℤ × ℤ
     (Parking.discrepancyState c ρ σ s).pos p - (Parking.discrepancyState c ρ σ s).pos q
   have hS := Parking.measurableState_discrepancyState ⟨0, hd⟩ (fun _ => c) (fun _ => ρ) id
     measurable_const measurable_const measurable_id
-  have hX : Measurable X := measurable_pi_lambda _ fun s => ((hS s).2.1 p).sub ((hS s).2.1 q)
+  have hX : Measurable X := measurable_pi_iff.mpr fun s => ((hS s).2.1 p).sub ((hS s).2.1 q)
   have hset : {σ | ∃ s ≤ T,
       (Parking.discrepancyState c ρ σ s).pos p = (Parking.discrepancyState c ρ σ s).pos q} =
       {σ | ∃ s ≤ T, X σ s = 0} := by

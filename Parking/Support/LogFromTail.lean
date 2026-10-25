@@ -1,4 +1,8 @@
-import Parking.Support.MomentLowerTail
+module
+
+public import Parking.Support.MomentLowerTail
+
+@[expose] public section
 
 /-!
 # Logarithmic mean bound from an exponential tail

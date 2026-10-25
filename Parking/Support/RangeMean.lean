@@ -1,6 +1,10 @@
-import Parking.Support.Near
-import LatticeProb.Walk.SRWDiag
-import LatticeProb.Walk.RangeSecond
+module
+
+public import Parking.Support.Near
+public import LatticeProb.Walk.SRWDiag
+public import LatticeProb.Walk.RangeSecond
+
+@[expose] public section
 
 /-!
 # The expected range of the walk from below

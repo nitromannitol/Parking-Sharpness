@@ -1,4 +1,8 @@
-import Parking.Support.TightCLT
+module
+
+public import Parking.Support.TightCLT
+
+@[expose] public section
 
 /-!
 # The linear decomposition of the box reward in the scenery

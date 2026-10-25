@@ -1,5 +1,9 @@
-import Parking.Support.UpperTarget
-import Parking.Support.MomentLimits
+module
+
+public import Parking.Support.UpperTarget
+public import Parking.Support.MomentLimits
+
+@[expose] public section
 
 /-!
 # The second moment of the parking odometer at the critical density

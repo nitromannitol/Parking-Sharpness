@@ -1,4 +1,8 @@
-import Parking.Support.Coupling
+module
+
+public import Parking.Support.Coupling
+
+@[expose] public section
 
 /-!
 # Lemma 3.4: tagged monotonicity under coupling (frozen)

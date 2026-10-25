@@ -1,5 +1,9 @@
-import Parking.Support.SingleAddition
-import Parking.Support.LabelGreen
+module
+
+public import Parking.Support.SingleAddition
+public import Parking.Support.LabelGreen
+
+@[expose] public section
 
 /-!
 # Single-particle influence on the matched odometer

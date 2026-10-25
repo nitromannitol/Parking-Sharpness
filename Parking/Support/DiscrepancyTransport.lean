@@ -1,7 +1,11 @@
-import Parking.Support.DiscrepancyShift
-import Parking.Support.CoupledInvariance
-import Parking.Support.DiscrepancyMeas
-import Parking.Support.MassTransport
+module
+
+public import Parking.Support.DiscrepancyShift
+public import Parking.Support.CoupledInvariance
+public import Parking.Support.DiscrepancyMeas
+public import Parking.Support.MassTransport
+
+@[expose] public section
 
 /-!
 # Mass transport for surviving discrepancy labels

@@ -1,4 +1,8 @@
-import Parking.Support.PsiRate
+module
+
+public import Parking.Support.PsiRate
+
+@[expose] public section
 
 /-!
 # Step 3 of `prop:near-divisible`: the bounded upper bound above dimension four

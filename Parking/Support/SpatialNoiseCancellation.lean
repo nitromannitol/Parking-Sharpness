@@ -1,5 +1,9 @@
-import Parking.Support.Continuum
-import LatticeProb.Prob.Scaling.TimeTest
+module
+
+public import Parking.Support.Continuum
+public import LatticeProb.Prob.Scaling.TimeTest
+
+@[expose] public section
 
 /-!
 # Time differentiation cancels the time-independent noise term

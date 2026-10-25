@@ -1,7 +1,11 @@
-import Parking.Support.MatchedBellman
-import LatticeProb.Walk.Shells
-import Parking.Support.Walk
-import Parking.Support.Comparison
+module
+
+public import Parking.Support.MatchedBellman
+public import LatticeProb.Walk.Shells
+public import Parking.Support.Walk
+public import Parking.Support.Comparison
+
+@[expose] public section
 
 /-!
 # Uniform bounds for the common-table dynamics

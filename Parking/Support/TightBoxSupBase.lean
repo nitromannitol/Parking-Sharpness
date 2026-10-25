@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupMoment
+module
+
+public import Parking.Support.TightBoxSupMoment
+
+@[expose] public section
 
 /-!
 # Fixed-radius dyadic chaining for `Yfield`

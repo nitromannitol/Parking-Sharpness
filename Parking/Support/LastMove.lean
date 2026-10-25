@@ -1,5 +1,9 @@
-import Parking.Support.Matched
-import Parking.Support.RangeLower
+module
+
+public import Parking.Support.Matched
+public import Parking.Support.RangeLower
+
+@[expose] public section
 
 /-!
 # The last-move surgery

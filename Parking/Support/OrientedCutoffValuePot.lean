@@ -1,4 +1,8 @@
-import Parking.Support.OrientedCutoffValue
+module
+
+public import Parking.Support.OrientedCutoffValue
+
+@[expose] public section
 
 /-!
 # Cutoff optimal-stopping value with the potential at the origin

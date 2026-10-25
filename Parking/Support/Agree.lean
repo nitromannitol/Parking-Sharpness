@@ -1,7 +1,11 @@
-import LatticeProb.ParticleDriven
-import Parking.Support.Reads
-import Parking.Support.DeferredIntegral
-import Parking.Support.ParticleMeasurability
+module
+
+public import LatticeProb.ParticleDriven
+public import Parking.Support.Reads
+public import Parking.Support.DeferredIntegral
+public import Parking.Support.ParticleMeasurability
+
+@[expose] public section
 
 /-!
 # The two constructions have the same law
@@ -142,7 +146,7 @@ theorem expIdx_measurable (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × 
   have hemb : Measurable fun ω : RIdx d → Site d => ((η, expStack i₀ ω, ρ) : Data d) :=
     measurable_const.prodMk
       (((measurable_nbrProj i₀).comp
-        (measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inl q))).prodMk
+        (measurable_pi_iff.mpr fun q => measurable_pi_apply (Sum.inl q))).prodMk
         measurable_const)
   exact (measurable_expIdxOf a).comp hemb
 
@@ -445,8 +449,8 @@ theorem map_expStack (hd : 1 ≤ d) (i₀ : Fin d) :
     have hm : Measurable fun ω : RIdx d → Site d =>
         (((fun q : Site d × ℕ => ω (Sum.inl q)), fun q : Label d × ℕ => ω (Sum.inr q)) :
           (Site d × ℕ → Site d) × (Label d × ℕ → Site d)) :=
-      (measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inl q)).prodMk
-        (measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inr q))
+      (measurable_pi_iff.mpr fun q => measurable_pi_apply (Sum.inl q)).prodMk
+        (measurable_pi_iff.mpr fun q => measurable_pi_apply (Sum.inr q))
     haveI : IsProbabilityMeasure
         (Measure.infinitePi fun q : Label d × ℕ => expLaw d (Sum.inr q)) := by
       infer_instance
@@ -470,7 +474,7 @@ theorem map_expStack (hd : 1 ≤ d) (i₀ : Fin d) :
   calc (Measure.infinitePi (expLaw d)).map (expStack i₀)
       = ((Measure.infinitePi (expLaw d)).map (fun ω q => ω (Sum.inl q))).map (nbrProj i₀) := by
         rw [Measure.map_map (measurable_nbrProj i₀)
-          (measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inl q))]
+          (measurable_pi_iff.mpr fun q => measurable_pi_apply (Sum.inl q))]
         rfl
     _ = LatticeProb.stackLaw d := by rw [hfst, hproj]
 
@@ -556,7 +560,7 @@ theorem constructionsAgree_conf (d : ℕ) (hd : 1 ≤ d) (μ : Measure (Site d �
   have hstackU : Measurable (Function.uncurry
       fun (_ : (Site d → ℤ) × (Label d × ℕ → ℝ)) (ω : RIdx d → Site d) => expStack i₀ ω) :=
     (measurable_nbrProj i₀).comp
-      ((measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inl q)).comp measurable_snd)
+      ((measurable_pi_iff.mpr fun q => measurable_pi_apply (Sum.inl q)).comp measurable_snd)
   have hstep1 : (P.prod R).map (fun x => (x.1, expStack i₀ x.2))
       = P.prod (LatticeProb.stackLaw d) :=
     LatticeProb.map_prod_pair_of_forall_map P R hstackU fun _ => map_expStack hd i₀
@@ -569,13 +573,13 @@ theorem constructionsAgree_conf (d : ℕ) (hd : 1 ≤ d) (μ : Measure (Site d �
         ((x.1.1, expStack i₀ x.2, x.1.2) : Data d) :=
       (measurable_fst.comp measurable_fst).prodMk
         (((measurable_nbrProj i₀).comp
-          ((measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inl q)).comp
+          ((measurable_pi_iff.mpr fun q => measurable_pi_apply (Sum.inl q)).comp
             measurable_snd)).prodMk (measurable_snd.comp measurable_fst))
     exact (measurable_expIdxOf a).comp hemb
   have hmoveU : Measurable (Function.uncurry
       fun (y : (Site d → ℤ) × (Label d × ℕ → ℝ)) (ω : RIdx d → Site d) =>
         expMove i₀ y.1 y.2 ω) := by
-    refine measurable_pi_lambda _ fun a => ?_
+    refine measurable_pi_iff.mpr fun a => ?_
     exact measurable_of_countable_partition
       (fun x : ((Site d → ℤ) × (Label d × ℕ → ℝ)) × (RIdx d → Site d) =>
         expIdx i₀ x.1.1 x.1.2 a x.2) (hJ a) _
@@ -731,7 +735,7 @@ theorem constructionsAgree' : ConstructionsAgree := by
   have hrecode : Measurable fun ω : PData d =>
       ((ω.1, (fun q => stepVec (ω.2.1 q), ω.2.2)) : LatticeProb.PData d) :=
     measurable_fst.prodMk
-      ((measurable_pi_lambda _ fun q =>
+      ((measurable_pi_iff.mpr fun q =>
         hmeas.comp ((measurable_pi_apply q).comp (measurable_fst.comp measurable_snd))).prodMk
         (measurable_snd.comp measurable_snd))
   have hlaw : (pDataLaw d ν).map (fun ω : PData d =>

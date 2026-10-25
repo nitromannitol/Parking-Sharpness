@@ -1,7 +1,11 @@
-import Parking.Support.CountFiltration
-import Parking.Support.Tilt
-import Parking.Support.ProductFactor
-import LatticeProb.Prob.Reveal
+module
+
+public import Parking.Support.CountFiltration
+public import Parking.Support.Tilt
+public import Parking.Support.ProductFactor
+public import LatticeProb.Prob.Reveal
+
+@[expose] public section
 
 /-!
 # Exponential density of the tilted product law

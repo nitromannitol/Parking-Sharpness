@@ -1,5 +1,9 @@
-import Parking.Support.OrientedOdometerMeasurable
-import LatticeProb.Prob.Coordinate
+module
+
+public import Parking.Support.OrientedOdometerMeasurable
+public import LatticeProb.Prob.Coordinate
+
+@[expose] public section
 
 /-!
 # Independence from outgoing instructions and higher-layer scenery

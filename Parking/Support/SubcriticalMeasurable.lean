@@ -1,5 +1,9 @@
-import Parking.Support.Matched
-import Parking.Support.SubcriticalPair
+module
+
+public import Parking.Support.Matched
+public import Parking.Support.SubcriticalPair
+
+@[expose] public section
 
 /-!
 # Measurability of the pair `(F, Z)`
@@ -61,7 +65,7 @@ theorem measurable_holeSum (w : ℕ → Fin d × Bool) (t : ℕ) :
 theorem measurable_addParticle_fst (x₀ : Site d) :
     Measurable fun ω : PData d => addParticle x₀ ω.1 := by
   classical
-  refine measurable_pi_lambda _ fun x => ?_
+  refine measurable_pi_iff.mpr fun x => ?_
   by_cases h : x = x₀
   · simp only [addParticle, if_pos h]
     exact ((measurable_pi_apply x).comp measurable_fst).add_const 1
@@ -72,7 +76,7 @@ theorem measurable_addParticle_fst (x₀ : Site d) :
 theorem measurable_taggedMove (w : ℕ → Fin d × Bool) :
     Measurable fun ω : PData d => taggedMove w ω.2.1 := by
   classical
-  refine measurable_pi_lambda _ fun q => ?_
+  refine measurable_pi_iff.mpr fun q => ?_
   by_cases h : q.1.1 = (0 : Site d)
   · by_cases h2 : q.1.2 = 0
     · simp only [taggedMove, if_pos h, if_pos h2]
@@ -86,7 +90,7 @@ theorem measurable_taggedMove (w : ℕ → Fin d × Bool) :
 theorem measurable_taggedRank (r : ℕ → ℝ) :
     Measurable fun ω : PData d => taggedRank r ω.2.2 := by
   classical
-  refine measurable_pi_lambda _ fun q => ?_
+  refine measurable_pi_iff.mpr fun q => ?_
   by_cases h : q.1.1 = (0 : Site d)
   · by_cases h2 : q.1.2 = 0
     · simp only [taggedRank, if_pos h, if_pos h2]

@@ -1,5 +1,9 @@
-import LatticeProb.ParticleDriven
-import Parking.Support.Reads
+module
+
+public import LatticeProb.ParticleDriven
+public import Parking.Support.Reads
+
+@[expose] public section
 
 /-!
 # Measurability of the particle-driven state
@@ -45,7 +49,7 @@ theorem measurable_of_candidates' (e : α → Site d → ℤ) (he : Measurable e
     Measurable f := by
   refine measurable_of_countable_partition
     (fun a : α => (fun x : ↥(boxFinset z r) => e a (x : Site d)))
-    (measurable_pi_lambda _ fun x => (measurable_pi_apply (x : Site d)).comp he)
+    (measurable_pi_iff.mpr fun x => (measurable_pi_apply (x : Site d)).comp he)
     f (fun c a => g (candidatesOf z r c) a) (fun c => hg _) fun a => ?_
   rw [h a, candidates_eq_candidatesOf]
 
@@ -277,10 +281,10 @@ the active count, the hole count, and the active flag) is measurable, assembling
 already-known measurability of each of its four component fields. -/
 theorem measurable_stackObservables :
     Measurable (LatticeProb.stackObservables (d := d)) := by
-  refine Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-    (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-      (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-        (measurable_pi_lambda _ fun ti => ?_)))
+  refine Measurable.prodMk (measurable_pi_iff.mpr fun tx => ?_)
+    (Measurable.prodMk (measurable_pi_iff.mpr fun tx => ?_)
+      (Measurable.prodMk (measurable_pi_iff.mpr fun tx => ?_)
+        (measurable_pi_iff.mpr fun ti => ?_)))
   · exact measurable_particleOdometer tx.1 tx.2
   · exact measurable_activeCount tx.1 tx.2
   · exact measurable_holeCount tx.1 tx.2
@@ -293,10 +297,10 @@ construction is measurable: three of its four fields follow directly from
 theorem measurable_pObservables :
     Measurable (LatticeProb.pObservables (d := d)) := by
   obtain ⟨hact, -, hhol, hdep⟩ := measurable_pState (d := d) 0
-  refine Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-    (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-      (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-        (measurable_pi_lambda _ fun ti => ?_)))
+  refine Measurable.prodMk (measurable_pi_iff.mpr fun tx => ?_)
+    (Measurable.prodMk (measurable_pi_iff.mpr fun tx => ?_)
+      (Measurable.prodMk (measurable_pi_iff.mpr fun tx => ?_)
+        (measurable_pi_iff.mpr fun ti => ?_)))
   · exact (measurable_pState (d := d) tx.1).2.2.2 tx.2
   · exact by
       have := measurable_pState (d := d) tx.1

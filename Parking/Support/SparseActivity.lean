@@ -1,6 +1,10 @@
-import Parking.Support.ClippedTable
-import Parking.Support.ClippedRoundMean
-import Parking.Support.IndicatorIntegral
+module
+
+public import Parking.Support.ClippedTable
+public import Parking.Support.ClippedRoundMean
+public import Parking.Support.IndicatorIntegral
+
+@[expose] public section
 
 /-!
 # Hole activity of the sparse sandpile

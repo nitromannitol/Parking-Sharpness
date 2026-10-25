@@ -1,4 +1,8 @@
-import Parking.Support.Coupling
+module
+
+public import Parking.Support.Coupling
+
+@[expose] public section
 
 /-!
 # No unfilled hole where a survivor has stood

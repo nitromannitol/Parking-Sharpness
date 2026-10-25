@@ -1,4 +1,8 @@
-import Parking.Support.ExposureProduct
+module
+
+public import Parking.Support.ExposureProduct
+
+@[expose] public section
 
 /-!
 # The exposure filtration and conditional independence of unread instructions (frozen)

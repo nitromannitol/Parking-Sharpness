@@ -1,5 +1,9 @@
-import Parking.Support.NearestCriticalModel
-import LatticeProb.Walk.SRWGreenSup
+module
+
+public import Parking.Support.NearestCriticalModel
+public import LatticeProb.Walk.SRWGreenSup
+
+@[expose] public section
 
 /-!
 # Variance and correlation estimates

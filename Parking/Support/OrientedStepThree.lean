@@ -1,6 +1,10 @@
-import Parking.Support.OrientedStepMoments
-import Parking.Support.OrientedMeanBound
-import Parking.Support.OrientedMeanComparison
+module
+
+public import Parking.Support.OrientedStepMoments
+public import Parking.Support.OrientedMeanBound
+public import Parking.Support.OrientedMeanComparison
+
+@[expose] public section
 
 /-!
 # Step 3 of the oriented walk theorem: matching means to order `o(n^{1/4})`

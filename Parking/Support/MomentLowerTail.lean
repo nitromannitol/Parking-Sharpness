@@ -1,4 +1,8 @@
-import Parking.Support.MomentTail
+module
+
+public import Parking.Support.MomentTail
+
+@[expose] public section
 
 /-!
 # An exponential lower tail from Bernstein-type moment growth

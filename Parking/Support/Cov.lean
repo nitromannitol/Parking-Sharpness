@@ -1,5 +1,9 @@
-import Parking.Support.Range
-import Parking.Support.Measurability
+module
+
+public import Parking.Support.Range
+public import Parking.Support.Measurability
+
+@[expose] public section
 
 /-!
 # Covariance of one coordinate and Step 1 of `lem:product`

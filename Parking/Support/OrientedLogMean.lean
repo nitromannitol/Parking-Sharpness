@@ -1,6 +1,10 @@
-import Parking.Support.OrientedMaxLog
-import Parking.Support.OrientedFirstMoment
-import Parking.Support.OrientedLaw
+module
+
+public import Parking.Support.OrientedMaxLog
+public import Parking.Support.OrientedFirstMoment
+public import Parking.Support.OrientedLaw
+
+@[expose] public section
 
 /-!
 # The logarithmic divisible mean bound under the oriented law

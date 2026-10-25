@@ -1,6 +1,10 @@
-import Parking.Support.RoundEnumeration
-import Parking.Support.MatchedBounds
-import Parking.Support.BlockSum
+module
+
+public import Parking.Support.RoundEnumeration
+public import Parking.Support.MatchedBounds
+public import Parking.Support.BlockSum
+
+@[expose] public section
 
 /-!
 # Summing over the round enumeration

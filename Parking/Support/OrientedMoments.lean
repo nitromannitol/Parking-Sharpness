@@ -1,5 +1,9 @@
-import Parking.Support.OrientedInvariance
-import Parking.Support.WStarBound
+module
+
+public import Parking.Support.OrientedInvariance
+public import Parking.Support.WStarBound
+
+@[expose] public section
 
 /-!
 # Finite particle moments under the directed driving law

@@ -1,6 +1,10 @@
-import Parking.Support.Walk
-import Parking.Support.GammaSum
-import Parking.External.GreenGradient
+module
+
+public import Parking.Support.Walk
+public import Parking.Support.GammaSum
+public import Parking.External.GreenGradient
+
+@[expose] public section
 
 /-!
 # Summability of the running-maximum kernel (frozen)

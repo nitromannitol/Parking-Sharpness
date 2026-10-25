@@ -1,6 +1,10 @@
-import Parking.Support.CountFiltration
-import Parking.Support.NoiseSplice
-import Parking.Support.RestrictLaw
+module
+
+public import Parking.Support.CountFiltration
+public import Parking.Support.NoiseSplice
+public import Parking.Support.RestrictLaw
+
+@[expose] public section
 
 /-!
 # The three steps of `lem:product` combined

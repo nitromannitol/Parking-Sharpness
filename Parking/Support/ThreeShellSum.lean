@@ -1,5 +1,9 @@
-import Parking.Support.BoxTranslation
-import Parking.Support.MatchedUniform
+module
+
+public import Parking.Support.BoxTranslation
+public import Parking.Support.MatchedUniform
+
+@[expose] public section
 
 /-!
 # Three-shell sums over a finite set

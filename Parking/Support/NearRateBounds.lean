@@ -1,7 +1,11 @@
-import Parking.Support.NearScale
-import Parking.Support.NearCutoff
-import Parking.External.GreenNorms
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.NearScale
+public import Parking.Support.NearCutoff
+public import Parking.External.GreenNorms
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # The five quantities of Step 3, read at the cutoff

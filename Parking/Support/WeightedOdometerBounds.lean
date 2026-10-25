@@ -1,7 +1,11 @@
-import Parking.Support.GreenSquareSum
-import Parking.Support.MatchedUniform
-import Parking.Support.FlatNoise
-import Parking.Support.TableQuadratic
+module
+
+public import Parking.Support.GreenSquareSum
+public import Parking.Support.MatchedUniform
+public import Parking.Support.FlatNoise
+public import Parking.Support.TableQuadratic
+
+@[expose] public section
 
 /-!
 # Deterministic bounds on the weighted odometer

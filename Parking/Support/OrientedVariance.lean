@@ -1,4 +1,8 @@
-import Parking.Support.OrientedLayer
+module
+
+public import Parking.Support.OrientedLayer
+
+@[expose] public section
 
 /-!
 # Oriented variance

@@ -1,5 +1,9 @@
-import Parking.Support.MatchedUniform
-import Parking.Support.MatchedMonotone
+module
+
+public import Parking.Support.MatchedUniform
+public import Parking.Support.MatchedMonotone
+
+@[expose] public section
 
 /-!
 # A finite sink that blocks influence within a fixed horizon

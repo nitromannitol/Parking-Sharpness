@@ -1,4 +1,8 @@
-import Parking.Support.TiltContinuity
+module
+
+public import Parking.Support.TiltContinuity
+
+@[expose] public section
 
 /-!
 # The tilting interval of `thm:subcritical`

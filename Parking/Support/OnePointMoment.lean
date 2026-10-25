@@ -1,7 +1,11 @@
-import Parking.Support.TableJointNoise
-import Parking.Support.TableDecomposition
-import Parking.Support.ClippedGreenMoment
-import Parking.Support.ClippedScenery
+module
+
+public import Parking.Support.TableJointNoise
+public import Parking.Support.TableDecomposition
+public import Parking.Support.ClippedGreenMoment
+public import Parking.Support.ClippedScenery
+
+@[expose] public section
 
 /-!
 # The high-dimensional sparse odometer's linear moment bound

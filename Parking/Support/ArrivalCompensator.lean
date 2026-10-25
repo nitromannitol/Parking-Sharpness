@@ -1,4 +1,8 @@
-import Parking.Support.NoArrivalFlag
+module
+
+public import Parking.Support.NoArrivalFlag
+
+@[expose] public section
 
 /-!
 # The arrival compensator

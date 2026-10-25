@@ -1,6 +1,10 @@
-import Parking.Support.OrientedWalkReduced
-import Parking.Support.OrientedTransport
-import Parking.Support.MonotoneDensity
+module
+
+public import Parking.Support.OrientedWalkReduced
+public import Parking.Support.OrientedTransport
+public import Parking.Support.MonotoneDensity
+
+@[expose] public section
 
 /-!
 # The directed activity asymptotic from the mean alone

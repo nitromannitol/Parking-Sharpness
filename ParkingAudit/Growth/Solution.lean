@@ -1,7 +1,11 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Growth.SolutionBasic
-import ParkingAudit.Support.GrowthBridge
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Growth.SolutionBasic
+public import ParkingAudit.Support.GrowthBridge
+
+@[expose] public section
 
 /-!
 # Solution: Growth

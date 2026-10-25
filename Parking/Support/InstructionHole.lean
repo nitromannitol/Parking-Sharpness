@@ -1,5 +1,9 @@
-import Parking.Support.HoleRelative
-import Parking.Support.InstructionPartial
+module
+
+public import Parking.Support.HoleRelative
+public import Parking.Support.InstructionPartial
+
+@[expose] public section
 
 /-!
 # The hole-relative influence of one instruction

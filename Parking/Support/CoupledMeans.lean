@@ -1,6 +1,10 @@
-import Parking.Support.CoupledLaw
-import Parking.Support.CouplingTarget
-import Parking.Support.DiscrepancyBalance
+module
+
+public import Parking.Support.CoupledLaw
+public import Parking.Support.CouplingTarget
+public import Parking.Support.DiscrepancyBalance
+
+@[expose] public section
 
 /-!
 # Marginal expectations for the common-table coupling

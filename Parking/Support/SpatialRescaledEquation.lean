@@ -1,7 +1,11 @@
-import Parking.Support.SpatialDiscreteEquation
-import Parking.Support.Continuum
-import Parking.Support.LinPotential
-import Parking.Support.SpatWWalkGrid
+module
+
+public import Parking.Support.SpatialDiscreteEquation
+public import Parking.Support.Continuum
+public import Parking.Support.LinPotential
+public import Parking.Support.SpatWWalkGrid
+
+@[expose] public section
 
 /-!
 # The rescaled divisible recursion

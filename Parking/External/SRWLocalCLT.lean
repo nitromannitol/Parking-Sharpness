@@ -1,4 +1,8 @@
-import Parking.Support.LinCovarianceGlue
+module
+
+public import Parking.Support.LinCovarianceGlue
+
+@[expose] public section
 
 /-!
 # The multivariate local CLT for the simple random walk

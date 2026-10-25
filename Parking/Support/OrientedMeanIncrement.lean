@@ -1,6 +1,10 @@
-import Parking.Support.OrientedArrivalJoint
-import Parking.Support.OrientedNegativeFactor
-import Parking.Support.NegativeMean
+module
+
+public import Parking.Support.OrientedArrivalJoint
+public import Parking.Support.OrientedNegativeFactor
+public import Parking.Support.NegativeMean
+
+@[expose] public section
 
 /-!
 # Unfilled scenery forces an increase in the particle mean

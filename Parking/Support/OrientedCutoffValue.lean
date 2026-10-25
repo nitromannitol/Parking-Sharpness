@@ -1,9 +1,13 @@
-import LatticeProb.ExtendedMapping
-import Parking.Support.OrientedValueLipschitz
-import Parking.External.OrientedStoppingStability
-import Mathlib.Topology.ContinuousMap.Compact
-import Mathlib.Topology.Order.ProjIcc
-import LatticeProb.BoxClamp
+module
+
+public import LatticeProb.ExtendedMapping
+public import Parking.Support.OrientedValueLipschitz
+public import Parking.External.OrientedStoppingStability
+public import Mathlib.Topology.ContinuousMap.Compact
+public import Mathlib.Topology.Order.ProjIcc
+public import LatticeProb.BoxClamp
+
+@[expose] public section
 
 /-!
 # Cutoff optimal-stopping values

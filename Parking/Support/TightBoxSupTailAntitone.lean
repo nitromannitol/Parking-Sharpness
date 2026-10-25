@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupTailMoment
+module
+
+public import Parking.Support.TightBoxSupTailMoment
+
+@[expose] public section
 
 /-!
 # Antitonicity of `dtail` in its level argument

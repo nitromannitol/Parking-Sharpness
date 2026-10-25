@@ -1,8 +1,12 @@
-import Parking.Support.TightEquicont
-import Parking.Support.TightFddAssembly
-import Parking.Support.TightContBoxLimit
-import LatticeProb.Prob.FddTight
-import LatticeProb.Prob.Scaling.BoundedFunctionalLift
+module
+
+public import Parking.Support.TightEquicont
+public import Parking.Support.TightFddAssembly
+public import Parking.Support.TightContBoxLimit
+public import LatticeProb.Prob.FddTight
+public import LatticeProb.Prob.Scaling.BoundedFunctionalLift
+
+@[expose] public section
 
 /-!
 # `boxToFin` distances and the unit-capped sup distance `capDist`

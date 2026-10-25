@@ -1,4 +1,8 @@
-import LatticeProb.Network.MaximumPrinciple
+module
+
+public import LatticeProb.Network.MaximumPrinciple
+
+@[expose] public section
 
 /-!
 # The finite-set maximum principle for a network Laplacian

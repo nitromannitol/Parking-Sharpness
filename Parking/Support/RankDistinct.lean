@@ -1,5 +1,9 @@
-import Parking.Support.Pathwise
-import LatticeProb.Invariance
+module
+
+public import Parking.Support.Pathwise
+public import LatticeProb.Invariance
+
+@[expose] public section
 
 /-!
 # Almost-sure distinctness of the uniform variables

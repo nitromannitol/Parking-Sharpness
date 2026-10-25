@@ -1,4 +1,8 @@
-import Parking.Frozen.Master
+module
+
+public import Parking.Frozen.Master
+
+@[expose] public section
 
 /-!
 # Growth of the mean particle odometer

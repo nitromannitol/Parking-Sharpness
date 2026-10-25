@@ -1,5 +1,9 @@
-import Parking.Support.MatchedLocality
-import Parking.Support.SingleMean
+module
+
+public import Parking.Support.MatchedLocality
+public import Parking.Support.SingleMean
+
+@[expose] public section
 
 /-!
 # Locality of the conditional mean odometer

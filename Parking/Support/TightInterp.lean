@@ -1,10 +1,14 @@
-import Mathlib.Algebra.BigOperators.Finprod
-import Mathlib.Topology.MetricSpace.Lipschitz
-import Mathlib.Topology.Algebra.Monoid
-import Mathlib.Topology.Algebra.Ring.Real
-import Mathlib.Algebra.Order.Floor.Ring
-import Mathlib.Order.Interval.Finset.Basic
-import Mathlib.Data.Int.Interval
+module
+
+public import Mathlib.Algebra.BigOperators.Finprod
+public import Mathlib.Topology.MetricSpace.Lipschitz
+public import Mathlib.Topology.Algebra.Monoid
+public import Mathlib.Topology.Algebra.Ring.Real
+public import Mathlib.Algebra.Order.Floor.Ring
+public import Mathlib.Order.Interval.Finset.Basic
+public import Mathlib.Data.Int.Interval
+
+@[expose] public section
 
 /-!
 # The piecewise bilinear interpolation of a grid field

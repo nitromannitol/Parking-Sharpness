@@ -1,9 +1,13 @@
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.Support.ScalOrientedScalingChain
-import Parking.Support.ScalSpatialScalingChain
-import Parking.Support.ScalWhiteNoise
+module
+
+public import Parking.External.SandpileGrowth
+public import Parking.External.Bernstein
+public import Parking.External.UConcentration
+public import Parking.Support.ScalOrientedScalingChain
+public import Parking.Support.ScalSpatialScalingChain
+public import Parking.Support.ScalWhiteNoise
+
+@[expose] public section
 
 /-!
 # The discharge of the two scaling propositions from their inputs

@@ -1,6 +1,10 @@
-import Parking.Support.TightWalkMaximal
-import Parking.Support.TightBoxLaw
-import Parking.Support.OrientedMaxMoment
+module
+
+public import Parking.Support.TightWalkMaximal
+public import Parking.Support.TightBoxLaw
+public import Parking.Support.OrientedMaxMoment
+
+@[expose] public section
 
 /-!
 # Exactness of the hat interpolation at the walk's own grid points

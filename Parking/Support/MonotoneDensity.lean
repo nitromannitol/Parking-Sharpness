@@ -1,5 +1,9 @@
-import Parking.Support.MeanUniformInt
-import Parking.Support.ScalParabolicScaling
+module
+
+public import Parking.Support.MeanUniformInt
+public import Parking.Support.ScalParabolicScaling
+
+@[expose] public section
 
 /-!
 # The monotone density theorem for the activity

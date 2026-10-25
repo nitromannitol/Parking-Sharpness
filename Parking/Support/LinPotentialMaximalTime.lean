@@ -1,6 +1,10 @@
-import Parking.Support.LinPotentialMaximal
-import Parking.Support.Invariance
-import Parking.Support.BoxTranslation
+module
+
+public import Parking.Support.LinPotentialMaximal
+public import Parking.Support.Invariance
+public import Parking.Support.BoxTranslation
+
+@[expose] public section
 
 /-!
 # The maximal inequality over a time range, re-centered

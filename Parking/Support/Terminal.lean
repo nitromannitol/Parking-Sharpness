@@ -1,4 +1,8 @@
-import Parking.Support.StopOptional
+module
+
+public import Parking.Support.StopOptional
+
+@[expose] public section
 
 /-!
 # The terminal-reward form of the stopping problem

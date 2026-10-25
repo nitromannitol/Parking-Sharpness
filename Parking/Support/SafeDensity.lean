@@ -1,6 +1,10 @@
-import Parking.Support.SafeTransport
-import Parking.Support.FiniteTransport
-import Parking.Support.IndicatorIntegral
+module
+
+public import Parking.Support.SafeTransport
+public import Parking.Support.FiniteTransport
+public import Parking.Support.IndicatorIntegral
+
+@[expose] public section
 
 /-!
 # A density bound between good holes and hole closers

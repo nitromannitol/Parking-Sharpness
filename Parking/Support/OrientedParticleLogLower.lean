@@ -1,6 +1,10 @@
-import Parking.Support.OrientedNoArrivalJoint
-import Parking.Support.OrientedMeanIncrement
-import Parking.Support.ExponentialGrowth
+module
+
+public import Parking.Support.OrientedNoArrivalJoint
+public import Parking.Support.OrientedMeanIncrement
+public import Parking.Support.ExponentialGrowth
+
+@[expose] public section
 
 /-!
 # Logarithmic lower bound for the particle mean

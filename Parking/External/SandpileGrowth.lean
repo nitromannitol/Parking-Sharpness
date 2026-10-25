@@ -1,4 +1,8 @@
-import Parking.Basic
+module
+
+public import Parking.Basic
+
+@[expose] public section
 
 /-!
 # The mean sandpile odometer growth input (frozen)

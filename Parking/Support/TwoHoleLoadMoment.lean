@@ -1,6 +1,10 @@
-import Parking.Support.TwoHoleJoint
-import Parking.Support.OnePointMoment
-import Parking.Support.WeightedNorm
+module
+
+public import Parking.Support.TwoHoleJoint
+public import Parking.Support.OnePointMoment
+public import Parking.Support.WeightedNorm
+
+@[expose] public section
 
 /-!
 # A moment bound for the finite two-hole load

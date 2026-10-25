@@ -1,5 +1,9 @@
-import LatticeProb.ContinuumHeatKernel
-import Parking.Support.Continuum
+module
+
+public import LatticeProb.ContinuumHeatKernel
+public import Parking.Support.Continuum
+
+@[expose] public section
 
 /-!
 # Heat-kernel overlap integral for the covariance

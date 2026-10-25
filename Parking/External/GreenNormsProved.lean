@@ -1,3 +1,5 @@
+module
+
 /-
 The two-sided rates of the ℓ²-norm and the max-norm of the finite-time SRW
 Green kernel (`eq:green-norms`), proved rather than assumed.
@@ -28,12 +30,14 @@ Green kernel (`eq:green-norms`), proved rather than assumed.
   `srwGreen_high_dim_le` alone gives the upper bound, without any horizon
   growth needed.
 -/
-import Parking.External.GreenNorms
-import Parking.Support.WMartingale
-import Parking.Support.GreenBridge
-import LatticeProb.Walk.VarianceScale
-import LatticeProb.Walk.SRWGreenSup
-import LatticeProb.Walk.SRWDiag
+public import Parking.External.GreenNorms
+public import Parking.Support.WMartingale
+public import Parking.Support.GreenBridge
+public import LatticeProb.Walk.VarianceScale
+public import LatticeProb.Walk.SRWGreenSup
+public import LatticeProb.Walk.SRWDiag
+
+@[expose] public section
 
 open Filter Topology
 

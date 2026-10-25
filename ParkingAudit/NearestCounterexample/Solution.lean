@@ -1,7 +1,11 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.NearestCounterexample.SolutionBasic
-import ParkingAudit.Support.NearestCounterexampleBridge
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.NearestCounterexample.SolutionBasic
+public import ParkingAudit.Support.NearestCounterexampleBridge
+
+@[expose] public section
 
 /-!
 # Solution: NearestCounterexample

@@ -1,4 +1,8 @@
-import Parking.Support.FinitePathMoment
+module
+
+public import Parking.Support.FinitePathMoment
+
+@[expose] public section
 
 /-!
 # Exponential moment of a finite path maximum

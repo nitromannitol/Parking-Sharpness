@@ -1,6 +1,10 @@
-import Parking.Basic
-import LatticeProb.Walk.SRW
-import LatticeProb.ParticleHoleLemmas
+module
+
+public import Parking.Basic
+public import LatticeProb.Walk.SRW
+public import LatticeProb.ParticleHoleLemmas
+
+@[expose] public section
 
 /-!
 # Orthant cubes and the graph-distance comparison

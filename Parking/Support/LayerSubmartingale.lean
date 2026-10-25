@@ -1,4 +1,8 @@
-import Parking.Support.LayerReward
+module
+
+public import Parking.Support.LayerReward
+
+@[expose] public section
 
 /-!
 # A submartingale bound from fresh layers

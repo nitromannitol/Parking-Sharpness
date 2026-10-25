@@ -1,5 +1,9 @@
-import Parking.Support.SpatialTestedSum
-import LatticeProb.Prob.Scaling.TimeCell
+module
+
+public import Parking.Support.SpatialTestedSum
+public import LatticeProb.Prob.Scaling.TimeCell
+
+@[expose] public section
 
 /-!
 # Exact integration over the cells of the parabolic lattice

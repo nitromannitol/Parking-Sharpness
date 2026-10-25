@@ -1,4 +1,8 @@
-import Parking.Support.Oriented
+module
+
+public import Parking.Support.Oriented
+
+@[expose] public section
 
 /-!
 # The binomial local central limit theorem

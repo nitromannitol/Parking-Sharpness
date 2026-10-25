@@ -1,5 +1,9 @@
-import Parking.Support.Pathwise
-import Parking.Support.OrientedMaximum
+module
+
+public import Parking.Support.Pathwise
+public import Parking.Support.OrientedMaximum
+
+@[expose] public section
 
 /-!
 # `eq:stopping`: the odometer as an optimal-stopping value

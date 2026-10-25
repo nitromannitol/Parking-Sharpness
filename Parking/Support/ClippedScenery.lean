@@ -1,7 +1,11 @@
-import Parking.Support.ClippedMoments
-import Parking.Support.SceneryCenter
-import Parking.Support.ProductLift
-import Parking.Support.WeightedOdometerBounds
+module
+
+public import Parking.Support.ClippedMoments
+public import Parking.Support.SceneryCenter
+public import Parking.Support.ProductLift
+public import Parking.Support.WeightedOdometerBounds
+
+@[expose] public section
 
 open LatticeProb.MomentNorm (rNorm)
 

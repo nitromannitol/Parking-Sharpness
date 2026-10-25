@@ -1,6 +1,10 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Master.SolutionBasic
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Master.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `Master`: Mathlib-only vocabulary to the repository

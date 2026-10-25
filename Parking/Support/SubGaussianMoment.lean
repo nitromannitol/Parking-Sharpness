@@ -1,4 +1,8 @@
-import LatticeProb.Prob.WeightedConc
+module
+
+public import LatticeProb.Prob.WeightedConc
+
+@[expose] public section
 
 /-!
 # The `L^q`-moment form of a sub-Gaussian-on-a-range tail bound

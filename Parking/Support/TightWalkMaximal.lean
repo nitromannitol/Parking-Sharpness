@@ -1,7 +1,11 @@
-import Parking.Support.TightWalk
-import Mathlib.Probability.Martingale.OptionalStopping
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.ConditionalExpectation
+module
+
+public import Parking.Support.TightWalk
+public import Mathlib.Probability.Martingale.OptionalStopping
+public import Mathlib.Probability.Independence.InfinitePi
+public import Mathlib.Probability.ConditionalExpectation
+
+@[expose] public section
 
 /-!
 # A maximal inequality for the rescaled walk

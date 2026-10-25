@@ -1,5 +1,9 @@
-import Parking.Support.RoundHoleFactor
-import Parking.Support.FutureHole
+module
+
+public import Parking.Support.RoundHoleFactor
+public import Parking.Support.FutureHole
+
+@[expose] public section
 
 /-!
 # The instruction cost charged against a pair of future-hole events

@@ -1,6 +1,10 @@
-import Parking.Support.OrientedDivisibleMoment
-import Parking.Support.OrientedLaw
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.OrientedDivisibleMoment
+public import Parking.Support.OrientedLaw
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # Oriented two-mean

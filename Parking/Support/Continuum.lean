@@ -1,5 +1,9 @@
-import Parking.Support.Range
-import LatticeProb.WhiteNoise
+module
+
+public import Parking.Support.Range
+public import LatticeProb.WhiteNoise
+
+@[expose] public section
 
 /-!
 # Continuum objects of Section 8

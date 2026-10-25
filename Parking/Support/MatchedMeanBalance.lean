@@ -1,7 +1,11 @@
-import Parking.Support.RoundArrivalMean
-import Parking.Support.MatchedCountIntegral
-import Parking.Support.LayerIntegral
-import Parking.Support.WalkIntegral
+module
+
+public import Parking.Support.RoundArrivalMean
+public import Parking.Support.MatchedCountIntegral
+public import Parking.Support.LayerIntegral
+public import Parking.Support.WalkIntegral
+
+@[expose] public section
 
 /-!
 # Mean balance for the common-table odometer

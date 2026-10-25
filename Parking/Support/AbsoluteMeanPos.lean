@@ -1,5 +1,9 @@
-import Parking.Support.OdometerRandomness
-import Parking.Support.ParticleConfLaw
+module
+
+public import Parking.Support.OdometerRandomness
+public import Parking.Support.ParticleConfLaw
+
+@[expose] public section
 
 /-!
 # Positivity of the absolute discrepancy

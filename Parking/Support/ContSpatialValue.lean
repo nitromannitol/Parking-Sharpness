@@ -1,6 +1,10 @@
-import Mathlib
-import LatticeProb.Prob.BrownianContAll
-import Parking.Basic
+module
+
+public import Mathlib
+public import LatticeProb.Prob.BrownianContAll
+public import Parking.Basic
+
+@[expose] public section
 
 /-!
 # The `Fin d`-dimensional Brownian optimal-stopping value

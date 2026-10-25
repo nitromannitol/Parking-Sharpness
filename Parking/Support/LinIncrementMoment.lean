@@ -1,5 +1,9 @@
-import Parking.Support.LinIncrementConcentration
-import Parking.Support.SubGaussianMoment
+module
+
+public import Parking.Support.LinIncrementConcentration
+public import Parking.Support.SubGaussianMoment
+
+@[expose] public section
 
 /-!
 # The `L^q`-moment form of the linear field's concentration

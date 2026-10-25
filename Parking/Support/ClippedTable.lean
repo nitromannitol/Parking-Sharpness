@@ -1,7 +1,11 @@
-import Parking.Support.TableLaw
-import Parking.Support.SceneryLaw
-import Parking.Support.FlatNoise
-import Parking.Support.BoundedMoment
+module
+
+public import Parking.Support.TableLaw
+public import Parking.Support.SceneryLaw
+public import Parking.Support.FlatNoise
+public import Parking.Support.BoundedMoment
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 
@@ -25,7 +29,7 @@ def clippedField (η : Site d → ℤ) : Site d → ℤ := fun y => clipSparse (
 /-- `clippedField` is measurable, mapping each coordinate through the countable clipping
 function `clipSparse`. -/
 theorem measurable_clippedField : Measurable (clippedField (d := d)) :=
-  measurable_pi_lambda _ fun y =>
+  measurable_pi_iff.mpr fun y =>
     (measurable_from_countable' clipSparse).comp (measurable_pi_apply y)
 
 /-- Every clipped-field value is at most one particle in size, `(clippedField η y).toNat ≤ 1`,

@@ -1,5 +1,9 @@
-import Parking.Support.Equivariance
-import LatticeProb.Invariance
+module
+
+public import Parking.Support.Equivariance
+public import LatticeProb.Invariance
+
+@[expose] public section
 
 /-!
 # Translation invariance of the driving data
@@ -61,7 +65,7 @@ theorem stackRankLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (stackR
 /-- Translating a configuration by `v` is measurable, since each coordinate
 `x ↦ η (x + v)` is a coordinate projection. -/
 theorem measurable_shiftConf (v : Site d) : Measurable (shiftConf (d := d) v) :=
-  measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)
+  measurable_pi_iff.mpr fun x => measurable_pi_apply (x + v)
 
 /-- Translating the full data triple by `v` is measurable, combining
 `measurable_shiftConf`, `measurable_shiftStack` and `measurable_shiftRank`

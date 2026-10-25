@@ -1,4 +1,8 @@
-import Parking.Support.DiscrepancyLabels
+module
+
+public import Parking.Support.DiscrepancyLabels
+
+@[expose] public section
 
 /-!
 # Discrepancy measurability
@@ -187,7 +191,7 @@ theorem Parking.measurable_matchedCount (i₀ : Fin d) (e : Ω → Site d → �
     (ρ : Ω → Label d × ℕ → ℝ) (σ : Ω → Parking.RoundNoise d)
     (he : Measurable e) (hρ : Measurable ρ) (hσ : Measurable σ) (t : ℕ) :
     Measurable fun ω => Parking.matchedCount (e ω) (ρ ω) (σ ω) t := by
-  refine measurable_pi_lambda _ fun x => ?_
+  refine measurable_pi_iff.mpr fun x => ?_
   exact (measurable_of_countable (Finset.card (α := Label d))).comp
     (Parking.measurable_matchActive e _ he
       (Parking.measurableState_matchedState i₀ e ρ σ he hρ hσ t) t x)

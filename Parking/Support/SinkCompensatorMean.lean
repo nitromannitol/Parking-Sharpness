@@ -1,4 +1,8 @@
-import Parking.Support.SinkMean
+module
+
+public import Parking.Support.SinkMean
+
+@[expose] public section
 
 /-!
 # Compensator mean bounds for the sparse sink

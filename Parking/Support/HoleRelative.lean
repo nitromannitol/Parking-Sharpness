@@ -1,6 +1,10 @@
-import Parking.Support.SingleHoleWeight
-import Parking.Support.SingleHoleTerminal
-import Parking.Support.LayerSubmartingale
+module
+
+public import Parking.Support.SingleHoleWeight
+public import Parking.Support.SingleHoleTerminal
+public import Parking.Support.LayerSubmartingale
+
+@[expose] public section
 
 /-!
 # Sandwiching the effect of adding one particle on the expected hole count

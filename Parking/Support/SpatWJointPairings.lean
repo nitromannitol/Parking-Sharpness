@@ -1,6 +1,10 @@
-import Parking.Support.SpatWBlockPairingConvergence
-import Parking.Support.SpatWPairingConvergence
-import Parking.Support.SpatWSceneryFdd
+module
+
+public import Parking.Support.SpatWBlockPairingConvergence
+public import Parking.Support.SpatWPairingConvergence
+public import Parking.Support.SpatWSceneryFdd
+
+@[expose] public section
 
 /-!
 # Joint scenery, field, and spatial pairing convergence

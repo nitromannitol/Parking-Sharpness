@@ -1,6 +1,10 @@
-import Parking.Support.RangeMean
-import LatticeProb.Prob.PaleyZygmund
-import LatticeProb.Prob.CountableMeasurable
+module
+
+public import Parking.Support.RangeMean
+public import LatticeProb.Prob.PaleyZygmund
+public import LatticeProb.Prob.CountableMeasurable
+
+@[expose] public section
 
 /-!
 # Paley-Zygmund for the range

@@ -1,4 +1,8 @@
-import Parking.Support.ClippedTable
+module
+
+public import Parking.Support.ClippedTable
+
+@[expose] public section
 
 /-!
 # The hole-count law under the table dynamics

@@ -1,6 +1,10 @@
-import Parking.Support.OrientedLowerNorm
-import Parking.Support.OrientedNormPositive
-import Parking.Support.OrientedTwoMean
+module
+
+public import Parking.Support.OrientedLowerNorm
+public import Parking.Support.OrientedNormPositive
+public import Parking.Support.OrientedTwoMean
+
+@[expose] public section
 
 /-!
 # Lower rates determined by the directed Green norm

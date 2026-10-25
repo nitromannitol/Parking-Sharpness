@@ -1,4 +1,8 @@
-import Parking.Support.GreenPotential
+module
+
+public import Parking.Support.GreenPotential
+
+@[expose] public section
 
 /-!
 # The escape potential

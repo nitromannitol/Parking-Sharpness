@@ -1,7 +1,11 @@
-import Parking.Support.RoundHoleSection
-import Parking.Support.HoleLocality
-import Parking.Support.ProductFactor
-import Parking.Support.RoundBlock
+module
+
+public import Parking.Support.RoundHoleSection
+public import Parking.Support.HoleLocality
+public import Parking.Support.ProductFactor
+public import Parking.Support.RoundBlock
+
+@[expose] public section
 
 /-!
 # Charging the round hole factor to a finite query set

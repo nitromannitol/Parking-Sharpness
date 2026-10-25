@@ -1,4 +1,8 @@
-import Parking.Support.CoordinateErasedSpace
+module
+
+public import Parking.Support.CoordinateErasedSpace
+
+@[expose] public section
 
 /-!
 # A filtration revealing a finite list of coordinates

@@ -1,4 +1,8 @@
-import Parking.Support.InstructionField
+module
+
+public import Parking.Support.InstructionField
+
+@[expose] public section
 
 /-!
 # Monotonicity of the common-table process in the initial field

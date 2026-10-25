@@ -1,4 +1,8 @@
-import Parking.Support.SubcriticalBound
+module
+
+public import Parking.Support.SubcriticalBound
+
+@[expose] public section
 
 /-!
 # Joint bound via the walk of the bottom particle at the origin
@@ -93,7 +97,7 @@ theorem moveLaw_map_originMove (d : ℕ) (hd : 1 ≤ d) :
 /-- `originMoveOf` is measurable, being a coordinate projection of the driving
 data. -/
 theorem measurable_originMoveOf : Measurable (originMoveOf (d := d)) := by
-  refine measurable_pi_lambda _ fun s => ?_
+  refine measurable_pi_iff.mpr fun s => ?_
   exact (measurable_pi_apply ((((0 : Site d), 0) : Label d), s)).comp
     (measurable_fst.comp measurable_snd)
 
@@ -121,7 +125,7 @@ theorem integral_indicator_mul_originMove (hd : 1 ≤ d) {ν : Measure ℤ}
     fun b => Bd (fun s : ℕ => b.1 ((((0 : Site d), 0) : Label d), s)) with hHdef
   have hGm : Measurable G := measurable_const.indicator hcnt
   have hHm : Measurable H :=
-    hBm.comp (measurable_pi_lambda _ fun s => (measurable_pi_apply _).comp measurable_fst)
+    hBm.comp (measurable_pi_iff.mpr fun s => (measurable_pi_apply _).comp measurable_fst)
   have hG1 : ∀ a, |G a| ≤ 1 := by
     intro a
     rw [hGdef, Set.indicator_apply]
@@ -189,7 +193,7 @@ theorem integral_indicator_mul_originMove (hd : 1 ≤ d) {ν : Measure ℤ}
         (f := fun m => Bd (fun s : ℕ => m ((((0 : Site d), 0) : Label d), s)))
         measurable_fst.aemeasurable
         (by rw [hmp.map_eq]
-            exact (hBm.comp (measurable_pi_lambda _ fun s =>
+            exact (hBm.comp (measurable_pi_iff.mpr fun s =>
               measurable_pi_apply _)).aestronglyMeasurable)
       rw [hmp.map_eq] at h
       exact h.symm
@@ -201,7 +205,7 @@ theorem integral_indicator_mul_originMove (hd : 1 ≤ d) {ν : Measure ℤ}
     have h := integral_map (μ := moveLaw d)
       (φ := fun m : Label d × ℕ → Fin d × Bool =>
         fun s : ℕ => m ((((0 : Site d), 0) : Label d), s)) (f := Bd)
-      (measurable_pi_lambda _ fun s => measurable_pi_apply _).aemeasurable
+      (measurable_pi_iff.mpr fun s => measurable_pi_apply _).aemeasurable
       (by rw [moveLaw_map_originMove d hd]; exact hBi.aestronglyMeasurable)
     rw [moveLaw_map_originMove d hd] at h
     exact h.symm

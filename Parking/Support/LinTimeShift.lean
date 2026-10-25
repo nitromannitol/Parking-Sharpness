@@ -1,7 +1,11 @@
-import Parking.Support.GreenBridge
-import Parking.Support.Kernel
-import LatticeProb.Walk.GreenSq
-import LatticeProb.Walk.VarianceScale
+module
+
+public import Parking.Support.GreenBridge
+public import Parking.Support.Kernel
+public import LatticeProb.Walk.GreenSq
+public import LatticeProb.Walk.VarianceScale
+
+@[expose] public section
 
 /-!
 # The two-time comparison of the truncated Green function

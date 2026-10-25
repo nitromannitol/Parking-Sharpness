@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Reindexing a `Fintype`-indexed product measure by `Fin N`

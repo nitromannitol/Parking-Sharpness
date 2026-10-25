@@ -1,6 +1,10 @@
-import Parking.Support.UpperStep
-import LatticeProb.Prob.PaleyZygmund
-import LatticeProb.Prob.Moments
+module
+
+public import Parking.Support.UpperStep
+public import LatticeProb.Prob.PaleyZygmund
+public import LatticeProb.Prob.Moments
+
+@[expose] public section
 
 /-!
 # The Paley-Zygmund first-moment bound

@@ -1,6 +1,10 @@
-import Parking.Support.HoleMean
-import Parking.Support.InstructionUnused
-import Parking.Support.RoundMeanField
+module
+
+public import Parking.Support.HoleMean
+public import Parking.Support.InstructionUnused
+public import Parking.Support.RoundMeanField
+
+@[expose] public section
 
 /-!
 # The conditional future hole count as a bounded martingale

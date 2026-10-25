@@ -1,6 +1,10 @@
-import Parking.Support.JointStopping
-import Parking.Support.MeanHorizonStep1
-import Parking.Support.Invariance
+module
+
+public import Parking.Support.JointStopping
+public import Parking.Support.MeanHorizonStep1
+public import Parking.Support.Invariance
+
+@[expose] public section
 
 /-!
 # Stationarity and the a priori bounds of Step 2

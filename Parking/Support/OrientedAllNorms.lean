@@ -1,6 +1,10 @@
-import Parking.Support.OrientedGreenRates
-import Parking.Support.OrientedLowerNorm
-import Parking.Support.VarianceNonconstant
+module
+
+public import Parking.Support.OrientedGreenRates
+public import Parking.Support.OrientedLowerNorm
+public import Parking.Support.VarianceNonconstant
+
+@[expose] public section
 
 /-!
 # The complete directed Green norm profile

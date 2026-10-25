@@ -1,5 +1,9 @@
-import Parking.Support.NearestSpatialAssembly
-import Parking.Support.NearestTestFun
+module
+
+public import Parking.Support.NearestSpatialAssembly
+public import Parking.Support.NearestTestFun
+
+@[expose] public section
 
 /-!
 # `thm:nearest` from one pathwise statement

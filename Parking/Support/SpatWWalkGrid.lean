@@ -1,6 +1,10 @@
-import Parking.Support.SpatWWalkTaylor
-import Parking.Support.SpatWSignedDecomp
-import Parking.Support.NearestBallEvent
+module
+
+public import Parking.Support.SpatWWalkTaylor
+public import Parking.Support.SpatWSignedDecomp
+public import Parking.Support.NearestBallEvent
+
+@[expose] public section
 
 /-!
 # Cell representation of the signed-density test coefficient

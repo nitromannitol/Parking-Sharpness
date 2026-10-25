@@ -1,6 +1,10 @@
-import Parking.Support.PinnedSceneryFinite
-import Parking.Support.SinkField
-import LatticeProb.Prob.FiniteMarginal
+module
+
+public import Parking.Support.PinnedSceneryFinite
+public import Parking.Support.SinkField
+public import LatticeProb.Prob.FiniteMarginal
+
+@[expose] public section
 
 /-!
 # Subgaussianity and moment bound for the sink scenery contribution

@@ -1,6 +1,10 @@
-import Parking.Support.InstructionHole
-import Parking.Support.HoleKernel
-import Parking.Support.DeficitFactor
+module
+
+public import Parking.Support.InstructionHole
+public import Parking.Support.HoleKernel
+public import Parking.Support.DeficitFactor
+
+@[expose] public section
 
 open LatticeProb (measurable_from_countable')
 

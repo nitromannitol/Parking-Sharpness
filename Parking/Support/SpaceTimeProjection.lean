@@ -1,5 +1,9 @@
-import Parking.Support.Continuum
-import LatticeProb.Prob.Scaling.CompactTimeIntegral
+module
+
+public import Parking.Support.Continuum
+public import LatticeProb.Prob.Scaling.CompactTimeIntegral
+
+@[expose] public section
 
 /-!
 # Spatial tests from space-time tests

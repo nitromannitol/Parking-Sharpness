@@ -1,5 +1,9 @@
-import Parking.Support.NoArrivalWeight
-import Parking.Support.MomentLowerTail
+module
+
+public import Parking.Support.NoArrivalWeight
+public import Parking.Support.MomentLowerTail
+
+@[expose] public section
 
 /-!
 # A Chernoff-style split for a no-arrival event

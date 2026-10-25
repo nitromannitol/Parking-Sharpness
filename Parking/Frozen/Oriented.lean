@@ -1,7 +1,11 @@
-import Parking.Support.Range
-import Parking.Support.OrientedTwoMean
-import Parking.Support.OrientedAllNorms
-import Parking.Support.OrientedLogMean
+module
+
+public import Parking.Support.Range
+public import Parking.Support.OrientedTwoMean
+public import Parking.Support.OrientedAllNorms
+public import Parking.Support.OrientedLogMean
+
+@[expose] public section
 
 /-!
 # Theorem 12.2: growth of the oriented odometer (frozen)

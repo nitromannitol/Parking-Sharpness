@@ -1,6 +1,10 @@
-import Parking.Support.Continuum
-import LatticeProb.Prob.Scaling.SpaceTimeDerivatives
-import Parking.Support.SpatialTimeDerivative
+module
+
+public import Parking.Support.Continuum
+public import LatticeProb.Prob.Scaling.SpaceTimeDerivatives
+public import Parking.Support.SpatialTimeDerivative
+
+@[expose] public section
 
 /-!
 # The spatial heat operator on space-time test functions

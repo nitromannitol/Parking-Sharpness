@@ -1,9 +1,13 @@
-import Parking.Support.HeatMoments
-import Parking.Support.Odometer
-import LatticeProb.Graph.Zd
-import LatticeProb.Walk.Shells
-import Parking.Support.Walk
-import Parking.External.GreenGradient
+module
+
+public import Parking.Support.HeatMoments
+public import Parking.Support.Odometer
+public import LatticeProb.Graph.Zd
+public import LatticeProb.Walk.Shells
+public import Parking.Support.Walk
+public import Parking.External.GreenGradient
+
+@[expose] public section
 
 /-!
 # The sum of `lem:gamma-sum`

@@ -1,5 +1,9 @@
-import LatticeProb.Prob.LpSmooth
-import LatticeProb.Prob.FiniteMarginal
+module
+
+public import LatticeProb.Prob.LpSmooth
+public import LatticeProb.Prob.FiniteMarginal
+
+@[expose] public section
 
 /-!
 # A square-function estimate for finite centered linear combinations

@@ -1,6 +1,10 @@
-import Parking.Support.OrientedInstructionSupport
-import Parking.Support.OrientedLayer
-import Parking.Support.ErrorUnroll
+module
+
+public import Parking.Support.OrientedInstructionSupport
+public import Parking.Support.OrientedLayer
+public import Parking.Support.ErrorUnroll
+
+@[expose] public section
 
 /-!
 # The directed particle odometer as a lower-layer recursion

@@ -1,4 +1,8 @@
-import Parking.Support.TiltCov
+module
+
+public import Parking.Support.TiltCov
+
+@[expose] public section
 
 /-!
 # Lemma 10.2: the tilted-law product/covariance bound (frozen)

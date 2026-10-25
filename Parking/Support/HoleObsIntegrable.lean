@@ -1,7 +1,11 @@
-import Parking.Support.HoleObsBound
-import Parking.Support.SubcriticalMeasurable
-import Parking.Support.CountFiltration
-import Parking.Support.RestrictLaw
+module
+
+public import Parking.Support.HoleObsBound
+public import Parking.Support.SubcriticalMeasurable
+public import Parking.Support.CountFiltration
+public import Parking.Support.RestrictLaw
+
+@[expose] public section
 
 /-!
 # Integrability of the hole observable

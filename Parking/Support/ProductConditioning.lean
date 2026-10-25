@@ -1,4 +1,8 @@
-import LatticeProb.Prob.Splice
+module
+
+public import LatticeProb.Prob.Splice
+
+@[expose] public section
 
 /-!
 # The coordinate sub-sigma-algebra and partial integration as conditional expectation

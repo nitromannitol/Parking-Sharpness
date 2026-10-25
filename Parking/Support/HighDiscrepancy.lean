@@ -1,6 +1,10 @@
-import Parking.Support.AbsoluteMeanPos
-import Parking.Support.HighMeanLimits
-import Parking.Support.BoundExtension
+module
+
+public import Parking.Support.AbsoluteMeanPos
+public import Parking.Support.HighMeanLimits
+public import Parking.Support.BoundExtension
+
+@[expose] public section
 
 /-!
 # Logarithmic bounds for the high-dimensional absolute discrepancy

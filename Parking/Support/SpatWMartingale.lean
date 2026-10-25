@@ -1,8 +1,12 @@
-import Parking.Support.SpatWMartingaleCore
-import Parking.Support.SpatWSignedDecomp
-import Parking.Support.NearTailSum
-import Parking.Support.DensitySequence
-import LatticeProb.Prob.Scaling.RoundMartingale
+module
+
+public import Parking.Support.SpatWMartingaleCore
+public import Parking.Support.SpatWSignedDecomp
+public import Parking.Support.NearTailSum
+public import Parking.Support.DensitySequence
+public import LatticeProb.Prob.Scaling.RoundMartingale
+
+@[expose] public section
 
 /-!
 # The round martingale for `signedM`

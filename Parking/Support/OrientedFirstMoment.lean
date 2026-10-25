@@ -1,5 +1,9 @@
-import Parking.Support.OrientedFinite
-import Parking.Support.LinearFirstMoment
+module
+
+public import Parking.Support.OrientedFinite
+public import Parking.Support.LinearFirstMoment
+
+@[expose] public section
 
 /-!
 # Integrability from a first scenery moment

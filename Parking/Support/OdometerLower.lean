@@ -1,6 +1,10 @@
-import Parking.Support.SecondMoment
-import Parking.Frozen.Master
-import LatticeProb.Prob.PaleyZygmund
+module
+
+public import Parking.Support.SecondMoment
+public import Parking.Frozen.Master
+public import LatticeProb.Prob.PaleyZygmund
+
+@[expose] public section
 
 /-!
 # The Paley-Zygmund odometer lower bound

@@ -1,6 +1,10 @@
-import Parking.Support.Relabel
-import Parking.Support.NoiseSplice
-import LatticeProb.Prob.ZeroOne
+module
+
+public import Parking.Support.Relabel
+public import Parking.Support.NoiseSplice
+public import LatticeProb.Prob.ZeroOne
+
+@[expose] public section
 
 /-!
 # The law of relabeled noise

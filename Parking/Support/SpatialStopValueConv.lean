@@ -1,12 +1,16 @@
-import Parking.Support.SpatWalkCLT
-import Parking.Support.ValueLipschitz
-import Parking.Support.ContValueLipschitz
-import Parking.Support.LinearFieldMeasurable
-import Parking.Support.LinHatMeasurable
-import Parking.Support.ExtendedMappingReal
-import LatticeProb.Prob.Scaling.LipschitzLimit
-import LatticeProb.Prob.Scaling.FloorGap
-import Parking.External.SpatialStoppingStability
+module
+
+public import Parking.Support.SpatWalkCLT
+public import Parking.Support.ValueLipschitz
+public import Parking.Support.ContValueLipschitz
+public import Parking.Support.LinearFieldMeasurable
+public import Parking.Support.LinHatMeasurable
+public import Parking.Support.ExtendedMappingReal
+public import LatticeProb.Prob.Scaling.LipschitzLimit
+public import LatticeProb.Prob.Scaling.FloorGap
+public import Parking.External.SpatialStoppingStability
+
+@[expose] public section
 
 /-!
 # The single-point, single-cutoff scalar stopping-value convergence

@@ -1,3 +1,5 @@
+module
+
 /-
 The law of the continuum noise field on the box `K = [0,T] x [-2A,2A]`
 (`parking.tex:3207-3218`), as a genuine Borel probability measure on
@@ -19,8 +21,10 @@ converges to it UNIFORMLY on the box as `n → ∞`, i.e. in the metric of `C(re
 space is measurable (`measurable_of_tendsto_metrizable`), which gives
 `Parking.measurable_contBoxLimitMap` and with it the law `Parking.contBoxRewardLaw`.
 -/
-import Parking.Support.TightBoxLaw
-import Parking.Support.TightNoiseModification
+public import Parking.Support.TightBoxLaw
+public import Parking.Support.TightNoiseModification
+
+@[expose] public section
 
 open LatticeProb.BoxClamp (boxPoint rewardBox)
 open LatticeProb.ContinuumStopping (contNoiseSpace)

@@ -1,4 +1,8 @@
-import LatticeProb.Rank
+module
+
+public import LatticeProb.Rank
+
+@[expose] public section
 
 /-!
 # Pairing opposite finite lists by priority

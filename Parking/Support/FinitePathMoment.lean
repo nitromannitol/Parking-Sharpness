@@ -1,5 +1,9 @@
-import Parking.Support.DyadicMoment
-import Mathlib.Data.Nat.Log
+module
+
+public import Parking.Support.DyadicMoment
+public import Mathlib.Data.Nat.Log
+
+@[expose] public section
 
 /-!
 # A finite-path maximal inequality

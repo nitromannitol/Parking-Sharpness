@@ -1,6 +1,10 @@
-import Parking.Support.ThreeShellSum
-import Parking.Support.TwoHoleShellBounds
-import Parking.Support.HoleBounds
+module
+
+public import Parking.Support.ThreeShellSum
+public import Parking.Support.TwoHoleShellBounds
+public import Parking.Support.HoleBounds
+
+@[expose] public section
 
 /-!
 # Summing the two-hole pair correlations

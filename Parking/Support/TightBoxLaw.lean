@@ -1,6 +1,10 @@
-import Parking.Support.TightKolmogorov
-import Parking.Support.OrientedCutoffValue
-import Parking.Support.CriticalLawReal
+module
+
+public import Parking.Support.TightKolmogorov
+public import Parking.Support.OrientedCutoffValue
+public import Parking.Support.CriticalLawReal
+
+@[expose] public section
 
 /-!
 # Law of the rescaled box-reward field

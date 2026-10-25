@@ -1,6 +1,10 @@
-import Parking.Support.RoundDifference
-import Parking.Support.RoundBlock
-import Parking.Support.ProductSetCongr
+module
+
+public import Parking.Support.RoundDifference
+public import Parking.Support.RoundBlock
+public import Parking.Support.ProductSetCongr
+
+@[expose] public section
 
 /-!
 # Summing the round reveal differences

@@ -1,4 +1,8 @@
-import Parking.Support.SpatialResidualAlgebra
+module
+
+public import Parking.Support.SpatialResidualAlgebra
+
+@[expose] public section
 
 /-!
 # Coordinatewise versions preserve the white-noise laws

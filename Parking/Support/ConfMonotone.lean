@@ -1,5 +1,9 @@
-import Parking.Support.Agree
-import Parking.Support.Coupling
+module
+
+public import Parking.Support.Agree
+public import Parking.Support.Coupling
+
+@[expose] public section
 
 /-!
 # Raising the configuration in the particle-driven construction

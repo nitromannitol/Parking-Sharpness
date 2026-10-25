@@ -1,8 +1,12 @@
-import Parking.Support.SpatialSpaceTimeMeasurable
-import Parking.Support.SpatWSceneryFdd
-import Parking.Support.NearestBallEvent
-import LatticeProb.Prob.Scaling.FddNiceFunctional
-import LatticeProb.Prob.Scaling.Slutsky
+module
+
+public import Parking.Support.SpatialSpaceTimeMeasurable
+public import Parking.Support.SpatWSceneryFdd
+public import Parking.Support.NearestBallEvent
+public import LatticeProb.Prob.Scaling.FddNiceFunctional
+public import LatticeProb.Prob.Scaling.Slutsky
+
+@[expose] public section
 
 /-!
 # Joint scenery and space-time functionals

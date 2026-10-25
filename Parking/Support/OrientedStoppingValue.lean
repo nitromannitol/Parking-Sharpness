@@ -1,4 +1,8 @@
-import Parking.Support.OrientedStopping
+module
+
+public import Parking.Support.OrientedStopping
+
+@[expose] public section
 
 /-!
 # The oriented form of `eq:stopping`

@@ -1,4 +1,8 @@
-import Parking.Support.CoordinateMartingale
+module
+
+public import Parking.Support.CoordinateMartingale
+
+@[expose] public section
 
 /-!
 # Bounded predictable products with a past-selected reward

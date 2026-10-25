@@ -1,7 +1,11 @@
-import Parking.External.HeatCompactness
-import LatticeProb.Prob.Scaling.TimeDifferenceLimit
-import Parking.Support.SpatialDifferenceQuotient
-import Parking.Support.SpatialMeasurableDerivative
+module
+
+public import Parking.External.HeatCompactness
+public import LatticeProb.Prob.Scaling.TimeDifferenceLimit
+public import Parking.Support.SpatialDifferenceQuotient
+public import Parking.Support.SpatialMeasurableDerivative
+
+@[expose] public section
 
 /-!
 # The smooth limit of positive time quotients is the continuum time derivative

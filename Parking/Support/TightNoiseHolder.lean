@@ -1,4 +1,8 @@
-import Parking.Support.TightOverlap
+module
+
+public import Parking.Support.TightOverlap
+
+@[expose] public section
 
 /-!
 # Hölder bounds for the noise field's covariance

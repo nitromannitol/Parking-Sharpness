@@ -1,4 +1,8 @@
-import Parking.Frozen.Transport
+module
+
+public import Parking.Frozen.Transport
+
+@[expose] public section
 
 /-!
 # Step 3 of `lem:critical-density`, from the survivor bound

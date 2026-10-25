@@ -1,6 +1,10 @@
-import Parking.Support.GreenPotential
-import Parking.Support.LayerReward
-import Parking.Support.DiscrepancyFresh
+module
+
+public import Parking.Support.GreenPotential
+public import Parking.Support.LayerReward
+public import Parking.Support.DiscrepancyFresh
+
+@[expose] public section
 
 /-!
 # Green-function bound on label departures

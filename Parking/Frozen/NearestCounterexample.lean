@@ -1,5 +1,9 @@
-import Parking.Support.ThreePointLaw
-import Parking.Support.NearestCounterexampleProof
+module
+
+public import Parking.Support.ThreePointLaw
+public import Parking.Support.NearestCounterexampleProof
+
+@[expose] public section
 
 /-!
 # A three-point law where the hole stays nearer, `d ≥ 5` (frozen)

@@ -1,6 +1,10 @@
-import Parking.Support.SceneryFinite
-import Parking.Support.SparseLaw
-import LatticeProb.Prob.FiniteMarginal
+module
+
+public import Parking.Support.SceneryFinite
+public import Parking.Support.SparseLaw
+public import LatticeProb.Prob.FiniteMarginal
+
+@[expose] public section
 
 /-!
 # The scenery moment bound under a general prior law
@@ -49,7 +53,7 @@ theorem exists_matchedMeanU_subgaussian (hd : 5 ≤ d) :
   let f : (S → ℤ) → ℝ := fun ξ => matchedMeanU (sparseBoxField S ξ) 0 T x
   have hf : Measurable f := measurable_from_countable' _
   have hR : Measurable (S.restrict : (Site d → ℤ) → S → ℤ) :=
-    measurable_pi_lambda _ fun y => measurable_pi_apply y.val
+    measurable_pi_iff.mpr fun y => measurable_pi_apply y.val
   have hmap := iidLaw_map_restrict d ν S
   have ha : ∀ᵐ η ∂(iidLaw d ν), ∀ y, clipSparse (η y) = η y := by
     apply ae_all_iff.mpr

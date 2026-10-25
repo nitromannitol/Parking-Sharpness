@@ -1,6 +1,10 @@
-import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
-import LatticeProb.Prob.Scaling.TimeIntegration
-import Parking.Support.SpatialStrictDerivative
+module
+
+public import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
+public import LatticeProb.Prob.Scaling.TimeIntegration
+public import Parking.Support.SpatialStrictDerivative
+
+@[expose] public section
 
 /-!
 # A coordinate-measurable choice of the smooth time derivative

@@ -1,7 +1,11 @@
-import Parking.Support.TightStoppingHomog
-import Parking.Support.TightStoppingCompare
-import Parking.Support.TightHappExact
-import Parking.Support.TightGYBoxBound
+module
+
+public import Parking.Support.TightStoppingHomog
+public import Parking.Support.TightStoppingCompare
+public import Parking.Support.TightHappExact
+public import Parking.Support.TightGYBoxBound
+
+@[expose] public section
 
 /-!
 # The per-scenery comparison for `happ`

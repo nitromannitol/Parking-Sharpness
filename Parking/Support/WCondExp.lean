@@ -1,5 +1,9 @@
-import Parking.Support.WFiltration
-import LatticeProb.Prob.CoordIntegral
+module
+
+public import Parking.Support.WFiltration
+public import LatticeProb.Prob.CoordIntegral
+
+@[expose] public section
 
 /-!
 # The conditional mean of the increments vanishes

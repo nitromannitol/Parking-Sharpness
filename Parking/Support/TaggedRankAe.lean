@@ -1,5 +1,9 @@
-import Parking.Support.RankDistinct
-import Parking.Support.SubcriticalStep2
+module
+
+public import Parking.Support.RankDistinct
+public import Parking.Support.SubcriticalStep2
+
+@[expose] public section
 
 /-!
 # The tagged uniform variables are almost surely pairwise distinct

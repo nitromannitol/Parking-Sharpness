@@ -1,4 +1,8 @@
-import Parking.Support.BlockAverages
+module
+
+public import Parking.Support.BlockAverages
+
+@[expose] public section
 
 /-!
 # Step 2 of the mean-horizon lemma on the joint space

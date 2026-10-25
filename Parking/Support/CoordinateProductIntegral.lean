@@ -1,5 +1,9 @@
-import Mathlib.Probability.Independence.Integration
-import Mathlib.Probability.Independence.InfinitePi
+module
+
+public import Mathlib.Probability.Independence.Integration
+public import Mathlib.Probability.Independence.InfinitePi
+
+@[expose] public section
 
 /-!
 # Expectation of a finite product of coordinate functions

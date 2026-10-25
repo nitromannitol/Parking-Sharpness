@@ -1,4 +1,8 @@
-import Parking.Support.CriticalReduction
+module
+
+public import Parking.Support.CriticalReduction
+
+@[expose] public section
 
 /-!
 # The choice of `ε`

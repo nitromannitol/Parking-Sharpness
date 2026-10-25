@@ -1,5 +1,9 @@
-import Parking.Support.WalkMaximal
-import Parking.Support.ValueLipschitz
+module
+
+public import Parking.Support.WalkMaximal
+public import Parking.Support.ValueLipschitz
+
+@[expose] public section
 
 /-!
 # The stopping-value cutoff construction

@@ -1,8 +1,12 @@
-import Parking.External.SpatialOdometerScaling
-import Parking.Support.SpatialVanishingDistance
-import Parking.Support.NearestBallEvent
-import Parking.Support.SpatWSceneryFdd
-import LatticeProb.Prob.Scaling.Slutsky
+module
+
+public import Parking.External.SpatialOdometerScaling
+public import Parking.Support.SpatialVanishingDistance
+public import Parking.Support.NearestBallEvent
+public import Parking.Support.SpatWSceneryFdd
+public import LatticeProb.Prob.Scaling.Slutsky
+
+@[expose] public section
 
 /-!
 # The three-block scenery/divisible/odometer joint convergence

@@ -1,4 +1,8 @@
-import Parking.Support.Walk
+module
+
+public import Parking.Support.Walk
+
+@[expose] public section
 
 /-!
 # The error field, its maximal average, and conditional expectations

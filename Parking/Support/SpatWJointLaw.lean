@@ -1,4 +1,8 @@
-import Parking.Support.SpatWLinFdd
+module
+
+public import Parking.Support.SpatWLinFdd
+
+@[expose] public section
 
 /-!
 # Joint scenery-and-field finite-dimensional convergence

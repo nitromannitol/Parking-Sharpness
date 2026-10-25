@@ -1,6 +1,10 @@
-import Parking.Support.SpatialSpaceTimeTaylor
-import Parking.Support.SpatialRescaledEquation
-import LatticeProb.Prob.Scaling.TimeTestApproximation
+module
+
+public import Parking.Support.SpatialSpaceTimeTaylor
+public import Parking.Support.SpatialRescaledEquation
+public import LatticeProb.Prob.Scaling.TimeTestApproximation
+
+@[expose] public section
 
 /-!
 # Cellwise consistency of the space-time test coefficients

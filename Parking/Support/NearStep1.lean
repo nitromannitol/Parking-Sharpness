@@ -1,7 +1,11 @@
-import Parking.Support.NearLower
-import Parking.Support.MeanHorizonProof
-import Parking.Support.NearOptimize
-import Parking.External.Stopping
+module
+
+public import Parking.Support.NearLower
+public import Parking.Support.MeanHorizonProof
+public import Parking.Support.NearOptimize
+public import Parking.External.Stopping
+
+@[expose] public section
 
 /-!
 # Step 1 of `prop:near-divisible`: the optimal stopping representation

@@ -1,7 +1,11 @@
-import Parking.Support.OrientedMeanBound
-import Parking.Support.OrientedYoung
-import Parking.Support.OrientedMoments
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.OrientedMeanBound
+public import Parking.Support.OrientedYoung
+public import Parking.Support.OrientedMoments
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # Step 4: the logarithmic upper bound on the directed particle mean

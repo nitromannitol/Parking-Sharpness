@@ -1,6 +1,10 @@
-import LatticeProb.WhiteNoise
-import Parking.Support.Continuum
-import Parking.Support.NearestMollifier
+module
+
+public import LatticeProb.WhiteNoise
+public import Parking.Support.Continuum
+public import Parking.Support.NearestMollifier
+
+@[expose] public section
 
 /-!
 # The mollification identity

@@ -1,5 +1,9 @@
-import Mathlib
-import LatticeProb.Prob.SpliceAvg
+module
+
+public import Mathlib
+public import LatticeProb.Prob.SpliceAvg
+
+@[expose] public section
 
 /-!
 # Averaging a functional over part of the randomness

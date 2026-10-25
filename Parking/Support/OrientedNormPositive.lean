@@ -1,4 +1,8 @@
-import Parking.Support.OrientedNorm
+module
+
+public import Parking.Support.OrientedNorm
+
+@[expose] public section
 
 /-!
 # A lower bound for the directed Green norm

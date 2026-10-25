@@ -1,7 +1,11 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.SubcriticalTail.SolutionBasic
-import ParkingAudit.Support.SubcriticalTailBridge
+module
+
+public import Mathlib
+public import Parking.Frozen.SubcriticalTail
+public import ParkingAudit.SubcriticalTail.SolutionBasic
+public import ParkingAudit.Support.SubcriticalTailBridge
+
+@[expose] public section
 
 /-!
 # Solution: SubcriticalTail
@@ -9,10 +13,10 @@ import ParkingAudit.Support.SubcriticalTailBridge
 The challenge module `ParkingAudit/SubcriticalTail/Challenge.lean` imports only Mathlib and states
 the theorem with one intentional `sorry`. This solution imports the repository together with
 `ParkingAudit.SubcriticalTail.SolutionBasic`, a verbatim copy of the challenge's vocabulary, and
-proves the byte-identical statement from `Parking.subcritical_tail` through the bridge lemmas in
+proves the byte-identical statement from `Parking.Frozen.subcritical_tail` through the bridge lemmas in
 `ParkingAudit/Support/SubcriticalTailBridge.lean`: the statement is reverted, every vocabulary
 constant that is not definitionally its counterpart is rewritten to the repository's, and the result
-is closed by `Parking.subcritical_tail`.
+is closed by `Parking.Frozen.subcritical_tail`.
 -/
 
 namespace ParkingAudit
@@ -32,6 +36,6 @@ theorem subcritical_tail
         S (law d ν) t ≤ C * Real.exp (-(c * (t : ℝ) ^ ((d : ℝ) / (d + 2)))) := by
   revert hDV d hd ν hprob hint hmean hpos θ hθ hexp
   rw [Bridge.S_eq, Bridge.donskerVaradhan_eq]
-  exact Parking.subcritical_tail
+  exact Parking.Frozen.subcritical_tail
 
 end ParkingAudit

@@ -1,5 +1,9 @@
-import Parking.Support.SinkMean
-import Parking.Support.FlatMean
+module
+
+public import Parking.Support.SinkMean
+public import Parking.Support.FlatMean
+
+@[expose] public section
 
 /-!
 # Real-valued observables of the sparse sink process

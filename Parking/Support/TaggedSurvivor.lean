@@ -1,5 +1,9 @@
-import Parking.Support.SurvivorHoles
-import Parking.Support.SubcriticalPair
+module
+
+public import Parking.Support.SurvivorHoles
+public import Parking.Support.SubcriticalPair
+
+@[expose] public section
 
 /-!
 # `F Z = 0` for the realization with the tagged particle put back

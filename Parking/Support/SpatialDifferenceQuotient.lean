@@ -1,8 +1,12 @@
-import Parking.Support.SpaceTimeContOp
-import LatticeProb.Prob.Scaling.TimeTranslation
-import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
-import LatticeProb.Prob.Scaling.HeatPositivity
-import Parking.External.HeatInteriorRegularity
+module
+
+public import Parking.Support.SpaceTimeContOp
+public import LatticeProb.Prob.Scaling.TimeTranslation
+public import LatticeProb.Prob.Scaling.MeasurableTimeDerivative
+public import LatticeProb.Prob.Scaling.HeatPositivity
+public import Parking.External.HeatInteriorRegularity
+
+@[expose] public section
 
 /-!
 # Forward time differences solve the homogeneous heat equation

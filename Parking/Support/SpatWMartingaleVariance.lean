@@ -1,12 +1,16 @@
-import Parking.Support.SpatWMartingale
-import LatticeProb.Walk.RiemannLattice
-import Parking.Support.Continuum
-import Parking.Support.Measurability
-import LatticeProb.WhiteNoise
-import Parking.Support.MatchedUniform
-import Parking.Frozen.Growth
-import LatticeProb.Prob.Scaling.Telescope
-import LatticeProb.Prob.Scaling.Chebyshev
+module
+
+public import Parking.Support.SpatWMartingale
+public import LatticeProb.Walk.RiemannLattice
+public import Parking.Support.Continuum
+public import Parking.Support.Measurability
+public import LatticeProb.WhiteNoise
+public import Parking.Support.MatchedUniform
+public import Parking.Frozen.Growth
+public import LatticeProb.Prob.Scaling.Telescope
+public import LatticeProb.Prob.Scaling.Chebyshev
+
+@[expose] public section
 
 /-!
 # The martingale variance bound

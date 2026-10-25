@@ -1,7 +1,11 @@
-import Parking.External.SRWLocalCLT
-import Sandpile.External.LocalCLT
-import Sandpile.External.LocalCLTProved
-import Sandpile.External.VarianceScaleProved
+module
+
+public import Parking.External.SRWLocalCLT
+public import Sandpile.External.LocalCLT
+public import Sandpile.External.LocalCLTProved
+public import Sandpile.External.VarianceScaleProved
+
+@[expose] public section
 
 /-!
 # Bridging the multivariate local CLT from Divisible-Sandpile-Percolation

@@ -1,5 +1,9 @@
-import Parking.Support.NearestCriticalModel
-import Parking.Support.CriticalLawReal
+module
+
+public import Parking.Support.NearestCriticalModel
+public import Parking.Support.CriticalLawReal
+
+@[expose] public section
 
 /-!
 # Critical normalization: mass-centered odometer law

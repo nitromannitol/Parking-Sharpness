@@ -1,6 +1,10 @@
-import Parking.Support.CancellationCount
-import Parking.Support.CouplingTarget
-import Parking.Support.ConfMoments
+module
+
+public import Parking.Support.CancellationCount
+public import Parking.Support.CouplingTarget
+public import Parking.Support.ConfMoments
+
+@[expose] public section
 
 /-!
 # Opposite-pair and discrepancy label means

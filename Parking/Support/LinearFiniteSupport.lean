@@ -1,4 +1,8 @@
-import Parking.Support.LinearSceneryMoment
+module
+
+public import Parking.Support.LinearSceneryMoment
+
+@[expose] public section
 
 /-!
 # Moment bounds for finitely supported linear coefficients

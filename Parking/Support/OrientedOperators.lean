@@ -1,5 +1,9 @@
-import Parking.Support.OrientedPotential
-import Mathlib.Data.Nat.Choose.Sum
+module
+
+public import Parking.Support.OrientedPotential
+public import Mathlib.Data.Nat.Choose.Sum
+
+@[expose] public section
 
 /-!
 # Commuting signed averages and their binomial expansion

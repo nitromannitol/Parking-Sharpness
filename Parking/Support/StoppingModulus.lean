@@ -1,5 +1,9 @@
-import Parking.Support.ValueLipschitz
-import Parking.Support.StoppingShift
+module
+
+public import Parking.Support.ValueLipschitz
+public import Parking.Support.StoppingShift
+
+@[expose] public section
 
 /-!
 # The stopping value's spatial modulus

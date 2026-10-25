@@ -1,5 +1,9 @@
-import Parking.Support.SubcriticalJointBound
-import Parking.Support.TiltInterval
+module
+
+public import Parking.Support.SubcriticalJointBound
+public import Parking.Support.TiltInterval
+
+@[expose] public section
 
 /-!
 # The tilting interval of `thm:subcritical`

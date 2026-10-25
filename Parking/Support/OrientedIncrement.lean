@@ -1,7 +1,11 @@
-import Parking.Support.OrientedSceneryMoment
-import Parking.Support.OrientedCountLoad
-import Parking.Support.NonnegativeProduct
-import Parking.Support.Measurability
+module
+
+public import Parking.Support.OrientedSceneryMoment
+public import Parking.Support.OrientedCountLoad
+public import Parking.Support.NonnegativeProduct
+public import Parking.Support.Measurability
+
+@[expose] public section
 
 /-!
 # One-quarter time increments of the directed potential

@@ -1,4 +1,8 @@
-import Parking.Support.SurvivorExpansion
+module
+
+public import Parking.Support.SurvivorExpansion
+
+@[expose] public section
 
 /-!
 # Lemma 3.5: mass transport for survivors (frozen)

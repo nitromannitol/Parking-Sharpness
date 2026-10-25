@@ -1,5 +1,9 @@
-import Parking.Support.OrientedLogUpper
-import Parking.Support.OrientedParticleLogLower
+module
+
+public import Parking.Support.OrientedLogUpper
+public import Parking.Support.OrientedParticleLogLower
+
+@[expose] public section
 
 /-!
 # Step 4, two-sided form: logarithmic bounds on the directed particle mean

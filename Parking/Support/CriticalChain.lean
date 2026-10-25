@@ -1,8 +1,12 @@
-import Parking.Frozen.Comparison
-import Parking.Frozen.Transport
-import Parking.Support.UBound
-import Parking.Support.CriticalReduction
-import Parking.Support.Invariance
+module
+
+public import Parking.Frozen.Comparison
+public import Parking.Frozen.Transport
+public import Parking.Support.UBound
+public import Parking.Support.CriticalReduction
+public import Parking.Support.Invariance
+
+@[expose] public section
 
 /-!
 # `cor:critical` reduced to `lem:critical-density`

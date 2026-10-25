@@ -1,4 +1,8 @@
-import Parking.Support.RangeResolvent
+module
+
+public import Parking.Support.RangeResolvent
+
+@[expose] public section
 
 /-!
 # Proposition 11.2: the range resolvent bound (frozen)

@@ -1,4 +1,8 @@
-import Parking.Support.NearHorizon
+module
+
+public import Parking.Support.NearHorizon
+
+@[expose] public section
 
 /-!
 # The rate `ψ_d` of Step 3 of `prop:near-divisible`

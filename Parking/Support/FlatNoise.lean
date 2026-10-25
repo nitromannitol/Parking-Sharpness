@@ -1,5 +1,9 @@
-import Parking.Support.MatchedCounts
-import Parking.Support.MatchedLaw
+module
+
+public import Parking.Support.MatchedCounts
+public import Parking.Support.MatchedLaw
+
+@[expose] public section
 
 /-!
 # The flat round-noise product space
@@ -32,7 +36,7 @@ def curryRoundNoise (ω : FlatRoundNoise d) : RoundNoise d := fun t q => ω (t, 
 /-- `curryRoundNoise` is measurable, since each output coordinate is a single coordinate
 projection of the flat table. -/
 theorem measurable_curryRoundNoise : Measurable (curryRoundNoise (d := d)) :=
-  measurable_pi_lambda _ fun t => measurable_pi_lambda _ fun q => measurable_pi_apply (t, q)
+  measurable_pi_iff.mpr fun t => measurable_pi_iff.mpr fun q => measurable_pi_apply (t, q)
 
 /-- `flatRoundNoiseLaw` is a probability measure, since each factor `stepLaw d` is. -/
 theorem flatRoundNoiseLaw_isProbability (hd : 1 ≤ d) :

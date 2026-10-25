@@ -1,13 +1,17 @@
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
-import Parking.External.Stopping
+module
 
-import Parking.Support.LowMeanLimits
-import Parking.Support.FourRatio
-import Parking.Support.HighDiscrepancy
+public import Parking.External.SandpileGrowth
+public import Parking.External.Bernstein
+public import Parking.External.UConcentration
+public import Parking.External.UConcentrationProved
+public import Parking.External.GreenNormsProved
+public import Parking.External.Stopping
+
+public import Parking.Support.LowMeanLimits
+public import Parking.Support.FourRatio
+public import Parking.Support.HighDiscrepancy
+
+@[expose] public section
 
 /-!
 # Theorem 1.4: the dimension trichotomy (frozen)

@@ -1,6 +1,10 @@
-import Parking.Support.MatchedLocality
-import Parking.Support.HoleMean
-import Parking.Support.RoundMeanField
+module
+
+public import Parking.Support.MatchedLocality
+public import Parking.Support.HoleMean
+public import Parking.Support.RoundMeanField
+
+@[expose] public section
 
 /-!
 # Locality of the finite-horizon conditional hole mean

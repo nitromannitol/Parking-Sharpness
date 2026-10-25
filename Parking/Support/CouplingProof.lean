@@ -1,6 +1,10 @@
-import Parking.Support.CancellationMean
-import Parking.Support.CoupledMeans
-import Parking.Support.LabelCreation
+module
+
+public import Parking.Support.CancellationMean
+public import Parking.Support.CoupledMeans
+public import Parking.Support.LabelCreation
+
+@[expose] public section
 
 /-!
 # The resampling coupling proof

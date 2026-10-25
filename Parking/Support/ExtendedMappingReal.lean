@@ -1,4 +1,8 @@
-import LatticeProb.ExtendedMapping
+module
+
+public import LatticeProb.ExtendedMapping
+
+@[expose] public section
 
 /-!
 # The extended continuous mapping theorem, real parameter

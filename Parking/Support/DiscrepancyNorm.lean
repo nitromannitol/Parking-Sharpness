@@ -1,4 +1,8 @@
-import Parking.Support.DiscrepancyRates
+module
+
+public import Parking.Support.DiscrepancyRates
+
+@[expose] public section
 
 /-!
 # The discrepancy moment norm

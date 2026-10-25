@@ -1,9 +1,13 @@
-import Parking.Support.OrientedMaximum
-import Parking.Support.Pathwise
-import Parking.Support.Walk
-import Parking.Support.Coupling
-import Parking.Support.WStarMoment
-import Parking.Support.OrientedIncrement
+module
+
+public import Parking.Support.OrientedMaximum
+public import Parking.Support.Pathwise
+public import Parking.Support.Walk
+public import Parking.Support.Coupling
+public import Parking.Support.WStarMoment
+public import Parking.Support.OrientedIncrement
+
+@[expose] public section
 
 /-!
 # The directed walk stays in its box

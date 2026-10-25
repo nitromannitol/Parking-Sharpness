@@ -1,6 +1,10 @@
-import Parking.Support.OrientedGivenBound
-import Parking.Support.OrientedInstructionIntegral
-import Parking.Support.FiniteRandomCount
+module
+
+public import Parking.Support.OrientedGivenBound
+public import Parking.Support.OrientedInstructionIntegral
+public import Parking.Support.FiniteRandomCount
+
+@[expose] public section
 
 /-!
 # The conditional mean of directed arrivals

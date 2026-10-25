@@ -1,4 +1,8 @@
-import Parking.Support.LinearMoment
+module
+
+public import Parking.Support.LinearMoment
+
+@[expose] public section
 
 /-!
 # First moments and centered positive parts of finite linear sums

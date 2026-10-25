@@ -1,9 +1,13 @@
-import Parking.Support.TightNoiseHolder
-import Parking.Support.TightGaussianMoment
-import Parking.Support.TightKolmogorov
-import Parking.Support.ScalNoiseModification
-import LatticeProb.Gauss.WhiteNoise
-import LatticeProb.Prob.ChentsovPiModification
+module
+
+public import Parking.Support.TightNoiseHolder
+public import Parking.Support.TightGaussianMoment
+public import Parking.Support.TightKolmogorov
+public import Parking.Support.ScalNoiseModification
+public import LatticeProb.Gauss.WhiteNoise
+public import LatticeProb.Prob.ChentsovPiModification
+
+@[expose] public section
 
 /-!
 # A continuous modification of the box-clamped noise field

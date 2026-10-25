@@ -1,7 +1,11 @@
-import Parking.Support.TightBoxSupBaseSum
-import Parking.Support.TightBoxSupBaseZero
-import Parking.Support.TightBoxSupTailMoment
-import Parking.Support.TightBoxSupTelescope
+module
+
+public import Parking.Support.TightBoxSupBaseSum
+public import Parking.Support.TightBoxSupBaseZero
+public import Parking.Support.TightBoxSupTailMoment
+public import Parking.Support.TightBoxSupTelescope
+
+@[expose] public section
 
 /-!
 # Assembling the three-piece box-supremum bound

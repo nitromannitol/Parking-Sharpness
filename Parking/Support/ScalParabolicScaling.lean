@@ -1,5 +1,9 @@
-import Parking.Support.ScalScalingDischarge
-import Parking.Support.UpperStep
+module
+
+public import Parking.Support.ScalScalingDischarge
+public import Parking.Support.UpperStep
+
+@[expose] public section
 
 /-!
 # The parabolic rescaling identities of Step 2

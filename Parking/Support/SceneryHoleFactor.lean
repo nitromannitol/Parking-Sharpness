@@ -1,6 +1,10 @@
-import Parking.Support.SceneryHolePartial
-import Parking.Support.EscapeGap
-import Parking.Support.SquareDeficit
+module
+
+public import Parking.Support.SceneryHolePartial
+public import Parking.Support.EscapeGap
+public import Parking.Support.SquareDeficit
+
+@[expose] public section
 
 /-!
 # The two-target scenery correlation factor

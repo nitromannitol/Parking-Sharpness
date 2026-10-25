@@ -1,6 +1,10 @@
-import Parking.Support.SinkObservable
-import Parking.Support.BoundedConditionalMoment
-import Parking.Support.WeightedOdometerBounds
+module
+
+public import Parking.Support.SinkObservable
+public import Parking.Support.BoundedConditionalMoment
+public import Parking.Support.WeightedOdometerBounds
+
+@[expose] public section
 
 /-!
 # Green-weighted moment comparison for the sparse sink

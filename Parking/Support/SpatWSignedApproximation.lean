@@ -1,8 +1,12 @@
-import Parking.Support.SpatWMiddleApproximation
-import Parking.Support.SpatWOdometerMass
-import LatticeProb.Prob.Scaling.VanishingMass
-import Parking.Support.SpatWPairingTransfer
-import Parking.Support.SpatWMartingaleVariance
+module
+
+public import Parking.Support.SpatWMiddleApproximation
+public import Parking.Support.SpatWOdometerMass
+public import LatticeProb.Prob.Scaling.VanishingMass
+public import Parking.Support.SpatWPairingTransfer
+public import Parking.Support.SpatWMartingaleVariance
+
+@[expose] public section
 
 /-!
 # Signed density versus the scenery and divisible-odometer pairing

@@ -1,5 +1,9 @@
-import Parking.Support.Continuum
-import Mathlib.Topology.UniformSpace.LocallyUniformConvergence
+module
+
+public import Parking.Support.Continuum
+public import Mathlib.Topology.UniformSpace.LocallyUniformConvergence
+
+@[expose] public section
 
 /-!
 # Compactness of classical heat solutions

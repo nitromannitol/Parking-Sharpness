@@ -1,4 +1,8 @@
-import Parking.Support.Continuum
+module
+
+public import Parking.Support.Continuum
+
+@[expose] public section
 
 /-!
 # The strong minimum principle for the heat operator

@@ -1,4 +1,8 @@
-import Parking.Support.CovParts
+module
+
+public import Parking.Support.CovParts
+
+@[expose] public section
 
 /-!
 # The arithmetic of Step 2

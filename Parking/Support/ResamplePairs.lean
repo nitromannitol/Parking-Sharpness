@@ -1,5 +1,9 @@
-import Parking.Support.Resample
-import LatticeProb.Prob.CoordIntegral
+module
+
+public import Parking.Support.Resample
+public import LatticeProb.Prob.CoordIntegral
+
+@[expose] public section
 
 /-!
 # Step 3 of `lem:critical-density`: independence across sites

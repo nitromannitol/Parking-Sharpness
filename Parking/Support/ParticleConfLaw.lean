@@ -1,4 +1,8 @@
-import Parking.Support.CoupledLaw
+module
+
+public import Parking.Support.CoupledLaw
+
+@[expose] public section
 
 /-!
 # The joint law of the configuration and particle odometer

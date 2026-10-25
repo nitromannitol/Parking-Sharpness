@@ -1,5 +1,9 @@
-import Parking.Support.OrientedOperators
-import Parking.Support.Oriented
+module
+
+public import Parking.Support.OrientedOperators
+public import Parking.Support.Oriented
+
+@[expose] public section
 
 /-!
 # Directed layer collision probability

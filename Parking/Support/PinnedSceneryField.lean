@@ -1,5 +1,9 @@
-import Parking.Support.SceneryField
-import Parking.Support.WeightedOdometerBounds
+module
+
+public import Parking.Support.SceneryField
+public import Parking.Support.WeightedOdometerBounds
+
+@[expose] public section
 
 /-!
 # Pinning one coordinate of the sparse box field

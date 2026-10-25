@@ -1,4 +1,8 @@
-import Parking.Support.ProductMoment
+module
+
+public import Parking.Support.ProductMoment
+
+@[expose] public section
 
 /-!
 # Moments of a bounded nonnegative function and its conditional roots

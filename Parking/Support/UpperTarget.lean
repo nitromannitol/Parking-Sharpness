@@ -1,5 +1,9 @@
-import Parking.Support.CriticalLawReal
-import Parking.External.GreenNorms
+module
+
+public import Parking.Support.CriticalLawReal
+public import Parking.External.GreenNorms
+
+@[expose] public section
 
 /-!
 # Steps 2 and 3 of `thm:upper`, and `eq:target`

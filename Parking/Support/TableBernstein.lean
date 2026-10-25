@@ -1,7 +1,11 @@
-import Parking.Support.WeightedOdometerBounds
-import Parking.Support.BoundedMoment
-import Parking.Support.TableDifferenceSum
-import Parking.External.Bernstein
+module
+
+public import Parking.Support.WeightedOdometerBounds
+public import Parking.Support.BoundedMoment
+public import Parking.Support.TableDifferenceSum
+public import Parking.External.Bernstein
+
+@[expose] public section
 
 /-!
 # Bernstein's inequality for the table martingale

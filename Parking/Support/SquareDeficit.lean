@@ -1,4 +1,8 @@
-import Parking.Support.DeficitFactor
+module
+
+public import Parking.Support.DeficitFactor
+
+@[expose] public section
 
 /-!
 # Squared relative deficits

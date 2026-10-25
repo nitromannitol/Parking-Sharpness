@@ -1,6 +1,10 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Growth.SolutionBasic
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Growth.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `Growth`: Mathlib-only vocabulary to the repository

@@ -1,5 +1,9 @@
-import Parking.Support.MatchedMeanBalance
-import Parking.Support.MatchedMonotone
+module
+
+public import Parking.Support.MatchedMeanBalance
+public import Parking.Support.MatchedMonotone
+
+@[expose] public section
 
 /-!
 # Monotonicity of the mean odometer's Laplacian

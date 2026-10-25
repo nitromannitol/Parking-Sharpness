@@ -1,5 +1,9 @@
-import Parking.Support.BlockTools
-import LatticeProb.Walk.RangeSecond
+module
+
+public import Parking.Support.BlockTools
+public import LatticeProb.Walk.RangeSecond
+
+@[expose] public section
 
 /-!
 # `eq:stopping-blocks`: the block decomposition of the reward

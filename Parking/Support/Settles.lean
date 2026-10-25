@@ -1,6 +1,10 @@
-import Parking.Frozen.Growth
-import Parking.Support.CouplingTarget
-import Parking.Support.DensitySequence
+module
+
+public import Parking.Frozen.Growth
+public import Parking.Support.CouplingTarget
+public import Parking.Support.DensitySequence
+
+@[expose] public section
 
 /-!
 # Step 1 of `prop:everyone-settles`: every particle settles and every hole is filled

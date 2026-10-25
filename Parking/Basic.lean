@@ -1,10 +1,14 @@
-import LatticeProb.Site
-import LatticeProb.IID
-import LatticeProb.ParticleHole
-import LatticeProb.Rank
-import LatticeProb.ParticleHoleLemmas
-import LatticeProb.Walk.SRW
-import LatticeProb.Walk.Shells
+module
+
+public import LatticeProb.Site
+public import LatticeProb.IID
+public import LatticeProb.ParticleHole
+public import LatticeProb.Rank
+public import LatticeProb.ParticleHoleLemmas
+public import LatticeProb.Walk.SRW
+public import LatticeProb.Walk.Shells
+
+@[expose] public section
 
 /-!
 # The parking model

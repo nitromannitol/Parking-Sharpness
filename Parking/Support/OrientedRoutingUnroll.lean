@@ -1,5 +1,9 @@
-import Parking.Support.OrientedRouting
-import Parking.Support.OrientedRoutingCoordinate
+module
+
+public import Parking.Support.OrientedRouting
+public import Parking.Support.OrientedRoutingCoordinate
+
+@[expose] public section
 
 /-!
 # Convolution expansion of the directed routing error

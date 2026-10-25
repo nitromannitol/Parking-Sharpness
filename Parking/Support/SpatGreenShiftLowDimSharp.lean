@@ -1,4 +1,8 @@
-import Parking.Support.SpatGreenShiftLowDim
+module
+
+public import Parking.Support.SpatGreenShiftLowDim
+
+@[expose] public section
 
 /-!
 # The sharp dimension-one space-direction `l2Norm` rate

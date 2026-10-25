@@ -1,5 +1,9 @@
-import Parking.Support.NearestBallEvent
-import Mathlib.Probability.Process.Kolmogorov
+module
+
+public import Parking.Support.NearestBallEvent
+public import Mathlib.Probability.Process.Kolmogorov
+
+@[expose] public section
 
 /-!
 # The rescaled divisible odometer as a Kolmogorov process

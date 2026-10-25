@@ -1,7 +1,11 @@
-import Parking.Support.ThreePointLaw
-import Parking.External.SandpileGrowth
-import Parking.External.Stopping
-import Parking.Support.FourSparseChain
+module
+
+public import Parking.Support.ThreePointLaw
+public import Parking.External.SandpileGrowth
+public import Parking.External.Stopping
+public import Parking.Support.FourSparseChain
+
+@[expose] public section
 
 /-!
 # Divergence of the growth ratio at `d = 4` (frozen)

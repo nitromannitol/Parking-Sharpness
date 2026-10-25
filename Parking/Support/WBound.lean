@@ -1,6 +1,10 @@
-import Parking.Support.GreenIncrement
-import Parking.Support.ActivityHoles
-import Parking.Support.Comparison
+module
+
+public import Parking.Support.GreenIncrement
+public import Parking.Support.ActivityHoles
+public import Parking.Support.Comparison
+
+@[expose] public section
 
 /-!
 # Measurability and a pathwise bound on the error field

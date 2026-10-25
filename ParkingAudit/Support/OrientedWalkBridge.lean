@@ -1,6 +1,10 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.OrientedWalk.SolutionBasic
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.OrientedWalk.SolutionBasic
+
+@[expose] public section
 
 /-!
 # Bridge for `OrientedWalk`: Mathlib-only vocabulary to the repository

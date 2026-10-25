@@ -1,7 +1,11 @@
-import Parking.Support.CoordinateFiltration
-import Parking.Support.OrientedOdometerMeasurable
-import Parking.Support.OrientedVariance
-import Parking.Support.OrientedInstructionIntegral
+module
+
+public import Parking.Support.CoordinateFiltration
+public import Parking.Support.OrientedOdometerMeasurable
+public import Parking.Support.OrientedVariance
+public import Parking.Support.OrientedInstructionIntegral
+
+@[expose] public section
 
 /-!
 # Predictable departure counts and one-instruction moments

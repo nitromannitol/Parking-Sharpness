@@ -1,5 +1,9 @@
-import Parking.Support.SpatialGreenPairing
-import Parking.Support.ContUc
+module
+
+public import Parking.Support.SpatialGreenPairing
+public import Parking.Support.ContUc
+
+@[expose] public section
 
 /-!
 # The spatial odometer scaling limit (frozen)

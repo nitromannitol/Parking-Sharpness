@@ -1,5 +1,9 @@
-import Parking.Support.NearBounded
-import Parking.Support.CriticalChain
+module
+
+public import Parking.Support.NearBounded
+public import Parking.Support.CriticalChain
+
+@[expose] public section
 
 /-!
 # Comparison of the limit mean odometers

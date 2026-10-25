@@ -1,6 +1,10 @@
-import Parking.Support.MatchedCountIntegral
-import Parking.Support.MatchedBellman
-import Parking.Support.FutureValue
+module
+
+public import Parking.Support.MatchedCountIntegral
+public import Parking.Support.MatchedBellman
+public import Parking.Support.FutureValue
+
+@[expose] public section
 
 /-!
 # The expected remaining hole count in the common-table process

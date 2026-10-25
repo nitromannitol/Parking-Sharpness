@@ -1,6 +1,10 @@
-import Parking.Support.TiltProduct
-import LatticeProb.Prob.ExpFamily
-import Parking.Support.ProductBound
+module
+
+public import Parking.Support.TiltProduct
+public import LatticeProb.Prob.ExpFamily
+public import Parking.Support.ProductBound
+
+@[expose] public section
 
 /-!
 # Differentiating the tilted mean

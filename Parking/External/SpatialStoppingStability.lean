@@ -1,6 +1,10 @@
-import Parking.Support.ContSpatialValue
-import Parking.Support.Terminal
-import Parking.External.OrientedStoppingStability
+module
+
+public import Parking.Support.ContSpatialValue
+public import Parking.Support.Terminal
+public import Parking.External.OrientedStoppingStability
+
+@[expose] public section
 
 /-!
 # Spatial optimal-stopping stability (frozen)

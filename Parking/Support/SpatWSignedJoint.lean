@@ -1,6 +1,10 @@
-import Parking.Support.SpatWJointPairings
-import Parking.Support.SpatWSignedPairingResidual
-import Parking.Support.NearestEvents
+module
+
+public import Parking.Support.SpatWJointPairings
+public import Parking.Support.SpatWSignedPairingResidual
+public import Parking.Support.NearestEvents
+
+@[expose] public section
 
 /-!
 # Joint signed-density limit

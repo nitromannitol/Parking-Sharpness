@@ -1,11 +1,15 @@
-import LatticeProb.Prob.Laplace
-import LatticeProb.Prob.ExpTail
-import Parking.Support.CriticalLawReal
-import Parking.Support.SparseLaw
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import Parking.Support.UFinite
-import LatticeProb.Prob.MapPi
+module
+
+public import LatticeProb.Prob.Laplace
+public import LatticeProb.Prob.ExpTail
+public import Parking.Support.CriticalLawReal
+public import Parking.Support.SparseLaw
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+public import Parking.Support.UFinite
+public import LatticeProb.Prob.MapPi
+
+@[expose] public section
 
 /-!
 # Sparse-law convex comparison and the dimension-four sandpile bound

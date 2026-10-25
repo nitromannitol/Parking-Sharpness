@@ -1,8 +1,12 @@
-import Parking.Frozen.DensityCompare
-import Parking.Frozen.CriticalDensity
-import Parking.Support.Near
-import Parking.Support.CriticalChain
-import Parking.Support.JointStopping
+module
+
+public import Parking.Frozen.DensityCompare
+public import Parking.Frozen.CriticalDensity
+public import Parking.Support.Near
+public import Parking.Support.CriticalChain
+public import Parking.Support.JointStopping
+
+@[expose] public section
 
 /-!
 # The lower bound of `thm:near` above dimension three

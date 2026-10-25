@@ -1,5 +1,9 @@
-import Parking.Support.UConcBridge
-import Parking.Support.URealMoment
+module
+
+public import Parking.Support.UConcBridge
+public import Parking.Support.URealMoment
+
+@[expose] public section
 
 /-!
 # The concentration estimate and moment norm at a real one-site law

@@ -1,5 +1,9 @@
-import Parking.Support.NearestCriticalTail
-import Mathlib.MeasureTheory.Measure.Portmanteau
+module
+
+public import Parking.Support.NearestCriticalTail
+public import Mathlib.MeasureTheory.Measure.Portmanteau
+
+@[expose] public section
 
 /-!
 # Positivity of the continuum odometer at `(1,0)`

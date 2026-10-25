@@ -1,5 +1,9 @@
-import Parking.Support.InstructionHoleFactor
-import Parking.Support.PartialInvariant
+module
+
+public import Parking.Support.InstructionHoleFactor
+public import Parking.Support.PartialInvariant
+
+@[expose] public section
 
 /-!
 # The round hole reveal factor

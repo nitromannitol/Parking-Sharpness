@@ -1,4 +1,8 @@
-import Parking.Support.TightCov
+module
+
+public import Parking.Support.TightCov
+
+@[expose] public section
 
 /-!
 # Covariance limit of the interpolated box reward field

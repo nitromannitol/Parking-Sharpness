@@ -1,5 +1,9 @@
-import Parking.Support.Oriented
-import Parking.Support.KernelBridge
+module
+
+public import Parking.Support.Oriented
+public import Parking.Support.KernelBridge
+
+@[expose] public section
 
 /-!
 # The oriented kernel as a lattice kernel

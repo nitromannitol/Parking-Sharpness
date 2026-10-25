@@ -1,5 +1,9 @@
-import Parking.Support.SceneryFdd
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.SceneryFdd
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # Finite-dimensional convergence of the scenery pairings

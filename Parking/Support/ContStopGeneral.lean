@@ -1,6 +1,10 @@
-import LatticeProb.ContinuumStoppingBounds
-import Parking.Support.ContOrientedLimit
-import LatticeProb.ContinuumStoppingValue
+module
+
+public import LatticeProb.ContinuumStoppingBounds
+public import Parking.Support.ContOrientedLimit
+public import LatticeProb.ContinuumStoppingValue
+
+@[expose] public section
 
 /-!
 # The Brownian optimal-stopping value at a general reward

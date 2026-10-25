@@ -1,6 +1,10 @@
-import Parking.Support.TightBoxSupAssemble
-import Parking.Support.TightBoxSupTailAntitone
-import LatticeProb.Prob.Scaling.PolyGrowth
+module
+
+public import Parking.Support.TightBoxSupAssemble
+public import Parking.Support.TightBoxSupTailAntitone
+public import LatticeProb.Prob.Scaling.PolyGrowth
+
+@[expose] public section
 
 /-!
 # Moment bound for the assembled three-piece box supremum

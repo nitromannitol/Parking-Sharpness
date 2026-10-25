@@ -1,6 +1,10 @@
-import Parking.Support.BlockStop
-import Parking.Support.UpperStep
-import Parking.Support.PhiSum
+module
+
+public import Parking.Support.BlockStop
+public import Parking.Support.UpperStep
+public import Parking.Support.PhiSum
+
+@[expose] public section
 
 /-!
 # The analytic tools of the mean-horizon Step 2

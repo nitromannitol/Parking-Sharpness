@@ -1,5 +1,9 @@
-import Parking.Support.OrientedFreshness
-import Parking.Support.OrientedMaximum
+module
+
+public import Parking.Support.OrientedFreshness
+public import Parking.Support.OrientedMaximum
+
+@[expose] public section
 
 /-!
 # The directed routing error and its Bellman comparison

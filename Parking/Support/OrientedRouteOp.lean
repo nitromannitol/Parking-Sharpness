@@ -1,8 +1,12 @@
-import Parking.Support.OrientedRoute
+module
 
-import Parking.Support.OrientedRoute
-import Parking.Support.OrientedParticleMoment
-import Parking.Support.OrientedRouting
+public import Parking.Support.OrientedRoute
+
+public import Parking.Support.OrientedRoute
+public import Parking.Support.OrientedParticleMoment
+public import Parking.Support.OrientedRouting
+
+@[expose] public section
 
 /-!
 # The directed operator half of the one-layer noise average

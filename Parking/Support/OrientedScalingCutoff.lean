@@ -1,5 +1,9 @@
-import LatticeProb.WeakLimit
-import Parking.Support.OrientedScalingOne
+module
+
+public import LatticeProb.WeakLimit
+public import Parking.Support.OrientedScalingOne
+
+@[expose] public section
 
 /-!
 # `prop:oriented-scaling` from the truncated stopping problems

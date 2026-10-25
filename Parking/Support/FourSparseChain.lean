@@ -1,6 +1,10 @@
-import Parking.Support.SparseCompare
-import Parking.Support.DensitySequence
-import Parking.Frozen.CorCritical
+module
+
+public import Parking.Support.SparseCompare
+public import Parking.Support.DensitySequence
+public import Parking.Frozen.CorCritical
+
+@[expose] public section
 
 /-!
 # The sparse dimension-four ratio, from the critical lower bound and convex comparison

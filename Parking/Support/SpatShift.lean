@@ -1,4 +1,8 @@
-import Parking.Support.Invariance
+module
+
+public import Parking.Support.Invariance
+
+@[expose] public section
 
 /-!
 # Shift invariance of the scenery integral

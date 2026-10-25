@@ -1,6 +1,10 @@
-import Parking.Support.NearDensity
-import Parking.Support.NearTiltInterval
-import Parking.Frozen.CriticalDensity
+module
+
+public import Parking.Support.NearDensity
+public import Parking.Support.NearTiltInterval
+public import Parking.Frozen.CriticalDensity
+
+@[expose] public section
 
 /-!
 # The logarithmic lower bound above dimension three

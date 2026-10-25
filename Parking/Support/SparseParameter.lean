@@ -1,5 +1,9 @@
-import Parking.Support.IntegerSparseComparison
-import Parking.Support.MasterChain
+module
+
+public import Parking.Support.IntegerSparseComparison
+public import Parking.Support.MasterChain
+
+@[expose] public section
 
 /-!
 # A sparse comparison parameter for centered nonconstant integer laws

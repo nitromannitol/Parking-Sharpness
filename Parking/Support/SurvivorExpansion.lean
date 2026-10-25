@@ -1,4 +1,8 @@
-import Parking.Support.Exchange
+module
+
+public import Parking.Support.Exchange
+
+@[expose] public section
 
 /-!
 # The expansion of `S_t` over the configuration at the origin
@@ -144,10 +148,10 @@ theorem measure_active_eq (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
     exact (measurable_pi_apply ((t, 0) : ℕ × ℕ)) (measurableSet_singleton true)
   have hmσ : Measurable fun ω : Data d => fun q : ℕ × ℕ =>
       (state (toDriver ω) q.1).active (0, σ q.2) :=
-    measurable_pi_lambda _ fun q => (measurable_state (d := d) q.1).1 (0, σ q.2)
+    measurable_pi_iff.mpr fun q => (measurable_state (d := d) q.1).1 (0, σ q.2)
   have hmid : Measurable fun ω : Data d => fun q : ℕ × ℕ =>
       (state (toDriver ω) q.1).active (0, q.2) :=
-    measurable_pi_lambda _ fun q => (measurable_state (d := d) q.1).1 (0, q.2)
+    measurable_pi_iff.mpr fun q => (measurable_state (d := d) q.1).1 (0, q.2)
   have hval := congrArg (fun ρ : Measure (ℕ × ℕ → Bool) =>
     ρ {f : ℕ × ℕ → Bool | f (t, 0) = true}) hex
   simp only [Measure.map_apply hmσ hT, Measure.map_apply hmid hT] at hval

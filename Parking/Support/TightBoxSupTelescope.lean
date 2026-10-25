@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupChain
+module
+
+public import Parking.Support.TightBoxSupChain
+
+@[expose] public section
 
 /-!
 # Telescoping to the value of `Yfield`

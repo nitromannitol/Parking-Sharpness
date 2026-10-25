@@ -1,6 +1,10 @@
-import Parking.Support.OrientedNorm
-import Parking.Support.BinomialDelay
-import Parking.Support.BinomialMoments
+module
+
+public import Parking.Support.OrientedNorm
+public import Parking.Support.BinomialDelay
+public import Parking.Support.BinomialMoments
+
+@[expose] public section
 
 /-!
 # Squared coefficient bound for two times

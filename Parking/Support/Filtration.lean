@@ -1,4 +1,8 @@
-import Parking.Support.Error
+module
+
+public import Parking.Support.Error
+
+@[expose] public section
 
 /-!
 # Exposure filtration

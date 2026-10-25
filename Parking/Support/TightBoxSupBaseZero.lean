@@ -1,4 +1,8 @@
-import Parking.Support.TightBoxSupBase
+module
+
+public import Parking.Support.TightBoxSupBase
+
+@[expose] public section
 
 /-!
 # The level-`0` base term

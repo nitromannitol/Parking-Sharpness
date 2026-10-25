@@ -1,6 +1,10 @@
-import Parking.Support.ContinuumCutoffLimit
-import Parking.Support.ContUc
-import Parking.External.LinearFieldScaling
+module
+
+public import Parking.Support.ContinuumCutoffLimit
+public import Parking.Support.ContUc
+public import Parking.External.LinearFieldScaling
+
+@[expose] public section
 
 /-!
 # The randomized cutoff-to-true bound for `contUc`'s stopping summand

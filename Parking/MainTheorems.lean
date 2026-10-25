@@ -1,12 +1,16 @@
-import Parking.Frozen.SubcriticalTail
-import Parking.Frozen.Master
-import Parking.Frozen.Growth
-import Parking.Frozen.Trichotomy
-import Parking.Frozen.Nearest
-import Parking.Frozen.NearestCounterexample
-import Parking.Frozen.Near
-import Parking.Frozen.OrientedWalk
-import Parking.External.Stopping
+module
+
+public import Parking.Frozen.SubcriticalTail
+public import Parking.Frozen.Master
+public import Parking.Frozen.Growth
+public import Parking.Frozen.Trichotomy
+public import Parking.Frozen.Nearest
+public import Parking.Frozen.NearestCounterexample
+public import Parking.Frozen.Near
+public import Parking.Frozen.OrientedWalk
+public import Parking.External.Stopping
+
+@[expose] public section
 
 /-!
 # Main results

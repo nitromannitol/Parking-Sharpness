@@ -1,6 +1,10 @@
-import Parking.Support.SubcriticalRelabel
-import Parking.Support.ReadsPresent
-import Parking.Support.SubcriticalDepends
+module
+
+public import Parking.Support.SubcriticalRelabel
+public import Parking.Support.ReadsPresent
+public import Parking.Support.SubcriticalDepends
+
+@[expose] public section
 
 /-!
 # Relabeling invariance of the subcritical observables

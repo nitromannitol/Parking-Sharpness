@@ -1,5 +1,9 @@
-import Parking.Support.Walk
-import LatticeProb.Walk.LatticeKernel
+module
+
+public import Parking.Support.Walk
+public import LatticeProb.Walk.LatticeKernel
+
+@[expose] public section
 
 /-!
 # Lattice kernels

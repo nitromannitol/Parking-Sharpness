@@ -1,5 +1,9 @@
-import Parking.Support.OrientedNoArrivalLaw
-import Parking.Support.OrientedArrivalJoint
+module
+
+public import Parking.Support.OrientedNoArrivalLaw
+public import Parking.Support.OrientedArrivalJoint
+
+@[expose] public section
 
 /-!
 # The joint no-arrival probability and its exponential lower bound

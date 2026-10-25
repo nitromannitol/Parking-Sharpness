@@ -1,4 +1,8 @@
-import Parking.Support.OrientedError
+module
+
+public import Parking.Support.OrientedError
+
+@[expose] public section
 
 /-!
 # Pointwise directed pathwise comparison

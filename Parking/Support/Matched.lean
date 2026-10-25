@@ -1,5 +1,9 @@
-import Parking.Support.Agree
-import Parking.Support.Coupling
+module
+
+public import Parking.Support.Agree
+public import Parking.Support.Coupling
+
+@[expose] public section
 
 /-!
 # The common-table construction
@@ -193,7 +197,7 @@ theorem Parking.measurableState_pState (e : Ω → Site d → ℤ)
   let T : Ω → LatticeProb.PData d := fun ω =>
     (e ω, (fun q => Parking.stepVec (m ω q)), r ω)
   have hT : Measurable T := he.prodMk
-    ((measurable_pi_lambda _ fun q => hvec.comp ((measurable_pi_apply q).comp hm)).prodMk hr)
+    ((measurable_pi_iff.mpr fun q => hvec.comp ((measurable_pi_apply q).comp hm)).prodMk hr)
   have hst : (fun ω => Parking.pState ⟨e ω, m ω, r ω⟩ t) =
       fun ω => LatticeProb.pState (LatticeProb.toPDriver (T ω)) t :=
     funext fun ω => Parking.pState_stepVec (e ω) (m ω) (r ω) t
@@ -258,7 +262,7 @@ theorem Parking.measurableState_matchedState (i₀ : Fin d) (e : Ω → Site d �
       let m : Ω → Label d × ℕ → Fin d × Bool := fun ω q =>
         if q.2 < t then Parking.matchedMoves (e ω) (r ω) (σ ω) q else (i₀, false)
       have hm : Measurable m := by
-        refine measurable_pi_lambda _ fun q => ?_
+        refine measurable_pi_iff.mpr fun q => ?_
         dsimp [m]
         by_cases hqt : q.2 < t
         · simp only [if_pos hqt]
@@ -285,7 +289,7 @@ theorem Parking.measurable_matchedMoves (i₀ : Fin d) (e : Ω → Site d → �
     (r : Ω → Label d × ℕ → ℝ) (σ : Ω → Parking.RoundNoise d)
     (he : Measurable e) (hr : Measurable r) (hσ : Measurable σ) :
     Measurable fun ω => Parking.matchedMoves (e ω) (r ω) (σ ω) := by
-  refine measurable_pi_lambda _ fun q => ?_
+  refine measurable_pi_iff.mpr fun q => ?_
   exact LatticeProb.measurable_eval_var _
     (Parking.measurable_matchSlot e r _ he hr
       (Parking.measurableState_matchedState i₀ e r σ he hr hσ q.2) q.2 q.1)

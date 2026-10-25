@@ -1,5 +1,9 @@
-import Parking.Support.FinitePathMoment
-import Parking.Support.OrientedPathMax
+module
+
+public import Parking.Support.FinitePathMoment
+public import Parking.Support.OrientedPathMax
+
+@[expose] public section
 
 /-!
 # One-quarter moment growth of the directed walk maximum

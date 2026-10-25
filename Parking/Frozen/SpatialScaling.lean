@@ -1,17 +1,21 @@
-import Parking.Support.Continuum
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.HeatStrongMinimumProved
-import Parking.External.GreenNormsProved
-import Parking.External.SpatialOdometerScaling
-import Parking.Support.UpperTarget
-import Parking.Support.SpatialDerivativeLimit
-import Parking.Support.SpatialVanishingDistance
-import Parking.Support.SpatWSignedJoint
-import Parking.Support.SpatialFixedTestPDE
-import Parking.Support.SpatialNoiseVersion
+module
+
+public import Parking.Support.Continuum
+public import Parking.External.SandpileGrowth
+public import Parking.External.Bernstein
+public import Parking.External.UConcentration
+public import Parking.External.UConcentrationProved
+public import Parking.External.HeatStrongMinimumProved
+public import Parking.External.GreenNormsProved
+public import Parking.External.SpatialOdometerScaling
+public import Parking.Support.UpperTarget
+public import Parking.Support.SpatialDerivativeLimit
+public import Parking.Support.SpatialVanishingDistance
+public import Parking.Support.SpatWSignedJoint
+public import Parking.Support.SpatialFixedTestPDE
+public import Parking.Support.SpatialNoiseVersion
+
+@[expose] public section
 
 /-!
 # Proposition 8.3: the spatial scaling limit (frozen)

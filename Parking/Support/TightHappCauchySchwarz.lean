@@ -1,6 +1,10 @@
-import Parking.Support.TightBoxSupL2
-import Parking.Support.TightBoxLaw
-import Parking.Support.MomentLimits
+module
+
+public import Parking.Support.TightBoxSupL2
+public import Parking.Support.TightBoxLaw
+public import Parking.Support.MomentLimits
+
+@[expose] public section
 
 /-!
 # The reward-field-side `L¹` moment bound for `happ`

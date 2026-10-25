@@ -1,7 +1,11 @@
-import Parking.Support.Walk
-import Parking.Support.GammaSum
-import Parking.Support.WBound
-import Parking.Support.ErrorUnroll
+module
+
+public import Parking.Support.Walk
+public import Parking.Support.GammaSum
+public import Parking.Support.WBound
+public import Parking.Support.ErrorUnroll
+
+@[expose] public section
 
 /-!
 # The linear membrane field

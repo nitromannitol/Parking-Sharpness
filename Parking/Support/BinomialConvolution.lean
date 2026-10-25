@@ -1,4 +1,8 @@
-import Parking.Support.OrientedBinomial
+module
+
+public import Parking.Support.OrientedBinomial
+
+@[expose] public section
 
 /-!
 # Binomial convolution and the convex square estimate

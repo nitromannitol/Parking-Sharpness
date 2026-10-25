@@ -1,4 +1,8 @@
-import Parking.Support.RangeResolvent
+module
+
+public import Parking.Support.RangeResolvent
+
+@[expose] public section
 
 /-!
 # The dyadic block sum of Step 2 of `lem:mean-horizon` (`parking.tex:2817-2841`)

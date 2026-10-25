@@ -1,5 +1,9 @@
-import Parking.Support.BoundedProduct
-import Parking.Support.DiscrepancyNorm
+module
+
+public import Parking.Support.BoundedProduct
+public import Parking.Support.DiscrepancyNorm
+
+@[expose] public section
 
 /-!
 # Sub-Gaussian moment norms

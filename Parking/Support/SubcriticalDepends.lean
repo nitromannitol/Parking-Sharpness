@@ -1,5 +1,9 @@
-import Parking.Support.FiniteRange
-import Parking.Support.SubcriticalPair
+module
+
+public import Parking.Support.FiniteRange
+public import Parking.Support.SubcriticalPair
+
+@[expose] public section
 
 /-!
 # The subcritical observables depend on finitely many sites

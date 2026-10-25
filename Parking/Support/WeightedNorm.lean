@@ -1,5 +1,9 @@
-import Parking.Support.WeightedMoment
-import Parking.Support.MomentTail
+module
+
+public import Parking.Support.WeightedMoment
+public import Parking.Support.MomentTail
+
+@[expose] public section
 
 /-!
 # Weighted `rNorm` bound

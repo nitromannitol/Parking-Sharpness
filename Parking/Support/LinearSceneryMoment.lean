@@ -1,4 +1,8 @@
-import Parking.Support.LinearMoment
+module
+
+public import Parking.Support.LinearMoment
+
+@[expose] public section
 
 /-!
 # Finite coefficient moments under an infinite independent field

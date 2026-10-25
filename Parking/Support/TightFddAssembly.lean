@@ -1,5 +1,9 @@
-import Parking.Support.TightContFdd
-import LatticeProb.Prob.Scaling.CramerWold
+module
+
+public import Parking.Support.TightContFdd
+public import LatticeProb.Prob.Scaling.CramerWold
+
+@[expose] public section
 
 /-!
 # Finite-dimensional convergence of the rescaled box reward field

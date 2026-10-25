@@ -1,5 +1,9 @@
-import Parking.Support.ProductTower
-import Parking.Support.CenteredVariance
+module
+
+public import Parking.Support.ProductTower
+public import Parking.Support.CenteredVariance
+
+@[expose] public section
 
 /-!
 # Revealing one coordinate of a partial integral

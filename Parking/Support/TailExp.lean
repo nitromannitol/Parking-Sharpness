@@ -1,6 +1,10 @@
-import Mathlib
-import Parking.Support.Near
-import Parking.Support.RangeLower
+module
+
+public import Mathlib
+public import Parking.Support.Near
+public import Parking.Support.RangeLower
+
+@[expose] public section
 
 /-!
 # Tail analysis downstream of `thm:subcritical`

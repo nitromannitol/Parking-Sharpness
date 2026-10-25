@@ -1,7 +1,11 @@
-import Mathlib
-import Parking.MainTheorems
-import ParkingAudit.Nearest.SolutionBasic
-import ParkingAudit.Support.NearestBridge
+module
+
+public import Mathlib
+public import Parking.MainTheorems
+public import ParkingAudit.Nearest.SolutionBasic
+public import ParkingAudit.Support.NearestBridge
+
+@[expose] public section
 
 /-!
 # Solution: Nearest

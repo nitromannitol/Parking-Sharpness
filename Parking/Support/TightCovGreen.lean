@@ -1,7 +1,11 @@
-import Parking.Support.TightKolmogorov
-import Parking.Support.BinomialConvolution
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.CoordIntegral
+module
+
+public import Parking.Support.TightKolmogorov
+public import Parking.Support.BinomialConvolution
+public import Parking.Support.CriticalLawReal
+public import LatticeProb.Prob.CoordIntegral
+
+@[expose] public section
 
 /-!
 # Green-function cross sums for the covariance

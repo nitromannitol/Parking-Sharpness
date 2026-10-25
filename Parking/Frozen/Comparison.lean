@@ -1,4 +1,8 @@
-import Parking.Support.Comparison
+module
+
+public import Parking.Support.Comparison
+
+@[expose] public section
 
 /-!
 # The divisible/particle comparison (frozen)

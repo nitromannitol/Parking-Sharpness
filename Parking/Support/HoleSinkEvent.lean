@@ -1,5 +1,9 @@
-import Parking.Support.HoleNoArrival
-import Parking.Support.SinkField
+module
+
+public import Parking.Support.HoleNoArrival
+public import Parking.Support.SinkField
+
+@[expose] public section
 
 /-!
 # The surviving-hole event as an initial atom and a sink no-arrival event

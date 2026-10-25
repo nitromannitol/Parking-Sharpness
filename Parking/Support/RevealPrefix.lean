@@ -1,4 +1,8 @@
-import Parking.Support.ProductDoob
+module
+
+public import Parking.Support.ProductDoob
+
+@[expose] public section
 
 /-!
 # Revealed prefixes of a blocked enumeration

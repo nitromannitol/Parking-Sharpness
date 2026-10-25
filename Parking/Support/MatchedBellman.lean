@@ -1,7 +1,11 @@
-import Parking.Support.MatchedPriority
-import Parking.Support.MeanLaw
-import Parking.Support.InstructionField
-import LatticeProb.Prob.InfinitePiSplit
+module
+
+public import Parking.Support.MatchedPriority
+public import Parking.Support.MeanLaw
+public import Parking.Support.InstructionField
+public import LatticeProb.Prob.InfinitePiSplit
+
+@[expose] public section
 
 /-!
 # A Bellman equation for the mean odometer

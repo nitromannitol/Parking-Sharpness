@@ -1,5 +1,9 @@
-import Parking.Support.Lp
-import Parking.Support.Pathwise
+module
+
+public import Parking.Support.Lp
+public import Parking.Support.Pathwise
+
+@[expose] public section
 
 /-!
 # The maximal average `w^\star` is measurable and bounded

@@ -1,8 +1,12 @@
-import Parking.Support.NearestPathwise
-import Parking.Support.NearestSigned
-import Parking.Support.NearestContinuumPositivity
-import Parking.Frozen.SpatialScaling
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.NearestPathwise
+public import Parking.Support.NearestSigned
+public import Parking.Support.NearestContinuumPositivity
+public import Parking.Frozen.SpatialScaling
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # `thm:nearest` from `prop:spatial-scaling`

@@ -1,5 +1,9 @@
-import Parking.Support.OrientedPotential
-import Parking.Support.OrientedRoutingCoordinate
+module
+
+public import Parking.Support.OrientedPotential
+public import Parking.Support.OrientedRoutingCoordinate
+
+@[expose] public section
 
 /-!
 # Directed Green increment as a sum of routing discrepancies

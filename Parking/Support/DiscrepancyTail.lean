@@ -1,4 +1,8 @@
-import Parking.Support.DiscrepancyRelative
+module
+
+public import Parking.Support.DiscrepancyRelative
+
+@[expose] public section
 
 /-!
 # The discrepancy tail

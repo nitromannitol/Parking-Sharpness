@@ -1,6 +1,10 @@
-import Parking.Support.HatInterpD
-import Parking.Support.LinPotential
-import Mathlib.Topology.ContinuousMap.BoundedCompactlySupported
+module
+
+public import Parking.Support.HatInterpD
+public import Parking.Support.LinPotential
+public import Mathlib.Topology.ContinuousMap.BoundedCompactlySupported
+
+@[expose] public section
 
 /-!
 # The interpolated linear membrane field

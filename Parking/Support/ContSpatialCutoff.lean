@@ -1,5 +1,9 @@
-import Parking.Support.ContValueLipschitz
-import LatticeProb.Prob.BrownianExitTime
+module
+
+public import Parking.Support.ContValueLipschitz
+public import LatticeProb.Prob.BrownianExitTime
+
+@[expose] public section
 
 /-!
 # The cutoff construction for the continuum spatial value

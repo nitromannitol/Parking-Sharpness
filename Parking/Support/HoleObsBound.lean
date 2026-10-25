@@ -1,4 +1,8 @@
-import Parking.Support.SurvivorTransfer
+module
+
+public import Parking.Support.SurvivorTransfer
+
+@[expose] public section
 
 /-!
 # The hole observable is dominated by the initial hole count

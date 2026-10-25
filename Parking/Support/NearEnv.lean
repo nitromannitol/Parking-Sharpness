@@ -1,6 +1,10 @@
-import Parking.Support.NearRates
-import Parking.Support.Near
-import Parking.Support.Pathwise
+module
+
+public import Parking.Support.NearRates
+public import Parking.Support.Near
+public import Parking.Support.Pathwise
+
+@[expose] public section
 
 /-!
 # The scale in which Step 3 of the upper bounds of `thm:near` is read

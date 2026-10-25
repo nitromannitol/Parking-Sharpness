@@ -1,5 +1,9 @@
-import Parking.Support.WExploration
-import LatticeProb.Prob.ExplorationCond
+module
+
+public import Parking.Support.WExploration
+public import LatticeProb.Prob.ExplorationCond
+
+@[expose] public section
 
 /-!
 # The exploration reads only what it has revealed

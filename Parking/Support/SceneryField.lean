@@ -1,5 +1,9 @@
-import Parking.Support.MeanLocality
-import Parking.Support.MatchedUniform
+module
+
+public import Parking.Support.MeanLocality
+public import Parking.Support.MatchedUniform
+
+@[expose] public section
 
 /-!
 # Finite, sparse-valued approximating fields

@@ -1,6 +1,10 @@
-import Parking.Support.SubcriticalJoint
-import Parking.Support.RangeLower
-import Parking.Support.Near
+module
+
+public import Parking.Support.SubcriticalJoint
+public import Parking.Support.RangeLower
+public import Parking.Support.Near
+
+@[expose] public section
 
 /-!
 # The joint bound of `thm:subcritical`

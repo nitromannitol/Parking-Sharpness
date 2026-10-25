@@ -1,4 +1,8 @@
-import Parking.Support.TableDifference
+module
+
+public import Parking.Support.TableDifference
+
+@[expose] public section
 
 /-!
 # The chronological reveal filtration

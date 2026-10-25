@@ -1,3 +1,5 @@
+module
+
 /-
 The continuum box-reward law: `Parking.contBoxRewardMap` converges, at every fixed noise
 realization, to `Parking.contBoxLimitMap` uniformly on the box, because the modification `Y`
@@ -8,7 +10,9 @@ pointwise limit of measurable maps into a metric space is measurable
 genuine Borel probability measure on `C(rewardBox T A, ℝ)`, with no descriptive-set-theoretic
 fact about the σ-algebra of `C(K, ℝ)` needed.
 -/
-import Parking.Support.TightContBoxLaw
+public import Parking.Support.TightContBoxLaw
+
+@[expose] public section
 
 open LatticeProb.BoxClamp (rewardBox)
 open LatticeProb.ContinuumStopping (contNoiseLaw contNoiseSpace)

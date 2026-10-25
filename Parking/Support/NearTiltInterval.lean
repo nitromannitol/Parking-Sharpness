@@ -1,7 +1,11 @@
-import Parking.Support.TailRange
-import Parking.Support.TiltContinuity
-import Parking.Support.SubcriticalInterval
-import Parking.Support.NearTiltMoments
+module
+
+public import Parking.Support.TailRange
+public import Parking.Support.TiltContinuity
+public import Parking.Support.SubcriticalInterval
+public import Parking.Support.NearTiltMoments
+
+@[expose] public section
 
 /-!
 # Steps 1 and 2 of `lem:near-tilt`: the tilt interval and its prefactor

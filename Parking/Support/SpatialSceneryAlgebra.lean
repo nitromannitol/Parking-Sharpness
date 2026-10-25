@@ -1,5 +1,9 @@
-import Parking.Support.SpatialTimeSourceApproximation
-import Parking.Support.SpatialTestedSum
+module
+
+public import Parking.Support.SpatialTimeSourceApproximation
+public import Parking.Support.SpatialTestedSum
+
+@[expose] public section
 
 /-!
 # Scenery pairing algebra

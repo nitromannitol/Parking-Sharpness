@@ -1,8 +1,12 @@
-import Parking.Support.TailRange
-import Parking.Support.TailExp
-import Parking.Support.SubcriticalInterval
-import Parking.Frozen.RangeLower
-import Parking.External.DonskerVaradhan
+module
+
+public import Parking.Support.TailRange
+public import Parking.Support.TailExp
+public import Parking.Support.SubcriticalInterval
+public import Parking.Frozen.RangeLower
+public import Parking.External.DonskerVaradhan
+
+@[expose] public section
 
 /-!
 # The two-sided subcritical tail bound

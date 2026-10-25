@@ -1,5 +1,9 @@
-import Parking.Support.OrientedArrivalMean
-import Parking.Support.OrientedPotential
+module
+
+public import Parking.Support.OrientedArrivalMean
+public import Parking.Support.OrientedPotential
+
+@[expose] public section
 
 /-!
 # Directed particle mean dominates the divisible odometer

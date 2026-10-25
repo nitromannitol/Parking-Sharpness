@@ -1,4 +1,8 @@
-import Parking.Support.OneParticle
+module
+
+public import Parking.Support.OneParticle
+
+@[expose] public section
 
 /-!
 # Lemma 3.3: the one-particle coupling (frozen)

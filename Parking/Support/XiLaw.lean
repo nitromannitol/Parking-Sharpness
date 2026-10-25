@@ -1,12 +1,16 @@
-import Parking.Support.Near
-import LatticeProb.Prob.ConvexOrder
-import LatticeProb.Prob.Laplace
-import LatticeProb.Prob.ExpTail
-import Parking.Support.CriticalLawReal
-import LatticeProb.Prob.ConvexProduct
-import Parking.Support.UConvex
-import LatticeProb.Prob.MapPi
-import LatticeProb.Prob.NearFamily
+module
+
+public import Parking.Support.Near
+public import LatticeProb.Prob.ConvexOrder
+public import LatticeProb.Prob.Laplace
+public import LatticeProb.Prob.ExpTail
+public import Parking.Support.CriticalLawReal
+public import LatticeProb.Prob.ConvexProduct
+public import Parking.Support.UConvex
+public import LatticeProb.Prob.MapPi
+public import LatticeProb.Prob.NearFamily
+
+@[expose] public section
 
 /-!
 # The law of the recentred scenery (`parking.tex:2744-2747`)

@@ -1,6 +1,10 @@
-import Parking.Support.IsolatedTransport
-import Parking.Support.FiniteTransport
-import Parking.Support.IndicatorIntegral
+module
+
+public import Parking.Support.IsolatedTransport
+public import Parking.Support.FiniteTransport
+public import Parking.Support.IndicatorIntegral
+
+@[expose] public section
 
 /-!
 # From isolated holes to good holes

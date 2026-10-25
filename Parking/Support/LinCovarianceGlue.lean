@@ -1,8 +1,12 @@
-import Parking.Support.LinCovariance
-import Parking.Support.LinPotentialSum
-import Parking.Support.LinTimeShift
-import Parking.Support.SpatGreenShift
-import LatticeProb.Walk.GreenPointwise
+module
+
+public import Parking.Support.LinCovariance
+public import Parking.Support.LinPotentialSum
+public import Parking.Support.LinTimeShift
+public import Parking.Support.SpatGreenShift
+public import LatticeProb.Walk.GreenPointwise
+
+@[expose] public section
 
 /-!
 # The covariance of the linear membrane field, closed form

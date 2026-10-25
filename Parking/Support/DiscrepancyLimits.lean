@@ -1,6 +1,10 @@
-import Parking.Support.DiscrepancyTail
-import Parking.Support.MomentLimits
-import Parking.Support.TailLimits
+module
+
+public import Parking.Support.DiscrepancyTail
+public import Parking.Support.MomentLimits
+public import Parking.Support.TailLimits
+
+@[expose] public section
 
 /-!
 # Discrepancy limits

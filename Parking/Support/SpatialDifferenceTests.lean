@@ -1,9 +1,13 @@
-import Parking.Support.SpatialTimeDerivative
-import Parking.Support.SpaceTimeContOp
-import LatticeProb.Prob.Scaling.TimeTranslationPairing
-import LatticeProb.Prob.Scaling.BackwardPositivity
-import Parking.External.HeatInteriorRegularity
-import Mathlib.MeasureTheory.Group.Integral
+module
+
+public import Parking.Support.SpatialTimeDerivative
+public import Parking.Support.SpaceTimeContOp
+public import LatticeProb.Prob.Scaling.TimeTranslationPairing
+public import LatticeProb.Prob.Scaling.BackwardPositivity
+public import Parking.External.HeatInteriorRegularity
+public import Mathlib.MeasureTheory.Group.Integral
+
+@[expose] public section
 
 /-! Backward differences of test functions for the time-difference argument. -/
 

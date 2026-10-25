@@ -1,5 +1,9 @@
-import Parking.Support.MomentLimits
-import Parking.Support.Lp
+module
+
+public import Parking.Support.MomentLimits
+public import Parking.Support.Lp
+
+@[expose] public section
 
 open LatticeProb.MomentNorm (rNorm)
 

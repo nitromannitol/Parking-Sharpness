@@ -1,6 +1,10 @@
-import Parking.Support.ConfMoments
-import Parking.Support.WBound
-import Parking.Support.KernelBridge
+module
+
+public import Parking.Support.ConfMoments
+public import Parking.Support.WBound
+public import Parking.Support.KernelBridge
+
+@[expose] public section
 
 /-!
 # A priori bounds on the divisible sandpile odometer

@@ -1,6 +1,10 @@
-import Parking.Support.NearestGreen
-import Parking.Support.RoundHitting
-import LatticeProb.Walk.ExteriorDirichlet
+module
+
+public import Parking.Support.NearestGreen
+public import Parking.Support.RoundHitting
+public import LatticeProb.Walk.ExteriorDirichlet
+
+@[expose] public section
 
 /-!
 # The Green potential and its decrement under one fresh direction

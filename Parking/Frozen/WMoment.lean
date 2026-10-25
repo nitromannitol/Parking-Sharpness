@@ -1,4 +1,8 @@
-import Parking.Support.WMomentProof
+module
+
+public import Parking.Support.WMomentProof
+
+@[expose] public section
 
 /-!
 # Proposition 5.6: the w-error moment bound (frozen)

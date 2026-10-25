@@ -1,5 +1,9 @@
-import Parking.Support.OrientedFiniteRoute
-import Parking.Support.OrientedNorm
+module
+
+public import Parking.Support.OrientedFiniteRoute
+public import Parking.Support.OrientedNorm
+
+@[expose] public section
 
 /-!
 # The total directed charge and its particle moment bound

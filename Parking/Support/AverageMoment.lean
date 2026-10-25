@@ -1,5 +1,9 @@
-import Parking.Support.WeightedMoment
-import Parking.Support.MomentLimits
+module
+
+public import Parking.Support.WeightedMoment
+public import Parking.Support.MomentLimits
+
+@[expose] public section
 
 /-!
 # Averaging a common moment bound

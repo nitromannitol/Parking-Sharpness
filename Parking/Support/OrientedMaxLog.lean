@@ -1,7 +1,11 @@
-import Parking.Support.OrientedPotentialExponential
-import Parking.Support.OrientedPathMax
-import Parking.Support.FiniteExponentialMax
-import Parking.Support.ExponentialMean
+module
+
+public import Parking.Support.OrientedPotentialExponential
+public import Parking.Support.OrientedPathMax
+public import Parking.Support.FiniteExponentialMax
+public import Parking.Support.ExponentialMean
+
+@[expose] public section
 
 /-!
 # A logarithmic mean bound for the potential maximum

@@ -1,6 +1,10 @@
-import Parking.Support.OrientedCollision
-import Parking.Support.BinomialNorm
-import LatticeProb.Walk.SRWDiag
+module
+
+public import Parking.Support.OrientedCollision
+public import Parking.Support.BinomialNorm
+public import LatticeProb.Walk.SRWDiag
+
+@[expose] public section
 
 /-!
 # Two-sided directed layer norms

@@ -1,7 +1,11 @@
-import Parking.Support.CoupledMeans
-import Parking.Support.MeanLaw
-import Parking.Support.MatchedBellman
-import Parking.Support.UpperTarget
+module
+
+public import Parking.Support.CoupledMeans
+public import Parking.Support.MeanLaw
+public import Parking.Support.MatchedBellman
+public import Parking.Support.UpperTarget
+
+@[expose] public section
 
 /-!
 # The count history has the original process's law

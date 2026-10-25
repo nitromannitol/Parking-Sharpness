@@ -1,6 +1,10 @@
-import Parking.Support.OrientedFinite
-import Parking.Support.OrientedDelay
-import Parking.Support.LinearFiniteSupport
+module
+
+public import Parking.Support.OrientedFinite
+public import Parking.Support.OrientedDelay
+public import Parking.Support.LinearFiniteSupport
+
+@[expose] public section
 
 /-!
 # Conditional scenery moments of potential increments

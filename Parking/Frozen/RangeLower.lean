@@ -1,4 +1,8 @@
-import Parking.Support.RangeLower
+module
+
+public import Parking.Support.RangeLower
+
+@[expose] public section
 
 /-!
 # Lemma 10.1: the range lower bound (frozen)

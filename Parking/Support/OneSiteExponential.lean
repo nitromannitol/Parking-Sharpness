@@ -1,5 +1,9 @@
-import Parking.Support.ExponentialRemainder
-import Parking.Support.ConfMoments
+module
+
+public import Parking.Support.ExponentialRemainder
+public import Parking.Support.ConfMoments
+
+@[expose] public section
 
 /-!
 # A quadratic exponential-moment bound near the origin

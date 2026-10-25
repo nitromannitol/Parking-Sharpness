@@ -1,7 +1,11 @@
-import Parking.Support.OrientedError
-import Parking.Support.OrientedOdometerMeasurable
-import Parking.Support.Measurability
-import Parking.Support.ActivityHoles
+module
+
+public import Parking.Support.OrientedError
+public import Parking.Support.OrientedOdometerMeasurable
+public import Parking.Support.Measurability
+public import Parking.Support.ActivityHoles
+
+@[expose] public section
 
 /-!
 # Measurability of the directed odometer and error field

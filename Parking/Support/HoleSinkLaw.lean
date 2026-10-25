@@ -1,8 +1,12 @@
-import Parking.Support.HoleSinkEvent
-import Parking.Support.TableHoleLaw
-import Parking.Support.NoArrivalJoint
-import Parking.Support.ClosePair
-import LatticeProb.Prob.Coordinate
+module
+
+public import Parking.Support.HoleSinkEvent
+public import Parking.Support.TableHoleLaw
+public import Parking.Support.NoArrivalJoint
+public import Parking.Support.ClosePair
+public import LatticeProb.Prob.Coordinate
+
+@[expose] public section
 
 /-!
 # The sparse surviving-hole probability factors through the sink no-arrival probability

@@ -1,5 +1,9 @@
-import Parking.Support.ContOrientedLimit
-import LatticeProb.Prob.ChentsovPiModification
+module
+
+public import Parking.Support.ContOrientedLimit
+public import LatticeProb.Prob.ChentsovPiModification
+
+@[expose] public section
 
 /-!
 # The jointly continuous modification of the space-time noise field

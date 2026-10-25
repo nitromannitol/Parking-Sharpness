@@ -1,4 +1,8 @@
-import Parking.Support.RangeLower
+module
+
+public import Parking.Support.RangeLower
+
+@[expose] public section
 
 /-!
 # The range of the simple walk, its first moment, and the hitting identity

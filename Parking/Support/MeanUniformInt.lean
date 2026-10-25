@@ -1,6 +1,10 @@
-import Parking.Support.Continuum
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+module
+
+public import Parking.Support.Continuum
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+@[expose] public section
 
 /-!
 # Convergence of the means under a uniform moment bound

@@ -1,8 +1,12 @@
-import Parking.Support.TightHappHolder
-import Parking.Support.OrientedMaxMoment
-import Parking.Support.CriticalLawReal
-import Parking.Support.TightMoment
-import LatticeProb.Prob.Scaling.ProductMoment
+module
+
+public import Parking.Support.TightHappHolder
+public import Parking.Support.OrientedMaxMoment
+public import Parking.Support.CriticalLawReal
+public import Parking.Support.TightMoment
+public import LatticeProb.Prob.Scaling.ProductMoment
+
+@[expose] public section
 
 /-!
 # Jensen's inequality for the scenery-average of the `L^8` norm

@@ -1,6 +1,10 @@
-import Parking.Support.NearestMollifier
-import Parking.Support.NearestTestFun
-import Parking.External.LinearFieldScaling
+module
+
+public import Parking.Support.NearestMollifier
+public import Parking.Support.NearestTestFun
+public import Parking.External.LinearFieldScaling
+
+@[expose] public section
 
 /-!
 # Field-only finite-dimensional convergence

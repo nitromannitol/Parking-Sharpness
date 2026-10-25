@@ -1,5 +1,9 @@
-import Parking.Support.NearestBallEvent
-import Parking.Support.NearestLimit
+module
+
+public import Parking.Support.NearestBallEvent
+public import Parking.Support.NearestLimit
+
+@[expose] public section
 
 /-!
 # Assembling the spatial-scaling endgame

@@ -1,5 +1,9 @@
-import Parking.Support.UConcBridge
-import Parking.External.SandpileGrowth
+module
+
+public import Parking.Support.UConcBridge
+public import Parking.External.SandpileGrowth
+
+@[expose] public section
 
 /-!
 # The critical-density hypotheses for the real one-site law

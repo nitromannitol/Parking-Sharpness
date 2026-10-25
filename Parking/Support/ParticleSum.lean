@@ -1,4 +1,8 @@
-import Parking.Support.ParticleFiltration
+module
+
+public import Parking.Support.ParticleFiltration
+
+@[expose] public section
 
 /-!
 # Counting the particles of a finite set of sites

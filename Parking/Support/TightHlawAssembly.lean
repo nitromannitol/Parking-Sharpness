@@ -1,7 +1,11 @@
-import Parking.Support.TightLiftPhi
-import Parking.Support.TightHlawFdd
-import Parking.Support.TightContBoxLimit
-import Mathlib.MeasureTheory.Measure.Portmanteau
+module
+
+public import Parking.Support.TightLiftPhi
+public import Parking.Support.TightHlawFdd
+public import Parking.Support.TightContBoxLimit
+public import Mathlib.MeasureTheory.Measure.Portmanteau
+
+@[expose] public section
 
 /-!
 # `hlaw`: weak convergence of the box-reward law

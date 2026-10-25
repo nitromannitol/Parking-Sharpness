@@ -1,5 +1,9 @@
-import Parking.Support.StoppingShift
-import Parking.Support.ValueLipschitz
+module
+
+public import Parking.Support.StoppingShift
+public import Parking.Support.ValueLipschitz
+
+@[expose] public section
 
 /-!
 # Spatial oscillation of the odometer via the linear field

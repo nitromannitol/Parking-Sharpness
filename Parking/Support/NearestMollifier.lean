@@ -1,6 +1,10 @@
-import Parking.Support.Continuum
-import Mathlib.Analysis.Calculus.BumpFunction.Normed
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+module
+
+public import Parking.Support.Continuum
+public import Mathlib.Analysis.Calculus.BumpFunction.Normed
+public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+
+@[expose] public section
 
 /-!
 # The one-sided time mollifier

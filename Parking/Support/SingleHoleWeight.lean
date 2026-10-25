@@ -1,7 +1,11 @@
-import Parking.Support.FutureHole
-import Parking.Support.SingleFreshSlot
-import Parking.Support.EscapePotential
-import Parking.Support.CoordinateFactor
+module
+
+public import Parking.Support.FutureHole
+public import Parking.Support.SingleFreshSlot
+public import Parking.Support.EscapePotential
+public import Parking.Support.CoordinateFactor
+
+@[expose] public section
 
 /-!
 # The escape-weighted future hole count

@@ -1,7 +1,11 @@
-import LatticeProb.Prob.TwoPointOrder
-import Parking.Support.MeanHorizonStep1
-import Parking.Support.CriticalLawReal
-import Parking.Support.CriticalChain
+module
+
+public import LatticeProb.Prob.TwoPointOrder
+public import Parking.Support.MeanHorizonStep1
+public import Parking.Support.CriticalLawReal
+public import Parking.Support.CriticalChain
+
+@[expose] public section
 
 /-!
 # Step 2 of the near-divisible lower bound

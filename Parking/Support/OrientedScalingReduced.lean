@@ -1,5 +1,9 @@
-import Parking.Support.OrientedMeanLimit
-import Parking.Support.OrientedTwoLower
+module
+
+public import Parking.Support.OrientedMeanLimit
+public import Parking.Support.OrientedTwoLower
+
+@[expose] public section
 
 /-!
 # `prop:oriented-scaling` reduced to its analytic clauses

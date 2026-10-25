@@ -1,5 +1,9 @@
-import Parking.Support.NoArrivalWeight
-import Parking.Support.LayerReward
+module
+
+public import Parking.Support.NoArrivalWeight
+public import Parking.Support.LayerReward
+
+@[expose] public section
 
 /-!
 # The no-arrival exponential supermartingale is a bounded expectation

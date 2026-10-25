@@ -1,7 +1,11 @@
-import Parking.Support.SpatWDivisiblePairing
-import Parking.Support.NearestBallEvent
-import Parking.Support.SpatialVanishingDistance
-import Parking.Support.SpatWMiddleApproximation
+module
+
+public import Parking.Support.SpatWDivisiblePairing
+public import Parking.Support.NearestBallEvent
+public import Parking.Support.SpatialVanishingDistance
+public import Parking.Support.SpatWMiddleApproximation
+
+@[expose] public section
 
 /-!
 # Transferring odometer closeness to test-function pairings

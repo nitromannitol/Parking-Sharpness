@@ -1,4 +1,8 @@
-import Parking.Support.NearRateBounds
+module
+
+public import Parking.Support.NearRateBounds
+
+@[expose] public section
 
 /-!
 # The five products of Step 3, compared with the rate of `eq:near`

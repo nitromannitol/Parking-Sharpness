@@ -1,4 +1,8 @@
-import Parking.Support.NoBoth
+module
+
+public import Parking.Support.NoBoth
+
+@[expose] public section
 
 /-!
 # Positive particle odometer empties the hole

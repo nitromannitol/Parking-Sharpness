@@ -1,4 +1,8 @@
-import Parking.Support.RoundArrivalMean
+module
+
+public import Parking.Support.RoundArrivalMean
+
+@[expose] public section
 
 /-!
 # Table entries that can send a particle to a site

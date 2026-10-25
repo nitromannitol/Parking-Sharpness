@@ -1,5 +1,9 @@
-import Parking.Support.SubcriticalGraft
-import Parking.Support.SubcriticalStep1
+module
+
+public import Parking.Support.SubcriticalGraft
+public import Parking.Support.SubcriticalStep1
+
+@[expose] public section
 
 /-!
 # Grafting cost for Step 1 of `thm:subcritical`

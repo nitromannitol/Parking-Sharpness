@@ -1,4 +1,8 @@
-import Parking.Support.SpatGreenShift
+module
+
+public import Parking.Support.SpatGreenShift
+
+@[expose] public section
 
 /-!
 # The space-direction two-point comparison, dimensions one and two

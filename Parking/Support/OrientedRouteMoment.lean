@@ -1,4 +1,8 @@
-import Parking.Support.OrientedChargeMoment
+module
+
+public import Parking.Support.OrientedChargeMoment
+
+@[expose] public section
 
 /-!
 # Removing the stack cutoff in the routing moment estimate

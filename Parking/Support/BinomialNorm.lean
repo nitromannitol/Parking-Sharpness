@@ -1,5 +1,9 @@
-import Parking.Support.Oriented
-import LatticeProb.Walk.Series
+module
+
+public import Parking.Support.Oriented
+public import LatticeProb.Walk.Series
+
+@[expose] public section
 
 /-!
 # Two-sided norm estimates for the central binomial term

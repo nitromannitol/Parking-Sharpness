@@ -1,4 +1,8 @@
-import Parking.Support.ProductConditioning
+module
+
+public import Parking.Support.ProductConditioning
+
+@[expose] public section
 
 /-!
 # The coordinate-reveal Doob martingale

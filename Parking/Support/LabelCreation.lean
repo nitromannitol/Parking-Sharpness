@@ -1,5 +1,9 @@
-import Parking.Support.DiscrepancyTransport
-import Parking.Support.OppositeMeans
+module
+
+public import Parking.Support.DiscrepancyTransport
+public import Parking.Support.OppositeMeans
+
+@[expose] public section
 
 /-!
 # The initial discrepancy label mass

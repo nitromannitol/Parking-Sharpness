@@ -1,4 +1,8 @@
-import Parking.Support.ProductSection
+module
+
+public import Parking.Support.ProductSection
+
+@[expose] public section
 
 /-!
 # Partial integration is invariant under the presentation of the retained set

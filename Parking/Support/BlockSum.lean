@@ -1,4 +1,8 @@
-import Parking.Support.RevealPrefix
+module
+
+public import Parking.Support.RevealPrefix
+
+@[expose] public section
 
 /-!
 # Reindexing sums into chronological blocks

@@ -1,9 +1,13 @@
-import Parking.Support.MeanHorizonProof
-import Parking.External.SandpileGrowth
-import Parking.External.Stopping
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
+module
+
+public import Parking.Support.MeanHorizonProof
+public import Parking.External.SandpileGrowth
+public import Parking.External.Stopping
+public import Parking.External.UConcentration
+public import Parking.External.UConcentrationProved
+public import Parking.External.GreenNormsProved
+
+@[expose] public section
 
 /-!
 # The mean-horizon bound on a stopped tilted sum (frozen)

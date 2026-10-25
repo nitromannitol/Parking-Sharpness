@@ -1,7 +1,11 @@
-import Parking.Support.WeightedOdometerBounds
-import Parking.Support.SceneryCenter
-import Parking.Support.ClippedTable
-import Parking.Support.WalkIntegral
+module
+
+public import Parking.Support.WeightedOdometerBounds
+public import Parking.Support.SceneryCenter
+public import Parking.Support.ClippedTable
+public import Parking.Support.WalkIntegral
+
+@[expose] public section
 
 /-!
 # Integrability of the conditional mean odometer

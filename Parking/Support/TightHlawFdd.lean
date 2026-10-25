@@ -1,7 +1,11 @@
-import Parking.Support.TightFddAssembly
-import Parking.Support.TightHlawLift
-import Parking.Support.TightNoiseModification
-import Parking.Support.TightEquicont
+module
+
+public import Parking.Support.TightFddAssembly
+public import Parking.Support.TightHlawLift
+public import Parking.Support.TightNoiseModification
+public import Parking.Support.TightEquicont
+
+@[expose] public section
 
 /-!
 # `hfdd` and `htight` for the box-reward field

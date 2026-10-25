@@ -1,5 +1,9 @@
-import Parking.Support.TightYConv
-import Parking.Support.TightWalkConv
+module
+
+public import Parking.Support.TightYConv
+public import Parking.Support.TightWalkConv
+
+@[expose] public section
 
 /-!
 # `hYconv`, assembled unconditionally

@@ -1,4 +1,8 @@
-import Parking.Support.MomentTail
+module
+
+public import Parking.Support.MomentTail
+
+@[expose] public section
 
 /-!
 # Fourth-power tail from linear moments and a logarithmic mean

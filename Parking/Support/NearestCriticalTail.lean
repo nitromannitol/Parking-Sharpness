@@ -1,8 +1,12 @@
-import Parking.External.CriticalScaleLowerTailProved
-import Parking.Support.NearestCriticalNormalization
-import Parking.Support.URealMoment
-import Parking.Support.Continuum
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+module
+
+public import Parking.External.CriticalScaleLowerTailProved
+public import Parking.Support.NearestCriticalNormalization
+public import Parking.Support.URealMoment
+public import Parking.Support.Continuum
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+
+@[expose] public section
 
 /-!
 # The critical lower tail, rescaled

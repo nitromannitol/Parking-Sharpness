@@ -1,4 +1,8 @@
-import Parking.Support.StoppingBlocks
+module
+
+public import Parking.Support.StoppingBlocks
+
+@[expose] public section
 
 /-!
 # Joint measurability for Step 2 of the mean-horizon lemma

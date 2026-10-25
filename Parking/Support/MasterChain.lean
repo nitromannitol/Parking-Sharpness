@@ -1,6 +1,10 @@
-import Parking.Support.CriticalChain
-import Parking.Frozen.Upper
-import Parking.Support.CovParts
+module
+
+public import Parking.Support.CriticalChain
+public import Parking.Frozen.Upper
+public import Parking.Support.CovParts
+
+@[expose] public section
 
 /-!
 # `thm:master` reduced to `cor:critical`

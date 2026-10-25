@@ -1,4 +1,8 @@
-import Parking.Support.OrientedStopping
+module
+
+public import Parking.Support.OrientedStopping
+
+@[expose] public section
 
 /-!
 # Rescaling of the directed lattice for the scaling limit

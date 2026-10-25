@@ -1,4 +1,8 @@
-import Mathlib.Probability.Moments.Variance
+module
+
+public import Mathlib.Probability.Moments.Variance
+
+@[expose] public section
 
 /-!
 # A bounded influence controls its centered increment and variance

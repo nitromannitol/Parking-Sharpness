@@ -1,5 +1,9 @@
-import Parking.Support.ErrorUnroll
-import Parking.Support.Reads
+module
+
+public import Parking.Support.ErrorUnroll
+public import Parking.Support.Reads
+
+@[expose] public section
 
 /-!
 # The pieces of `lem:w-martingale` that do not need the exposure filtration

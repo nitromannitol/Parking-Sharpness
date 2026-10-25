@@ -1,10 +1,14 @@
-import Parking.External.SandpileGrowth
-import Parking.External.Bernstein
-import Parking.External.UConcentration
-import Parking.External.UConcentrationProved
-import Parking.External.GreenNormsProved
-import Parking.Frozen.CorCritical
-import Parking.Support.MasterChain
+module
+
+public import Parking.External.SandpileGrowth
+public import Parking.External.Bernstein
+public import Parking.External.UConcentration
+public import Parking.External.UConcentrationProved
+public import Parking.External.GreenNormsProved
+public import Parking.Frozen.CorCritical
+public import Parking.Support.MasterChain
+
+@[expose] public section
 
 /-!
 # The master theorem (frozen)

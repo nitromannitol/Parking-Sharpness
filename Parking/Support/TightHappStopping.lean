@@ -1,5 +1,9 @@
-import Parking.Support.TightHappTerminal
-import Parking.Support.OrientedCutoffValuePot
+module
+
+public import Parking.Support.TightHappTerminal
+public import Parking.Support.OrientedCutoffValuePot
+
+@[expose] public section
 
 /-!
 # The master bound between the rescaled odometer and `Y`

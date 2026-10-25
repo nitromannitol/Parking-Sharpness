@@ -1,6 +1,10 @@
-import Parking.Support.OrientedMeanBound
-import Parking.Support.OrientedMeanComparison
-import Mathlib
+module
+
+public import Parking.Support.OrientedMeanBound
+public import Parking.Support.OrientedMeanComparison
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Step 3 of the oriented walk theorem: the particle-to-divisible ratio

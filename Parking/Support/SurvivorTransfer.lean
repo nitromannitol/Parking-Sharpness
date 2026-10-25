@@ -1,4 +1,8 @@
-import Parking.Support.TaggedSurvivor
+module
+
+public import Parking.Support.TaggedSurvivor
+
+@[expose] public section
 
 /-!
 # `F Z = 0` transferred to the realization without the tagged particle
