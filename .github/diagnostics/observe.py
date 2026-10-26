@@ -1,6 +1,6 @@
 import os,sys,json,hashlib,re,subprocess,pathlib,time
 P=pathlib.Path.cwd();O=P/'diagnostic-output';O.mkdir(exist_ok=True)
-LOCK='/home/bourabbe/.lake-global.lock';CAP='12884901888'
+LOCK=str(pathlib.Path.home()/'.lake-global.lock');CAP='12884901888'
 def run(args,*,env=None,cwd=None,output=None):
     command=[str(x) for x in args]
     with (O/'commands.jsonl').open('a') as f:f.write(json.dumps({'argv':command,'cwd':str(cwd or P),'at':time.time()})+'\n')
