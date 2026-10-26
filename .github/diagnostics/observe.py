@@ -12,7 +12,10 @@ def run(args,*,env=None,cwd=None,output=None):
     return p
 lean=pathlib.Path(subprocess.check_output(['elan','which','lean'],text=True).strip());lake=lean.parent/'lake'
 assert hashlib.sha256(lean.read_bytes()).hexdigest()=='bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38'
-def locked(args,**kw):return run(['/usr/bin/flock','-x',LOCK,'/usr/bin/prlimit','--as='+CAP,'--',*args],**kw)
+def locked(args,**kw):
+    execution_env=kw.get('env') or os.environ
+    exports=[k+'='+execution_env[k] for k in ['LEAN_PATH','LEAN_SRC_PATH','PATH'] if k in execution_env]
+    return run(['/usr/bin/flock','-x',LOCK,'sudo','systemd-run','--quiet','--scope','--property=MemoryMax='+CAP,'--property=MemorySwapMax=0','--','runuser','-u',os.environ['USER'],'--','env',*exports,*args],**kw)
 manifest=json.loads((P/'lake-manifest.json').read_text())
 packages={x['name'].removeprefix('«').removesuffix('»'):P/'.lake/packages'/x['name'].removeprefix('«').removesuffix('»') for x in manifest['packages']}
 for x in manifest['packages']:
