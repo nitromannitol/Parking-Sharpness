@@ -189,7 +189,8 @@ theorem card_settledAt' (h : LabelOrder d) (D : Driver d) (t : ℕ) (x : Site d)
     rw [hpos]
     simp only [decide_eq_true_eq, hact, true_and, ← hA]
     simp only [prec, holeCount, ← hS]
-    rfl
+    apply Iff.of_eq
+    congr
   rw [hfilter]
   exact card_filter_countLT_lt (prec_irrefl h D.rank t) (prec_trans h D.rank t)
     (prec_total h D.rank t) _
