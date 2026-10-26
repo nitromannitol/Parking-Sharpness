@@ -24,7 +24,7 @@ elementary facts do it.
   what turns `φ_d(N)` with `N = 1 ∨ ⌈M⌉` back into `φ_d(M)`.
 -/
 
-open LatticeProb.MomentNorm (eLpNorm_ne_top)
+open LatticeProb.MomentNorm (eLpNorm_ne_top_of_aestronglyMeasurable)
 
 noncomputable section
 
@@ -103,7 +103,7 @@ theorem integral_ite_le_holder {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω
   have hgmem : MemLp g (ENNReal.ofReal (5/4)) μ :=
     MemLp.indicator hA (memLp_const (1:ℝ))
   have hfmem : MemLp f (ENNReal.ofReal 5) μ :=
-    ⟨hfm, lt_top_iff_ne_top.mpr (eLpNorm_ne_top μ (by norm_num) f hf)⟩
+    ⟨hfm, lt_top_iff_ne_top.mpr (eLpNorm_ne_top_of_aestronglyMeasurable μ (by norm_num) f hfm hf)⟩
   have hmain := integral_mul_le_Lp_mul_Lq_of_nonneg hconj hg0 hf0' hgmem hfmem
   have hpt : ∀ ω : Ω, g ω * f ω = if ω ∈ A then f ω else 0 := by
     intro ω

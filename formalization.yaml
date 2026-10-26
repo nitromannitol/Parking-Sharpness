@@ -48,7 +48,7 @@ related_formalizations:
       The shared library Lattice-Probability (LatticeProb): the lattice, the
       simple random walk and its Green functions, the particle-hole process
       and the toolkits for results that do not depend on the parking model.
-      Pinned git dependency at commit 46c6e5ab28dad997e91dea051ce274d39635b9f2.
+      Pinned git dependency at commit 4012b5c7662714883d248e2352ad1c6382dc49dd.
   - id: "https://github.com/nitromannitol/Divisible-Sandpile-Percolation"
     relationship: "builds-on"
     note: >-

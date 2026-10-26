@@ -14,7 +14,7 @@ dividing a random variable by a deterministic scale preserves integrability of e
 moment and rescales the normalized moment by that scale.
 -/
 
-open LatticeProb.MomentNorm (eLpNorm_ne_top eLpNorm_toReal_eq rNorm rNorm_nonneg)
+open LatticeProb.MomentNorm (eLpNorm_ne_top_of_aestronglyMeasurable eLpNorm_toReal_eq_of_aestronglyMeasurable rNorm rNorm_nonneg)
 
 noncomputable section
 namespace Parking
@@ -27,8 +27,8 @@ theorem rNorm_mono_exponent {Ω : Type} [MeasurableSpace Ω]
     (f : Ω → ℝ) (hm : AEStronglyMeasurable f μ)
     (hpi : Integrable (fun ω => |f ω| ^ p) μ) (hqi : Integrable (fun ω => |f ω| ^ q) μ) :
     rNorm μ p f ≤ rNorm μ q f := by
-  rw [← eLpNorm_toReal_eq μ hp f hpi, ← eLpNorm_toReal_eq μ (hp.trans hpq) f hqi]
-  exact ENNReal.toReal_mono (eLpNorm_ne_top μ (hp.trans hpq) f hqi)
+  rw [← eLpNorm_toReal_eq_of_aestronglyMeasurable μ hp f hm hpi, ← eLpNorm_toReal_eq_of_aestronglyMeasurable μ (hp.trans hpq) f hm hqi]
+  exact ENNReal.toReal_mono (eLpNorm_ne_top_of_aestronglyMeasurable μ (hp.trans hpq) f hm hqi)
     (eLpNorm_le_eLpNorm_of_exponent_le (ENNReal.ofReal_le_ofReal hpq) hm)
 
 /-- Raising the moment norm back to its exponent recovers the moment. -/
