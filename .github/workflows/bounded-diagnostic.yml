@@ -19,8 +19,6 @@ jobs:
           set -euo pipefail
           free -h
           df -h .
-          sudo mkdir -p /home/bourabbe
-          sudo chown "$(id -u):$(id -g)" /home/bourabbe
           curl -fsSL --retry 3 https://github.com/leanprover/elan/releases/download/v4.2.3/elan-x86_64-unknown-linux-gnu.tar.gz -o "$RUNNER_TEMP/elan.tar.gz"
           echo "df0b2b3a439961ffcbb3985214365ffe40f49bc871df04dff268c7d8e21ca8b2  $RUNNER_TEMP/elan.tar.gz" | sha256sum -c -
           mkdir "$RUNNER_TEMP/elan"
