@@ -1,7 +1,7 @@
 name: Bounded pinned diagnostic
 on:
   push:
-    branches: [palomar/diagnostic-parking-four-api-v2-20261025]
+    branches: [palomar/diagnostic-coupling-warning-20261026]
   workflow_dispatch:
 permissions:
   contents: read
