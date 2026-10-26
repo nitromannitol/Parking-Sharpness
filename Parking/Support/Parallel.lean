@@ -215,7 +215,7 @@ theorem nextPos_of_mem {D : Driver d} {S : State d} {t : ℕ} {y : Site d}
   have hact : S.active p = true := (Finset.mem_filter.mp hp).2.1
   have hpos : S.pos p = y := (Finset.mem_filter.mp hp).2.2
   unfold nextPos
-  rw [if_pos hact, hpos]
+  rw [ite_eq_left hact, hpos]
 
 /-- Within one round the instructions read at `y` are exactly those whose index
 lies between the departures before and after the round. -/

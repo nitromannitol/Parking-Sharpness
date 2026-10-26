@@ -6,7 +6,7 @@ package «parking_sharpness» where
 
 require «lattice-probability» from git
   "https://github.com/nitromannitol/Lattice-Probability.git" @
-    "cb28d90268a9ad6d96503b6d27cbe84df0e643cd"
+    "48117ca58eff687ad55526eee0f1372ce72237b1"
 
 require «divisible_sandpile» from git
   "https://github.com/nitromannitol/Divisible-Sandpile-Percolation.git" @

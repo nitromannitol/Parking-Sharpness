@@ -161,7 +161,7 @@ theorem sum_kern_eq_one (hd : 1 ≤ d) (y : Site d) :
     ∑ z ∈ nbrFinset y, kern d y z = 1 := by
   have hval : ∀ z ∈ nbrFinset y, kern d y z = (2 * (d : ℝ))⁻¹ := by
     intro z hz
-    rw [kern, if_pos hz]
+    rw [kern, ite_eq_left hz]
   rw [Finset.sum_congr rfl hval, Finset.sum_const, LatticeProb.Graph.Zd.card_nbrFinset,
     nsmul_eq_mul]
   have hd' : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd
@@ -494,7 +494,7 @@ theorem gamma_sum_of_gradient (d : ℕ) (hd : 1 ≤ d)
       ring
     rw [hb0, hshell, zero_add]
     have hkappa : kappa 1 n = Real.sqrt (n : ℝ) := by
-      rw [kappa, if_pos rfl, Real.sqrt_eq_rpow]
+      rw [kappa, ite_eq_left rfl, Real.sqrt_eq_rpow]
     rw [hkappa]
     have := sum_min_le_sqrt hn
     linarith
@@ -613,7 +613,7 @@ theorem gamma_sum_of_gradient (d : ℕ) (hd : 1 ≤ d)
           _ ≤ K * 1 := mul_le_mul_of_nonneg_left (sum_inv_sq_succ_le_one n) hKnn
           _ = K := by ring
       have hkappa : kappa d n = 1 := by
-        rw [kappa, if_neg (by omega), if_neg (by omega)]
+        rw [kappa, ite_eq_right (by omega), ite_eq_right (by omega)]
       rw [hkappa, hb0, mul_one]
       linarith
 

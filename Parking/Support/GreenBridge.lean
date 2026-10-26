@@ -56,7 +56,7 @@ theorem heat_neg (d j : ℕ) (x : Site d) : heat d j (-x) = heat d j x := by
       show (if -x = 0 then (1 : ℝ) else 0) = if x = 0 then 1 else 0
       by_cases hx : x = 0
       · simp [hx]
-      · rw [if_neg (fun hc => hx (by simpa using neg_eq_zero.mp hc)), if_neg hx]
+      · rw [ite_eq_right (fun hc => hx (by simpa using neg_eq_zero.mp hc)), ite_eq_right hx]
   | succ j ih =>
       show walkOp (heat d j) (-x) = walkOp (heat d j) x
       unfold walkOp nbrSum
@@ -96,7 +96,7 @@ theorem gamma_one (m : ℕ) (y : Site 1) :
     gamma 1 m y = (green 1 m (y + unit 0) - green 1 m (y - unit 0)) ^ 2 / 4 := by
   have hkern : ∀ z ∈ nbrFinset y, kern 1 y z = 1 / 2 := by
     intro z hz
-    rw [kern, if_pos hz]
+    rw [kern, ite_eq_left hz]
     norm_num
   have hw : walkOp (green 1 m) y
       = (green 1 m (y + unit 0) + green 1 m (y - unit 0)) / 2 := by

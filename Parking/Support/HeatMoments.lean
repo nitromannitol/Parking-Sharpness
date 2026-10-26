@@ -74,7 +74,7 @@ theorem summable_heat1 (m : ℕ) : Summable (heat1 m) := by
 /-- At `m = 0` the kernel is the point mass at the origin. -/
 theorem heat1_zero_zero : heat1 0 0 = 1 := by
   unfold heat1
-  rw [srwHeat_zero, if_pos]
+  rw [srwHeat_zero, ite_eq_left]
   funext i
   fin_cases i
   simp

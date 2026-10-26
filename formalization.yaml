@@ -48,7 +48,7 @@ related_formalizations:
       The shared library Lattice-Probability (LatticeProb): the lattice, the
       simple random walk and its Green functions, the particle-hole process
       and the toolkits for results that do not depend on the parking model.
-      Pinned git dependency at commit cb28d90268a9ad6d96503b6d27cbe84df0e643cd.
+      Pinned git dependency at commit 48117ca58eff687ad55526eee0f1372ce72237b1.
   - id: "https://github.com/nitromannitol/Divisible-Sandpile-Percolation"
     relationship: "builds-on"
     note: >-
@@ -271,6 +271,7 @@ automation:
         The existing mathematical proofs were reused. Selected full Palomar preflight
         receipts distinguish mechanical verification from review and registration.
         A residual reflexive equivalence in the parallel process proof was closed.
+        The corresponding coupling equivalence and observed proof warnings were repaired.
     - method: "agent"
       models:
         - "Claude Opus 5.5"

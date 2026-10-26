@@ -38,11 +38,11 @@ variable {d : ℕ}
 theorem abs_stepVec_le_one (b : Fin d × Bool) (i : Fin d) : |stepVec b i| ≤ 1 := by
   unfold stepVec
   by_cases hb : b.2
-  · simp only [hb, if_true]
+  · simp only [hb, ite_true]
     by_cases hij : i = b.1
     · subst hij; simp [unit, Pi.single_eq_same]
     · simp [unit, Pi.single_eq_of_ne hij]
-  · simp only [hb, Bool.false_eq_true, if_false]
+  · simp only [hb, Bool.false_eq_true, ite_false]
     by_cases hij : i = b.1
     · subst hij; simp [unit, Pi.single_eq_same]
     · simp [unit, Pi.single_eq_of_ne hij]
@@ -154,6 +154,8 @@ theorem pSettledAt_eq (D : PDriver d) (t : ℕ) (x : Site d) :
   rw [hp'.2]
   simp only [decide_eq_true_eq, hp'.1, true_and]
   simp only [prec, pHoleCount]
+  apply Iff.of_eq
+  congr
 
 /-- The number of arrivals at `x` that settle is `min(arrivals, holes)`, applying
 `card_filter_countLT_lt` to the total, irreflexive, transitive priority order
