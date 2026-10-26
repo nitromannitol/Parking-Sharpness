@@ -29,7 +29,7 @@ theorem rNorm_mono_exponent {Ω : Type} [MeasurableSpace Ω]
     rNorm μ p f ≤ rNorm μ q f := by
   rw [← eLpNorm_toReal_eq_of_aestronglyMeasurable μ hp f hm hpi, ← eLpNorm_toReal_eq_of_aestronglyMeasurable μ (hp.trans hpq) f hm hqi]
   exact ENNReal.toReal_mono (eLpNorm_ne_top_of_aestronglyMeasurable μ (hp.trans hpq) f hm hqi)
-    (eLpNorm_le_eLpNorm_of_exponent_le (ENNReal.ofReal_le_ofReal hpq) hm)
+    (eLpNorm_le_eLpNorm_of_exponent_le (ENNReal.ofReal_le_ofReal hpq))
 
 /-- Raising the moment norm back to its exponent recovers the moment. -/
 theorem rNorm_rpow {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω)

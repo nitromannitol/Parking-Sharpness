@@ -201,7 +201,7 @@ them.  In summary:
   on relevant changes to `main` or by manual dispatch.
 - **Pinned toolchain.** Lean `v4.35.0-rc2`, `mathlib` at revision
   `065356127b1dc0016f66b7283ce0ce2c4055aa55`, `Lattice-Probability` at commit
-  `4012b5c7662714883d248e2352ad1c6382dc49dd` and `Divisible-Sandpile-Percolation` at commit
+  `aa6f2bcba87f4d70ed93e3dc8e0502bc636bb737` and `Divisible-Sandpile-Percolation` at commit
   `cd8b15a32d00b1eec48f8747339e2d0cfaa73a21`, recorded in
   [`lean-toolchain`](lean-toolchain), [`lakefile.lean`](lakefile.lean) and
   [`lake-manifest.json`](lake-manifest.json).
