@@ -49,6 +49,7 @@ for n,d in packages.items():
     link=mathlib/'.lake/packages'/n;link.parent.mkdir(parents=True,exist_ok=True);link.symlink_to(d,target_is_directory=True)
 locked([lean,'-j1','--run',mathlib/'Cache/Main.lean','get'],cwd=mathlib,env=cacheenv,output='cache.log')
 selected_source='0c9cb31aa57a143d15b580b853f2bde82d04a9e7'
+run(['git','fetch','--depth=1','origin',selected_source],output='selected-source-fetch.log')
 assert not subprocess.check_output(['git','diff','--name-only',selected_source,'HEAD','--',':(exclude).github/diagnostics/**',':(exclude).github/workflows/bounded-diagnostic.yml'],text=True).strip()
 bindings=[]
 for x in manifest['packages']:
