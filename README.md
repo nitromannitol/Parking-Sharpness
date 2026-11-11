@@ -205,8 +205,9 @@ The other three, `LinearFieldScaling`, `SpatialFixedTimeTightness` and
 cited results; none of them is a hypothesis of a main theorem.
 
 The growth of the mean divisible sandpile odometer (`SandpileGrowth`) is also proved, in
-`Parking/External/SandpileGrowthProved.lean`, from the formalization of that paper; that proof
-takes three inputs that the formalization states as hypotheses, `Sandpile.External.LocalCLT`,
+`Parking/External/SandpileGrowthProved.lean`, from the formalization of that paper; that theorem
+takes three hypotheses: `Sandpile.External.LocalCLT`, which the pinned formalization proves
+(`Sandpile.External.localCLT`), and two that it assumes,
 `Sandpile.External.ContinuumStoppingStability` and the family
 `Sandpile.External.ContinuumOptimalStopping`. Nine further results the paper quotes are
 proved, mostly from the shared library, and so are not assumed: the optimal stopping
@@ -314,8 +315,8 @@ lake build
 
 The 2 source dependencies, Lattice-Probability and Divisible-Sandpile-Percolation, have no
 prebuilt cache, so the first build compiles them as well as the library. `import Parking`
-loads the whole development, and `import Parking.MainTheorems` loads the main theorems and
-what they use.
+loads the main theorems and what they use, and `import Parking.MainTheorems` loads the main
+theorems and what they use.
 
 The dependencies are public repositories, pinned to exact commits in
 [`lake-manifest.json`](lake-manifest.json):
@@ -388,7 +389,7 @@ pairs. Both run on pushes to `main` that change Lean files, `tools/`, `paper/`, 
 ## Repository layout
 
 ```text
-Parking.lean              the root module, importing the whole library
+Parking.lean              the root module, importing the main theorems and what they use
 Parking/
   MainTheorems.lean       the eight main theorems, stated in full
   Frozen/                 the certified statement surface, one frozen statement per file
