@@ -127,6 +127,13 @@ the two odometers, `Parking.S` is the expected number of active particles, and
 This repository formalizes every theorem, lemma, proposition and corollary of the paper
 (`tools/check_coverage.py`).
 
+## Corrections to the published version
+
+The formalization follows `paper/parking.tex`, a corrected text of the paper: it is
+[arXiv:2609.02820v1](https://arxiv.org/abs/2609.02820v1) with five corrections.
+[`paper/CHANGES_FROM_ARXIV.md`](paper/CHANGES_FROM_ARXIV.md) lists every change against the
+arXiv version.
+
 ## Standing assumptions and scope
 
 1. **Every theorem is about every integer law that satisfies its hypotheses.** The statements
@@ -172,9 +179,7 @@ This repository formalizes every theorem, lemma, proposition and corollary of th
    one Lean declaration per theorem, lemma, proposition or corollary, and one proposition per
    cited result. The paper-to-Lean map, node by node, is
    [`CORRESPONDENCE.md`](CORRESPONDENCE.md), and [`PROOF.md`](PROOF.md) describes the proofs
-   section by section and the Lean tree that carries them. The pinned paper is
-   arXiv:2609.02820v1 with the corrections listed in
-   [`paper/CHANGES_FROM_ARXIV.md`](paper/CHANGES_FROM_ARXIV.md).
+   section by section and the Lean tree that carries them.
 
 ## Assumed literature inputs
 
