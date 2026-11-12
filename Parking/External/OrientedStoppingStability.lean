@@ -67,11 +67,11 @@ MODELLING.
   `Parking.contValue B PB G T` is the supremum of `E_0 G(τ, B_τ)` over the
   stopping times of `B` bounded by `T`, again with `τ` the elapsed time.  The
   limit field `Z_T(s,x)` of `parking.tex:3192-3195` also carries the elapsed
-  time as its first argument, since it integrates the noise over `r ∈ (s,T)`;
-  `LatticeProb.ContinuumStopping.contStopValue_eq_contValue` reads the paper's value as a
-  `Parking.contValue`.  A reward that the paper writes with the REMAINING time
-  is read here at the elapsed time `k/n` with the horizon subtracted inside it,
-  so that the two sides of the statement are the same problem.  Along an
+  time as its first argument, since it integrates the noise over `r ∈ (s,T)`, so
+  the paper's value is `Parking.contValue` at the reward `-Z_T`.  A reward that
+  the paper writes with the REMAINING time is read here at the elapsed time `k/n`
+  with the horizon subtracted inside it, so that the two sides of the statement
+  are the same problem.  Along an
   oriented trajectory the layer index `ℓ(z) = -(z₁+z₂)` equals the number of
   steps, so the pair (elapsed time, rescaled site) determines the site, and a
   reward of the paper's shape is indeed a function of that pair.
@@ -81,9 +81,10 @@ MODELLING.
   at zero almost surely.  Mathlib 4.32 has a construction of a real Brownian
   motion but the statement is quantified over a space carrying one, as every
   other continuum statement of the repository is.
-- A stopping time of `B` is recorded by Galmarino's criterion
-  (`LatticeProb.ContinuumStopping.IsContStopping`), as in the companion
-  divisible-sandpile repository.
+- A stopping time of `B` is a stopping time of its natural filtration
+  (`Parking.IsNaturalStopping`): the event `{τ ≤ t}` is determined by the path
+  of `B` up to time `t`.  This is the class of rules of the cited results, and
+  the one over which the Brownian value is the limit of the walk's values.
 
 WHY THE UNIFORM CONVERGENCE IS OVER ALL OF `[0,T] × ℝ`.  The cited estimates
 need only uniform convergence on compact sets, at the price of a tightness bound
@@ -150,7 +151,8 @@ open scoped NNReal ENNReal
 bounded rewards, with the invariance principle for the stopped oriented walk
 (`parking.tex:3214-3218`; the cutoff and stability estimates of the parabolic
 scaling limit in the cited companion paper, of the kind of Coquet-Toldo,
-Theorem 3 and Corollary 4).  Assumed, not proved. -/
+Theorem 3 and Corollary 4).  The Brownian value runs over the stopping times of
+the natural filtration of `B`.  Assumed, not proved. -/
 def Parking.External.OrientedStoppingStability : Prop :=
   ∀ (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
       (B : ℝ≥0 → ΩB → ℝ), Parking.IsQuarterBrownian B PB →

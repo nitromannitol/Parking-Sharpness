@@ -64,7 +64,7 @@ states, up to the notation below.
 | `lem:w-martingale` | the family is indexed from zero, so the paper's `ξ_i` is `ξ (i-1)` and `F_{i-1}` is `F i` | it removes a truncated subtraction |
 | `prop:spatial-scaling` | `U` is identified with `contUc` on an exhibited Brownian space; its Green field is the L² extension of the exhibited white noise. "Converging locally uniformly" is the joint convergence of the finite-dimensional distributions, the vanishing in probability of the local uniform distance between the two rescaled odometers, and the equicontinuity in probability of the rescaled divisible odometer on compact sets of positive times | the Brownian value equality holds for every nonnegative horizon; the three convergence clauses together give convergence in distribution in the topology of local uniform convergence on `(0,∞)×ℝ^d`, as used by `thm:nearest` |
 | `prop:oriented-scaling` | the limit is asserted to exist and to be measurable | the paper defines it in the proof |
-| `prop:oriented-scaling`, Step 1 | the payoffs the Brownian value takes its supremum over are those of the stopping rules whose payoff is INTEGRABLE (`Parking.contPayoffs`) | Galmarino's criterion does not make a stopping rule measurable, so for a general rule the Bochner integral is the junk value zero, and a supremum over those zeros would exceed the value of the problem whenever every genuine payoff is negative.  For the paper's reward `-Z_T` the two readings agree, because the rule that stops at the horizon has payoff exactly zero (`Parking.contAttainable_eq_contPayoffs`) |
+| `prop:oriented-scaling`, Step 1 | the Brownian value takes its supremum over the stopping times of the natural filtration of `B` whose payoff is INTEGRABLE (`Parking.contPayoffs`, `Parking.IsNaturalStopping`) | these are the stopping times of the cited optimal-stopping results: the event `{τ ≤ t}` is determined by the path of `B` up to time `t`.  The integrability conjunct keeps the junk value of a Bochner integral out of the supremum; the rule that stops at once is admissible, so the set of payoffs is never empty |
 | `thm:nearest`, `thm:nearest-counterexample` | the distance from the origin to the nearest hole and to the nearest active particle is the graph distance `∑_i |x_i|` | `parking.tex:588-601` fixes distances on `Z^d` to be graph distances, and the proof of the counterexample uses the `l^1` identity `|w_i-a_i|=|w_i-y_i|+|a_i-y_i|` and `l^1` balls |
 | `thm:subcritical`, `lem:product` | conditioning on the walk of the first particle is prescribing the moves of the label `(0,0)`, and the bound is asserted for every prescribed walk | the walk is independent of everything else, so this is the conditional probability |
 
@@ -465,7 +465,6 @@ the two main theorems discharge it.
 | `thm-nearest-counterexample` | `Parking.Frozen.nearest_counterexample` | `parking.tex:289-302`, `thm:nearest-counterexample` | PROVED |
 | `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | parking.tex:117-121 (Theorem 1 of Donsker-Varadhan 1979, cited for eq:sharpness and used at parking.tex:2514-2517) | FROZEN |
 | `prop-resolvent` | `Parking.Frozen.resolvent` | `parking.tex:2643-2663`, `prop:resolvent` | PROVED |
-| `ext-oriented-stopping-stability` | `Parking.External.OrientedStoppingStability` | parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling) | FROZEN |
 | `lem-product` | `Parking.Frozen.product` | `parking.tex:2336-2347`, `lem:product` | PROVED |
 | `thm-subcritical` | `Parking.Frozen.subcritical` | `parking.tex:2434-2447`, `thm:subcritical` | PROVED |
 | `thm-subcritical-tail` | `Parking.Frozen.subcritical_tail` | `parking.tex:123-135`, `thm:subcritical-tail` | PROVED |
@@ -473,7 +472,6 @@ the two main theorems discharge it.
 | `ext-variance-scale` | `Parking.External.varianceScale` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1117-1240); proved from the shared library Lattice-Probability (LatticeProb.Walk.VarianceScale, LatticeProb.Walk.Correlation, LatticeProb.Walk.WindowD4) | PROVED |
 | `ext-multivariate-berry-esseen` | `Parking.External.MultivariateBerryEsseen` | parking.tex:1822-1848 (critical_toppling input, sandpile.tex:1770-1782, quoted from Raic Theorem 1.1) | FROZEN |
 | `ext-spatial-fixed-time-tightness` | `Parking.External.SpatialFixedTimeTightness` | parking.tex:1756-1767 (prop:spatial-scaling, quoted from BP Theorem 1.3(i)(b)) | FROZEN |
-| `ext-spatial-stopping-stability` | `Parking.External.SpatialStoppingStability` | parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling) | FROZEN |
 | `thm-oriented` | `Parking.Frozen.oriented` | `parking.tex:3072-3085`, `thm:oriented` | PROVED |
 | `prop-w-moment` | `Parking.Frozen.w_moment` | `parking.tex:1202-1215`, `prop:w-moment` | PROVED |
 | `ext-heat-compactness` | `Parking.External.HeatCompactness` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, classical parabolic compactness) | FROZEN |
@@ -501,5 +499,7 @@ the two main theorems discharge it.
 | `thm-oriented-walk` | `Parking.Frozen.oriented_walk` | `parking.tex:363-380`, `thm:oriented-walk` | PROVED |
 | `prop-spatial-scaling` | `Parking.Frozen.spatial_scaling` | `parking.tex:1694-1752`, `prop:spatial-scaling` | PROVED |
 | `thm-nearest` | `Parking.Frozen.nearest` | `parking.tex:266-275`, `thm:nearest` | PROVED |
+| `ext-oriented-stopping-stability` | `Parking.External.OrientedStoppingStability` | parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling) | FROZEN |
+| `ext-spatial-stopping-stability` | `Parking.External.SpatialStoppingStability` | parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling) | FROZEN |
 
 <!-- FROZEN-SURFACE-END -->

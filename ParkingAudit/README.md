@@ -91,9 +91,9 @@ repository uses to state the theorems, in the namespace `ParkingAudit`.
 | `External.contHeatKernel` | `Parking/External/SRWLocalCLT.lean` |
 | `External.contFiniteGreen` | `Parking/External/LinearFieldScaling.lean` |
 | `IsSpatialGreenPairing` | `Parking/Support/SpatialGreenPairing.lean` |
-| `IsQuarterBrownian`, `IsContStopping` | `Parking/Support/ContOrientedLimit.lean` |
+| `IsQuarterBrownian` | `Parking/Support/ContOrientedLimit.lean` |
 | `contPayoffs`, `contValue` | `Parking/Support/ContStopGeneral.lean` |
-| `IsSpatialContStopping`, `spatialContPayoffs`, `spatialContValue`, `ofBrownianSpace` | `Parking/Support/ContSpatialValue.lean` |
+| `pathSigma`, `IsNaturalStopping`, `IsSpatialContStopping`, `spatialContPayoffs`, `spatialContValue`, `ofBrownianSpace` | `Parking/Support/ContSpatialValue.lean` |
 | `contUc` | `Parking/Support/ContUc.lean` |
 | `binomLaw` | `Parking/Support/Oriented.lean` |
 | `orientedPath` | `Parking/Support/OrientedMaximum.lean` |

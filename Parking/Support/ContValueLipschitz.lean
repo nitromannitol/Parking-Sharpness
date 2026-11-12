@@ -93,8 +93,8 @@ analogue on the infinite-dimensional path space `ΩB`): a stopping rule admissib
 reward is admissible for the other. It holds whenever `G` and `G'` are both, say, jointly
 continuous and `τ` is composed with a jointly measurable driving process, which is the
 shape every use of this lemma in this repository supplies; it is recorded as a hypothesis
-here, not derived, since `IsSpatialContStopping` (Galmarino's criterion) does not by itself
-make `τ` measurable. -/
+here, not derived, since the lemma does not assume the driving process jointly measurable in
+time and sample. -/
 theorem abs_spatialContValue_sub_le {ΩB : Type*} [MeasurableSpace ΩB]
     (B : ℝ≥0 → ΩB → (Fin d → ℝ)) (PB : Measure ΩB) [IsProbabilityMeasure PB]
     (G G' : ℝ → (Fin d → ℝ) → ℝ) (T : ℝ) {c M : ℝ}

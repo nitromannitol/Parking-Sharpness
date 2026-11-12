@@ -306,17 +306,6 @@ nodes:
     provider: Parking.Frozen.resolvent
     approved: "2026-09-10"
 
-  - id: ext-oriented-stopping-stability
-    version: 2
-    kind: definition
-    source: parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling)
-    file: Parking/External/OrientedStoppingStability.lean
-    export: Parking.External.OrientedStoppingStability
-    state: FROZEN
-    frozen_sha256: 2210b69d98ff4cd19d9242705c5b58eb5e411334af429aa526a4824381b0f5f0
-    provider: Parking.External.OrientedStoppingStability
-    approved: "2026-09-11"
-
   - id: lem-product
     version: 5
     kind: theorem
@@ -392,17 +381,6 @@ nodes:
     state: FROZEN
     frozen_sha256: 16c23b1d88788d1a4e519822b6cbfa09cd4e7c571581cd12da5cd24bcc0fb457
     provider: Parking.External.SpatialFixedTimeTightness
-    approved: "2026-09-16"
-
-  - id: ext-spatial-stopping-stability
-    version: 2
-    kind: definition
-    source: parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling)
-    file: Parking/External/SpatialStoppingStability.lean
-    export: Parking.External.SpatialStoppingStability
-    state: FROZEN
-    frozen_sha256: a9eb6f0fa59ff6c0bc8d24d304682ec4b515d98d08e9d473e8d2452644379f76
-    provider: Parking.External.SpatialStoppingStability
     approved: "2026-09-16"
 
   - id: thm-oriented
@@ -700,4 +678,26 @@ nodes:
     frozen_sha256: 15b063f0bbef52bec0962640dc4f5f757a34ccab2c08c824601938b029868ccc
     provider: Parking.Frozen.nearest
     approved: "2026-09-27"
+
+  - id: ext-oriented-stopping-stability
+    version: 3
+    kind: definition
+    source: parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling)
+    file: Parking/External/OrientedStoppingStability.lean
+    export: Parking.External.OrientedStoppingStability
+    state: FROZEN
+    frozen_sha256: dd18b56284ed63cc6447d33c10313ab6852957aa7119a32223485c510b85165d
+    provider: Parking.External.OrientedStoppingStability
+    approved: "2026-11-12"
+
+  - id: ext-spatial-stopping-stability
+    version: 3
+    kind: definition
+    source: parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling)
+    file: Parking/External/SpatialStoppingStability.lean
+    export: Parking.External.SpatialStoppingStability
+    state: FROZEN
+    frozen_sha256: 183ff48cd4ca99e766a4d892a18957d931f5a9d9a984b7068f77bb6d71b48344
+    provider: Parking.External.SpatialStoppingStability
+    approved: "2026-11-12"
 

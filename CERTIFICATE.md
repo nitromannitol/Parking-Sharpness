@@ -179,7 +179,7 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 | `thm-nearest-counterexample` | `4edb5724164ff3f61a2e6f33ddd93e1e1879dd7a37253d163a2e568c74a78987` |
 | `ext-donsker-varadhan` | `4ed9aad3375d1c450cc8b21702c87a9459763c06cc9cacfb692f906b754af423` |
 | `prop-resolvent` | `904a892b5eb0c60d3b5f46918ea0554afefae252290a309362a97d3333a5363b` |
-| `ext-oriented-stopping-stability` | `2210b69d98ff4cd19d9242705c5b58eb5e411334af429aa526a4824381b0f5f0` |
+| `ext-oriented-stopping-stability` | `dd18b56284ed63cc6447d33c10313ab6852957aa7119a32223485c510b85165d` |
 | `lem-product` | `392b048bfd4663cfadbe590a17abefc0c755213a60698da1d2bbbb452a08f12a` |
 | `thm-subcritical` | `4c7507c1091e653f1b747a06d1904f33f5e82f4c7365bcec0c8931fc390be950` |
 | `thm-subcritical-tail` | `e712ea0a1a96aa7a7a17e8ef1442bf6d1032ead517a7d344b8834c997dae4138` |
@@ -187,7 +187,7 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 | `ext-variance-scale` | `5ad03a7dbc301ede04678dd9bcf379e7ec8c2b56ce36c83f773c6daa854b1ab0` |
 | `ext-multivariate-berry-esseen` | `0150875b4230a2e9015871008ac2973a8b1934043ce89615212dc6878b690c57` |
 | `ext-spatial-fixed-time-tightness` | `16c23b1d88788d1a4e519822b6cbfa09cd4e7c571581cd12da5cd24bcc0fb457` |
-| `ext-spatial-stopping-stability` | `a9eb6f0fa59ff6c0bc8d24d304682ec4b515d98d08e9d473e8d2452644379f76` |
+| `ext-spatial-stopping-stability` | `183ff48cd4ca99e766a4d892a18957d931f5a9d9a984b7068f77bb6d71b48344` |
 | `thm-oriented` | `8ae751db70d9861676a438b36775eb8ac512779db25209095fc10934e6eae2f2` |
 | `prop-w-moment` | `ddde27a9a9b8ee94a38ac0fe2bfa7103ced6eba69b883f493f20e12fb1cbb535` |
 | `ext-heat-compactness` | `bc6af3f25db5de01c86b6b7d861c767ddc7ccdcdfb7d6ba9d26cfb3381f7d55b` |

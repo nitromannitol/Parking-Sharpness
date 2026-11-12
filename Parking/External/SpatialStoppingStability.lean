@@ -58,8 +58,9 @@ MODELLING.
   (Fin d)`; `Parking.ofBrownianSpace` reads it in the paper's own `Fin d → ℝ` vocabulary.
   `LatticeProb.exists_isBrownianSpace_cont` proves one with every path continuous exists, so
   the hypothesis is not vacuous.
-- A stopping time of `B` is recorded by Galmarino's criterion, `Parking.IsSpatialContStopping`,
-  the `Fin d`-dimensional analogue of `LatticeProb.ContinuumStopping.IsContStopping`.
+- A stopping time of `B` is a stopping time of its natural filtration,
+  `Parking.IsSpatialContStopping` (`Parking.IsNaturalStopping` for a `(Fin d → ℝ)`-valued
+  process), as for `Parking.External.OrientedStoppingStability`.
 
 WHY THE UNIFORM CONVERGENCE IS OVER ALL OF `[0,T] × (Fin d → ℝ)`.  Exactly as for
 `Parking.External.OrientedStoppingStability`: the application supplies the reward through a
@@ -102,7 +103,8 @@ rewards, with the invariance principle for the stopped simple random walk
 (`parking.tex:1756-1767`; the cutoff and stability estimates of the parabolic scaling limit in
 the cited companion paper, of the kind of Coquet-Toldo, Theorem 3 and Corollary 4, the SAME
 citation as `Parking.External.OrientedStoppingStability`, transcribed here for a
-`(Fin d → ℝ)`-valued driving process).  Assumed, not proved. -/
+`(Fin d → ℝ)`-valued driving process).  The Brownian value runs over the stopping times of
+the natural filtration of `B`.  Assumed, not proved. -/
 def Parking.External.SpatialStoppingStability : Prop :=
   ∀ (d : ℕ), 1 ≤ d → d ≤ 3 →
     ∀ (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]

@@ -27,10 +27,11 @@ This module builds the comparison, for a GENERAL bounded reward `G`, mirroring
 (`Parking.abs_spatialContValue_sub_contCutoffValue_le`) — no External, no `sorry`. As in
 `Parking.abs_spatialContValue_sub_le` (`ContValueLipschitz.lean`, whose own docstring explains
 why), the cross-integrability of an admissible rule's payoff between the true and the cutoff
-reward is recorded as an explicit hypothesis rather than derived: `IsSpatialContStopping`
-(Galmarino's criterion) does not by itself make a stopping time jointly measurable with the
-driving process, so integrability of the two composite payoffs is not a free consequence of
-either reward's own measurability. The box is cut at the Pi (sup) norm on `Fin d → ℝ`,
+reward is recorded as an explicit hypothesis rather than derived: the measurability of a
+composite payoff `G(τ, B_τ)` needs the driving process jointly measurable in time and sample,
+which is not assumed here, so integrability of the two composite payoffs is not a free
+consequence of either reward's own measurability.
+The box is cut at the Pi (sup) norm on `Fin d → ℝ`,
 `Parking.norm_ofBrownianSpace_le` transporting the library's own Euclidean-norm exit tail
 (stated for `EuclideanSpace ℝ (Fin d)`, the driving space of `LatticeProb.IsBrownianSpace`) to
 it: the sup norm of a vector is at most its Euclidean norm, coordinatewise, so a sup-norm exit

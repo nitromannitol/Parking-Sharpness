@@ -260,7 +260,8 @@ def Parking.External.MultivariateBerryEsseen : Prop :=
 bounded rewards, with the invariance principle for the stopped oriented walk
 (`parking.tex:3214-3218`; the cutoff and stability estimates of the parabolic
 scaling limit in the cited companion paper, of the kind of Coquet-Toldo,
-Theorem 3 and Corollary 4).  Assumed, not proved. -/
+Theorem 3 and Corollary 4).  The Brownian value runs over the stopping times of
+the natural filtration of `B`.  Assumed, not proved. -/
 def Parking.External.OrientedStoppingStability : Prop :=
   ∀ (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
       (B : ℝ≥0 → ΩB → ℝ), Parking.IsQuarterBrownian B PB →
@@ -410,7 +411,8 @@ rewards, with the invariance principle for the stopped simple random walk
 (`parking.tex:1756-1767`; the cutoff and stability estimates of the parabolic scaling limit in
 the cited companion paper, of the kind of Coquet-Toldo, Theorem 3 and Corollary 4, the SAME
 citation as `Parking.External.OrientedStoppingStability`, transcribed here for a
-`(Fin d → ℝ)`-valued driving process).  Assumed, not proved. -/
+`(Fin d → ℝ)`-valued driving process).  The Brownian value runs over the stopping times of
+the natural filtration of `B`.  Assumed, not proved. -/
 def Parking.External.SpatialStoppingStability : Prop :=
   ∀ (d : ℕ), 1 ≤ d → d ≤ 3 →
     ∀ (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]

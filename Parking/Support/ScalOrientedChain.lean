@@ -27,7 +27,7 @@ carried here as explicit hypotheses, in the shape the frozen statement needs,
 until the canonical Wiener space and the joint-measurability lemma land.
 -/
 
-open LatticeProb.ContinuumStopping (contStopValue contU contValue_le measurable_contZ)
+open LatticeProb.ContinuumStopping (contStopValue contU measurable_contZ)
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open scoped NNReal ENNReal
