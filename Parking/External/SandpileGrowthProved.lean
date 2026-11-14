@@ -406,7 +406,7 @@ private theorem sandpileGrowth_proof
     meanOdometer_one_pos d ν hd hmean hvar hvar' θ hθ hexpint
   constructor
   · intro hd3
-    obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hLocalCLT hStab
+    obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hStab
       hOS d hd hd3 ν hprob hmean hvar hvar'
       θ hθ hexpint
     let p : ℝ := (4 - (d : ℝ)) / 4
@@ -469,7 +469,7 @@ private theorem sandpileGrowth_proof
           rw [Parking.meanSandpileReal_eq_sandpileMean d ν hd n]
           exact ⟨hlowall n hn, hupper n hn⟩
         · intro hd3
-          obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hLocalCLT hStab
+          obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hStab
             hOS d hd hd3 ν hprob hmean hvar hvar'
             θ hθ hexpint
           refine ⟨L, hL, ?_⟩

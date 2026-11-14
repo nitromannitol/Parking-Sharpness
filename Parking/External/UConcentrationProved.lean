@@ -394,7 +394,7 @@ theorem Parking.External.uConcentration : Parking.External.UConcentration
     Parking.External.uconc_kGreen_one_le hK hn
   have hmeasR : Measurable
       (s.restrict : (Parking.Site d → ℝ) → (s → ℝ)) :=
-    measurable_pi_lambda _ fun k => measurable_pi_apply (k : Parking.Site d)
+    Measurable.of_eval fun k => measurable_pi_apply (k : Parking.Site d)
   have hF0 : Measurable
       (fun ζ : s → ℝ => Parking.kSol r K (Parking.extendField s ζ) n 0) :=
     Parking.External.uconc_measurable_kSol_extend s n 0
