@@ -19,10 +19,10 @@
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "e419fc2b93738e8c4cef04ab58afef0cf1afc46b",
+   "rev": "58c21b8399823c3b5d1208608ceeac2ce5cefb5d",
    "name": "divisible_sandpile",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "e419fc2b93738e8c4cef04ab58afef0cf1afc46b",
+   "inputRev": "58c21b8399823c3b5d1208608ceeac2ce5cefb5d",
    "inherited": false,
    "configFile": "lakefile.lean"
   },
