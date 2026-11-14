@@ -43,7 +43,7 @@ theorem exists_near_UNorm (hd : 1 ≤ d) (hGrowth : External.SandpileGrowth)
   obtain ⟨C₁, hC₁, h1⟩ := upper_step_one_uniform (d := d) hd hBern
   obtain ⟨C₂, hC₂, h2⟩ := exists_near_uNorm hd hGrowth hConc hfam'
   refine ⟨C₁ * (1 + C₂) * Real.exp 2, by positivity, fun δ hδ N hN => ?_⟩
-  haveI := hprob δ hδ
+  have := hprob δ hδ
   have hexpabs := (hexp δ hδ).1
   have hexpmax := integrable_expMax_of_expAbs hθ hexpabs
   obtain ⟨j, hj⟩ := exists_rHigh_eq N
@@ -201,7 +201,7 @@ theorem exists_meanUlimit_le_rate (hd : 1 ≤ d) (hGrowth : Parking.External.San
   have hδd' : δ ≤ δd := le_trans hδ.2 (min_le_right _ _)
   have hδ1 : δ ≤ 1 := le_trans hδc' hδc1
   have hδmem : δ ∈ Set.Icc (0 : ℝ) δ₀ := ⟨hδ0.le, le_trans hδc' hδcδ₀⟩
-  haveI := hprob δ hδmem
+  have := hprob δ hδmem
   obtain ⟨hane, hcutδ⟩ := hcut δ ⟨hδ0, hδc'⟩
   set N : ℕ := nearCutoff d CR a δ with hNdef
   have haδ : 0 < a * δ ^ 2 := by positivity
@@ -270,15 +270,15 @@ theorem exists_rate_le_meanUlimit (hd : 1 ≤ d)
   · obtain ⟨c, δ₁, hc, hδ₁, hδ₁δ₀, hlow⟩ := exists_meanUlimit_log_lower hd hfam
     refine ⟨c, δ₁, hc, hδ₁, hδ₁δ₀, fun δ hδ => ?_⟩
     have hR : Parking.nearRate d δ = Real.log (Real.exp 1 / δ) := by
-      rw [Parking.nearRate, if_neg (by omega : ¬ d = 1), if_neg (by omega : ¬ d = 2),
-        if_neg (by omega : ¬ d = 3)]
+      rw [Parking.nearRate, ite_eq_right (by omega : ¬ d = 1), ite_eq_right (by omega : ¬ d = 2),
+        ite_eq_right (by omega : ¬ d = 3)]
     rw [hR]
     exact hlow δ hδ
   · obtain ⟨c, C, hc, hC, δ₁, hδ₁, hδ₁δ₀, hdiv⟩ :=
       Parking.Frozen.near_divisible hGrowth hStopping d hd δ₀ ν θ M K hfam
     refine ⟨c, δ₁, hc, hδ₁, hδ₁δ₀, fun δ hδ => ?_⟩
     have hlow := (hdiv δ hδ).2.1 (by omega : d ≤ 4)
-    haveI := hprob δ ⟨hδ.1.le, le_trans hδ.2 hδ₁δ₀⟩
+    have := hprob δ ⟨hδ.1.le, le_trans hδ.2 hδ₁δ₀⟩
     have hint : Integrable (fun k : ℤ => |(k : ℝ)|) (ν δ) :=
       integrable_abs_of_absMoment hθ (hexp δ ⟨hδ.1.le, le_trans hδ.2 hδ₁δ₀⟩).1
     exact le_trans hlow (meanuLimit_le_meanUlimit hd (ν δ) hint)

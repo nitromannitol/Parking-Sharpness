@@ -70,29 +70,29 @@ theorem measurable_readSel {t : ℕ} (ht : 1 ≤ t) (y : Site d) (j : ℕ) :
       constructor
       · intro hω
         simp only [Set.mem_preimage, Set.mem_singleton_iff, readSel] at hω
-        simp only [Set.mem_compl_iff, Set.mem_iUnion, Set.mem_setOf_eq]
+        simp only [Set.mem_compl_iff, Set.mem_iUnion, Set.mem_ofPred_eq]
         rintro ⟨x, hx1, hx2⟩
-        rw [if_pos hx1] at hω
+        rw [ite_eq_left hx1] at hω
         exact Option.some_ne_none _ hω
       · intro hω
-        simp only [Set.mem_compl_iff, Set.mem_iUnion, Set.mem_setOf_eq, not_exists] at hω
+        simp only [Set.mem_compl_iff, Set.mem_iUnion, Set.mem_ofPred_eq, not_exists] at hω
         simp only [Set.mem_preimage, Set.mem_singleton_iff, readSel]
         by_cases h : j + 1 ≤ U ω (k + 1) y
         · exact absurd (And.intro h rfl) (hω (ω.2.1 (y, j)))
-        · rw [if_neg h]
+        · rw [ite_eq_right h]
     rw [hset]
     exact (MeasurableSet.iUnion fun x => measurableSet_generator k y x j).compl
   | some x =>
     have hset : (readSel (k + 1) y j) ⁻¹' {some x}
         = {ω : Data d | j + 1 ≤ U ω (k + 1) y ∧ ω.2.1 (y, j) = x} := by
       ext ω
-      simp only [Set.mem_preimage, Set.mem_singleton_iff, readSel, Set.mem_setOf_eq]
+      simp only [Set.mem_preimage, Set.mem_singleton_iff, readSel, Set.mem_ofPred_eq]
       by_cases h : j + 1 ≤ U ω (k + 1) y
-      · rw [if_pos h]
+      · rw [ite_eq_left h]
         constructor
         · intro heq; exact ⟨h, Option.some.inj heq⟩
         · rintro ⟨-, heq⟩; rw [heq]
-      · rw [if_neg h]
+      · rw [ite_eq_right h]
         constructor
         · intro heq; exact absurd heq.symm (Option.some_ne_none x)
         · rintro ⟨hc, -⟩; exact absurd hc h
@@ -117,7 +117,7 @@ theorem measurable_readGate {t : ℕ} (ht : 1 ≤ t) (y : Site d) (j : ℕ) (ψ 
 theorem readGate_eq_of_lt {t : ℕ} {y : Site d} {j : ℕ} {ψ : Site d → ℝ} {ω : Data d}
     (h : j < U ω t y) : readGate d t y j ψ ω = ψ (ω.2.1 (y, j)) := by
   unfold readGate readSel
-  rw [if_pos (by omega : j + 1 ≤ U ω t y)]
+  rw [ite_eq_left (by omega : j + 1 ≤ U ω t y)]
   rfl
 
 /-! ### The `expFiltration d t`-measurability of the partial sum -/
@@ -224,7 +224,7 @@ theorem sum_single_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure 
     (hTsub : T ⊆ {ω | U ω k y = a}) :
     ∫ ω, T.indicator (fun ω => ∑ j ∈ Finset.Ico a b, ψ (ω.2.1 (y, j))) ω ∂(law d ν)
       = ((b - a : ℕ) : ℝ) * walkOp ψ y * (law d ν).real T := by
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hTamb : MeasurableSet T := expFiltration_le d k T hT
   have hind : (fun ω : Data d => T.indicator (fun ω => ∑ j ∈ Finset.Ico a b, ψ (ω.2.1 (y, j))) ω)
       = fun ω => ∑ j ∈ Finset.Ico a b, T.indicator (fun ω => ψ (ω.2.1 (y, j))) ω := by
@@ -262,8 +262,8 @@ theorem condExp_siteExp_eq_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critica
     (law d ν)[fun ω : Data d =>
         ∑ j ∈ Finset.Ico (U ω k y) (expOdometer d k ω y), (φR (ω.2.1 (y, j)) - walkOp φR y)
       | expFiltration d k] =ᵐ[law d ν] (fun _ => (0 : ℝ)) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   classical
   set sel : Data d → ℕ × ℕ := fun ω => (U ω k y, expOdometer d k ω y) with hseldef
   have hsel : Measurable[expFiltration d k] sel :=

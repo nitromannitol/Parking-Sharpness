@@ -145,11 +145,11 @@ theorem symmetricInParticles_graftSurvivalObs (w : ℕ → Fin d × Bool) (r : �
       {ω : PData d | (pState (taggedDriver w r ω) t).active (0, 0) = true} with hS
     by_cases hmem : graftOrigin ω₁ ω ∈ S
     · have h1 : relabelAt x₀ σ (graftOrigin ω₁ ω) ∈ S := by
-        rw [hS, Set.mem_setOf_eq, h]
+        rw [hS, Set.mem_ofPred_eq, h]
         exact hmem
       rw [Set.indicator_of_mem h1, Set.indicator_of_mem hmem]
     · have h1 : relabelAt x₀ σ (graftOrigin ω₁ ω) ∉ S := by
-        rw [hS, Set.mem_setOf_eq, h]
+        rw [hS, Set.mem_ofPred_eq, h]
         exact hmem
       rw [Set.indicator_of_notMem h1, Set.indicator_of_notMem hmem]
 
@@ -169,11 +169,11 @@ theorem survivalObs_congr_present (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) 
     with hS
   by_cases hmem : ω ∈ S
   · have h1 : ω' ∈ S := by
-      rw [hS, Set.mem_setOf_eq, ← h]
+      rw [hS, Set.mem_ofPred_eq, ← h]
       exact hmem
     rw [Set.indicator_of_mem hmem, Set.indicator_of_mem h1]
   · have h1 : ω' ∉ S := by
-      rw [hS, Set.mem_setOf_eq, ← h]
+      rw [hS, Set.mem_ofPred_eq, ← h]
       exact hmem
     rw [Set.indicator_of_notMem hmem, Set.indicator_of_notMem h1]
 

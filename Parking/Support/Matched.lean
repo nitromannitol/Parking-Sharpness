@@ -75,7 +75,7 @@ theorem Parking.matchSlot_of_mem (η : Site d → ℤ) (ρ : Label d × ℕ → 
   classical
   have hpos : S.pos p = x := (Finset.mem_filter.mp hp).2.2
   unfold Parking.matchSlot
-  rw [hpos, if_pos hp]
+  rw [hpos, ite_eq_left hp]
 
 /-- The entries used at a site are exactly its initial segment of active
 counts. Thus two configurations share the first minimum count of entries. -/
@@ -261,14 +261,14 @@ theorem Parking.measurableState_matchedState (i₀ : Fin d) (e : Ω → Site d �
         refine Measurable.of_eval fun q => ?_
         dsimp [m]
         by_cases hqt : q.2 < t
-        · simp only [if_pos hqt]
+        · simp only [ite_eq_left hqt]
           exact LatticeProb.measurable_eval_var
             (fun ω => Parking.matchSlot (e ω) (r ω)
               (Parking.matchedState (e ω) (r ω) (σ ω) q.2) q.2 q.1)
             (Parking.measurable_matchSlot e r _ he hr (ih q.2 hqt) q.2 q.1)
             (fun ω j => σ ω q.2 j)
             (fun j => (measurable_pi_apply j).comp ((measurable_pi_apply q.2).comp hσ))
-        · simp only [if_neg hqt]
+        · simp only [ite_eq_right hqt]
           exact measurable_const
       have hst : (fun ω => Parking.matchedState (e ω) (r ω) (σ ω) t) =
           fun ω => Parking.pState ⟨e ω, m ω, r ω⟩ t := by
@@ -301,7 +301,7 @@ def Parking.roundNoiseLaw (d : ℕ) : Measure (Parking.RoundNoise d) :=
 iterated `Measure.infinitePi` of `stepLaw d`. -/
 theorem Parking.roundNoiseLaw_isProbability (hd : 1 ≤ d) :
     IsProbabilityMeasure (Parking.roundNoiseLaw d) := by
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   unfold Parking.roundNoiseLaw
   infer_instance
 

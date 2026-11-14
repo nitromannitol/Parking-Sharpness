@@ -54,9 +54,9 @@ theorem orientedPath_indicator_sum (j : ℕ) (f : Site d → ℝ) (p : ℕ → F
         = if orientedPath (0 : Site d) p j = z then f z else 0 := by
     intro z _
     rw [Set.indicator_apply]
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
   rw [Finset.sum_congr rfl hterm,
-    Finset.sum_ite_eq (boxFinset (0 : Site d) j) (orientedPath (0 : Site d) p j) f, if_pos hmem]
+    Finset.sum_ite_eq (boxFinset (0 : Site d) j) (orientedPath (0 : Site d) p j) f, ite_eq_left hmem]
 
 /-- The directed walk fibre is measurable. -/
 theorem measurableSet_orientedPath_fibre (j : ℕ) (z : Site d) :
@@ -70,8 +70,8 @@ theorem integral_orientedPath_decomp (hd : 1 ≤ d) (j : ℕ) (f : Site d → �
       = ∑ z ∈ boxFinset (0 : Site d) j,
           (walkLaw d).real {p | orientedPath (0 : Site d) p j = z} * f z := by
   classical
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   rw [integral_congr_ae (Filter.Eventually.of_forall (orientedPath_indicator_sum j f)),
     integral_finsetSum _ fun z _ =>
       (integrable_const (f z)).indicator (measurableSet_orientedPath_fibre j z)]

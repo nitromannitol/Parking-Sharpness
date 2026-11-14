@@ -79,8 +79,8 @@ theorem integral_twoHoleDiscount_le (hd : 3 ≤ d) (ν : Measure ℤ) [IsProbabi
       Real.exp (holeSceneryConst d * ∑ y ∈ boxFinset u R,
         (1 - escapePotential d x y) * (1 - escapePotential d z y)) * holeProb d ν T ^ 2 := by
   have hd1 : 1 ≤ d := by omega
-  haveI := roundNoiseLaw_isProbability hd1
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := roundNoiseLaw_isProbability hd1
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let μ := (iidLaw d ν).prod (roundNoiseLaw d)
   have hi : Integrable (twoHoleDiscount T x z u R) μ :=
     Integrable.of_bound (measurable_twoHoleDiscount hd1 T x z u R).aestronglyMeasurable 1

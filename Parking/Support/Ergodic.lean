@@ -49,7 +49,7 @@ theorem ergodic_map_of_semiconj {Ω Ω' : Type*} [MeasurableSpace Ω] [Measurabl
     (hT : Ergodic T μ) (hΦ : Measurable Φ)
     (hS : MeasurePreserving S (μ.map Φ) (μ.map Φ))
     (hcomm : ∀ ω, Φ (T ω) = S (Φ ω)) : Ergodic S (μ.map Φ) := by
-  haveI : IsProbabilityMeasure (μ.map Φ) := inferInstance
+  have : IsProbabilityMeasure (μ.map Φ) := inferInstance
   refine ⟨hS, LatticeProb.preErgodic_of_prob_eq_zero_or_one ?_⟩
   intro A hA hinv
   have hpre : T ⁻¹' (Φ ⁻¹' A) = Φ ⁻¹' A := by
@@ -237,7 +237,7 @@ instance instructionLaw_zero_isProb : IsProbabilityMeasure (instructionLaw (0 : 
 summands `i` belongs to. -/
 instance cellLaw_isProb (ν : Measure ℤ) [IsProbabilityMeasure ν] (i : Slot d) :
     IsProbabilityMeasure (cellLaw ν i) := by
-  haveI := uniformUnit_isProbability
+  have := uniformUnit_isProbability
   rcases i with x | q | p
   · simp only [cellLaw, Sum.elim_inl]; infer_instance
   · simp only [cellLaw, Sum.elim_inr, Sum.elim_inl]; infer_instance
@@ -293,7 +293,7 @@ theorem prodCellLaw_map_gatherCells (ν : Measure ℤ) [IsProbabilityMeasure ν]
         ((Measure.infinitePi fun q : Site d × ℕ => cellLaw (d := d) ν (Sum.inr (Sum.inl q))).prod
           (Measure.infinitePi fun p : Label d × ℕ =>
             cellLaw (d := d) ν (Sum.inr (Sum.inr p))))).map gatherCells = law d ν := by
-  haveI := uniformUnit_isProbability
+  have := uniformUnit_isProbability
   have hg1 : (Measure.infinitePi fun x : Site d => cellLaw (d := d) ν (Sum.inl x)).map
       (fun a : Site d → Cell d => fun x : Site d => cellInt (a x))
       = LatticeProb.iidLaw d ν := by
@@ -377,7 +377,7 @@ event invariant under a single nonzero translation has probability `0` or `1`. -
 theorem ergodic_shiftData (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {v : Site d} (hv : v ≠ 0) :
     Ergodic (shiftData (d := d) v) (law d ν) := by
-  haveI : Fact (1 ≤ d) := ⟨hd⟩
+  have : Fact (1 ≤ d) := ⟨hd⟩
   have hmp : MeasurePreserving (shiftData (d := d) v) (law d ν) (law d ν) :=
     ⟨measurable_shiftData v, law_map_shiftData hd ν v⟩
   have h := ergodic_map_of_semiconj (μ := flatLaw d ν)

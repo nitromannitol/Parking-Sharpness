@@ -52,12 +52,12 @@ theorem Parking.lintegral_discrepancyCancelledPairs_coupled (hd : 1 ≤ d)
       ∂(Parking.coupledLaw d ν p) ≤
       ENNReal.ofReal ((p.toReal * Parking.gammaOf ν) ^ 2 / 2) *
         (Parking.walkLaw d) {r | ∃ s ≤ 2 * T, Parking.walkPath z r s = 0} := by
-  haveI := Parking.resampleOne_isProbability ν hp
-  haveI : IsProbabilityMeasure (Parking.resampleLaw d ν p) := by
+  have := Parking.resampleOne_isProbability ν hp
+  have : IsProbabilityMeasure (Parking.resampleLaw d ν p) := by
     unfold Parking.resampleLaw LatticeProb.iidLaw
     infer_instance
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI := Parking.roundNoiseLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have := Parking.roundNoiseLaw_isProbability hd
   let h := (Parking.walkLaw d) {r | ∃ s ≤ 2 * T, Parking.walkPath z r s = 0}
   have hm := Parking.measurable_discrepancyOppositePairs z
   unfold Parking.coupledLaw
@@ -93,9 +93,9 @@ theorem Parking.lintegral_discrepancyDead_le (hd : 1 ≤ d) (ν : Measure ℤ)
     by_cases hz : z = 0
     · subst z
       simp only [Parking.discrepancyCancelledPairs_zero, Finset.card_empty, Nat.cast_zero,
-        lintegral_zero, f, if_true, mul_zero, le_refl]
+        lintegral_zero, f, ite_true, mul_zero, le_refl]
     · exact (Parking.lintegral_discrepancyCancelledPairs_coupled hd ν hp hint T z hz).trans_eq
-        (by simp only [f, if_neg hz, a])
+        (by simp only [f, ite_eq_right hz, a])
   calc ∫⁻ ω : Parking.CoupledData d, ((Parking.discrepancyDead ω.1.1 ω.1.2 ω.2 T).card : ℝ≥0∞)
         ∂(Parking.coupledLaw d ν p)
       ≤ ∫⁻ ω : Parking.CoupledData d, ∑ z ∈ boxFinset (0 : Site d) (2 * T),

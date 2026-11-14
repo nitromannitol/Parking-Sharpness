@@ -138,9 +138,9 @@ theorem tendsto_weak_horizon (ν : Measure ℤ) (hν : CriticalLaw ν)
     Tendsto (fun n : ℕ => ∫ w, F ((n : ℝ) ^ (-(1 : ℝ) / 4) *
         uOriented (fun y => (w.1 y : ℝ)) ⌊(n : ℝ) * T⌋₊ 0) ∂(orientedLaw 2 ν)) atTop
       (𝓝 (∫ x, F (T ^ ((1 : ℝ) / 4) * x) ∂L)) := by
-  haveI := hν.prob
-  haveI := hL
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have := hL
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   have hXm : ∀ m : ℕ, AEMeasurable
       (fun w : Data 2 => (m : ℝ) ^ (-(1 : ℝ) / 4) *
         uOriented (fun y => (w.1 y : ℝ)) m 0) (orientedLaw 2 ν) :=
@@ -173,11 +173,11 @@ theorem selfsimilar_of_weak (ν : Measure ℤ) (hν : CriticalLaw ν)
             uOriented (fun y => (w.1 y : ℝ)) ⌊(n : ℝ) * T⌋₊ 0)
           ∂(orientedLaw 2 ν)) atTop (𝓝 (∫ ω, F (Uc T ω) ∂Q))) :
     ∀ T : ℝ, 0 < T → Q.map (Uc T) = Q.map fun ω => T ^ ((1 : ℝ) / 4) * Uc 1 ω := by
-  haveI := hν.prob
-  haveI := hQ
+  have := hν.prob
+  have := hQ
   intro T hT
   set L : Measure ℝ := Q.map (Uc 1) with hLdef
-  haveI hL : IsProbabilityMeasure L :=
+  have hL : IsProbabilityMeasure L :=
     inferInstance
   have hint : ∀ F : BoundedContinuousFunction ℝ ℝ, ∫ x, F x ∂L = ∫ ω, F (Uc 1 ω) ∂Q := by
     intro F
@@ -229,9 +229,9 @@ theorem oriented_scaling_of_weak_one (ν : Measure ℤ) (hν : CriticalLaw ν)
       Integrable (Uc 1) Q ∧ μ = ∫ ω, Uc 1 ω ∂Q ∧ 0 < μ ∧
       Tendsto (fun n : ℕ => (n : ℝ) ^ (-(1 : ℝ) / 4) *
         meanuOriented (orientedLaw 2 ν) n) atTop (𝓝 μ) := by
-  haveI := hν.prob
-  haveI := hL
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have := hL
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   refine oriented_scaling_of_weak ν hν ℝ inferInstance L hL
     (fun T x => T ^ ((1 : ℝ) / 4) * x)
     (fun T _ => measurable_const.mul measurable_id) ?_ ?_

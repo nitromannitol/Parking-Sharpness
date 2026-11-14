@@ -29,7 +29,7 @@ variable {d : ℕ}
 `2^{k(4-d)/4}`, from bounding `2^k N + 1` by `2^k (N + 1)` inside the power `(4-d)/4`. -/
 theorem phi_two_pow_le_pow {d : ℕ} (hd3 : d ≤ 3) (k : ℕ) {N : ℝ} (hN : 1 ≤ N) :
     phi d (2 ^ k * N) ≤ 2 ^ ((k : ℝ) * (((4 : ℝ) - (d : ℝ)) / 4)) * phi d N := by
-  simp only [phi, if_pos hd3]
+  simp only [phi, ite_eq_left hd3]
   have hk : (1 : ℝ) ≤ (2:ℝ) ^ k := one_le_pow₀ (by norm_num)
   have hNpos : (0 : ℝ) < N := by linarith
   have hstep : (2:ℝ) ^ k * N + 1 ≤ (2:ℝ) ^ k * (N + 1) := by nlinarith [hk]
@@ -50,7 +50,7 @@ the factor `k log 2 + 1`, via `log(2^k(N + 2)) = k log 2 + log(N + 2)` together 
 theorem phi_two_pow_le_log {d : ℕ} (hd4 : 4 ≤ d) (k : ℕ) {N : ℝ} (hN : 1 ≤ N) :
     phi d (2 ^ k * N) ≤ ((k : ℝ) * Real.log 2 + 1) * phi d N := by
   have hd3 : ¬ (d ≤ 3) := by omega
-  simp only [phi, if_neg hd3]
+  simp only [phi, ite_eq_right hd3]
   have hk : (1 : ℝ) ≤ (2:ℝ) ^ k := one_le_pow₀ (by norm_num)
   have hstep : (2:ℝ) ^ k * N + 2 ≤ (2:ℝ) ^ k * (N + 2) := by nlinarith [hk]
   have h1 : Real.log ((2:ℝ) ^ k * N + 2) ≤ Real.log ((2:ℝ) ^ k * (N + 2)) :=

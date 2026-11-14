@@ -60,7 +60,7 @@ theorem measurable_pairPair (F G : ℤ × ℤ → ℤ) :
 measure `iidLaw d π` along the measurable map `measurable_pairPair`. -/
 theorem pairCoupling_isProbability (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     (F G : ℤ × ℤ → ℤ) : IsProbabilityMeasure (pairCoupling d π F G) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
   unfold pairCoupling; infer_instance
 
@@ -69,7 +69,7 @@ theorem pairCoupling_isProbability (π : Measure (ℤ × ℤ)) [IsProbabilityMea
 theorem pairCoupling_map_fst (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     (F G : ℤ × ℤ → ℤ) :
     (pairCoupling d π F G).map Prod.fst = LatticeProb.iidLaw d (π.map F) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
   rw [pairCoupling, Measure.map_map measurable_fst (measurable_pairPair F G)]
   exact LatticeProb.iidLaw_map_pi d π (measurable_from_countable' F)
@@ -79,7 +79,7 @@ theorem pairCoupling_map_fst (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure �
 theorem pairCoupling_map_snd (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     (F G : ℤ × ℤ → ℤ) :
     (pairCoupling d π F G).map Prod.snd = LatticeProb.iidLaw d (π.map G) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
   rw [pairCoupling, Measure.map_map measurable_snd (measurable_pairPair F G)]
   exact LatticeProb.iidLaw_map_pi d π (measurable_from_countable' G)
@@ -92,7 +92,7 @@ theorem pairCoupling_translationInvariant (π : Measure (ℤ × ℤ))
     (pairCoupling d π F G).map
         (fun c => (Parking.shiftConf v c.1, Parking.shiftConf v c.2))
       = pairCoupling d π F G := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hshift : Measurable (fun c : Site d → ℤ × ℤ => fun x => c (x + v)) :=
     Measurable.of_eval fun x => measurable_pi_apply (x + v)
@@ -116,7 +116,7 @@ almost surely, whenever the one-site maps satisfy `F ≤ G`. -/
 theorem pairCoupling_mono (π : Measure (ℤ × ℤ)) [IsProbabilityMeasure π]
     {F G : ℤ × ℤ → ℤ} (h : ∀ p : ℤ × ℤ, F p ≤ G p) :
     ∀ᵐ c ∂(pairCoupling d π F G), ∀ x, c.1 x ≤ c.2 x := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hset : MeasurableSet {p : (Site d → ℤ) × (Site d → ℤ) | ∀ x, p.1 x ≤ p.2 x} := by
     have : {p : (Site d → ℤ) × (Site d → ℤ) | ∀ x, p.1 x ≤ p.2 x}
@@ -183,17 +183,17 @@ theorem S_sub_couplingCost_le (hd : 1 ≤ d) (nd0 nc : Measure ℤ)
     (hfst : pi.map Prod.fst = nd0) (hsnd : pi.map Prod.snd = nc) (t : ℕ) :
     Parking.S (Parking.law d nc) t - ∫ p, |((p.1 : ℤ) : ℝ) - ((p.2 : ℤ) : ℝ)| ∂pi
       ≤ Parking.S (Parking.law d nd0) t := by
-  haveI := hpi
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d pi) := by
+  have := hpi
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d pi) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI hpd : IsProbabilityMeasure (LatticeProb.iidLaw d nd0) := by
+  have hpd : IsProbabilityMeasure (LatticeProb.iidLaw d nd0) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI hpc : IsProbabilityMeasure (LatticeProb.iidLaw d nc) := by
+  have hpc : IsProbabilityMeasure (LatticeProb.iidLaw d nc) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hmnmeas : Measurable minPair := measurable_from_countable' minPair
-  haveI hpm : IsProbabilityMeasure (pi.map minPair) :=
+  have hpm : IsProbabilityMeasure (pi.map minPair) :=
     inferInstance
-  haveI hpim : IsProbabilityMeasure (LatticeProb.iidLaw d (pi.map minPair)) := by
+  have hpim : IsProbabilityMeasure (LatticeProb.iidLaw d (pi.map minPair)) := by
     unfold LatticeProb.iidLaw; infer_instance
   -- integrability of the two coordinates and of the minimum under the coupling
   have hI1 : Integrable (fun p : ℤ × ℤ => |((p.1 : ℤ) : ℝ)|) pi := by
@@ -226,12 +226,12 @@ theorem S_sub_couplingCost_le (hd : 1 ≤ d) (nd0 nc : Measure ℤ)
       Integrable (fun k : ℤ => |(k : ℝ)|) lam →
       Integrable (fun eta : Site d → ℤ => |((eta 0 : ℤ) : ℝ)|) (LatticeProb.iidLaw d lam) := by
     intro lam hp hint
-    haveI := hp
+    have := hp
     exact integrable_eval_iid (d := d) lam hint 0
   have hmeanbridge : ∀ (lam : Measure ℤ), IsProbabilityMeasure lam →
       ∫ eta, ((eta 0 : ℤ) : ℝ) ∂(LatticeProb.iidLaw d lam) = ∫ k, (k : ℝ) ∂lam := by
     intro lam hp
-    haveI := hp
+    have := hp
     exact integral_eval_iid (d := d) lam
       (measurable_from_countable' (fun k : ℤ => (k : ℝ))).aestronglyMeasurable 0
   have hlaweq : ∀ lam : Measure ℤ,

@@ -61,7 +61,7 @@ theorem integral_pHoleCount_eq (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityM
 /-- The mean of the configuration at one site is the mean of the one-site law. -/
 theorem integral_eta_iidLaw (d : ℕ) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     ∫ η, ((η (0 : Site d) : ℤ) : ℝ) ∂(iidLaw d ν) = ∫ k, (k : ℝ) ∂ν := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hmap : (iidLaw d ν).map (fun η : Site d → ℤ => η 0) = ν :=
     Measure.infinitePi_map_eval _ 0
   have h := integral_map (μ := iidLaw d ν) (φ := fun η : Site d → ℤ => η 0)
@@ -74,7 +74,7 @@ theorem integral_eta_iidLaw (d : ℕ) (ν : Measure ℤ) [IsProbabilityMeasure �
 theorem neg_mean_le_integral_pHoleCount (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (t : ℕ) (x : Site d) :
     -∫ k, (k : ℝ) ∂ν ≤ ∫ ω, (pHoleCount (toPDriver ω) t x : ℝ) ∂(pDataLaw d ν) := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hi0 : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) (iidLaw d ν) := by
     have hmap : (iidLaw d ν).map (fun η : Site d → ℤ => η 0) = ν :=
       Measure.infinitePi_map_eval _ 0
@@ -95,7 +95,7 @@ theorem neg_mean_le_integral_pHoleCount (hd : 1 ≤ d) {ν : Measure ℤ} [IsPro
 theorem integrable_pHoleCount (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (t : ℕ) (x : Site d) :
     Integrable (fun ω : PData d => (pHoleCount (toPDriver ω) t x : ℝ)) (pDataLaw d ν) := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   refine Integrable.mono'
     (integrable_pDataLaw_of_counts (G := fun a : Site d → ℤ => (((-(a x)).toNat : ℕ) : ℝ)) hd
       (integrable_negPart_coord hint x))

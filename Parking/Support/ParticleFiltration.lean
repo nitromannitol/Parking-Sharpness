@@ -49,7 +49,7 @@ theorem mem_particleLabels {d : ℕ} {N : Finset (Site d)} {a : Site d → ℤ} 
 theorem prefixSet_zero {α : Type*} (s : Finset α) :
     prefixSet s 0 = (∅ : Set α) := by
   ext p
-  simp only [prefixSet, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_exists]
+  simp only [prefixSet, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_exists]
   exact fun h => Nat.not_lt_zero _
 
 /-- The prefix of length `s.card` of a finite set `s` is all of `s`, since every element's
@@ -57,7 +57,7 @@ position under the canonical enumeration is below `s.card`. -/
 theorem prefixSet_card {α : Type*} (s : Finset α) :
     prefixSet s s.card = (s : Set α) := by
   ext p
-  simp only [prefixSet, Set.mem_setOf_eq, Finset.mem_coe]
+  simp only [prefixSet, Set.mem_ofPred_eq, Finset.mem_coe]
   constructor
   · rintro ⟨h, -⟩
     exact h
@@ -129,23 +129,23 @@ theorem noiseComb_particleLabels_comb {d : ℕ} (N : Finset (Site d)) (a : Site 
             simp only [Finset.mem_coe, mem_particleLabels]
             exact ⟨hN, hc⟩
           have hS : q.1 ∈ {p : Label d | p.1 ∈ N → p.2 < (a p.1).toNat} := fun _ => hc
-          simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hN]
-          rw [if_pos (mem_particleLabels.mpr ⟨hN, hc⟩),
-            if_pos (by omega : (q.1.2 : ℤ) < a q.1.1)]
+          simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hN]
+          rw [ite_eq_left (mem_particleLabels.mpr ⟨hN, hc⟩),
+            ite_eq_left (by omega : (q.1.2 : ℤ) < a q.1.1)]
         · have hmem : q.1 ∉ (particleLabels N a : Set (Label d)) := by
             simp only [Finset.mem_coe, mem_particleLabels, not_and]
             exact fun _ => hc
           have hS : q.1 ∉ {p : Label d | p.1 ∈ N → p.2 < (a p.1).toNat} := by
-            simp only [Set.mem_setOf_eq, not_forall]
+            simp only [Set.mem_ofPred_eq, not_forall]
             exact ⟨hN, hc⟩
-          simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hN]
-          rw [if_neg (fun h => hc (mem_particleLabels.mp h).2),
-            if_neg (by omega : ¬ ((q.1.2 : ℤ) < a q.1.1))]
+          simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hN]
+          rw [ite_eq_right (fun h => hc (mem_particleLabels.mp h).2),
+            ite_eq_right (by omega : ¬ ((q.1.2 : ℤ) < a q.1.1))]
       · have hS : q.1 ∈ {p : Label d | p.1 ∈ N → p.2 < (a p.1).toNat} := fun h => absurd h hN
         have hmem : q.1 ∉ (particleLabels N a : Set (Label d)) := by
           simp only [Finset.mem_coe, mem_particleLabels, not_and]
           exact fun h => absurd h hN
-        simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hN]
+        simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hN]
 
 /-- **The last stage of the filtration.**  An observable of the counts and of the
 particles present at the sites of `N` is determined by the walks and the uniform

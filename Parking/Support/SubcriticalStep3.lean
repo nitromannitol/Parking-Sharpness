@@ -98,10 +98,10 @@ theorem mean_mul_mean_le_covSum (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbability
 theorem integral_survivalObs_le_one (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) (t : ℕ) :
     ∫ ω, survivalObs w r t ω ∂(pDataLaw d ν) ≤ 1 := by
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
+  have : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
   have hle : ∀ ω : PData d, survivalObs w r t ω ≤ 1 := fun ω => (survivalObs_mem_Icc w r t ω).2
   have hI : Integrable (survivalObs (d := d) w r t) (pDataLaw d ν) := by
     refine (integrable_const (1 : ℝ)).mono' (measurable_survivalObs w r t).aestronglyMeasurable
@@ -136,7 +136,7 @@ theorem integral_survivalObs_le_exp (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabi
         (∑ x ∈ subcriticalBox d t, cov (pDataLaw d (tiltLaw ν s)) (survivalObs w r t)
           (fun ω => ((ω.1 x : ℤ) : ℝ))) (Set.Icc 0 lam₁) s := by
     intro s hs
-    haveI := hprob s hs
+    have := hprob s hs
     exact (hasDerivWithinAt_integral_restrictLaw hd hint hexp hs.1
       (lt_of_le_of_lt hs.2 hlam₁θ) (hnonpos s hs).1 (subcriticalBox d t) (baseData hd)
       (dependsOn_survivalObs w r t) (measurable_survivalObs w r t)
@@ -148,7 +148,7 @@ theorem integral_survivalObs_le_exp (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabi
       ≤ 3 * ∑ x ∈ subcriticalBox d t, cov (pDataLaw d (tiltLaw ν s)) (survivalObs w r t)
           (fun ω => ((ω.1 x : ℤ) : ℝ)) := by
     intro s hs
-    haveI := hprob s hs
+    have := hprob s hs
     have hmain := mean_mul_mean_le_covSum (ν := tiltLaw ν s) hd (hnonpos s hs).1.abs
       (hnonpos s hs).2 w hr t (subset_refl (subcriticalBox d t)) (baseData hd)
     have hZ : (rangeCard (0 : Site d) w t : ℝ) * drift ν s
@@ -183,7 +183,7 @@ theorem integral_survivalObs_le_exp (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabi
         = ∫ ω, survivalObs w r t ω ∂(pDataLaw d ν))
   have h1 : (∫ ω, survivalObs w r t ω
       ∂(restrictLaw d (subcriticalBox d t) (tiltLaw ν lam₁) (baseData hd))) ≤ 1 := by
-    haveI := hprob lam₁ (Set.right_mem_Icc.mpr (le_of_lt hlam₁))
+    have := hprob lam₁ (Set.right_mem_Icc.mpr (le_of_lt hlam₁))
     have hrw : (∫ ω, survivalObs w r t ω
           ∂(restrictLaw d (subcriticalBox d t) (tiltLaw ν lam₁) (baseData hd)))
         = ∫ ω, survivalObs w r t ω ∂(pDataLaw d (tiltLaw ν lam₁)) :=

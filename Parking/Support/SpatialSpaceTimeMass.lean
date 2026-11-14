@@ -49,7 +49,7 @@ theorem exists_integral_barDivisible_le (hd : 1 ≤ d) (hd3 : d ≤ 3)
     {H : ℝ} (hH : 1 ≤ H) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 2 ≤ R → ∀ t : ℝ, t ≤ H → ∀ x,
       ∫ w, barDivisible w R t x ∂law d ν ≤ C := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨b, B, _, hB, hb⟩ := exists_meanu_growth_bounds hGrowth d hd hd3 ν hν
   have hHpos : 0 < H := lt_of_lt_of_le one_pos hH
   let a : ℝ := (4 - (d : ℝ)) / 4
@@ -90,9 +90,9 @@ theorem exists_integral_local_spaceTime_barDivisible_le (hd : 1 ≤ d) (hd3 : d 
         ((law d ν).prod (volume.restrict K)) ∧
       Integrable (fun w => ∫ p in K, barDivisible w R p.1 p.2) (law d ν) ∧
       (∫ w, (∫ p in K, barDivisible w R p.1 p.2) ∂law d ν) ≤ C := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
-  haveI : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
+  have := hν.prob
+  have := law_isProb hd ν
+  have : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
   obtain ⟨H, hHK⟩ := hK.exists_bound_of_continuousOn continuous_fst.continuousOn
   obtain ⟨C, hC, hbound⟩ := exists_integral_barDivisible_le hd hd3 hGrowth ν hν
     (H := max H 1) (le_max_right _ _)

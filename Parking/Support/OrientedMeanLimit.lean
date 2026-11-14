@@ -37,8 +37,8 @@ theorem exists_rescaled_uOriented_eighth (ν : Measure ℤ) (hν : CriticalLaw �
         (orientedLaw 2 ν) ∧
       ∫ ω : Data 2, ((n : ℝ) ^ (-(1 : ℝ) / 4) * uOriented (fun y => (ω.1 y : ℝ)) n 0) ^ (8 : ℝ)
         ∂(orientedLaw 2 ν) ≤ C := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
   have hmom8 : Integrable (fun k : ℤ => |(k : ℝ)| ^ (8 : ℝ)) ν := by
     obtain ⟨K, hK, hbd⟩ := rpow_le_const_mul_exp (by norm_num : (0:ℝ) ≤ (8:ℝ)) hθ
@@ -129,8 +129,8 @@ theorem meanuOriented_tendsto_of_weak (ν : Measure ℤ) (hν : CriticalLaw ν)
           ∂(orientedLaw 2 ν)) atTop (𝓝 (∫ ω, F (V ω) ∂Q))) :
     Tendsto (fun n : ℕ => (n : ℝ) ^ (-(1 : ℝ) / 4) * meanuOriented (orientedLaw 2 ν) n)
       atTop (𝓝 (∫ ω, V ω ∂Q)) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   obtain ⟨C, hC, hfacts⟩ := exists_rescaled_uOriented_eighth ν hν
   simp only [mul_one, Nat.floor_natCast] at hweak
   have hmain := tendsto_integral_of_uniform_rpow

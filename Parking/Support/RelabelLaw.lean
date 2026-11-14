@@ -37,11 +37,11 @@ theorem relabelIdx_injective {d : ℕ} (x₀ : Site d) (σ : Equiv.Perm ℕ) :
   subst hxy
   subst hts
   by_cases hx : x = x₀
-  · rw [if_pos hx, if_pos hx] at hij
+  · rw [ite_eq_left hx, ite_eq_left hx] at hij
     have hij' : i = j := σ.injective hij
     subst hij'
     rfl
-  · rw [if_neg hx, if_neg hx] at hij
+  · rw [ite_eq_right hx, ite_eq_right hx] at hij
     subst hij
     rfl
 
@@ -72,11 +72,11 @@ theorem injective_relabelNoise_snd {d : ℕ} (x₀ : Site d) (σ : Equiv.Perm �
 /-- **Relabeling the noise at a site preserves its law.** -/
 theorem measurePreserving_relabelNoise {d : ℕ} (hd : 1 ≤ d) (x₀ : Site d) (σ : Equiv.Perm ℕ) :
     MeasurePreserving (relabelNoise x₀ σ) (noiseLaw d) (noiseLaw d) := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have h1 : MeasurePreserving (LatticeProb.coordShift (relabelIdx x₀ σ))
       (moveLaw d) (moveLaw d) :=
     LatticeProb.measurePreserving_coordShift (fun _ : Label d × ℕ => stepLaw d)

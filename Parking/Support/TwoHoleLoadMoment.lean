@@ -32,9 +32,9 @@ theorem exists_twoHoleLoad_moment_bound (hBernstein : External.Bernstein) (hd : 
   refine ⟨C, hC, fun p hp hp4 T x z u R B hB r hr => ?_⟩
   have hd1 : 1 ≤ d := by omega
   have hd3 : 3 ≤ d := by omega
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := roundNoiseLaw_isProbability hd1
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := roundNoiseLaw_isProbability hd1
   let μ := (iidLaw d (threePointLaw p)).prod (roundNoiseLaw d)
   let M := C * (meanU (law d (threePointLaw p)) T + r)
   have hM : 0 ≤ M :=

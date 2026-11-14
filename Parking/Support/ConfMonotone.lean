@@ -100,7 +100,7 @@ theorem pMono {D D' : LatticeProb.PDriver d} (hmove : D'.move = D.move)
             = (if (LatticeProb.pState D t).active p
               then (LatticeProb.pState D t).pos p + D.move (p, t)
               else (LatticeProb.pState D t).pos p)
-        rw [if_pos hp', if_pos hp, hpos, hmove]
+        rw [ite_eq_left hp', ite_eq_left hp, hpos, hmove]
       have harr : ∀ x : Site d,
           LatticeProb.pArrivalsAt D (LatticeProb.pState D t) t x
             ⊆ LatticeProb.pArrivalsAt D' (LatticeProb.pState D' t) t x := by

@@ -53,7 +53,7 @@ theorem orientedLayer_height {n : ℕ} {x : Site d} (h : orientedLayer d n x ≠
     layerHeight x = -(n : ℤ) := by
   induction n generalizing x with
   | zero =>
-    have hx : x = 0 := by by_contra hx; exact h (if_neg hx)
+    have hx : x = 0 := by by_contra hx; exact h (ite_eq_right hx)
     simp [hx, layerHeight]
   | succ n ih =>
     obtain ⟨i, hi⟩ := orientedLayer_predecessor h
@@ -69,7 +69,7 @@ theorem orientedLayer_mem_box {n : ℕ} {x : Site d} (h : orientedLayer d n x �
     x ∈ boxFinset 0 n := by
   induction n generalizing x with
   | zero =>
-    have hx : x = 0 := by by_contra hx; exact h (if_neg hx)
+    have hx : x = 0 := by by_contra hx; exact h (ite_eq_right hx)
     simp [hx, mem_boxFinset_iff]
   | succ n ih =>
     obtain ⟨i, hi⟩ := orientedLayer_predecessor h

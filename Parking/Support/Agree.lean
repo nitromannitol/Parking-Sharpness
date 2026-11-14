@@ -229,7 +229,7 @@ theorem expIdx_pred (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ �
           refine h (q, s) (Finset.mem_product.mpr ⟨hmem, Finset.mem_range.mpr hs⟩) ?_
           show expIdxOf D (q, s) = Sum.inl q₀
           unfold expIdxOf
-          rw [if_pos hq, hr]
+          rw [ite_eq_left hq, hr]
         · right
           refine state_agree_box hsD a.1.1 a.2 (2 * a.2) ⟨fun _ _ => rfl, ?_, fun _ _ _ => rfl⟩
           intro w hw k
@@ -312,7 +312,7 @@ theorem expMove_active (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ
   have hidx : expIdx i₀ η ρ a ω = Sum.inl (readIndex (expDriver i₀ η ρ ω) a.2 a.1) := by
     show expIdxOf (expDriver i₀ η ρ ω) a = _
     unfold expIdxOf
-    rw [if_pos ha]
+    rw [ite_eq_left ha]
   show expG i₀ (expIdx i₀ η ρ a ω) (ω (expIdx i₀ η ρ a ω)) = _
   rw [hidx]
   rfl
@@ -340,7 +340,7 @@ theorem pState_expMove (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ
                 then (expDriver i₀ η ρ ω).stack ((state (expDriver i₀ η ρ ω) t).pos p,
                   instructionIndex (expDriver i₀ η ρ ω) (state (expDriver i₀ η ρ ω) t) t p)
                 else (state (expDriver i₀ η ρ ω) t).pos p)
-          rw [if_pos hact, if_pos hact, expMove_active i₀ η ρ ω (p, t) hact]
+          rw [ite_eq_left hact, ite_eq_left hact, expMove_active i₀ η ρ ω (p, t) hact]
           show (state (expDriver i₀ η ρ ω) t).pos p
               + ((expDriver i₀ η ρ ω).stack (readIndex (expDriver i₀ η ρ ω) t p)
                 - (state (expDriver i₀ η ρ ω) t).pos p) = _
@@ -356,7 +356,7 @@ theorem pState_expMove (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ
                 then (expDriver i₀ η ρ ω).stack ((state (expDriver i₀ η ρ ω) t).pos p,
                   instructionIndex (expDriver i₀ η ρ ω) (state (expDriver i₀ η ρ ω) t) t p)
                 else (state (expDriver i₀ η ρ ω) t).pos p)
-          rw [if_neg hact, if_neg hact]
+          rw [ite_eq_right hact, ite_eq_right hact]
       have harr : ∀ x : Site d,
           LatticeProb.pArrivalsAt ⟨η, expMove i₀ η ρ ω, ρ⟩ (state (expDriver i₀ η ρ ω) t) t x
             = arrivalsAt (expDriver i₀ η ρ ω) (state (expDriver i₀ η ρ ω) t) t x := by
@@ -410,11 +410,11 @@ theorem expLaw_map_expG (i₀ : Fin d) (i : RIdx d) :
       have hae : (expG i₀ (Sum.inl q)) =ᵐ[instructionLaw q.1] (fun z : Site d => z - q.1) := by
         refine MeasureTheory.ae_iff.mpr ?_
         refine measure_mono_null (fun z hz => ?_) (instructionLaw_compl_nbr q.1)
-        simp only [Set.mem_setOf_eq] at hz
+        simp only [Set.mem_ofPred_eq] at hz
         intro hmem
         apply hz
         show (if z ∈ nbrFinset q.1 then z else q.1 + unit i₀) - q.1 = z - q.1
-        rw [if_pos (Finset.mem_coe.mp hmem)]
+        rw [ite_eq_left (Finset.mem_coe.mp hmem)]
       show (instructionLaw q.1).map (expG i₀ (Sum.inl q)) = _
       rw [Measure.map_congr hae]
       exact LatticeProb.instructionLaw_map_sub_self q.1
@@ -426,7 +426,7 @@ theorem expLaw_map_expG (i₀ : Fin d) (i : RIdx d) :
 law, whatever the configuration and the uniform variables are. -/
 theorem map_expMove (hd : 1 ≤ d) (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) :
     (Measure.infinitePi (expLaw d)).map (expMove i₀ η ρ) = LatticeProb.moveLaw d := by
-  haveI : ∀ i, IsProbabilityMeasure (expLaw d i) := expLaw_isProbability hd
+  have : ∀ i, IsProbabilityMeasure (expLaw d i) := expLaw_isProbability hd
   exact map_revealed_dag (expLaw d) (expIdx_isDagExploration i₀ η ρ)
     (measurable_expG i₀) (expLaw_map_expG i₀)
 
@@ -434,10 +434,10 @@ theorem map_expMove (hd : 1 ≤ d) (i₀ : Fin d) (η : Site d → ℤ) (ρ : La
 law. -/
 theorem map_expStack (hd : 1 ≤ d) (i₀ : Fin d) :
     (Measure.infinitePi (expLaw d)).map (expStack i₀) = LatticeProb.stackLaw d := by
-  haveI : ∀ i, IsProbabilityMeasure (expLaw d i) := expLaw_isProbability hd
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ i, IsProbabilityMeasure (expLaw d i) := expLaw_isProbability hd
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => LatticeProb.instructionLaw_isProbability hd q.1
-  haveI : ∀ q : Label d × ℕ, IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
+  have : ∀ q : Label d × ℕ, IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
     fun _ => LatticeProb.instructionLaw_isProbability hd 0
   have hsplit := LatticeProb.infinitePi_sum (X := fun _ : RIdx d => Site d) (expLaw d)
   have hfst : (Measure.infinitePi (expLaw d)).map (fun ω q => ω (Sum.inl q))
@@ -447,7 +447,7 @@ theorem map_expStack (hd : 1 ≤ d) (i₀ : Fin d) :
           (Site d × ℕ → Site d) × (Label d × ℕ → Site d)) :=
       (Measurable.of_eval fun q => measurable_pi_apply (Sum.inl q)).prodMk
         (Measurable.of_eval fun q => measurable_pi_apply (Sum.inr q))
-    haveI : IsProbabilityMeasure
+    have : IsProbabilityMeasure
         (Measure.infinitePi fun q : Label d × ℕ => expLaw d (Sum.inr q)) := by
       infer_instance
     calc (Measure.infinitePi (expLaw d)).map (fun ω q => ω (Sum.inl q))
@@ -538,20 +538,20 @@ theorem constructionsAgree_conf (d : ℕ) (hd : 1 ≤ d) (μ : Measure (Site d �
         (fun ω : LatticeProb.PData d => (ω.1, LatticeProb.pObservables ω)) := by
   classical
   let i₀ : Fin d := ⟨0, hd⟩
-  haveI hpl : ∀ i, IsProbabilityMeasure (expLaw d i) := expLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have hpl : ∀ i, IsProbabilityMeasure (expLaw d i) := expLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => LatticeProb.instructionLaw_isProbability hd q.1
-  haveI : IsProbabilityMeasure (LatticeProb.stackLaw d) := by
+  have : IsProbabilityMeasure (LatticeProb.stackLaw d) := by
     unfold LatticeProb.stackLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
+  have : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
     LatticeProb.instructionLaw_isProbability hd 0
-  haveI : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
+  have : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
     unfold LatticeProb.moveLaw; infer_instance
   set P : Measure ((Site d → ℤ) × (Label d × ℕ → ℝ)) :=
     (μ).prod (LatticeProb.rankLaw d) with hP
   set R : Measure (RIdx d → Site d) := Measure.infinitePi (expLaw d) with hR
-  haveI : IsProbabilityMeasure R := by rw [hR]; infer_instance
+  have : IsProbabilityMeasure R := by rw [hR]; infer_instance
   -- the stack coordinates
   have hstackU : Measurable (Function.uncurry
       fun (_ : (Site d → ℤ) × (Label d × ℕ → ℝ)) (ω : RIdx d → Site d) => expStack i₀ ω) :=
@@ -664,8 +664,8 @@ theorem constructionsAgree_conf (d : ℕ) (hd : 1 ≤ d) (μ : Measure (Site d �
 law**, as `parking.tex:645-646` states. -/
 theorem constructionsAgree : LatticeProb.ConstructionsAgree := by
   intro d hd ν hν
-  haveI := hν
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := hν
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   calc (LatticeProb.stackDataLaw d ν).map LatticeProb.stackObservables
       = (((LatticeProb.iidLaw d ν).prod
@@ -725,8 +725,8 @@ theorem pState_stepVec (η : Site d → ℤ) (m : Label d × ℕ → Fin d × Bo
 counts of the stack process. -/
 theorem constructionsAgree' : ConstructionsAgree := by
   intro d hd ν hν
-  haveI := hν
-  haveI := stepLaw_isProbability hd
+  have := hν
+  have := stepLaw_isProbability hd
   have hmeas : Measurable (stepVec (d := d)) := measurable_from_countable' _
   have hrecode : Measurable fun ω : PData d =>
       ((ω.1, (fun q => stepVec (ω.2.1 q), ω.2.2)) : LatticeProb.PData d) :=

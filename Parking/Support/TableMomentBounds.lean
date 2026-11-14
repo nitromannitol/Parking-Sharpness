@@ -46,7 +46,7 @@ theorem integrable_tableDiff (hd : 3 ≤ d) (η : Site d → ℤ) (hη : ∀ y, 
     (e : Fin K ↪ Site d × ℕ) (hK : 0 < K) (n : ℕ) :
     Integrable (tableDiff η ρ T x e hK n) (flatRoundNoiseLaw d) ∧
       Integrable (fun ω => tableDiff η ρ T x e hK n ω ^ 2) (flatRoundNoiseLaw d) := by
-  haveI := flatRoundNoiseLaw_isProbability (by omega : 1 ≤ d)
+  have := flatRoundNoiseLaw_isProbability (by omega : 1 ≤ d)
   have hm := measurable_tableDiff (by omega) η ρ T x e hK n
   have hb := abs_tableDiff_le hd η hη ρ T x e hK n
   constructor
@@ -64,7 +64,7 @@ theorem condExp_tableDiff_zero (hd : 3 ≤ d) (base : FlatRoundNoise d)
     (flatRoundNoiseLaw d)[tableDiff η ρ T x e hK (n + 1) | tableFiltration base e n]
       =ᵐ[flatRoundNoiseLaw d] 0 := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   apply condExp_zero_of_fresh_coordinate (fun _ : ℕ × RoundSlot d => stepLaw d) base
     (blockReveal (slotEnumeration e) n) (n / K, Sum.inl (e ⟨n % K, Nat.mod_lt n hK⟩))
     (notMem_blockReveal_next (slotEnumeration e) hK n) _
@@ -86,7 +86,7 @@ theorem condExp_tableDiff_sq_le (hd : 3 ≤ d) (base : FlatRoundNoise d)
         if (e j).2 < matchedCount η ρ (curryRoundNoise ω) (n / K) (e j).1 then
           walkOp (fun y => fullGreen d (y - x) ^ 2) (e j).1 else 0) := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   have hc := condExp_eq_coordinate_integral (fun _ : ℕ × RoundSlot d => stepLaw d) base
     (blockReveal (slotEnumeration e) n) (n / K, Sum.inl (e ⟨n % K, Nat.mod_lt n hK⟩))
     (notMem_blockReveal_next (slotEnumeration e) hK n)

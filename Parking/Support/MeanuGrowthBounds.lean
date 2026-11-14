@@ -39,7 +39,7 @@ theorem exists_meanu_growth_bounds (hGrowth : Parking.External.SandpileGrowth)
     ∃ b B : ℝ, 0 < b ∧ 0 < B ∧ ∀ n : ℕ, 2 ≤ n →
       b * (n : ℝ) ^ ((4 - (d : ℝ)) / 4) ≤ Parking.meanu (Parking.law d ν) n ∧
         Parking.meanu (Parking.law d ν) n ≤ B * (n : ℝ) ^ ((4 - (d : ℝ)) / 4) := by
-  haveI := hν.prob
+  have := hν.prob
   have hBP := hGrowth d hd (realLaw ν) (realLaw_isProbability ν) (realLaw_mean ν hν)
     (realLaw_evariance_pos ν hν) (realLaw_evariance_lt_top ν hν) (realLaw_expMoment ν hν)
   obtain ⟨b, B, hb, hB, hbound⟩ := hBP.1 hd3
@@ -51,7 +51,7 @@ theorem exists_meanu_growth_bounds (hGrowth : Parking.External.SandpileGrowth)
 horizon (`u_monotone_time`), so its mean does too. -/
 theorem meanu_monotone (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     Monotone (fun n : ℕ => Parking.meanu (Parking.law d ν) n) := by
-  haveI := hν.prob
+  have := hν.prob
   intro n m hnm
   exact integral_mono (integrable_uOf hd ν hν.integrable_abs n 0)
     (integrable_uOf hd ν hν.integrable_abs m 0)

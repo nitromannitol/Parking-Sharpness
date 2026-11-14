@@ -43,7 +43,7 @@ theorem survivorsFrom_zero (D : Driver d) (y : Site d) :
 /-- The marginal of the law of the data at one site is the one-site law. -/
 theorem law_map_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] (z : Site d) :
     (law d ν).map (fun ω : Data d => ω.1 z) = ν := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have h1 : (fun ω : Data d => ω.1 z) = (fun η : Site d → ℤ => η z) ∘ Prod.fst := rfl
   have h2 : (law d ν).map Prod.fst = LatticeProb.iidLaw d ν :=
@@ -155,7 +155,7 @@ theorem master_of_cor_critical
       c * (Parking.meanu (Parking.law d ν) n + Real.log n) ≤ Parking.meanU (Parking.law d ν) n ∧
         Parking.meanU (Parking.law d ν) n
           ≤ C * (Parking.meanu (Parking.law d ν) n + Real.log n) := by
-  haveI := hprob
+  have := hprob
   -- the exponential moment gives a first moment
   have hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν := by
     obtain ⟨K, hK, hbound⟩ := rpow_le_const_mul_exp (r := (1 : ℝ)) (by norm_num) hθ

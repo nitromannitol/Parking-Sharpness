@@ -121,7 +121,7 @@ theorem Parking.discrepancyPair_hit_le (hd : 1 ≤ d) (c : Site d → ℤ × ℤ
       (Parking.discrepancyState c ρ σ s).pos p = (Parking.discrepancyState c ρ σ s).pos q} =
       {σ | ∃ s ≤ T, X σ s = 0} := by
     ext σ
-    simp only [Set.mem_setOf_eq, X, sub_eq_zero]
+    simp only [Set.mem_ofPred_eq, X, sub_eq_zero]
   rw [hset]
   apply Parking.roundPath_hit_le hd X hX (p.1 - q.1)
     (fun σ n => Parking.discrepancyIndex c ρ σ n p)

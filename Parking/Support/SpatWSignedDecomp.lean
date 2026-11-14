@@ -99,10 +99,10 @@ theorem arrivals_sum_eq_range (stack : Site d × ℕ → Site d) (y : Site d) (�
     apply summable_of_ne_finset_zero (s := {stack (y, j)})
     intro x hx
     simp only [Finset.mem_singleton] at hx
-    rw [if_neg (fun h => hx h.symm)]
+    rw [ite_eq_right (fun h => hx h.symm)]
   rw [hswap]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [tsum_eq_single (stack (y, j)) (fun x hx => if_neg (fun h => hx h.symm))]
+  rw [tsum_eq_single (stack (y, j)) (fun x hx => ite_eq_right (fun h => hx h.symm))]
   simp
 
 /-- If a site `x` lies in the box of radius `B` around the origin, every neighbour of `x` lies
@@ -402,8 +402,8 @@ theorem tendsto_signedPair_sub_scenePair_of_convergence (hd : 1 ≤ d) (ν : Mea
         ((law d ν) {w | ε < |signedPair w R φ - scenePair w R φ - L w|}).toReal) atTop
       (𝓝 0) := by
   intro ε hε
-  haveI := hν.prob
-  haveI hlaw : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have hlaw : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hae := ae_stack_nbr_law hd ν
   have hbound : ∀ R : ℝ, 1 ≤ R →
       ((law d ν) {w | ε < |signedPair w R φ - scenePair w R φ - L w|}).toReal

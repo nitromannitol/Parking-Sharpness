@@ -32,11 +32,11 @@ namespace Parking
 
 /-- The noise of the particle-driven construction is a probability measure. -/
 theorem noiseLaw_isProbability {d : ℕ} (hd : 1 ≤ d) : IsProbabilityMeasure (noiseLaw d) := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   unfold noiseLaw
   infer_instance
 
@@ -110,7 +110,7 @@ theorem integrable_of_le_add_one {d : ℕ} (hd : 1 ≤ d) {Z : PData d → ℝ} 
     (hlow : ∀ b : PNoise d, Z ((a, b) : PData d) ≤ W b)
     (hup : ∀ b : PNoise d, W b - Z ((a, b) : PData d) ≤ 1) :
     Integrable W (noiseLaw d) := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   refine Integrable.mono' (hZi.abs.add (integrable_const (1 : ℝ)))
     hWm.aestronglyMeasurable (Filter.Eventually.of_forall fun b => ?_)
   have h1 := hlow b
@@ -169,7 +169,7 @@ theorem spInt_particleSplice_last {d : ℕ} (hd : 1 ≤ d) {N : Finset (Site d)}
     {G : PData d → ℝ} (hGN : DependsOn N G) (hGP : ReadsParticles G) (a : Site d → ℤ) :
     ∀ᵐ ω ∂(noiseLaw d), spInt (noiseLaw d) (particleSplice N a (particleLabels N a).card)
         (fun b => G ((a, b) : PData d)) ω = G ((a, ω) : PData d) := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   have hsplice : ∀ᵐ q ∂((noiseLaw d).prod (noiseLaw d)),
       Function.Injective
         (noiseComb {p : Label d | p.1 ∈ N → p.2 < (a p.1).toNat} q.1 q.2).2 :=
@@ -239,7 +239,7 @@ theorem abs_spInt_particle_Z_le_one {d : ℕ} (hd : 1 ≤ d) {N : Finset (Site d
       |spInt (noiseLaw d) (particleSplice N a (i + 1)) (fun b => Z ((a, b) : PData d)) ω
         - spInt (noiseLaw d) (particleSplice N a i) (fun b => Z ((a, b) : PData d)) ω|
         ≤ 1 := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   set p : Label d := enumLabel (particleLabels N a) i with hp
   have hmem : p ∈ particleLabels N a := enumLabel_mem _ hi
   have hp2 : p.2 < (a p.1).toNat := (mem_particleLabels.mp hmem).2
@@ -268,7 +268,7 @@ theorem integral_abs_spInt_particle_F_le {d : ℕ} (hd : 1 ≤ d) {N : Finset (S
       ≤ 2 * ((∫ b, F ((a, b) : PData d) ∂(noiseLaw d))
               - ∫ b, F (delAt (enumLabel (particleLabels N a) i).1 ((a, b) : PData d))
                   ∂(noiseLaw d)) := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   set p : Label d := enumLabel (particleLabels N a) i with hp
   have hmem : p ∈ particleLabels N a := enumLabel_mem _ hi
   have hp2 : p.2 < (a p.1).toNat := (mem_particleLabels.mp hmem).2
@@ -331,7 +331,7 @@ theorem abs_cov_noise_le {d : ℕ} (hd : 1 ≤ d) {N : Finset (Site d)} {F Z : P
       ≤ ∑ x ∈ N, ((a x).toNat : ℝ) *
           (2 * ((∫ b, F ((a, b) : PData d) ∂(noiseLaw d))
                 - ∫ b, F (delAt x ((a, b) : PData d)) ∂(noiseLaw d))) := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   have hFm' : Measurable (fun b : PNoise d => F ((a, b) : PData d)) :=
     hFm.comp (measurable_const.prodMk measurable_id)
   have hFb : ∀ b : PNoise d, |F ((a, b) : PData d)| ≤ 1 := by
@@ -365,7 +365,7 @@ theorem abs_cov_noise_le {d : ℕ} (hd : 1 ≤ d) {N : Finset (Site d)} {F Z : P
     (fun p : Label d => 2 * ((∫ b, F ((a, b) : PData d) ∂(noiseLaw d))
       - ∫ b, F (delAt p.1 ((a, b) : PData d)) ∂(noiseLaw d)))
     (enumLabel (particleLabels N a))
-    (fun i hi => by unfold enumLabel; rw [dif_pos hi])
+    (fun i hi => by unfold enumLabel; rw [dite_eq_left hi])
   have hsum2 := sum_particleLabels N a
     (fun x : Site d => 2 * ((∫ b, F ((a, b) : PData d) ∂(noiseLaw d))
       - ∫ b, F (delAt x ((a, b) : PData d)) ∂(noiseLaw d)))

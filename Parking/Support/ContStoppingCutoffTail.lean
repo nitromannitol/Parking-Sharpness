@@ -69,7 +69,7 @@ theorem exists_measureReal_abs_Z_gt_le {Ω' : Type} [MeasurableSpace Ω'] (Q' : 
   have hset : {ω' | M ^ 2 ≤ Z ω' t x * Z ω' t x} = {ω' | M ≤ |Z ω' t x|} := by
     ext ω'
     have habs : Z ω' t x * Z ω' t x = |Z ω' t x| * |Z ω' t x| := (abs_mul_abs_self _).symm
-    simp only [Set.mem_setOf_eq, habs, sq]
+    simp only [Set.mem_ofPred_eq, habs, sq]
     constructor
     · intro h
       by_contra hc
@@ -225,7 +225,7 @@ theorem ae_tendsto_contCutoffValue_sub_contStoppingValue {Ω' : Type} [Measurabl
       atTop (𝓝 L) := hω'
   have hval : contStoppingValue (ofBrownianSpace B') PB' Z ω' s x = hchoice.choose := by
     unfold contStoppingValue
-    rw [dif_pos hchoice]
+    rw [dite_eq_left hchoice]
   rw [hval]
   have hfun : (fun n : ℕ => contCutoffValue (ofBrownianSpace B') PB'
         (fun k y => -Z ω' (s - k) (x + y)) ((n : ℝ) + 1) s)

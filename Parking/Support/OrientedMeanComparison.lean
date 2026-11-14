@@ -19,10 +19,10 @@ variable {d : ℕ}
 `orientedLaw_map_conf` and `integral_orientedOdometer_given_mean`. -/
 theorem meanuOriented_le_meanU (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) (n : ℕ) :
     meanuOriented (orientedLaw d ν) n ≤ meanU (orientedLaw d ν) n := by
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let f : (Site d → ℤ) → ℝ := fun η => uOriented (fun y => (η y : ℝ)) n 0
   have hm : Measurable f := (measurable_uOriented n 0).comp
     (Measurable.of_eval fun y => measurable_intCastReal.comp (measurable_pi_apply y))

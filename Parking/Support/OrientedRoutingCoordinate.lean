@@ -36,7 +36,7 @@ theorem measurable_orientedOdometer_coordinateFiltration
     change layerHeight (q j).1 ≤ layerHeight (q k).1 at hh
     rw [hkc] at hh
     omega
-  exact if_neg hnot
+  exact ite_eq_right hnot
 
 /-- The one-layer routing discrepancy between the layer weight of a routing instruction's
 target `z` and the layer weight of its source `y` one layer earlier. -/

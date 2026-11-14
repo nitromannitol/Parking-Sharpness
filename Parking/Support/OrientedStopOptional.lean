@@ -66,8 +66,8 @@ theorem orientedStopValue_eq_potential (hd : 1 ≤ d) (η : Site d → ℝ) :
     ∀ (n : ℕ) (x : Site d) (σ : (ℕ → Fin d × Bool) → ℕ), IsStoppingTimeLE n σ →
       orientedStopValue η x σ
         = orientedPotential η n x - ∫ p, orientedStopTerminal η n x σ p ∂(walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   intro n
   induction n with
   | zero =>

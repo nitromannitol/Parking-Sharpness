@@ -114,7 +114,7 @@ supremum over the whole type as over that set.** -/
 theorem ciSup_eq_ciSup_subtype_of_forall_not_mem_eq_zero [Nonempty ι'] {s : Finset ι'}
     {f : ι' → ℝ} (hf0 : ∀ i, 0 ≤ f i) (hz : ∀ i ∉ s, f i = 0) (hne : s.Nonempty) :
     (⨆ i, f i) = ⨆ i : (s : Finset ι'), f (i : ι') := by
-  haveI : Nonempty (s : Finset ι') := ⟨⟨hne.choose, hne.choose_spec⟩⟩
+  have : Nonempty (s : Finset ι') := ⟨⟨hne.choose, hne.choose_spec⟩⟩
   have hbdd : BddAbove (Set.range f) := by
     refine ⟨max 0 (s.sup' hne f), ?_⟩
     rintro _ ⟨i, rfl⟩

@@ -33,7 +33,7 @@ theorem measurableSet_injective_rank {v : PData d → (Label d × ℕ → ℝ)} 
   have hset : {ω : PData d | Function.Injective (v ω)}
       = ⋂ q : Label d × ℕ, ⋂ q' : Label d × ℕ, {ω : PData d | v ω q = v ω q' → q = q'} := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_iInter, Function.Injective]
+    simp only [Set.mem_ofPred_eq, Set.mem_iInter, Function.Injective]
   rw [hset]
   refine MeasurableSet.iInter fun q => MeasurableSet.iInter fun q' => ?_
   by_cases hqq : q = q'
@@ -63,9 +63,9 @@ theorem measurable_addParticle_fst (x₀ : Site d) :
   classical
   refine Measurable.of_eval fun x => ?_
   by_cases h : x = x₀
-  · simp only [addParticle, if_pos h]
+  · simp only [addParticle, ite_eq_left h]
     exact ((measurable_pi_apply x).comp measurable_fst).add_const 1
-  · simp only [addParticle, if_neg h]
+  · simp only [addParticle, ite_eq_right h]
     exact (measurable_pi_apply x).comp measurable_fst
 
 /-- The walks with the tagged particle put back are measurable. -/
@@ -75,11 +75,11 @@ theorem measurable_taggedMove (w : ℕ → Fin d × Bool) :
   refine Measurable.of_eval fun q => ?_
   by_cases h : q.1.1 = (0 : Site d)
   · by_cases h2 : q.1.2 = 0
-    · simp only [taggedMove, if_pos h, if_pos h2]
+    · simp only [taggedMove, ite_eq_left h, ite_eq_left h2]
       exact measurable_const
-    · simp only [taggedMove, if_pos h, if_neg h2]
+    · simp only [taggedMove, ite_eq_left h, ite_eq_right h2]
       exact (measurable_pi_apply _).comp (measurable_fst.comp measurable_snd)
-  · simp only [taggedMove, if_neg h]
+  · simp only [taggedMove, ite_eq_right h]
     exact (measurable_pi_apply q).comp (measurable_fst.comp measurable_snd)
 
 /-- The uniform variables with the tagged particle put back are measurable. -/
@@ -89,11 +89,11 @@ theorem measurable_taggedRank (r : ℕ → ℝ) :
   refine Measurable.of_eval fun q => ?_
   by_cases h : q.1.1 = (0 : Site d)
   · by_cases h2 : q.1.2 = 0
-    · simp only [taggedRank, if_pos h, if_pos h2]
+    · simp only [taggedRank, ite_eq_left h, ite_eq_left h2]
       exact measurable_const
-    · simp only [taggedRank, if_pos h, if_neg h2]
+    · simp only [taggedRank, ite_eq_left h, ite_eq_right h2]
       exact (measurable_pi_apply _).comp (measurable_snd.comp measurable_snd)
-  · simp only [taggedRank, if_neg h]
+  · simp only [taggedRank, ite_eq_right h]
     exact (measurable_pi_apply q).comp (measurable_snd.comp measurable_snd)
 
 /-- Every field of the state with the tagged particle put back is measurable. -/

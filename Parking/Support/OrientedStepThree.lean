@@ -47,7 +47,7 @@ theorem exists_oriented_two_log_moment (hBern : Parking.External.Bernstein)
       (∫ ω : Data 2, (U ω n 0 : ℝ) ^ (2 ⊔ ⌈Real.log ((n : ℝ) + 1)⌉₊ : ℝ) ∂(orientedLaw 2 ν)) ^
           ((1 : ℝ) / (2 ⊔ ⌈Real.log ((n : ℝ) + 1)⌉₊ : ℝ))
         ≤ C * (n : ℝ) ^ ((1 : ℝ) / 4) * Real.sqrt (Real.log ((n : ℝ) + 1)) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨C₀, hC₀, hrec⟩ := exists_oriented_U_moment_recursion hBern
   obtain ⟨C₁, hC₁, hu⟩ := exists_oriented_uOriented_norm (d := 2) (by norm_num) hConc ν hν
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
@@ -103,7 +103,7 @@ theorem exists_oriented_two_log_moment (hBern : Parking.External.Bernstein)
   have hA0 : 0 ≤ A := Real.rpow_nonneg hI0 _
   -- the divisible moment at the logarithmic exponent
   have hkappa : orientedKappa 2 n = Real.sqrt (n : ℝ) := by
-    rw [orientedKappa, if_pos rfl, Real.sqrt_eq_rpow]
+    rw [orientedKappa, ite_eq_left rfl, Real.sqrt_eq_rpow]
   have hsq : Real.sqrt (rn * orientedKappa 2 n)
       ≤ 2 * Real.sqrt L * (n : ℝ) ^ ((1 : ℝ) / 4) := by
     rw [hkappa]
@@ -178,8 +178,8 @@ theorem exists_oriented_herr (hBern : Parking.External.Bernstein)
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
       |meanU (orientedLaw 2 ν) n - meanuOriented (orientedLaw 2 ν) n| ≤
         C * (n : ℝ) ^ ((1 : ℝ) / 8) * Real.log ((n : ℝ) + 1) ^ ((3 : ℝ) / 4) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   obtain ⟨C₀, hC₀, hb⟩ := exists_oriented_wErr_moment_law hBern
   obtain ⟨C₄, hC₄, hAb⟩ := exists_oriented_two_log_moment hBern hConc ν hν
   refine ⟨4 * C₀ * (2 * Real.sqrt C₄ + 24), by positivity, fun n hn => ?_⟩

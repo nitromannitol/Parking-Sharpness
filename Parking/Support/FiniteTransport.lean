@@ -22,7 +22,7 @@ theorem integral_box_transport (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityM
     (he : ∀ v ω a b, F (shiftData v ω) a b = F ω (a + v) (b + v)) :
     (∫ ω, ∑ a ∈ boxFinset 0 R, F ω a 0 ∂(law d ν)) =
       ∫ ω, ∑ b ∈ boxFinset 0 R, F ω 0 b ∂(law d ν) := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have ht : ∀ a : Site d, (∫ ω, F ω a 0 ∂(law d ν)) =
       ∫ ω, F ω 0 (-a) ∂(law d ν) := by
     intro a

@@ -68,7 +68,7 @@ theorem measurable_coordinateFiltration_eval (b : Π i, X i) {q : Fin K → ι}
   have hnot : q j ∉ remainingCoordinates q n := by
     rw [mem_remainingCoordinates_iff hq]
     omega
-  simp only [eraseCoordinates, if_neg hnot]
+  simp only [eraseCoordinates, ite_eq_right hnot]
 
 /-- Membership of a stage-`n`-measurable set is unaffected by overwriting a coordinate `q j`
 that has not yet been revealed (`j.val ≥ n`), inherited from `erasedCoordinateSpace_set_update`

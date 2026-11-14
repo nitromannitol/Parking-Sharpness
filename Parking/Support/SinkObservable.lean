@@ -57,8 +57,8 @@ theorem integral_sparseSinkTableU (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
     (T : ℕ) (v x : Site d) :
     ∫ z, sparseSinkTableU T v x z ∂((iidLaw d ν).prod (flatRoundNoiseLaw d)) =
       ∫ η, matchedMeanU (sparseSinkField T v η) 0 T x ∂(iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
   have hi : Integrable (sparseSinkTableU T v x) ((iidLaw d ν).prod (flatRoundNoiseLaw d)) :=
     Integrable.of_bound (measurable_sparseSinkTableU hd T v x).aestronglyMeasurable _
       (ae_of_all _ (sparseSinkTableU_bound T v x))
@@ -97,9 +97,9 @@ theorem sparseSinkLambda_bound (hd : 1 ≤ d) (T : ℕ) (z : (Site d → ℤ) ×
 theorem integral_sparseSinkLambda (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) (T : ℕ) :
     ∫ z, sparseSinkLambda T z ∂((iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)) =
       walkOp (sparseSinkMean (d := d) p T) 0 := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
   unfold sparseSinkLambda
   rw [integral_walkOp _ _ _ (fun x _ => Integrable.of_bound
     (measurable_sparseSinkTableU hd T 0 x).aestronglyMeasurable _

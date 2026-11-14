@@ -63,7 +63,7 @@ theorem integral_noArrivalWeight_prod_le_one {Ω : Type} [MeasurableSpace Ω] (h
     (K : ℕ) (hK : ∀ ω y, (Φ ω y).toNat ≤ K) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     ∫ z, noArrivalWeight (Φ z.1) ρ (curryRoundNoise z.2) T x
       ∂(μ.prod (flatRoundNoiseLaw d)) ≤ 1 := by
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have := flatRoundNoiseLaw_isProbability hd
   have hm := measurable_noArrivalWeight_of hd (fun z : Ω × FlatRoundNoise d => Φ z.1)
     (fun _ => ρ) (fun z => curryRoundNoise z.2) (hΦ.comp measurable_fst) measurable_const
     (measurable_curryRoundNoise.comp measurable_snd) T x

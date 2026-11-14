@@ -44,7 +44,7 @@ theorem oriented_walk_of_scaling (hBern : Parking.External.Bernstein)
           (μ' * (n : ℝ) ^ ((1 : ℝ) / 4))) atTop (𝓝 1) ∧
         Tendsto (fun t : ℕ => S (orientedLaw d ν) t /
           (μ' / 4 * (t : ℝ) ^ (-(3 : ℝ) / 4))) atTop (𝓝 1)) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨Ca, hCa, hmom2⟩ := exists_oriented_hmom2 hBern hConc ν hν
   obtain ⟨Cc, hCc, herr⟩ := exists_oriented_herr hBern hConc ν hν
   refine ⟨?_, ?_, ?_⟩

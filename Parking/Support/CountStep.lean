@@ -65,10 +65,10 @@ theorem integral_count_step_le {f : ℤ → ℝ}
         have : ((k.toNat : ℤ) : ℝ) = (k : ℝ) :=
           congrArg (fun z : ℤ => (z : ℝ)) (Int.toNat_of_nonneg (by omega))
         rw [show ((k.toNat : ℝ)) = ((k.toNat : ℤ) : ℝ) by push_cast; ring, this]
-      rw [if_pos hk, smul_eq_mul, measureReal_def, hk0]
+      rw [ite_eq_left hk, smul_eq_mul, measureReal_def, hk0]
       ring
     · have hk0 : k.toNat = 0 := Int.toNat_of_nonpos (by omega)
-      rw [if_neg hk, smul_eq_mul, hk0]
+      rw [ite_eq_right hk, smul_eq_mul, hk0]
       simp
   rw [integral_countable hgi, tsum_congr hpt, (hstep.1).tsum_mul_left 2]
   exact mul_le_mul_of_nonneg_left hstep.2 (by norm_num)

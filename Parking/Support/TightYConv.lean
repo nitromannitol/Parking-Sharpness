@@ -55,9 +55,9 @@ theorem tendsto_integral_Y_of_hWalk (ν : Measure ℤ) (hν : CriticalLaw ν)
       contZ (∫ x : ℝ, x ^ 2 ∂(realLaw ν)) 1 (z 0) (z 1) =ᵐ[contNoiseLaw] Yfield z)
     (f : ℝ → ℝ) (hfb : ∃ C : ℝ, ∀ x y, dist (f x) (f y) ≤ C) (hflip : ∃ K, LipschitzWith K f) :
     ∃ c : ℝ, Tendsto (fun n => ∫ w, f (Y A n w) ∂(orientedLaw 2 ν)) atTop (𝓝 c) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   obtain ⟨K, hK⟩ := hflip
   set F : BoundedContinuousFunction ℝ ℝ := ⟨⟨f, hK.continuous⟩, hfb⟩ with hFdef
   have hFcoe : ∀ x, F x = f x := fun _ => rfl

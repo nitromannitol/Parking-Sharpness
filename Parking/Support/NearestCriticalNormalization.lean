@@ -68,7 +68,7 @@ measure `iidLaw d ν` under the measurable centering map. -/
 theorem Parking.CriticalScale.centeredMassLaw_isProbability (d : ℕ) (ν : Measure ℝ)
     [IsProbabilityMeasure ν] : IsProbabilityMeasure (centeredMassLaw d ν) := by
   unfold centeredMassLaw
-  haveI : IsProbabilityMeasure (ν.map fun z => 1 + 2 * (d : ℝ) * z) :=
+  have : IsProbabilityMeasure (ν.map fun z => 1 + 2 * (d : ℝ) * z) :=
     inferInstance
   unfold iidLaw
   infer_instance
@@ -91,7 +91,7 @@ theorem Parking.CriticalScale.odometer_lowerTail_eq {d : ℕ} (hd : 1 ≤ d)
     (measurableSet_le (measurable_odometer t x) measurable_const)]
   congr 1
   ext η
-  simp only [Set.mem_preimage, Set.mem_setOf_eq, odometer_centered hd]
+  simp only [Set.mem_preimage, Set.mem_ofPred_eq, odometer_centered hd]
 
 /-- The integer-valued analogue of `odometer_lowerTail_eq`: transports the lower-tail event
 for `Parking.uOf` along the pushforward identity `Parking.law_map_confReal`. -/

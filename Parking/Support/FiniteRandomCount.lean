@@ -23,7 +23,7 @@ theorem count_below_eq_sum (n M : ℕ) (hn : n ≤ M) (P : ℕ → Prop) :
           apply sum_congr rfl
           intro j hj
           simp only [mem_range.mp hj, true_and]
-    _ = _ := sum_subset (range_mono hn) (fun j _ hj => if_neg (fun h => hj (mem_range.mpr h.1)))
+    _ = _ := sum_subset (range_mono hn) (fun j _ hj => ite_eq_right (fun h => hj (mem_range.mpr h.1)))
 
 /-- The integral of the `{0, 1}`-valued indicator of a measurable event `S` equals
 `μ.real S`, via `integral_indicator_one`. -/
@@ -62,12 +62,12 @@ theorem integral_random_count {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpa
   have heF : (fun ω => (((range (N ω)).filter fun j => Y j ω = a).card : ℝ)) =ᵐ[μ]
       fun ω => ∑ j ∈ range M, f j ω := hNM.mono fun ω hω => by
     have h := count_below_eq_sum (N ω) M hω (fun j => Y j ω = a)
-    simp only [f, D, Set.indicator_apply, Set.mem_setOf_eq]
+    simp only [f, D, Set.indicator_apply, Set.mem_ofPred_eq]
     exact_mod_cast h
   have heG : (fun ω => (N ω : ℝ)) =ᵐ[μ] fun ω => ∑ j ∈ range M, g j ω := hNM.mono fun ω hω => by
     have h := count_below_eq_sum (N ω) M hω (fun _ => True)
     simp only [filter_true, card_range, and_true] at h
-    simp only [g, C, Set.indicator_apply, Set.mem_setOf_eq]
+    simp only [g, C, Set.indicator_apply, Set.mem_ofPred_eq]
     exact_mod_cast h
   have hterm (j : ℕ) (hj : j < M) : (∫ ω, f j ω ∂μ) = p * ∫ ω, g j ω ∂μ := by
     have h := (hind j hj).measure_inter_preimage_eq_mul {k : ℕ | j < k} {a}

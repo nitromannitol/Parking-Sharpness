@@ -56,8 +56,8 @@ value of an unbounded `sSup` either. -/
 theorem stoppingSup_le (hd : 1 ≤ d) (F : ℕ → Site d → ℝ) (n : ℕ) (x : Site d)
     {M : ℝ} (hM : 0 ≤ M) (hbound : ∀ (k : ℕ) (y : Site d), F k y ≤ M) :
     stoppingSup d F n x ≤ M := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   refine Real.sSup_le (fun a ha => ?_) hM
   obtain ⟨σ, hσ, rfl⟩ := ha
   by_cases hint : Integrable (fun p => F (σ p) (walkPath x p (σ p))) (walkLaw d)

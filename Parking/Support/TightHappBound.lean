@@ -50,7 +50,7 @@ theorem measurableSet_walkBad (n : ℕ) (A : ℝ) : MeasurableSet (walkBad n A) 
   have heq : walkBad n A = ⋃ k ∈ Finset.range (n + 1),
       {p : ℕ → Fin 2 × Bool | 4 * A * Real.sqrt n ≤ |walkPartialSum k p|} := by
     ext p
-    simp only [walkBad, Set.mem_setOf_eq, Set.mem_iUnion, Finset.mem_range]
+    simp only [walkBad, Set.mem_ofPred_eq, Set.mem_iUnion, Finset.mem_range]
     constructor
     · rintro ⟨k, hk, hp⟩; exact ⟨k, by omega, hp⟩
     · rintro ⟨k, hk, hp⟩; exact ⟨k, by omega, hp⟩

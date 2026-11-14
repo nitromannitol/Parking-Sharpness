@@ -130,7 +130,7 @@ theorem exists_linPotential_increment_moment (hd : 1 ≤ d) (ν0 : Measure ℝ)
       rw [Equiv.symm_apply_apply, linIncrementWeight, sq_abs]
     have hne' : s.Nonempty := by
       obtain ⟨i0, _⟩ := hex; exact ⟨(i0 : Site d), i0.2⟩
-    haveI : Nonempty s := ⟨⟨hne'.choose, hne'.choose_spec⟩⟩
+    have : Nonempty s := ⟨⟨hne'.choose, hne'.choose_spec⟩⟩
     have hnormInf : supAbs (fun z => green d n (x - z) - green d m (y - z)) = lInfNorm ℓ' := by
       unfold supAbs lInfNorm
       have hfnn : ∀ z : Site d, 0 ≤ |green d n (x - z) - green d m (y - z)| := fun z => abs_nonneg _
@@ -193,7 +193,7 @@ theorem exists_linPotential_increment_moment (hd : 1 ≤ d) (ν0 : Measure ℝ)
       exact hconst ζ0 (s.restrict η)
     have hmean0 : (∫ η', (linPotential η' n x - linPotential η' m y) ∂(iidLaw d ν0))
         = linIncrement s n m x y ζ0 := by
-      haveI : IsProbabilityMeasure (iidLaw d ν0) := by unfold iidLaw; infer_instance
+      have : IsProbabilityMeasure (iidLaw d ν0) := by unfold iidLaw; infer_instance
       rw [integral_congr_ae (Filter.Eventually.of_forall hallη), integral_const, probReal_univ,
         one_smul]
     have hl2zero : l2Norm (fun z => green d n (x - z) - green d m (y - z)) = 0 := by

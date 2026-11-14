@@ -48,9 +48,9 @@ theorem measurable_tableHistory (hd : 1 ≤ d) : Measurable (tableHistory (d := 
 theorem map_tableHistory (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     ((iidLaw d ν).prod (roundNoiseLaw d)).map tableHistory =
       (law d ν).map (fun ω => countHistory (Parking.stackObservables ω)) := by
-  haveI := rankLaw_isProbability d
-  haveI := roundNoiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := rankLaw_isProbability d
+  have := roundNoiseLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let Ω := ((Site d → ℤ) × (Label d × ℕ → ℝ)) × RoundNoise d
   have hbase : MeasurePreserving (fun ω : Ω => (ω.1.1, ω.2))
       (((iidLaw d ν).prod (rankLaw d)).prod (roundNoiseLaw d))
@@ -115,8 +115,8 @@ theorem integrable_tableOdometer (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilit
 theorem integral_matchedMeanU (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (T : ℕ) (x : Site d) :
     ∫ η, matchedMeanU η 0 T x ∂(iidLaw d ν) = ∫ ω, (U ω T x : ℝ) ∂(law d ν) := by
-  haveI := roundNoiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := roundNoiseLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hm : Measurable
       (fun ω : (Site d → ℤ) × RoundNoise d => (matchedState ω.1 0 ω.2 T).departures x) :=
     (measurable_pi_apply (T, x)).comp (measurable_fst.comp (measurable_tableHistory hd))

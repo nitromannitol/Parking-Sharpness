@@ -106,8 +106,8 @@ theorem tendsto_scenePair_linHatInterp_joint_fdd_signedResidual
           atTop
           (𝓝 (∫ ω', G ((fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω',
                   fun j => Z ω' (sp j).1 (sp j).2), (0 : Fin q → ℝ)) ∂Q')) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   obtain ⟨Ω', mΩ', Q', hQ', W, Z, hW, hpairEq, hWmeas, hZmeas, hconv⟩ :=
     tendsto_scenePair_linHatInterp_joint_fdd d p m hd hd3 ν hν hLin φ hφ sp hsp
   refine ⟨Ω', mΩ', Q', hQ', W, Z, hW, hpairEq, fun G => ?_⟩

@@ -28,9 +28,9 @@ theorem holeProb_eq_mul_sink_noArrival (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp
         {z | noArrivalFlag (sparseSinkField T 0 z.1) 0 (curryRoundNoise z.2)
           T 0 = true}).toReal := by
   classical
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
   let μ := (iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)
   let G : Set ((Site d → ℤ) × FlatRoundNoise d) :=
     {z | noArrivalFlag (sparseSinkField T 0 z.1) 0 (curryRoundNoise z.2) T 0 = true}

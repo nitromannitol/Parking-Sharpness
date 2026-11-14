@@ -50,8 +50,8 @@ theorem exists_orientedCount_load_moment (q : ℝ) (hq : 2 ≤ q) :
         (Real.sqrt h + |(orientedFirstCount ω j h : ℝ) - (h : ℝ) / 2|) ^ q ∂(walkLaw 2)) ≤
           C * (h : ℝ) ^ (q / 2) := by
   have hq0 : 0 < q := by linarith
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   obtain ⟨C, hC, hb⟩ := exists_orientedCount_moment q hq
   refine ⟨2 ^ q * (1 + C ^ (q / 2)), by positivity, fun j h => ?_⟩
   have hi : Integrable (fun ω : ℕ → Fin 2 × Bool =>

@@ -26,9 +26,9 @@ theorem exists_uOriented_two_moment (μ : Measure ℝ) [IsProbabilityMeasure μ]
       rNorm (iidLaw 2 μ) r (fun η => uOriented η n 0) ≤ C * (n : ℝ) ^ ((1 : ℝ) / 4) := by
   have hr0 : 0 < r := by linarith
   have hr1 : 1 ≤ r := by linarith
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
-  haveI : IsProbabilityMeasure (iidLaw 2 μ) := by unfold iidLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw 2 μ) := by unfold iidLaw; infer_instance
   obtain ⟨A, hA, hmax⟩ := exists_orientedMax_moment μ r hr hmom hmean
   refine ⟨2 * A, by positivity, fun n hn => ?_⟩
   obtain ⟨hi, hb⟩ := hmax n hn

@@ -21,8 +21,8 @@ theorem exists_discrepancy_tail {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     ∀ ε : ℝ, 0 < ε → ∃ c : ℝ, 0 < c ∧ ∃ N : ℕ, ∀ n : ℕ, N ≤ n →
       ((law d ν) {ω | ε * meanu (law d ν) n < |(U ω n 0 : ℝ) - uOf ω n 0|}).toReal ≤
         Real.exp (-(c * Real.log n ^ 2)) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   intro ε hε

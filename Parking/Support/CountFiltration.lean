@@ -73,7 +73,7 @@ theorem measurable_update_const {d : ℕ} (a : Site d → ℤ) (x : Site d) :
 theorem measurable_avgAt {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
     {f : (Site d → ℤ) → ℝ} (hfm : Measurable f) (x : Site d) :
     Measurable (avgAt ν x f) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hu : MeasurePreserving (fun q : (Site d → ℤ) × ℤ => Function.update q.1 x q.2)
       ((LatticeProb.iidLaw d ν).prod ν) (LatticeProb.iidLaw d ν) :=
@@ -111,7 +111,7 @@ theorem cov_split_coord {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
       = cov (LatticeProb.iidLaw d ν) (avgAt ν x f) (avgAt ν x z)
         + ∫ a, cov ν (fun k => f (Function.update a x k))
               (fun k => z (Function.update a x k)) ∂(LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hu : MeasurePreserving (fun q : (Site d → ℤ) × ℤ => Function.update q.1 x q.2)
       ((LatticeProb.iidLaw d ν).prod ν) (LatticeProb.iidLaw d ν) :=
@@ -155,7 +155,7 @@ theorem cov_const_left {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω)
 theorem integrable_coord {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (y : Site d) :
     Integrable (fun a : Site d → ℤ => ((a y : ℤ) : ℝ)) (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have heval : MeasurePreserving (fun a : Site d → ℤ => a y) (LatticeProb.iidLaw d ν) ν :=
     measurePreserving_eval_infinitePi (fun _ : Site d => ν) y
@@ -197,7 +197,7 @@ theorem integrable_section_of_lipschitz {d : ℕ} {ν : Measure ℤ} [IsProbabil
 theorem integrable_avgAt {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
     {z : (Site d → ℤ) → ℝ} (hzi : Integrable z (LatticeProb.iidLaw d ν)) (x : Site d) :
     Integrable (avgAt ν x z) (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hu : MeasurePreserving (fun q : (Site d → ℤ) × ℤ => Function.update q.1 x q.2)
       ((LatticeProb.iidLaw d ν).prod ν) (LatticeProb.iidLaw d ν) :=
@@ -265,7 +265,7 @@ theorem integrable_cov_section {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasur
     (hfb : ∀ a, |f a| ≤ 1) (hzi : Integrable z (LatticeProb.iidLaw d ν)) (x : Site d) :
     Integrable (fun a : Site d → ℤ => cov ν (fun k => f (Function.update a x k))
         (fun k => z (Function.update a x k))) (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hu : MeasurePreserving (fun q : (Site d → ℤ) × ℤ => Function.update q.1 x q.2)
       ((LatticeProb.iidLaw d ν).prod ν) (LatticeProb.iidLaw d ν) :=
@@ -298,7 +298,7 @@ theorem integral_cov_coord {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν
     ∫ a, cov ν (fun k => f (Function.update a x k)) (fun k : ℤ => (k : ℝ))
         ∂(LatticeProb.iidLaw d ν)
       = cov (LatticeProb.iidLaw d ν) f (fun a => ((a x : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hcoordm : Measurable (fun a : Site d → ℤ => ((a x : ℤ) : ℝ)) :=
     (measurable_int_fun (fun k : ℤ => (k : ℝ))).comp (measurable_pi_apply x)
@@ -319,7 +319,7 @@ theorem cov_avgAt_coord {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) {x y : Site d} (hxy : y ≠ x) :
     cov (LatticeProb.iidLaw d ν) (avgAt ν x f) (fun a => ((a y : ℤ) : ℝ))
       = cov (LatticeProb.iidLaw d ν) f (fun a => ((a y : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hcoordm : Measurable (fun a : Site d → ℤ => ((a y : ℤ) : ℝ)) :=
     (measurable_int_fun (fun k : ℤ => (k : ℝ))).comp (measurable_pi_apply y)
@@ -350,7 +350,7 @@ theorem abs_cov_counts_le {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
       Integrable z (LatticeProb.iidLaw d ν) →
       |cov (LatticeProb.iidLaw d ν) f z|
         ≤ ∑ x ∈ N, cov (LatticeProb.iidLaw d ν) f (fun a => ((a x : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   intro N
   induction N using Finset.induction_on with

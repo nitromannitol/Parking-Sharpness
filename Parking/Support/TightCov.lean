@@ -192,7 +192,7 @@ theorem sum_Ico_one_eq_sum_range (M : ℕ) (F : ℕ → ℝ) :
     · subst hk
       simp
     · rw [sum_Ico_succ_top hk, sum_range_succ, ih,
-        if_neg (Nat.pos_iff_ne_zero.mp hk)]
+        ite_eq_right (Nat.pos_iff_ne_zero.mp hk)]
 
 /-- The harmonic decrement: `1/i ≤ log i − log (i−1)` for `i ≥ 2`. -/
 theorem inv_natCast_le_log_sub {i : ℕ} (hi : 2 ≤ i) :

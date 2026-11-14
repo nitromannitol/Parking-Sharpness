@@ -197,17 +197,17 @@ theorem exists_kappa_le_kEnv (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
   by_cases h1 : d = 1
   · obtain ⟨C, hC, hCle⟩ := exists_kappa_le_env d hC₀
     refine ⟨C, hC, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [kEnv_cases, if_pos h1]
+    rw [kEnv_cases, ite_eq_left h1]
     have h := hCle N δ hδ0 hδ1 hN
-    rwa [kappaEnv, if_pos h1] at h
+    rwa [kappaEnv, ite_eq_left h1] at h
   by_cases h2 : d = 2
   · obtain ⟨C, hC, hCle⟩ := exists_kappa_le_env d hC₀
     refine ⟨C, hC, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [kEnv_cases, if_neg h1, if_pos h2]
+    rw [kEnv_cases, ite_eq_right h1, ite_eq_left h2]
     have h := hCle N δ hδ0 hδ1 hN
-    rwa [kappaEnv, if_neg h1] at h
+    rwa [kappaEnv, ite_eq_right h1] at h
   · refine ⟨1, one_pos, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [kEnv_cases, if_neg h1, if_neg h2, env_one, Parking.kappa, if_neg h1, if_neg h2]
+    rw [kEnv_cases, ite_eq_right h1, ite_eq_right h2, env_one, Parking.kappa, ite_eq_right h1, ite_eq_right h2]
     norm_num
 
 /-- `max_x g_N(x)` at the cutoff, read exactly: from dimension three on it is one. -/
@@ -218,18 +218,18 @@ theorem exists_greenMaxRate_le_kEnv (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
   by_cases h1 : d = 1
   · obtain ⟨C, hC, hCle⟩ := exists_greenMaxRate_le_env d hC₀
     refine ⟨C, hC, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [kEnv_cases, if_pos h1]
+    rw [kEnv_cases, ite_eq_left h1]
     have h := hCle N δ hδ0 hδ1 hN
-    rwa [kappaEnv, if_pos h1] at h
+    rwa [kappaEnv, ite_eq_left h1] at h
   by_cases h2 : d = 2
   · obtain ⟨C, hC, hCle⟩ := exists_greenMaxRate_le_env d hC₀
     refine ⟨C, hC, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [kEnv_cases, if_neg h1, if_pos h2]
+    rw [kEnv_cases, ite_eq_right h1, ite_eq_left h2]
     have h := hCle N δ hδ0 hδ1 hN
-    rwa [kappaEnv, if_neg h1] at h
+    rwa [kappaEnv, ite_eq_right h1] at h
   · refine ⟨1, one_pos, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [kEnv_cases, if_neg h1, if_neg h2, env_one,
-      Parking.External.greenMaxRate, if_neg h1, if_neg h2]
+    rw [kEnv_cases, ite_eq_right h1, ite_eq_right h2, env_one,
+      Parking.External.greenMaxRate, ite_eq_right h1, ite_eq_right h2]
     norm_num
 
 /-- `φ_d(N)` at the cutoff. -/
@@ -267,8 +267,8 @@ theorem exists_sqrtRHigh_greenL2_le (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀
         _ = Real.sqrt Cr * Real.sqrt (env 0 1 δ) := Real.sqrt_mul hCr.le _
     have h2 := hs N δ hδ0 hδ1 hN
     have hq : qEnv d δ = env 0 1 δ := by
-      rw [qEnv_cases, if_neg (by omega : ¬ d = 1), if_neg (by omega : ¬ d = 2),
-        if_neg (by omega : ¬ d = 3)]
+      rw [qEnv_cases, ite_eq_right (by omega : ¬ d = 1), ite_eq_right (by omega : ¬ d = 2),
+        ite_eq_right (by omega : ¬ d = 3)]
     rw [hq]
     calc Real.sqrt (rHigh N) * Parking.External.greenL2Rate d N
         ≤ (Real.sqrt Cr * Real.sqrt (env 0 1 δ)) *

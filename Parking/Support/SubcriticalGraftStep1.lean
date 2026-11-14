@@ -201,9 +201,9 @@ configuration law. -/
 theorem integral_counts_pDataLaw (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     {G : (Site d → ℤ) → ℝ} (hG : AEStronglyMeasurable G (LatticeProb.iidLaw d ν)) :
     ∫ ω : PData d, G ω.1 ∂(pDataLaw d ν) = ∫ a, G a ∂(LatticeProb.iidLaw d ν) := by
-  haveI := Parking.stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have := Parking.stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hmp : MeasurePreserving (Prod.fst : PData d → (Site d → ℤ))
       (pDataLaw d ν) (LatticeProb.iidLaw d ν) := by
     unfold pDataLaw
@@ -217,7 +217,7 @@ theorem integral_counts_pDataLaw (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilit
 one-site law. -/
 theorem integral_abs_eta_pDataLaw (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν] :
     ∫ ω : PData d, |((ω.1 (0 : Site d) : ℤ) : ℝ)| ∂(pDataLaw d ν) = ∫ k, |(k : ℝ)| ∂ν := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hmeas : AEStronglyMeasurable (fun a : Site d → ℤ => |((a (0 : Site d) : ℤ) : ℝ)|)
       (LatticeProb.iidLaw d ν) :=
@@ -238,7 +238,7 @@ origin. -/
 theorem integrable_abs_eta_pDataLaw (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) :
     Integrable (fun ω : PData d => |((ω.1 (0 : Site d) : ℤ) : ℝ)|) (pDataLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   refine integrable_pDataLaw_of_counts (G := fun a : Site d → ℤ => |((a (0 : Site d) : ℤ) : ℝ)|)
     hd ?_
@@ -256,10 +256,10 @@ theorem integrable_graftHoleObs (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbability
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (w : ℕ → Fin d × Bool) (t : ℕ)
     {ω₁ : PData d} (hc : 0 ≤ ω₁.1 (0 : Site d)) :
     Integrable (graftHoleObs w ω₁ t) (pDataLaw d ν) := by
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
+  have : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
   have hZ : Integrable (holeObs (d := d) w t) (pDataLaw d ν) := by
     unfold holeObs
     exact integrable_finsetSum _ fun x _ => integrable_pHoleCount hd hint t x
@@ -284,10 +284,10 @@ theorem rangeCard_mul_sub_le_integral_graftHoleObs (hd : 1 ≤ d) {ν : Measure 
     (rangeCard (0 : Site d) w t : ℝ) * (-∫ k, (k : ℝ) ∂ν) - (∫ k, |(k : ℝ)| ∂ν)
         - ((ω₁.1 (0 : Site d)).toNat : ℝ)
       ≤ ∫ ω, graftHoleObs w ω₁ t ω ∂(pDataLaw d ν) := by
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
+  have : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
   have hZ : Integrable (holeObs (d := d) w t) (pDataLaw d ν) := by
     unfold holeObs
     exact integrable_finsetSum _ fun x _ => integrable_pHoleCount hd hint t x

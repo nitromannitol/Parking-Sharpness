@@ -208,27 +208,27 @@ theorem exists_finite_coordinate_moment_bound_sel (hBern : External.Bernstein) :
     fun z => H ⟨i, hi⟩ z ^ 2 * ∫ x, g ⟨i, hi⟩ (sel ⟨i, hi⟩ z) x ^ 2 ∂(P (q ⟨i, hi⟩)) else fun _ => 0
   have hξm (i : ℕ) : Measurable[F (i + 1)] (ξ i) := by
     by_cases hi : i < K
-    · simpa only [ξ, dif_pos hi] using hAm ⟨i, hi⟩
-    · simp only [ξ, dif_neg hi]; exact measurable_const
+    · simpa only [ξ, dite_eq_left hi] using hAm ⟨i, hi⟩
+    · simp only [ξ, dite_eq_right hi]; exact measurable_const
   have hξi (i : ℕ) : Integrable (ξ i) Q := by
     by_cases hi : i < K
-    · simpa only [ξ, dif_pos hi] using hAi ⟨i, hi⟩
-    · simp only [ξ, dif_neg hi]; exact integrable_zero _ _ _
+    · simpa only [ξ, dite_eq_left hi] using hAi ⟨i, hi⟩
+    · simp only [ξ, dite_eq_right hi]; exact integrable_zero _ _ _
   have hξc (i : ℕ) (hi : i < K) : Q[ξ i | F i] =ᵐ[Q] 0 := by
-    simpa only [ξ, dif_pos hi] using hAc ⟨i, hi⟩
+    simpa only [ξ, dite_eq_left hi] using hAc ⟨i, hi⟩
   have hξv (i : ℕ) (hi : i < K) : Q[fun z => ξ i z ^ 2 | F i] =ᵐ[Q] v i := by
-    simpa only [ξ, v, dif_pos hi] using hAv ⟨i, hi⟩
+    simpa only [ξ, v, dite_eq_left hi] using hAv ⟨i, hi⟩
   have hξb (i : ℕ) (hi : i < K) (z : Ω × (Π i, X i)) : |ξ i z| ≤ a := by
-    simpa only [ξ, dif_pos hi] using hAb ⟨i, hi⟩ z
+    simpa only [ξ, dite_eq_left hi] using hAb ⟨i, hi⟩ z
   have h := hb (Ω × (Π i, X i)) inferInstance Q inferInstance K F ξ v r a
     (coordinateFiltration_mono b q) (coordinateFiltration_le b q) hξm hξi hξc hξv hr ha hξb
   have heA (z : Ω × (Π i, X i)) : (∑ i ∈ range K, ξ i z) = ∑ j : Fin K, A j z := by
     rw [← Fin.sum_univ_eq_sum_range]
-    exact sum_congr rfl fun j _ => by simp only [ξ, dif_pos j.isLt]
+    exact sum_congr rfl fun j _ => by simp only [ξ, dite_eq_left j.isLt]
   have hev (z : Ω × (Π i, X i)) : (∑ i ∈ range K, v i z) =
       ∑ j : Fin K, H j z ^ 2 * ∫ x, g j (sel j z) x ^ 2 ∂(P (q j)) := by
     rw [← Fin.sum_univ_eq_sum_range]
-    exact sum_congr rfl fun j _ => by simp only [v, dif_pos j.isLt]
+    exact sum_congr rfl fun j _ => by simp only [v, dite_eq_left j.isLt]
   simpa only [heA, hev] using h
 
 end Parking

@@ -31,6 +31,6 @@ theorem integral_ite_one_zero (P : Ω → Prop) [DecidablePred P]
     (hP : MeasurableSet {ω | P ω}) :
     (∫ ω, if P ω then (1 : ℝ) else 0 ∂μ) = (μ {ω | P ω}).toReal := by
   have h := integral_indicator_const (μ := μ) (1 : ℝ) hP
-  simpa only [Set.indicator, Set.mem_setOf_eq, smul_eq_mul, mul_one, measureReal_def] using h
+  simpa only [Set.indicator, Set.mem_ofPred_eq, smul_eq_mul, mul_one, measureReal_def] using h
 
 end Parking

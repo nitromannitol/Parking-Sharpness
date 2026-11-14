@@ -27,7 +27,7 @@ variable {d : ℕ}
 /-- A coordinate of the uniform variables meets a fixed real on a null set. -/
 theorem rankLaw_eq_const_zero (d : ℕ) (a : LatticeProb.Label d × ℕ) (c : ℝ) :
     LatticeProb.rankLaw d {ρ : LatticeProb.Label d × ℕ → ℝ | ρ a = c} = 0 := by
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hpre : {ρ : LatticeProb.Label d × ℕ → ℝ | ρ a = c}
       = (fun ρ : LatticeProb.Label d × ℕ → ℝ => ρ a) ⁻¹' ({c} : Set ℝ) := rfl
   rw [hpre, ← Measure.map_apply (measurable_pi_apply a) (measurableSet_singleton c),
@@ -49,11 +49,11 @@ theorem rankLaw_ae_avoid (d : ℕ) (r : ℕ → ℝ) :
 theorem ae_avoid_pDataLaw (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (r : ℕ → ℝ) :
     ∀ᵐ ω ∂(pDataLaw d ν), ∀ (s : ℕ) (q : LatticeProb.Label d × ℕ), r s ≠ ω.2.2 q := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hmap : (pDataLaw d ν).map (fun ω : PData d => ω.2.2) = LatticeProb.rankLaw d := by
     have h1 : (fun ω : PData d => ω.2.2) = Prod.snd ∘ Prod.snd := rfl
     rw [h1, ← Measure.map_map measurable_snd measurable_snd]

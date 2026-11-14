@@ -35,14 +35,14 @@ theorem orientedInstructionLaw_forward_mass (y : Site d) (i : Fin d) :
       if j = i then 1 else 0 := by
     simp only [Set.indicator_apply, Set.mem_singleton_iff, add_right_inj, unit_injective.eq_iff]
   change (∑ j : Fin d, Set.indicator {y + unit i} (fun _ => (1 : ℝ)) (y + unit j)) / d = _
-  simp only [hterm, sum_ite_eq', mem_univ, if_true, one_div]
+  simp only [hterm, sum_ite_eq', mem_univ, ite_true, one_div]
 
 /-- The complement of `{y + unit i}` carries mass `1 - 1 / d` under
 `orientedInstructionLaw y`, the complementary probability to
 `orientedInstructionLaw_forward_mass`. -/
 theorem orientedInstructionLaw_miss_mass (hd : 1 ≤ d) (y : Site d) (i : Fin d) :
     (orientedInstructionLaw y).real {y + unit i}ᶜ = 1 - (d : ℝ)⁻¹ := by
-  haveI := orientedInstructionLaw_isProbability hd y
+  have := orientedInstructionLaw_isProbability hd y
   rw [probReal_compl_eq_one_sub (measurableSet_singleton _), orientedInstructionLaw_forward_mass]
 
 end Parking

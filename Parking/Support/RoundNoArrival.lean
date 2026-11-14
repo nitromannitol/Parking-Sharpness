@@ -39,7 +39,7 @@ theorem entryAvoids_nonneg (x : Site d) (q : RoundSlot d) (b : Fin d × Bool) :
 theorem integral_entryAvoids (hd : 1 ≤ d) (x : Site d) (q : RoundSlot d) :
     ∫ b, entryAvoids x q b ∂(stepLaw d) = 1 - entryEntranceProb x q := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   cases q with
   | inr q => simp [entryAvoids, entryEntranceProb]
   | inl q =>
@@ -70,7 +70,7 @@ theorem sum_entryEntranceProb (A : Site d → ℕ) (x : Site d) :
   rw [walkOp_eq_nbrFinset, Finset.sum_div]
   apply Finset.sum_congr rfl
   intro y hy
-  rw [kern, if_pos (nbrFinset_symm hy)]
+  rw [kern, ite_eq_left (nbrFinset_symm hy)]
   ring
 
 /-- The probability of no arrival in a fresh round is at most the exponential of minus
@@ -80,7 +80,7 @@ theorem integral_noArrivals_le_exp (hd : 1 ≤ d) (A : Site d → ℕ) (x : Site
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) ≤
         Real.exp (-walkOp (fun y => (A y : ℝ)) x) := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   simp_rw [noArrivals_eq_prod]
   rw [integral_finset_prod_coordinates _ _ (entryAvoids x) (fun q => measurable_from_countable' _)]
   have hprod : (∏ q ∈ incomingSlots A x, ∫ b, entryAvoids x q b ∂(stepLaw d)) ≤

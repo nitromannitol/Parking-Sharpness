@@ -19,7 +19,7 @@ variable {d : ℕ}
 theorem integral_abs_discrepancy_pos (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (hn : 2 ≤ n) :
     0 < ∫ ω, |(U ω n 0 : ℝ) - uOf ω n 0| ∂(law d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨t, rfl⟩ : ∃ t : ℕ, n = t + 2 := ⟨n - 2, by omega⟩
   obtain ⟨k, hk, hkν⟩ := hν.exists_positive_atom
   have hi := (integrable_U_law hd ν hν.integrable_abs (t + 2) 0).sub

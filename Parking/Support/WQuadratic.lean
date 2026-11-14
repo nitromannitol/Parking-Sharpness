@@ -40,7 +40,7 @@ theorem gamma_eq_walkOp (m : ℕ) (y : Site d) :
       kern d y z * (green d m z - walkOp (green d m) y) ^ 2
         = (2 * (d : ℝ))⁻¹ * (green d m z - walkOp (green d m) y) ^ 2 := by
     intro z hz
-    rw [kern, if_pos hz]
+    rw [kern, ite_eq_left hz]
   rw [gamma, Finset.sum_congr rfl hval, ← Finset.mul_sum,
     walkOp_eq_inv_sum (fun z => (green d m z - walkOp (green d m) y) ^ 2) y]
 
@@ -54,8 +54,8 @@ theorem gamma_le (hd : 1 ≤ d) (m : ℕ) (y : Site d) : gamma d m y ≤ (m : �
     have hk : 0 ≤ kern d y z := by
       rw [kern]
       by_cases h : z ∈ nbrFinset y
-      · rw [if_pos h]; positivity
-      · rw [if_neg h]
+      · rw [ite_eq_left h]; positivity
+      · rw [ite_eq_right h]
     have h1 : 0 ≤ green d m z := green_nonneg _ _
     have h2 : green d m z ≤ (m : ℝ) := green_le hd _ _
     have h3 : 0 ≤ walkOp (green d m) y := walkOp_green_nonneg _ _
@@ -125,11 +125,11 @@ theorem wGamma_le (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
 /-- `wGamma` is integrable: it is measurable and bounded by the constant `n²`. -/
 theorem integrable_wGamma (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n i : ℕ) : Integrable (wGamma i₀ n i) (law d ν) := by
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
+  have : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
   refine (integrable_const ((n : ℝ) ^ 2)).mono'
     (measurable_wGamma i₀ n i).aestronglyMeasurable
     (Filter.Eventually.of_forall fun ω => ?_)
@@ -141,11 +141,11 @@ the increment bound. -/
 theorem integrable_wXi_sq (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (hn : 1 ≤ n) (i : ℕ) :
     Integrable (fun ω => wXi i₀ n i ω ^ 2) (law d ν) := by
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
+  have : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
   refine (integrable_const (greenIncrement d n ^ 2)).mono'
     ((measurable_wXi i₀ n i).pow_const 2).aestronglyMeasurable
     (Filter.Eventually.of_forall fun ω => ?_)
@@ -225,11 +225,11 @@ theorem condExp_wXi_sq (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProba
     (n : ℕ) (hn : 1 ≤ n) (i : ℕ) :
     (law d ν)[fun ω => wXi i₀ n i ω ^ 2 | wFiltration i₀ n i]
       =ᵐ[law d ν] wGamma i₀ n i := by
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
+  have : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
   refine (MeasureTheory.ae_eq_condExp_of_forall_setIntegral_eq (wFiltration_le i₀ n i)
     (integrable_wXi_sq hd i₀ ν n hn i)
     (fun s _ _ => (integrable_wGamma hd i₀ ν n i).integrableOn)
@@ -317,7 +317,7 @@ theorem tsum_wGamma_eq (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (ω : Data d)
   have hproj : wProj i₀ ω = ω := by
     have hstack : nbrProj i₀ ω.2.1 = ω.2.1 := by
       funext q
-      rw [nbrProj, if_pos (hstep q)]
+      rw [nbrProj, ite_eq_left (hstep q)]
     show ((ω.1, nbrProj i₀ ω.2.1, ω.2.2) : Data d) = ω
     rw [hstack]
   set L := blockPrefix ω n (n - 1) with hL
@@ -333,14 +333,14 @@ theorem tsum_wGamma_eq (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (ω : Data d)
     · have hMlen : i < (L.map (fun q => gamma d (n - roundOf ω q) q.1)).length := by
         rw [List.length_map]; exact hi
       have hround : wRound i₀ n i ω = roundOf ω (wPair i₀ n i ω) := by
-        rw [wRound, if_pos (by rw [hproj]; exact hi), hproj]
+        rw [wRound, ite_eq_left (by rw [hproj]; exact hi), hproj]
       have hgetL : wPair i₀ n i ω = L[i]'hi := by
         rw [hpair, List.getD_eq_getElem _ _ hi]
       rw [wGamma, hround, hgetL, hM, List.getD_eq_getElem _ _ hMlen, List.getElem_map]
     · have hMlen : (L.map (fun q => gamma d (n - roundOf ω q) q.1)).length ≤ i := by
         rw [List.length_map]; exact Nat.le_of_not_lt hi
       have hround : wRound i₀ n i ω = 0 := by
-        rw [wRound, if_neg (by rw [hproj]; exact hi)]
+        rw [wRound, ite_eq_right (by rw [hproj]; exact hi)]
       have hpad : wPair i₀ n i ω = (padSite d n, i) := by
         rw [hpair, List.getD_eq_default _ _ (Nat.le_of_not_lt hi)]
       rw [wGamma, hround, hpad, Nat.sub_zero, gamma_padSite hd n, hM,
@@ -364,7 +364,7 @@ theorem tsum_wGamma_eq (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (ω : Data d)
 pair read there is then the parking site. -/
 theorem wGamma_eq_zero_of_le (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (ω : Data d)
     (h : (blockPrefix (wProj i₀ ω) n (n - 1)).length ≤ i) : wGamma i₀ n i ω = 0 := by
-  have hround : wRound i₀ n i ω = 0 := by rw [wRound, if_neg (by omega)]
+  have hround : wRound i₀ n i ω = 0 := by rw [wRound, ite_eq_right (by omega)]
   have hpad : wPair i₀ n i ω = (padSite d n, i) := by
     show (blockPrefix (wProj i₀ ω) n (n - 1)).getD i (padSite d n, i) = (padSite d n, i)
     rw [List.getD_eq_default _ _ h]

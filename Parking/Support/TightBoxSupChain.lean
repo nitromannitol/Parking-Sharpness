@@ -47,9 +47,9 @@ SUMMABLE for a.e. scenery `η`, uniformly in the scale `n`.** -/
 theorem ae_summable_levelInc (ν : Measure ℤ) (hν : CriticalLaw ν) {A : ℝ} (hA : 0 ≤ A)
     (n : ℕ) (hn : 1 ≤ n) (n1 : ℕ) :
     ∀ᵐ η ∂(iidLaw 2 (realLaw ν)), Summable (fun m : ℕ => levelInc A hA n m η) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   obtain ⟨K, _hKnn, hKall⟩ := exists_levelInc_tail_moment ν hν 16 (by norm_num) n1
   obtain ⟨C, _hCnn, _hCbd, hbound⟩ := hKall A hA
   set T : ℕ → (Site 2 → ℝ) → ℝ :=

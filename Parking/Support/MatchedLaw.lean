@@ -26,7 +26,7 @@ theorem Parking.map_matchedMoveLayers (hd : 1 ≤ d) (η : Site d → ℤ)
       Measure.infinitePi fun _ : ℕ =>
         Measure.infinitePi fun _ : Label d => Parking.stepLaw d := by
   classical
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   let i₀ : Fin d := ⟨0, hd⟩
   apply Parking.map_layers
   · exact Measurable.of_eval fun t => Measurable.of_eval fun p =>
@@ -54,7 +54,7 @@ theorem Parking.map_matchedMoves (hd : 1 ≤ d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) :
     (Parking.roundNoiseLaw d).map (Parking.matchedMoves η ρ) =
       Parking.moveLaw d := by
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   let F : Parking.RoundNoise d → ℕ → Label d → Fin d × Bool :=
     fun σ t p => Parking.matchedMoves η ρ σ (p, t)
   let C := (MeasurableEquiv.curry ℕ (Label d) (Fin d × Bool)).symm
@@ -80,12 +80,12 @@ theorem Parking.map_matchedData (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
         (fun ω => ((ω.1.1,
           Parking.matchedMoves ω.1.1 ω.1.2 ω.2, ω.1.2) : Parking.PData d)) =
       μ.prod ((Parking.moveLaw d).prod (LatticeProb.rankLaw d)) := by
-  haveI := Parking.stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (Parking.moveLaw d) := by
+  have := Parking.stepLaw_isProbability hd
+  have : IsProbabilityMeasure (Parking.moveLaw d) := by
     unfold Parking.moveLaw
     infer_instance
-  haveI := Parking.roundNoiseLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
+  have := Parking.roundNoiseLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
   have hm : Measurable fun ω : ((Site d → ℤ) × (Label d × ℕ → ℝ)) ×
       Parking.RoundNoise d => Parking.matchedMoves ω.1.1 ω.1.2 ω.2 :=
     Parking.measurable_matchedMoves ⟨0, hd⟩ _ _ _

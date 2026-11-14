@@ -51,14 +51,14 @@ theorem linPotential_indicator_eq_sum (η : Site d → ℝ) (s : Finset (Site d)
         funext w
         by_cases hwa : w = a
         · subst hwa
-          rw [if_pos (Finset.mem_insert_self w t), if_pos rfl]
+          rw [ite_eq_left (Finset.mem_insert_self w t), ite_eq_left rfl]
           by_cases hwt : w ∈ t
           · exact absurd hwt hat
-          · rw [if_neg hwt]; ring
-        · rw [if_neg hwa]
+          · rw [ite_eq_right hwt]; ring
+        · rw [ite_eq_right hwa]
           by_cases hwt : w ∈ t
-          · rw [if_pos (Finset.mem_insert_of_mem hwt), if_pos hwt]; ring
-          · rw [if_neg (by simp [Finset.mem_insert, hwa, hwt]), if_neg hwt]; ring
+          · rw [ite_eq_left (Finset.mem_insert_of_mem hwt), ite_eq_left hwt]; ring
+          · rw [ite_eq_right (by simp [Finset.mem_insert, hwa, hwt]), ite_eq_right hwt]; ring
       rw [hsplit, linPotential_add]
       have hsingle : linPotential (fun w => if w = a then η w else 0) n x
           = η a * green d n (x - a) := by
@@ -66,8 +66,8 @@ theorem linPotential_indicator_eq_sum (η : Site d → ℝ) (s : Finset (Site d)
             = fun w => η a * (if w = a then (1:ℝ) else 0) := by
           funext w
           by_cases hwa : w = a
-          · subst hwa; rw [if_pos rfl, if_pos rfl]; ring
-          · rw [if_neg hwa, if_neg hwa]; ring
+          · subst hwa; rw [ite_eq_left rfl, ite_eq_left rfl]; ring
+          · rw [ite_eq_right hwa, ite_eq_right hwa]; ring
         rw [heq, linPotential_const_mul, linPotential_single]
       rw [hsingle, ih, Finset.sum_insert hat]
 
@@ -80,8 +80,8 @@ theorem linPotential_eq_sum (η : Site d → ℝ) (n : ℕ) (x : Site d) :
       = fun w => if w ∈ boxFinset x n then η w else 0 := by
     funext w
     by_cases hw : w ∈ boxFinset x n
-    · simp only [extendField, dif_pos hw, Finset.restrict]; rw [if_pos hw]
-    · simp only [extendField, dif_neg hw]; rw [if_neg hw]
+    · simp only [extendField, dite_eq_left hw, Finset.restrict]; rw [ite_eq_left hw]
+    · simp only [extendField, dite_eq_right hw]; rw [ite_eq_right hw]
   rw [heq, linPotential_indicator_eq_sum]
 
 /-- **`V_n(x)` is the explicit finite sum over ANY finite index set containing the box of
@@ -93,8 +93,8 @@ theorem linPotential_eq_sum_of_boxFinset_subset {s : Finset (Site d)} {n : ℕ} 
   have heq : extendField s (s.restrict η) = fun w => if w ∈ s then η w else 0 := by
     funext w
     by_cases hw : w ∈ s
-    · simp only [extendField, dif_pos hw, Finset.restrict]; rw [if_pos hw]
-    · simp only [extendField, dif_neg hw]; rw [if_neg hw]
+    · simp only [extendField, dite_eq_left hw, Finset.restrict]; rw [ite_eq_left hw]
+    · simp only [extendField, dite_eq_right hw]; rw [ite_eq_right hw]
   rw [heq, linPotential_indicator_eq_sum]
 
 end Parking

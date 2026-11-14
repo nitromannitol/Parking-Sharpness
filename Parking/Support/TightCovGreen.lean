@@ -53,14 +53,14 @@ theorem orientedLayer_add_layerPoint (r r' : ℕ) (j : ℤ) (w : Site 2) :
   have hh : layerHeight (orientedLayerPoint r j + w) = -(r : ℤ) + (w 0 + w 1) := by
     rw [layerHeight_add, layerHeight_orientedLayerPoint, layerHeight_two]
   by_cases hc : w 0 + w 1 = (r : ℤ) - (r' : ℤ)
-  · rw [if_pos hc]
+  · rw [ite_eq_left hc]
     have hh2 : layerHeight (orientedLayerPoint r j + w) = -(r' : ℤ) := by rw [hh]; omega
-    rw [if_pos hh2]
+    rw [ite_eq_left hh2]
     congr 1
     show -(orientedLayerPoint r j + w) 0 = j - w 0
     simp only [orientedLayerPoint, Pi.add_apply, Matrix.cons_val_zero]
     ring
-  · rw [if_neg hc, if_neg]
+  · rw [ite_eq_right hc, ite_eq_right]
     rw [hh]
     omega
 
@@ -72,7 +72,7 @@ theorem layerCross_eq (r r' : ℕ) (w : Site 2) :
   classical
   unfold layerCross
   by_cases hc : w 0 + w 1 = (r : ℤ) - (r' : ℤ)
-  · rw [if_pos hc]
+  · rw [ite_eq_left hc]
     have hs : Function.support
         (fun z : Site 2 => orientedLayer 2 r z * orientedLayer 2 r' (z + w)) ⊆
         Set.range (orientedLayerPoint r) := by
@@ -82,7 +82,7 @@ theorem layerCross_eq (r r' : ℕ) (w : Site 2) :
         exact hz (by simp [hn])
       exact ⟨-z 0, orientedLayerPoint_eq (orientedLayer_height hn)⟩
     rw [← (orientedLayerPoint_injective r).tsum_eq hs]
-    simp only [orientedLayer_at_layerPoint, orientedLayer_add_layerPoint, if_pos hc]
+    simp only [orientedLayer_at_layerPoint, orientedLayer_add_layerPoint, ite_eq_left hc]
     have hsym : ∀ j : ℤ, binomLaw r j * binomLaw r' (j - w 0)
         = binomLaw r j * binomLaw r' ((r' : ℤ) + w 0 - j) := by
       intro j
@@ -95,7 +95,7 @@ theorem layerCross_eq (r r' : ℕ) (w : Site 2) :
     rw [hconv]
     exact tsum_eq_sum fun j hj => by
       rw [binomLaw_zero_outside hj, zero_mul]
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have hzero : (fun z : Site 2 => orientedLayer 2 r z * orientedLayer 2 r' (z + w))
         = fun _ => (0 : ℝ) := by
       funext z
@@ -106,7 +106,7 @@ theorem layerCross_eq (r r' : ℕ) (w : Site 2) :
           rw [layerHeight_add, h1, layerHeight_two]
           omega
         have h3 : orientedLayer 2 r' (z + w) = 0 := by
-          rw [orientedLayer_two, if_neg h2]
+          rw [orientedLayer_two, ite_eq_right h2]
         rw [h3, mul_zero]
     rw [hzero, tsum_zero]
 
@@ -149,10 +149,10 @@ theorem integral_eval_mul_eval_iid (ν : Measure ℤ) (hν : CriticalLaw ν)
     (z z' : Site 2) :
     ∫ η : Site 2 → ℝ, η z * η z' ∂(iidLaw 2 (realLaw ν))
       = if z = z' then ∫ x : ℝ, x ^ 2 ∂(realLaw ν) else 0 := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   by_cases hzz : z = z'
-  · rw [if_pos hzz, ← hzz]
+  · rw [ite_eq_left hzz, ← hzz]
     have hpt : (fun η : Site 2 → ℝ => η z * η z) = fun η => (η z) ^ 2 := by
       ext η; ring
     rw [hpt]
@@ -165,7 +165,7 @@ theorem integral_eval_mul_eval_iid (ν : Measure ℤ) (hν : CriticalLaw ν)
         (by fun_prop : AEStronglyMeasurable (fun x : ℝ => x ^ 2)
           ((iidLaw 2 (realLaw ν)).map fun η : Site 2 → ℝ => η z))
     rw [h1]
-  · rw [if_neg hzz]
+  · rw [ite_eq_right hzz]
     have hfact := LatticeProb.integral_mul_eval (fun _ : Site 2 => realLaw ν) z' 0
       (fun η : Site 2 → ℝ => η z) (measurable_pi_apply z)
       (fun ω => Function.update_of_ne hzz (0 : ℝ) ω)
@@ -182,8 +182,8 @@ theorem integral_eval_mul_eval_iid (ν : Measure ℤ) (hν : CriticalLaw ν)
 theorem integrable_eval_mul_eval_iid (ν : Measure ℤ) (hν : CriticalLaw ν)
     (z z' : Site 2) :
     Integrable (fun η : Site 2 → ℝ => η z * η z') (iidLaw 2 (realLaw ν)) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hsq : Integrable (fun x : ℝ => x ^ 2) (realLaw ν) :=
     (realLaw_memLp_two ν hν).integrable_sq
   have hev : ∀ w : Site 2, Integrable (fun η : Site 2 → ℝ => η w ^ 2)
@@ -215,8 +215,8 @@ theorem integral_orientedPotential_mul (ν : Measure ℤ) (hν : CriticalLaw ν)
         ∂(iidLaw 2 (realLaw ν))
       = (∫ x : ℝ, x ^ 2 ∂(realLaw ν)) * greenCross l l' (a - a') := by
   classical
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hterm : ∀ z z' : Site 2, Integrable
       (fun η : Site 2 → ℝ => (orientedGreen 2 l (z - a) * η z) *
         (orientedGreen 2 l' (z' - a') * η z')) (iidLaw 2 (realLaw ν)) := by
@@ -318,14 +318,14 @@ theorem greenCross_layerPoint_sub_of_le {m m' : ℕ} (hm : m ≤ m') {N : ℕ} (
     intro r _ r' _
     rw [layerCross_eq]
     by_cases hcond : r = r' + (m' - m)
-    · rw [if_pos hcond]
+    · rw [ite_eq_left hcond]
       have hcr : (orientedLayerPoint m j - orientedLayerPoint m' j') 0 +
           (orientedLayerPoint m j - orientedLayerPoint m' j') 1
           = (r : ℤ) - (r' : ℤ) := by
         rw [hw, hcond]
         omega
-      rw [if_pos hcr, hw0]
-    · rw [if_neg hcond]
+      rw [ite_eq_left hcr, hw0]
+    · rw [ite_eq_right hcond]
       have hcr : (orientedLayerPoint m j - orientedLayerPoint m' j') 0 +
           (orientedLayerPoint m j - orientedLayerPoint m' j') 1
           ≠ (r : ℤ) - (r' : ℤ) := by
@@ -338,7 +338,7 @@ theorem greenCross_layerPoint_sub_of_le {m m' : ℕ} (hm : m ≤ m') {N : ℕ} (
           rw [hd]
           linarith
         exact_mod_cast h2
-      rw [if_neg hcr]
+      rw [ite_eq_right hcr]
   rw [sum_congr rfl fun r hr => sum_congr rfl (hterm r hr)]
   rw [Finset.sum_comm]
   refine sum_congr rfl fun r' hr' => ?_
@@ -346,7 +346,7 @@ theorem greenCross_layerPoint_sub_of_le {m m' : ℕ} (hm : m ≤ m') {N : ℕ} (
     have h := mem_range.mp hr'
     omega
   rw [Finset.sum_ite_eq' (range (N - m)) (r' + (m' - m))]
-  rw [if_pos (mem_range.mpr hle)]
+  rw [ite_eq_left (mem_range.mpr hle)]
   rw [show (r' + (m' - m)) + r' = 2 * r' + (m' - m) by omega]
 
 /-- **The covariance of the grid reward field** is `n^{-1/2}` times the

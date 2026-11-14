@@ -51,8 +51,8 @@ theorem map_rank_eval (d : ℕ) (i : LatticeProb.Label d × ℕ) :
 theorem iIndepFun_rank (d : ℕ) :
     iIndepFun (fun (i : LatticeProb.Label d × ℕ) (ρ : LatticeProb.Label d × ℕ → ℝ) => ρ i)
       (LatticeProb.rankLaw d) := by
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : ∀ i : LatticeProb.Label d × ℕ,
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : ∀ i : LatticeProb.Label d × ℕ,
       IsProbabilityMeasure ((LatticeProb.rankLaw d).map
         (fun ρ : LatticeProb.Label d × ℕ → ℝ => ρ i)) := by
     intro i
@@ -68,7 +68,7 @@ theorem iIndepFun_rank (d : ℕ) :
 /-- Two distinct coordinates agree on a null set. -/
 theorem rankLaw_pair_eq_zero (d : ℕ) {a b : LatticeProb.Label d × ℕ} (hab : a ≠ b) :
     LatticeProb.rankLaw d {ρ : LatticeProb.Label d × ℕ → ℝ | ρ a = ρ b} = 0 := by
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hdiag : MeasurableSet {p : ℝ × ℝ | p.1 = p.2} :=
     (isClosed_eq continuous_fst continuous_snd).measurableSet
   have hind : IndepFun (fun ρ : LatticeProb.Label d × ℕ → ℝ => ρ a)
@@ -115,11 +115,11 @@ pairwise distinct uniform variables.** -/
 theorem ae_injective_pDataLaw {d : ℕ} (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] :
     ∀ᵐ ω ∂(pDataLaw d ν), Function.Injective ω.2.2 := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hmap : (pDataLaw d ν).map (fun ω : PData d => ω.2.2) = LatticeProb.rankLaw d := by
     have h1 : (fun ω : PData d => ω.2.2) = Prod.snd ∘ Prod.snd := rfl
     rw [h1, ← Measure.map_map measurable_snd measurable_snd]

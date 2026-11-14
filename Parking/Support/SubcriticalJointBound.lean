@@ -156,13 +156,13 @@ theorem integral_jointObs_le (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMea
             * ∫ p, Real.exp (-(((1 / 3) * ∫ s in (0 : ℝ)..lam₁, drift ν s)
                 * (rangeCard (0 : Site d) p t : ℝ))) ∂(walkLaw d))) := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by unfold pDataLaw; infer_instance
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (pDataLaw d ν) := by unfold pDataLaw; infer_instance
   set a : ℝ := (1 / 3) * ∫ s in (0 : ℝ)..lam₁, drift ν s with hadef
   set A : ℝ := (1 / 3) * ∫ s in (0 : ℝ)..lam₁, ∫ j, |(j : ℝ)| ∂(tiltLaw ν s) with hAdef
   have ha0 : 0 ≤ a := drift_intervalIntegral_nonneg hlam₁.le fun s hs => (hnonpos s hs).2
@@ -385,7 +385,7 @@ theorem rangeExp_nonneg (d : ℕ) (a : ℝ) (t : ℕ) : 0 ≤ rangeExp d a t := 
 theorem integrable_survivorsFrom_law (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (t : ℕ) :
     Integrable (fun ω => (LatticeProb.survivorsFrom (toDriver ω) t 0 : ℝ)) (law d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hti : TranslationInvariant (LatticeProb.iidLaw d ν) := fun v => iidLaw_map_shiftConf' ν v
   have hmap : (LatticeProb.iidLaw d ν).map (fun η : Site d → ℤ => η 0) = ν := by
@@ -413,7 +413,7 @@ theorem S_le_subcriticalConst (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMe
     S (law d ν) t
       ≤ subcriticalConst ν lam₁ * rangeExp d ((1 / 3) * ∫ s in (0 : ℝ)..lam₁, drift ν s) t := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hlaw : law d ν = dataLaw d (LatticeProb.iidLaw d ν) := rfl
   set A : ℝ := Real.exp ((1 / 3) * ∫ s in (0 : ℝ)..lam₁, ∫ j, |(j : ℝ)| ∂(tiltLaw ν s))

@@ -33,8 +33,8 @@ theorem sparseSink_green_moment_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabil
       ∂((iidLaw d ν).prod (flatRoundNoiseLaw d))) ^ (1 / r) ≤
       (∫ z, greenWeightedOdometer (clippedField z.1) 0 (curryRoundNoise z.2) T x T ^ (r / 2)
         ∂((iidLaw d ν).prod (flatRoundNoiseLaw d))) ^ (1 / r) := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
   let μ := (iidLaw d ν).prod (flatRoundNoiseLaw d)
   let Q : (Site d → ℤ) × FlatRoundNoise d → ℝ := fun z =>
     greenWeightedOdometer (clippedField z.1) 0 (curryRoundNoise z.2) T x T

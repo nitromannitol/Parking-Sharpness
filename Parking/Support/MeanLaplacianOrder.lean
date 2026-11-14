@@ -22,7 +22,7 @@ theorem matchedMeanU_laplacian_mono (hd : 1 ≤ d) (η ζ : Site d → ℤ) (hη
     (hx : η x = ζ x) :
     walkOp (matchedMeanU η ρ t) x - matchedMeanU η ρ t x ≤
       walkOp (matchedMeanU ζ ρ t) x - matchedMeanU ζ ρ t x := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have hη (y : Site d) : (η y).toNat ≤ K := (Int.toNat_le_toNat (hηζ y)).trans (hζ y)
   rw [matchedMeanU_signed_balance hd η K hη ρ t x, matchedMeanU_signed_balance hd ζ K hζ ρ t x, hx]
   have hA := integral_mono (integrable_matchedCount_bounded hd η K hη ρ t x (roundNoiseLaw d))

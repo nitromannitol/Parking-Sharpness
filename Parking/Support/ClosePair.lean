@@ -196,7 +196,7 @@ theorem measurable_eraseAt (z : Site d) : Measurable (eraseAt (d := d) z) := by
   by_cases hy : y = z
   · simp only [hy]
     exact measurable_const
-  · simp only [hy, if_false]
+  · simp only [hy, ite_false]
     exact (measurable_pi_apply y).comp measurable_fst
 
 /-- Erasing the configuration at `z` twice is the same as erasing it once. -/
@@ -258,10 +258,10 @@ theorem measure_inter_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasu
     ((law d ν) (G ∩ {ω : Data d | ω.1 z ∈ s})).toReal
       = (ν s).toReal * ((law d ν) G).toReal := by
   classical
-  haveI := stackRankLaw_isProbability (d := d) hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have := stackRankLaw_isProbability (d := d) hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
-  haveI : IsProbabilityMeasure (law d ν) :=
+  have : IsProbabilityMeasure (law d ν) :=
     inferInstanceAs (IsProbabilityMeasure ((LatticeProb.iidLaw d ν).prod (stackRankLaw d)))
   set f : Data d → ℝ := Set.indicator G (fun _ => (1 : ℝ)) with hf
   have hfmeas : Measurable f := (measurable_const.indicator hGm)
@@ -302,11 +302,11 @@ theorem close_pair (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
       ≤ 2 * p * holeProb d (threePointLaw p) t := by
   classical
   set ν := threePointLaw p with hνdef
-  haveI hνp : IsProbabilityMeasure ν := threePointLaw_isProbability hp.le (by linarith)
-  haveI := stackRankLaw_isProbability (d := d) hd
-  haveI hiid : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have hνp : IsProbabilityMeasure ν := threePointLaw_isProbability hp.le (by linarith)
+  have := stackRankLaw_isProbability (d := d) hd
+  have hiid : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
-  haveI hPp : IsProbabilityMeasure (law d ν) :=
+  have hPp : IsProbabilityMeasure (law d ν) :=
     inferInstanceAs (IsProbabilityMeasure ((LatticeProb.iidLaw d ν).prod (stackRankLaw d)))
   set F : Set (Data d) := {ω : Data d | H ω t x = 1} with hFdef
   have hFm : MeasurableSet F := (measurable_H t x) (measurableSet_singleton 1)
@@ -381,7 +381,7 @@ theorem close_pair (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     have hmap := law_map_shiftData hd ν x
     have hpre : (shiftData x) ⁻¹' {ω : Data d | H ω t 0 = 1} = F := by
       ext ω
-      simp only [Set.mem_preimage, Set.mem_setOf_eq, hFdef, H_shiftData, zero_add]
+      simp only [Set.mem_preimage, Set.mem_ofPred_eq, hFdef, H_shiftData, zero_add]
     have hmeas0 : MeasurableSet {ω : Data d | H ω t 0 = 1} :=
       (measurable_H t 0) (measurableSet_singleton 1)
     rw [holeProb, ← hmap, Measure.map_apply (measurable_shiftData x) hmeas0, hpre, hmap]

@@ -47,9 +47,9 @@ theorem barOdometer_mul_eq_sum_indicator (w : Data d) {R B : ℝ} (hR : 0 < R)
   simp_rw [hi, mul_ite, mul_zero]
   rw [Finset.sum_ite_eq']
   by_cases hx : latticePoint R x ∈ boxFinset (0 : Site d) (⌈B * R⌉₊ + 1)
-  · rw [if_pos hx]
+  · rw [ite_eq_left hx]
     simp only [barOdometer, one_mul]
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     have hg : g x = 0 := by
       by_contra hne
       exact hx (latticePoint_mem_boxFinset hR.le fun i =>

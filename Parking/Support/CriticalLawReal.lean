@@ -53,7 +53,7 @@ theorem realLaw_integral (ν : Measure ℤ) [IsProbabilityMeasure ν] {f : ℝ �
 `ν`, so it vanishes under `CriticalLaw ν`. -/
 theorem realLaw_mean (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∫ z, z ∂(realLaw ν) = 0 := by
-  haveI := hν.prob
+  have := hν.prob
   have h : ∫ z, (id z : ℝ) ∂(realLaw ν) = ∫ k, ((k : ℤ) : ℝ) ∂ν :=
     realLaw_integral ν measurable_id
   simpa using h.trans hν.mean
@@ -61,7 +61,7 @@ theorem realLaw_mean (ν : Measure ℤ) (hν : CriticalLaw ν) :
 /-- The exponential moment, transported. -/
 theorem realLaw_expMoment (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∃ θ : ℝ, 0 < θ ∧ Integrable (fun z : ℝ => Real.exp (θ * |z|)) (realLaw ν) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hint⟩ := hν.expMoment
   refine ⟨θ, hθ, ?_⟩
   rw [realLaw_integrable_iff ν (f := fun z : ℝ => Real.exp (θ * |z|))
@@ -71,7 +71,7 @@ theorem realLaw_expMoment (ν : Measure ℤ) (hν : CriticalLaw ν) :
 /-- The second moment is finite, so the coordinate is in `L²`. -/
 theorem realLaw_memLp_two (ν : Measure ℤ) (hν : CriticalLaw ν) :
     MemLp (id : ℝ → ℝ) 2 (realLaw ν) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hint⟩ := hν.expMoment
   obtain ⟨C, hC, hbound⟩ := rpow_le_const_mul_exp (r := (2 : ℝ)) (by norm_num) hθ
   have hsq : Integrable (fun k : ℤ => (((k : ℤ) : ℝ)) ^ 2) ν := by
@@ -94,7 +94,7 @@ theorem realLaw_memLp_two (ν : Measure ℤ) (hν : CriticalLaw ν) :
 coordinate is in `L²` by `realLaw_memLp_two`. -/
 theorem realLaw_evariance_lt_top (ν : Measure ℤ) (hν : CriticalLaw ν) :
     evariance (id : ℝ → ℝ) (realLaw ν) < ⊤ := by
-  haveI := hν.prob
+  have := hν.prob
   exact evariance_lt_top (realLaw_memLp_two ν hν)
 
 /-- The extended variance of the identity under `realLaw ν` is positive: were it
@@ -102,7 +102,7 @@ zero, the coordinate would be almost surely its mean `0`, forcing `ν {0} = 1`,
 contradicting the nonconstancy hypothesis of `CriticalLaw`. -/
 theorem realLaw_evariance_pos (ν : Measure ℤ) (hν : CriticalLaw ν) :
     0 < evariance (id : ℝ → ℝ) (realLaw ν) := by
-  haveI := hν.prob
+  have := hν.prob
   refine pos_iff_ne_zero.mpr fun hzero => ?_
   · have hae := (evariance_eq_zero_iff (X := (id : ℝ → ℝ)) (μ := realLaw ν)
       measurable_id.aemeasurable).mp hzero

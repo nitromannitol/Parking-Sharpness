@@ -40,9 +40,9 @@ theorem walk_indicator_sum (j : ℕ) (f : Site d → ℝ) (p : ℕ → Fin d × 
         = if walkPath (0 : Site d) p j = z then f z else 0 := by
     intro z _
     rw [Set.indicator_apply]
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
   rw [Finset.sum_congr rfl hterm,
-    Finset.sum_ite_eq (boxFinset (0 : Site d) j) (walkPath (0 : Site d) p j) f, if_pos hmem]
+    Finset.sum_ite_eq (boxFinset (0 : Site d) j) (walkPath (0 : Site d) p j) f, ite_eq_left hmem]
 
 /-- The fibre where the walk is at a prescribed site after `j` steps is measurable. -/
 theorem measurableSet_walk_fibre (j : ℕ) (z : Site d) :
@@ -54,8 +54,8 @@ law, being the finite combination of `walk_indicator_sum`. -/
 theorem integrable_walk_comp (hd : 1 ≤ d) (j : ℕ) (f : Site d → ℝ) :
     Integrable (fun p => f (walkPath (0 : Site d) p j)) (walkLaw d) := by
   classical
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hsum : Integrable (fun p => ∑ z ∈ boxFinset (0 : Site d) j,
       Set.indicator {q | walkPath (0 : Site d) q j = z} (fun _ => f z) p) (walkLaw d) :=
     integrable_finsetSum _ fun z _ =>
@@ -70,8 +70,8 @@ theorem integral_walk_decomp (hd : 1 ≤ d) (j : ℕ) (f : Site d → ℝ) :
       = ∑ z ∈ boxFinset (0 : Site d) j,
           (walkLaw d).real {p | walkPath (0 : Site d) p j = z} * f z := by
   classical
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   rw [integral_congr_ae (Filter.Eventually.of_forall (walk_indicator_sum j f)),
     integral_finsetSum _ fun z _ =>
       (integrable_const (f z)).indicator (measurableSet_walk_fibre j z)]
@@ -83,8 +83,8 @@ theorem integral_walk_decomp (hd : 1 ≤ d) (j : ℕ) (f : Site d → ℝ) :
 theorem sum_walk_prob (hd : 1 ≤ d) (j : ℕ) :
     ∑ z ∈ boxFinset (0 : Site d) j,
       (walkLaw d).real {p | walkPath (0 : Site d) p j = z} = 1 := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have h := integral_walk_decomp hd j (fun _ : Site d => (1 : ℝ))
   simp only [mul_one] at h
   rw [← h, integral_const, probReal_univ, smul_eq_mul, mul_one]
@@ -175,8 +175,8 @@ theorem wStar_rpow_le_sum (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (ω : Data d) :
     wStar ω n 0 ^ r
       ≤ ∑ j ∈ Finset.range (n + 1), wWalkMoment (d := d) r (n - j) j ω := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hrpow : Integrable (fun p => wMax ω n (0 : Site d) p ^ r) (walkLaw d) := by
     refine Integrable.mono' (integrable_const
         ((wCoef d n * confBox ω 0 (3 * n)) ^ r))

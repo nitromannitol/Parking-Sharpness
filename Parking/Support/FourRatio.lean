@@ -23,7 +23,7 @@ theorem four_mean_ratio_bounds (hGrowth : Parking.External.SandpileGrowth)
     (hGN : Parking.External.GreenNorms) (ν : Measure ℤ) (hν : CriticalLaw ν) :
     (∀ n : ℕ, 1 ≤ n → 1 ≤ meanU (law 4 ν) n / meanu (law 4 ν) n) ∧
     ∃ B : ℝ, ∀ n : ℕ, 1 ≤ n → meanU (law 4 ν) n / meanu (law 4 ν) n ≤ B := by
-  haveI := hν.prob
+  have := hν.prob
   constructor
   · intro n hn
     apply (le_div_iff₀ (meanu_pos (by norm_num) ν hν n hn)).mpr

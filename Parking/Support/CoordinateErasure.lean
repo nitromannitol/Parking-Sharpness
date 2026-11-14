@@ -41,12 +41,12 @@ theorem indepFun_of_erasure_invariant {ι X E : Type*} [MeasurableSpace X] [Meas
       by_cases hi : i ∈ S
       · have he : (fun ω : ι → X => erase ω i) = fun _ => c i := by
           funext ω
-          simp only [erase, if_pos hi]
+          simp only [erase, ite_eq_left hi]
         rw [he, MeasurableSpace.comap_const]
         exact bot_le
       · have he : (fun ω : ι → X => erase ω i) = fun ω => ω i := by
           funext ω
-          simp only [erase, if_neg hi]
+          simp only [erase, ite_eq_right hi]
         rw [he]
         exact le_biSup m hi
     have hcomp : F ∘ erase = F := funext hinv

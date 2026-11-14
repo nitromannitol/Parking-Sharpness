@@ -34,8 +34,8 @@ theorem filter_range_eq_range_card {n : ℕ} (P : ℕ → Prop) [DecidablePred P
       by_cases hPn : P n
       · have hall : (range n).filter P = range n := by
           refine filter_eq_self.mpr fun m hm => hP m n (le_of_lt (mem_range.mp hm)) hPn
-        rw [if_pos hPn, hall, card_insert_of_notMem (by simp), card_range, ← Finset.range_add_one]
-      · rw [if_neg hPn]
+        rw [ite_eq_left hPn, hall, card_insert_of_notMem (by simp), card_range, ← Finset.range_add_one]
+      · rw [ite_eq_right hPn]
         exact ih
 
 /-- The number of rounds before `n` at which instruction `(y,j)` is alive. -/

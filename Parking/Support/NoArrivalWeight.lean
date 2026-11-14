@@ -54,7 +54,7 @@ theorem noArrivalWeight_section (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label
     ∫ τ, noArrivalWeight η ρ (Function.update σ t τ) (t + 1) x
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) ≤ noArrivalWeight η ρ σ t x := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   let A := matchedCount η ρ σ t
   let c := arrivalCompensator η ρ σ t x
   let b := walkOp (fun y => (A y : ℝ)) x
@@ -74,7 +74,7 @@ theorem noArrivalWeight_section (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label
         arrivalCompensator_succ, arrivalCompensator_update η ρ σ t t τ le_rfl, heA]
       by_cases hz : (countArrivals A τ x).card = 0 <;> simp [hz, c, b]
     simp_rw [he]
-    rw [integral_const_mul, noArrivalWeight, if_pos hf]
+    rw [integral_const_mul, noArrivalWeight, ite_eq_left hf]
     have h := mul_le_mul_of_nonneg_left (integral_noArrivals_le_exp hd A x)
       (Real.exp_pos (c + b)).le
     apply h.trans_eq
@@ -88,5 +88,5 @@ theorem noArrivalWeight_section (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label
       rw [noArrivalFlag, noArrivalFlag_update η ρ σ t t τ le_rfl]
       simp [hf]
     simp_rw [he]
-    rw [integral_zero, noArrivalWeight, if_neg hf]
+    rw [integral_zero, noArrivalWeight, ite_eq_right hf]
 end Parking

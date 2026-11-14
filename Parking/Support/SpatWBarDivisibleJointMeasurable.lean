@@ -77,8 +77,7 @@ theorem measurable_integral_barDivisible_mul (R t : ℝ) (K : Set (Fin d → ℝ
     have hFeq : F = {p : Data d × (Fin d → ℝ) | p.2 ∈ K}.indicator
         (fun p => barDivisible p.1 R t p.2 * h p.2) := by
       funext p
-      simp only [hFdef, Set.indicator, Set.mem_setOf_eq]
-      rfl
+      simp only [hFdef, Set.indicator, Set.mem_ofPred_eq]
     rw [hFeq]
     exact hind
   have hSM : StronglyMeasurable F := hFmeas.stronglyMeasurable
@@ -118,8 +117,7 @@ theorem measurable_integral_Uc_mul {Ω : Type} [MeasurableSpace Ω] {Uc : Ω →
     have hFeq : F = {p : Ω × (Fin d → ℝ) | p.2 ∈ K}.indicator
         (fun p => Uc p.1 t p.2 * h p.2) := by
       funext p
-      simp only [hFdef, Set.indicator, Set.mem_setOf_eq]
-      rfl
+      simp only [hFdef, Set.indicator, Set.mem_ofPred_eq]
     rw [hFeq]
     exact hind
   have hSM : StronglyMeasurable F := hFmeas.stronglyMeasurable

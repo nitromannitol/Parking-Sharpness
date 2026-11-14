@@ -22,8 +22,8 @@ theorem low_mean_ratio_tendsto_one {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (hConc : Parking.External.UConcentration) (hGN : Parking.External.GreenNorms)
     (ν : Measure ℤ) (hν : CriticalLaw ν) :
     Tendsto (fun n : ℕ => meanU (law d ν) n / meanu (law d ν) n) atTop (𝓝 1) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   have hL := (discrepancy_moment_tendsto_zero hd hd3 hGrowth hBern hConc hGN ν hν 1
     (by norm_num)).2
   simp only [Real.rpow_one] at hL
@@ -53,7 +53,7 @@ theorem low_meanU_scaling_limit {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∃ L : ℝ, 0 < L ∧ Tendsto (fun n : ℕ =>
       (n : ℝ) ^ (-((4 - (d : ℝ)) / 4)) * meanU (law d ν) n) atTop (𝓝 L) := by
-  haveI := hν.prob
+  have := hν.prob
   have hBP := hGrowth d hd (realLaw ν) inferInstance (realLaw_mean ν hν)
     (realLaw_evariance_pos ν hν) (realLaw_evariance_lt_top ν hν) (realLaw_expMoment ν hν)
   obtain ⟨L, hL, hsp⟩ := hBP.2.2.2.2 hd3

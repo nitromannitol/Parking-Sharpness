@@ -31,9 +31,9 @@ theorem exists_clipped_green_moment_bound (hd : 5 ≤ d) :
   obtain ⟨W, hW, hsum⟩ := exists_greenSquareWeight_sum_bound hd
   refine ⟨W, hW, fun p hp hp4 T x r hr => ?_⟩
   have hd1 : 1 ≤ d := by omega
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd1
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd1
   let μ := (iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)
   let S := boxFinset x T
   let w : Site d → ℝ := fun v => walkOp (fun y => fullGreen d (y - x) ^ 2) v

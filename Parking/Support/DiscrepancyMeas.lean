@@ -80,7 +80,7 @@ theorem Parking.measurable_discrepancyMoving (c : Ω → Site d → ℤ × ℤ)
   have hb' : Measurable fun ω => b ω ((S ω).pos p) :=
     LatticeProb.measurable_eval_var _ (hS.2.1 p) b (fun x => (measurable_pi_apply x).comp hb)
   unfold Parking.discrepancyMoving Parking.discrepancyMoveCount
-  exact measurableSet_setOf.mp ((measurableSet_setOf.mpr hmem).inter
+  exact measurableSet_setOfPred.mp ((measurableSet_setOfPred.mpr hmem).inter
     (measurableSet_lt hrank ((ha'.sub hb').add (hb'.sub ha'))))
 
 /-- `discrepancySlot` at a fixed label is measurable: both branches of its defining `if` are
@@ -100,7 +100,7 @@ theorem Parking.measurable_discrepancySlot (c : Ω → Site d → ℤ × ℤ)
     LatticeProb.measurable_eval_var _ (hS.2.1 p) b (fun x => (measurable_pi_apply x).comp hb)
   have hmov := Parking.measurable_discrepancyMoving c ρ a b S hc hρ ha hb hS t p
   unfold Parking.discrepancySlot
-  exact Measurable.ite (measurableSet_setOf.mpr hmov)
+  exact Measurable.ite (measurableSet_setOfPred.mpr hmov)
     (measurable_inl.comp ((hS.2.1 p).prodMk ((ha'.min hb').add hrank))) measurable_const
 
 /-- `discrepancyNextPos` at a fixed label is measurable, combining `measurable_discrepancySlot`
@@ -117,7 +117,7 @@ theorem Parking.measurable_discrepancyNextPos (c : Ω → Site d → ℤ × ℤ)
       τ ω (Parking.discrepancySlot (c ω) (ρ ω) (a ω) (b ω) (S ω) t p) :=
     LatticeProb.measurable_eval_var _ hslot τ (fun q => (measurable_pi_apply q).comp hτ)
   unfold Parking.discrepancyNextPos
-  exact Measurable.ite (measurableSet_setOf.mpr hmov)
+  exact Measurable.ite (measurableSet_setOfPred.mpr hmov)
     ((hS.2.1 p).add ((measurable_of_countable Parking.stepVec).comp hentry)) (hS.2.1 p)
 
 /-- `discrepancyArrivalsSign` at a fixed time, site and sign is measurable, via

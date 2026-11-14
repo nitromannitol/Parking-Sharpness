@@ -46,7 +46,7 @@ theorem integral_round_entry_arrives (hd : 1 ≤ d) (y x : Site d) (j : ℕ) :
     ∫ τ, (if y + stepVec (τ (Sum.inl (y, j))) = x then (1 : ℝ) else 0)
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) = kern d y x := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   let f : Fin d × Bool → ℝ := fun b => if y + stepVec b = x then 1 else 0
   have hf : Measurable f := measurable_from_countable' _
   have hmap := measurePreserving_eval_infinitePi (fun _ : RoundSlot d => stepLaw d) (Sum.inl (y, j))
@@ -67,7 +67,7 @@ theorem integral_countArrivals (hd : 1 ≤ d) (A : Site d → ℕ) (x : Site d) 
     ∫ τ, ((countArrivals A τ x).card : ℝ) ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) =
       walkOp (fun y => (A y : ℝ)) x := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   let μ := Measure.infinitePi fun _ : RoundSlot d => stepLaw d
   let f (y : Site d) (j : ℕ) (τ : RoundSlot d → Fin d × Bool) : ℝ :=
     if y + stepVec (τ (Sum.inl (y, j))) = x then 1 else 0
@@ -94,6 +94,6 @@ theorem integral_countArrivals (hd : 1 ≤ d) (A : Site d → ℕ) (x : Site d) 
   rw [walkOp_eq_nbrFinset, Finset.sum_div]
   apply Finset.sum_congr rfl
   intro y hy
-  rw [kern, if_pos (nbrFinset_symm hy)]
+  rw [kern, ite_eq_left (nbrFinset_symm hy)]
   ring
 end Parking

@@ -31,7 +31,7 @@ forward neighbor `q.1 + unit i`, obtained by pushing each coordinate marginal fo
 `orientedInstructionLaw_compl_forward`. -/
 theorem orientedStackLaw_ae_forward (hd : 1 ≤ d) :
     ∀ᵐ σ ∂(orientedStackLaw d), ∀ q : Site d × ℕ, ∃ i : Fin d, σ q = q.1 + unit i := by
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
     fun q => orientedInstructionLaw_isProbability hd q.1
   rw [ae_all_iff]
   intro q
@@ -51,9 +51,9 @@ theorem orientedStackLaw_ae_forward (hd : 1 ≤ d) :
 under the projections defining the product measure. -/
 theorem orientedLaw_ae_forward (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     ∀ᵐ ω ∂(orientedLaw d ν), ∀ q : Site d × ℕ, ∃ i : Fin d, ω.2.1 q = q.1 + unit i := by
-  haveI := orientedStackLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := orientedStackLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hr : ∀ᵐ r ∂((orientedStackLaw d).prod (rankLaw d)),
       ∀ q : Site d × ℕ, ∃ i : Fin d, r.1 q = q.1 + unit i :=
     (Measure.quasiMeasurePreserving_fst).ae (orientedStackLaw_ae_forward hd)

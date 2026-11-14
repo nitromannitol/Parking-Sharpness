@@ -204,7 +204,7 @@ theorem measurable_of_determined {α β γ : Type*} [Nonempty α] [MeasurableSpa
     (fun c _ => if hc : ∃ a, r a = c then f hc.choose else f (Classical.arbitrary α))
     (fun _ => measurable_const) fun a => ?_
   have hc : ∃ a', r a' = r a := ⟨a, rfl⟩
-  rw [dif_pos hc]
+  rw [dite_eq_left hc]
   exact (h _ _ hc.choose_spec).symm
 
 /-- A block is determined by the odometers of its two rounds inside its box. -/
@@ -298,7 +298,7 @@ theorem map_revealed_explIdx (hd : 1 ≤ d) (i₀ : Fin d) (η : Site d → ℤ)
     (LatticeProb.stackLaw d).map (LatticeProb.revealed (explIdx i₀ η ρ n) (wG i₀))
       = Measure.infinitePi fun _ : ℕ => LatticeProb.displacementLaw d := by
   classical
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => LatticeProb.instructionLaw_isProbability hd q.1
   exact LatticeProb.map_revealed (X := fun _ : Site d × ℕ => Site d)
     (fun q : Site d × ℕ => instructionLaw q.1) (isExploration_explIdx hd i₀ η ρ n)
@@ -387,14 +387,14 @@ theorem map_wData (hd : 1 ≤ d) (i₀ : Fin d) (n : ℕ) (ν : Measure ℤ)
       = ((LatticeProb.iidLaw d ν).prod (LatticeProb.rankLaw d)).prod
         (Measure.infinitePi fun _ : ℕ => LatticeProb.displacementLaw d) := by
   classical
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => LatticeProb.instructionLaw_isProbability hd q.1
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.stackLaw d) := by
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.stackLaw d) := by
     unfold LatticeProb.stackLaw; infer_instance
-  haveI : IsProbabilityMeasure ((LatticeProb.iidLaw d ν).prod (LatticeProb.rankLaw d)) :=
+  have : IsProbabilityMeasure ((LatticeProb.iidLaw d ν).prod (LatticeProb.rankLaw d)) :=
     inferInstance
   have hreshuf : Measurable fun x : ConfRank d × (Site d × ℕ → Site d) =>
       ((x.1.1, (x.2, x.1.2)) : Data d) :=
@@ -573,7 +573,7 @@ theorem wErr_ae_eq_tsum_wXi (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ)
   refine (ae_stack_nbr_law hd ν).mono fun ω hω => ?_
   have hstack : nbrProj i₀ ω.2.1 = ω.2.1 := by
     funext q
-    rw [nbrProj, if_pos (hω q)]
+    rw [nbrProj, ite_eq_left (hω q)]
   have hproj : wProj i₀ ω = ω := by
     show ((ω.1, nbrProj i₀ ω.2.1, ω.2.2) : Data d) = ω
     rw [hstack]
@@ -683,11 +683,11 @@ theorem measurable_wXi (i₀ : Fin d) (n i : ℕ) : Measurable (wXi i₀ n i) :=
 /-- The increments are integrable: they are measurable and bounded. -/
 theorem integrable_wXi (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (hn : 1 ≤ n) (i : ℕ) : Integrable (wXi i₀ n i) (law d ν) := by
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
+  have : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
   refine (integrable_const (greenIncrement d n)).mono'
     (measurable_wXi i₀ n i).aestronglyMeasurable
     (Filter.Eventually.of_forall fun ω => ?_)

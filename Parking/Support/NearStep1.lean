@@ -54,7 +54,7 @@ theorem zdOptimalStop_eq (hd : 1 ≤ d) (ζ : Site d → ℝ) (n : ℕ) (X : ℕ
   rw [LatticeProb.Graph.Zd.zdOptimalStop]
   congr 1
   ext k
-  simp only [Set.mem_setOf_eq, zdStoppingValue_eq_u hd]
+  simp only [Set.mem_ofPred_eq, zdStoppingValue_eq_u hd]
 
 /-- The horizon `n` itself always lies in the set `zdOptimalStop` takes the infimum of,
 since `u ζ (n - n) (X n) = u ζ 0 (X n) = 0`. -/
@@ -134,7 +134,7 @@ theorem measurable_optStop (hd : 1 ≤ d) (n : ℕ) (X : ℕ → Site d) :
           {η : Site d → ℤ | ¬ (j ≤ n ∧ u (fun y => ((η y : ℤ) : ℝ)) (n - j) (X j) = 0)} := by
     ext η
     simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_inter_iff, Set.mem_iInter,
-      Set.mem_setOf_eq, Finset.mem_range]
+      Set.mem_ofPred_eq, Finset.mem_range]
     rw [optStop, zdOptimalStop_eq hd]
     constructor
     · intro h
@@ -187,7 +187,7 @@ theorem measurable_optStop_walk (hd : 1 ≤ d) (n : ℕ) (η : Site d → ℤ) :
 `zdOptimalStop_le`. -/
 theorem integrable_optStop_walk (hd : 1 ≤ d) (n : ℕ) (η : Site d → ℤ) :
     Integrable (fun X => ((optStop n η X : ℕ) : ℝ)) (LatticeProb.siteWalkLaw d (0 : Site d)) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   refine Integrable.mono' (integrable_const ((n : ℝ)))
     (((measurable_of_countable (fun k : ℕ => ((k : ℕ) : ℝ))).comp
       (measurable_optStop_walk hd n η)).aestronglyMeasurable)
@@ -207,10 +207,10 @@ theorem measurable_rewardSum_walk (hd : 1 ≤ d) (δ : ℝ) (n : ℕ) (η : Site
       = fun X => ∑ i ∈ Finset.range (n + 1),
           (if optStop n η X = i then ∑ j ∈ Finset.range i, Parking.xi δ η (X j) else 0) := by
     funext X
-    rw [Finset.sum_eq_single (optStop n η X) (fun i _ hi => if_neg fun h => hi h.symm)
+    rw [Finset.sum_eq_single (optStop n η X) (fun i _ hi => ite_eq_right fun h => hi h.symm)
       (fun hmem => absurd (Finset.mem_range.mpr
         (Nat.lt_succ_of_le (zdOptimalStop_le hd _ n X))) hmem)]
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   rw [heq]
   refine Finset.measurable_sum _ fun i _ => ?_
   refine Measurable.ite (hsm (measurableSet_singleton i)) ?_ measurable_const
@@ -223,7 +223,7 @@ at most `n` terms each bounded by that box sum. -/
 theorem integrable_rewardSum_walk (hd : 1 ≤ d) (δ : ℝ) (n : ℕ) (η : Site d → ℤ) :
     Integrable (fun X => ∑ j ∈ Finset.range (optStop n η X), Parking.xi δ η (X j))
       (LatticeProb.siteWalkLaw d (0 : Site d)) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   refine Integrable.mono'
     (integrable_const ((n : ℝ) * ∑ z ∈ boxFinset (0 : Site d) n, |Parking.xi δ η z|))
     (measurable_rewardSum_walk hd δ n η).aestronglyMeasurable ?_
@@ -278,8 +278,8 @@ theorem integrable_optStopAvg (hd : 1 ≤ d) (n : ℕ) (ν : Measure ℤ) [IsPro
     Integrable (fun η : Site d → ℤ =>
         ∫ X, ((optStop n η X : ℕ) : ℝ) ∂(LatticeProb.siteWalkLaw d (0 : Site d)))
       (LatticeProb.iidLaw d ν) := by
-  haveI : NeZero d := ⟨by omega⟩
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : NeZero d := ⟨by omega⟩
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hjoint : Measurable (fun p : (Site d → ℤ) × (ℕ → Site d) =>
       ((optStop n p.1 p.2 : ℕ) : ℝ)) :=
@@ -318,8 +318,8 @@ theorem exists_meanu_upper (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
   obtain ⟨C1, hC1, hMH⟩ := exists_meanHorizon (d := d) hd hGrowth hStopping hConc hGreen hfam'
   obtain ⟨C2, hC2, hopt⟩ := exists_phi_sub_le_nearRate d hd hC1
   refine ⟨C2, hC2, fun δ hδ hδpos hδ1 n => ?_⟩
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hintexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexp δ hδ).1
   have hintabs : Integrable (fun k : ℤ => |(k : ℝ)|) (ν δ) :=

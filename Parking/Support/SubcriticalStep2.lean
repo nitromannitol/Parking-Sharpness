@@ -53,7 +53,7 @@ theorem abs_cov_subcritical_le (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityM
         (restrictLaw d N (tiltLaw ν lam) ω₀) ∧
       |cov (restrictLaw d N (tiltLaw ν lam) ω₀) (survivalObs w r t) (holeObs w t)|
         ≤ 3 * D := by
-  haveI : IsProbabilityMeasure (tiltLaw ν lam) :=
+  have : IsProbabilityMeasure (tiltLaw ν lam) :=
     tiltLaw_isProbability (integrable_exp_tilt hexp hlam0 (le_of_lt hlamθ))
   have hrange : rangeFinset (0 : Site d) w t ⊆ N := fun x hx =>
     hN (boxFinset_mono (by omega) (rangeFinset_subset_box w t hx))
@@ -162,7 +162,7 @@ theorem mean_mul_mean_le_deriv (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityM
       survivalObs w r t ω * holeObs w t ω = 0) :
     (∫ ω, survivalObs w r t ω ∂(restrictLaw d N (tiltLaw ν lam) ω₀))
         * ∫ ω, holeObs w t ω ∂(restrictLaw d N (tiltLaw ν lam) ω₀) ≤ 3 * D := by
-  haveI : IsProbabilityMeasure (tiltLaw ν lam) :=
+  have : IsProbabilityMeasure (tiltLaw ν lam) :=
     tiltLaw_isProbability (integrable_exp_tilt hexp hlam0 (le_of_lt hlamθ))
   have hbound := abs_cov_subcritical_le hd hint hθ hexp hlam0 hlamθ hmeanint hmeanle
     w r t hN ω₀ hD

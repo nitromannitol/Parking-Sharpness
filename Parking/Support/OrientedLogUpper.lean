@@ -31,8 +31,8 @@ theorem meanU_oriented_log_upper_of_moment (hd : 3 ≤ d) (ν : Measure ℤ) (h�
             (2 ⊔ ⌈Real.log ((n : ℝ) + 1)⌉₊ : ℝ))) :
     ∃ C' : ℝ, 0 < C' ∧ ∀ n : ℕ, 1 ≤ n →
       meanU (orientedLaw d ν) n ≤ C' * Real.log ((n : ℝ) + 1) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability (by omega) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability (by omega) ν
   obtain ⟨θ, hθ, he⟩ := hν.expMoment
   refine ⟨3 * (4 * C + 4 * C ^ 2 + 4 * C) + 1, by positivity, fun n hn => ?_⟩
   set L : ℝ := Real.log ((n : ℝ) + 1) + 1 with hLdef

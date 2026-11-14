@@ -105,7 +105,7 @@ theorem integrable_oriented_uOriented_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (h�
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (x : Site d) :
     Integrable (fun ω : Data d => |uOriented (fun y => (ω.1 y : ℝ)) n x| ^ r)
       (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
   refine (integrable_oriented_absBox_rpow hd ν hθ hexp hr x n).mono'
     (((measurable_rpow_const (le_trans zero_le_one hr)).comp

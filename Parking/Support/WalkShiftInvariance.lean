@@ -49,7 +49,7 @@ every coordinate carries the SAME factor law `Parking.stepLaw d`. -/
 theorem measurePreserving_walkShift (hd : 1 ≤ d) (n : ℕ) :
     MeasurePreserving (LatticeProb.coordShift (X := Fin d × Bool) (fun k => k + n))
       (Parking.walkLaw d) (Parking.walkLaw d) := by
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   unfold Parking.walkLaw
   exact LatticeProb.measurePreserving_coordShift (fun _ : ℕ => Parking.stepLaw d)
     (add_left_injective n) (fun _ => rfl)
@@ -97,7 +97,7 @@ theorem measurableSet_walkPath_graphNorm_ge (m : ℕ) (A' : ℝ) :
           {p : ℕ → Fin d × Bool |
             A' ≤ (Parking.graphNorm (Parking.walkPath (0 : Site d) p j) : ℝ)} := by
     ext p
-    simp only [Set.mem_setOf_eq, Set.mem_iUnion, Finset.mem_range, Nat.lt_succ_iff, exists_prop]
+    simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Finset.mem_range, Nat.lt_succ_iff, exists_prop]
   rw [heq]
   refine Finset.measurableSet_biUnion _ (fun j _ => ?_)
   exact measurableSet_le measurable_const
@@ -124,7 +124,7 @@ theorem measureReal_sup_walkPath_excursion_le (hd : 1 ≤ d) (x : Site d) (n m :
       ≤ (Parking.graphNorm (Parking.walkPath x p (n + j) - Parking.walkPath x p n) : ℝ)}
       = f ⁻¹' S := by
     ext p
-    simp only [hS, hf, Set.mem_setOf_eq, Set.mem_preimage]
+    simp only [hS, hf, Set.mem_ofPred_eq, Set.mem_preimage]
     constructor
     · rintro ⟨j, hjm, hj⟩
       exact ⟨j, hjm, (walkPath_excursion_eq x p n j) ▸ hj⟩

@@ -333,7 +333,7 @@ theorem exists_finite_net {α : Type*} [PseudoMetricSpace α] {K : Set α} (hK :
   · have hmem : ((s.equivFin.symm j : α)) ∈ s := (s.equivFin.symm j).2
     exact htK (htfin.mem_toFinset.mp hmem)
   · have hx' := htcov hx
-    simp only [Set.mem_iUnion, Set.mem_setOf_eq, exists_prop] at hx'
+    simp only [Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop] at hx'
     obtain ⟨y, hy, hxy⟩ := hx'
     have hys : y ∈ s := htfin.mem_toFinset.mpr hy
     refine ⟨s.equivFin ⟨y, hys⟩, ?_⟩
@@ -404,7 +404,7 @@ theorem eventually_ball_barOdometer_pos (hd : 1 ≤ d) (ν : Measure ℤ)
     refine measureReal_le_integral Q _
       (integrable_netTest Q hη (fun j ω => Uc ω 1 (pts j)) (fun j => hUm 1 (pts j)))
       (fun ω => netTest_nonneg k a (a / 4) hη _) _ ?_ (fun ω hω => ?_)
-    · simp only [Set.setOf_forall]
+    · simp only [Set.ofPred_forall]
       exact MeasurableSet.iInter fun j => measurableSet_le measurable_const (hUm 1 (pts j))
     · exact le_of_eq (netTest_eq_one hη hω).symm
   have hdisc : ∀ᶠ R : ℝ in atTop, 1 - 2 * ε ≤
@@ -419,7 +419,7 @@ theorem eventually_ball_barOdometer_pos (hd : 1 ≤ d) (ν : Measure ℤ)
   filter_upwards [hdisc, hbad2, eventually_ge_atTop R₀, eventually_ge_atTop (0 : ℝ)] with
     R hRint hRc hRR₀ hR0
   have hEmeas : MeasurableSet {w : Data d | ∀ j, a - a / 4 < barDivisible w R 1 (pts j)} := by
-    simp only [Set.setOf_forall]
+    simp only [Set.ofPred_forall]
     exact MeasurableSet.iInter fun j => measurableSet_lt measurable_const
       (measurable_barDivisible R 1 (pts j))
   have hEbound : 1 - 2 * ε ≤

@@ -24,7 +24,7 @@ theorem exists_discrepancy_moment {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
       Integrable (fun ω => |(U ω n 0 : ℝ) - uOf ω n 0| ^ rHigh n) (law d ν) ∧
       rNorm (law d ν) (rHigh n) (fun ω => (U ω n 0 : ℝ) - uOf ω n 0) ≤ C * discrepancyRate d n := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   obtain ⟨K, hK, hbound⟩ := exists_diff_rHigh_low hd hd3 hGrowth hBern hConc hGN ν hν

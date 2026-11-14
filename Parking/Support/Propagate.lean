@@ -128,25 +128,25 @@ theorem Ulimit_top_of_exists {ω : Data d}
         rw [latDist, latDist]
         refine Finset.sum_lt_sum (fun j _ => ?_) ⟨i, Finset.mem_univ i, ?_⟩
         · rcases eq_or_ne j i with hj | hj
-          · rw [hj, hcoord i, if_pos rfl]
+          · rw [hj, hcoord i, ite_eq_left rfl]
             rcases lt_or_ge (y i) (x i) with h | h
-            · rw [hs, if_pos h]; omega
-            · rw [hs, if_neg (not_lt.mpr h)]; omega
-          · rw [hcoord j, if_neg hj]
-        · rw [hcoord i, if_pos rfl]
+            · rw [hs, ite_eq_left h]; omega
+            · rw [hs, ite_eq_right (not_lt.mpr h)]; omega
+          · rw [hcoord j, ite_eq_right hj]
+        · rw [hcoord i, ite_eq_left rfl]
           rcases lt_or_ge (y i) (x i) with h | h
-          · rw [hs, if_pos h]; omega
-          · rw [hs, if_neg (not_lt.mpr h)]; omega
+          · rw [hs, ite_eq_left h]; omega
+          · rw [hs, ite_eq_right (not_lt.mpr h)]; omega
       have hmemx : x ∈ LatticeProb.nbrFinset x' := by
         simp only [LatticeProb.nbrFinset, Finset.mem_biUnion, Finset.mem_univ, true_and,
           Finset.mem_insert, Finset.mem_singleton]
         refine ⟨i, ?_⟩
         rcases lt_or_ge (y i) (x i) with h | h
         · left
-          simp only [hx', hs, if_pos h, one_smul]
+          simp only [hx', hs, ite_eq_left h, one_smul]
           abel
         · right
-          simp only [hx', hs, if_neg (not_lt.mpr h)]
+          simp only [hx', hs, ite_eq_right (not_lt.mpr h)]
           funext j
           simp [LatticeProb.unit, Pi.single_apply]
       have hx'top : Parking.Ulimit ω x' = ⊤ := by

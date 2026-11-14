@@ -60,7 +60,7 @@ theorem mgf_bounded_differences (μ : Measure X) [IsProbabilityMeasure μ]
     ∫ ω, Real.exp (t * (f ω - ∫ w, f w ∂(Measure.pi (fun _ : Fin n => μ))))
       ∂(Measure.pi (fun _ : Fin n => μ)) ≤ Real.exp ((∑ i, c i ^ 2) * t ^ 2 / 2) := by
   classical
-  haveI : Nonempty X := nonempty_of_isProbabilityMeasure μ
+  have : Nonempty X := nonempty_of_isProbabilityMeasure μ
   induction n with
   | zero =>
       have he : f = fun _ => f (fun i => Fin.elim0 i) :=

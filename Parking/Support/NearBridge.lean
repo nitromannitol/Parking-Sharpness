@@ -45,7 +45,7 @@ theorem integral_uOf_rpow_le_xi (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
     {δ : ℝ} (hδ : 0 ≤ δ) {r : ℝ} (hr : 1 ≤ r) (n : ℕ) :
     ∫ ω, |Parking.uOf ω n 0| ^ r ∂(Parking.law d ν)
       ≤ ∫ η, |u (Parking.xi δ η) n 0| ^ r ∂(LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hr0 : (0 : ℝ) < r := lt_of_lt_of_le one_pos hr
   have hG : Measurable (fun ζ : Site d → ℝ => |u ζ n 0| ^ r) :=
@@ -65,7 +65,7 @@ theorem integral_uOf_rpow_le_xi (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
   have hInt : ∀ e : ℝ, Integrable (fun η : Site d → ℤ => |u (Parking.xi e η) n 0| ^ r)
       (LatticeProb.iidLaw d ν) := by
     intro e
-    haveI : IsProbabilityMeasure (shiftLaw e ν) := by
+    have : IsProbabilityMeasure (shiftLaw e ν) := by
       rw [shiftLaw]
       exact inferInstance
     have hexpe : Integrable (fun z : ℝ => Real.exp (θ * |z|)) (shiftLaw e ν) :=
@@ -101,7 +101,7 @@ theorem exists_near_uNorm (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGro
   obtain ⟨hδ₀, hθ, hprob, -, -, hexp, -⟩ := hfam
   obtain ⟨C, hC, hCle⟩ := exists_near_centered (d := d) hd hGrowth hConc hfam'
   refine ⟨C, hC, fun δ hδ m hm j => ?_⟩
-  haveI := hprob δ hδ
+  have := hprob δ hδ
   have hr2 : (2 : ℝ) ≤ (j : ℝ) + 2 := by
     have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
     linarith

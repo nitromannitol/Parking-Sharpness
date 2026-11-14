@@ -163,7 +163,7 @@ theorem integrableOn_mul_of_niceOnK {K : Set (Fin d → ℝ)} (hK : IsCompact K)
     IntegrableOn (fun x => g x * h x) K volume := by
   obtain ⟨hgm, M, hgb⟩ := hg
   obtain ⟨Mh, hMh0, hhb⟩ := exists_bound_h_on_K hK hh
-  haveI : IsFiniteMeasure (volume.restrict K) :=
+  have : IsFiniteMeasure (volume.restrict K) :=
     ⟨by rw [Measure.restrict_apply_univ]; exact hK.measure_lt_top⟩
   have hmeas : AEStronglyMeasurable (fun x => g x * h x) (volume.restrict K) :=
     (hgm.mul hh.measurable).aestronglyMeasurable
@@ -189,7 +189,7 @@ theorem abs_Phi0_sub_le {K : Set (Fin d → ℝ)} (hK : IsCompact K) (hKne : K.N
     {H G : (Fin d → ℝ) → ℝ} (hH : NiceOnK K H) (hG : NiceOnK K G) :
     |Phi0 K h F H - Phi0 K h F G| ≤
       (LF * Mh * volume.real K) * supDistOn K H G := by
-  haveI : IsFiniteMeasure (volume.restrict K) :=
+  have : IsFiniteMeasure (volume.restrict K) :=
     ⟨by rw [Measure.restrict_apply_univ]; exact hK.measure_lt_top⟩
   have hLF : 0 ≤ LF := by
     have h10 := hFlip 1 0

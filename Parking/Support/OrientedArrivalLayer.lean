@@ -97,7 +97,7 @@ theorem orientedLayerAverage_arrival_eq (η : Site d → ℤ) (σ : Site d × �
   · intro i _ hi
     have hne : y + unit i₀ ≠ y + unit i :=
       fun h => hi (unit_injective (add_left_cancel h : unit i₀ = unit i)).symm
-    rw [if_neg hne, mul_zero]
+    rw [ite_eq_right hne, mul_zero]
   · intro h
     exact absurd (Finset.mem_univ i₀) h
 

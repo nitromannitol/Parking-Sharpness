@@ -44,7 +44,7 @@ theorem high_mean_discrepancy_bounds (hd : 1 ≤ d) (hd5 : 5 ≤ d)
       c * Real.log n ≤ meanU (law d ν) n ∧ meanU (law d ν) n ≤ C * Real.log n ∧
       c * Real.log n ≤ ∫ ω, |(U ω n 0 : ℝ) - uOf ω n 0| ∂(law d ν) ∧
       (∫ ω, |(U ω n 0 : ℝ) - uOf ω n 0| ∂(law d ν)) ≤ C * Real.log n := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨c, C, hc, hC, hU⟩ := (meanU_growth hGrowth hBern hConc hGN d hd ν hν).2 (by omega)
   let f : ℕ → ℝ := fun n => ∫ ω, |(U ω n 0 : ℝ) - uOf ω n 0| ∂(law d ν)
   have hlog (n : ℕ) (hn : 2 ≤ n) : 0 < Real.log (n : ℝ) :=

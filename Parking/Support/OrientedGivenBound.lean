@@ -35,7 +35,7 @@ theorem orientedOdometer_ae_le_bound (hd : 1 ≤ d) (η : Site d → ℤ) (n : �
 theorem integrable_orientedOdometer_given (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     Integrable (fun σ : Site d × ℕ → Site d => (orientedOdometer η σ n x : ℝ))
       (orientedStackLaw d) := by
-  haveI := orientedStackLaw_isProbability hd
+  have := orientedStackLaw_isProbability hd
   have hm : Measurable fun σ : Site d × ℕ → Site d => (orientedOdometer η σ n x : ℝ) :=
     (measurable_from_countable' fun k : ℕ => (k : ℝ)).comp
       (measurable_orientedOdometer _ _ measurable_const measurable_id n x)

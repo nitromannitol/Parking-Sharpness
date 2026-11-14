@@ -28,9 +28,9 @@ theorem measure_isolated_le_good_add_activity (hd : 1 ≤ d) (ν : Measure ℤ)
     ((law d ν) {ω | IsolatedHole ω t (2 * K) 0}).toReal ≤
       ((law d ν) {ω | IsolatedHole ω t (2 * K) 0 ∧ (activeSites ω t K 0).card ≤ 1}).toReal +
         (1 / 2 : ℝ) * ∫ ω, (A ω t 0 : ℝ) ∂(law d ν) := by
-  haveI := stackRankLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) :=
+  have := stackRankLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (law d ν) :=
     inferInstanceAs (IsProbabilityMeasure ((iidLaw d ν).prod (stackRankLaw d)))
   let μ := law d ν
   let F := fun (ω : Data d) (y a : Site d) => (isolatedActiveMass ω t K y a : ℝ)
@@ -69,14 +69,14 @@ theorem measure_isolated_le_good_add_activity (hd : 1 ≤ d) (ν : Measure ℤ)
     rw [hOutω]
     by_cases hI : IsolatedHole ω t (2 * K) 0
     · by_cases hC : (activeSites ω t K 0).card ≤ 1
-      · simp only [I, G, hI, hC, and_self, if_true]
+      · simp only [I, G, hI, hC, and_self, ite_true]
         have hn : 0 ≤ ((activeSites ω t K 0).card : ℝ) := Nat.cast_nonneg _
         linarith
       · have h2 : (2 : ℝ) ≤ (activeSites ω t K 0).card :=
             by exact_mod_cast (show 2 ≤ (activeSites ω t K 0).card by omega)
-        simp only [I, G, hI, hC, and_false, if_true, if_false]
+        simp only [I, G, hI, hC, and_false, ite_true, ite_false]
         linarith
-    · simp only [I, G, hI, false_and, if_false, mul_zero, add_zero, le_refl]
+    · simp only [I, G, hI, false_and, ite_false, mul_zero, add_zero, le_refl]
   have h := integral_mono hiI (hiG.add (hiOut.const_mul (1 / 2 : ℝ))) hp
   change (∫ ω, I ω ∂μ) ≤ ∫ ω, G ω + (1 / 2 : ℝ) * ∑ a ∈ boxFinset 0 K, F ω 0 a ∂μ at h
   rw [integral_add hiG (hiOut.const_mul (1 / 2 : ℝ)), integral_const_mul] at h

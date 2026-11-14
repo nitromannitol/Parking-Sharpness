@@ -108,7 +108,7 @@ theorem lipschitzWith_u_extendField (hd : 1 ≤ d) (s : Finset (Site d)) (n : �
   apply abs_u_sub_le hd dist_nonneg
   intro y
   by_cases hy : y ∈ s
-  · simp only [extendField, dif_pos hy]
+  · simp only [extendField, dite_eq_left hy]
     exact dist_le_pi_dist η ξ ⟨y, hy⟩
   · simp [extendField, hy]
 

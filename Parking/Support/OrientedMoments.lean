@@ -38,7 +38,7 @@ theorem integrable_oriented_confBox_rpow (hd : 1 ≤ d) (ν : Measure ℤ) [IsPr
       (Finset.measurable_sum _ fun z _ =>
         (measurable_from_countable' Int.toNat).comp (measurable_pi_apply z))
   have hmap : (law d ν).map (Prod.fst : Data d → Site d → ℤ) = iidLaw d ν := by
-    haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+    have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
     exact dataLaw_map_fst hd _
   have hI : Integrable F (iidLaw d ν) := by
     rw [← hmap]

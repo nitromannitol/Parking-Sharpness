@@ -33,7 +33,7 @@ theorem exists_table_noise_moment_bound (hBernstein : External.Bernstein) :
   obtain ⟨C, hC, hBern⟩ := hBernstein
   refine ⟨C, hC, fun d hd η hη ρ T x r hr => ?_⟩
   have hd1 : 1 ≤ d := by omega
-  haveI := flatRoundNoiseLaw_isProbability hd1
+  have := flatRoundNoiseLaw_isProbability hd1
   let N := (2 * T + 1) ^ d
   let K := (roundEntrySet x T N).card
   let e := roundEnumeration x T N

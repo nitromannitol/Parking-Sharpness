@@ -39,13 +39,13 @@ def permLabelEquiv (x₀ : Site d) (σ : Equiv.Perm ℕ) : Equiv.Perm (Label d) 
   left_inv := by
     rintro ⟨x, i⟩
     by_cases h : x = x₀
-    · subst h; simp only [permLabel, Equiv.symm_apply_apply, if_pos]
-    · simp only [permLabel, if_neg h]
+    · subst h; simp only [permLabel, Equiv.symm_apply_apply, ite_eq_left]
+    · simp only [permLabel, ite_eq_right h]
   right_inv := by
     rintro ⟨x, i⟩
     by_cases h : x = x₀
-    · subst h; simp only [permLabel, Equiv.apply_symm_apply, if_pos]
-    · simp only [permLabel, if_neg h]
+    · subst h; simp only [permLabel, Equiv.apply_symm_apply, ite_eq_left]
+    · simp only [permLabel, ite_eq_right h]
 
 /-- `permLabelEquiv` applies as `permLabel`. -/
 @[simp] theorem permLabelEquiv_apply (x₀ : Site d) (σ : Equiv.Perm ℕ) (p : Label d) :
@@ -140,10 +140,10 @@ theorem mem_candidates_perm {η : Site d → ℤ}
   have hfst : (permLabel x₀ σ p).1 = p.1 := rfl
   rw [hfst]
   by_cases h : p.1 = x₀
-  · have hsnd : (permLabel x₀ σ p).2 = σ p.2 := by simp only [permLabel, if_pos h]
+  · have hsnd : (permLabel x₀ σ p).2 = σ p.2 := by simp only [permLabel, ite_eq_left h]
     rw [hsnd, h]
     exact and_congr_right fun _ => perm_lt_iff hσ p.2
-  · have hsnd : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, if_neg h]
+  · have hsnd : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, ite_eq_right h]
     rw [hsnd]
 
 /-- The relabelled driver again has pairwise distinct uniform variables. -/
@@ -270,11 +270,11 @@ theorem pState_perm (hD : RelabelDriver x₀ σ D' D)
     refine ⟨fun p => ?_, fun p => ?_, fun x => ?_, fun _ => rfl⟩
     · simp only [pState, LatticeProb.initial, hη]
       by_cases h : p.1 = x₀
-      · have h2 : (permLabel x₀ σ p).2 = σ p.2 := by simp only [permLabel, if_pos h]
+      · have h2 : (permLabel x₀ σ p).2 = σ p.2 := by simp only [permLabel, ite_eq_left h]
         have h1 : (permLabel x₀ σ p).1 = p.1 := rfl
         rw [h1, h2, h]
         exact decide_eq_decide.mpr (perm_lt_iff hσ p.2).symm
-      · have h2 : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, if_neg h]
+      · have h2 : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, ite_eq_right h]
         have h1 : (permLabel x₀ σ p).1 = p.1 := rfl
         rw [h1, h2]
     · rfl

@@ -103,7 +103,7 @@ theorem measurableSet_U_ge_expFiltration (k : ℕ) (y : Site d) (j : ℕ) :
   | zero =>
       have hempty : {ω : Data d | j + 1 ≤ U ω 0 y} = ∅ := by
         ext ω
-        simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+        simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
         have : U ω 0 y = 0 := rfl
         omega
       rw [hempty]
@@ -112,7 +112,7 @@ theorem measurableSet_U_ge_expFiltration (k : ℕ) (y : Site d) (j : ℕ) :
       have hunion : {ω : Data d | j + 1 ≤ U ω (k + 1) y}
           = ⋃ x : Site d, {ω : Data d | j + 1 ≤ U ω (k + 1) y ∧ ω.2.1 (y, j) = x} := by
         ext ω
-        simp only [Set.mem_setOf_eq, Set.mem_iUnion]
+        simp only [Set.mem_ofPred_eq, Set.mem_iUnion]
         constructor
         · intro h
           exact ⟨ω.2.1 (y, j), h, rfl⟩
@@ -131,7 +131,7 @@ theorem measurable_U_expFiltration (k : ℕ) (y : Site d) :
   have hsplit : (fun ω : Data d => U ω k y) ⁻¹' {v}
       = {ω : Data d | v ≤ U ω k y} \ {ω : Data d | v + 1 ≤ U ω k y} := by
     ext ω
-    simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_sdiff, Set.mem_setOf_eq]
+    simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_sdiff, Set.mem_ofPred_eq]
     omega
   rw [hsplit]
   refine @MeasurableSet.diff _ (expFiltration d k) _ _ ?_ (measurableSet_U_ge_expFiltration k y v)
@@ -150,7 +150,7 @@ theorem measurableSet_U_le_expFiltration (k : ℕ) (y : Site d) (j : ℕ) :
     MeasurableSet[expFiltration d k] {ω : Data d | U ω k y ≤ j} := by
   have hcompl : {ω : Data d | U ω k y ≤ j} = {ω : Data d | j + 1 ≤ U ω k y}ᶜ := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_compl_iff]
+    simp only [Set.mem_ofPred_eq, Set.mem_compl_iff]
     omega
   rw [hcompl]
   exact @MeasurableSet.compl _ _ (expFiltration d k) (measurableSet_U_ge_expFiltration k y j)
@@ -179,7 +179,7 @@ theorem measurable_arrivals_expFiltration (k : ℕ) (y x : Site d) :
                 ω.2.1 (y, j) = x}ᶜ) := by
       ext ω
       simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_iUnion, Set.mem_inter_iff,
-        Set.mem_iInter, Set.mem_setOf_eq, Set.mem_compl_iff, Finset.mem_filter,
+        Set.mem_iInter, Set.mem_ofPred_eq, Set.mem_compl_iff, Finset.mem_filter,
         Finset.mem_powerset, exists_prop]
       constructor
       · intro h
@@ -214,7 +214,7 @@ theorem measurable_arrivals_expFiltration (k : ℕ) (y x : Site d) :
       | zero =>
           have hempty : {ω : Data d | j + 1 ≤ U ω 0 y ∧ ω.2.1 (y, j) = x} = ∅ := by
             ext ω
-            simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+            simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
             have : U ω 0 y = 0 := rfl
             omega
           rw [hempty]
@@ -227,7 +227,7 @@ theorem measurable_arrivals_expFiltration (k : ℕ) (y x : Site d) :
       | zero =>
           have hempty : {ω : Data d | j + 1 ≤ U ω 0 y ∧ ω.2.1 (y, j) = x} = ∅ := by
             ext ω
-            simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+            simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
             have : U ω 0 y = 0 := rfl
             omega
           rw [hempty]
@@ -271,7 +271,7 @@ transferred from `ae_stack_nbr` along the identification of `law d ν`'s stack m
 with `LatticeProb.iidLaw d ν`. -/
 theorem ae_stack_nbr_law (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     ∀ᵐ ω ∂(law d ν), ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1 := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw
     infer_instance
   exact ae_stack_nbr hd (LatticeProb.iidLaw d ν)

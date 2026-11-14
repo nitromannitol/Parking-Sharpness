@@ -58,7 +58,7 @@ family forward coordinate by coordinate pushes the one-site law forward. -/
 theorem law_map_confReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     (law d ν).map (fun ω : Data d => confReal ω)
       = LatticeProb.iidLaw d (ν.map (fun k : ℤ => (k : ℝ))) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
   have hcomp : (fun ω : Data d => confReal ω)
       = (fun η : Site d → ℤ => fun y => ((η y : ℤ) : ℝ)) ∘ (Prod.fst : Data d → (Site d → ℤ)) :=
@@ -103,7 +103,7 @@ theorem exists_uConc (hd : 1 ≤ d) (hConc : Parking.External.UConcentration)
       (∫ ω, |uOf ω n 0 - meanu (law d ν) n| ^ r ∂(law d ν)) ^ (1 / r)
         ≤ C * (Real.sqrt r * l2Norm (green d n) + r * greenMax d n) := by
   set ν' : Measure ℝ := ν.map (fun k : ℤ => (k : ℝ)) with hν'
-  haveI : IsProbabilityMeasure ν' := by
+  have : IsProbabilityMeasure ν' := by
     rw [hν']
     exact inferInstance
   have hexp' : Integrable (fun z : ℝ => Real.exp (θ * |z|)) ν' := by
@@ -155,13 +155,13 @@ theorem exists_uNorm_le (hd : 1 ≤ d) (hConc : Parking.External.UConcentration)
   refine ⟨C, hC, fun n hn r hr2 => ?_⟩
   have hr1 : (1 : ℝ) ≤ r := by linarith
   have hr0 : (0 : ℝ) < r := by linarith
-  haveI := stackRankLaw_isProbability (d := d) hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have := stackRankLaw_isProbability (d := d) hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
-  haveI hlawP : IsProbabilityMeasure (law d ν) :=
+  have hlawP : IsProbabilityMeasure (law d ν) :=
     inferInstanceAs (IsProbabilityMeasure ((LatticeProb.iidLaw d ν).prod (stackRankLaw d)))
   set μ : Measure (Data d) := law d ν with hμ
-  haveI : IsProbabilityMeasure μ := hlawP
+  have : IsProbabilityMeasure μ := hlawP
   set M : ℝ := meanu μ n with hM
   have hM0 : 0 ≤ M := by
     rw [hM, meanu]

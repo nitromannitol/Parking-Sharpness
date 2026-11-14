@@ -31,7 +31,7 @@ def pathTrunc (n : ℕ) (a : Fin (n + 1) → Site d) : ℕ → Site d :=
 within the truncated range. -/
 theorem pathTrunc_eq (n : ℕ) (X : ℕ → Site d) {j : ℕ} (hj : j ≤ n) :
     pathTrunc n (fun i : Fin (n + 1) => X i) j = X j := by
-  rw [pathTrunc, dif_pos (by omega : j < n + 1)]
+  rw [pathTrunc, dite_eq_left (by omega : j < n + 1)]
 
 /-- **A bounded family of stopping times, measurable in the configuration, is jointly
 measurable.**  The stopping time reads only the first `n+1` positions of the path, and
@@ -105,9 +105,9 @@ theorem measurable_rewardSum {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ
       = fun p => ∑ i ∈ Finset.range (n + 1),
           (if σ p.1 p.2 = i then ∑ j ∈ Finset.range i, Parking.xi δ p.1 (p.2 j) else 0) := by
     funext p
-    rw [Finset.sum_eq_single (σ p.1 p.2) (fun i _ hi => if_neg fun h => hi h.symm)
+    rw [Finset.sum_eq_single (σ p.1 p.2) (fun i _ hi => ite_eq_right fun h => hi h.symm)
       (fun hmem => absurd (Finset.mem_range.mpr (Nat.lt_succ_of_le (hσn p.1 p.2))) hmem)]
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   rw [heq]
   refine Finset.measurable_sum _ fun i _ => ?_
   refine Measurable.ite (hσm (measurableSet_singleton i)) ?_ measurable_const
@@ -135,7 +135,7 @@ since evaluation at `z` pushes `iidLaw d ν` forward to `ν` measure-preservingl
 theorem integrable_eval_iid {α : Type*} [MeasurableSpace α] (ν : Measure α)
     [IsProbabilityMeasure ν] {f : α → ℝ} (hf : Integrable f ν) (z : Site d) :
     Integrable (fun η : Site d → α => f (η z)) (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   exact (measurePreserving_eval_infinitePi (fun _ : Site d => ν) z).integrable_comp_of_integrable hf
 

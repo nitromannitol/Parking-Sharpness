@@ -28,7 +28,7 @@ variable {d : ℕ}
 theorem integrable_rangeExpFun (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a) (t : ℕ) :
     Integrable (fun p : ℕ → Fin d × Bool =>
       Real.exp (-(a * (rangeCard (0 : Site d) p t : ℝ)))) (walkLaw d) := by
-  haveI : IsProbabilityMeasure (walkLaw d) := walkLaw_isProbability (d := d) hd
+  have : IsProbabilityMeasure (walkLaw d) := walkLaw_isProbability (d := d) hd
   have hmeas : Measurable fun p : ℕ → Fin d × Bool =>
       Real.exp (-(a * ((rangeCard (0 : Site d) p t : ℝ)))) :=
     (Measurable.of_discrete (β := ℝ) (f := fun n : ℕ => Real.exp (-(a * (n : ℝ))))).comp
@@ -42,7 +42,7 @@ theorem integrable_rangeExpFun (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a) (t : ℕ)
 /-- **`E_0 e^{-a|R_t|}` is positive**, because the range is at most `t+1`. -/
 theorem rangeExp_pos (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a) (t : ℕ) :
     0 < rangeExp d a t := by
-  haveI : IsProbabilityMeasure (walkLaw d) := walkLaw_isProbability (d := d) hd
+  have : IsProbabilityMeasure (walkLaw d) := walkLaw_isProbability (d := d) hd
   have hlb : ∀ p : ℕ → Fin d × Bool,
       Real.exp (-(a * ((t : ℝ) + 1))) ≤ Real.exp (-(a * (rangeCard (0 : Site d) p t : ℝ))) := by
     intro p
@@ -74,7 +74,7 @@ theorem nonnegProb_pos {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hpos : 0 < ν (Set.Ioi (0 : ℤ))) : 0 < (ν {j : ℤ | 0 ≤ j}).toReal := by
   have hsub : Set.Ioi (0 : ℤ) ⊆ {j : ℤ | 0 ≤ j} := by
     intro x hx
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     exact le_of_lt hx
   have hle : ν (Set.Ioi (0 : ℤ)) ≤ ν {j : ℤ | 0 ≤ j} := measure_mono hsub
   exact ENNReal.toReal_pos (ne_of_gt (lt_of_lt_of_le hpos hle)) (measure_ne_top ν _)
@@ -96,8 +96,8 @@ theorem nonnegProb_lt_one {ν : Measure ℤ} [IsProbabilityMeasure ν]
   have hae : (0 : ℤ → ℝ) ≤ᵐ[ν] fun k : ℤ => (k : ℝ) := by
     rw [Filter.EventuallyLE, ae_iff]
     refine measure_mono_null (fun k hk => ?_) hcompl
-    simp only [Pi.zero_apply, Set.mem_setOf_eq, not_le] at hk
-    simp only [Set.mem_compl_iff, Set.mem_setOf_eq, not_le]
+    simp only [Pi.zero_apply, Set.mem_ofPred_eq, not_le] at hk
+    simp only [Set.mem_compl_iff, Set.mem_ofPred_eq, not_le]
     exact_mod_cast hk
   have hge : 0 ≤ ∫ k, (k : ℝ) ∂ν := integral_nonneg_of_ae hae
   linarith

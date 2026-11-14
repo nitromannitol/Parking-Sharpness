@@ -35,8 +35,8 @@ theorem exists_rNorm_target (hd : 1 ≤ d) (hBern : Parking.External.Bernstein)
       Integrable (fun ω => ((U ω n 0 : ℕ) : ℝ) ^ r) (law d ν) ∧
       (∫ ω, ((U ω n 0 : ℕ) : ℝ) ^ r ∂(law d ν)) ^ (1 / r)
         ≤ C * (meanu (law d ν) n + Real.log n) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨C, hC, hCle⟩ := exists_critical_moment hd hBern hConc ν hν
   have hm0 : ∀ n : ℕ, (0 : ℝ) ≤ meanu (law d ν) n :=
     fun n => integral_nonneg fun ω => uOf_nonneg ω n 0
@@ -105,8 +105,8 @@ theorem exists_second_moment (hd : 1 ≤ d) (hBern : Parking.External.Bernstein)
       Integrable (fun ω => ((U ω n 0 : ℕ) : ℝ) ^ 2) (law d ν) ∧
       ∫ ω, ((U ω n 0 : ℕ) : ℝ) ^ 2 ∂(law d ν)
         ≤ C * (meanu (law d ν) n + Real.log n) ^ 2 := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨C, hC, hCle⟩ := exists_rNorm_target hd hBern hConc hGrowth hGN ν hν
   obtain ⟨C₀, hC₀, hcrit⟩ := exists_critical_moment hd hBern hConc ν hν
   have hpow : ∀ (n : ℕ) (ω : Data d),

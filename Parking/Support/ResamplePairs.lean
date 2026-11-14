@@ -67,7 +67,7 @@ site to `resampleOne ν p`. -/
 theorem integral_dPos (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1)
     (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν)) (x : Site d) :
     ∫ c, dPos c x ∂(resampleLaw d ν p) = p.toReal * gammaOf ν / 2 := by
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   have hmap : (resampleLaw d ν p).map (fun c : Site d → ℤ × ℤ => c x) = resampleOne ν p :=
     resampleLaw_map_eval ν hp x
   have hpm : Measurable (fun q : ℤ × ℤ => max ((q.2 : ℝ) - (q.1 : ℝ)) 0) := by fun_prop
@@ -84,7 +84,7 @@ by the swap symmetry `resampleOne_map_swap` reducing it to `integral_posPart_res
 theorem integral_dNeg (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1)
     (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν)) (x : Site d) :
     ∫ c, dNeg c x ∂(resampleLaw d ν p) = p.toReal * gammaOf ν / 2 := by
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   have hmap : (resampleLaw d ν p).map (fun c : Site d → ℤ × ℤ => c x) = resampleOne ν p :=
     resampleLaw_map_eval ν hp x
   have hpm : Measurable (fun q : ℤ × ℤ => max ((q.1 : ℝ) - (q.2 : ℝ)) 0) := by fun_prop
@@ -111,7 +111,7 @@ absolute change. -/
 theorem integral_labels (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1)
     (hint : Integrable (fun q : ℤ × ℤ => |(q.2 : ℝ) - (q.1 : ℝ)|) (ν.prod ν)) (x : Site d) :
     ∫ c, (dPos c x + dNeg c x) ∂(resampleLaw d ν p) = p.toReal * gammaOf ν := by
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   have hmap : (resampleLaw d ν p).map (fun c : Site d → ℤ × ℤ => c x) = resampleOne ν p :=
     resampleLaw_map_eval ν hp x
   have hsum : ∀ c : Site d → ℤ × ℤ,
@@ -164,7 +164,7 @@ theorem integral_dNeg_mul_dPos (ν : Measure ℤ) [IsProbabilityMeasure ν] {p :
     ∫ c, dNeg c z * dPos c 0 ∂(resampleLaw d ν p)
       = (p.toReal * gammaOf ν / 2) * (p.toReal * gammaOf ν / 2) := by
   classical
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   have hinv : ∀ c : Site d → ℤ × ℤ,
       dNeg (Function.update c (0 : Site d) ((0 : ℤ), (0 : ℤ))) z = dNeg c z := by
     intro c
@@ -190,7 +190,7 @@ theorem integral_dPos_mul_dNeg (ν : Measure ℤ) [IsProbabilityMeasure ν] {p :
     ∫ c, dPos c z * dNeg c 0 ∂(resampleLaw d ν p)
       = (p.toReal * gammaOf ν / 2) * (p.toReal * gammaOf ν / 2) := by
   classical
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   have hinv : ∀ c : Site d → ℤ × ℤ,
       dPos (Function.update c (0 : Site d) ((0 : ℤ), (0 : ℤ))) z = dPos c z := by
     intro c

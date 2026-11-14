@@ -50,7 +50,7 @@ theorem roundSigned_particle_bound (A H : Site d → ℕ) (N : ℕ) (hA : ∀ y,
 theorem roundMeanU_bound (hd : 1 ≤ d) (A H : Site d → ℕ) (N : ℕ) (hA : ∀ y, A y ≤ N)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) (τ : RoundSlot d → Fin d × Bool) :
     |matchedMeanU (roundSigned A H τ) ρ T x| ≤ ((T * ((2 * T + 1) ^ d * (2 * d * N)) : ℕ) : ℝ) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   rw [abs_of_nonneg (matchedMeanU_nonneg _ _ _ _)]
   have h := integral_mono (integrable_matchedOdometer hd (roundSigned A H τ) ρ T x)
     (integrable_const ((T * ((2 * T + 1) ^ d * (2 * d * N)) : ℕ) : ℝ))
@@ -73,7 +73,7 @@ theorem measurable_countArrivals {Ω : Type*} [MeasurableSpace Ω]
       have hAv := (measurable_pi_apply v).comp hA
       have hq := (measurable_pi_apply (Sum.inl (v, j))).comp hτ
       have hd := (measurable_of_countable (fun b : Fin d × Bool => v + stepVec b)).comp hq
-      exact measurableSet_setOf.mp ((measurableSet_lt measurable_const hAv).inter
+      exact measurableSet_setOfPred.mp ((measurableSet_lt measurable_const hAv).inter
         (measurableSet_eq_fun hd measurable_const))
 
 /-- The signed current-round field is measurable, allowing the counts to vary measurably too. -/

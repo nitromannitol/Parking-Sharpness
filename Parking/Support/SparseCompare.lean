@@ -54,9 +54,9 @@ theorem sparse_convex_integral_le {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1 / 2
     (f : ℝ → ℝ) {K : ℝ≥0} (hc : ConvexOn ℝ Set.univ f) (hf : LipschitzWith K f) :
     ∫ x, f x ∂(realLaw (threePointLaw (ε / 2))) ≤
       ∫ x, f x ∂(scaledLaplaceLaw (Real.log (Real.exp 1 / ε))⁻¹) := by
-  haveI : IsProbabilityMeasure (ProbabilityTheory.expMeasure 1) :=
+  have : IsProbabilityMeasure (ProbabilityTheory.expMeasure 1) :=
     isProbabilityMeasure_expMeasure (by norm_num)
-  haveI : IsProbabilityMeasure (threePointLaw (ε / 2)) :=
+  have : IsProbabilityMeasure (threePointLaw (ε / 2)) :=
     threePointLaw_isProbability (by positivity) (by linarith)
   have ht : 0 ≤ -Real.log ε := neg_nonneg.mpr (Real.log_nonpos hε.le (by linarith))
   have hb : (Real.log (Real.exp 1 / ε))⁻¹ = (-Real.log ε + 1)⁻¹ := by
@@ -110,7 +110,7 @@ theorem meanu_sparse_le_laplace (d : ℕ) (hd : 1 ≤ d) {ε : ℝ}
     (hε : 0 < ε) (hε1 : ε ≤ 1 / 2) (n : ℕ) :
     meanu (law d (threePointLaw (ε / 2))) n ≤
       (Real.log (Real.exp 1 / ε))⁻¹ * Parking.External.meanSandpileReal d laplaceLaw n := by
-  haveI : IsProbabilityMeasure (threePointLaw (ε / 2)) :=
+  have : IsProbabilityMeasure (threePointLaw (ε / 2)) :=
     threePointLaw_isProbability (by positivity) (by linarith)
   have hi : Integrable (id : ℝ → ℝ) (realLaw (threePointLaw (ε / 2))) := by
     rw [realLaw_integrable_iff _ measurable_id]

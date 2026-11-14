@@ -28,8 +28,8 @@ variable {d : ℕ}
 simple random walk on position paths. -/
 theorem map_walkLaw_walkPath (hd : 1 ≤ d) (x : Site d) :
     (Parking.walkLaw d).map (Parking.walkPath x) = LatticeProb.siteWalkLaw d x := by
-  haveI : NeZero d := ⟨by omega⟩
-  haveI := Parking.stepLaw_isProbability hd
+  have : NeZero d := ⟨by omega⟩
+  have := Parking.stepLaw_isProbability hd
   let M : (ℕ → Fin d × Bool) → ℕ → Site d := fun p n => Parking.stepVec (p n)
   have hM : Measurable M := Measurable.of_eval fun n =>
     (measurable_of_countable Parking.stepVec).comp (measurable_pi_apply n)
@@ -53,7 +53,7 @@ theorem rangeExp_eq (hd : 1 ≤ d) (a : ℝ) (t : ℕ) :
     rangeExp d a t
       = ∫ X, Real.exp (-(a * (LatticeProb.rangeCard X t : ℝ)))
           ∂(LatticeProb.siteWalkLaw d 0) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hwm : Measurable (Parking.walkPath (0 : Site d)) :=
     Measurable.of_eval fun j => Parking.measurable_walkPath 0 j
   have hfm : Measurable fun X : ℕ → Site d =>
@@ -106,7 +106,7 @@ theorem rangeExp_le_add (hd : 1 ≤ d) {a : ℝ} (ha : 0 < a) (m t : ℕ) :
     rangeExp d a t
       ≤ (LatticeProb.siteWalkLaw d 0).real
           {X : ℕ → Site d | LatticeProb.rangeCard X t < m} + Real.exp (-(a * (m : ℝ))) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   rw [rangeExp_eq hd]
   set S : Set (ℕ → Site d) := {X : ℕ → Site d | LatticeProb.rangeCard X t < m} with hS
   have hSm : MeasurableSet S := measurableSet_rangeCard_lt t m
@@ -128,7 +128,7 @@ theorem rangeExp_le_add (hd : 1 ≤ d) {a : ℝ} (ha : 0 < a) (m t : ℕ) :
       linarith
     · rw [Set.indicator_of_notMem hX]
       have hge : (m : ℝ) ≤ (LatticeProb.rangeCard X t : ℝ) := by
-        simp only [hS, Set.mem_setOf_eq, not_lt] at hX
+        simp only [hS, Set.mem_ofPred_eq, not_lt] at hX
         exact_mod_cast hX
       have h1 : Real.exp (-(a * (LatticeProb.rangeCard X t : ℝ)))
           ≤ Real.exp (-(a * (m : ℝ))) := Real.exp_le_exp.mpr (by nlinarith)
@@ -270,7 +270,7 @@ theorem exists_rangeExp_bound_high (hd : 3 ≤ d) : ∃ c C : ℝ, 0 < c ∧ 0 <
   have hgs : greenScale d n = 1 := by
     have h1 : d ≠ 1 := by omega
     have h2 : d ≠ 2 := by omega
-    simp only [greenScale, if_neg h1, if_neg h2]
+    simp only [greenScale, ite_eq_right h1, ite_eq_right h2]
   have hsqrt : Real.sqrt (a * (t : ℝ)) = (t : ℝ) / s :=
     (div_sqrt_div_self ha (by linarith)).symm
   have hsqrt2 : a * s = Real.sqrt (a * (t : ℝ)) := mul_sqrt_div_self ha (by linarith)
@@ -348,7 +348,7 @@ theorem exists_rangeExp_bound_one (hd : d = 1) : ∃ c C : ℝ, 0 < c ∧ 0 < C 
   have hupos : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu1
   have hnpos : (0 : ℝ) < (n : ℝ) := lt_of_lt_of_le zero_lt_one hn1R
   have hgs : greenScale d n = Real.sqrt ((n : ℝ) + 1) := by
-    simp only [greenScale, if_pos hd]
+    simp only [greenScale, ite_eq_left hd]
   have hrate : (0 : ℝ) ≤ a ^ ((2 : ℝ) / 3) * (t : ℝ) ^ ((1 : ℝ) / 3) := by positivity
   have hb := hbound a ha ha1 n t hn1
   have hterm1 : Real.exp (-(c₁ * (t : ℝ) / (n : ℝ)))
@@ -444,7 +444,7 @@ theorem exists_rangeExp_bound_two (hd : d = 2) : ∃ c C : ℝ, 0 < c ∧ 0 < C 
   have hnpos : (0 : ℝ) < (n : ℝ) := lt_of_lt_of_le zero_lt_one hn1R
   have hvpos : (0 : ℝ) < v := lt_of_lt_of_le zero_lt_one hv1
   have hgs : greenScale d n = Real.log ((n : ℝ) + 2) := by
-    simp only [greenScale, if_neg (by omega : d ≠ 1), if_pos hd]
+    simp only [greenScale, ite_eq_right (by omega : d ≠ 1), ite_eq_left hd]
   have hlogpos : (0 : ℝ) < Real.log ((n : ℝ) + 2) := Real.log_pos (by linarith)
   -- the horizon is at most `t log(t+2)`
   have hvt : v ≤ (t : ℝ) * L := by
@@ -640,8 +640,8 @@ theorem exists_resolvent_tail_high (hd : 3 ≤ d) :
     nlinarith [Real.exp_pos 1]
   have hLpos : (0 : ℝ) < L := by linarith
   have hTeq : resolventThreshold d C a = C * (a⁻¹ * L ^ 2) := by
-    simp only [resolventThreshold, if_neg (by omega : d ≠ 1),
-      if_neg (by omega : d ≠ 2), hLdef]
+    simp only [resolventThreshold, ite_eq_right (by omega : d ≠ 1),
+      ite_eq_right (by omega : d ≠ 2), hLdef]
   have hTpos : (0 : ℝ) < resolventThreshold d C a := by
     rw [hTeq]; positivity
   set A : ℝ := 1536 * C₀ * Real.exp (-(β * L)) / (c₀ ^ 4 * a ^ 2) with hAdef
@@ -650,7 +650,7 @@ theorem exists_resolvent_tail_high (hd : 3 ≤ d) :
       then rangeExp d a t else 0) ≤ A * (1 / ((t : ℝ) + 1) ^ 2) := by
     intro t
     by_cases hT : resolventThreshold d C a < (t : ℝ)
-    · rw [if_pos hT]
+    · rw [ite_eq_left hT]
       have ht1 : 1 ≤ t := by
         rcases Nat.eq_zero_or_pos t with rfl | hpos
         · exfalso
@@ -729,17 +729,17 @@ theorem exists_resolvent_tail_high (hd : 3 ≤ d) :
       have hfin := mul_le_mul_of_nonneg_left hfrac
         (by positivity : (0:ℝ) ≤ 1536 * C₀ * Real.exp (-(β * L)))
       linarith [hfin]
-    · rw [if_neg hT]
+    · rw [ite_eq_right hT]
       positivity
   have hmajsum : Summable (fun t : ℕ => A * (1 / ((t : ℝ) + 1) ^ 2)) := hsum1.mul_left A
   have hnn : ∀ t : ℕ, (0 : ℝ) ≤ (if resolventThreshold d C a < (t : ℝ)
       then rangeExp d a t else 0) := by
     intro t
     by_cases hT : resolventThreshold d C a < (t : ℝ)
-    · rw [if_pos hT]
+    · rw [ite_eq_left hT]
       rw [rangeExp]
       exact integral_nonneg fun p => (Real.exp_pos _).le
-    · rw [if_neg hT]
+    · rw [ite_eq_right hT]
   have hsummable : Summable (fun t : ℕ => if resolventThreshold d C a < (t : ℝ)
       then rangeExp d a t else 0) :=
     hmajsum.of_nonneg_of_le hnn hmaj
@@ -853,7 +853,7 @@ theorem exists_resolvent_tail_one (hd : d = 1) :
     nlinarith [Real.exp_pos 1]
   have hLpos : (0 : ℝ) < L := by linarith
   have hTeq : resolventThreshold d C a = C * (a ^ (-(2 : ℝ)) * L ^ 3) := by
-    simp only [resolventThreshold, if_pos hd, hLdef]
+    simp only [resolventThreshold, ite_eq_left hd, hLdef]
   have hTpos : (0 : ℝ) < resolventThreshold d C a := by
     rw [hTeq]
     have : (0:ℝ) < a ^ (-(2:ℝ)) := Real.rpow_pos_of_pos ha _
@@ -867,7 +867,7 @@ theorem exists_resolvent_tail_one (hd : d = 1) :
       then rangeExp d a t else 0) ≤ A * (1 / ((t : ℝ) + 1) ^ 2) := by
     intro t
     by_cases hT : resolventThreshold d C a < (t : ℝ)
-    · rw [if_pos hT]
+    · rw [ite_eq_left hT]
       have ht1 : 1 ≤ t := by
         rcases Nat.eq_zero_or_pos t with rfl | hpos
         · exfalso
@@ -956,16 +956,16 @@ theorem exists_resolvent_tail_one (hd : d = 1) :
       have hfin := mul_le_mul_of_nonneg_left hfrac
         (by positivity : (0:ℝ) ≤ 184320 * C₀ * Real.exp (-(β * L)))
       linarith [hfin]
-    · rw [if_neg hT]
+    · rw [ite_eq_right hT]
       positivity
   have hmajsum : Summable (fun t : ℕ => A * (1 / ((t : ℝ) + 1) ^ 2)) := hsum1.mul_left A
   have hnn : ∀ t : ℕ, (0 : ℝ) ≤ (if resolventThreshold d C a < (t : ℝ)
       then rangeExp d a t else 0) := by
     intro t
     by_cases hT : resolventThreshold d C a < (t : ℝ)
-    · rw [if_pos hT, rangeExp]
+    · rw [ite_eq_left hT, rangeExp]
       exact integral_nonneg fun p => (Real.exp_pos _).le
-    · rw [if_neg hT]
+    · rw [ite_eq_right hT]
   have hsummable : Summable (fun t : ℕ => if resolventThreshold d C a < (t : ℝ)
       then rangeExp d a t else 0) :=
     hmajsum.of_nonneg_of_le hnn hmaj
@@ -1110,7 +1110,7 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
     nlinarith [Real.exp_pos 1]
   have hLpos : (0 : ℝ) < L := by linarith
   have hTeq : resolventThreshold d C a = C * (a⁻¹ * L ^ 3) := by
-    simp only [resolventThreshold, if_neg (by omega : d ≠ 1), if_pos hd, hLdef]
+    simp only [resolventThreshold, ite_eq_right (by omega : d ≠ 1), ite_eq_left hd, hLdef]
   have hTpos : (0 : ℝ) < resolventThreshold d C a := by
     rw [hTeq]; positivity
   have haT : a * resolventThreshold d C a = C * L ^ 3 := by
@@ -1121,7 +1121,7 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
       then rangeExp d a t else 0) ≤ A * (1 / ((t : ℝ) + 1) ^ 2) := by
     intro t
     by_cases hT : resolventThreshold d C a < (t : ℝ)
-    · rw [if_pos hT]
+    · rw [ite_eq_left hT]
       have ht1 : 1 ≤ t := by
         rcases Nat.eq_zero_or_pos t with rfl | hpos
         · exfalso
@@ -1323,16 +1323,16 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
       have hfin := mul_le_mul_of_nonneg_left hfrac
         (by positivity : (0:ℝ) ≤ 10569646080 * C₀ * Real.exp (-(β * L)))
       linarith [hfin]
-    · rw [if_neg hT]
+    · rw [ite_eq_right hT]
       positivity
   have hmajsum : Summable (fun t : ℕ => A * (1 / ((t : ℝ) + 1) ^ 2)) := hsum1.mul_left A
   have hnn : ∀ t : ℕ, (0 : ℝ) ≤ (if resolventThreshold d C a < (t : ℝ)
       then rangeExp d a t else 0) := by
     intro t
     by_cases hT : resolventThreshold d C a < (t : ℝ)
-    · rw [if_pos hT, rangeExp]
+    · rw [ite_eq_left hT, rangeExp]
       exact integral_nonneg fun p => (Real.exp_pos _).le
-    · rw [if_neg hT]
+    · rw [ite_eq_right hT]
   have hsummable : Summable (fun t : ℕ => if resolventThreshold d C a < (t : ℝ)
       then rangeExp d a t else 0) :=
     hmajsum.of_nonneg_of_le hnn hmaj

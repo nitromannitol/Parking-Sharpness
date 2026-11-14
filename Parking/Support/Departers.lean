@@ -69,7 +69,7 @@ theorem infinite_departers {ω : Data d}
             LatticeProb.instructionIndex D (LatticeProb.state D t) t p) := by
       show LatticeProb.nextPos D (LatticeProb.state D t) t p = _
       unfold LatticeProb.nextPos
-      rw [if_pos hact]
+      rw [ite_eq_left hact]
     rw [hnext, hpos]
     intro hc
     have hin : D.stack (x, LatticeProb.instructionIndex D (LatticeProb.state D t) t p)

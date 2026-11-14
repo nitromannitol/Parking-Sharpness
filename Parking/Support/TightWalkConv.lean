@@ -121,8 +121,8 @@ theorem hWalk_of_quarterBrownian {ΩB : Type} [MeasurableSpace ΩB] (PB : Measur
     Tendsto (fun n : ℕ => ∫ p, F (fun i => orientedScaledSite n
         (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊)) ∂(walkLaw 2)) atTop
       (𝓝 (∫ β, F (fun i => B (Real.toNNReal (ts i)) β) ∂PB)) := by
-  haveI : IsProbabilityMeasure (walkLaw 2) := by
-    haveI := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by
+    have := stepLaw_isProbability (d := 2) (by norm_num)
     unfold walkLaw; infer_instance
   have hXm : ∀ n : ℕ, Measurable (fun p : ℕ → Fin 2 × Bool => fun i : Fin m =>
       orientedScaledSite n (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊)) :=

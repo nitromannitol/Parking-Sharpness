@@ -63,8 +63,8 @@ theorem Parking.card_discrepancyAtSign_zero (c : Site d → ℤ × ℤ) (ρ : La
     (fun _ => decide (0 < (c x).2 - (c x).1) = sgn)).card =
     if decide (0 < (c x).2 - (c x).1) = sgn then (Parking.discrepancyConf c x).toNat else 0
   by_cases h : decide (0 < (c x).2 - (c x).1) = sgn
-  · simp only [h, Finset.filter_true, Finset.card_range, if_true]
-  · simp only [h, Finset.filter_false, Finset.card_empty, if_false]
+  · simp only [h, Finset.filter_true, Finset.card_range, ite_true]
+  · simp only [h, Finset.filter_false, Finset.card_empty, ite_false]
 
 /-- At time `0` the positive-signed label count at `x` is `((c x).2 - (c x).1).toNat`, from
 `card_discrepancyAtSign_zero` and the definition of `discrepancyConf` as an absolute value. -/
@@ -75,8 +75,8 @@ theorem Parking.card_discrepancyPositive_zero (c : Site d → ℤ × ℤ) (ρ : 
   rw [Parking.card_discrepancyAtSign_zero]
   unfold Parking.discrepancySign Parking.discrepancyConf
   by_cases h : 0 < (c x).2 - (c x).1
-  · simp only [h, decide_true, if_true, abs_of_pos h]
-  · simp only [h, decide_false, Bool.false_eq_true, if_false]
+  · simp only [h, decide_true, ite_true, abs_of_pos h]
+  · simp only [h, decide_false, Bool.false_eq_true, ite_false]
     exact (Int.toNat_eq_zero.mpr (by omega : (c x).2 - (c x).1 ≤ 0)).symm
 
 /-- The negative-signed companion of `card_discrepancyPositive_zero`: at time `0` the
@@ -88,9 +88,9 @@ theorem Parking.card_discrepancyNegative_zero (c : Site d → ℤ × ℤ) (ρ : 
   rw [Parking.card_discrepancyAtSign_zero]
   unfold Parking.discrepancySign Parking.discrepancyConf
   by_cases h : 0 < (c x).2 - (c x).1
-  · simp only [h, decide_true, Bool.true_eq_false, if_false]
+  · simp only [h, decide_true, Bool.true_eq_false, ite_false]
     exact (Int.toNat_eq_zero.mpr (by omega : (c x).1 - (c x).2 ≤ 0)).symm
-  · simp only [h, decide_false, if_true]
+  · simp only [h, decide_false, ite_true]
     rw [abs_of_nonpos (by omega : (c x).2 - (c x).1 ≤ 0), neg_sub]
 
 /-- At every time, the label process has at most one sign at each site. -/
@@ -334,7 +334,7 @@ theorem Parking.discrepancySlot_surplus (hbal : Parking.DiscrepancyBalance c ρ 
   rw [hpos] at hr
   refine ⟨min (a₀ x) (a₁ x) + rankIn (Parking.discrepancyAt c S t x)
     (Parking.matchKey ρ 0) p, ?_, ?_⟩
-  · simp only [Parking.discrepancySlot, if_pos hm, hpos]
+  · simp only [Parking.discrepancySlot, ite_eq_left hm, hpos]
   · unfold Parking.discrepancyMoveCount at hr
     cases sgn <;> simp only [Bool.not_false, Bool.not_true] at hsur ⊢ <;> omega
 
@@ -367,7 +367,7 @@ theorem Parking.exists_discrepancyLabel_at_slot (hbal : Parking.DiscrepancyBalan
     rw [hpos, hr]
     exact ⟨hp, hk⟩
   refine ⟨p, hp, Parking.discrepancySign_of_surplus c ρ σ t hbal x sgn hsur hp, hm, ?_⟩
-  simp only [Parking.discrepancySlot, if_pos hm, hpos, hmin, hr]
+  simp only [Parking.discrepancySlot, ite_eq_left hm, hpos, hmin, hr]
   congr 2
   omega
 
@@ -388,7 +388,7 @@ theorem Parking.image_discrepancyIncoming_moving
     obtain ⟨j, he, hj, ho⟩ := Parking.discrepancySlot_surplus c ρ σ t hbal ((S).pos p) sgn
       hpAt hs hm
     have hd : (S).pos p + Parking.stepVec (σ t (Sum.inl ((S).pos p, j))) = x := by
-      simpa only [Parking.discrepancyNextPos, if_pos hm, he] using hn
+      simpa only [Parking.discrepancyNextPos, ite_eq_left hm, he] using hn
     rw [he, Finset.mem_sdiff, Parking.mem_arrivalSlots_iff, Parking.mem_arrivalSlots_iff]
     exact ⟨⟨hj, hd⟩, fun hh => (Nat.not_lt_of_ge ho) hh.1⟩
   · intro hq
@@ -407,7 +407,7 @@ theorem Parking.image_discrepancyIncoming_moving
     refine ⟨p, Finset.mem_filter.mpr ⟨?_, hm⟩, he⟩
     apply (Parking.mem_discrepancyIncoming_iff c ρ σ t x sgn p).mpr
     refine ⟨hp'.1, ?_, hs⟩
-    simpa only [Parking.discrepancyNextPos, if_pos hm, he, hp'.2] using hd
+    simpa only [Parking.discrepancyNextPos, ite_eq_left hm, he, hp'.2] using hd
 
 /-- Waiting labels remain at their current site. -/
 theorem Parking.discrepancyIncoming_waiting (x : Site d) (sgn : Bool) :

@@ -83,12 +83,12 @@ theorem Parking.nearest_of_positive_test_events {d : ℕ} (hd : 1 ≤ d) (ν : M
       (∀ x, 0 ≤ φ x) ∧ (∀ x, 0 < φ x → (∑ i : Fin d, |x i|) ≤ r) ∧
       ∀ᶠ R : ℝ in atTop, 1 - ε ≤ ((Parking.law d ν) (Parking.PositiveTestEvent R r φ)).toReal) :
     Tendsto (fun t : ℕ => ((Parking.law d ν) {ω | Parking.HoleCloser ω t}).toReal) atTop (𝓝 0) := by
-  haveI := hprob
-  haveI := Parking.stackRankLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := hprob
+  have := Parking.stackRankLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw
     infer_instance
-  haveI : IsProbabilityMeasure (Parking.law d ν) :=
+  have : IsProbabilityMeasure (Parking.law d ν) :=
     inferInstanceAs (IsProbabilityMeasure ((LatticeProb.iidLaw d ν).prod (Parking.stackRankLaw d)))
   exact Parking.nearest_of_rescaled_positive_events (Parking.law d ν) hEvents
 

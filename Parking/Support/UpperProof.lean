@@ -130,7 +130,7 @@ theorem upper_step_one_uniform (hd : 1 ≤ d) (hBern : Parking.External.Bernstei
   obtain ⟨C₀, hC₀, hC₀le'⟩ := exists_wErr_moment_const_uniform (d := d) hd hBern
   refine ⟨2 + 4 * C₀ ^ 2 + 4 * C₀, by positivity, ?_⟩
   intro ν hprobν θ hθ hexp n hn r hr2
-  haveI := hprobν
+  have := hprobν
   have hC₀le := hC₀le' ν hprobν θ hθ hexp
   have hr1 : (1 : ℝ) ≤ r := by linarith
   have hr0 : (0 : ℝ) < r := by linarith

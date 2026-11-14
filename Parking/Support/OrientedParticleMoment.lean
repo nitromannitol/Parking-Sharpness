@@ -39,7 +39,7 @@ theorem integrable_orientedOdometer_joint_rpow (hd : 1 ≤ d) (ν : Measure ℤ)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (x : Site d) :
     Integrable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
       (orientedOdometer z.1 z.2 n x : ℝ) ^ r) ((iidLaw d ν).prod (orientedStackLaw d)) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, he⟩ := hν.expMoment
   have hm : Measurable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
       (orientedOdometer z.1 z.2 n x : ℝ) ^ r) :=

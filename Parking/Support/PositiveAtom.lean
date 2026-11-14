@@ -22,7 +22,7 @@ open scoped ENNReal
 otherwise `k.toNat` would vanish `ν`-a.e., contradicting `integral_toNat_pos`. -/
 theorem CriticalLaw.exists_positive_atom {ν : Measure ℤ} (hν : CriticalLaw ν) :
     ∃ k : ℤ, 1 ≤ k ∧ ν {k} ≠ 0 := by
-  haveI := hν.prob
+  have := hν.prob
   by_contra h
   push Not at h
   have hz : (fun k : ℤ => ((k.toNat : ℕ) : ℝ)) =ᵐ[ν] 0 := by

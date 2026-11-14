@@ -22,7 +22,7 @@ theorem orientedOdometers_indep_upper_stacks {ι : Type*} (hd : 1 ≤ d) (η : S
     IndepFun (fun σ : Site d × ℕ → Site d => fun i => orientedOdometer η σ n (x i))
       (fun σ : Site d × ℕ → Site d => fun q : {q : Site d × ℕ | h ≤ layerHeight q.1} => σ q)
       (orientedStackLaw d) := by
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
     fun q => orientedInstructionLaw_isProbability hd q.1
   apply indepFun_of_erasure_invariant (fun q : Site d × ℕ => orientedInstructionLaw q.1)
     {q : Site d × ℕ | h ≤ layerHeight q.1} (fun _ => (0 : Site d)) _
@@ -32,7 +32,7 @@ theorem orientedOdometers_indep_upper_stacks {ι : Type*} (hd : 1 ≤ d) (η : S
   funext i
   apply orientedOdometer_lower_layers n (x i) (fun _ _ => rfl)
   intro q hq
-  exact if_neg (by change ¬h ≤ layerHeight q.1; have := hx i; omega)
+  exact ite_eq_right (by change ¬h ≤ layerHeight q.1; have := hx i; omega)
 
 /-- The arrival count `orientedArrivalCount η σ n x` depends only on the scenery and stack
 coordinates below the layer of `x`, since it is built from `orientedOdometer` at the `d`
@@ -73,6 +73,6 @@ theorem orientedArrivals_indep_upper_conf (ν : Measure ℤ) [IsProbabilityMeasu
   intro η
   apply orientedArrivalCount_lower_layers n x _ (fun _ _ => rfl)
   intro y hy
-  exact if_neg (by change ¬layerHeight x ≤ layerHeight y; omega)
+  exact ite_eq_right (by change ¬layerHeight x ≤ layerHeight y; omega)
 
 end Parking

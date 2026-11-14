@@ -85,8 +85,8 @@ theorem measurable_walkFddVec (m n : ℕ) (ts : Fin m → ℝ) : Measurable (wal
 /-- The law of the rescaled walk vector. -/
 def walkFddLaw (m n : ℕ) (ts : Fin m → ℝ) : ProbabilityMeasure (EuclideanSpace ℝ (Fin m)) :=
   ⟨(walkLaw 2).map (walkFddVec m n ts), by
-    haveI := stepLaw_isProbability (d := 2) (by norm_num)
-    haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+    have := stepLaw_isProbability (d := 2) (by norm_num)
+    have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
     exact inferInstance⟩
 
 end Parking
@@ -100,7 +100,7 @@ symmetric sign `σ` gives `cos x`. -/
 theorem integral_stepLaw_cexp (x : ℝ) :
     ∫ b : Fin 2 × Bool, Complex.exp (((x * walkStepSign b.1 : ℝ) : ℂ) * Complex.I) ∂(stepLaw 2)
       = (Real.cos x : ℂ) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
+  have := stepLaw_isProbability (d := 2) (by norm_num)
   have hfin : ∀ b : Fin 2 × Bool,
       Integrable (fun b' => Complex.exp (((x * walkStepSign b'.1 : ℝ) : ℂ) * Complex.I))
         (Measure.dirac b) := fun b => integrable_dirac (by simp)
@@ -127,8 +127,8 @@ theorem charFun_walkFddLaw (m : ℕ) (ts : Fin m → ℝ) {T : ℝ}
           (Real.cos ((∑ i : Fin m, (if j < ⌊(n : ℝ) * ts i⌋₊ then u i else 0))
             / (2 * Real.sqrt (n : ℝ))) : ℂ) := by
   classical
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   set k : Fin m → ℕ := fun i => ⌊(n : ℝ) * ts i⌋₊ with hk
   set K : ℕ := ⌊(n : ℝ) * T⌋₊ with hK
   set c : ℝ := 2 * Real.sqrt (n : ℝ) with hc
@@ -165,12 +165,12 @@ theorem charFun_walkFddLaw (m : ℕ) (ts : Fin m → ℝ) {T : ℝ}
                     (if j < k i then u i * walkStepSign (p j).1 else 0) := by
                   refine Finset.sum_congr rfl fun j hj => ?_
                   rw [Finset.mem_range] at hj
-                  exact (if_pos hj).symm
+                  exact (ite_eq_left hj).symm
               _ = ∑ j ∈ Finset.range K,
                     (if j < k i then u i * walkStepSign (p j).1 else 0) := by
                   refine Finset.sum_subset (Finset.range_mono (hkK i)) fun j hjK hjki => ?_
                   rw [Finset.mem_range] at hjki
-                  exact if_neg hjki
+                  exact ite_eq_right hjki
         _ = ∑ j ∈ Finset.range K, ∑ i : Fin m,
               if j < k i then u i * walkStepSign (p j).1 else 0 := Finset.sum_comm
         _ = ∑ j ∈ Finset.range K, Λ j * walkStepSign (p j).1 := by

@@ -243,7 +243,7 @@ theorem pArrivalsAt_insert {D E : PDriver d} (hmove : E.move = D.move) (t : ℕ)
   · subst hpu
     by_cases hx : pNextPos E (pState E t) t p = x
     · simp [hx, hu']
-    · simp only [hx, if_false, hu', true_and]
+    · simp only [hx, ite_false, hu', true_and]
       exact ((iff_false _).mpr (notMem_pArrivalsAt hu x)).symm
   · have hactp : (pState E t).active p = (pState D t).active p := hother p hpu
     have hiff : ((pState E t).active p = true ∧ pNextPos E (pState E t) t p = x)
@@ -255,10 +255,10 @@ theorem pArrivalsAt_insert {D E : PDriver d} (hmove : E.move = D.move) (t : ℕ)
       · rintro ⟨h1, h2⟩
         exact ⟨h1, by rwa [pNextPos_congr hmove h1 (by rw [hactp]; exact h1) (hpos p h1)]⟩
     by_cases hx : pNextPos E (pState E t) t u = x
-    · rw [if_pos hx, Finset.mem_insert]
+    · rw [ite_eq_left hx, Finset.mem_insert]
       simp only [hpu, false_or]
       exact hiff
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       exact hiff
 
 /-- Two drivers with matching active sets and positions at `t` have the same active
@@ -298,7 +298,7 @@ theorem pActiveAt_insert {D E : PDriver d} (t : ℕ) (u : Label d)
   · subst hpu
     by_cases hx : (pState E t).pos p = x
     · simp [hx, hu']
-    · simp only [hx, if_false, hu', true_and]
+    · simp only [hx, ite_false, hu', true_and]
       exact ((iff_false _).mpr (notMem_pActiveAt hu x)).symm
   · have hactp : (pState E t).active p = (pState D t).active p := hother p hpu
     have hiff : ((pState E t).active p = true ∧ (pState E t).pos p = x)
@@ -306,10 +306,10 @@ theorem pActiveAt_insert {D E : PDriver d} (t : ℕ) (u : Label d)
       rw [mem_pActiveAt_iff, hactp]
       exact ⟨fun ⟨h1, h2⟩ => ⟨h1, by rwa [hpos p h1]⟩, fun ⟨h1, h2⟩ => ⟨h1, by rwa [← hpos p h1]⟩⟩
     by_cases hx : (pState E t).pos u = x
-    · rw [if_pos hx, Finset.mem_insert]
+    · rw [ite_eq_left hx, Finset.mem_insert]
       simp only [hpu, false_or]
       exact hiff
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       exact hiff
 
 /-! ### The one-particle discrepancy -/
@@ -378,9 +378,9 @@ theorem oneParticleInv_succ (h : LabelOrder d) (D : PDriver d) (x₀ : Site d) (
     have hoffarr : ∀ y, y ≠ w →
         pArrivalsAt E (pState E t) t y = pArrivalsAt D (pState D t) t y := by
       intro y hy
-      rw [harr y, if_neg (fun hc => hy hc.symm)]
+      rw [harr y, ite_eq_right (fun hc => hy hc.symm)]
     have hatw : pArrivalsAt E (pState E t) t w
-        = insert u (pArrivalsAt D (pState D t) t w) := by rw [harr w, if_pos rfl]
+        = insert u (pArrivalsAt D (pState D t) t w) := by rw [harr w, ite_eq_left rfl]
     have hoffsurv : ∀ y, y ≠ w → ∀ p,
         (p ∈ pArrivalsAt E (pState E t) t y
             \ settledIn (pArrivalsAt E (pState E t) t y) (prec E.rank t) (pHoleCount E t y)
@@ -638,7 +638,7 @@ theorem oneParticleInv_zero (D : PDriver d) (x₀ : Site d) : OneParticleInv D x
     · show (initial (addParticle x₀ D.eta)).active (x₀, (D.eta x₀).toNat) = true
       rw [hact]
       simp only [decide_eq_true_eq]
-      simp only [addParticle, if_pos]
+      simp only [addParticle, ite_eq_left]
       omega
     · show (initial D.eta).active (x₀, (D.eta x₀).toNat) = false
       rw [hact]
@@ -651,20 +651,20 @@ theorem oneParticleInv_zero (D : PDriver d) (x₀ : Site d) : OneParticleInv D x
         rw [hx]
         simp [addParticle]
         omega
-      · simp only [addParticle, if_neg hx]
+      · simp only [addParticle, ite_eq_right hx]
     · intro x
       show (initial (addParticle x₀ D.eta)).holes x = (initial D.eta).holes x
       rw [hhol, hhol]
       by_cases hx : x = x₀
       · rw [hx]; simp [addParticle]; omega
-      · simp only [addParticle, if_neg hx]
+      · simp only [addParticle, ite_eq_right hx]
   · refine Or.inr ⟨?_, x₀, ?_, ?_⟩
     · intro p
       show (initial (addParticle x₀ D.eta)).active p = (initial D.eta).active p
       rw [hact, hact, decide_eq_decide]
       by_cases hx : p.1 = x₀
       · rw [hx]; simp [addParticle]; omega
-      · simp only [addParticle, if_neg hx]
+      · simp only [addParticle, ite_eq_right hx]
     · show (initial D.eta).holes x₀ = (initial (addParticle x₀ D.eta)).holes x₀ + 1
       rw [hhol, hhol]
       simp [addParticle]
@@ -672,7 +672,7 @@ theorem oneParticleInv_zero (D : PDriver d) (x₀ : Site d) : OneParticleInv D x
     · intro x hx
       show (initial D.eta).holes x = (initial (addParticle x₀ D.eta)).holes x
       rw [hhol, hhol]
-      simp only [addParticle, if_neg hx]
+      simp only [addParticle, ite_eq_right hx]
 
 /-- `OneParticleInv` holds at every time `t`, by induction from the base case
 `oneParticleInv_zero` and the one-round step `oneParticleInv_succ`. -/
@@ -700,11 +700,11 @@ theorem one_particle_of_labelOrder (h : LabelOrder d) (D : PDriver d) (x₀ : Si
   rcases oneParticleInv_all h D x₀ t with ⟨u, hu', hu, hother, hholes⟩ | ⟨hactEq, z, hz, hzo⟩
   · refine Or.inl ⟨hholes, (pState (addParticleDriver x₀ D) t).pos u, ?_, ?_⟩
     · unfold pActiveCount
-      rw [pActiveAt_insert t u hu' hu hother hpos, if_pos rfl,
+      rw [pActiveAt_insert t u hu' hu hother hpos, ite_eq_left rfl,
         Finset.card_insert_of_notMem (notMem_pActiveAt hu _)]
     · intro x hx
       unfold pActiveCount
-      rw [pActiveAt_insert t u hu' hu hother hpos, if_neg (fun hc => hx hc.symm)]
+      rw [pActiveAt_insert t u hu' hu hother hpos, ite_eq_right (fun hc => hx hc.symm)]
   · refine Or.inr ⟨fun x => ?_, z, hz, hzo⟩
     unfold pActiveCount
     rw [pActiveAt_congr t hactEq hpos]

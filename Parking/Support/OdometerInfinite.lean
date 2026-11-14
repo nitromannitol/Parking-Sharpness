@@ -25,7 +25,7 @@ theorem Ulimit_eq_top_iff (ω : Data d) (x : Site d) :
   rw [iSup_eq_top]
   constructor
   · intro h M
-    obtain ⟨n, hn⟩ := h (M : ℕ∞) (by exact_mod_cast ENat.coe_lt_top M)
+    obtain ⟨n, hn⟩ := h (M : ℕ∞) (by exact_mod_cast ENat.natCast_lt_top M)
     exact ⟨n, le_of_lt (by exact_mod_cast hn)⟩
   · intro h b hb
     lift b to ℕ using hb.ne
@@ -54,8 +54,8 @@ theorem exists_prob_Ulimit_top (hGrowth : Parking.External.SandpileGrowth)
     (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∃ a : ℝ, 0 < a ∧ a ≤ (law d ν).real {ω : Data d | Parking.Ulimit ω 0 = ⊤} := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨c, a, hc, ha, hlow⟩ :=
     exists_odometer_lower_prob hGrowth hBernstein hConcentration hGreenNorms d hd ν hν
   classical
@@ -86,7 +86,7 @@ theorem exists_prob_Ulimit_top (hGrowth : Parking.External.SandpileGrowth)
     exact Set.mem_iUnion.mpr ⟨n, le_of_lt (by exact_mod_cast this)⟩
   have hset : {ω : Data d | Parking.Ulimit ω 0 = ⊤} = ⋂ M : ℕ, B M := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_iInter, hB, Set.mem_iUnion]
+    simp only [Set.mem_ofPred_eq, Set.mem_iInter, hB, Set.mem_iUnion]
     exact Ulimit_eq_top_iff ω 0
   refine ⟨a, ha, ?_⟩
   rw [hset]

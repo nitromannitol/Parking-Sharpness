@@ -22,7 +22,7 @@ variable {d : ℕ}
 theorem integral_U_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (T : ℕ) (x : Site d) :
     ∫ ω, (U ω T x : ℝ) ∂(law d ν) = meanU (law d ν) T := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hm : AEStronglyMeasurable (fun ω : Data d => (U ω T x : ℝ)) (dataLaw d (iidLaw d ν)) :=
     ((measurable_from_countable' fun n : ℕ => (n : ℝ)).comp
       (measurable_U T x)).aestronglyMeasurable

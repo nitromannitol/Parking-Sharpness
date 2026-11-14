@@ -50,13 +50,13 @@ theorem goodSafeMass_out (ω : Data d) (t R : ℕ) :
     (∑ w ∈ boxFinset 0 R, goodSafeMass ω t R 0 w) =
       if GoodHole ω t R 0 then (safeSites ω t R 0).card else 0 := by
   by_cases h : GoodHole ω t R 0
-  · simp only [goodSafeMass, h, true_and, if_true]
+  · simp only [goodSafeMass, h, true_and, ite_true]
     rw [← Finset.card_filter]
     congr 1
     ext w
     simp only [Finset.mem_filter, mem_safeSites]
     tauto
-  · simp only [goodSafeMass, h, false_and, if_false, Finset.sum_const_zero]
+  · simp only [goodSafeMass, h, false_and, ite_false, Finset.sum_const_zero]
 
 /-- Summing `goodSafeMass` over all sources `y` into a fixed target `0` is at most the
 indicator of `HoleCloser`: `isolatedHole_unique` forces at most one good hole to have `0`
@@ -78,7 +78,7 @@ theorem goodSafeMass_in (hd : 1 ≤ d) (ω : Data d) (t R : ℕ) :
       (boxFinset_mono hR (mem_safeSites.mp hwy).1)
       (boxFinset_mono hR (mem_safeSites.mp hwz).1)
   by_cases h : HoleCloser ω t
-  · simp only [h, if_true, goodSafeMass]
+  · simp only [h, ite_true, goodSafeMass]
     rw [← Finset.card_filter]
     apply Finset.card_le_one.mpr
     intro y hy z hz
@@ -87,10 +87,10 @@ theorem goodSafeMass_in (hd : 1 ≤ d) (ω : Data d) (t R : ℕ) :
   · have he : ∀ y, goodSafeMass ω t R y 0 = 0 := by
       intro y
       unfold goodSafeMass
-      apply if_neg
+      apply ite_eq_right
       rintro ⟨hy, hwy⟩
       apply h
       exact (HoleCloser_iff ω t).mpr (safeSites_closer hy.1.1 hwy)
-    simp only [he, Finset.sum_const_zero, h, if_false, le_refl]
+    simp only [he, Finset.sum_const_zero, h, ite_false, le_refl]
 
 end Parking

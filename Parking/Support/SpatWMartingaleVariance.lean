@@ -168,7 +168,7 @@ theorem sum_sq_centered_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMea
     ∫ ω, T.indicator (fun ω => (∑ j ∈ Finset.Ico a b, ψ (ω.2.1 (y, j))) ^ 2) ω ∂(law d ν)
       = ((b - a : ℕ) : ℝ) * walkOp (fun x => (ψ x) ^ 2) y * (law d ν).real T := by
   classical
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hTamb : MeasurableSet T := expFiltration_le d k T hT
   have hptwise : ∀ j ∈ Finset.Ico a b, ∀ j' ∈ Finset.Ico a b,
       ∫ ω, T.indicator (fun ω => ψ (ω.2.1 (y, j)) * ψ (ω.2.1 (y, j'))) ω ∂(law d ν)
@@ -182,13 +182,13 @@ theorem sum_sq_centered_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMea
       rw [hTsub hω]; exact (Finset.mem_Ico.mp hj').1
     by_cases hjj' : j = j'
     · subst hjj'
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have hcore := single_core hd ν k y j (fun x => (ψ x) ^ 2) hT hTsubj
       have heq : (fun ω : Data d => ψ (ω.2.1 (y, j)) * ψ (ω.2.1 (y, j)))
           = fun ω : Data d => (ψ (ω.2.1 (y, j))) ^ 2 := by funext ω; ring
       rw [heq]
       exact hcore
-    · rw [if_neg hjj']
+    · rw [ite_eq_right hjj']
       have hne : (y, j) ≠ (y, j') := by simp [hjj']
       have hTsub2 : T ⊆ {ω | U ω k y ≤ j} ∩ {ω | U ω k y ≤ j'} :=
         fun ω hω => ⟨hTsubj hω, hTsubj' hω⟩
@@ -236,9 +236,9 @@ theorem sum_sq_centered_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMea
     intro j hj
     rw [integral_finsetSum _ (fun j' hj' => hintg j hj j' hj'), Finset.sum_congr rfl (hptwise j hj)]
     rw [Finset.sum_eq_single j]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
     · intro x _ hx
-      rw [if_neg (fun h : j = x => hx h.symm)]
+      rw [ite_eq_right (fun h : j = x => hx h.symm)]
     · intro h; exact absurd hj h
   rw [Finset.sum_congr rfl hInnerEq, Finset.sum_const, nsmul_eq_mul, Nat.card_Ico]
   ring
@@ -259,7 +259,7 @@ theorem sum_prod_diffsite_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityM
       = ((b - a : ℕ) : ℝ) * ((b' - a' : ℕ) : ℝ) * walkOp ψ y * walkOp ψ' y'
           * (law d ν).real T := by
   classical
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hTamb : MeasurableSet T := expFiltration_le d k T hT
   have hptwise : ∀ j ∈ Finset.Ico a b, ∀ j' ∈ Finset.Ico a' b',
       ∫ ω, T.indicator (fun ω => ψ (ω.2.1 (y, j)) * ψ' (ω.2.1 (y', j'))) ω ∂(law d ν)
@@ -350,8 +350,8 @@ theorem condExp_siteVar_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw 
       | expFiltration d k]
       =ᵐ[law d ν] fun ω => (walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2)
           * ((expOdometer d k ω y : ℝ) - (U ω k y : ℝ)) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   classical
   set γ : ℝ := walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2 with hγdef
   set sel : Data d → ℕ × ℕ := fun ω => (U ω k y, expOdometer d k ω y) with hseldef
@@ -570,8 +570,8 @@ theorem condExp_crossSite_eq_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Criti
         * (∑ j' ∈ Finset.Ico (U ω k y') (expOdometer d k ω y'),
             (φR (ω.2.1 (y', j')) - walkOp φR y'))
       | expFiltration d k] =ᵐ[law d ν] fun _ => (0 : ℝ) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   classical
   set sel : Data d → (ℕ × ℕ) × (ℕ × ℕ) :=
     fun ω => ((U ω k y, expOdometer d k ω y), (U ω k y', expOdometer d k ω y')) with hseldef
@@ -787,8 +787,8 @@ theorem integrable_siteSum_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
     Integrable (fun ω : Data d =>
       (∑ j ∈ Finset.Ico (U ω k z) (expOdometer d k ω z), (φR (ω.2.1 (z, j)) - walkOp φR z)) ^ 2)
       (law d ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hM0 : 0 ≤ M := le_trans (abs_nonneg (φR (0 : Site d))) (hbound (0 : Site d))
   have h0 : 0 ≤ M + |walkOp φR z| := by linarith [abs_nonneg (walkOp φR z)]
   have hEsq : Integrable (fun ω : Data d =>
@@ -865,8 +865,8 @@ theorem integrable_siteSum (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw 
     Integrable (fun ω : Data d =>
       ∑ j ∈ Finset.Ico (U ω k z) (expOdometer d k ω z), (φR (ω.2.1 (z, j)) - walkOp φR z))
       (law d ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hInt2 : Integrable (fun ω : Data d => (expOdometer d k ω z : ℝ)) (law d ν) := by
     have hcong : (fun ω : Data d => (expOdometer d k ω z : ℝ))
         =ᵐ[law d ν] fun ω => (U ω (k + 1) z : ℝ) := by
@@ -894,8 +894,8 @@ def xiRoundExp (φR : Site d → ℝ) (box' : Finset (Site d)) (k : ℕ) (ω : D
 theorem condExp_xiRoundExp_eq_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     (law d ν)[xiRoundExp φR box' k | expFiltration d k] =ᵐ[law d ν] fun _ => (0 : ℝ) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hInt : ∀ y ∈ box', Integrable (fun ω : Data d =>
       ∑ j ∈ Finset.Ico (U ω k y) (expOdometer d k ω y), (φR (ω.2.1 (y, j)) - walkOp φR y))
       (law d ν) := fun y _ => integrable_siteSum hd ν hν k y hbound
@@ -933,8 +933,8 @@ theorem condExp_xiRoundExp_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
       =ᵐ[law d ν] fun ω => ∑ y ∈ box',
         (walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2)
           * ((expOdometer d k ω y : ℝ) - (U ω k y : ℝ)) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   classical
   have hInt : ∀ p ∈ box' ×ˢ box', Integrable (fun ω : Data d =>
       (∑ j ∈ Finset.Ico (U ω k p.1) (expOdometer d k ω p.1), (φR (ω.2.1 (p.1, j)) - walkOp φR p.1))
@@ -964,7 +964,7 @@ theorem condExp_xiRoundExp_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
     by_cases hpp : p.1 = p.2
     · have hv := condExp_siteVar_eq hd ν hν k p.1 hbound
       filter_upwards [hv] with ω hω
-      rw [if_pos hpp]
+      rw [ite_eq_left hpp]
       rw [show (fun ω : Data d =>
           (∑ j ∈ Finset.Ico (U ω k p.1) (expOdometer d k ω p.1),
               (φR (ω.2.1 (p.1, j)) - walkOp φR p.1))
@@ -977,7 +977,7 @@ theorem condExp_xiRoundExp_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
       exact hω
     · have hc := condExp_crossSite_eq_zero hd ν hν k p.1 p.2 hpp hbound
       filter_upwards [hc] with ω hω
-      rw [if_neg hpp]
+      rw [ite_eq_right hpp]
       exact hω
   have hall : ∀ᵐ ω ∂(law d ν), ∀ p ∈ box' ×ˢ box', (law d ν)[fun ω : Data d =>
       (∑ j ∈ Finset.Ico (U ω k p.1) (expOdometer d k ω p.1),
@@ -992,9 +992,9 @@ theorem condExp_xiRoundExp_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
   rw [h1, Finset.sum_apply, Finset.sum_congr rfl h2, Finset.sum_product]
   refine Finset.sum_congr rfl fun y hy => ?_
   rw [Finset.sum_eq_single y]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro y' _ hy'
-    rw [if_neg (fun h => hy' h.symm)]
+    rw [ite_eq_right (fun h => hy' h.symm)]
   · intro h; exact absurd hy h
 
 /-! ### The bridge from `xiRoundExp` (expOdometer-gated) to `xiRound` (pathwise measurable) -/
@@ -1026,8 +1026,8 @@ sum of the per-site squares via `sq_sum_le_card_mul_sum_sq`, each term integrabl
 theorem integrable_xiRoundExp_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (fun ω => (xiRoundExp φR box' k ω) ^ 2) (law d ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hDom : Integrable (fun ω : Data d => (box'.card : ℝ) * ∑ y ∈ box',
       (∑ j ∈ Finset.Ico (U ω k y) (expOdometer d k ω y), (φR (ω.2.1 (y, j)) - walkOp φR y)) ^ 2)
       (law d ν) :=
@@ -1046,8 +1046,8 @@ almost-sure identification `xiRound_ae_eq_xiRoundExp`. -/
 theorem integrable_xiRound (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (xiRound φR box' k) (law d ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   exact (integrable_xiRoundExp hd ν hν k box' hbound).congr
     (xiRound_ae_eq_xiRoundExp hd ν φR box' k).symm
 
@@ -1056,8 +1056,8 @@ theorem integrable_xiRound (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw 
 theorem integrable_xiRound_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     Integrable (fun ω => (xiRound φR box' k ω) ^ 2) (law d ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hbridge : (fun ω => (xiRound φR box' k ω) ^ 2)
       =ᵐ[law d ν] fun ω => (xiRoundExp φR box' k ω) ^ 2 := by
     filter_upwards [xiRound_ae_eq_xiRoundExp hd ν φR box' k] with ω h
@@ -1070,8 +1070,8 @@ conditional expectation under a.e. equality. -/
 theorem condExp_xiRound_eq_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (k : ℕ) (box' : Finset (Site d)) {φR : Site d → ℝ} {M : ℝ} (hbound : ∀ x, |φR x| ≤ M) :
     (law d ν)[xiRound φR box' k | expFiltration d k] =ᵐ[law d ν] fun _ => (0 : ℝ) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   exact (MeasureTheory.condExp_congr_ae (xiRound_ae_eq_xiRoundExp hd ν φR box' k)).trans
     (condExp_xiRoundExp_eq_zero hd ν hν k box' hbound)
 
@@ -1084,8 +1084,8 @@ theorem condExp_xiRound_sq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw 
       =ᵐ[law d ν] fun ω => ∑ y ∈ box',
         (walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2)
           * ((expOdometer d k ω y : ℝ) - (U ω k y : ℝ)) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hbridge : (fun ω => (xiRound φR box' k ω) ^ 2)
       =ᵐ[law d ν] fun ω => (xiRoundExp φR box' k ω) ^ 2 := by
     filter_upwards [xiRound_ae_eq_xiRoundExp hd ν φR box' k] with ω h
@@ -1104,8 +1104,8 @@ theorem xiRound_sq_sum_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw �
     Integrable (fun ω => (∑ k ∈ Finset.range t, xiRound φR box' k ω) ^ 2) (law d ν) ∧
       ∫ ω, (∑ k ∈ Finset.range t, xiRound φR box' k ω) ^ 2 ∂(law d ν)
         = ∑ k ∈ Finset.range t, ∫ ω, (xiRound φR box' k ω) ^ 2 ∂(law d ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   refine LatticeProb.Scaling.RoundMartingale.integral_sq_sum_eq_sum_integral_sq
     (expFiltration d) (expFiltration_le d) (xiRound φR box') ?_
     (fun k => integrable_xiRound hd ν hν k box' hbound)
@@ -1144,8 +1144,8 @@ theorem integral_xiRound_sq_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critical
     ∫ ω, (xiRound φR box' k ω) ^ 2 ∂(law d ν)
       = ∑ y ∈ box', (walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2)
           * (meanU (law d ν) (k + 1) - meanU (law d ν) k) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have htower : ∫ ω, (xiRound φR box' k ω) ^ 2 ∂(law d ν)
       = ∫ ω, (∑ y ∈ box', (walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2)
           * ((expOdometer d k ω y : ℝ) - (U ω k y : ℝ))) ∂(law d ν) := by
@@ -1186,8 +1186,8 @@ theorem sum_integral_xiRound_sq_eq (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Crit
     ∑ k ∈ Finset.range t, ∫ ω, (xiRound φR box' k ω) ^ 2 ∂(law d ν)
       = ∑ y ∈ box', (walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2)
           * meanU (law d ν) t := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hstep : ∀ k, ∫ ω, (xiRound φR box' k ω) ^ 2 ∂(law d ν)
       = ∑ y ∈ box', (walkOp (fun x => (φR x) ^ 2) y - (walkOp φR y) ^ 2)
           * (meanU (law d ν) (k + 1) - meanU (law d ν) k) :=
@@ -1287,8 +1287,8 @@ theorem integral_signedM_sq_le (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (ν : Measure ℤ) (hν : CriticalLaw ν) {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) :
     ∃ Cφ : ℝ, 0 ≤ Cφ ∧ ∀ R : ℝ, 1 ≤ R → 2 ≤ ⌊R ^ 2⌋₊ →
       ∫ ω, (signedM ω R φ) ^ 2 ∂(law d ν) ≤ Cφ * R ^ (-(d : ℝ) / 2) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   obtain ⟨B, hB, hbound⟩ := exists_norm_bound_of_hasCompactSupport hφ.2
   obtain ⟨L, hL0, hLbound⟩ := testFun_nbr_diff_le hφ
   obtain ⟨c, C, hc, hcC, hmean, _⟩ :=
@@ -1421,8 +1421,8 @@ theorem tendsto_signedM_zero (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (ν : Measure ℤ) (hν : CriticalLaw ν) {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) :
     ∀ ε : ℝ, 0 < ε →
       Tendsto (fun R : ℝ => ((law d ν) {w | ε < |signedM w R φ|}).toReal) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   obtain ⟨Cφ, hCφ0, hCφ⟩ :=
     integral_signedM_sq_le hd hd3 hGrowth hBernstein hConcentration hGreenNorms ν hν hφ
   intro ε hε

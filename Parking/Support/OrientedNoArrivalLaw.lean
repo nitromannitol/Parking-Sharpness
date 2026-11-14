@@ -36,7 +36,7 @@ theorem oriented_noArrival_probability_given (hd : 1 ≤ d) (η : Site d → ℤ
     (orientedStackLaw d).real {σ : Site d × ℕ → Site d | orientedArrivalCount η σ n x = 0} =
       ∫ σ : Site d × ℕ → Site d, (1 - (d : ℝ)⁻¹) ^
         (∑ i : Fin d, orientedOdometer η σ n (x - unit i)) ∂(orientedStackLaw d) := by
-  haveI := orientedStackLaw_isProbability hd
+  have := orientedStackLaw_isProbability hd
   apply probability_eq_integral_of_fibers (orientedStackLaw d)
     (fun σ : Site d × ℕ → Site d => fun i : Fin d => orientedOdometer η σ n (x - unit i))
     (Measurable.of_eval fun i =>
@@ -60,7 +60,7 @@ theorem oriented_noArrival_exp_given (hd : 2 ≤ d) (η : Site d → ℤ)
         (orientedOdometer η σ n (x - unit i) : ℝ) ∂(orientedStackLaw d)) ≤
       (orientedStackLaw d).real {σ : Site d × ℕ → Site d | orientedArrivalCount η σ n x = 0} := by
   have hd1 : 1 ≤ d := by omega
-  haveI := orientedStackLaw_isProbability hd1
+  have := orientedStackLaw_isProbability hd1
   let q : ℝ := 1 - (d : ℝ)⁻¹
   let V : (Site d × ℕ → Site d) → ℝ := fun σ =>
     ∑ i : Fin d, (orientedOdometer η σ n (x - unit i) : ℝ)

@@ -60,12 +60,12 @@ theorem roundSigned_eq_addParticle (A H : Site d → ℕ) (τ : RoundSlot d → 
   · have hmem : Sum.inl (v, j) ∈ countArrivals A τ x :=
       (mem_countArrivals _ _ _ _ _).mpr ⟨hj, hx.symm⟩
     have hc := Finset.card_erase_add_one hmem
-    simp only [roundSigned, roundWithout, addParticle, if_pos hx]
+    simp only [roundSigned, roundWithout, addParticle, ite_eq_left hx]
     omega
   · have hn : Sum.inl (v, j) ∉ countArrivals A τ x := by
       rw [mem_countArrivals]
       exact fun h => hx h.2.symm
-    simp only [roundSigned, roundWithout, addParticle, if_neg hx, Finset.erase_eq_of_notMem hn]
+    simp only [roundSigned, roundWithout, addParticle, ite_eq_right hx, Finset.erase_eq_of_notMem hn]
 
 /-- Removing an entry removes all dependence on its value. -/
 theorem roundWithout_update (A H : Site d → ℕ) (τ : RoundSlot d → Fin d × Bool)

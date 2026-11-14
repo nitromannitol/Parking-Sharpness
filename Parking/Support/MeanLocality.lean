@@ -34,5 +34,5 @@ theorem matchedMeanU_addParticle_of_far (η : Site d → ℤ) (ρ : Label d × �
   apply matchedMeanU_agree_box
   intro y hy
   have hne : y ≠ v := fun he => hv (he ▸ hy)
-  simp only [addParticle, if_neg hne]
+  simp only [addParticle, ite_eq_right hne]
 end Parking

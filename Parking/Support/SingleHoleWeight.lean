@@ -59,7 +59,7 @@ theorem singleHoleWeight_section_ge (hd : 3 ≤ d) (η : Site d → ℤ) (v : Si
         ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) := by
   classical
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   let c := singleAdditionPair η v
   let y := (discrepancyState c ρ σ s).pos (v, 0)
   let q := discrepancyIndex c ρ σ s (v, 0)
@@ -92,6 +92,6 @@ theorem singleHoleWeight_section_ge (hd : 3 ≤ d) (η : Site d → ℤ) (v : Si
   · change futureHoleValue η ρ σ T s x * escapePotential d x y ≤
       ∫ τ, F τ * escapePotential d x (if discrepancyDoesMove c ρ σ s (v, 0) then
         y + stepVec (τ q) else y) ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)
-    simp only [if_neg hm]
+    simp only [ite_eq_right hm]
     rw [integral_mul_const, hFB]
 end Parking

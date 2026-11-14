@@ -94,7 +94,7 @@ theorem meanUlimit_le_of_tail (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
     Parking.meanUlimit (Parking.law d ν)
       ≤ ENNReal.ofReal (Parking.meanU (Parking.law d ν) N + Ctail) :=
 by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hsum : ∀ n : ℕ, Parking.meanU (Parking.law d ν) n
       = ∑ s ∈ Finset.range n, Parking.S (Parking.law d ν) s := fun n =>
@@ -148,7 +148,7 @@ theorem exists_meanUlimit_le_cutoff (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → M
     calc a * δ ^ 2 ≤ a * a⁻¹ := by nlinarith
       _ = 1 := mul_inv_cancel₀ (ne_of_gt ha)
   have hδmem : δ ∈ Set.Icc (0 : ℝ) δ₀ := ⟨hδ0.le, le_trans hδ₁' hδ₁δ₀⟩
-  haveI := hprob δ hδmem
+  have := hprob δ hδmem
   have hint : Integrable (fun k : ℤ => |(k : ℝ)|) (ν δ) :=
     integrable_abs_of_absMoment hθ (hexp δ hδmem).1
   refine ⟨hane, meanUlimit_le_of_tail hd (ν δ) hint _ Ct hCt.le (fun n => ?_)⟩

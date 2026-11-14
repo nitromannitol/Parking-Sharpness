@@ -84,9 +84,9 @@ theorem tendsto_integral_orientedBoxReward_mul (ν : Measure ℤ) (hν : Critica
         orientedBoxReward T n η u * orientedBoxReward T n η u'
       ∂(iidLaw 2 (realLaw ν))) atTop
       (𝓝 ((∫ x : ℝ, x ^ 2 ∂(realLaw ν)) * contOverlap T u u')) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   set μ := iidLaw 2 (realLaw ν) with hμ
   set G : (Fin 2 → ℝ) → ℕ → (Site 2 → ℝ) → ℝ := fun v n η =>
     orientedGridReward n ⌊(n : ℝ) * T⌋₊ η ⌊(n : ℝ) * v 0⌋

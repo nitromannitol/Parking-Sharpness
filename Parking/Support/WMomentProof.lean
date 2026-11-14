@@ -193,7 +193,7 @@ theorem integral_U_rpow_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (y : Site d) :
     ∫ ω, ((U ω n y : ℕ) : ℝ) ^ r ∂(law d ν)
       = ∫ ω, ((U ω n 0 : ℕ) : ℝ) ^ r ∂(law d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
   have hti : TranslationInvariant (LatticeProb.iidLaw d ν) := fun w =>
     iidLaw_map_shiftConf' ν w
@@ -375,17 +375,17 @@ theorem exists_wErr_moment_const_uniform (hd : 1 ≤ d)
     mul_pos hCB (by nlinarith [Real.sqrt_nonneg Cg])
   refine ⟨CB * (Real.sqrt Cg + K + 1), hCpos, ?_⟩
   intro ν hprobν θ hθ hexp n hn r hr2
-  haveI := hprobν
+  have := hprobν
   have hr0 : (0 : ℝ) < r := by linarith
   have hr1 : (1 : ℝ) ≤ r := by linarith
   have hp1 : (1 : ℝ) ≤ r / 2 := by linarith
-  haveI hinst : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have hinst : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
+  have : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
   set E : ℝ := ∫ ω, ((U ω n 0 : ℕ) : ℝ) ^ r ∂(law d ν) with hEdef
   have hE0 : 0 ≤ E :=
     integral_nonneg fun ω => Real.rpow_nonneg (Nat.cast_nonneg _) r
@@ -412,12 +412,12 @@ theorem exists_wErr_moment_const_uniform (hd : 1 ≤ d)
     have haK : greenIncrement d m ≤ K := hKle m
     set ξ' : ℕ → Data d → ℝ := fun i => if i = 0 then 0 else ξ (i - 1) with hxidef
     have hxieq : ∀ i : ℕ, 1 ≤ i → ξ' i = ξ (i - 1) := fun i hi => by
-      rw [hxidef]; exact if_neg (by omega)
+      rw [hxidef]; exact ite_eq_right (by omega)
     have hXiamb : ∀ j, Measurable (ξ j) := fun j => (hXimeas j).mono (hFle (j + 1)) le_rfl
     have hmeas' : ∀ i, Measurable[F i] (ξ' i) := by
       intro i
       rcases Nat.eq_zero_or_pos i with rfl | hi
-      · have h0 : ξ' 0 = fun _ : Data d => (0 : ℝ) := by rw [hxidef]; exact if_pos rfl
+      · have h0 : ξ' 0 = fun _ : Data d => (0 : ℝ) := by rw [hxidef]; exact ite_eq_left rfl
         rw [h0]
         exact measurable_const
       · rw [hxieq i hi]
@@ -427,7 +427,7 @@ theorem exists_wErr_moment_const_uniform (hd : 1 ≤ d)
     have hint' : ∀ i, Integrable (ξ' i) (law d ν) := by
       intro i
       rcases Nat.eq_zero_or_pos i with rfl | hi
-      · have h0 : ξ' 0 = fun _ : Data d => (0 : ℝ) := by rw [hxidef]; exact if_pos rfl
+      · have h0 : ξ' 0 = fun _ : Data d => (0 : ℝ) := by rw [hxidef]; exact ite_eq_left rfl
         rw [h0]
         exact integrable_zero _ _ _
       · rw [hxieq i hi]; exact hXiint (i - 1)

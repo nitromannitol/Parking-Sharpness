@@ -27,7 +27,7 @@ theorem twoHoleWeight_section (hd : 3 ≤ d) (η : Site d → ℤ) (K : ℕ)
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) ≤
       twoHoleWeight η ρ σ T s x z u R := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   let A := matchedCount η ρ σ s
   let H := (matchedState η ρ σ s).holes
   let c := holeCostTotal η ρ σ s x z u R
@@ -67,8 +67,8 @@ theorem integral_twoHole_discount_le (hd : 3 ≤ d) (η : Site d → ℤ) (K : �
       Real.exp (-holeCostTotal η ρ σ T x z u R) ∂(roundNoiseLaw d)) ≤
       matchedMeanH η ρ T x * matchedMeanH η ρ T z := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
-  haveI := roundNoiseLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
+  have := roundNoiseLaw_isProbability hd1
   let V := fun σ s => -twoHoleWeight η ρ σ T s x z u R
   have hm (s : ℕ) : Measurable (fun σ : RoundNoise d => V σ s) :=
     (measurable_twoHoleWeight hd1 η ρ T s x z u R).neg

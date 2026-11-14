@@ -115,8 +115,8 @@ theorem orientedStopValue_consNat (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d 
     orientedStopValue η x σ
       = η x + ∫ u : Fin d × Bool, orientedStopValue η (x - unit u.1)
           (fun r => σ (consNat u r) - 1) ∂(stepLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hi : Integrable (orientedStopReward η x σ) (walkLaw d) :=
     integrable_orientedStopReward hd hσ η x
   have hfin : ∀ f : Fin d × Bool → ℝ, Integrable f (stepLaw d) := fun f =>
@@ -154,7 +154,7 @@ theorem orientedStopValue_of_zero {σ : (ℕ → Fin d × Bool) → ℕ}
 theorem orientedStopValue_le (hd : 1 ≤ d) (η : Site d → ℝ) :
     ∀ (n : ℕ) (x : Site d) (σ : (ℕ → Fin d × Bool) → ℕ), IsStoppingTimeLE n σ →
       orientedStopValue η x σ ≤ uOriented η n x := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   intro n
   induction n with
   | zero =>
@@ -197,7 +197,7 @@ theorem orientedStopValue_le (hd : 1 ≤ d) (η : Site d → ℝ) :
 /-- **The oriented odometer is the value of one bounded stopping rule.** -/
 theorem uOriented_mem_orientedStopValues (hd : 1 ≤ d) (η : Site d → ℝ) :
     ∀ (n : ℕ) (x : Site d), uOriented η n x ∈ orientedStopValues d η n x := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   intro n
   induction n with
   | zero =>

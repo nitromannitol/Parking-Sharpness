@@ -24,9 +24,9 @@ theorem exists_uOriented_log_mean (hd : 3 ≤ d)
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 1 ≤ n →
       (∫ η : Site d → ℝ, uOriented η n 0 ∂(iidLaw d μ)) ≤ C * Real.log ((n : ℝ) + 1) := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability (d := d) hd1
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
-  haveI : IsProbabilityMeasure (iidLaw d μ) := by unfold iidLaw; infer_instance
+  have := stepLaw_isProbability (d := d) hd1
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d μ) := by unfold iidLaw; infer_instance
   obtain ⟨C, hC, hb⟩ := exists_orientedMax_log_mean hd μ hi hm hθ he
   refine ⟨2 * C, by positivity, fun n hn => ?_⟩
   obtain ⟨hMi, hMb⟩ := hb n hn

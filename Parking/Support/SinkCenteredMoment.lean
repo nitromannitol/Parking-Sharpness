@@ -30,9 +30,9 @@ theorem exists_sparseSink_centered_moment (hBernstein : External.Bernstein) (hd 
   obtain ⟨Cs, hCs, hs⟩ := exists_sparseSink_scenery_moment hd
   refine ⟨Cb + Cs, by linarith, fun p hp hp4 T v x r hr => ?_⟩
   have hd1 : 1 ≤ d := by omega
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd1
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd1
   let μ := iidLaw d (threePointLaw p)
   let Y : (Site d → ℤ) → ℝ := fun η => matchedMeanU (sparseSinkField T v η) 0 T x
   let b := ∫ η, Y η ∂μ

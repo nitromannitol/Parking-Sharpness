@@ -48,26 +48,26 @@ def liftDown (c j : ℕ) : ℕ := if j = 0 then c else if j ≤ c then j - 1 els
 theorem liftDown_liftUp (c i : ℕ) : liftDown c (liftUp c i) = i := by
   unfold liftUp liftDown
   by_cases h1 : i < c
-  · rw [if_pos h1, if_neg (show ¬ (i + 1 = 0) by omega), if_pos (show i + 1 ≤ c by omega)]
+  · rw [ite_eq_left h1, ite_eq_right (show ¬ (i + 1 = 0) by omega), ite_eq_left (show i + 1 ≤ c by omega)]
     omega
   · by_cases h2 : i = c
-    · rw [if_neg h1, if_pos h2, if_pos rfl]
+    · rw [ite_eq_right h1, ite_eq_left h2, ite_eq_left rfl]
       omega
-    · rw [if_neg h1, if_neg h2, if_neg (show ¬ (i = 0) by omega),
-        if_neg (show ¬ (i ≤ c) by omega)]
+    · rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right (show ¬ (i = 0) by omega),
+        ite_eq_right (show ¬ (i ≤ c) by omega)]
 
 /-- `liftDown` is a right inverse of `liftUp`, so together they form the permutation
 `liftCycle`. -/
 theorem liftUp_liftDown (c j : ℕ) : liftUp c (liftDown c j) = j := by
   unfold liftUp liftDown
   by_cases h1 : j = 0
-  · rw [if_pos h1, if_neg (show ¬ (c < c) by omega), if_pos rfl]
+  · rw [ite_eq_left h1, ite_eq_right (show ¬ (c < c) by omega), ite_eq_left rfl]
     omega
   · by_cases h2 : j ≤ c
-    · rw [if_neg h1, if_pos h2, if_pos (show j - 1 < c by omega)]
+    · rw [ite_eq_right h1, ite_eq_left h2, ite_eq_left (show j - 1 < c by omega)]
       omega
-    · rw [if_neg h1, if_neg h2, if_neg (show ¬ (j < c) by omega),
-        if_neg (show ¬ (j = c) by omega)]
+    · rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right (show ¬ (j < c) by omega),
+        ite_eq_right (show ¬ (j = c) by omega)]
 
 /-- The cycle that carries the bottom label of the origin to the label `c`,
 pushing `0, …, c - 1` up by one, and fixes every index above `c`. -/
@@ -80,8 +80,8 @@ theorem liftCycle_apply (c i : ℕ) : liftCycle c i = liftUp c i := rfl
 /-- `liftCycle c` fixes every index strictly above `c`. -/
 theorem liftCycle_fixes (c : ℕ) : ∀ i, c + 1 ≤ i → liftCycle c i = i := by
   intro i hi
-  rw [liftCycle_apply, liftUp, if_neg (show ¬ (i < c) by omega),
-    if_neg (show ¬ (i = c) by omega)]
+  rw [liftCycle_apply, liftUp, ite_eq_right (show ¬ (i < c) by omega),
+    ite_eq_right (show ¬ (i = c) by omega)]
 
 /-- The realization with the tagged particle carried to the TOP label of the
 origin, so that the labels below it are exactly the particles of `ω`. -/
@@ -100,10 +100,10 @@ theorem delAt_swapData_fst (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : 
   funext x
   show (if x = 0 then (addParticle 0 ω.1) x - 1 else (addParticle 0 ω.1) x) = ω.1 x
   by_cases hx : x = 0
-  · rw [if_pos hx, hx]
+  · rw [ite_eq_left hx, hx]
     simp [addParticle]
-  · rw [if_neg hx]
-    simp only [addParticle, if_neg hx]
+  · rw [ite_eq_right hx]
+    simp only [addParticle, ite_eq_right hx]
 
 /-- `liftCycle (ω.1 0).toNat` fixes every label index at or above the particle count
 at the origin of `taggedData w rk ω`, by `liftCycle_fixes` and that this count is
@@ -131,8 +131,8 @@ theorem swapData_active (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) (ω : PDa
   have hperm : permLabel (0 : Site d) (liftCycle (ω.1 0).toNat) (0, (ω.1 0).toNat)
       = ((0 : Site d), 0) := by
     have : liftCycle (ω.1 0).toNat (ω.1 0).toNat = 0 := by
-      rw [liftCycle_apply, liftUp, if_neg (lt_irrefl _), if_pos rfl]
-    simp only [permLabel, this, if_true]
+      rw [liftCycle_apply, liftUp, ite_eq_right (lt_irrefl _), ite_eq_left rfl]
+    simp only [permLabel, this, ite_true]
   rw [swapData, hkey, hperm]
   exact h
 
@@ -147,29 +147,29 @@ theorem holeCount_delAt_swapData (w : ℕ → Fin d × Bool) (rk : ℕ → ℝ) 
     show taggedMove w ω.2.1
         ((q.1.1, if q.1.1 = 0 then liftCycle (ω.1 0).toNat q.1.2 else q.1.2), q.2) = ω.2.1 q
     by_cases hx : q.1.1 = (0 : Site d)
-    · rw [if_pos hx]
+    · rw [ite_eq_left hx]
       have hlt : q.1.2 < (ω.1 0).toNat := by rwa [hx] at hq
       have hup : liftCycle (ω.1 0).toNat q.1.2 = q.1.2 + 1 := by
-        rw [liftCycle_apply, liftUp, if_pos hlt]
+        rw [liftCycle_apply, liftUp, ite_eq_left hlt]
       rw [hup]
-      simp only [taggedMove, if_pos hx, if_neg (Nat.succ_ne_zero q.1.2)]
+      simp only [taggedMove, ite_eq_left hx, ite_eq_right (Nat.succ_ne_zero q.1.2)]
       simp only [Nat.add_sub_cancel, ← hx]
-    · rw [if_neg hx]
-      simp only [taggedMove, if_neg hx]
+    · rw [ite_eq_right hx]
+      simp only [taggedMove, ite_eq_right hx]
   · intro q hq
     rw [delAt_swapData_fst w rk ω] at hq
     show taggedRank rk ω.2.2
         ((q.1.1, if q.1.1 = 0 then liftCycle (ω.1 0).toNat q.1.2 else q.1.2), q.2) = ω.2.2 q
     by_cases hx : q.1.1 = (0 : Site d)
-    · rw [if_pos hx]
+    · rw [ite_eq_left hx]
       have hlt : q.1.2 < (ω.1 0).toNat := by rwa [hx] at hq
       have hup : liftCycle (ω.1 0).toNat q.1.2 = q.1.2 + 1 := by
-        rw [liftCycle_apply, liftUp, if_pos hlt]
+        rw [liftCycle_apply, liftUp, ite_eq_left hlt]
       rw [hup]
-      simp only [taggedRank, if_pos hx, if_neg (Nat.succ_ne_zero q.1.2)]
+      simp only [taggedRank, ite_eq_left hx, ite_eq_right (Nat.succ_ne_zero q.1.2)]
       simp only [Nat.add_sub_cancel, ← hx]
-    · rw [if_neg hx]
-      simp only [taggedRank, if_neg hx]
+    · rw [ite_eq_right hx]
+      simp only [taggedRank, ite_eq_right hx]
 
 /-- **`F Z = 0`**: once the tagged particle has survived to time `t`, no site of
 its range carries an unfilled hole in the realization that carries the other

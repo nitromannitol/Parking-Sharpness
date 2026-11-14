@@ -28,9 +28,9 @@ theorem exists_sparseSinkLambda_centered_moment (hBernstein : External.Bernstein
   obtain ⟨C, hC, hbound⟩ := exists_sparseSink_centered_moment hBernstein hd
   refine ⟨C, hC, fun p hp hp4 T r hr => ?_⟩
   have hd1 : 1 ≤ d := by omega
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd1
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd1
   let μ := (iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)
   let F : Site d → (Site d → ℤ) × FlatRoundNoise d → ℝ :=
     fun x z => sparseSinkTableU T 0 x z - sparseSinkMean p T x

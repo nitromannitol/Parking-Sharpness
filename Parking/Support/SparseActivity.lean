@@ -25,8 +25,8 @@ clipped field agrees almost surely with the original configuration and the initi
 count at each site is at least `-1`. -/
 theorem ae_sparse_H_le_one {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (t : ℕ) (x : Site d) : ∀ᵐ ω ∂(law d (threePointLaw p)), H ω t x ≤ 1 := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   have := LatticeProb.rankLaw_isProbability d
   have : SFinite (LatticeProb.stackLaw d) := by
     by_cases h : ∀ q : Site d × ℕ, IsProbabilityMeasure (LatticeProb.instructionLaw q.1)
@@ -50,14 +50,14 @@ hole probability `holeProb d (threePointLaw p) t`. -/
 theorem integral_sparse_H_eq_holeProb (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (t : ℕ) (x : Site d) :
     (∫ ω, (H ω t x : ℝ) ∂(law d (threePointLaw p))) = holeProb d (threePointLaw p) t := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
   have he : (fun ω : Data d => (H ω t x : ℝ)) =ᵐ[law d (threePointLaw p)]
       (fun ω => if H ω t x = 1 then (1 : ℝ) else 0) := by
     filter_upwards [ae_sparse_H_le_one hp hp4 t x] with ω hω
     by_cases h : H ω t x = 1
-    · simp only [h, if_true, Nat.cast_one]
+    · simp only [h, ite_true, Nat.cast_one]
     · have hz : H ω t x = 0 := by omega
-      simp only [hz, zero_ne_one, if_false, Nat.cast_zero]
+      simp only [hz, zero_ne_one, ite_false, Nat.cast_zero]
   have hS : MeasurableSet {ω : Data d | H ω t x = 1} :=
     (measurable_H t x) (measurableSet_singleton 1)
   rw [integral_congr_ae he, integral_ite_one_zero _ (fun ω => H ω t x = 1) hS]
@@ -69,8 +69,8 @@ increments and the hole-activity balance identity. -/
 theorem sparse_activity_mean (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) (t : ℕ) :
     Integrable (fun ω : Data d => (A ω t 0 : ℝ)) (law d (threePointLaw p)) ∧
       (∫ ω, (A ω t 0 : ℝ) ∂(law d (threePointLaw p))) = holeProb d (threePointLaw p) t := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   have hmp := measurePreserving_eval_infinitePi (fun _ : Site d => threePointLaw p) (0 : Site d)
   have hi : Integrable (fun η : Site d → ℤ => |(η 0 : ℝ)|) (iidLaw d (threePointLaw p)) :=
     by simpa only [iidLaw, Function.comp_def] using

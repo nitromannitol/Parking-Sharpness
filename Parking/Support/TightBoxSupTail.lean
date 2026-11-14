@@ -46,9 +46,9 @@ theorem exists_levelInc_tail_moment (ν : Measure ℤ) (hν : CriticalLaw ν) (p
       (∫ η : Site 2 → ℝ,
           (∑ k ∈ Finset.range (N + 1), levelInc A hA n (n1 + 1 + k) η) ^ p
           ∂(iidLaw 2 (realLaw ν))) ≤ C := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   set r : ℝ := jensenRatio p with hrdef
   have hr0 : 0 < r := jensenRatio_pos p
   have hr1 : r < 1 := jensenRatio_lt_one (by linarith)

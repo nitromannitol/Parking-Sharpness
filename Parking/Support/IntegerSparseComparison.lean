@@ -31,7 +31,7 @@ theorem threePoint_convex_integral_le (ν : Measure ℤ) [IsProbabilityMeasure �
     {p : ℝ} (hp : 0 ≤ p) (hp2 : 2 * p ≤ 1) (hpν : p ≤ ν.real {k : ℤ | 1 ≤ k})
     (f : ℝ → ℝ) {K : ℝ≥0} (hc : ConvexOn ℝ Set.univ f) (hf : LipschitzWith K f) :
     (∫ z, f z ∂(realLaw (threePointLaw p))) ≤ ∫ z, f z ∂(realLaw ν) := by
-  haveI := threePointLaw_isProbability hp hp2
+  have := threePointLaw_isProbability hp hp2
   have hX : Integrable (fun k : ℤ => (k : ℝ)) ν := by
     exact hint.mono' measurable_intCastReal.aestronglyMeasurable
       (Filter.Eventually.of_forall fun k => by simp only [Real.norm_eq_abs]; rfl)
@@ -47,7 +47,7 @@ theorem threePoint_convex_integral_le (ν : Measure ℤ) [IsProbabilityMeasure �
   have hlin : Integrable (fun k : ℤ => f 0 + (k : ℝ) * b) ν :=
     (integrable_const (f 0)).add (hX.mul_const b)
   have hbound := integral_mono (hlin.add hI) hfi (fun k => by
-    simpa only [Pi.add_apply, S, Set.indicator_apply, Set.mem_setOf_eq, gap, b] using
+    simpa only [Pi.add_apply, S, Set.indicator_apply, Set.mem_ofPred_eq, gap, b] using
       convex_integer_minorant f hc k)
   simp only [Pi.add_apply, integral_add hlin hI,
     integral_add (integrable_const (f 0)) (hX.mul_const b), integral_mul_const,

@@ -136,7 +136,7 @@ theorem exists_signed_level_of_pathwise {d : ℕ} {Ω : Type} [MeasurableSpace �
   have hBm : ∀ k, MeasurableSet (B k) := fun k => measurableSet_le measurable_const hSm
   have hBmono : Monotone B := by
     intro k l hkl ω hω
-    simp only [hB, Set.mem_setOf_eq] at hω ⊢
+    simp only [hB, Set.mem_ofPred_eq] at hω ⊢
     refine le_trans ?_ hω
     have : ((k : ℝ) + 1) ≤ ((l : ℝ) + 1) := by exact_mod_cast Nat.succ_le_succ hkl
     exact one_div_le_one_div_of_le (by positivity) this
@@ -145,11 +145,11 @@ theorem exists_signed_level_of_pathwise {d : ℕ} {Ω : Type} [MeasurableSpace �
     constructor
     · rintro hω
       obtain ⟨k, hk⟩ := Set.mem_iUnion.mp hω
-      simp only [hB, Set.mem_setOf_eq] at hk
+      simp only [hB, Set.mem_ofPred_eq] at hk
       have hp : (0 : ℝ) < 1 / (k + 1 : ℝ) := by positivity
       exact lt_of_lt_of_le hp hk
     · intro hω
-      simp only [Set.mem_setOf_eq] at hω
+      simp only [Set.mem_ofPred_eq] at hω
       obtain ⟨k, hk⟩ := exists_nat_one_div_lt hω
       exact Set.mem_iUnion.mpr ⟨k, hk.le⟩
   have hchain : ENNReal.ofReal (1 - ε) < ⨆ k, Q (B k) := by

@@ -37,7 +37,7 @@ theorem rangeCard_mono (X : ℕ → Site d) : Monotone fun t : ℕ => LatticePro
 /-- The expected range is nondecreasing in time. -/
 theorem integral_rangeCard_mono (hd : 1 ≤ d) (x : Site d) :
     Monotone fun t : ℕ => ∫ X, (LatticeProb.rangeCard X t : ℝ) ∂(LatticeProb.siteWalkLaw d x) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   intro s t hst
   refine integral_mono (LatticeProb.integrable_rangeCard x s)
     (LatticeProb.integrable_rangeCard x t) fun X => ?_
@@ -50,7 +50,7 @@ theorem rangeCard_half_mean_prob (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
       {X : ℕ → Site d | (1 / 2 : ℝ)
           * (∫ Y, (LatticeProb.rangeCard Y t : ℝ) ∂(LatticeProb.siteWalkLaw d x))
         < (LatticeProb.rangeCard X t : ℝ)} := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hGpos : (0 : ℝ) < LatticeProb.srwGreen d (t + 1) 0 :=
     lt_of_lt_of_le zero_lt_one (LatticeProb.one_le_srwGreen_origin t)
   have hmpos : 0 < ∫ X, (LatticeProb.rangeCard X t : ℝ) ∂(LatticeProb.siteWalkLaw d x) := by
@@ -89,7 +89,7 @@ theorem exists_horizon_high (hd : 3 ≤ d) :
     intro t
     have h1 : d ≠ 1 := by omega
     have h2 : d ≠ 2 := by omega
-    simp only [greenScale, if_neg h1, if_neg h2]
+    simp only [greenScale, ite_eq_right h1, ite_eq_right h2]
   refine ⟨c⁻¹ + 1, by positivity, fun m => ?_⟩
   refine ⟨⌈(m : ℝ) / c⌉₊, ?_, ?_⟩
   · have hmm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m

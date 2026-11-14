@@ -49,13 +49,13 @@ within radius `A`. No hat-interpolation, no clamping error: the reward itself is
 the box. -/
 theorem cutoffReward_eq_of_le (F : ℕ → Site d → ℝ) (A : ℝ) (k : ℕ) (z : Site d)
     (hz : (graphNorm z : ℝ) ≤ A) : cutoffReward F A k z = F k z :=
-  if_pos hz
+  ite_eq_left hz
 
 /-- The cutoff reward vanishes at every site outside the box of `Parking.graphNorm`-radius
 `A`, directly from the `if`-branch defining `cutoffReward`. -/
 theorem cutoffReward_eq_zero_of_lt (F : ℕ → Site d → ℝ) (A : ℝ) (k : ℕ) (z : Site d)
     (hz : ¬ (graphNorm z : ℝ) ≤ A) : cutoffReward F A k z = 0 :=
-  if_neg hz
+  ite_eq_right hz
 
 /-- **A bound on the true reward bounds the cutoff reward, everywhere, not just inside the
 box.** -/
@@ -94,8 +94,8 @@ def cutoffStoppingSup (F : ℕ → Site d → ℝ) (A : ℝ) (n : ℕ) : ℝ :=
 /-- **The cutoff value is bounded by any bound on the true reward.** -/
 theorem abs_cutoffStoppingSup_le (hd : 1 ≤ d) (F : ℕ → Site d → ℝ) (A : ℝ) {M : ℝ} (hM : 0 ≤ M)
     (hFb : ∀ k y, |F k y| ≤ M) (n : ℕ) : |cutoffStoppingSup F A n| ≤ M := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   unfold cutoffStoppingSup
   have hbd : ∀ k y, |cutoffReward F A k y| ≤ M := abs_cutoffReward_le F A hM hFb
   have hub : stoppingSup d (cutoffReward F A) n (0 : Site d) ≤ M :=
@@ -140,8 +140,8 @@ theorem abs_terminalValue_sub_cutoffReward_le (hd : 1 ≤ d) (F : ℕ → Site d
     (hσ : IsStoppingTimeLE n σ) :
     |terminalValue F (0 : Site d) σ - terminalValue (cutoffReward F A) (0 : Site d) σ|
       ≤ M * (walkLaw d).real {p | ∃ k ≤ n, A < (graphNorm (walkPath (0 : Site d) p k) : ℝ)} := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hM : 0 ≤ M := le_trans (abs_nonneg _) (hFb 0 0)
   have hF := integrable_terminalReward hd hσ F (0 : Site d)
   have hG := integrable_terminalReward hd hσ (cutoffReward F A) (0 : Site d)
@@ -151,7 +151,7 @@ theorem abs_terminalValue_sub_cutoffReward_le (hd : 1 ≤ d) (F : ℕ → Site d
     have hEeq : E = ⋃ k ∈ Finset.range (n + 1),
         {p | A < (graphNorm (walkPath (0 : Site d) p k) : ℝ)} := by
       ext p
-      simp only [hEdef, Set.mem_setOf_eq, Set.mem_iUnion, Finset.mem_range]
+      simp only [hEdef, Set.mem_ofPred_eq, Set.mem_iUnion, Finset.mem_range]
       constructor
       · rintro ⟨k, hk, hlt⟩; exact ⟨k, by omega, hlt⟩
       · rintro ⟨k, hk, hlt⟩; exact ⟨k, by omega, hlt⟩
@@ -170,9 +170,9 @@ theorem abs_terminalValue_sub_cutoffReward_le (hd : 1 ≤ d) (F : ℕ → Site d
     intro p
     unfold cutoffReward
     by_cases hbox : (graphNorm (walkPath (0 : Site d) p (σ p)) : ℝ) ≤ A
-    · rw [if_pos hbox, sub_self, abs_zero]
+    · rw [ite_eq_left hbox, sub_self, abs_zero]
       exact Set.indicator_nonneg (fun _ _ => hM) p
-    · rw [if_neg hbox, sub_zero]
+    · rw [ite_eq_right hbox, sub_zero]
       have hmem : p ∈ E := ⟨σ p, hσ.1 p, not_le.mp hbox⟩
       rw [Set.indicator_of_mem hmem]
       exact hFb (σ p) (walkPath (0 : Site d) p (σ p))
@@ -240,8 +240,8 @@ depending only on `d`. -/
 theorem abs_stoppingSup_sub_cutoffStoppingSup_le' (hd : 1 ≤ d) (F : ℕ → Site d → ℝ) {A M : ℝ}
     (hA : 0 < A) (hFb : ∀ k y, |F k y| ≤ M) (n : ℕ) :
     |stoppingSup d F n (0 : Site d) - cutoffStoppingSup F A n| ≤ M * ((n : ℝ) * d ^ 2 / A ^ 2) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hM : 0 ≤ M := le_trans (abs_nonneg _) (hFb 0 0)
   have h1 := abs_stoppingSup_sub_cutoffStoppingSup_le hd F A M hFb n
   refine h1.trans (mul_le_mul_of_nonneg_left ?_ hM)

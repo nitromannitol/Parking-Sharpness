@@ -19,9 +19,9 @@ namespace Parking
 theorem aestronglyMeasurable_yfieldSup3 (ν : Measure ℤ) (hν : CriticalLaw ν) {A : ℝ} (hA : 0 ≤ A)
     (R n : ℕ) (hn : 1 ≤ n) :
     AEStronglyMeasurable (fun η : Site 2 → ℝ => yfieldSup3 A hA R n η) (iidLaw 2 (realLaw ν)) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   set G1 : (Site 2 → ℝ) → ℝ := fun η => ∑ s ∈ Finset.range R, levelIncFixed A hA R n (s+1) η
     with hG1def
   set G2 : (Site 2 → ℝ) → ℝ := fun η => LatticeProb.dtail (fun m => levelInc A hA n m η) R
@@ -69,9 +69,9 @@ theorem exists_yfieldSup3_L2_moment (ν : Measure ℤ) (hν : CriticalLaw ν) (p
       Integrable (fun η : Site 2 → ℝ => (yfieldSup3 A hA R n η) ^ 2) (iidLaw 2 (realLaw ν)) ∧
       (∫ η : Site 2 → ℝ, (yfieldSup3 A hA R n η) ^ 2 ∂(iidLaw 2 (realLaw ν))) ≤
         (D * (((R : ℝ) + 1) ^ 2)) ^ (2 / p) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   obtain ⟨K, hKnn, hKall⟩ := exists_yfieldSup3_moment ν hν p hp
   refine ⟨K, hKnn, fun A hA => ?_⟩
   obtain ⟨D, hDnn, hDbd, hbound⟩ := hKall A hA

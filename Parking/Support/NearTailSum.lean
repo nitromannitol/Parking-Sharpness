@@ -76,13 +76,13 @@ theorem sum_Ico_le_of_tsum {f g : ℕ → ℝ} {T C : ℝ} {N : ℕ} (hC : 0 ≤
     intro s hs
     have hNs : N ≤ s := (Finset.mem_Ico.mp hs).1
     have hTs : T < (s : ℝ) := lt_of_lt_of_le hNT (by exact_mod_cast hNs)
-    rw [if_pos hTs]
+    rw [ite_eq_left hTs]
     exact hfg s
   have hnonneg : ∀ i : ℕ, i ∉ Finset.Ico N n → 0 ≤ (if T < (i : ℝ) then g i else 0) := by
     intro i _
     by_cases hi : T < (i : ℝ)
-    · rw [if_pos hi]; exact hg i
-    · rw [if_neg hi]
+    · rw [ite_eq_left hi]; exact hg i
+    · rw [ite_eq_right hi]
   calc ∑ s ∈ Finset.Ico N n, f s
       ≤ ∑ s ∈ Finset.Ico N n, C * (if T < (s : ℝ) then g s else 0) := Finset.sum_le_sum hstep
     _ = C * ∑ s ∈ Finset.Ico N n, (if T < (s : ℝ) then g s else 0) := by rw [Finset.mul_sum]

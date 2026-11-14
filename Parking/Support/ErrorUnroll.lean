@@ -130,7 +130,7 @@ theorem iterate_walkOp_apply_zero (m : ℕ) (u : Site d → ℝ) :
         simp
       · intro x hx
         show (if x = 0 then (1 : ℝ) else 0) * u x = 0
-        rw [if_neg hx, zero_mul]
+        rw [ite_eq_right hx, zero_mul]
   | succ m ih =>
       rw [Function.iterate_succ_apply, ih]
       have hshift : ∀ i : Fin d,

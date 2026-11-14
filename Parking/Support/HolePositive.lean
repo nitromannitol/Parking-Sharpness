@@ -47,9 +47,9 @@ theorem clippedHole_overwrite_box (η : Site d → ℤ) (ρ : Label d × ℕ →
 theorem holeProb_pos (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) (T : ℕ) :
     0 < holeProb d (threePointLaw p) T := by
   classical
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
   rw [holeProb_eq_clippedTable hd _ (ae_clipSparse_threePointLaw p) T]
   apply ENNReal.toReal_pos
   · by_contra hz

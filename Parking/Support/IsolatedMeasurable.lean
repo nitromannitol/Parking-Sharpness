@@ -30,7 +30,7 @@ measurable event `H · t y = 1` with a countable intersection over `z` of the
 measurable complementary events at the other sites. -/
 theorem measurableSet_IsolatedHole (t K : ℕ) (y : Site d) :
     MeasurableSet {ω : Data d | IsolatedHole ω t K y} := by
-  simp only [IsolatedHole, Set.setOf_and, Set.setOf_forall]
+  simp only [IsolatedHole, Set.ofPred_and, Set.ofPred_forall]
   apply MeasurableSet.inter ((measurable_H t y) (measurableSet_singleton 1))
   apply MeasurableSet.iInter
   intro z
@@ -51,19 +51,19 @@ theorem measurableSet_GoodHole (t R : ℕ) (y : Site d) :
 active-site condition and the pointwise `Opposite` predicate. -/
 theorem measurableSet_mem_safeSites (t R : ℕ) (y w : Site d) :
     MeasurableSet {ω : Data d | w ∈ safeSites ω t R y} := by
-  simp only [mem_safeSites, Set.setOf_and, Set.setOf_forall]
+  simp only [mem_safeSites, Set.ofPred_and, Set.ofPred_forall]
   apply MeasurableSet.inter (MeasurableSet.const _)
   apply MeasurableSet.iInter
   intro a
   simp only [mem_activeSites]
   by_cases hO : Opposite y a w
-  · simp only [hO, implies_true, Set.setOf_true]
+  · simp only [hO, implies_true, Set.ofPred_true]
     exact MeasurableSet.univ
   · simp only [hO, imp_false, not_and]
     by_cases hB : a ∈ boxFinset y (2 * d * R)
     · simp only [hB, true_implies]
       exact (measurableSet_lt measurable_const (measurable_A t a)).compl
-    · simp only [hB, false_implies, Set.setOf_true]
+    · simp only [hB, false_implies, Set.ofPred_true]
       exact MeasurableSet.univ
 
 end Parking

@@ -56,10 +56,10 @@ theorem sq_greenDiff_le_gamma (hd : 1 ≤ d) (m : ℕ) {y z : Site d}
     have hk : 0 ≤ kern d y z' := by
       rw [kern]
       by_cases hcase : z' ∈ nbrFinset y
-      · rw [if_pos hcase]; positivity
-      · rw [if_neg hcase]
+      · rw [ite_eq_left hcase]; positivity
+      · rw [ite_eq_right hcase]
     positivity
-  rw [kern, if_pos hz] at hterm
+  rw [kern, ite_eq_left hz] at hterm
   rw [inv_mul_le_iff₀ hdpos] at hterm
   linarith
 
@@ -185,12 +185,12 @@ theorem greenIncrement_pos (hd : 1 ≤ d) {n : ℕ} (hn : 2 ≤ n) :
         green d 1 (unit i₀ + unit i) + green d 1 (unit i₀ - unit i)
           = if i = i₀ then 1 else 0 := by
       intro i
-      rw [green_one_apply, green_one_apply, if_neg (unit_add_unit_ne_zero i₀ i)]
+      rw [green_one_apply, green_one_apply, ite_eq_right (unit_add_unit_ne_zero i₀ i)]
       by_cases h : i = i₀
-      · rw [if_pos ((unit_sub_unit_eq_zero_iff i₀ i).mpr h), if_pos h, zero_add]
-      · rw [if_neg (fun hc => h ((unit_sub_unit_eq_zero_iff i₀ i).mp hc)), if_neg h, zero_add]
+      · rw [ite_eq_left ((unit_sub_unit_eq_zero_iff i₀ i).mpr h), ite_eq_left h, zero_add]
+      · rw [ite_eq_right (fun hc => h ((unit_sub_unit_eq_zero_iff i₀ i).mp hc)), ite_eq_right h, zero_add]
     rw [Finset.sum_congr rfl (fun i _ => hterm i), Finset.sum_ite_eq' Finset.univ i₀
-      (fun _ : Fin d => (1 : ℝ)), if_pos (Finset.mem_univ i₀)]
+      (fun _ : Fin d => (1 : ℝ)), ite_eq_left (Finset.mem_univ i₀)]
     exact one_div _
   have hdpos : (0 : ℝ) < 2 * (d : ℝ) := by
     have : (1 : ℝ) ≤ (d : ℝ) := by exact_mod_cast hd
@@ -204,7 +204,7 @@ theorem greenIncrement_pos (hd : 1 ≤ d) {n : ℕ} (hn : 2 ≤ n) :
     nlinarith [mul_le_mul_of_nonneg_left hd2 (le_of_lt hinvpos)]
   have hval : |green d 1 (0 : Site d) - walkOp (green d 1) (unit i₀)|
       = 1 - (2 * (d : ℝ))⁻¹ := by
-    rw [green_one_apply, if_pos rfl, hwalk]
+    rw [green_one_apply, ite_eq_left rfl, hwalk]
     rw [abs_of_nonneg (by linarith)]
   calc (0 : ℝ) < 1 - (2 * (d : ℝ))⁻¹ := hpos
     _ = |green d 1 (0 : Site d) - walkOp (green d 1) (unit i₀)| := hval.symm

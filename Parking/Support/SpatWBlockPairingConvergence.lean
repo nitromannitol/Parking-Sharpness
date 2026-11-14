@@ -108,7 +108,7 @@ theorem tendsto_integral_barDivisible_block_pairings_of_lipschitz
     rw [heq]
     exact hFlip.continuous.measurable.comp ((hVm R).prodMk
       (Measurable.of_eval fun j => measurable_integral_barDivisible_mul R t K hK (h j) (hh j)))
-  haveI : ∀ _ : ℝ, IsProbabilityMeasure (law d ν) := fun _ => inferInstance
+  have : ∀ _ : ℝ, IsProbabilityMeasure (law d ν) := fun _ => inferInstance
   have hconv := LatticeProb.Scaling.FddBlockTightness.tendsto_integral_of_fdd_of_equicontinuous
     (Φ := Φ) hK (Filter.Eventually.of_forall hVm) hVlimm
     (Filter.Eventually.of_forall fun R z => measurable_barDivisible R t z)

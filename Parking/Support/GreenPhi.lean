@@ -73,22 +73,22 @@ theorem exists_green_phi (d : ℕ) (hd : 1 ≤ d) :
   by_cases h1 : d = 1
   · subst h1
     constructor
-    · simp only [greenL2Rate, phi, if_pos (by norm_num : (1:ℕ) ≤ 3)]
+    · simp only [greenL2Rate, phi, ite_eq_left (by norm_num : (1:ℕ) ≤ 3)]
       norm_num
       nlinarith [hbase ((3:ℝ)/4) (by norm_num), hone ((3:ℝ)/4) (by norm_num)]
-    · simp only [greenMaxRate, phi, if_pos (by norm_num : (1:ℕ) ≤ 3)]
+    · simp only [greenMaxRate, phi, ite_eq_left (by norm_num : (1:ℕ) ≤ 3)]
       norm_num
       nlinarith [hbase ((1:ℝ)/2) (by norm_num), hexp ((1:ℝ)/2) ((3:ℝ)/4) (by norm_num),
         hone ((3:ℝ)/4) (by norm_num)]
   by_cases h2 : d = 2
   · subst h2
     constructor
-    · simp only [greenL2Rate, phi, if_neg (by norm_num : ¬(2:ℕ) = 1),
-        if_pos (by norm_num : (2:ℕ) ≤ 3)]
+    · simp only [greenL2Rate, phi, ite_eq_right (by norm_num : ¬(2:ℕ) = 1),
+        ite_eq_left (by norm_num : (2:ℕ) ≤ 3)]
       norm_num
       nlinarith [hbase ((1:ℝ)/2) (by norm_num), hone ((1:ℝ)/2) (by norm_num)]
-    · simp only [greenMaxRate, phi, if_neg (by norm_num : ¬(2:ℕ) = 1),
-        if_pos (by norm_num : (2:ℕ) ≤ 3)]
+    · simp only [greenMaxRate, phi, ite_eq_right (by norm_num : ¬(2:ℕ) = 1),
+        ite_eq_left (by norm_num : (2:ℕ) ≤ 3)]
       norm_num
       have hlog := log_le_two_sqrt (show (0:ℝ) < (m:ℝ) by linarith)
       have hsq : Real.sqrt (m:ℝ) = (m:ℝ) ^ ((1:ℝ)/2) := Real.sqrt_eq_rpow _
@@ -97,35 +97,35 @@ theorem exists_green_phi (d : ℕ) (hd : 1 ≤ d) :
   by_cases h3 : d = 3
   · subst h3
     constructor
-    · simp only [greenL2Rate, phi, if_neg (by norm_num : ¬(3:ℕ) = 1),
-        if_neg (by norm_num : ¬(3:ℕ) = 2), if_pos (by norm_num : (3:ℕ) ≤ 3)]
+    · simp only [greenL2Rate, phi, ite_eq_right (by norm_num : ¬(3:ℕ) = 1),
+        ite_eq_right (by norm_num : ¬(3:ℕ) = 2), ite_eq_left (by norm_num : (3:ℕ) ≤ 3)]
       norm_num
       nlinarith [hbase ((1:ℝ)/4) (by norm_num), hone ((1:ℝ)/4) (by norm_num)]
-    · simp only [greenMaxRate, phi, if_neg (by norm_num : ¬(3:ℕ) = 1),
-        if_neg (by norm_num : ¬(3:ℕ) = 2), if_pos (by norm_num : (3:ℕ) ≤ 3)]
+    · simp only [greenMaxRate, phi, ite_eq_right (by norm_num : ¬(3:ℕ) = 1),
+        ite_eq_right (by norm_num : ¬(3:ℕ) = 2), ite_eq_left (by norm_num : (3:ℕ) ≤ 3)]
       norm_num
       nlinarith [hone ((1:ℝ)/4) (by norm_num)]
   · have hd4 : 4 ≤ d := by omega
     have hphi : phi d (m:ℝ) = Real.log ((m:ℝ) + 2) := by
-      rw [phi, if_neg (by omega : ¬ d ≤ 3)]
+      rw [phi, ite_eq_right (by omega : ¬ d ≤ 3)]
     have hlogm : Real.log (m:ℝ) ≤ Real.log ((m:ℝ) + 2) :=
       Real.log_le_log (by linarith) (by linarith)
     have hlog14 : 1/4 ≤ Real.log (m:ℝ) := log_ge_quarter hm
     have hone2 : 1 ≤ 2 * Real.log ((m:ℝ) + 2) := one_le_log_add_two hm
     have hmax : greenMaxRate d (m:ℕ) = 1 := by
-      rw [greenMaxRate, if_neg (by omega : ¬ d = 1), if_neg (by omega : ¬ d = 2)]
+      rw [greenMaxRate, ite_eq_right (by omega : ¬ d = 1), ite_eq_right (by omega : ¬ d = 2)]
     by_cases h4 : d = 4
     · subst h4
       refine ⟨?_, ?_⟩
-      · rw [greenL2Rate, if_neg (by norm_num : ¬(4:ℕ) = 1), if_neg (by norm_num : ¬(4:ℕ) = 2),
-          if_neg (by norm_num : ¬(4:ℕ) = 3), hphi]
+      · rw [greenL2Rate, ite_eq_right (by norm_num : ¬(4:ℕ) = 1), ite_eq_right (by norm_num : ¬(4:ℕ) = 2),
+          ite_eq_right (by norm_num : ¬(4:ℕ) = 3), hphi]
         calc Real.sqrt (Real.log (m:ℝ)) ≤ 2 * Real.log (m:ℝ) := sqrt_le_two_mul hlog14
           _ ≤ 2 * Real.log ((m:ℝ) + 2) := by linarith
       · rw [hmax, hphi]; linarith
     · have hd5 : 5 ≤ d := by omega
       have hl2 : greenL2Rate d (m:ℕ) = 1 := by
-        rw [greenL2Rate, if_neg (by omega : ¬ d = 1), if_neg (by omega : ¬ d = 2),
-          if_neg (by omega : ¬ d = 3), if_neg (by omega : ¬ d = 4)]
+        rw [greenL2Rate, ite_eq_right (by omega : ¬ d = 1), ite_eq_right (by omega : ¬ d = 2),
+          ite_eq_right (by omega : ¬ d = 3), ite_eq_right (by omega : ¬ d = 4)]
       refine ⟨?_, ?_⟩
       · rw [hl2, hphi]; linarith
       · rw [hmax, hphi]; linarith

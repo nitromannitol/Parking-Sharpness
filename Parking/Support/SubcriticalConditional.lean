@@ -65,14 +65,14 @@ theorem taggedDriver_unshiftOrigin (w : ℕ → Fin d × Bool) (ω : PData d) :
     show (if x = (0 : Site d) then (unshiftOrigin ω).1 x + 1 else (unshiftOrigin ω).1 x)
       = ω.1 x
     by_cases hx : x = (0 : Site d)
-    · rw [if_pos hx, hx]
+    · rw [ite_eq_left hx, hx]
       show ((if (0 : Site d) = (0 : Site d) then ω.1 (0 : Site d) - 1
         else ω.1 (0 : Site d)) + 1) = ω.1 (0 : Site d)
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       omega
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       show (if x = (0 : Site d) then ω.1 x - 1 else ω.1 x) = ω.1 x
-      rw [if_neg hx]
+      rw [ite_eq_right hx]
   have hm : taggedMove w (unshiftOrigin ω).2.1 = (setMoves w ω).2.1 := by
     funext q
     obtain ⟨⟨x, i⟩, s⟩ := q
@@ -83,10 +83,10 @@ theorem taggedDriver_unshiftOrigin (w : ℕ → Fin d × Bool) (ω : PData d) :
     · subst hx
       by_cases hi : i = 0
       · subst hi
-        rw [if_pos rfl, if_pos rfl, if_pos rfl]
+        rw [ite_eq_left rfl, ite_eq_left rfl, ite_eq_left rfl]
       · have hne : ¬ ((((0 : Site d), i) : Label d) = ((0 : Site d), 0)) := by
           simp [hi]
-        rw [if_pos rfl, if_neg hi, if_neg hne]
+        rw [ite_eq_left rfl, ite_eq_right hi, ite_eq_right hne]
         show (unshiftOrigin ω).2.1 ((((0 : Site d), i - 1) : Label d), s)
           = ω.2.1 ((((0 : Site d), i) : Label d), s)
         show (if (0 : Site d) = (0 : Site d) then
@@ -94,14 +94,14 @@ theorem taggedDriver_unshiftOrigin (w : ℕ → Fin d × Bool) (ω : PData d) :
           else ω.2.1 ((((0 : Site d), i - 1) : Label d), s))
           = ω.2.1 ((((0 : Site d), i) : Label d), s)
         have hii : i - 1 + 1 = i := Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero hi)
-        rw [if_pos rfl, hii]
+        rw [ite_eq_left rfl, hii]
     · have hne : ¬ ((((x, i) : Label d)) = ((0 : Site d), 0)) := by
         intro hh
         exact hx (congrArg Prod.fst hh)
-      rw [if_neg hx, if_neg hne]
+      rw [ite_eq_right hx, ite_eq_right hne]
       show (if x = (0 : Site d) then ω.2.1 ((((0 : Site d), i + 1) : Label d), s)
         else ω.2.1 ((((x, i) : Label d)), s)) = ω.2.1 ((((x, i) : Label d)), s)
-      rw [if_neg hx]
+      rw [ite_eq_right hx]
   have hr : taggedRank (originRankOf ω) (unshiftOrigin ω).2.2 = (setMoves w ω).2.2 := by
     funext q
     obtain ⟨⟨x, i⟩, s⟩ := q
@@ -112,9 +112,9 @@ theorem taggedDriver_unshiftOrigin (w : ℕ → Fin d × Bool) (ω : PData d) :
     · subst hx
       by_cases hi : i = 0
       · subst hi
-        rw [if_pos rfl, if_pos rfl]
+        rw [ite_eq_left rfl, ite_eq_left rfl]
         rfl
-      · rw [if_pos rfl, if_neg hi]
+      · rw [ite_eq_left rfl, ite_eq_right hi]
         show (unshiftOrigin ω).2.2 ((((0 : Site d), i - 1) : Label d), s)
           = ω.2.2 ((((0 : Site d), i) : Label d), s)
         show (if (0 : Site d) = (0 : Site d) then
@@ -122,11 +122,11 @@ theorem taggedDriver_unshiftOrigin (w : ℕ → Fin d × Bool) (ω : PData d) :
           else ω.2.2 ((((0 : Site d), i - 1) : Label d), s))
           = ω.2.2 ((((0 : Site d), i) : Label d), s)
         have hii : i - 1 + 1 = i := Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero hi)
-        rw [if_pos rfl, hii]
-    · rw [if_neg hx]
+        rw [ite_eq_left rfl, hii]
+    · rw [ite_eq_right hx]
       show (if x = (0 : Site d) then ω.2.2 ((((0 : Site d), i + 1) : Label d), s)
         else ω.2.2 ((((x, i) : Label d)), s)) = ω.2.2 ((((x, i) : Label d)), s)
-      rw [if_neg hx]
+      rw [ite_eq_right hx]
   show PDriver.mk (addParticle (0 : Site d) (unshiftOrigin ω).1)
       (taggedMove w (unshiftOrigin ω).2.1) (taggedRank (originRankOf ω) (unshiftOrigin ω).2.2)
     = PDriver.mk (setMoves w ω).1 (setMoves w ω).2.1 (setMoves w ω).2.2
@@ -169,13 +169,13 @@ theorem originRank_unshiftOrigin (ω : PData d) :
   · show (if i = 0 then originRankOf ω s
       else (unshiftOrigin ω).2.2 ((((0 : Site d), i - 1) : Label d), s))
       = ω.2.2 ((((0 : Site d), i) : Label d), s)
-    rw [if_neg hi]
+    rw [ite_eq_right hi]
     show (if (0 : Site d) = (0 : Site d) then
         ω.2.2 ((((0 : Site d), (i - 1) + 1) : Label d), s)
       else ω.2.2 ((((0 : Site d), i - 1) : Label d), s))
       = ω.2.2 ((((0 : Site d), i) : Label d), s)
     have hii : i - 1 + 1 = i := Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero hi)
-    rw [if_pos rfl, hii]
+    rw [ite_eq_left rfl, hii]
 
 /-- The prescription `originRank` carries at `unshiftOrigin ω`, together with the bottom
 particle's own uniforms, is injective as soon as `ω`'s own uniform-variable family is, by
@@ -343,12 +343,12 @@ theorem measurePreserving_graftOrigin (hd : 1 ≤ d) (ν : Measure ℤ) [IsProba
     MeasurePreserving (fun p : PData d × PData d => graftOrigin p.1 p.2)
       ((pDataLaw d ν).prod (pDataLaw d ν)) (pDataLaw d ν) := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
   have hsp := measurePreserving_pairSplice (LatticeProb.iidLaw d ν) (noiseLaw d)
     (measurePreserving_countComb ν ({(0 : Site d)} : Set (Site d)))
     (measurePreserving_noiseComb hd {p : Label d | p.1 = (0 : Site d)})
@@ -374,12 +374,12 @@ theorem measurePreserving_graftOrigin (hd : 1 ≤ d) (ν : Measure ℤ) [IsProba
 /-- The count at the origin has the one-site law. -/
 theorem pDataLaw_eta_zero (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] (m : ℤ) :
     (pDataLaw d ν) {ω : PData d | ω.1 (0 : Site d) = m} = ν {m} := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
   have h1 : MeasurePreserving (Prod.fst : PData d → (Site d → ℤ)) (pDataLaw d ν)
       (LatticeProb.iidLaw d ν) := by
     unfold pDataLaw
@@ -406,13 +406,13 @@ theorem survivalGivenWalk_le_of_graft (hd : 1 ≤ d) {ν : Measure ℤ} [IsProba
         ∫ ω, graftSurvivalObs w r ω₁ t ω ∂(pDataLaw d ν) ≤ B) :
     survivalGivenWalk d ν k t w ≤ B := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by unfold pDataLaw; infer_instance
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (pDataLaw d ν) := by unfold pDataLaw; infer_instance
   have hcnt : MeasurableSet {ω' : PData d | ω'.1 (0 : Site d) = (k : ℤ)} := by
     have hm : Measurable fun ω : PData d => ω.1 (0 : Site d) :=
       (measurable_pi_apply (0 : Site d)).comp measurable_fst

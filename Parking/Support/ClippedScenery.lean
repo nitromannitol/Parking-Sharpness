@@ -29,8 +29,8 @@ theorem exists_clipped_scenery_norm_bound (hd : 5 ≤ d) :
   refine ⟨C, hC, fun p hp hp4 T x r hr => ?_⟩
   have hd1 : 1 ≤ d := by omega
   have hr0 : 0 < r := by linarith
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   let μ := iidLaw d (threePointLaw p)
   let m := meanU (law d (threePointLaw p)) T
   let M : (Site d → ℤ) → ℝ := fun η => matchedMeanU (clippedField η) 0 T x

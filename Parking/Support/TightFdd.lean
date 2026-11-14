@@ -27,8 +27,8 @@ theorem integral_sum_mul_sum (ν : Measure ℤ) (hν : CriticalLaw ν) (S : Fins
     (a b : Site 2 → ℝ) :
     ∫ η : Site 2 → ℝ, (∑ z ∈ S, a z * η z) * (∑ z ∈ S, b z * η z) ∂(iidLaw 2 (realLaw ν))
       = (∫ x : ℝ, x ^ 2 ∂(realLaw ν)) * ∑ z ∈ S, a z * b z := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hterm : ∀ z z' : Site 2, Integrable
       (fun η : Site 2 → ℝ => (a z * η z) * (b z' * η z')) (iidLaw 2 (realLaw ν)) := by
     intro z z'
@@ -139,8 +139,8 @@ theorem tendsto_sum_orientedBoxRewardCoeff_mul (ν : Measure ℤ) (hν : Critica
     (hSu' : ∀ n, orientedBoxRewardSupport T n u' ⊆ S n) :
     Tendsto (fun n => ∑ z ∈ S n, orientedBoxRewardCoeff T n u z * orientedBoxRewardCoeff T n u' z)
       atTop (𝓝 (contOverlap T u u')) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hσ2 : 0 < ∫ x : ℝ, x ^ 2 ∂(realLaw ν) := realLaw_sq_integral_pos ν hν
   have heq : ∀ n : ℕ, (∫ x : ℝ, x ^ 2 ∂(realLaw ν)) *
       ∑ z ∈ S n, orientedBoxRewardCoeff T n u z * orientedBoxRewardCoeff T n u' z =

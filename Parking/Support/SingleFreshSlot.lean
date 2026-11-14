@@ -30,7 +30,7 @@ theorem singleAddition_index_unused (η : Site d → ℤ) (v : Site d)
   refine ⟨j, Nat.le_add_right _ _, ?_⟩
   have hm' := of_decide_eq_true hm
   unfold discrepancyIndex discrepancySlot
-  rw [if_pos hm']
+  rw [ite_eq_left hm']
   have hc0 : coupledConf false c = η := rfl
   have hc1 : coupledConf true c = addParticle v η := rfl
   change Sum.inl (x, min (matchedCount (coupledConf false c) ρ σ t x)

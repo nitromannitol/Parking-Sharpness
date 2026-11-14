@@ -81,10 +81,10 @@ theorem exists_oriented_instr_moment (hBern : External.Bernstein) :
   obtain ⟨C, hC, hb⟩ := exists_finite_coordinate_moment_bound_sel hBern
   refine ⟨C, hC, fun d hd2 ν hν N n M r hr => ?_⟩
   have hd : 1 ≤ d := by omega
-  haveI := hν.prob
-  haveI : ∀ c : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw c.1) :=
+  have := hν.prob
+  have : ∀ c : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw c.1) :=
     fun c => orientedInstructionLaw_isProbability hd c.1
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let T := (boxFinset (0 : Site d) N) ×ˢ range M
   obtain ⟨q, hq, hcov, hsort⟩ := exists_sorted_enumeration T (fun c => layerHeight c.1)
   let bb : Site d × ℕ → Site d := fun _ => 0

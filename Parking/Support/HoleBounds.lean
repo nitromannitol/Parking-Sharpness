@@ -27,9 +27,9 @@ theorem matchedHoles_antitone (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ
 /-- The sparse surviving-hole probability decreases with time. -/
 theorem holeProb_antitone (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) :
     Antitone (holeProb d (threePointLaw p)) := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
   intro s t hst
   rw [holeProb_eq_clippedTable hd _ (ae_clipSparse_threePointLaw p) t,
     holeProb_eq_clippedTable hd _ (ae_clipSparse_threePointLaw p) s]
@@ -47,9 +47,9 @@ theorem holeProb_antitone (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 /
 /-- A hole can survive only when its initial site was a hole. -/
 theorem holeProb_le_p (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4) (T : ℕ) :
     holeProb d (threePointLaw p) T ≤ p := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
   rw [holeProb_eq_mul_sink_noArrival hd hp hp4 T]
   apply mul_le_of_le_one_right hp.le
   exact (ENNReal.toReal_mono (measure_ne_top _ _)

@@ -68,7 +68,7 @@ theorem exists_oriented_centered_bound (hd : 2 ≤ d) (hConc : Parking.External.
       (∫ ω : Data d, |uOriented (fun y => (ω.1 y : ℝ)) n 0 -
           meanuOriented (orientedLaw d ν) n| ^ r ∂(orientedLaw d ν)) ^ (1 / r) ≤
         C * (Real.sqrt (r * orientedKappa d n) + r) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, he⟩ := realLaw_expMoment ν hν
   obtain ⟨C, hC, hb⟩ := exists_uOriented_centered_bound hd hConc (realLaw ν) hθ he
   refine ⟨C, hC, fun n hn r hr => ?_⟩

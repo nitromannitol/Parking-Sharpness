@@ -88,9 +88,9 @@ theorem exists_corner_tail_bound (hd1 : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure �
           ((iidLaw d (realLaw ν))
               {η | ε < |R ^ ((d:ℝ)/2 - 2) * (linPotential η m c - linPotential η n0 z0)|}).toReal
             ≤ K * (R ^ ((d:ℝ) - 4) * (spatialStepRate d (n0 + 1)) ^ 2) := by
-  haveI := hν.prob
-  haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
+  have := hν.prob
+  have hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => realLaw ν))
   obtain ⟨θ, hθ, hexpabs⟩ := realLaw_expMoment ν hν
   have hint1 : Integrable (fun z : ℝ => z) (realLaw ν) :=
@@ -300,9 +300,9 @@ theorem tendsto_measure_linHatInterp_sub_barPotential_zero
     (s : ℝ) (hs : 0 < s) (x : Fin d → ℝ) {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun R : ℝ => ((iidLaw d (realLaw ν))
         {η | ε < |linHatInterp η R (s, x) - barPotential η R s x|}).toReal) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
+  have := hν.prob
+  have hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => realLaw ν))
   obtain ⟨K, hK, hKbound⟩ := exists_corner_tail_bound (d := d) hd1 hd3 ν hν hε
   set N : ℝ := 2 * 2 ^ d with hNdef
@@ -366,7 +366,7 @@ theorem tendsto_measure_linHatInterp_sub_barPotential_zero
         = {η : Site d → ℝ |
             ε < |R ^ ((d:ℝ)/2 - 2) * (linPotential η m.toNat c - linPotential η n0 z0)|} := by
       ext η
-      simp only [Set.mem_setOf_eq]
+      simp only [Set.mem_ofPred_eq]
       rw [congrFun heq η]
     rw [hsetEq]
     exact hKbound R hR n0 hn0 m.toNat hmbounds.1 hmbounds.2 z0 c hgraphle

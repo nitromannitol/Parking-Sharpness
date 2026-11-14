@@ -25,8 +25,8 @@ theorem integral_oriented_arrivals_given (hd : 1 ≤ d) (η : Site d → ℤ)
           (d : ℝ)⁻¹ * ∫ σ : Site d × ℕ → Site d, (orientedOdometer η σ n y : ℝ)
             ∂(orientedStackLaw d) := by
   classical
-  haveI := orientedStackLaw_isProbability hd
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
+  have := orientedStackLaw_isProbability hd
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
     fun q => orientedInstructionLaw_isProbability hd q.1
   have hp (j : ℕ) : (orientedStackLaw d).real {σ : Site d × ℕ → Site d | σ (y, j) = y + unit i} =
       (d : ℝ)⁻¹ := by

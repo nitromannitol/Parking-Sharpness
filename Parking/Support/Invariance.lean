@@ -38,7 +38,7 @@ variable {d : ℕ}
 per-site instruction laws `instructionLaw y`, each a probability measure by
 `instructionLaw_isProbability`. -/
 theorem stackLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (LatticeProb.stackLaw d) := by
-  haveI : ∀ y : Site d, IsProbabilityMeasure (instructionLaw y) := fun y =>
+  have : ∀ y : Site d, IsProbabilityMeasure (instructionLaw y) := fun y =>
     instructionLaw_isProbability hd y
   exact inferInstanceAs
     (IsProbabilityMeasure (Measure.infinitePi fun p : Site d × ℕ => instructionLaw p.1))
@@ -46,15 +46,15 @@ theorem stackLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (LatticePro
 /-- `LatticeProb.rankLaw d` is a probability measure, as the infinite product of
 i.i.d. uniform variables on `[0, 1]`. -/
 theorem rankLaw_isProbability (d : ℕ) : IsProbabilityMeasure (LatticeProb.rankLaw d) := by
-  haveI := uniformUnit_isProbability
+  have := uniformUnit_isProbability
   exact inferInstanceAs (IsProbabilityMeasure
     (Measure.infinitePi fun _ : Label d × ℕ => volume.restrict (Set.Icc (0 : ℝ) 1)))
 
 /-- The product `stackRankLaw d` of the stack law and the rank law is a probability
 measure, combining `stackLaw_isProbability` and `rankLaw_isProbability`. -/
 theorem stackRankLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (stackRankLaw d) := by
-  haveI := stackLaw_isProbability hd
-  haveI := rankLaw_isProbability d
+  have := stackLaw_isProbability hd
+  have := rankLaw_isProbability d
   exact inferInstanceAs
     (IsProbabilityMeasure ((LatticeProb.stackLaw d).prod (LatticeProb.rankLaw d)))
 
@@ -87,7 +87,7 @@ theorem iidLaw_map_shiftConf' (ν : Measure ℤ) [IsProbabilityMeasure ν] (v : 
 /-- The stack law is translation invariant. -/
 theorem stackLaw_map_shiftStack (hd : 1 ≤ d) (v : Site d) :
     (LatticeProb.stackLaw d).map (shiftStack v) = LatticeProb.stackLaw d := by
-  haveI : ∀ y : Site d, IsProbabilityMeasure (instructionLaw y) := fun y =>
+  have : ∀ y : Site d, IsProbabilityMeasure (instructionLaw y) := fun y =>
     instructionLaw_isProbability hd y
   have hinj : Function.Injective fun q : Site d × ℕ => (q.1 + v, q.2) := by
     rintro ⟨x, i⟩ ⟨y, j⟩ h
@@ -118,7 +118,7 @@ theorem stackLaw_map_shiftStack (hd : 1 ≤ d) (v : Site d) :
 /-- The law of the uniform variables is translation invariant. -/
 theorem rankLaw_map_shiftRank (v : Site d) :
     (LatticeProb.rankLaw d).map (shiftRank v) = LatticeProb.rankLaw d := by
-  haveI := uniformUnit_isProbability
+  have := uniformUnit_isProbability
   have hinj : Function.Injective fun q : Label d × ℕ => (shiftLabel v q.1, q.2) := by
     rintro ⟨p, i⟩ ⟨q, j⟩ h
     simp only [Prod.mk.injEq] at h
@@ -133,8 +133,8 @@ rank coordinates together, combining `stackLaw_map_shiftStack` and
 `rankLaw_map_shiftRank` via `Measure.map_prod_map`. -/
 theorem stackRankLaw_map (hd : 1 ≤ d) (v : Site d) :
     (stackRankLaw d).map (Prod.map (shiftStack v) (shiftRank v)) = stackRankLaw d := by
-  haveI := stackLaw_isProbability hd
-  haveI := rankLaw_isProbability d
+  have := stackLaw_isProbability hd
+  have := rankLaw_isProbability d
   rw [stackRankLaw, ← Measure.map_prod_map _ _ (measurable_shiftStack v) (measurable_shiftRank v),
     stackLaw_map_shiftStack hd v, rankLaw_map_shiftRank v]
 
@@ -143,7 +143,7 @@ translation invariant. -/
 theorem dataLaw_map_shiftData (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)}
     [IsProbabilityMeasure μ] (hti : TranslationInvariant μ) (v : Site d) :
     (dataLaw d μ).map (shiftData v) = dataLaw d μ := by
-  haveI := stackRankLaw_isProbability hd
+  have := stackRankLaw_isProbability hd
   rw [dataLaw, shiftData_eq_prodMap,
     ← Measure.map_prod_map _ _ (measurable_shiftConf v)
       ((measurable_shiftStack v).prodMap (measurable_shiftRank v)),
@@ -152,7 +152,7 @@ theorem dataLaw_map_shiftData (hd : 1 ≤ d) {μ : Measure (Site d → ℤ)}
 /-- The i.i.d. law of the data is translation invariant. -/
 theorem law_map_shiftData (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] (v : Site d) :
     (law d ν).map (shiftData v) = law d ν := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
   have hti : TranslationInvariant (LatticeProb.iidLaw d ν) := fun w =>
     iidLaw_map_shiftConf' ν w

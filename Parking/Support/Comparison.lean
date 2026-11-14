@@ -65,7 +65,7 @@ theorem arrivals_eq_sum (σ : Site d × ℕ → Site d) (y x : Site d) (m M : �
     have hjm : j < m := Finset.mem_range.mp hj
     by_cases h : σ (y, j) = x <;> simp [h, hjm]
   · intro j _ hj
-    rw [if_neg (fun hc => hj (Finset.mem_range.mpr hc.1))]
+    rw [ite_eq_right (fun hc => hj (Finset.mem_range.mpr hc.1))]
 
 /-- `U` at a fixed configuration is measurable in the randomness alone. -/
 theorem measurable_Ugiven (η : Site d → ℤ) (n : ℕ) (x : Site d) :
@@ -77,10 +77,10 @@ theorem measurable_Ugiven (η : Site d → ℤ) (n : ℕ) (x : Site d) :
 (`U_le_uBound`). -/
 theorem integrable_Ugiven (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     Integrable (fun s : Randomness d => (U ((η, s) : Data d) n x : ℝ)) (stackRankLaw d) := by
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by
     unfold stackRankLaw stackLaw; infer_instance
   refine (integrable_const ((uBound η n x : ℝ))).mono'
     (measurable_Ugiven η n x).aestronglyMeasurable (Filter.Eventually.of_forall fun s => ?_)
@@ -94,10 +94,10 @@ theorem integrable_indicator_U (hd : 1 ≤ d) (η : Site d → ℤ)
     (E : Set (Data d)) (hE : MeasurableSet E) :
     Integrable (fun s : Randomness d =>
       Set.indicator E (fun _ => (1 : ℝ)) ((η, s) : Data d)) (stackRankLaw d) := by
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by
     unfold stackRankLaw stackLaw; infer_instance
   refine (integrable_const (1 : ℝ)).mono'
     (((measurable_one.indicator hE).comp
@@ -183,10 +183,10 @@ theorem meanUgiven_arrivals (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (y x 
       by_cases h1 : j + 1 ≤ U ((η, s) : Data d) n y
       · rw [Set.indicator_of_mem (show ((η, s) : Data d)
             ∈ {ω : Data d | j + 1 ≤ U ω n y} from h1),
-          if_pos (show j < U ((η, s) : Data d) n y from h1)]
+          ite_eq_left (show j < U ((η, s) : Data d) n y from h1)]
       · rw [Set.indicator_of_notMem (show ((η, s) : Data d)
             ∉ {ω : Data d | j + 1 ≤ U ω n y} from h1),
-          if_neg (show ¬ j < U ((η, s) : Data d) n y from h1)]
+          ite_eq_right (show ¬ j < U ((η, s) : Data d) n y from h1)]
     rw [Finset.sum_congr rfl this, Finset.sum_boole]
     have hfil : ((Finset.range M).filter fun j => j < U ((η, s) : Data d) n y)
         = Finset.range (U ((η, s) : Data d) n y) := by
@@ -219,17 +219,17 @@ theorem sum_kern_nbr (η : Site d → ℤ) (n : ℕ) (x : Site d) :
       = walkOp (fun y => meanUgiven d η n y) x := by
   rw [walkOp_eq_nbrFinset, Finset.sum_div]
   refine Finset.sum_congr rfl fun y hy => ?_
-  rw [kern, if_pos (nbrFinset_symm hy)]
+  rw [kern, ite_eq_left (nbrFinset_symm hy)]
   ring
 
 /-- Jensen's inequality for the positive part, averaged over the instructions. -/
 theorem meanUgiven_succ_ge (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     max 0 ((η x : ℝ) + walkOp (fun y => meanUgiven d η n y) x) ≤ meanUgiven d η (n + 1) x := by
   classical
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by
     unfold stackRankLaw stackLaw; infer_instance
   set f : Randomness d → ℝ := fun s =>
     (η x : ℝ) + ∑ y ∈ nbrFinset x, (arrivals s.1 y x (U ((η, s) : Data d) n y) : ℝ) with hf

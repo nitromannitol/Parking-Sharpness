@@ -32,7 +32,7 @@ reindexing the product measure through the site-shift `q ↦ (q.1 + v, q.2)` and
 applying `orientedInstructionLaw_map_sub` to each coordinate marginal. -/
 theorem orientedStackLaw_map_shiftStack (hd : 1 ≤ d) (v : Site d) :
     (orientedStackLaw d).map (shiftStack v) = orientedStackLaw d := by
-  haveI : ∀ y : Site d, IsProbabilityMeasure (orientedInstructionLaw y) :=
+  have : ∀ y : Site d, IsProbabilityMeasure (orientedInstructionLaw y) :=
     fun y => orientedInstructionLaw_isProbability hd y
   have hinj : Function.Injective fun q : Site d × ℕ => (q.1 + v, q.2) := by
     rintro ⟨x, i⟩ ⟨y, j⟩ h
@@ -60,9 +60,9 @@ the invariance of the i.i.d. scenery law under `shiftConf`, of `orientedStackLaw
 `shiftStack` (`orientedStackLaw_map_shiftStack`), and of the rank law under `shiftRank`. -/
 theorem orientedLaw_map_shiftData (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (v : Site d) : (orientedLaw d ν).map (shiftData v) = orientedLaw d ν := by
-  haveI := orientedStackLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := orientedStackLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   rw [orientedLaw, shiftData_eq_prodMap,
     ← Measure.map_prod_map _ _ (measurable_shiftConf v)
       ((measurable_shiftStack v).prodMap (measurable_shiftRank v)),
@@ -74,8 +74,8 @@ theorem orientedLaw_map_shiftData (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
 forward along `Prod.fst`. -/
 theorem orientedLaw_map_conf (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     (orientedLaw d ν).map (Prod.fst : Data d → Site d → ℤ) = iidLaw d ν := by
-  haveI := orientedStackLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
+  have := orientedStackLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
   rw [orientedLaw, Measure.map_fst_prod]
   simp
 

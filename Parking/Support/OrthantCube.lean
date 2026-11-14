@@ -131,10 +131,10 @@ theorem graphNorm_sub_add_of_opposite {y a w : Site d} (hw : Opposite y a w) :
   push_cast
   dsimp only [Pi.sub_apply]
   by_cases h : y i < a i
-  · simp only [h, if_true] at hi
+  · simp only [h, ite_true] at hi
     rw [abs_of_nonpos (by omega), abs_of_nonpos (by omega), abs_of_nonneg (by omega)]
     omega
-  · simp only [h, if_false] at hi
+  · simp only [h, ite_false] at hi
     rw [abs_of_nonneg (by omega), abs_of_nonneg (by omega), abs_of_nonpos (by omega)]
     omega
 

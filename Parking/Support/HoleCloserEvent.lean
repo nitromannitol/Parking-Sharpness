@@ -53,14 +53,14 @@ union over hole sites `y` of an intersection of measurable comparisons `H ω t y
 `A ω t a` not exceeding `y` in graph norm. -/
 theorem measurableSet_CloserAt (t : ℕ) (w : Site d) :
     MeasurableSet {ω : Data d | CloserAt ω t w} := by
-  simp only [CloserAt, Set.setOf_exists, Set.setOf_and, Set.setOf_forall]
+  simp only [CloserAt, Set.ofPred_exists, Set.ofPred_and, Set.ofPred_forall]
   apply MeasurableSet.iUnion
   intro y
   apply MeasurableSet.inter (measurableSet_lt measurable_const (measurable_H t y))
   apply MeasurableSet.iInter
   intro a
   by_cases h : graphNorm (w - y) < graphNorm (w - a)
-  · simp only [h, implies_true, Set.setOf_true]
+  · simp only [h, implies_true, Set.ofPred_true]
     exact MeasurableSet.univ
   · simp only [h, imp_false]
     exact (measurableSet_lt measurable_const (measurable_A t a)).compl

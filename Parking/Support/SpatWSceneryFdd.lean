@@ -223,8 +223,8 @@ theorem tendsto_scenePair_fdd (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
     Tendsto (fun R : ℝ => ∫ w, F (fun i => scenePair w R (φ i)) ∂(law d ν)) atTop
       (𝓝 (∫ ω, F (fun i => contW (variance (fun k : ℤ => (k : ℝ)) ν) (φ i) ω)
             ∂(whiteNoiseLaw (volume : Measure (Fin d → ℝ))))) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   set v : ℝ := variance (fun k : ℤ => (k : ℝ)) ν with hvdef
   have hv : 0 ≤ v := variance_nonneg _ _
   obtain ⟨B, hB, hbound⟩ := exists_uniform_norm_bound hφ

@@ -26,8 +26,8 @@ theorem oriented_noArrival_probability_joint (hd : 1 ≤ d) (ν : Measure ℤ) [
         ∫ z : (Site d → ℤ) × (Site d × ℕ → Site d), (1 - (d : ℝ)⁻¹) ^
           (∑ i : Fin d, orientedOdometer z.1 z.2 n (x - unit i))
           ∂((iidLaw d ν).prod (orientedStackLaw d)) := by
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let E : Set ((Site d → ℤ) × (Site d × ℕ → Site d)) :=
     {z | orientedArrivalCount z.1 z.2 n x = 0}
   have hE : MeasurableSet E :=
@@ -59,7 +59,7 @@ theorem oriented_noArrival_probability_joint (hd : 1 ≤ d) (ν : Measure ℤ) [
         Set.indicator {σ : Site d × ℕ → Site d | orientedArrivalCount η σ n x = 0}
           (fun _ => (1 : ℝ)) := by
       funext σ
-      simp only [Set.indicator_apply, E, Set.mem_setOf_eq]
+      simp only [Set.indicator_apply, E, Set.mem_ofPred_eq]
     change (∫ σ, Set.indicator E (fun _ => (1 : ℝ)) (η, σ) ∂(orientedStackLaw d)) = _
     rw [he]
     exact (integral_indicator_one (μ := orientedStackLaw d) hm).trans
@@ -74,9 +74,9 @@ theorem oriented_noArrival_exp_joint (hd : 2 ≤ d) (ν : Measure ℤ) (hν : Cr
       ((iidLaw d ν).prod (orientedStackLaw d)).real
         {z : (Site d → ℤ) × (Site d × ℕ → Site d) | orientedArrivalCount z.1 z.2 n x = 0} := by
   have hd1 : 1 ≤ d := by omega
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd1
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd1
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let q : ℝ := 1 - (d : ℝ)⁻¹
   let V : (Site d → ℤ) × (Site d × ℕ → Site d) → ℝ := fun z =>
     ∑ i : Fin d, (orientedOdometer z.1 z.2 n (x - unit i) : ℝ)

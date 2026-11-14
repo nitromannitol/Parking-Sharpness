@@ -43,7 +43,7 @@ theorem instruction_future_centered_bounds (hd : 3 ≤ d) (A H : Site d → ℕ)
       (∫ a, (f a - ∫ b, f b ∂(stepLaw d)) ^ 2 ∂(stepLaw d)) ≤
         walkOp (fun y => fullGreen d (y - x) ^ 2) v := by
   dsimp only
-  haveI := stepLaw_isProbability (by omega : 1 ≤ d)
+  have := stepLaw_isProbability (by omega : 1 ≤ d)
   have h := centered_influence_bounds (stepLaw d)
     (fun a => matchedMeanU (roundSigned A H (Function.update τ (Sum.inl (v, j)) a)) ρ T x)
     (fun a => fullGreen d (v + stepVec a - x))

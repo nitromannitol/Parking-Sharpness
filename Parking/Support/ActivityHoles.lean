@@ -40,7 +40,7 @@ variable {d : ℕ}
 /-- Projecting `dataLaw d μ` onto its first coordinate returns `μ`. -/
 theorem dataLaw_map_fst (hd : 1 ≤ d) (μ : Measure (Site d → ℤ)) [IsProbabilityMeasure μ] :
     (dataLaw d μ).map Prod.fst = μ := by
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   exact Measure.fst_prod
 
 /-- A function integrable against `μ` is integrable against `dataLaw d μ` when read only
@@ -327,8 +327,8 @@ theorem sum_arrivals_nbr {σ : Site d × ℕ → Site d} (h : ∀ q : Site d × 
 pulled back from `stackLaw_ae_nbr` through the product structure. -/
 theorem ae_stack_nbr (hd : 1 ≤ d) (μ : Measure (Site d → ℤ)) [IsProbabilityMeasure μ] :
     ∀ᵐ ω ∂(dataLaw d μ), ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1 := by
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
   have := stackRankLaw_isProbability (d := d) hd
   have h1 : ∀ᵐ s ∂(stackRankLaw d), ∀ q : Site d × ℕ, s.1 q ∈ nbrFinset q.1 :=
     (Measure.quasiMeasurePreserving_fst).ae (stackLaw_ae_nbr hd)
@@ -343,7 +343,7 @@ theorem activity_holes_main (hd : 1 ≤ d) [IsProbabilityMeasure μ]
         - ∫ ω, (Parking.H ω t 0 : ℝ) ∂(dataLaw d μ)
       = ∫ η, ((η 0 : ℤ) : ℝ) ∂μ := by
   classical
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   have hae := ae_stack_nbr hd μ
   have hIA := integrable_A_data hd hti hint t (0 : Site d)
   have hIH := integrable_H_data hd hti hint t (0 : Site d)

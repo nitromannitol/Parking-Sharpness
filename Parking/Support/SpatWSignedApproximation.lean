@@ -29,8 +29,8 @@ theorem tendsto_signedMiddle_sub_barOdometer_pairing_zero_of_walk_approximation
     {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) {a : ℝ} (ha : 0 < a) :
     Tendsto (fun R : ℝ => ((law d ν) {w | a < |signedMiddle w R φ -
       ∫ x, barOdometer w R 1 x * contOp d φ x|}).toReal) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨B, hB, hbound⟩ := exists_norm_bound_of_hasCompactSupport hφ.2
   let K := Metric.closedBall (0 : Fin d → ℝ) (B + 2)
   obtain ⟨C, hC, hm⟩ := exists_integral_local_barOdometer_le hd hd3
@@ -53,8 +53,8 @@ theorem tendsto_signedMiddle_sub_barDivisible_pairing_zero
     {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) {a : ℝ} (ha : 0 < a) :
     Tendsto (fun R : ℝ => ((law d ν) {w | a < |signedMiddle w R φ -
       ∫ x, barDivisible w R 1 x * contOp d φ x|}).toReal) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   have h1 := fun a ha =>
     tendsto_signedMiddle_sub_barOdometer_pairing_zero_of_walk_approximation hd hd3
       hGrowth hBernstein hConcentration hGreenNorms ν hν hφ (a := a) ha
@@ -74,8 +74,8 @@ theorem tendsto_signedPair_sub_scenePair_sub_barDivisible_pairing_zero
     {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) {a : ℝ} (ha : 0 < a) :
     Tendsto (fun R : ℝ => ((law d ν) {w | a < |signedPair w R φ - scenePair w R φ -
       ∫ x, barDivisible w R 1 x * contOp d φ x|}).toReal) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   have h1 := fun a ha => tendsto_signedMiddle_sub_barDivisible_pairing_zero hd hd3
     hGrowth hBernstein hConcentration hGreenNorms ν hν hφ (a := a) ha
   have h2 := tendsto_signedM_zero hd hd3 hGrowth hBernstein hConcentration hGreenNorms ν hν hφ

@@ -54,7 +54,7 @@ theorem measurable_isolatedActiveMass (t K : ℕ) (y a : Site d) :
       measurable_const measurable_const
   change MeasurableSet {ω : Data d | a ∈ activeSites ω t K y}
   simp_rw [mem_activeSites]
-  simp only [Set.setOf_and]
+  simp only [Set.ofPred_and]
   exact (MeasurableSet.const _).inter (measurableSet_lt measurable_const (measurable_A t a))
 
 /-- Summing `isolatedActiveMass ω t K 0 a` over the box of candidate active sites
@@ -65,12 +65,12 @@ theorem isolatedActiveMass_out (ω : Data d) (t K : ℕ) :
       if IsolatedHole ω t (2 * K) 0 then (activeSites ω t K 0).card else 0 := by
   classical
   by_cases h : IsolatedHole ω t (2 * K) 0
-  · simp only [h, if_true, isolatedActiveMass_eq, true_and]
+  · simp only [h, ite_true, isolatedActiveMass_eq, true_and]
     rw [activeSites, Finset.card_filter]
     apply Finset.sum_congr rfl
     intro a ha
     simp only [Finset.mem_filter, ha, true_and]
-  · simp only [isolatedActiveMass_eq, h, false_and, if_false, Finset.sum_const_zero]
+  · simp only [isolatedActiveMass_eq, h, false_and, ite_false, Finset.sum_const_zero]
 
 /-- Summing `isolatedActiveMass ω t K y 0` over the box of candidate holes `y` is at
 most the active count `A ω t 0`, since `isolatedHole_unique` allows at most one such
@@ -91,7 +91,7 @@ theorem isolatedActiveMass_in (ω : Data d) (t K : ℕ) :
     simpa only [isolatedActiveMass_eq] using hc.trans h1
   · have he : ∀ y, isolatedActiveMass ω t K y 0 = 0 := by
       intro y
-      simp only [isolatedActiveMass_eq, mem_activeSites, hA, and_false, if_false]
+      simp only [isolatedActiveMass_eq, mem_activeSites, hA, and_false, ite_false]
     simp only [he, Finset.sum_const_zero]
     exact Nat.zero_le _
 

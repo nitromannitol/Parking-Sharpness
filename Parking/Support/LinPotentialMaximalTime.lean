@@ -119,9 +119,9 @@ theorem exists_linPotential_maximal_tail_time (hd1 : 1 ≤ d) (ν : Measure ℤ)
           {η | ∃ m ∈ Finset.Icc 1 N, ∃ y ∈ boxFinset (0 : Site d) A,
               M ≤ |linPotential η m y|}).toReal
         ≤ C * N * (2 * A + 1) ^ d * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))) := by
-  haveI := hν.prob
-  haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
+  have := hν.prob
+  have hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => realLaw ν))
   obtain ⟨c, C, hc, hC, hmono⟩ := exists_linPotential_point_tail_mono hd1 ν hν
   refine ⟨c, C, hc, hC, ?_⟩
@@ -248,8 +248,8 @@ theorem exists_linPotential_maximal_tail_time_shift (hd1 : 1 ≤ d) (ν : Measur
           {η | ∃ m ∈ Finset.Icc 1 N, ∃ y ∈ boxFinset (0 : Site d) A,
               M ≤ |linPotential η m (y + z0)|}).toReal
         ≤ C * N * (2 * A + 1) ^ d * Real.exp (-(c * min (M ^ 2 / (N : ℝ) ^ 2) (M / (N : ℝ)))) := by
-  haveI := hν.prob
-  haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   obtain ⟨c, C, hc, hC, hmain⟩ := exists_linPotential_maximal_tail_time hd1 ν hν
   refine ⟨c, C, hc, hC, ?_⟩
   intro z0 N hN A M hM
@@ -265,7 +265,7 @@ theorem exists_linPotential_maximal_tail_time_shift (hd1 : 1 ≤ d) (ν : Measur
       = {η : Site d → ℝ | ∃ m ∈ Finset.Icc 1 N, ∃ y ∈ boxFinset (0 : Site d) A,
           M ≤ |linPotential η m (y + z0)|} := by
     ext η
-    simp only [Set.mem_preimage, hTdef, Set.mem_setOf_eq]
+    simp only [Set.mem_preimage, hTdef, Set.mem_ofPred_eq]
     constructor
     · rintro ⟨m, hm, y, hy, hle⟩
       refine ⟨m, hm, y, hy, ?_⟩

@@ -50,7 +50,7 @@ theorem Parking.map_pair_roundEntries (hd : 1 ≤ d) (i j : Parking.RoundSlot d)
     (Measure.infinitePi fun _ : Parking.RoundSlot d => Parking.stepLaw d).map
         (fun σ => (σ i, Parking.reverseDirection (σ j))) =
       (Parking.stepLaw d).prod (Parking.stepLaw d) := by
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   have hpair : (Measure.infinitePi fun _ : Parking.RoundSlot d => Parking.stepLaw d).map
       (fun σ => (σ i, σ j)) = (Parking.stepLaw d).prod (Parking.stepLaw d) := by
     exact Measure.infinitePi_map_eval_prod hij
@@ -76,7 +76,7 @@ theorem Parking.map_predictable_roundPairs (hd : 1 ≤ d)
         (fun σ n => (σ n (i σ n), Parking.reverseDirection (σ n (j σ n)))) =
       Measure.infinitePi fun _ : ℕ => (Parking.stepLaw d).prod (Parking.stepLaw d) := by
   classical
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   apply Parking.map_layers
   · refine Measurable.of_eval fun n => ?_
     have hrev : Measurable (Parking.reverseDirection (d := d)) := measurable_from_countable' _

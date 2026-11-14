@@ -42,7 +42,7 @@ theorem integral_discrepancy_green_step (hd : 3 ≤ d) (c : Site d → ℤ × �
     ∫ τ, fullGreen d ((discrepancyState c ρ (Function.update σ t τ) (t + 1)).pos p - x)
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) =
         fullGreen d ((discrepancyState c ρ σ t).pos p - x) - discrepancyDeparture c ρ σ t p x := by
-  haveI := stepLaw_isProbability (by omega : 1 ≤ d)
+  have := stepLaw_isProbability (by omega : 1 ≤ d)
   simp only [discrepancyPosition_update_succ]
   by_cases h : discrepancyDoesMove c ρ σ t p = true
   · simp only [h, ↓reduceIte, discrepancyDeparture, true_and]
@@ -56,7 +56,7 @@ theorem integral_discrepancy_departures_le (hd : 3 ≤ d) (c : Site d → ℤ ×
     ∫ σ, ∑ t ∈ Finset.range T, discrepancyDeparture c ρ σ t p x ∂(roundNoiseLaw d) ≤
       fullGreen d (p.1 - x) := by
   classical
-  haveI := stepLaw_isProbability (by omega : 1 ≤ d)
+  have := stepLaw_isProbability (by omega : 1 ≤ d)
   let V : RoundNoise d → ℕ → ℝ := fun σ t => fullGreen d ((discrepancyState c ρ σ t).pos p - x)
   let r : RoundNoise d → ℕ → ℝ := fun σ t => discrepancyDeparture c ρ σ t p x
   have hS (t : ℕ) := measurableState_discrepancyState (d := d) ⟨0, by omega⟩
@@ -74,7 +74,7 @@ theorem integral_discrepancy_departures_le (hd : 3 ≤ d) (c : Site d → ℤ ×
     have hm := measurable_discrepancyMoving (Ω := RoundNoise d)
       (fun _ => c) (fun _ => ρ) _ _ _ measurable_const measurable_const ha hb (hS t) t p
     have hm' : MeasurableSet {σ | discrepancyDoesMove c ρ σ t p = true} := by
-      simpa only [discrepancyDoesMove, decide_eq_true_eq, id_eq] using measurableSet_setOf.mpr hm
+      simpa only [discrepancyDoesMove, decide_eq_true_eq, id_eq] using measurableSet_setOfPred.mpr hm
     exact Measurable.ite (hm'.inter (measurableSet_eq_fun ((hS t).2.1 p) measurable_const))
       measurable_const measurable_const
   apply layer_reward_sum_le (Measure.infinitePi fun _ : RoundSlot d => stepLaw d)

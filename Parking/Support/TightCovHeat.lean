@@ -163,7 +163,7 @@ theorem integral_contNoiseTest_mul (T s s' x x' : ℝ) :
         = fun y => contHeat (t - s) x y * contHeat (t - s') x' y := by
       funext y
       simp only [contNoiseTest]
-      rw [if_pos ⟨h1, hc.2⟩, if_pos ⟨h2, hc.2⟩]
+      rw [ite_eq_left ⟨h1, hc.2⟩, ite_eq_left ⟨h2, hc.2⟩]
     show ∫ y : ℝ, contNoiseTest T s x (t, y) * contNoiseTest T s' x' (t, y)
       = contHeat (2 * t - s - s') x x'
     rw [hpt, show 2 * t - s - s' = (t - s) + (t - s') by ring]
@@ -175,9 +175,9 @@ theorem integral_contNoiseTest_mul (T s s' x x' : ℝ) :
       simp only [contNoiseTest]
       by_cases h1 : s < t ∧ t < T
       · have h2 : ¬ (s' < t ∧ t < T) := fun h2 => hc ⟨max_lt h1.1 h2.1, h1.2⟩
-        rw [if_neg h2]
+        rw [ite_eq_right h2]
         ring
-      · rw [if_neg h1]
+      · rw [ite_eq_right h1]
         ring
     show ∫ y : ℝ, contNoiseTest T s x (t, y) * contNoiseTest T s' x' (t, y) = 0
     rw [hpt]

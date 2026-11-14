@@ -119,10 +119,10 @@ theorem exists_phi_sub_le_nearRate (d : ℕ) (hd : 1 ≤ d) {C0 : ℝ} (hC0 : 0 
     obtain ⟨C, hC, hle⟩ := exists_pow_sub_le (α := (3:ℝ)/4) (by norm_num) (by norm_num) hC0
     refine ⟨C, hC, fun δ hδ hδ1 Mv hMv => ?_⟩
     have hphi : phi 1 Mv = (Mv + 1) ^ ((3:ℝ)/4) := by
-      rw [phi, if_pos (by norm_num : (1:ℕ) ≤ 3)]
+      rw [phi, ite_eq_left (by norm_num : (1:ℕ) ≤ 3)]
       norm_num
     have hrate : Parking.nearRate 1 δ = δ ^ (-((3:ℝ)/4) / (1 - (3:ℝ)/4)) := by
-      rw [Parking.nearRate, if_pos rfl]
+      rw [Parking.nearRate, ite_eq_left rfl]
       norm_num
     rw [hphi, hrate]
     exact hle δ hδ hδ1 Mv hMv
@@ -131,10 +131,10 @@ theorem exists_phi_sub_le_nearRate (d : ℕ) (hd : 1 ≤ d) {C0 : ℝ} (hC0 : 0 
     obtain ⟨C, hC, hle⟩ := exists_pow_sub_le (α := (1:ℝ)/2) (by norm_num) (by norm_num) hC0
     refine ⟨C, hC, fun δ hδ hδ1 Mv hMv => ?_⟩
     have hphi : phi 2 Mv = (Mv + 1) ^ ((1:ℝ)/2) := by
-      rw [phi, if_pos (by norm_num : (2:ℕ) ≤ 3)]
+      rw [phi, ite_eq_left (by norm_num : (2:ℕ) ≤ 3)]
       norm_num
     have hrate : Parking.nearRate 2 δ = δ ^ (-((1:ℝ)/2) / (1 - (1:ℝ)/2)) := by
-      rw [Parking.nearRate, if_neg (by norm_num : ¬(2:ℕ) = 1), if_pos rfl]
+      rw [Parking.nearRate, ite_eq_right (by norm_num : ¬(2:ℕ) = 1), ite_eq_left rfl]
       norm_num
       rw [Real.rpow_neg_one]
     rw [hphi, hrate]
@@ -144,11 +144,11 @@ theorem exists_phi_sub_le_nearRate (d : ℕ) (hd : 1 ≤ d) {C0 : ℝ} (hC0 : 0 
     obtain ⟨C, hC, hle⟩ := exists_pow_sub_le (α := (1:ℝ)/4) (by norm_num) (by norm_num) hC0
     refine ⟨C, hC, fun δ hδ hδ1 Mv hMv => ?_⟩
     have hphi : phi 3 Mv = (Mv + 1) ^ ((1:ℝ)/4) := by
-      rw [phi, if_pos (by norm_num : (3:ℕ) ≤ 3)]
+      rw [phi, ite_eq_left (by norm_num : (3:ℕ) ≤ 3)]
       norm_num
     have hrate : Parking.nearRate 3 δ = δ ^ (-((1:ℝ)/4) / (1 - (1:ℝ)/4)) := by
-      rw [Parking.nearRate, if_neg (by norm_num : ¬(3:ℕ) = 1),
-        if_neg (by norm_num : ¬(3:ℕ) = 2), if_pos rfl]
+      rw [Parking.nearRate, ite_eq_right (by norm_num : ¬(3:ℕ) = 1),
+        ite_eq_right (by norm_num : ¬(3:ℕ) = 2), ite_eq_left rfl]
       norm_num
     rw [hphi, hrate]
     exact hle δ hδ hδ1 Mv hMv
@@ -156,10 +156,10 @@ theorem exists_phi_sub_le_nearRate (d : ℕ) (hd : 1 ≤ d) {C0 : ℝ} (hC0 : 0 
     obtain ⟨C, hC, hle⟩ := exists_log_sub_le hC0
     refine ⟨C, hC, fun δ hδ hδ1 Mv hMv => ?_⟩
     have hphi : phi d Mv = Real.log (Mv + 2) := by
-      rw [phi, if_neg (by omega : ¬ d ≤ 3)]
+      rw [phi, ite_eq_right (by omega : ¬ d ≤ 3)]
     have hrate : Parking.nearRate d δ = Real.log (Real.exp 1 / δ) := by
-      rw [Parking.nearRate, if_neg (by omega : ¬ d = 1), if_neg (by omega : ¬ d = 2),
-        if_neg (by omega : ¬ d = 3)]
+      rw [Parking.nearRate, ite_eq_right (by omega : ¬ d = 1), ite_eq_right (by omega : ¬ d = 2),
+        ite_eq_right (by omega : ¬ d = 3)]
     rw [hphi, hrate]
     exact hle δ hδ hδ1 Mv hMv
 

@@ -54,7 +54,7 @@ theorem orientedLayer_two (l : ℕ) (x : Site 2) :
     simp only [orientedLayer, binomLaw_zero, Nat.cast_zero, neg_zero]
     by_cases hx : x = 0
     · simp [hx, layerHeight_two]
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       by_cases hh : layerHeight x = 0
       · have hn : -x 0 ≠ 0 := by
           intro hn
@@ -80,16 +80,16 @@ theorem orientedLayer_two (l : ℕ) (x : Site 2) :
       push_cast
       omega
     by_cases hx : layerHeight x = -((l + 1 : ℕ) : ℤ)
-    · simp only [if_pos (hh.mpr hx), if_pos hx]
+    · simp only [ite_eq_left (hh.mpr hx), ite_eq_left hx]
       exact (binomLaw_succ l (-x 0)).symm
-    · simp only [if_neg (fun h => hx (hh.mp h)), if_neg hx]
+    · simp only [ite_eq_right (fun h => hx (hh.mp h)), ite_eq_right hx]
       norm_num
 
 /-- At the point `orientedLayerPoint l j`, the directed layer function equals
 `binomLaw l j`. -/
 theorem orientedLayer_at_layerPoint (l : ℕ) (j : ℤ) :
     orientedLayer 2 l (orientedLayerPoint l j) = binomLaw l j := by
-  rw [orientedLayer_two, if_pos (layerHeight_orientedLayerPoint l j)]
+  rw [orientedLayer_two, ite_eq_left (layerHeight_orientedLayerPoint l j)]
   simp [orientedLayerPoint]
 
 /-- The sum of squares of the directed layer function over layer `l` in dimension two

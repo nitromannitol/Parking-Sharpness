@@ -37,8 +37,8 @@ theorem measurable_eraseCoordinates (b : Π i, X i) (S : Set ι) :
     Measurable (eraseCoordinates (Ω := Ω) b S) := by
   refine measurable_fst.prodMk (Measurable.of_eval fun i => ?_)
   by_cases hi : i ∈ S
-  · simpa only [if_pos hi] using (measurable_const : Measurable (fun _ : Ω × (Π i, X i) => b i))
-  · simp only [if_neg hi]
+  · simpa only [ite_eq_left hi] using (measurable_const : Measurable (fun _ : Ω × (Π i, X i) => b i))
+  · simp only [ite_eq_right hi]
     fun_prop
 
 omit [MeasurableSpace Ω] [∀ i, MeasurableSpace (X i)] in
@@ -52,9 +52,9 @@ theorem eraseCoordinates_erase_of_subset (b : Π i, X i) {S T : Set ι} (hTS : T
   · rfl
   funext i
   by_cases hi : i ∈ S
-  · simp only [eraseCoordinates, if_pos hi]
+  · simp only [eraseCoordinates, ite_eq_left hi]
   · have hiT : i ∉ T := fun h => hi (hTS h)
-    simp only [eraseCoordinates, if_neg hi, if_neg hiT]
+    simp only [eraseCoordinates, ite_eq_right hi, ite_eq_right hiT]
 
 /-- `erasedCoordinateSpace b S` is a sub-σ-algebra of the ambient product σ-algebra, since the
 erasure map generating it is measurable. -/
@@ -98,9 +98,9 @@ theorem eraseCoordinates_update [DecidableEq ι] (b : Π i, X i) (S : Set ι) {q
   · rfl
   funext i
   by_cases hi : i ∈ S
-  · simp only [eraseCoordinates, if_pos hi]
+  · simp only [eraseCoordinates, ite_eq_left hi]
   · have hne : i ≠ q := fun h => hi (h ▸ hq)
-    simp only [eraseCoordinates, if_neg hi, Function.update_of_ne hne]
+    simp only [eraseCoordinates, ite_eq_right hi, Function.update_of_ne hne]
 
 /-- A set measurable for `erasedCoordinateSpace b S` cannot distinguish two points that agree
 outside an already-erased coordinate `q ∈ S`, by pulling `eraseCoordinates_update` back through

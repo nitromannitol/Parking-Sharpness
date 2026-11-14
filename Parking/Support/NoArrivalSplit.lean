@@ -42,7 +42,7 @@ theorem measure_flag_le_lower_tail {Ω : Type} [MeasurableSpace Ω]
       · have hx : ω ∉ B := hl
         rw [Set.indicator_of_notMem hx, zero_add]
         dsimp only [W]
-        rw [if_pos hf, ← Real.exp_add]
+        rw [ite_eq_left hf, ← Real.exp_add]
         exact Real.one_le_exp_iff.mpr (by linarith)
     · have hs : ω ∉ S := hf
       rw [Set.indicator_of_notMem hs]

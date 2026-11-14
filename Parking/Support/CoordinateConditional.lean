@@ -34,7 +34,7 @@ theorem condExp_mul_fresh_coordinate {Ω ι : Type*} {X : ι → Type*}
     (hiHG : Integrable (fun z => H z * g (z.2 q)) (μ.prod (Measure.infinitePi P))) :
     (μ.prod (Measure.infinitePi P))[fun z => H z * g (z.2 q) | m] =ᵐ[μ.prod (Measure.infinitePi P)]
       fun z => H z * ∫ a, g a ∂(P q) := by
-  letI : MeasurableSpace (Ω × (Π i, X i)) := Prod.instMeasurableSpace
+  let : MeasurableSpace (Ω × (Π i, X i)) := Prod.instMeasurableSpace
   have hHa : Measurable H := hH.mono hm le_rfl
   have hHin (η : Ω) (σ : Π i, X i) : H (η, Function.update σ q b) = H (η, σ) := by
     have hs := hH (measurableSet_singleton (H (η, σ)))

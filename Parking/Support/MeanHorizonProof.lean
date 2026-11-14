@@ -84,7 +84,7 @@ theorem exists_meanHorizon (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
           Integrable (rewardAvg δ σ) (LatticeProb.iidLaw d (ν δ)) ∧
             ∫ η, rewardAvg δ σ η ∂(LatticeProb.iidLaw d (ν δ)) ≤ C * phi d Mσ := by
   classical
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   obtain ⟨hδ₀, hθ, hprob, hmeanν, -, hexpfam, -⟩ := id hfam
   obtain ⟨C1, hC1, hstep1⟩ := exists_step1 (d := d) hd hGrowth hConc hGreen hfam
   obtain ⟨C2, hC2, hseries⟩ := exists_phi_block_sum d (θ := (4:ℝ)/5) (by norm_num)
@@ -92,10 +92,10 @@ theorem exists_meanHorizon (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
       have : (1:ℝ) ≤ (d:ℝ) := by exact_mod_cast hd
       linarith)
   refine ⟨3 * C1 * (1 + C2), by positivity, fun δ hδ n σ hσ hσn hm Mσ hMdef => ?_⟩
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
   have hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexpfam δ hδ).1
   set P := LatticeProb.iidLaw d (ν δ) with hP
-  haveI : IsProbabilityMeasure P := by rw [hP, LatticeProb.iidLaw]; infer_instance
+  have : IsProbabilityMeasure P := by rw [hP, LatticeProb.iidLaw]; infer_instance
   have hIreward : Integrable (rewardAvg δ σ) P :=
     integrable_rewardAvg hd hθ (ν δ) hexp hσ hσn hm
   refine ⟨hIreward, ?_⟩

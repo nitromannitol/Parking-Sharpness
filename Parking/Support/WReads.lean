@@ -53,13 +53,13 @@ theorem U_agree_of_revealed {ω ω' : Data d} (hs : StepsToNeighbour (toDriver �
     intro q i
     show |τ q i - q.1 i| ≤ 1
     by_cases h : q.2 < U ω t q.1
-    · rw [hτ]; simp only [h, if_true]; exact hs q i
-    · rw [hτ]; simp only [h, if_false]; exact hs' q i
+    · rw [hτ]; simp only [h, ite_true]; exact hs q i
+    · rw [hτ]; simp only [h, ite_false]; exact hs' q i
   have hstate : LatticeProb.state (toDriver ω) t = LatticeProb.state (toDriver ω'') t := by
     refine state_congr (D := toDriver ω) (D' := toDriver ω'') hs rfl rfl t fun z i hi => ?_
     show ω.2.1 (z, i) = τ (z, i)
     rw [hτ]
-    exact (if_pos (show i < U ω t z from hi)).symm
+    exact (ite_eq_left (show i < U ω t z from hi)).symm
   have hU2 : U ω t y = U ω'' t y := by
     show (LatticeProb.state (toDriver ω) t).departures y
       = (LatticeProb.state (toDriver ω'') t).departures y
@@ -72,8 +72,8 @@ theorem U_agree_of_revealed {ω ω' : Data d} (hs : StepsToNeighbour (toDriver �
     show τ q = ω'.2.1 q
     rw [hτ]
     by_cases h : q.2 < U ω t q.1
-    · simp only [h, if_true]; exact hstack q hq h
-    · simp only [h, if_false]
+    · simp only [h, ite_true]; exact hstack q hq h
+    · simp only [h, ite_false]
   obtain ⟨h1, h2⟩ :=
     U_agree_of_agree_box (ω := ω'') (ω' := ω') hstep heta hrank R t hbox y hy
   exact ⟨hU2.trans h1, hU2s.trans h2⟩

@@ -118,7 +118,7 @@ displacements has the law of the direction sequence of a simple random walk. -/
 theorem moveLaw_map_label (hd : 1 ≤ d) (p : Label d) :
     (moveLaw d).map (fun m : Label d × ℕ → Fin d × Bool => fun j : ℕ => m (p, j))
       = walkLaw d := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   unfold moveLaw walkLaw
   exact infinitePi_map_inj' (stepLaw d) (fun j : ℕ => (p, j))
     fun a b h => by simpa [Prod.mk.injEq] using h
@@ -195,7 +195,7 @@ theorem iidLaw_cylinder (ν : Measure ℤ) [IsProbabilityMeasure ν] (R : Finset
       = (fun (ω : Site d → ℤ) (k : {x // x ∈ R}) => ω (k : Site d)) ⁻¹'
         (Set.univ.pi fun k : {x // x ∈ R} => A (k : Site d)) := by
     ext η
-    simp only [Set.mem_setOf_eq, Set.mem_preimage, Set.mem_pi, Set.mem_univ, forall_true_left]
+    simp only [Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_pi, Set.mem_univ, forall_true_left]
     constructor
     · intro h k; exact h k.1 k.2
     · intro h x hx; exact h ⟨x, hx⟩
@@ -259,7 +259,7 @@ theorem measurableSet_walkGood (m : ℤ) (t : ℕ) : MeasurableSet (walkGood d m
       = {ω : PData d | ω.1 0 = m} ∩ ⋂ s ∈ Finset.range (t + 1),
           {ω : PData d | 0 ≤ ω.1 (walkPath 0 (firstWalk ω) s)} := by
     ext ω
-    simp only [walkGood, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_iInter, Finset.mem_range,
+    simp only [walkGood, Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_iInter, Finset.mem_range,
       Nat.lt_succ_iff]
   rw [this]
   exact h1.inter (MeasurableSet.biInter (Set.to_countable _) fun s _ => h2 s)
@@ -283,15 +283,15 @@ theorem iidLaw_walk_cylinder (ν : Measure ℤ) [IsProbabilityMeasure ν] (m : �
   have hA : ∀ x, MeasurableSet (A x) := by
     intro x
     by_cases h : x = 0
-    · simp only [hAdef, if_pos h]; exact measurableSet_singleton m
-    · simp only [hAdef, if_neg h]
+    · simp only [hAdef, ite_eq_left h]; exact measurableSet_singleton m
+    · simp only [hAdef, ite_eq_right h]
       exact measurableSet_le measurable_const measurable_id
   have h0R : (0 : Site d) ∈ R := by
     refine Finset.mem_image.mpr ⟨0, Finset.mem_range.mpr (Nat.succ_pos t), rfl⟩
   have hset : {η : Site d → ℤ | η 0 = m ∧ ∀ s ≤ t, 0 ≤ η (walkPath 0 w s)}
       = {η : Site d → ℤ | ∀ x ∈ R, η x ∈ A x} := by
     ext η
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     constructor
     · rintro ⟨h1, h2⟩ x hx
       rcases Finset.mem_image.mp hx with ⟨s, hs, rfl⟩
@@ -299,7 +299,7 @@ theorem iidLaw_walk_cylinder (ν : Measure ℤ) [IsProbabilityMeasure ν] (m : �
       · have hAx : A (walkPath (0 : Site d) w s) = {m} := by simp [hAdef, hz]
         rw [hAx, hz, h1]
         exact rfl
-      · simp only [hAdef, if_neg hz, Set.mem_setOf_eq]
+      · simp only [hAdef, ite_eq_right hz, Set.mem_ofPred_eq]
         exact h2 s (Nat.lt_succ_iff.mp (Finset.mem_range.mp hs))
     · intro h
       have h1 : η 0 = m := by
@@ -311,14 +311,14 @@ theorem iidLaw_walk_cylinder (ν : Measure ℤ) [IsProbabilityMeasure ν] (m : �
       have := h _ hx
       by_cases hz : walkPath (0 : Site d) w s = 0
       · rw [hz, h1]; omega
-      · simpa [hAdef, if_neg hz] using this
+      · simpa [hAdef, ite_eq_right hz] using this
   rw [hset, iidLaw_cylinder ν R A hA]
   rw [← Finset.mul_prod_erase R (fun x => ν (A x)) h0R]
   have hA0 : ν (A 0) = ν {m} := by simp [hAdef]
   have hprod : ∏ x ∈ R.erase 0, ν (A x) = (ν {j : ℤ | 0 ≤ j}) ^ (R.erase 0).card := by
     rw [Finset.prod_congr rfl (fun x hx => ?_), Finset.prod_const]
     have : x ≠ 0 := Finset.ne_of_mem_erase hx
-    simp [hAdef, if_neg this]
+    simp [hAdef, ite_eq_right this]
   rw [hA0, hprod, Finset.card_erase_of_mem h0R]
   rfl
 
@@ -328,9 +328,9 @@ theorem map_firstWalk (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν
         (fun y : (Label d × ℕ → Fin d × Bool) × (Label d × ℕ → ℝ) =>
           fun j : ℕ => y.1 (((0 : Site d), 0), j))
       = walkLaw d := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
   have hg : Measurable fun m : Label d × ℕ → Fin d × Bool =>
       fun j : ℕ => m (((0 : Site d), 0), j) :=
     Measurable.of_eval fun j => measurable_pi_apply _
@@ -353,10 +353,10 @@ theorem pDataLaw_walkGood (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
     (pDataLaw d ν) (walkGood d m t)
       = ν {m} * ∫⁻ w, (ν {j : ℤ | 0 ≤ j}) ^ (Parking.rangeCard (0 : Site d) w t - 1)
           ∂(walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hpow : Measurable fun w : ℕ → Fin d × Bool =>
       (ν {j : ℤ | 0 ≤ j}) ^ (Parking.rangeCard (0 : Site d) w t - 1) :=
@@ -444,8 +444,8 @@ theorem map_conf_active_agree (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
       = (pDataLaw d ν).map (fun ω : PData d =>
         (ω.1, fun ti : ℕ × Label d => (pState (toPDriver ω) ti.1).active ti.2)) := by
   classical
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   set Obs := (ℕ × Site d → ℕ) × (ℕ × Site d → ℕ) × (ℕ × Site d → ℕ) × (ℕ × Label d → Bool)
     with hObs
@@ -543,7 +543,7 @@ theorem integral_posPart_eq_tsum (ν : Measure ℤ) [IsProbabilityMeasure ν]
 /-- `walkLaw d` is a probability measure once `d ≥ 1`, being built from the probability
 step law. -/
 theorem walkLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   unfold walkLaw
   infer_instance
 
@@ -570,7 +570,7 @@ theorem rangePow_le_one (ν : Measure ℤ) [IsProbabilityMeasure ν] (p : ℕ �
 theorem integrable_rangePow (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] (t : ℕ) :
     Integrable (fun p => (ν {j : ℤ | 0 ≤ j}).toReal ^
         (Parking.rangeCard (0 : Site d) p t - 1)) (Parking.walkLaw d) := by
-  haveI := walkLaw_isProbability (d := d) hd
+  have := walkLaw_isProbability (d := d) hd
   refine (integrable_const (1 : ℝ)).mono'
     (measurable_rangePow ν t).aestronglyMeasurable
     (Filter.Eventually.of_forall fun p => ?_)

@@ -34,9 +34,9 @@ theorem exists_oriented_uOriented_norm (hd : 2 ≤ d) (hConc : Parking.External.
       (∫ ω : Data d, |uOriented (confReal ω) n 0| ^ r ∂(orientedLaw d ν)) ^ (1 / r)
         ≤ meanuOriented (orientedLaw d ν) n
           + C * (Real.sqrt (r * orientedKappa d n) + r) := by
-  haveI := hν.prob
+  have := hν.prob
   have hd1 : 1 ≤ d := by omega
-  haveI : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd1 ν
+  have : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd1 ν
   obtain ⟨C, hC, hb⟩ := exists_oriented_centered_bound hd hConc ν hν
   refine ⟨C, hC, fun n hn r hr => ?_⟩
   have hr0 : (0 : ℝ) < r := by linarith
@@ -112,7 +112,7 @@ theorem exists_oriented_hmom2 (hBern : Parking.External.Bernstein)
           C * (n : ℝ) ^ ((1 : ℝ) / 8) *
             ((∫ ω : Data 2, (U ω n 0 : ℝ) ^ (8 : ℝ) ∂(orientedLaw 2 ν)) ^ ((1 : ℝ) / 16)
               + 1) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨C₀, hC₀, hrec⟩ := exists_oriented_U_moment_recursion hBern
   obtain ⟨C₁, hC₁, hu⟩ := exists_oriented_uOriented_norm (d := 2) (by norm_num) hConc ν hν
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
@@ -227,7 +227,7 @@ theorem exists_oriented_hmom (hBern : Parking.External.Bernstein)
               ∂(orientedLaw d ν)) ^
               ((1 : ℝ) / (2 ⊔ ⌈Real.log ((n : ℝ) + 1)⌉₊ : ℝ))) +
             (2 ⊔ ⌈Real.log ((n : ℝ) + 1)⌉₊ : ℝ)) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨C₀, hC₀, hrec⟩ := exists_oriented_U_moment_recursion hBern
   obtain ⟨C₁, hC₁, hu⟩ := exists_oriented_uOriented_norm (d := d) (by omega) hConc ν hν
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
@@ -266,7 +266,7 @@ theorem exists_oriented_hmom (hBern : Parking.External.Bernstein)
       have he : orientedKappa 3 n = L := by simp [orientedKappa, hL]
       rw [he]; linarith
     · have he : orientedKappa d n = 1 := by
-        rw [orientedKappa, if_neg (show d ≠ 2 by omega), if_neg h3]
+        rw [orientedKappa, ite_eq_right (show d ≠ 2 by omega), ite_eq_right h3]
       rw [he]; linarith
   have hsq : Real.sqrt (rn * orientedKappa d n) ≤ 3 * L := by
     have h1 : rn * orientedKappa d n ≤ (4 * L) * (2 * L) :=

@@ -30,7 +30,7 @@ theorem exists_integer_linear_abs_lower (ν : Measure ℤ) [IsProbabilityMeasure
       c * Real.sqrt (∑ i, a i ^ 2) ≤
         ∫ ξ : Fin N → ℝ, |∑ i, a i * ξ i| ∂(Measure.pi fun _ : Fin N => realLaw ν) := by
   obtain ⟨p, hp, hp2, hpν⟩ := exists_sparse_comparison_parameter ν hnc hint hmean
-  haveI := threePointLaw_isProbability hp.le hp2
+  have := threePointLaw_isProbability hp.le hp2
   have h4 : Integrable (fun z : ℝ => z ^ 4) (realLaw (threePointLaw p)) :=
     (realLaw_integrable_iff _ (measurable_id.pow_const 4)).mpr (integrable_threePointLaw p _)
   have hμm : (∫ z : ℝ, z ∂(realLaw (threePointLaw p))) = 0 :=

@@ -177,10 +177,10 @@ theorem holeObs_add_lip (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (t : ℕ)
       intro x _
       by_cases hx : x = z
       · subst hx
-        rw [if_pos rfl, hdef, hz]
+        rw [ite_eq_left rfl, hdef, hz]
         push_cast
         ring
-      · rw [if_neg hx, hdef, hz' x hx, sub_self]
+      · rw [ite_eq_right hx, hdef, hz' x hx, sub_self]
     have hs : (∑ x ∈ rangeFinset (0 : Site d) w t,
             ((pHoleCount (toPDriver ω) t x : ℕ) : ℝ))
           - ∑ x ∈ rangeFinset (0 : Site d) w t,
@@ -189,10 +189,10 @@ theorem holeObs_add_lip (hd : 1 ≤ d) (w : ℕ → Fin d × Bool) (t : ℕ)
       rw [← Finset.sum_sub_distrib, Finset.sum_congr rfl key]
       exact Finset.sum_ite_eq' (rangeFinset (0 : Site d) w t) z fun _ => (1 : ℝ)
     by_cases hzR : z ∈ rangeFinset (0 : Site d) w t
-    · rw [if_pos hzR] at hs
+    · rw [ite_eq_left hzR] at hs
       rw [abs_le]
       constructor <;> linarith
-    · rw [if_neg hzR] at hs
+    · rw [ite_eq_right hzR] at hs
       rw [abs_le]
       constructor <;> linarith
 

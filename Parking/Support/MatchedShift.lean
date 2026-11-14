@@ -197,10 +197,10 @@ theorem Parking.matchSlot_shift (η : Site d → ℤ) (ρ : Label d × ℕ → �
   have hr := Parking.rankIn_shift v ρ t _ _ hA p
   unfold Parking.matchSlot
   by_cases hp : p ∈ Parking.matchActive (fun y => η (y + v)) S' t (S'.pos p)
-  · rw [if_pos hp, if_pos (hm.mp hp)]
+  · rw [ite_eq_left hp, ite_eq_left (hm.mp hp)]
     change Sum.inl (S'.pos p + v, _) = Sum.inl _
     rw [hr, hS.pos, sub_add_cancel]
-  · rw [if_neg hp, if_neg (fun h => hp (hm.mpr h))]
+  · rw [ite_eq_right hp, ite_eq_right (fun h => hp (hm.mpr h))]
     rfl
 
 /-- The common-table physical dynamics commute with translations. -/

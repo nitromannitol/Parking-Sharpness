@@ -33,7 +33,7 @@ theorem exists_greenSquareWeight_sum_bound (hd : 5 ≤ d) :
   obtain ⟨C, hC, hCb⟩ := fullGreen_bubble_bound hd
   refine ⟨C, hC, fun x S => ?_⟩
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   have hfinite (a : Fin d × Bool) : ∑ v ∈ S, fullGreen d (v + stepVec a - x) ^ 2 ≤ C := by
     have hs : Summable (fun y : Site d => fullGreen d (y - (x - stepVec a)) ^ 2) := by
       simpa only [pow_two] using (hCb (x - stepVec a) (x - stepVec a)).1

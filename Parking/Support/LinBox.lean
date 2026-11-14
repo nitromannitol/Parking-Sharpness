@@ -111,7 +111,7 @@ theorem lipschitzWith_linPotential_extendField (hd : 1 ≤ d) (s : Finset (Site 
   apply abs_linPotential_sub_le hd dist_nonneg
   intro y
   by_cases hy : y ∈ s
-  · simp only [extendField, dif_pos hy]
+  · simp only [extendField, dite_eq_left hy]
     exact dist_le_pi_dist ζ ξ ⟨y, hy⟩
   · simp [extendField, hy]
 
@@ -125,11 +125,11 @@ theorem extendField_update {s : Finset (Site d)} (ζ : s → ℝ) (i : s) (v : �
   by_cases hw : w = (i : Site d)
   · subst hw
     rw [Function.update_self]
-    simp only [extendField, dif_pos i.2]
+    simp only [extendField, dite_eq_left i.2]
     exact Function.update_self i v ζ
   · rw [Function.update_of_ne hw]
     by_cases hws : w ∈ s
-    · simp only [extendField, dif_pos hws]
+    · simp only [extendField, dite_eq_left hws]
       rw [Function.update_of_ne]
       intro hcontra
       exact hw (congrArg Subtype.val hcontra)

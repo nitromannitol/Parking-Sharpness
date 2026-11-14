@@ -44,7 +44,7 @@ theorem exists_matchedMeanU_subgaussian (hd : 5 ≤ d) :
   classical
   obtain ⟨V, hV, hsg⟩ := exists_sparseBoxField_subgaussian hd
   refine ⟨V, hV, fun ν hν hclip T x => ?_⟩
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let S := boxFinset x T
   let f : (S → ℤ) → ℝ := fun ξ => matchedMeanU (sparseBoxField S ξ) 0 T x
   have hf : Measurable f := measurable_from_countable' _
@@ -62,7 +62,7 @@ theorem exists_matchedMeanU_subgaussian (hd : 5 ≤ d) :
     intro y hy
     have hyS : y ∈ S := hy
     change sparseBoxField S (S.restrict η) y = η y
-    rw [sparseBoxField, dif_pos hyS]
+    rw [sparseBoxField, dite_eq_left hyS]
     exact hη y
   have hm : ∫ ξ, f ξ ∂(Measure.pi (fun _ : S => ν)) =
       ∫ η, matchedMeanU η 0 T x ∂(iidLaw d ν) := by
@@ -87,8 +87,8 @@ theorem exists_sparse_scenery_moment (hd : 5 ≤ d) :
         ∫ ζ, matchedMeanU ζ 0 T x ∂(iidLaw d (threePointLaw p))) ≤ C * Real.sqrt r := by
   obtain ⟨V, _hV, hsg⟩ := exists_matchedMeanU_subgaussian hd
   refine ⟨2 * Real.exp ((V : ℝ) / 2), by positivity, fun p hp hp4 T x r hr => ?_⟩
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   exact subgaussian_rNorm_le _ _ ((measurable_matchedMeanU (by omega) 0 T x).sub_const _)
     V (hsg (threePointLaw p) (ae_clipSparse_threePointLaw p) T x) r hr
 end Parking

@@ -37,6 +37,6 @@ theorem holeKernel_eq_walkOp (hd : 1 ≤ d) (x z y : Site d) :
 
 /-- Every real function of one direction is integrable. -/
 theorem integrable_step_fun (hd : 1 ≤ d) (f : Fin d × Bool → ℝ) : Integrable f (stepLaw d) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   exact integrableOn_univ.mp (IntegrableOn.of_finite Set.finite_univ)
 end Parking

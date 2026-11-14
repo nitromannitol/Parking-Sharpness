@@ -232,14 +232,14 @@ theorem measurable_of_finite_dependence (hd : 1 ≤ d) (n : ℕ)
     (h : ∀ p q : ℕ → Fin d × Bool, (∀ i, i < n → p i = q i) → f p = f q) :
     Measurable f := by
   classical
-  haveI : Nonempty (Fin d × Bool) := ⟨(⟨0, by omega⟩, true)⟩
+  have : Nonempty (Fin d × Bool) := ⟨(⟨0, by omega⟩, true)⟩
   set e : (Fin n → Fin d × Bool) → (ℕ → Fin d × Bool) :=
     fun c i => if hi : i < n then c ⟨i, hi⟩ else Classical.arbitrary _ with he
   have hfac : f = (fun c : Fin n → Fin d × Bool => f (e c))
       ∘ (fun (p : ℕ → Fin d × Bool) (i : Fin n) => p (i : ℕ)) := by
     funext p
     refine (h _ _ fun i hi => ?_).symm
-    simp only [he, dif_pos hi]
+    simp only [he, dite_eq_left hi]
   rw [hfac]
   exact Measurable.of_discrete.comp (Measurable.of_eval fun i => measurable_pi_apply _)
 
@@ -253,8 +253,8 @@ theorem measurable_wMax (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
 constant `wBound ω n x`. -/
 theorem integrable_wMax (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     Integrable (wMax ω n x) (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by
     unfold walkLaw; infer_instance
   refine (integrable_const (wBound ω n x)).mono'
     (measurable_wMax hd ω n x).aestronglyMeasurable (Filter.Eventually.of_forall fun p => ?_)
@@ -266,8 +266,8 @@ the supremum defining `wMax ω n x p` for any direction sequence `p`, so it is a
 mean of `wMax` over the walk law, which is `wStar`. -/
 theorem abs_wErr_le_wStar (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     |wErr ω n x| ≤ wStar ω n x := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by
     unfold walkLaw; infer_instance
   have hpt : ∀ p, |wErr ω n x| ≤ wMax ω n x p := by
     intro p
@@ -317,7 +317,7 @@ theorem wStar_zero (ω : Data d) (x : Site d) : wStar ω 0 x = 0 := by
 `2d` directions. -/
 theorem integral_stepLaw (hd : 1 ≤ d) (g : Fin d × Bool → ℝ) :
     ∫ u, g u ∂(stepLaw d) = (∑ b : Fin d × Bool, g b) / (2 * d) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   have hfin : ∀ b : Fin d × Bool, Integrable g (Measure.dirac b) := fun b =>
     integrable_dirac (by simp)
   rw [stepLaw, integral_smul_measure, integral_finsetSum_measure (fun b _ => hfin b)]
@@ -346,8 +346,8 @@ independent copy of itself, so the mean of `wMax` after that first step is one o
 terms of the supremum defining `wMax` at the longer horizon. -/
 theorem walkOp_wStar_le (hd : 1 ≤ d) (ω : Data d) (k : ℕ) (x : Site d) :
     walkOp (wStar ω k) x ≤ wStar ω (k + 1) x := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   set f : (ℕ → Fin d × Bool) → ℝ := fun p => wMax ω k (x + stepVec (p 0)) (tailNat p) with hf
   have hshift : ∀ (p : ℕ → Fin d × Bool) (j : ℕ),
       walkPath (x + stepVec (p 0)) (tailNat p) j = walkPath x p (j + 1) := by

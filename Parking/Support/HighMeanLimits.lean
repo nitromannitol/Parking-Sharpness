@@ -34,7 +34,7 @@ theorem high_meanu_div_log_tendsto_zero (hd : 1 ≤ d) (hd5 : 5 ≤ d)
     (hGrowth : Parking.External.SandpileGrowth) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (hb : ∃ b : ℤ, ν (Set.Iio b) = 0) :
     Tendsto (fun n : ℕ => meanu (law d ν) n / Real.log n) atTop (𝓝 0) := by
-  haveI := hν.prob
+  have := hν.prob
   have hBP := hGrowth d hd (realLaw ν) inferInstance (realLaw_mean ν hν)
     (realLaw_evariance_pos ν hν) (realLaw_evariance_lt_top ν hν) (realLaw_expMoment ν hν)
   obtain ⟨c, C, _hc, hC, hu⟩ := hBP.2.2.2.1 hd5 (realLaw_bounded_below ν hb)

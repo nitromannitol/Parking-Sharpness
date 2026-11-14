@@ -70,7 +70,7 @@ theorem Parking.lintegral_coupled_holes (hd : 1 ≤ d) (ν : Measure ℤ)
     ∫⁻ ω : Parking.CoupledData d,
       ((Parking.matchedState (Parking.coupledConf b ω.1.1) ω.1.2 ω.2 t).holes 0 : ℝ≥0∞)
       ∂(Parking.coupledLaw d ν p) = ENNReal.ofReal (Parking.S (Parking.law d ν) t) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw
     infer_instance
   have hmap : (LatticeProb.iidLaw d ν).map (fun η : Site d → ℤ => η 0) = ν :=

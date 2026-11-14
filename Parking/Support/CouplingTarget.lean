@@ -81,7 +81,7 @@ theorem mean_A_and_H_eq_S (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (hmean : ∫ k, (k : ℝ) ∂ν = 0) (t : ℕ) :
     ∫ ω, (A ω t 0 : ℝ) ∂(law d ν) = S (law d ν) t ∧
       ∫ ω, (H ω t 0 : ℝ) ∂(law d ν) = S (law d ν) t := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hmap : (LatticeProb.iidLaw d ν).map (fun η : Site d → ℤ => η 0) = ν := by
     show (MeasureTheory.Measure.infinitePi fun _ : Site d => ν).map
@@ -130,7 +130,7 @@ theorem tsum_cancel_le (hd : 1 ≤ d) (t : ℕ) (a : ℝ≥0∞) (canc : Site d 
     intro z
     by_cases hz : z = 0
     · rw [hz, h0]; simp
-    · rw [if_neg hz]; exact h z hz
+    · rw [ite_eq_right hz]; exact h z hz
   calc ∑' z : Site d, canc z
       ≤ ∑' z : Site d,
           a * (if z = 0 then 0 else (walkLaw d) {p | ∃ j ≤ 2 * t, walkPath z p j = 0}) :=

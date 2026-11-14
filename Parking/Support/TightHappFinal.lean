@@ -101,8 +101,8 @@ theorem happ_diff_eq_zero_of_n_zero (A : ℕ) (w : Data 2) :
 theorem exists_uOriented_L1_bound (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∃ C1 : ℝ, 0 < C1 ∧ ∀ n : ℕ, ∫ w, |(n : ℝ) ^ (-(1 : ℝ) / 4) *
         uOriented (confReal w) n 0| ∂(orientedLaw 2 ν) ≤ C1 := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   obtain ⟨C1, hC1pos, hC1⟩ := exists_meanuOriented_two_upper ν hν.mean 8 (by norm_num)
     (hν.integrable_rpow (by norm_num))
   refine ⟨C1, hC1pos, fun n => ?_⟩
@@ -135,10 +135,10 @@ theorem happ_bound_A_zero (ν : Measure ℤ) (hν : CriticalLaw ν) (p : ℝ) (h
     ∃ B0 : ℝ, 0 ≤ B0 ∧ ∀ n : ℕ, 1 ≤ n →
       ∫ w, |(n : ℝ) ^ (-(1 : ℝ) / 4) * uOriented (confReal w) n 0 - Y 0 n w|
         ∂(orientedLaw 2 ν) ≤ B0 := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   obtain ⟨C1, hC1pos, hC1⟩ := exists_uOriented_L1_bound ν hν
   obtain ⟨K, hKnn, hKall⟩ := exists_integral_norm_boxRewardMap_le ν hν p hp
   refine ⟨C1 + 2 * K, by positivity, fun n hn => ?_⟩
@@ -218,12 +218,12 @@ theorem happ_bound_A_pos (ν : Measure ℤ) (hν : CriticalLaw ν) (p : ℝ) (hp
         ∂(orientedLaw 2 ν) ≤
         Codom * (1 / (16 * (A : ℝ) ^ 2)) ^ ((7 : ℝ) / 8) +
           Krwd * (1 + (A : ℝ)) ^ (1 / 2 + 2 / p) / (16 * (A : ℝ) ^ 2) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   obtain ⟨Codom, hCodompos, hCodomall⟩ := exists_integral_rNorm_orientedMax_le ν hν
   obtain ⟨Krwd, hKrwdnn, hKrwdall⟩ := exists_integral_norm_boxRewardMap_le ν hν p hp
   refine ⟨Codom, Krwd, hCodompos.le, hKrwdnn, fun A hA1 n hn => ?_⟩
@@ -449,8 +449,8 @@ theorem oriented_scaling_assembled
     intro A
     simp only [hedef]
     by_cases hA : A = 0
-    · simp only [hA, if_pos]; exact hB0nn
-    · simp only [hA, if_false]
+    · simp only [hA, ite_eq_left]; exact hB0nn
+    · simp only [hA, ite_false]
       positivity
   have he : Tendsto e atTop (𝓝 0) := by
     set e2 : ℝ := (1 : ℝ) / 2 + 2 / 13 with he2def
@@ -509,7 +509,7 @@ theorem oriented_scaling_assembled
       simpa using this
     refine hcomb.congr' ?_
     filter_upwards [Filter.eventually_gt_atTop 0] with A hA
-    simp only [hedef, if_neg hA.ne']
+    simp only [hedef, ite_eq_right hA.ne']
   have happ : ∀ A n : ℕ, ∫ w, |(n : ℝ) ^ (-(1 : ℝ) / 4) *
       uOriented (fun y => (w.1 y : ℝ)) n 0 - Y A n w| ∂(orientedLaw 2 ν) ≤ e A := by
     intro A n
@@ -528,7 +528,7 @@ theorem oriented_scaling_assembled
       simp only [integral_const, smul_eq_mul, mul_zero]
       exact he0nn A
     · rcases Nat.eq_zero_or_pos A with rfl | hApos
-      · simp only [hedef, if_pos rfl]
+      · simp only [hedef, ite_eq_left rfl]
         have hb := hB0all n hnpos
         have heqc : (fun w : Data 2 => |(n : ℝ) ^ (-(1 : ℝ) / 4) *
             uOriented (fun y => (w.1 y : ℝ)) n 0 - Y 0 n w|) =
@@ -536,7 +536,7 @@ theorem oriented_scaling_assembled
               Y 0 n w|) := rfl
         rw [heqc]
         exact hb
-      · simp only [hedef, if_neg hApos.ne']
+      · simp only [hedef, ite_eq_right hApos.ne']
         have hb := hPosall A hApos n hnpos
         have hbridge2 : (∫ w, |(n : ℝ) ^ (-(1 : ℝ) / 4) *
               uOriented (fun y => (w.1 y : ℝ)) n 0 - Y A n w| ∂(orientedLaw 2 ν)) =

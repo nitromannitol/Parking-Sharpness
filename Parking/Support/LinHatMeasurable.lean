@@ -252,10 +252,10 @@ theorem exists_lipschitz_cutoffBC_linHatInterp (d : ℕ) (hd : 1 ≤ d) (R : ℝ
       intro z
       by_cases hz : z ∈ Z
       · show |extendField Z y1 z - extendField Z y2 z| ≤ dist y1 y2
-        simp only [extendField, dif_pos hz]
+        simp only [extendField, dite_eq_left hz]
         rw [← Real.dist_eq]
         exact dist_le_pi_dist y1 y2 ⟨z, hz⟩
-      · simp only [extendField, dif_neg hz, sub_zero, abs_zero]
+      · simp only [extendField, dite_eq_right hz, sub_zero, abs_zero]
         exact dist_nonneg
     have hterm : ∀ m ∈ Tbox, ∀ c ∈ Sbox,
         |(R ^ ((d : ℝ) / 2 - 2) * linPotential (extendField Z y1) m.toNat c) *
@@ -276,7 +276,8 @@ theorem exists_lipschitz_cutoffBC_linHatInterp (d : ℕ) (hd : 1 ≤ d) (R : ℝ
       have hwnn : 0 ≤ hat1 ((R ^ 2 * p.1 : ℝ) - (m : ℝ)) * hatProd (fun i => R * p.2 i) c :=
         mul_nonneg (hat1_nonneg _) (hatProd_nonneg _ _)
       have hwle : hat1 ((R ^ 2 * p.1 : ℝ) - (m : ℝ)) * hatProd (fun i => R * p.2 i) c ≤ 1 :=
-        mul_le_one₀ (hat1_le_one _) (hatProd_nonneg _ _) (hatProd_le_one _ _)
+        (mul_le_of_le_one_left (hatProd_nonneg _ _) (hat1_le_one _)).trans
+          (hatProd_le_one _ _)
       have hwabs : |hat1 ((R ^ 2 * p.1 : ℝ) - (m : ℝ)) * hatProd (fun i => R * p.2 i) c| ≤ 1 := by
         rw [abs_of_nonneg hwnn]; exact hwle
       have hmn : m.toNat ≤ linHatRad R0 := toNat_mem_linHatTimeBox_le hm

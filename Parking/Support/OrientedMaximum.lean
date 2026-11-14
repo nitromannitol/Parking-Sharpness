@@ -43,7 +43,7 @@ theorem exists_bound_of_finite_dependence (hd : 1 ≤ d) (n : ℕ)
   have he : f (e (fun k : Fin n => p k)) = f p := by
     apply hf
     intro k hk
-    simp only [e, dif_pos hk]
+    simp only [e, dite_eq_left hk]
   rw [← he]
   exact single_le_sum (f := fun c : Fin n → Fin d × Bool => |f (e c)|)
     (fun _ _ => abs_nonneg _) (mem_univ (fun k : Fin n => p (k : ℕ)))
@@ -55,8 +55,8 @@ theorem integrable_of_finite_dependence (hd : 1 ≤ d) (n : ℕ)
     (f : (ℕ → Fin d × Bool) → ℝ)
     (hf : ∀ p q, (∀ i, i < n → p i = q i) → f p = f q) :
     Integrable f (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   obtain ⟨C, _, hC⟩ := exists_bound_of_finite_dependence hd n f hf
   exact (integrable_const C).mono' (measurable_of_finite_dependence hd n f hf).aestronglyMeasurable
     (Filter.Eventually.of_forall fun p => by simpa only [Real.norm_eq_abs] using hC p)
@@ -105,8 +105,8 @@ theorem orientedMax_nonneg (F : ℕ → Site d → ℝ) (n : ℕ) (x : Site d) (
 `orientedMaxMean F n x`, by integrating the pointwise bound `abs_le_orientedMax`. -/
 theorem abs_le_orientedMaxMean (hd : 1 ≤ d) (F : ℕ → Site d → ℝ) (n : ℕ) (x : Site d) :
     |F n x| ≤ orientedMaxMean F n x := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have h := integral_mono (integrable_const |F n x|) (integrable_orientedMax hd F n x)
     (abs_le_orientedMax F n x)
   simpa only [integral_const, probReal_univ, smul_eq_mul, one_mul, orientedMaxMean] using h
@@ -126,7 +126,7 @@ tail-shifted maximum `orientedMax F n (x - unit (p 0).1) (tailNat p)` is bounded
 larger running maximum at horizon `n + 1`. -/
 theorem orientedOp_orientedMaxMean_le (hd : 1 ≤ d) (F : ℕ → Site d → ℝ) (n : ℕ) (x : Site d) :
     orientedOp (orientedMaxMean F n) x ≤ orientedMaxMean F (n + 1) x := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   let f : (ℕ → Fin d × Bool) → ℝ :=
     fun p => orientedMax F n (x - unit (p 0).1) (tailNat p)
   have hi : Integrable f (walkLaw d) := by

@@ -98,7 +98,7 @@ forward from the product structure. -/
 theorem law_map_conf_eval (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (z : Site d) :
     (law d ν).map (fun ω : Data d => ω.1 z) = ν := by
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   have h1 : (fun ω : Data d => ω.1 z)
       = (fun η : Site d → ℤ => η z) ∘ (Prod.fst : Data d → (Site d → ℤ)) := rfl
   rw [h1, ← Measure.map_map (measurable_pi_apply z) measurable_fst]

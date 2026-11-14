@@ -32,9 +32,9 @@ theorem exists_sparseSink_noArrival_bound (hBernstein : External.Bernstein) (hd 
   have hg0 : 0 < escapeConst d := by linarith
   let c' := min c (1 / (2 * escapeConst d))
   refine ⟨A + 1, c', by linarith, lt_min hc (by positivity), fun p hp hp4 T => ?_⟩
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd1
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd1
   let μ := (iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)
   let m := meanU (law d (threePointLaw p)) T
   let b := walkOp (sparseSinkMean (d := d) p T) 0

@@ -25,7 +25,7 @@ variable {d : ℕ}
 theorem matchedMeanU_le_box (hd : 1 ≤ d) (η : Site d → ℤ) (N : ℕ)
     (hη : ∀ y, (η y).toNat ≤ N) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     matchedMeanU η ρ T x ≤ ((T * ((2 * T + 1) ^ d * N) : ℕ) : ℝ) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have h := integral_mono (integrable_matchedOdometer hd η ρ T x)
     (integrable_const ((T * ((2 * T + 1) ^ d * N) : ℕ) : ℝ))
     (fun σ => Nat.cast_le.mpr (matchedOdometer_le_box η N hη ρ σ T x))

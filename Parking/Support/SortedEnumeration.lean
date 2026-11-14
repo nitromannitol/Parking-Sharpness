@@ -20,9 +20,9 @@ theorem exists_sorted_enumeration {ι : Type*} (S : Finset ι) (h : ι → ℤ) 
     ∃ q : Fin S.card → ι, Function.Injective q ∧ (∀ x, x ∈ S ↔ ∃ j, q j = x) ∧
       Monotone (fun j => h (q j)) := by
   let r : ι → ι → Prop := fun x y => h x ≤ h y
-  letI : IsTrans ι r := ⟨fun _ _ _ => le_trans⟩
-  letI : Std.Total r := ⟨fun x y => le_total (h x) (h y)⟩
-  letI : Std.Refl r := ⟨fun _ => le_rfl⟩
+  let : IsTrans ι r := ⟨fun _ _ _ => le_trans⟩
+  let : Std.Total r := ⟨fun x y => le_total (h x) (h y)⟩
+  let : Std.Refl r := ⟨fun _ => le_rfl⟩
   let L := S.toList.mergeSort (fun x y => decide (r x y))
   have hp : L.Perm S.toList := List.mergeSort_perm _ _
   have hlen : L.length = S.card := hp.length_eq.trans S.length_toList

@@ -52,7 +52,7 @@ integrable, combining its measurability with the uniform bound
 theorem integrableOn_spaceTime_barDivisible (hd : 1 ≤ d) (w : Data d)
     {R : ℝ} (hR : 0 ≤ R) {K : Set (ℝ × (Fin d → ℝ))} (hK : IsCompact K) :
     IntegrableOn (fun p => barDivisible w R p.1 p.2) K := by
-  haveI : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
+  have : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
   obtain ⟨M, hM⟩ := exists_bound_spaceTime_barDivisible hd w hR hK
   exact Integrable.of_bound
     (measurable_spaceTime_barDivisible w R).aestronglyMeasurable M

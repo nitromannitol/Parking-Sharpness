@@ -59,8 +59,8 @@ theorem S_ge_of_nearFamily (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Measure �
   obtain ⟨pri, hpri, hf, hs, hKd⟩ := hcouple δ hδ
   have hδmem : δ ∈ Set.Icc (0 : ℝ) δ₀ := ⟨hδ.1.le, hδ.2⟩
   have h0mem : (0 : ℝ) ∈ Set.Icc (0 : ℝ) δ₀ := ⟨le_rfl, hδ₀.le⟩
-  haveI := hprob δ hδmem
-  haveI := hprob 0 h0mem
+  have := hprob δ hδmem
+  have := hprob 0 h0mem
   have hintd : Integrable (fun k : ℤ => |(k : ℝ)|) (ν δ) :=
     integrable_abs_of_absMoment hθ (hexp δ hδmem).1
   have hint0 : Integrable (fun k : ℤ => |(k : ℝ)|) (ν 0) :=
@@ -78,15 +78,15 @@ theorem meanU_ge_of_nearFamily (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Measur
   obtain ⟨hδ₀, hθ, hprob, hmean, hnc, hexp, hcouple⟩ := hfam
   have hδmem : δ ∈ Set.Icc (0 : ℝ) δ₀ := ⟨hδ.1.le, hδ.2⟩
   have h0mem : (0 : ℝ) ∈ Set.Icc (0 : ℝ) δ₀ := ⟨le_rfl, hδ₀.le⟩
-  haveI := hprob δ hδmem
-  haveI := hprob 0 h0mem
+  have := hprob δ hδmem
+  have := hprob 0 h0mem
   have hintd : Integrable (fun k : ℤ => |(k : ℝ)|) (ν δ) :=
     integrable_abs_of_absMoment hθ (hexp δ hδmem).1
   have hint0 : Integrable (fun k : ℤ => |(k : ℝ)|) (ν 0) :=
     integrable_abs_of_absMoment hθ (hexp 0 h0mem).1
-  haveI hpd : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
+  have hpd : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI hpc : IsProbabilityMeasure (LatticeProb.iidLaw d (ν 0)) := by
+  have hpc : IsProbabilityMeasure (LatticeProb.iidLaw d (ν 0)) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hsumd : Parking.meanU (Parking.law d (ν δ)) n
       = ∑ s ∈ Finset.range n, Parking.S (Parking.law d (ν δ)) s :=
@@ -122,7 +122,7 @@ theorem exists_meanUlimit_log_lower (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → M
   have hfam' : NearFamily δ₀ ν θ M K := hfam
   obtain ⟨hδ₀, hθ, hprob, hmean, hnc, hexp, hcouple⟩ := hfam
   have h0mem : (0 : ℝ) ∈ Set.Icc (0 : ℝ) δ₀ := ⟨le_rfl, hδ₀.le⟩
-  haveI hp0 := hprob 0 h0mem
+  have hp0 := hprob 0 h0mem
   have hint0 : Integrable (fun k : ℤ => |(k : ℝ)|) (ν 0) :=
     integrable_abs_of_absMoment hθ (hexp 0 h0mem).1
   have hmean0 : ∫ k, (k : ℝ) ∂(ν 0) = 0 := by
@@ -189,7 +189,7 @@ theorem exists_meanUlimit_log_lower (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → M
     have hDdef : D = c₀ + C₀ + K + K := hD
     nlinarith [hlow, hcomp, hloss, hstep, hDL]
   have hδmem : δ ∈ Set.Icc (0 : ℝ) δ₀ := ⟨hδ0.le, hδδ₀⟩
-  haveI := hprob δ hδmem
+  have := hprob δ hδmem
   have hintd : Integrable (fun k : ℤ => |(k : ℝ)|) (ν δ) :=
     integrable_abs_of_absMoment hθ (hexp δ hδmem).1
   exact le_trans (ENNReal.ofReal_le_ofReal hmain)

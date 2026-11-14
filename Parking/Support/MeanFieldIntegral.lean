@@ -41,7 +41,7 @@ theorem integral_clipped_matchedMeanU (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4
     (T : ℕ) (x : Site d) :
     ∫ η, matchedMeanU (clippedField η) 0 T x ∂(iidLaw d (threePointLaw p)) =
       meanU (law d (threePointLaw p)) T := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
   have he : (fun η => matchedMeanU (clippedField η) 0 T x) =ᵐ[iidLaw d (threePointLaw p)]
       (fun η => matchedMeanU η 0 T x) :=
     (ae_clippedField (threePointLaw p) (ae_clipSparse_threePointLaw p)).mono

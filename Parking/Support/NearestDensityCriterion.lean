@@ -28,10 +28,10 @@ theorem holeCloser_lower_of_pair_sum (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 
         holeProb d (threePointLaw p) t / 4) :
     holeProb d (threePointLaw p) t / 4 * ((R + 1 : ℕ) : ℝ) ^ d ≤
       ((law d (threePointLaw p)) {ω | HoleCloser ω t}).toReal := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI := stackRankLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d (threePointLaw p)) :=
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have := stackRankLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (law d (threePointLaw p)) :=
     inferInstanceAs (IsProbabilityMeasure ((iidLaw d (threePointLaw p)).prod (stackRankLaw d)))
   let μ := law d (threePointLaw p)
   let h := holeProb d (threePointLaw p) t

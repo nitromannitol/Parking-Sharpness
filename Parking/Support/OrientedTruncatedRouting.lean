@@ -56,9 +56,9 @@ theorem exists_oriented_truncated_route_moment (hBern : External.Bernstein) :
           ∂((iidLaw d ν).prod (orientedStackLaw d))) ^ (1 / r) + r) := by
   obtain ⟨C, hC, hb⟩ := exists_finite_coordinate_moment_bound hBern
   refine ⟨C, hC, fun d hd ν _ S m l M r hr => ?_⟩
-  haveI : ∀ c : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw c.1) :=
+  have : ∀ c : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw c.1) :=
     fun c => orientedInstructionLaw_isProbability hd c.1
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let T := S ×ˢ range M
   obtain ⟨q, hq, hcov, hsort⟩ := exists_sorted_enumeration T (fun c => layerHeight c.1)
   let b : Site d × ℕ → Site d := fun _ => 0

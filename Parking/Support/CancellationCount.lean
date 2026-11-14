@@ -142,17 +142,17 @@ theorem Parking.measurable_discrepancyCancelledBy (i₀ : Fin d)
     (c : Ω → Site d → ℤ × ℤ) (ρ : Ω → Label d × ℕ → ℝ) (σ : Ω → Parking.RoundNoise d)
     (hc : Measurable c) (hρ : Measurable ρ) (hσ : Measurable σ) (T : ℕ) (p q : Label d) :
     Measurable fun ω => Parking.discrepancyCancelledBy (c ω) (ρ ω) (σ ω) T p q := by
-  apply measurableSet_setOf.mp
+  apply measurableSet_setOfPred.mp
   rw [show {ω | Parking.discrepancyCancelledBy (c ω) (ρ ω) (σ ω) T p q} =
     ⋃ t : ℕ, {ω | t < T ∧ Parking.discrepancyCancelledAt (c ω) (ρ ω) (σ ω) t p q} by
       ext ω
-      simp only [Parking.discrepancyCancelledBy, Set.mem_setOf_eq, Set.mem_iUnion]]
+      simp only [Parking.discrepancyCancelledBy, Set.mem_ofPred_eq, Set.mem_iUnion]]
   apply MeasurableSet.iUnion
   intro t
   by_cases ht : t < T
-  · simpa only [ht, true_and] using measurableSet_setOf.mpr
+  · simpa only [ht, true_and] using measurableSet_setOfPred.mpr
       (Parking.measurable_discrepancyCancelledAt i₀ c ρ σ hc hρ hσ t p q)
-  · simp only [ht, false_and, Set.setOf_false]
+  · simp only [ht, false_and, Set.ofPred_false]
     exact MeasurableSet.empty
 
 
@@ -260,14 +260,14 @@ theorem Parking.lintegral_discrepancyCancelledPairs_le (hd : 1 ≤ d)
   by_cases hs : Parking.discrepancySign c (z, 0) = Parking.discrepancySign c (0, 0)
   · simp only [Parking.discrepancyCancelledPairs_empty_of_sign c ρ _ T z hs,
       Finset.card_empty, Nat.cast_zero, lintegral_zero, Parking.discrepancyOppositePairs,
-      if_pos hs, zero_mul, le_refl]
+      ite_eq_left hs, zero_mul, le_refl]
   · let I := (Finset.range (Parking.discrepancyConf c z).toNat).product
       (Finset.range (Parking.discrepancyConf c 0).toNat)
     let f : ℕ × ℕ → Parking.RoundNoise d → ℝ≥0∞ := fun ji σ =>
       if Parking.discrepancyCancelledBy c ρ σ T (z, ji.1) (0, ji.2) then 1 else 0
     have hm : ∀ ji, Measurable (f ji) := by
       intro ji
-      have he := measurableSet_setOf.mpr
+      have he := measurableSet_setOfPred.mpr
         (Parking.measurable_discrepancyCancelledBy ⟨0, hd⟩ (fun _ => c) (fun _ => ρ) id
           measurable_const measurable_const measurable_id T (z, ji.1) (0, ji.2))
       exact Measurable.ite he measurable_const measurable_const
@@ -299,6 +299,6 @@ theorem Parking.lintegral_discrepancyCancelledPairs_le (hd : 1 ≤ d)
       _ = _ := by
         simp only [Finset.sum_const, nsmul_eq_mul, I, Finset.product_eq_sprod,
           Finset.card_product, Finset.card_range,
-          Parking.discrepancyOppositePairs, if_neg hs, Nat.cast_mul]
+          Parking.discrepancyOppositePairs, ite_eq_right hs, Nat.cast_mul]
 
 end

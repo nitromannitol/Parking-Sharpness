@@ -90,7 +90,7 @@ theorem measurableSet_blockSmall (n m K : ℕ) :
         (LatticeProb.shiftPath (i * n)) ⁻¹'
           {X : ℕ → Site d | LatticeProb.rangeCard X n < m} := by
     ext X
-    simp only [blockSmall, Set.mem_setOf_eq, Set.mem_iInter, Set.mem_preimage]
+    simp only [blockSmall, Set.mem_ofPred_eq, Set.mem_iInter, Set.mem_preimage]
   rw [hrw]
   exact MeasurableSet.iInter fun i => MeasurableSet.iInter fun _ =>
     (LatticeProb.measurable_shiftPath (i * n)) (measurableSet_rangeCard_lt n m)
@@ -103,7 +103,7 @@ theorem blockSmall_succ (n m K : ℕ) :
       = {X : ℕ → Site d | LatticeProb.rangeCard X n < m}
           ∩ (LatticeProb.shiftPath n) ⁻¹' (blockSmall d n m K) := by
   ext X
-  simp only [blockSmall, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_preimage]
+  simp only [blockSmall, Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_preimage]
   constructor
   · intro h
     refine ⟨by simpa [shiftPath_zero] using h 0 (Nat.succ_pos K), fun i hi => ?_⟩
@@ -164,13 +164,13 @@ theorem measureReal_siteWalkLaw_translate [NeZero d] (S : Set (ℕ → Site d))
 /-- The block event is translation invariant. -/
 theorem mem_blockSmall_translate (n m K : ℕ) (y : Site d) (X : ℕ → Site d) :
     (fun k => y + X k) ∈ blockSmall d n m K ↔ X ∈ blockSmall d n m K := by
-  simp only [blockSmall, Set.mem_setOf_eq, shiftPath_translate, rangeCard_translate]
+  simp only [blockSmall, Set.mem_ofPred_eq, shiftPath_translate, rangeCard_translate]
 
 /-- The event that the range by time `n` is small is translation invariant. -/
 theorem mem_rangeCard_lt_translate (n m : ℕ) (y : Site d) (X : ℕ → Site d) :
     (fun k => y + X k) ∈ {X : ℕ → Site d | LatticeProb.rangeCard X n < m}
       ↔ X ∈ {X : ℕ → Site d | LatticeProb.rangeCard X n < m} := by
-  simp only [Set.mem_setOf_eq, rangeCard_translate]
+  simp only [Set.mem_ofPred_eq, rangeCard_translate]
 
 
 /-- **The blocks are independent.**  The first `K` blocks of `n` steps are all
@@ -217,7 +217,7 @@ theorem measureReal_blockSmall [NeZero d] (n m : ℕ) :
         have hr : LatticeProb.rangeCard X n = LatticeProb.rangeCard Y n :=
           rangeCard_congr X Y n hXY
         have hiff : X ∈ A ↔ Y ∈ A := by
-          simp only [hA, Set.mem_setOf_eq, hr]
+          simp only [hA, Set.mem_ofPred_eq, hr]
         by_cases hX : X ∈ A
         · simp [hF, Set.indicator_of_mem hX, Set.indicator_of_mem (hiff.mp hX)]
         · simp [hF, Set.indicator_of_notMem hX,
@@ -248,7 +248,7 @@ theorem measureReal_blockSmall [NeZero d] (n m : ℕ) :
 theorem subset_blockSmall (n m t : ℕ) :
     {X : ℕ → Site d | LatticeProb.rangeCard X t < m} ⊆ blockSmall d n m (t / n) := by
   intro X hX i hi
-  simp only [Set.mem_setOf_eq] at hX
+  simp only [Set.mem_ofPred_eq] at hX
   have hfit : i * n + n ≤ t := by
     have h1 : (i + 1) * n ≤ (t / n) * n := Nat.mul_le_mul_right n hi
     have h2 : (t / n) * n ≤ t := Nat.div_mul_le_self t n
@@ -273,7 +273,7 @@ theorem measureReal_rangeCard_lt_le_seven_eighths (hd : 1 ≤ d) (n m : ℕ)
       ≤ (1 / 2) * ∫ X, (LatticeProb.rangeCard X n : ℝ) ∂(LatticeProb.siteWalkLaw d 0)) :
     (LatticeProb.siteWalkLaw d 0).real {X : ℕ → Site d | LatticeProb.rangeCard X n < m}
       ≤ 7 / 8 := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   set E : Set (ℕ → Site d) := {X : ℕ → Site d | (1 / 2 : ℝ)
       * (∫ Y, (LatticeProb.rangeCard Y n : ℝ) ∂(LatticeProb.siteWalkLaw d 0))
     < (LatticeProb.rangeCard X n : ℝ)} with hE
@@ -287,7 +287,7 @@ theorem measureReal_rangeCard_lt_le_seven_eighths (hd : 1 ≤ d) (n m : ℕ)
   have hpz := rangeCard_half_mean_prob hd (0 : Site d) n
   have hsub : {X : ℕ → Site d | LatticeProb.rangeCard X n < m} ⊆ Eᶜ := by
     intro X hX
-    simp only [hE, Set.mem_compl_iff, Set.mem_setOf_eq, not_lt]
+    simp only [hE, Set.mem_compl_iff, Set.mem_ofPred_eq, not_lt]
     have h1 : ((LatticeProb.rangeCard X n : ℕ) : ℝ) < (m : ℝ) := by exact_mod_cast hX
     linarith [hm]
   have hsum := measureReal_add_measureReal_compl (μ := LatticeProb.siteWalkLaw d 0) hEm
@@ -308,7 +308,7 @@ theorem rangeTail_le (hd : 1 ≤ d) (n t : ℕ) (x : Site d) :
     (LatticeProb.siteWalkLaw d x).real
         {X : ℕ → Site d | LatticeProb.rangeCard X t < blockThreshold d n}
       ≤ (7 / 8 : ℝ) ^ (t / n) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hmean : (0 : ℝ)
       ≤ ∫ X, (LatticeProb.rangeCard X n : ℝ) ∂(LatticeProb.siteWalkLaw d 0) :=
     integral_nonneg fun X => by positivity

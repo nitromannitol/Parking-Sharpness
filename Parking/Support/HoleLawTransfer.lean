@@ -28,7 +28,7 @@ theorem map_conf_pHoleCount (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeas
     (n : ℕ) (x : Site d) :
     (pDataLaw d ν).map (fun ω : Parking.PData d => (ω.1, pHoleCount (toPDriver ω) n x)) =
       (law d ν).map (fun ω : Data d => (ω.1, H ω n x)) := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let proj : (Site d → ℤ) × ProcessObservables d → (Site d → ℤ) × ℕ :=
     fun z => (z.1, z.2.2.2.1 (n, x))
   have hp : Measurable proj := measurable_fst.prodMk
@@ -37,7 +37,7 @@ theorem map_conf_pHoleCount (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeas
   have hconf := congrArg (fun μ => Measure.map proj μ) (constructionsAgree_conf d hd (iidLaw d ν))
   rw [Measure.map_map hp (measurable_fst.prodMk measurable_stackObservables),
     Measure.map_map hp (measurable_fst.prodMk measurable_pObservables)] at hconf
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   let recode : Parking.PData d → LatticeProb.PData d :=
     fun ω => (ω.1, (fun q => stepVec (ω.2.1 q)), ω.2.2)
   have hrec : Measurable recode := measurable_fst.prodMk

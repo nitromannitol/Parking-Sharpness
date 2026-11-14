@@ -74,7 +74,7 @@ theorem abs_walkPartialSum_le (k : ℕ) (p : ℕ → Fin 2 × Bool) : |walkParti
 theorem iIndep_coord :
     iIndep (fun j : ℕ => MeasurableSpace.comap (fun p : ℕ → Fin 2 × Bool => p j) inferInstance)
       (walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
+  have := stepLaw_isProbability (d := 2) (by norm_num)
   exact (iIndepFun_infinitePi (Ω := fun _ : ℕ => Fin 2 × Bool) (P := fun _ : ℕ => stepLaw 2)
     (X := fun (_ : ℕ) (b : Fin 2 × Bool) => b) (fun _ => Measurable.of_discrete)).iIndep
 
@@ -125,7 +125,7 @@ theorem indep_coord_walkFiltration (k : ℕ) :
 /-- **A single step has mean zero.** -/
 theorem integral_walkStepSign_eval (k : ℕ) :
     ∫ p : ℕ → Fin 2 × Bool, walkStepSign (p k).1 ∂(walkLaw 2) = 0 := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
+  have := stepLaw_isProbability (d := 2) (by norm_num)
   have hmap : (walkLaw 2).map (fun p : ℕ → Fin 2 × Bool => p k) = stepLaw 2 :=
     Measure.infinitePi_map_eval _ _
   have hmeas : Measurable (fun b : Fin 2 × Bool => walkStepSign b.1) := Measurable.of_discrete
@@ -141,8 +141,8 @@ theorem integral_walkStepSign_eval (k : ℕ) :
 /-- **The increment of `Parking.walkPartialSum` has conditional mean zero.** -/
 theorem condExp_walkStepSign_walkFiltration (k : ℕ) :
     (walkLaw 2)[fun p => walkStepSign (p k).1 | walkFiltration k] =ᵐ[walkLaw 2] 0 := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   have hSM : StronglyMeasurable[MeasurableSpace.comap
       (fun p : ℕ → Fin 2 × Bool => p k) inferInstance] (fun p : ℕ → Fin 2 × Bool =>
       walkStepSign (p k).1) := by
@@ -164,8 +164,8 @@ theorem condExp_walkStepSign_walkFiltration (k : ℕ) :
 /-- `walkPartialSum k` is integrable, dominated by the constant `k` via
 `abs_walkPartialSum_le`. -/
 theorem integrable_walkPartialSum (k : ℕ) : Integrable (walkPartialSum k) (walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   exact Integrable.mono' (integrable_const (k : ℝ))
     (measurable_walkPartialSum k).aestronglyMeasurable
     (Filter.Eventually.of_forall fun p => by
@@ -174,8 +174,8 @@ theorem integrable_walkPartialSum (k : ℕ) : Integrable (walkPartialSum k) (wal
 /-- The square of `walkPartialSum k` is integrable, dominated by the constant `k ^ 2`. -/
 theorem integrable_walkPartialSum_sq (k : ℕ) :
     Integrable (fun p => (walkPartialSum k p) ^ 2) (walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   refine Integrable.mono' (integrable_const ((k : ℝ) ^ 2))
     ((measurable_walkPartialSum k).pow_const 2).aestronglyMeasurable
     (Filter.Eventually.of_forall fun p => ?_)
@@ -185,8 +185,8 @@ theorem integrable_walkPartialSum_sq (k : ℕ) :
 
 /-- **`Parking.walkPartialSum` is a martingale for its own natural filtration.** -/
 theorem martingale_walkPartialSum : Martingale walkPartialSum walkFiltration (walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   refine martingale_of_condExp_sub_eq_zero_nat stronglyAdapted_walkFiltration
     integrable_walkPartialSum fun i => ?_
   have heq : (walkPartialSum (i + 1) - walkPartialSum i) = fun p => walkStepSign (p i).1 := by
@@ -203,8 +203,8 @@ theorem martingale_walkPartialSum : Martingale walkPartialSum walkFiltration (wa
 theorem condExp_sq_walkPartialSum_sub (i : ℕ) :
     (walkLaw 2)[fun p => (walkPartialSum (i + 1) p) ^ 2 - (walkPartialSum i p) ^ 2 |
         walkFiltration i] =ᵐ[walkLaw 2] fun _ => (1 : ℝ) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   have hstepMeas : Measurable (fun p : ℕ → Fin 2 × Bool => walkStepSign (p i).1) :=
     (Measurable.of_discrete (f := fun b : Fin 2 × Bool => walkStepSign b.1)).comp
       (measurable_pi_apply i)
@@ -268,8 +268,8 @@ theorem condExp_sq_walkPartialSum_sub (i : ℕ) :
 /-- **`(Parking.walkPartialSum)²` is a submartingale for `Parking.walkFiltration`.** -/
 theorem submartingale_walkPartialSum_sq :
     Submartingale (fun k p => (walkPartialSum k p) ^ 2) walkFiltration (walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   refine submartingale_of_condExp_sub_nonneg_nat
     (fun i => ((stronglyAdapted_walkFiltration i)).pow 2) integrable_walkPartialSum_sq
     fun i => ?_
@@ -284,8 +284,8 @@ theorem submartingale_walkPartialSum_sq :
 exact conditional increment and the tower property of conditional expectation. -/
 theorem integral_walkPartialSum_sq_le (n : ℕ) :
     ∫ p, (walkPartialSum n p) ^ 2 ∂(walkLaw 2) ≤ n := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   induction n with
   | zero =>
     have : (fun p : ℕ → Fin 2 × Bool => (walkPartialSum 0 p) ^ 2) = fun _ => (0 : ℝ) := by
@@ -302,7 +302,7 @@ theorem integral_walkPartialSum_sq_le (n : ℕ) :
         = ∫ _p : ℕ → Fin 2 × Bool, (1 : ℝ) ∂(walkLaw 2) :=
       integral_congr_ae (condExp_sq_walkPartialSum_sub i)
     rw [hrhs] at htower
-    haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+    have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
     rw [integral_const, measureReal_def, measure_univ, ENNReal.toReal_one, smul_eq_mul,
       mul_one] at htower
     have hsub : (∫ p, ((walkPartialSum (i + 1) p) ^ 2 - (walkPartialSum i p) ^ 2) ∂(walkLaw 2))
@@ -323,8 +323,8 @@ needs. -/
 theorem measureReal_sup_walkPartialSum_sq_le (n : ℕ) (hn : 1 ≤ n) {A : ℝ} (hA : 0 < A) :
     (walkLaw 2).real {p | ∃ k ≤ n, (4 * A * Real.sqrt n) ≤ |walkPartialSum k p|} ≤
       1 / (16 * A ^ 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   set ε : ℝ≥0 := (16 * A ^ 2 * n : ℝ).toNNReal with hεdef
   have hεcoe : (ε : ℝ) = 16 * A ^ 2 * n := by
     rw [hεdef, Real.coe_toNNReal]
@@ -336,7 +336,7 @@ theorem measureReal_sup_walkPartialSum_sq_le (n : ℕ) (hn : 1 ≤ n) {A : ℝ} 
           fun k => (walkPartialSum k ω) ^ 2}
       = {p | ∃ k ≤ n, (4 * A * Real.sqrt n) ≤ |walkPartialSum k p|} := by
     ext p
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     rw [Finset.le_sup'_iff]
     constructor
     · rintro ⟨k, hk, hkle⟩

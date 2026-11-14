@@ -60,11 +60,11 @@ theorem integral_u_shift_le_meanu (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Mea
     (∫ ζ, u ζ m 0 ∂(LatticeProb.iidLaw d (shiftLaw δ (ν δ)))) - δ * m
       ≤ meanu (law d (ν δ)) m := by
   obtain ⟨hδ₀, hθ, hprob, hmeanν, -, hexp, -⟩ := hfam
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
   have hintexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexp δ hδ).1
   have hintid : Integrable (fun k : ℤ => ((k : ℝ))) (ν δ) :=
     integrable_intCast_of_exp hθ (ν δ) hintexp
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hxim : ∀ e : ℝ, Measurable (fun η : Site d → ℤ => Parking.xi e η) := fun e =>
     Measurable.of_eval fun y =>
@@ -123,15 +123,15 @@ theorem exists_meanSandpile_twoPoint_lower (hd : 1 ≤ d)
   obtain ⟨h3, h4, h5, -, -⟩ := hGrowth d hd (twoPointLaw a₀) inferInstance hmean hv0 hvT hexp
   by_cases hd3 : d ≤ 3
   · obtain ⟨c, C, hc, hC, h⟩ := h3 hd3
-    exact ⟨c, hc, fun m hm => by rw [lowerRate, if_pos hd3]; exact (h m hm).1⟩
+    exact ⟨c, hc, fun m hm => by rw [lowerRate, ite_eq_left hd3]; exact (h m hm).1⟩
   by_cases hd4 : d = 4
   · obtain ⟨c, C, hc, hC, h⟩ := h4 hd4
     exact ⟨c, hc, fun m hm => by
-      rw [lowerRate, if_neg hd3, if_pos hd4]; exact (h m hm).1⟩
+      rw [lowerRate, ite_eq_right hd3, ite_eq_left hd4]; exact (h m hm).1⟩
   · have hd5 : 5 ≤ d := by omega
     obtain ⟨c, C, hc, hC, h⟩ := h5 hd5
     exact ⟨c, hc, fun m hm => by
-      rw [lowerRate, if_neg hd3, if_neg hd4]; exact (h m hm).1⟩
+      rw [lowerRate, ite_eq_right hd3, ite_eq_right hd4]; exact (h m hm).1⟩
 
 /-- **Step 2 of `prop:near-divisible`** (`parking.tex:2876-2894`), before the optimization
 over the horizon.  The comparison `eq:near-convex` replaces the recentred scenery by the
@@ -146,7 +146,7 @@ theorem exists_meanu_lower (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
   obtain ⟨c, hc, hlow⟩ := exists_meanSandpile_twoPoint_lower hd hGrowth ha₀
   refine ⟨c, δ₁, hc, hδ₁, hδ₁₀, fun δ hδ m hm => ?_⟩
   have hδicc : δ ∈ Set.Icc (0:ℝ) δ₀ := ⟨hδ.1.le, le_trans hδ.2 hδ₁₀⟩
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδicc
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδicc
   have hintexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexp δ hδicc).1
   have hintid : Integrable (fun k : ℤ => ((k : ℝ))) (ν δ) :=
     integrable_intCast_of_exp hθ (ν δ) hintexp

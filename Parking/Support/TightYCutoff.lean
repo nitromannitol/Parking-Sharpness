@@ -119,9 +119,9 @@ theorem integrable_of_integrable_sq {Ω : Type*} [MeasurableSpace Ω] {μ : Meas
 /-- **Each grid reward is integrable**, at any grid indices. -/
 theorem integrable_orientedGridReward (ν : Measure ℤ) (hν : CriticalLaw ν) (n N : ℕ) (m j : ℤ) :
     Integrable (fun η : Site 2 → ℝ => orientedGridReward n N η m j) (iidLaw 2 (realLaw ν)) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   obtain ⟨C, _hC, hb⟩ := exists_orientedGridReward_single_moment ν hν 2 (by norm_num)
   have hsq : Integrable (fun η : Site 2 → ℝ => |orientedGridReward n N η m j| ^ (2 : ℝ))
       (iidLaw 2 (realLaw ν)) := (hb n N m j).1
@@ -137,9 +137,9 @@ theorem integrable_boxCornerSum (ν : Measure ℤ) (hν : CriticalLaw ν) (T : �
     (A : ℝ) (_hA : 0 ≤ A) (n : ℕ) :
     Integrable (fun η : Site 2 → ℝ => ∑ m ∈ boxCornerM T n, ∑ j ∈ boxCornerJ T A n,
         |orientedGridReward n ⌊(n : ℝ) * T⌋₊ η m j|) (iidLaw 2 (realLaw ν)) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   refine integrable_finsetSum (boxCornerM T n) fun m _ => ?_
   refine integrable_finsetSum (boxCornerJ T A n) fun j _ => ?_
   exact (integrable_orientedGridReward ν hν n ⌊(n : ℝ) * T⌋₊ m j).abs
@@ -176,9 +176,9 @@ theorem measurable_Y (A n : ℕ) : Measurable (Y A n) :=
 the rescaled box-reward field of its own scenery. -/
 theorem integrable_Y (ν : Measure ℤ) (hν : CriticalLaw ν) (A n : ℕ) :
     Integrable (Y A n) (orientedLaw 2 ν) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   set g : (Site 2 → ℝ) → ℝ := fun η =>
       orientedCutoffValuePot (T := 1) zero_le_one (Nat.cast_nonneg A) n
         (boxRewardMap 1 zero_le_one (A : ℝ) (Nat.cast_nonneg A) n η) with hgdef

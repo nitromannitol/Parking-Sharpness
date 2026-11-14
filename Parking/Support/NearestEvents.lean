@@ -17,7 +17,7 @@ measurable, as a countable intersection of measurable strict-inequality sets. -/
 theorem Parking.measurableSet_positive_U_ball {d : ℕ} (t : ℕ) (r : ℝ) :
     MeasurableSet {ω : Parking.Data d | ∀ y : Parking.Site d,
       (Parking.graphNorm y : ℝ) ≤ r → 0 < Parking.U ω t y} := by
-  simp only [Set.setOf_forall]
+  simp only [Set.ofPred_forall]
   exact MeasurableSet.iInter fun y => MeasurableSet.iInter fun _ =>
     measurableSet_lt measurable_const (Parking.measurable_U t y)
 
@@ -48,12 +48,12 @@ measurable, as a countable union split on whether each `y` lies in the ball. -/
 theorem Parking.measurableSet_active_ball {d : ℕ} (t : ℕ) (r : ℝ) :
     MeasurableSet {ω : Parking.Data d | ∃ y : Parking.Site d,
       (Parking.graphNorm y : ℝ) ≤ r ∧ 0 < Parking.A ω t y} := by
-  simp only [Set.setOf_exists]
+  simp only [Set.ofPred_exists]
   apply MeasurableSet.iUnion
   intro y
   by_cases hy : (Parking.graphNorm y : ℝ) ≤ r
   · simpa only [hy, true_and] using measurableSet_lt measurable_const (Parking.measurable_A t y)
-  · simp only [hy, false_and, Set.setOf_false]
+  · simp only [hy, false_and, Set.ofPred_false]
     exact MeasurableSet.empty
 
 /-- A finite-measure subadditivity bound: if `E ⊆ B ∪ C` then

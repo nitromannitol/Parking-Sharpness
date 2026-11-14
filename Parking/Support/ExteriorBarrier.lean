@@ -25,7 +25,7 @@ theorem exterior_superharmonic_barrier (hd : 3 ≤ d) (f : Site d → ℝ) (m : 
     ∀ y : Site d, m * (1 - srwGreenInf d y / srwGreenInf d 0) ≤ f y := by
   classical
   have hd1 : 1 ≤ d := by omega
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hg : 0 < srwGreenInf d 0 := zero_lt_one.trans_le (one_le_srwGreenInf_origin hd)
   let b : Site d → ℝ := fun y => m * (1 - srwGreenInf d y / srwGreenInf d 0)
   let h : Site d → ℝ := fun y => b y - f y

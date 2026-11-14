@@ -50,8 +50,8 @@ theorem tendsto_integral_discreteResidualTest_zero (hd : 1 ≤ d) (hd3 : d ≤ 3
       test volume (Icc a (T + 1) ×ˢ Metric.closedBall 0 (B + 2)) (tsupport ψ) δ
         (spaceTimeResidualTest ψ) (scenePair w R (fun x => ∫ s : ℝ, ψ (s, x)))
         (fun p => barDivisible w R p.1 p.2) ∂law d ν) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   let K : Set (ℝ × (Fin d → ℝ)) := Icc a (T + 1) ×ˢ Metric.closedBall 0 (B + 2)
   have hK : IsCompact K := isCompact_Icc.prod (isCompact_closedBall _ _)
   let F : ℝ → Data d → ℝ := fun R w => test volume K (tsupport ψ) δ

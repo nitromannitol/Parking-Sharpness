@@ -56,8 +56,8 @@ theorem abs_terminalValue_sub_le (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d �
     (hσ : IsStoppingTimeLE n σ) (F G : ℕ → Site d → ℝ) (x : Site d) {c : ℝ}
     (hdiff : ∀ (k : ℕ) (y : Site d), |F k y - G k y| ≤ c) :
     |terminalValue F x σ - terminalValue G x σ| ≤ c := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hF := integrable_terminalReward hd hσ F x
   have hG := integrable_terminalReward hd hσ G x
   have hsub : terminalValue F x σ - terminalValue G x σ
@@ -77,8 +77,8 @@ theorem abs_terminalValue_le (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bo
     (hσ : IsStoppingTimeLE n σ) (F : ℕ → Site d → ℝ) (x : Site d) {M : ℝ}
     (hbound : ∀ (k : ℕ) (y : Site d), |F k y| ≤ M) :
     |terminalValue F x σ| ≤ M := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hF := integrable_terminalReward hd hσ F x
   calc |terminalValue F x σ|
       ≤ ∫ p, |F (σ p) (walkPath x p (σ p))| ∂(walkLaw d) := abs_integral_le_integral_abs
@@ -133,8 +133,8 @@ theorem abs_terminalValue_sub_le_of_le (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → F
     (hσ : IsStoppingTimeLE n σ) (F G : ℕ → Site d → ℝ) (x : Site d) {c : ℝ}
     (hdiff : ∀ k ≤ n, ∀ (y : Site d), |F k y - G k y| ≤ c) :
     |terminalValue F x σ - terminalValue G x σ| ≤ c := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hF := integrable_terminalReward hd hσ F x
   have hG := integrable_terminalReward hd hσ G x
   have hsub : terminalValue F x σ - terminalValue G x σ

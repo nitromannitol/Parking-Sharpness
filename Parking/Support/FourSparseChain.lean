@@ -48,7 +48,7 @@ theorem four_sparse_of_growth (hGrowth : Parking.External.SandpileGrowth) :
   refine ⟨a / (2 * C), by positivity, fun ε hε hε1 => ?_⟩
   have hν : CriticalLaw (threePointLaw (ε / 2)) :=
     criticalLaw_threePointLaw (by positivity) (by linarith)
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨D, _hD, hl⟩ := hcc 4 (by norm_num) _ hν.prob hν.nonconst hν.integrable_abs hν.mean
   have hBP := hGrowth 4 (by norm_num) (realLaw (threePointLaw (ε / 2))) inferInstance
     (realLaw_mean _ hν) (realLaw_evariance_pos _ hν) (realLaw_evariance_lt_top _ hν)

@@ -69,7 +69,7 @@ theorem integrable_u_rpow_iid (hd : 1 ≤ d) (ν : Measure ℝ) [IsProbabilityMe
     {r : ℝ} (hr : 0 ≤ r) (hpow : Integrable (fun t : ℝ => max t 0 ^ (⌈r⌉₊)) ν)
     (n : ℕ) (x : Site d) :
     Integrable (fun η : Site d → ℝ => |u η n x| ^ r) (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
   have hIp : Integrable (fun η : Site d → ℝ => u η n x ^ (⌈r⌉₊)) (LatticeProb.iidLaw d ν) :=
     integrable_u_pow_iid hd ν _ hpow n x
@@ -94,7 +94,7 @@ theorem exists_uNormReal_le (hd : 1 ≤ d) (hConc : Parking.External.UConcentrat
   refine ⟨C, hC, fun n hn r hr2 => ?_⟩
   have hr1 : (1 : ℝ) ≤ r := by linarith
   have hr0 : (0 : ℝ) < r := by linarith
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
   set μ : Measure (Site d → ℝ) := LatticeProb.iidLaw d ν with hμ
   set M : ℝ := Parking.External.meanSandpileReal d ν n with hM

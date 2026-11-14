@@ -71,12 +71,12 @@ theorem integral_pow_u_xi_le_twoPoint (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ →
       ≤ ∫ η, u η m 0 ^ (k + 2)
           ∂(LatticeProb.iidLaw d (twoPointLaw Bd)) := by
   obtain ⟨hδ₀, hθ, hprob, hmeanν, -, hexp, -⟩ := hfam
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
   have hintexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexp δ hδ).1
   have hintid : Integrable (fun k : ℤ => ((k : ℝ))) (ν δ) :=
     integrable_intCast_of_exp hθ (ν δ) hintexp
   set μ : Measure ℝ := shiftLaw δ (ν δ) with hμ
-  haveI : IsProbabilityMeasure μ := by rw [hμ]; infer_instance
+  have : IsProbabilityMeasure μ := by rw [hμ]; infer_instance
   have hμmean : ∫ z, z ∂μ = 0 := by
     rw [hμ, integral_shiftLaw_id δ (ν δ) hintid, hmeanν δ hδ]
     ring
@@ -149,7 +149,7 @@ theorem exists_psi_moment (hd5 : 5 ≤ d) (hGrowth : Parking.External.SandpileGr
       (∫ η, |u η m 0| ^ (5:ℝ) ∂(LatticeProb.iidLaw d ζ)) ^ ((1:ℝ)/5) ≤ C * psi d m := by
   classical
   have hd : 1 ≤ d := by omega
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ζ) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ζ) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ζ))
   obtain ⟨C0, hC0, hmeanle⟩ :=
     exists_mean_le_psi hd5 hGrowth ζ hmean hv0 hvT ⟨θ', hθ', hexp'⟩ hbdd
@@ -157,12 +157,12 @@ theorem exists_psi_moment (hd5 : 5 ≤ d) (hGrowth : Parking.External.SandpileGr
   obtain ⟨⟨c2, C2, hc2, hC2, hg2⟩, ⟨c3, C3, hc3, hC3, hg3⟩⟩ := hGreen d hd
   have hrate2 : ∀ n : ℕ, Parking.External.greenL2Rate d n = 1 := by
     intro n
-    rw [Parking.External.greenL2Rate, if_neg (by omega : ¬ d = 1),
-      if_neg (by omega : ¬ d = 2), if_neg (by omega : ¬ d = 3), if_neg (by omega : ¬ d = 4)]
+    rw [Parking.External.greenL2Rate, ite_eq_right (by omega : ¬ d = 1),
+      ite_eq_right (by omega : ¬ d = 2), ite_eq_right (by omega : ¬ d = 3), ite_eq_right (by omega : ¬ d = 4)]
   have hrate3 : ∀ n : ℕ, Parking.External.greenMaxRate d n = 1 := by
     intro n
-    rw [Parking.External.greenMaxRate, if_neg (by omega : ¬ d = 1),
-      if_neg (by omega : ¬ d = 2)]
+    rw [Parking.External.greenMaxRate, ite_eq_right (by omega : ¬ d = 1),
+      ite_eq_right (by omega : ¬ d = 2)]
   have hmaxpow : Integrable (fun t : ℝ => max t 0 ^ (⌈(5:ℝ)⌉₊)) ζ :=
     integrable_maxPow_of_exp ζ hθ' hexp' _
   have hI : ∀ m : ℕ, Integrable (fun η : Site d → ℝ => |u η m 0| ^ (5:ℝ))
@@ -257,7 +257,7 @@ theorem exists_step1_psi (hd5 : 5 ≤ d) (hGrowth : Parking.External.SandpileGro
   obtain ⟨C, hC, hCle⟩ := exists_psi_moment (d := d) hd5 hGrowth hConc hGreen (twoPointLaw Bd)
     hζmean hζv0 hζvT one_pos hζexp hζbdd
   refine ⟨C, hC, fun δ hδ m => ?_⟩
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
   have hconv : ∫ η, |u η m 0| ^ (5:ℝ) ∂(LatticeProb.iidLaw d (twoPointLaw Bd))
       = ∫ η, u η m 0 ^ (5:ℕ) ∂(LatticeProb.iidLaw d (twoPointLaw Bd)) := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun η => ?_)
@@ -295,16 +295,16 @@ theorem exists_meanHorizon_psi (hd5 : 5 ≤ d) (hGrowth : Parking.External.Sandp
             ∫ η, rewardAvg δ σ η ∂(LatticeProb.iidLaw d (ν δ)) ≤ C * psi d Mσ := by
   classical
   have hd : 1 ≤ d := by omega
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hfam' : NearFamily δ₀ ν θ M K := hfam
   obtain ⟨hδ₀, hθ, hprob, hmeanν, -, hexpfam, -⟩ := id hfam
   obtain ⟨C1, hC1, hstep1⟩ := exists_step1_psi hd5 hGrowth hConc hGreen hfam' hsupp
   obtain ⟨C2, hC2, hseries⟩ := exists_psi_block_sum d (by omega : 2 ≤ d)
   refine ⟨3 * C1 * (1 + C2), by positivity, fun δ hδ n σ hσ hσn hm Mσ hMdef => ?_⟩
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
   have hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexpfam δ hδ).1
   set P := LatticeProb.iidLaw d (ν δ) with hP
-  haveI : IsProbabilityMeasure P := by rw [hP, LatticeProb.iidLaw]; infer_instance
+  have : IsProbabilityMeasure P := by rw [hP, LatticeProb.iidLaw]; infer_instance
   have hIreward : Integrable (rewardAvg δ σ) P :=
     integrable_rewardAvg hd hθ (ν δ) hexp hσ hσn hm
   refine ⟨hIreward, ?_⟩
@@ -553,8 +553,8 @@ theorem exists_meanuLimit_psi_upper (hd5 : 5 ≤ d)
   have hδ0 : δ ≤ δ₀ := le_trans hδ.2 (min_le_left _ _)
   have hδs : δ ≤ δ₂ := le_trans hδ.2 (min_le_right _ _)
   have hδicc : δ ∈ Set.Icc (0:ℝ) δ₀ := ⟨hδpos.le, hδ0⟩
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδicc
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδicc
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hintexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexp δ hδicc).1
   have hintabs : Integrable (fun k : ℤ => |(k : ℝ)|) (ν δ) :=

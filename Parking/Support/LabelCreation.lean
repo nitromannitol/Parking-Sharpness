@@ -23,8 +23,8 @@ theorem Parking.lintegral_coupled_conf (hd : 1 ≤ d) (ν : Measure ℤ)
     (f : (Site d → ℤ × ℤ) → ℝ≥0∞) (hf : Measurable f) :
     ∫⁻ ω : Parking.CoupledData d, f ω.1.1 ∂(Parking.coupledLaw d ν p) =
       ∫⁻ c, f c ∂(Parking.resampleLaw d ν p) := by
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI := Parking.roundNoiseLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have := Parking.roundNoiseLaw_isProbability hd
   unfold Parking.coupledLaw
   rw [lintegral_prod (fun ω : Parking.CoupledData d => f ω.1.1)
     ((hf.comp measurable_fst).comp measurable_fst).aemeasurable]

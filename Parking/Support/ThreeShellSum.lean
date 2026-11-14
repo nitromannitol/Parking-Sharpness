@@ -43,14 +43,14 @@ theorem sum_three_shell_le (S : Finset (Site d)) (f : Site d → ℝ) (L M : ℕ
     intro z hz
     by_cases hzL : graphNorm z < L
     · have h := h₀ z hz hzL
-      simp only [hzL, if_true]
+      simp only [hzL, ite_true]
       split_ifs <;> linarith
     · by_cases hzM : graphNorm z < M
       · have h := h₁ z hz (by omega) hzM
-        simp only [hzL, hzM, if_false, if_true, zero_add]
+        simp only [hzL, hzM, ite_false, ite_true, zero_add]
         linarith
       · have h := h₂ z hz (by omega) (by omega)
-        simpa only [hzL, hzM, if_false, zero_add] using h
+        simpa only [hzL, hzM, ite_false, zero_add] using h
   have hcount (K : ℕ) :
       ((S.filter fun z => graphNorm z < K).card : ℝ) ≤ ((2 * K + 1 : ℕ) : ℝ) ^ d := by
     have hs : (S.filter fun z => graphNorm z < K) ⊆ boxFinset (0 : Site d) K := by

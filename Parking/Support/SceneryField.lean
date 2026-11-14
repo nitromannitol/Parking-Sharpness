@@ -62,7 +62,7 @@ theorem sparseBoxField_update (S : Finset (Site d)) (ξ : S → ℤ) (v : S) (k 
 theorem sparseBoxField_mean_bound (hd : 1 ≤ d) (S : Finset (Site d)) (ξ : S → ℤ)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     |matchedMeanU (sparseBoxField S ξ) ρ T x| ≤ ((T * (2 * T + 1) ^ d : ℕ) : ℝ) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   rw [abs_of_nonneg (matchedMeanU_nonneg _ _ _ _)]
   have hη : ∀ y, (sparseBoxField S ξ y).toNat ≤ 1 := by
     intro y

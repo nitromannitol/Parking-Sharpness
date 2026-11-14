@@ -61,13 +61,13 @@ theorem signedAverage_commute (positive negative : Bool) :
 being the average of `f` over the `d` predecessors `x - unit i`. -/
 theorem signedAverage_false (f : Site d → ℝ) (x : Site d) :
     signedAverage d false f x = orientedOp f x := by
-  simp only [signedAverage_apply, Bool.false_eq_true, if_false, ← sub_eq_add_neg, orientedOp]
+  simp only [signedAverage_apply, Bool.false_eq_true, ite_false, ← sub_eq_add_neg, orientedOp]
 
 /-- The positive-signed average of the `n`-th oriented layer is the `(n + 1)`-th layer,
 matching the recursion `orientedLayer_succ`. -/
 theorem signedAverage_true_layer (n : ℕ) (x : Site d) :
     signedAverage d true (orientedLayer d n) x = orientedLayer d (n + 1) x := by
-  simp only [signedAverage_apply, if_true, orientedLayer_succ]
+  simp only [signedAverage_apply, ite_true, orientedLayer_succ]
 
 /-- The average of the positive- and negative-signed averages, the operator of the
 ordinary (undirected) simple random walk. -/
@@ -79,7 +79,7 @@ random walk over all `2d` neighbors. -/
 theorem simpleAverage_apply (f : Site d → ℝ) (x : Site d) :
     simpleAverage d f x = walkOp f x := by
   simp only [simpleAverage, LinearMap.smul_apply, LinearMap.add_apply, Pi.smul_apply,
-    Pi.add_apply, smul_eq_mul, signedAverage_apply, if_true, Bool.false_eq_true, if_false,
+    Pi.add_apply, smul_eq_mul, signedAverage_apply, ite_true, Bool.false_eq_true, ite_false,
     ← sub_eq_add_neg, walkOp, nbrSum, sum_add_distrib, div_eq_mul_inv, mul_inv_rev]
   ring
 

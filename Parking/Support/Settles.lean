@@ -168,8 +168,8 @@ theorem ae_exists_survivors_zero (hGrowth : Parking.External.SandpileGrowth)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∀ᵐ ω ∂(Parking.law d ν), ∃ t : ℕ,
       LatticeProb.survivorsFrom (Parking.toDriver ω) t 0 = 0 := by
-  haveI := hν.prob
-  haveI := Parking.law_isProb (d := d) hd ν
+  have := hν.prob
+  have := Parking.law_isProb (d := d) hd ν
   have hint := hν.integrable_abs
   have htr := Parking.Frozen.transport d hd ν inferInstance hint
   refine Parking.ae_exists_eq_zero_of_tendsto (Parking.law d ν)
@@ -186,13 +186,13 @@ theorem ae_exists_holes_zero (hGrowth : Parking.External.SandpileGrowth)
     (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     ∀ᵐ ω ∂(Parking.law d ν), ∃ t : ℕ, Parking.H ω t 0 = 0 := by
-  haveI := hν.prob
-  haveI := Parking.law_isProb (d := d) hd ν
+  have := hν.prob
+  have := Parking.law_isProb (d := d) hd ν
   have hint := hν.integrable_abs
   have hHint : ∀ t : ℕ,
       Integrable (fun ω : Data d => (Parking.H ω t 0 : ℝ)) (Parking.law d ν) := by
     intro t
-    haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+    have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
       unfold LatticeProb.iidLaw; infer_instance
     have hmap : (LatticeProb.iidLaw d ν).map (fun η : Site d → ℤ => η 0) = ν :=
       Measure.infinitePi_map_eval _ 0
@@ -278,7 +278,7 @@ theorem ae_settle_and_fill (hGrowth : Parking.External.SandpileGrowth)
       (∀ p : Label d, ∃ t₀ : ℕ, ∀ t : ℕ, t₀ ≤ t →
           (LatticeProb.state (Parking.toDriver ω) t).active p = false) ∧
       (∀ x : Site d, ∃ t₀ : ℕ, ∀ t : ℕ, t₀ ≤ t → Parking.H ω t x = 0) := by
-  haveI := hν.prob
+  have := hν.prob
   have hsurv := ae_forall_survivors_zero (d := d) hd ν
     (ae_exists_survivors_zero hGrowth hBernstein hConcentration hGreenNorms d hd ν hν)
   have hholes := ae_forall_holes_zero (d := d) hd ν

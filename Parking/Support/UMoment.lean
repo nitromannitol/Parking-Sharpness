@@ -226,7 +226,7 @@ integrability of `u` from `integrable_u_iid`. -/
 theorem integrable_hinge_u_iid {d : ℕ} (hd : 1 ≤ d) (μ : Measure ℝ) [IsProbabilityMeasure μ]
     (hμ : Integrable (id : ℝ → ℝ) μ) (c : ℝ) (n : ℕ) (x : Site d) :
     Integrable (fun η => max (u η n x - c) 0) (LatticeProb.iidLaw d μ) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d μ) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d μ) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => μ))
   have hu := integrable_u_iid hd μ hμ n x
   refine (hu.abs.add (integrable_const |c|)).mono' ?_
@@ -251,7 +251,7 @@ theorem lintegral_pow_u_iid_eq {d : ℕ} (hd : 1 ≤ d) (μ : Measure ℝ) [IsPr
       = ∫⁻ c in Set.Ioi (0:ℝ),
           ENNReal.ofReal (((m : ℝ) + 2) * ((m : ℝ) + 1) * c ^ m)
             * ENNReal.ofReal (∫ η, max (u η n x - c) 0 ∂(LatticeProb.iidLaw d μ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d μ) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d μ) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => μ))
   have hmu : Measurable fun η : Site d → ℝ => u η n x := measurable_u_eval n x
   have hjoint : Measurable fun p : (Site d → ℝ) × ℝ =>

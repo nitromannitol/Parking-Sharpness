@@ -39,8 +39,8 @@ def jointLaw (d : ℕ) (ν : Measure ℤ) : Measure ((Site d → ℤ) × (ℕ �
 measures: the i.i.d. field law and the site walk law. -/
 theorem jointLaw_isProbability (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (jointLaw d ν) := by
-  haveI : NeZero d := ⟨by omega⟩
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : NeZero d := ⟨by omega⟩
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   rw [jointLaw]; infer_instance
 
@@ -100,9 +100,9 @@ theorem blockPair_apply (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) �
   classical
   rw [blockPair, Set.indicator_apply]
   by_cases h : blockBound N k < σ η X
-  · rw [if_pos (show (η, X) ∈ blockEvent σ (blockBound N k) from h), if_pos h]
+  · rw [ite_eq_left (show (η, X) ∈ blockEvent σ (blockBound N k) from h), ite_eq_left h]
     rfl
-  · rw [if_neg (show (η, X) ∉ blockEvent σ (blockBound N k) from h), if_neg h]
+  · rw [ite_eq_right (show (η, X) ∉ blockEvent σ (blockBound N k) from h), ite_eq_right h]
 
 /-- `blockPair` is nonnegative, as the indicator of the nonnegative function
 `uPair`. -/
@@ -137,7 +137,7 @@ theorem integrable_blockPair_slice (hd : 1 ≤ d) (δ : ℝ)
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (N k : ℕ) (η : Site d → ℤ) :
     Integrable (fun X => blockPair δ σ N k (η, X))
       (LatticeProb.siteWalkLaw d (0 : Site d)) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hmeas : Measurable (fun X : ℕ → Site d => blockPair δ σ N k (η, X)) := by
     have h := LatticeProb.measurable_of_dependsUpTo
       (dependsUpTo_blockU (Parking.xi δ η) (hσ η) (hσn η) (blockBound N k)
@@ -167,7 +167,7 @@ theorem integrable_blockPair (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) (N k : ℕ) :
     Integrable (blockPair δ σ N k) (jointLaw d ν) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   rw [jointLaw]
   refine (integrable_prod_iff
     (measurable_blockPair hσ hσn hm δ N k).aestronglyMeasurable).mpr ⟨?_, ?_⟩
@@ -191,8 +191,8 @@ theorem integral_blockPair_eq (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) (N k : ℕ) :
     ∫ p, blockPair δ σ N k p ∂(jointLaw d ν)
       = ∫ η, blockAvg δ σ N k η ∂(LatticeProb.iidLaw d ν) := by
-  haveI : NeZero d := ⟨by omega⟩
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : NeZero d := ⟨by omega⟩
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have h := integral_prod (μ := LatticeProb.iidLaw d ν)
     (ν := LatticeProb.siteWalkLaw d (0 : Site d)) (blockPair δ σ N k)
@@ -268,7 +268,7 @@ theorem integrable_sigma_prod (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) :
     Integrable (fun p : (Site d → ℤ) × (ℕ → Site d) => ((σ p.1 p.2 : ℕ) : ℝ))
       (jointLaw d ν) := by
-  haveI := jointLaw_isProbability hd ν
+  have := jointLaw_isProbability hd ν
   have hmeas : Measurable (fun p : (Site d → ℤ) × (ℕ → Site d) => ((σ p.1 p.2 : ℕ) : ℝ)) :=
     (measurable_of_countable (fun m : ℕ => (m : ℝ))).comp
       (measurable_uncurry_stopping hσ hσn hm)
@@ -285,8 +285,8 @@ theorem integral_sigma_prod (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeas
     ∫ p, ((σ p.1 p.2 : ℕ) : ℝ) ∂(jointLaw d ν)
       = ∫ η, ∫ X, ((σ η X : ℕ) : ℝ) ∂(LatticeProb.siteWalkLaw d (0 : Site d))
         ∂(LatticeProb.iidLaw d ν) := by
-  haveI : NeZero d := ⟨by omega⟩
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : NeZero d := ⟨by omega⟩
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have h := integral_prod (μ := LatticeProb.iidLaw d ν)
     (ν := LatticeProb.siteWalkLaw d (0 : Site d))
@@ -305,7 +305,7 @@ theorem measureReal_blockEvent_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
     (jointLaw d ν).real (blockEvent σ s)
       ≤ (∫ η, ∫ X, ((σ η X : ℕ) : ℝ) ∂(LatticeProb.siteWalkLaw d (0 : Site d))
           ∂(LatticeProb.iidLaw d ν)) / (s : ℝ) := by
-  haveI := jointLaw_isProbability hd ν
+  have := jointLaw_isProbability hd ν
   have hs' : (0:ℝ) < (s : ℝ) := by exact_mod_cast hs
   have h := measureReal_gt_le_div (jointLaw d ν)
     (f := fun p : (Site d → ℤ) × (ℕ → Site d) => ((σ p.1 p.2 : ℕ) : ℝ))
@@ -314,7 +314,7 @@ theorem measureReal_blockEvent_le (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabili
   refine le_trans (le_of_eq ?_) h
   congr 1
   ext p
-  simp only [blockEvent, Set.mem_setOf_eq]
+  simp only [blockEvent, Set.mem_ofPred_eq]
   exact_mod_cast Iff.rfl
 
 /-- The probability of `blockEvent` is trivially at most `1`, since `jointLaw d ν`
@@ -322,7 +322,7 @@ is a probability measure. -/
 theorem measureReal_blockEvent_le_one (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (σ : (Site d → ℤ) → (ℕ → Site d) → ℕ) (s : ℕ) :
     (jointLaw d ν).real (blockEvent σ s) ≤ 1 := by
-  haveI := jointLaw_isProbability hd ν
+  have := jointLaw_isProbability hd ν
   exact measureReal_le_one
 
 /-! ### Hölder on one block -/
@@ -339,7 +339,7 @@ theorem integral_blockAvg_le (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
       ≤ ((jointLaw d ν).real (blockEvent σ (blockBound N k))) ^ ((4:ℝ)/5)
         * (∫ η, u (Parking.xi δ η) (blockBound N (k + 1) - blockBound N k) 0 ^ (5:ℕ)
             ∂(LatticeProb.iidLaw d ν)) ^ ((1:ℝ)/5) := by
-  haveI := jointLaw_isProbability hd ν
+  have := jointLaw_isProbability hd ν
   rw [← integral_blockPair_eq hd hθ ν hexp hσ hσn hm N k]
   have h := integral_indicator_le_holder (jointLaw d ν)
     (measurableSet_blockEvent hσ hσn hm (blockBound N k))

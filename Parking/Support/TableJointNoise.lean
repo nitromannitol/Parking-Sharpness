@@ -33,7 +33,7 @@ theorem exists_table_joint_noise_moment_bound (hBernstein : External.Bernstein) 
   refine ⟨C, hC, fun d hd Ω mΩ μ hμ Φ hΦ hΦb ρ T x r hr => ?_⟩
   have hd1 : 1 ≤ d := by omega
   have hr0 : 0 < r := by linarith
-  haveI := flatRoundNoiseLaw_isProbability hd1
+  have := flatRoundNoiseLaw_isProbability hd1
   let ν := flatRoundNoiseLaw d
   let B : ℝ := ((T * (2 * T + 1) ^ d : ℕ) : ℝ)
   let W : ℝ := ∑ v ∈ boxFinset x T, walkOp (fun y => fullGreen d (y - x) ^ 2) v

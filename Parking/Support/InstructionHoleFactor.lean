@@ -29,7 +29,7 @@ theorem integral_hole_factor (hd : 3 ≤ d) (x z v : Site d)
       Real.exp (holeKernel d x z v / (1 / (2 * escapeConst d)) ^ 2) *
         ((∫ a, f a ∂(stepLaw d)) * ∫ a, g a ∂(stepLaw d)) := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   let δ : ℝ := 1 / (2 * escapeConst d)
   have hδ : 0 < δ := by
     dsimp only [δ]

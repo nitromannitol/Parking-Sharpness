@@ -50,8 +50,8 @@ theorem tendsto_spatial_signed_joint
         fun j => Uc ω (sp j).1 (sp j).2,
         fun j => Uc ω (sp j).1 (sp j).2,
         fun l => W (χ l) ω + ∫ x, Uc ω 1 x * contOp d (χ l) x) ∂Q)) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   let g := fun l => contOp d (χ l)
   let K : Set (Fin d → ℝ) := {0} ∪ ⋃ l, tsupport (g l)
   have hK : IsCompact K := isCompact_singleton.union

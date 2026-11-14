@@ -51,7 +51,7 @@ theorem integrable_oriented_countSum_rpow_law (hd : 1 ≤ d) (ν : Measure ℤ) 
     (S : Finset (Site d)) (n : ℕ) {r : ℝ} (hr : 1 ≤ r) :
     Integrable (fun ω : Data d => (∑ y ∈ S, (orientedOdometer ω.1 ω.2.1 n y : ℝ)) ^ r)
       (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   have hm : Measurable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
       (∑ y ∈ S, (orientedOdometer z.1 z.2 n y : ℝ)) ^ r) :=
     (measurable_rpow_const (by linarith : (0 : ℝ) ≤ r)).comp
@@ -70,7 +70,7 @@ integrability is `integrable_oriented_countSum_rpow_law`. -/
 theorem integrable_abs_wErrOriented_rpow_zero (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) :
     Integrable (fun ω : Data d => |wErrOriented ω.1 ω.2.1 n 0| ^ r) (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   refine (integrable_oriented_countSum_rpow_law hd ν hν
     (boxFinset (0 : Site d) (n + 1)) (n - 1) hr).mono'
     (((measurable_rpow_const (by linarith : (0 : ℝ) ≤ r)).comp
@@ -86,7 +86,7 @@ transporting `integrable_abs_wErrOriented_rpow_zero` along the shift invariance
 theorem integrable_abs_wErrOriented_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (z : Site d) :
     Integrable (fun ω : Data d => |wErrOriented ω.1 ω.2.1 n z| ^ r) (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   have hm : Measurable (fun ω : Data d => |wErrOriented ω.1 ω.2.1 n z| ^ r) :=
     (measurable_rpow_const (by linarith : (0 : ℝ) ≤ r)).comp
       (measurable_wErrOriented n z).abs
@@ -111,8 +111,8 @@ radius `j` with total probability `1`, the constant-function case of
 theorem sum_orientedPath_prob (hd : 1 ≤ d) (j : ℕ) :
     ∑ z ∈ boxFinset (0 : Site d) j,
       (walkLaw d).real {p | orientedPath (0 : Site d) p j = z} = 1 := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have h := integral_orientedPath_decomp hd j (fun _ : Site d => (1 : ℝ))
   simp only [mul_one, integral_const, probReal_univ, smul_eq_mul] at h
   exact h.symm
@@ -137,7 +137,7 @@ theorem orientedWalkMoment_eq (hd : 1 ≤ d) (r : ℝ) (m j : ℕ) (ω : Data d)
 theorem integrable_orientedWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (m j : ℕ) :
     Integrable (orientedWalkMoment (d := d) r m j) (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   exact integrable_finsetSum _ fun z _ =>
     (integrable_abs_wErrOriented_rpow hd ν hν hr m z).const_mul _
 
@@ -149,7 +149,7 @@ theorem integral_orientedWalkMoment (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Cri
     {r : ℝ} (hr : 1 ≤ r) (m j : ℕ) :
     ∫ ω, orientedWalkMoment (d := d) r m j ω ∂(orientedLaw d ν)
       = ∫ ω : Data d, |wErrOriented ω.1 ω.2.1 m 0| ^ r ∂(orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   simp only [orientedWalkMoment]
   rw [integral_finsetSum _ fun z _ =>
     (integrable_abs_wErrOriented_rpow hd ν hν hr m z).const_mul _]
@@ -185,8 +185,8 @@ theorem wStarOriented_nonneg (η : Site d → ℤ) (σ : Site d × ℕ → Site 
 (`orientedMax_eq_sup`) and integrating that jointly measurable function over the walk. -/
 theorem measurable_wStarOriented (hd : 1 ≤ d) (n : ℕ) (x : Site d) :
     Measurable fun ω : Data d => wStarOriented ω.1 ω.2.1 n x := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hterm : ∀ j : ℕ, Measurable fun a : Data d × (ℕ → Fin d × Bool) =>
       |wErrOriented a.1.1 a.1.2.1 (n - j) (orientedPath x a.2 j)| := by
     intro j
@@ -220,8 +220,8 @@ pointwise bound `orientedMax_rpow_le_sum` on the maximum by a sum. -/
 theorem wStarOriented_rpow_le_sum (hd : 1 ≤ d) {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (ω : Data d) :
     wStarOriented ω.1 ω.2.1 n 0 ^ r
       ≤ ∑ j ∈ Finset.range (n + 1), orientedWalkMoment (d := d) r (n - j) j ω := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have h1 : wStarOriented ω.1 ω.2.1 n 0 ^ r
       ≤ ∫ p, orientedMax (wErrOriented ω.1 ω.2.1) n 0 p ^ r ∂(walkLaw d) :=
     orientedMaxMean_rpow_le hd (wErrOriented ω.1 ω.2.1) n 0 hr
@@ -253,7 +253,7 @@ integrable sum `∑_{j ≤ n} orientedWalkMoment r (n - j) j` via `wStarOriented
 theorem integrable_wStarOriented_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     {r : ℝ} (hr : 1 ≤ r) (n : ℕ) :
     Integrable (fun ω : Data d => wStarOriented ω.1 ω.2.1 n 0 ^ r) (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   have hdom : Integrable (fun ω : Data d => ∑ j ∈ Finset.range (n + 1),
       orientedWalkMoment (d := d) r (n - j) j ω) (orientedLaw d ν) :=
     integrable_finsetSum _ fun j _ => integrable_orientedWalkMoment hd ν hν hr (n - j) j
@@ -271,7 +271,7 @@ theorem wStarOriented_moment_le (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critica
       ≤ B) :
     (∫ ω : Data d, wStarOriented ω.1 ω.2.1 n 0 ^ r ∂(orientedLaw d ν)) ^ (1 / r)
       ≤ ((n : ℝ) + 1) ^ (1 / r) * B := by
-  haveI := hν.prob
+  have := hν.prob
   have hr0 : (0 : ℝ) < r := lt_of_lt_of_le zero_lt_one hr
   have hMS : ∀ m ≤ n,
       (∫ ω : Data d, |wErrOriented ω.1 ω.2.1 m 0| ^ r ∂(orientedLaw d ν)) ≤ B ^ r := by

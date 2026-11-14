@@ -56,7 +56,7 @@ theorem tendsto_integral_comp_real_of_lipschitz
     fun n => hLip (r n)
   have hpt' : ∀ x : E, Tendsto (fun n => fR (r n) x) atTop (𝓝 (f x)) :=
     fun x => (hpt x).comp hr
-  haveI : ∀ n : ℕ, IsProbabilityMeasure (νR (r n)) := fun n => inferInstance
+  have : ∀ n : ℕ, IsProbabilityMeasure (νR (r n)) := fun n => inferInstance
   exact tendsto_integral_comp_of_locally_uniform ν (fun n => νR (r n)) hlim' f
     (fun n => fR (r n)) (fun n => hfR (r n)) hf
     (fun x _ hε => locallyUniform_of_lipschitz (fun n => fR (r n)) f hLip' hpt' x hε) G

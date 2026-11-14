@@ -48,8 +48,8 @@ theorem blockAvg_nonneg (δ : ℝ) (σ : (Site d → ℤ) → (ℕ → Site d) �
   refine integral_nonneg fun X => ?_
   show (0:ℝ) ≤ if blockBound N k < σ η X then _ else 0
   by_cases h : blockBound N k < σ η X
-  · rw [if_pos h]; exact u_nonneg _ _ _
-  · rw [if_neg h]
+  · rw [ite_eq_left h]; exact u_nonneg _ _ _
+  · rw [ite_eq_right h]
 
 /-- `blockAvg` is strongly measurable in the configuration, by integrating out the walk
 from the jointly measurable block term `measurable_blockTerm`. -/
@@ -57,7 +57,7 @@ theorem stronglyMeasurable_blockAvg (hd : 1 ≤ d) (δ : ℝ)
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) (N k : ℕ) :
     StronglyMeasurable (blockAvg δ σ N k) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   exact StronglyMeasurable.integral_prod_right'
     (measurable_blockTerm hσ hσn hm δ (blockBound N k)
       (blockBound N (k + 1) - blockBound N k)).stronglyMeasurable
@@ -68,7 +68,7 @@ theorem stronglyMeasurable_rewardAvg (hd : 1 ≤ d) (δ : ℝ)
     {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ} (hσ : ∀ η, LatticeProb.IsWalkStopping (σ η))
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (hm : ∀ X, Measurable fun η => σ η X) :
     StronglyMeasurable (rewardAvg δ σ) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   exact StronglyMeasurable.integral_prod_right'
     (measurable_rewardSum hσ hσn hm δ).stronglyMeasurable
 
@@ -82,7 +82,7 @@ theorem blockAvg_le (hd : 1 ≤ d) (δ : ℝ) {σ : (Site d → ℤ) → (ℕ �
     blockAvg δ σ N k η
       ≤ ((max N (2 * n) : ℕ) : ℝ)
           * ∑ z ∈ boxFinset (0 : Site d) (n + max N (2 * n)), |Parking.xi δ η z| := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hbound := ae_mem_boxFinset hd n (0 : Site d)
   have hle : blockAvg δ σ N k η
       ≤ ∫ _X : ℕ → Site d, (((max N (2 * n) : ℕ) : ℝ)
@@ -92,8 +92,8 @@ theorem blockAvg_le (hd : 1 ≤ d) (δ : ℝ) {σ : (Site d → ℤ) → (ℕ �
     · filter_upwards with X
       show (0:ℝ) ≤ if blockBound N k < σ η X then _ else 0
       by_cases h : blockBound N k < σ η X
-      · rw [if_pos h]; exact u_nonneg _ _ _
-      · rw [if_neg h]
+      · rw [ite_eq_left h]; exact u_nonneg _ _ _
+      · rw [ite_eq_right h]
     · filter_upwards [hbound] with X hX
       exact blockTerm_bound hd δ η (hσn η) k hX
   refine hle.trans (le_of_eq ?_)
@@ -104,7 +104,7 @@ dominated by the box sum `G`, so its walk-average is at most `n * G`. -/
 theorem abs_rewardAvg_le (hd : 1 ≤ d) (δ : ℝ) {σ : (Site d → ℤ) → (ℕ → Site d) → ℕ}
     {n : ℕ} (hσn : ∀ η X, σ η X ≤ n) (η : Site d → ℤ) :
     |rewardAvg δ σ η| ≤ (n : ℝ) * ∑ z ∈ boxFinset (0 : Site d) n, |Parking.xi δ η z| := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   set G : ℝ := ∑ z ∈ boxFinset (0 : Site d) n, |Parking.xi δ η z| with hG
   have hG0 : 0 ≤ G := Finset.sum_nonneg fun _ _ => abs_nonneg _
   have hbound := ae_mem_boxFinset hd n (0 : Site d)

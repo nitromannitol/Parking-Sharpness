@@ -34,7 +34,7 @@ theorem survivorsFrom_eq_tsum (D : Driver d) (t : ℕ) :
   have hz : ∀ i ∉ Finset.range (D.eta 0).toNat,
       (if (state D t).active (0, i) = true then (1 : ℝ≥0∞) else 0) = 0 := by
     intro i hi
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hact
     exact hi (Finset.mem_range.mpr (LatticeProb.lt_toNat_of_active hact))
   rw [tsum_eq_sum hz, Finset.sum_boole]
@@ -89,7 +89,7 @@ theorem measure_active_split (P : Measure (Data d)) (t i : ℕ) :
       = ⋃ m : ℕ, {ω : Data d | ω.1 0 = (m : ℤ) + 1 ∧
           (state (toDriver ω) t).active (0, i) = true} := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_iUnion]
+    simp only [Set.mem_ofPred_eq, Set.mem_iUnion]
     constructor
     · intro hact
       have h1 : i < (ω.1 0).toNat := LatticeProb.lt_toNat_of_active hact
@@ -113,7 +113,7 @@ theorem measure_active_of_lt (P : Measure (Data d)) (t i m : ℕ) (him : m < i) 
   have hempty : {ω : Data d | ω.1 0 = (m : ℤ) + 1 ∧
       (state (toDriver ω) t).active (0, i) = true} = ∅ := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_and]
+    simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_and]
     intro heq hact
     have h1 : i < (ω.1 0).toNat := LatticeProb.lt_toNat_of_active hact
     rw [heq] at h1
@@ -156,7 +156,7 @@ theorem measure_active_eq (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
         (state (toDriver ω) q.1).active (0, σ q.2)) ⁻¹'
         {f : ℕ × ℕ → Bool | f (t, 0) = true}
       = {ω : Data d | (state (toDriver ω) t).active (0, i) = true} := by
-    ext ω; simp only [Set.mem_preimage, Set.mem_setOf_eq, hσ0]
+    ext ω; simp only [Set.mem_preimage, Set.mem_ofPred_eq, hσ0]
   have hpre2 : (fun ω : Data d => fun q : ℕ × ℕ =>
         (state (toDriver ω) q.1).active (0, q.2)) ⁻¹'
         {f : ℕ × ℕ → Bool | f (t, 0) = true}
@@ -168,12 +168,12 @@ theorem measure_active_eq (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
       ∩ {ω : Data d | ω.1 0 = (m : ℤ) + 1}
       = {ω : Data d | ω.1 0 = (m : ℤ) + 1 ∧
           (state (toDriver ω) t).active (0, i) = true} := by
-    ext ω; simp only [Set.mem_inter_iff, Set.mem_setOf_eq]; tauto
+    ext ω; simp only [Set.mem_inter_iff, Set.mem_ofPred_eq]; tauto
   have hinter2 : {ω : Data d | (state (toDriver ω) t).active (0, 0) = true}
       ∩ {ω : Data d | ω.1 0 = (m : ℤ) + 1}
       = {ω : Data d | ω.1 0 = (m : ℤ) + 1 ∧
           (state (toDriver ω) t).active (0, 0) = true} := by
-    ext ω; simp only [Set.mem_inter_iff, Set.mem_setOf_eq]; tauto
+    ext ω; simp only [Set.mem_inter_iff, Set.mem_ofPred_eq]; tauto
   rw [hinter1, hinter2] at hval
   exact hval
 
@@ -225,11 +225,11 @@ theorem S_expansion (hd : 1 ≤ d) (μ : Measure (Site d → ℤ)) [IsProbabilit
         ((dataLaw d μ) {ω : Data d | ω.1 0 = (m : ℤ) + 1 ∧
           (state (toDriver ω) t).active (0, 0) = true}).toReal := by
   classical
-  haveI : IsProbabilityMeasure (dataLaw d μ) := by
-    haveI := stackRankLaw_isProbability (d := d) hd
+  have : IsProbabilityMeasure (dataLaw d μ) := by
+    have := stackRankLaw_isProbability (d := d) hd
     unfold dataLaw; infer_instance
   set P := dataLaw d μ with hP
-  haveI : IsProbabilityMeasure P := by rw [hP]; infer_instance
+  have : IsProbabilityMeasure P := by rw [hP]; infer_instance
   set A : ℕ → Set (Data d) := fun m => {ω : Data d | ω.1 0 = (m : ℤ) + 1 ∧
     (state (toDriver ω) t).active (0, 0) = true} with hA
   set f : ℕ → ℝ≥0∞ := fun m => ((m : ℝ≥0∞) + 1) * P (A m) with hf

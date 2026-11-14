@@ -27,8 +27,8 @@ theorem meanU_oriented_two_upper_of_moment (ν : Measure ℤ) (hν : CriticalLaw
             ((∫ ω : Data 2, (U ω n 0 : ℝ) ^ (8 : ℝ) ∂(orientedLaw 2 ν)) ^ ((1 : ℝ) / 16) + 1)) :
     ∃ C' : ℝ, 0 < C' ∧ ∀ n : ℕ, 1 ≤ n →
       meanU (orientedLaw 2 ν) n ≤ C' * (n : ℝ) ^ ((1 : ℝ) / 4) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   obtain ⟨θ, hθ, he⟩ := hν.expMoment
   refine ⟨2 * C + C ^ 2 + 2 * C + 1, by positivity, fun n hn => ?_⟩
   set X : ℝ := (∫ ω : Data 2, (U ω n 0 : ℝ) ^ (8 : ℝ) ∂(orientedLaw 2 ν)) ^ ((1 : ℝ) / 8) with hXdef

@@ -70,7 +70,7 @@ theorem sum_dirac_nbr (y x : Site d) :
   classical
   simp only [Measure.coe_add, Pi.add_apply, Measure.dirac_apply]
   by_cases hx : x ∈ nbrFinset y
-  · rw [if_pos hx]
+  · rw [ite_eq_left hx]
     obtain ⟨i, hi | hi⟩ := mem_nbrFinset_iff.mp hx
     · rw [Finset.sum_eq_single i]
       · rw [Set.indicator_of_mem (by simp [hi]), Set.indicator_of_notMem
@@ -95,7 +95,7 @@ theorem sum_dirac_nbr (y x : Site d) :
             simpa using fun hc => hj (unit_sub_left_inj (hc.trans hi)))]
         simp
       · intro hc; exact absurd (Finset.mem_univ i) hc
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [Set.indicator_of_notMem (by
         simpa using fun hc : y + unit i = x => hx (hc ▸ mem_nbrFinset_add y i)),
@@ -119,9 +119,9 @@ theorem instructionLaw_singleton (hd : 1 ≤ d) (y x : Site d) :
     rw [← sum_dirac_nbr y x]
   rw [hval, kern]
   by_cases hx : x ∈ nbrFinset y
-  · rw [if_pos hx, if_pos hx, mul_one, ENNReal.toReal_inv, ENNReal.toReal_mul,
+  · rw [ite_eq_left hx, ite_eq_left hx, mul_one, ENNReal.toReal_inv, ENNReal.toReal_mul,
       ENNReal.toReal_ofNat, ENNReal.toReal_natCast]
-  · rw [if_neg hx, if_neg hx, mul_zero, ENNReal.toReal_zero]
+  · rw [ite_eq_right hx, ite_eq_right hx, mul_zero, ENNReal.toReal_zero]
 
 /-! ### Projecting a stack onto the neighbour stacks -/
 
@@ -142,7 +142,7 @@ theorem nbrProj_mem (i₀ : Fin d) (σ : Site d × ℕ → Site d) (q : Site d �
 to a neighbour of their site. -/
 theorem nbrProj_eq_self {i₀ : Fin d} {σ : Site d × ℕ → Site d}
     (h : ∀ q, σ q ∈ nbrFinset q.1) : nbrProj i₀ σ = σ := by
-  funext q; unfold nbrProj; rw [if_pos (h q)]
+  funext q; unfold nbrProj; rw [ite_eq_left (h q)]
 
 /-- `nbrProj` commutes with overwriting one coordinate `q₀` by a neighbour `c`
 of `q₀.1`. -/
@@ -176,10 +176,10 @@ theorem deferred_factorization (hd : 1 ≤ d) (n : ℕ) (y x : Site d) (j : ℕ)
     probGiven d η {ω | j + 1 ≤ U ω n y ∧ ω.2.1 (y, j) = x}
       = kern d y x * probGiven d η {ω | j + 1 ≤ U ω n y} := by
   classical
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by
     unfold stackRankLaw stackLaw
     infer_instance
   set i₀ : Fin d := ⟨0, by omega⟩ with hi₀

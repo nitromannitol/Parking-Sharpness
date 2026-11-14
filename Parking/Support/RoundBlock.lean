@@ -43,7 +43,7 @@ theorem partialInt_roundMeanU_query (hd : 1 ≤ d) (A H : Site d → ℕ)
       (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) τ
       = matchedMeanU (roundSigned A H τ) ρ T x := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   apply partialInt_eq_self
   intro ζ ζ' he
   apply roundMeanU_agree_finite A H N hA ρ T x ζ ζ'

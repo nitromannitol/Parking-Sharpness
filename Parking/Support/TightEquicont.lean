@@ -208,9 +208,9 @@ theorem orientedBoxReward_modulusInProbability (ν : Measure ℤ) (hν : Critica
   obtain ⟨δ, hδ0, hδ⟩ := kolmogorovModulusPi 2 ![0, -(2 * A)] ![T, 2 * A] p (p / 4) M
     (by linarith) (by linarith) ε η hε hη
   refine ⟨δ, hδ0, fun n hn => ?_⟩
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   exact hδ (iidLaw 2 (realLaw ν)) inferInstance (fun u ω => orientedBoxReward T n ω u)
     (fun u => measurable_orientedBoxReward T n u)
     (fun u hu v hv => (hK n hn u v hu hv).1)
@@ -231,9 +231,9 @@ theorem orientedBoxReward_boundedInProbability (ν : Measure ℤ) (hν : Critica
   obtain ⟨B, hB⟩ := kolmogorovBoundPi 2 ![0, -(2 * A)] ![T, 2 * A] p (p / 4) (max M M₀)
     (by linarith) (by linarith) ε hε
   refine ⟨B, fun n hn => ?_⟩
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   have hbase : ![0, -(2 * A)] ∈ orientedBox T A := by
     rw [orientedBox]
     refine Set.left_mem_Icc.mpr fun i => ?_

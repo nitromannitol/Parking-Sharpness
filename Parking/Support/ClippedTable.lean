@@ -52,9 +52,9 @@ theorem measurePreserving_clippedTable (hd : 1 ≤ d) (ν : Measure ℤ) [IsProb
     MeasurePreserving
       (fun ω : (Site d → ℤ) × FlatRoundNoise d => (clippedField ω.1, curryRoundNoise ω.2))
       ((iidLaw d ν).prod (flatRoundNoiseLaw d)) ((iidLaw d ν).prod (roundNoiseLaw d)) := by
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd
-  haveI := roundNoiseLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have hη : MeasurePreserving clippedField (iidLaw d ν) (iidLaw d ν) :=
     ⟨measurable_clippedField, (Measure.map_congr (ae_clippedField ν hclip)).trans (Measure.map_id)⟩
   exact hη.prod ⟨measurable_curryRoundNoise, map_curryRoundNoise hd⟩

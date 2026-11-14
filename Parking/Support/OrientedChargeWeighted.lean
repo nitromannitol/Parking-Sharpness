@@ -31,7 +31,7 @@ theorem oriented_charge_weighted_moment (hd : 2 ≤ d) (ν : Measure ℤ) (hν :
     (∫ ω : Data d, (∑ y ∈ boxFinset (0 : Site d) n,
         (⨆ m : ℕ, orientedGamma d m y) * (U ω n y : ℝ)) ^ p ∂(orientedLaw d ν)) ^ (1 / p) ≤
       (∫ ω : Data d, (U ω n 0 : ℝ) ^ p ∂(orientedLaw d ν)) ^ (1 / p) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, he⟩ := hν.expMoment
   have hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν :=
     integrable_expMax_of_expAbs hθ he

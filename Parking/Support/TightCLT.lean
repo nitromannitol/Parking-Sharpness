@@ -55,8 +55,8 @@ the coordinate would be `0` almost everywhere, forcing `ν` to be the point mass
 contradicting `hν.nonconst`. -/
 theorem realLaw_sq_integral_pos (ν : Measure ℤ) (hν : CriticalLaw ν) :
     0 < ∫ x : ℝ, x ^ 2 ∂(realLaw ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hnn : (0 : ℝ) ≤ ∫ x : ℝ, x ^ 2 ∂(realLaw ν) :=
     integral_nonneg fun x => sq_nonneg x
   rcases hnn.lt_or_eq with hpos | heq
@@ -98,8 +98,8 @@ theorem exists_taylor_charFun_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν) 
       ‖charFun (realLaw ν) s -
           (1 - ((∫ x : ℝ, x ^ 2 ∂(realLaw ν) : ℝ) : ℂ) * (s : ℂ) ^ 2 / 2)‖ ≤ ε * s ^ 2 := by
   intro ε hε
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   set σ2 : ℝ := ∫ x : ℝ, x ^ 2 ∂(realLaw ν) with hσ2
   have hσ2pos : 0 < σ2 := realLaw_sq_integral_pos ν hν
   set σ : ℝ := Real.sqrt σ2 with hσ
@@ -159,9 +159,9 @@ theorem charFun_map_weighted_sum_eq_prod_two (ν : Measure ℤ) (hν : CriticalL
     charFun ((iidLaw 2 (realLaw ν)).map (fun η : Site 2 → ℝ => ∑ w ∈ S, c w * η w)) t
       = ∏ w ∈ S, charFun (realLaw ν) (t * c w) := by
   classical
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   set g : Site 2 → ℝ → ℂ := fun w b => Complex.exp (((t * c w * b : ℝ) : ℂ) * Complex.I) with hg
   have hgmeas : ∀ w : Site 2, Measurable (g w) := fun w =>
     (Complex.continuous_exp.comp
@@ -252,8 +252,8 @@ theorem exists_log_charFun_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν) :
       ‖Complex.log (charFun (realLaw ν) s) +
           ((∫ x : ℝ, x ^ 2 ∂(realLaw ν) : ℝ) : ℂ) * (s : ℂ) ^ 2 / 2‖ ≤ ε * s ^ 2 := by
   intro ε hε
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   set σ2 : ℝ := ∫ x : ℝ, x ^ 2 ∂(realLaw ν) with hσ2
   have hσ2nonneg : 0 ≤ σ2 := by rw [hσ2]; exact integral_nonneg fun x => sq_nonneg x
   set K : ℝ := σ2 / 2 + 1 with hK
@@ -374,8 +374,8 @@ theorem tendsto_charFun_weighted_scenery_sum_two (ν : Measure ℤ) (hν : Criti
     Tendsto (fun n : ℕ => charFun ((iidLaw 2 (realLaw ν)).map
         (fun η : Site 2 → ℝ => ∑ w ∈ S n, d n w * η w)) t) atTop
       (𝓝 (Complex.exp (-((∫ x : ℝ, x ^ 2 ∂(realLaw ν) : ℝ) : ℂ) * (V : ℂ) * (t : ℂ) ^ 2 / 2))) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   set σ2 : ℝ := ∫ x : ℝ, x ^ 2 ∂(realLaw ν) with hσ2
   have hσ2nonneg : 0 ≤ σ2 := by rw [hσ2]; exact integral_nonneg fun x => sq_nonneg x
   have hprodeq : ∀ n : ℕ, charFun ((iidLaw 2 (realLaw ν)).map

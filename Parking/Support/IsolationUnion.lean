@@ -44,7 +44,7 @@ theorem measure_hole_le_isolated_add_pairs (μ : Measure (Data d)) [IsFiniteMeas
       split_ifs <;> norm_num
     by_cases hH : H ω t 0 = 1
     · by_cases hJ : IsolatedHole ω t K 0
-      · simp only [I, J, hH, hJ, if_true]
+      · simp only [I, J, hH, hJ, ite_true]
         linarith
       · have he : ∃ z ∈ boxFinset (0 : Site d) K, z ≠ 0 ∧ H ω t z = 1 := by
           have hnot : ¬ ∀ z ∈ boxFinset (0 : Site d) K, z ≠ 0 → H ω t z ≠ 1 := by
@@ -56,11 +56,11 @@ theorem measure_hole_le_isolated_add_pairs (μ : Measure (Data d)) [IsFiniteMeas
         have hzS : z ∈ S := Finset.mem_erase.mpr ⟨hz0, hzB⟩
         have hs : F ω z ≤ ∑ a ∈ S, F ω a := Finset.single_le_sum
           (fun a _ => by dsimp only [F]; split_ifs <;> norm_num) hzS
-        have hzF : F ω z = 1 := by simp only [F, hH, hzH, and_self, if_true]
+        have hzF : F ω z = 1 := by simp only [F, hH, hzH, and_self, ite_true]
         rw [hzF] at hs
-        simpa only [I, J, hH, hJ, if_true, if_false, zero_add] using hs
+        simpa only [I, J, hH, hJ, ite_true, ite_false, zero_add] using hs
     · have hJn : 0 ≤ J ω := by dsimp only [J]; split_ifs <;> norm_num
-      simp only [I, hH, if_false]
+      simp only [I, hH, ite_false]
       exact add_nonneg hJn hn
   have h := integral_mono hiI (hiJ.add (integrable_finsetSum S (fun z _ => hiF z))) hp
   change (∫ ω, I ω ∂μ) ≤ ∫ ω, J ω + ∑ z ∈ S, F ω z ∂μ at h

@@ -29,7 +29,7 @@ theorem exists_meanU_oriented_log_bounds (d : ℕ) (hd : 3 ≤ d) (ν : Measure 
     ∃ c C' : ℝ, 0 < c ∧ c ≤ C' ∧ ∀ n : ℕ, 2 ≤ n →
       c * Real.log n ≤ meanU (orientedLaw d ν) n ∧
         meanU (orientedLaw d ν) n ≤ C' * Real.log n := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨c, hc, hlo⟩ := exists_meanU_oriented_log_lower (d := d) (by omega) ν hν
   obtain ⟨C', hC', hhi⟩ := meanU_oriented_log_upper_of_moment hd ν hν C hC h
   refine ⟨c, c + 2 * C', hc, by linarith, fun n hn => ⟨?_, ?_⟩⟩

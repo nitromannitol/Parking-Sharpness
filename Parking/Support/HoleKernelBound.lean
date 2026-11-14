@@ -24,7 +24,7 @@ theorem exists_holeKernel_sum_bound (hd : 5 ≤ d) :
   obtain ⟨C, hC, hb⟩ := fullGreen_bubble_bound hd
   have hd3 : 3 ≤ d := by omega
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   have hq (x y : Site d) : 1 - escapePotential d x y ≤ fullGreen d (y - x) := by
     simp only [escapePotential, sub_sub_cancel]
     have hg : 0 < escapeConst d := zero_lt_one.trans_le (one_le_escapeConst hd3)

@@ -52,7 +52,7 @@ theorem matchedOdometer_le_candidates (η : Site d → ℤ) (ρ : Label d × ℕ
 theorem integrable_matchedOdometer (hd : 1 ≤ d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     Integrable (fun σ => ((matchedState η ρ σ T).departures x : ℝ)) (roundNoiseLaw d) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have hS := measurableState_matchedState ⟨0, hd⟩ (Ω := RoundNoise d)
     (fun _ => η) (fun _ => ρ) id measurable_const measurable_const measurable_id T
   apply Integrable.of_bound ((measurable_from_countable' fun k : ℕ => (k : ℝ)).comp

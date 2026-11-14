@@ -41,7 +41,7 @@ theorem fullGreen_gap (hd : 3 ≤ d) {x : Site d} (hx : x ≠ 0) :
   have h := hsum.le_tsum 0 (fun n _ => hnn n)
   rw [(summable_iterate_delta0 hd (0 : Site d)).tsum_sub (summable_iterate_delta0 hd x)] at h
   rw [tsum_iterate_delta0_eq hd 0, tsum_iterate_delta0_eq hd x] at h
-  simp only [Function.iterate_zero_apply, delta0, if_neg hx, ite_true, sub_zero] at h
+  simp only [Function.iterate_zero_apply, delta0, ite_eq_right hx, ite_true, sub_zero] at h
   change 1 ≤ 2 * srwGreenInf d 0 - 2 * srwGreenInf d x at h
   rw [← fullGreen_eq_srwGreenInf, ← fullGreen_eq_srwGreenInf] at h
   change 1 ≤ 2 * escapeConst d - 2 * fullGreen d x at h
@@ -65,7 +65,7 @@ theorem integral_step_escapePotential_gap (hd : 3 ≤ d) (x y : Site d) :
   by_cases hy : y = x
   · subst y
     have hd1 : 1 ≤ d := by omega
-    haveI := stepLaw_isProbability hd1
+    have := stepLaw_isProbability hd1
     have hg : 0 < escapeConst d := zero_lt_one.trans_le (one_le_escapeConst hd)
     have hi : Integrable (fun a : Fin d × Bool => fullGreen d (x + stepVec a - x)) (stepLaw d) :=
       Integrable.of_bound (measurable_from_countable' _).aestronglyMeasurable (escapeConst d)
@@ -74,7 +74,7 @@ theorem integral_step_escapePotential_gap (hd : 3 ≤ d) (x y : Site d) :
           exact fullGreen_le_escapeConst hd _)
     simp only [escapePotential]
     rw [integral_sub (integrable_const _) (hi.div_const _), integral_div, integral_const,
-      probReal_univ, one_smul, integral_step_green hd, if_pos rfl, sub_self]
+      probReal_univ, one_smul, integral_step_green hd, ite_eq_left rfl, sub_self]
     change 1 / (2 * escapeConst d) ≤ 1 - (escapeConst d - 1) / escapeConst d
     apply (mul_le_mul_iff_of_pos_right hg).mp
     rw [sub_mul, one_mul, div_mul_cancel₀ _ hg.ne']

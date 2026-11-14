@@ -112,7 +112,7 @@ theorem measurable_dyadicRewardY {ΩB : Type*} [mB : MeasurableSpace ΩB]
     intro i
     by_cases hi : i = 0
     · subst hi; exact measurable_const
-    · simp only [if_neg hi]
+    · simp only [ite_eq_right hi]
       exact hB.comp (measurable_const.prodMk measurable_snd)
   exact hY.comp hF
 
@@ -302,9 +302,9 @@ theorem abs_dyadicSnellY_le_of_condExp_le {ΩB : Type*} [mB : MeasurableSpace Ω
     ∀ k ω β, |dyadicSnellY (mB := mB) PB 𝒢 Y B m k (ω, β)| ≤ M := by
   intro k ω β
   by_cases hk : k ≤ 2 ^ m
-  · simp only [dyadicSnellY, if_pos hk]
+  · simp only [dyadicSnellY, ite_eq_left hk]
     exact abs_dyadicSnellRecY_le_of_condExp_le PB 𝒢 Y B m hYb hcond (2 ^ m - k) ω β
-  · simp only [dyadicSnellY, if_neg hk, abs_zero]
+  · simp only [dyadicSnellY, ite_eq_right hk, abs_zero]
     exact hM
 
 /-- **The Brownian average of the dyadic Snell recursion is bounded pointwise**
@@ -470,10 +470,10 @@ theorem measurable_condExpParamOp_all {ΩB : Type*} [mB : MeasurableSpace ΩB] [
   by_cases h : (∃ (hr : @Measurable (contNoiseSpace × ΩB) ℝ
         (@Prod.instMeasurableSpace contNoiseSpace ΩB _ mB) _ r),
         ∀ ω, Integrable (fun β => r (ω, β)) PB)
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact (Classical.choose_spec (LatticeProb.exists_measurable_condExp_param
       (Ω := contNoiseSpace) (ΩB := ΩB) (mΩ := inferInstance) (mB := mB) PB 𝒢 h𝒢 r h.1 h.2)).1
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact measurable_const
 
 /-- **The Brownian average of the dyadic Snell recursion is measurable in the

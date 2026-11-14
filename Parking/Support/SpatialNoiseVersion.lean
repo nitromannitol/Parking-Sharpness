@@ -42,17 +42,17 @@ theorem exists_noise_version_of_fixed_residual
   have htest (φ : (Fin d → ℝ) → ℝ) (n : ℕ) (h : HasTest φ n) :
       IsSpaceTimeTest (test φ n) ∧ tsupport (test φ n) ⊆ K n ∧
         (fun x => ∫ s : ℝ, test φ n (s, x)) = φ := by
-    simp only [test, dif_pos h]
+    simp only [test, dite_eq_left h]
     exact Classical.choose_spec h
   have htest0 (φ : (Fin d → ℝ) → ℝ) (n : ℕ) : IsSpaceTimeTest (test φ n) := by
     by_cases h : HasTest φ n
     · exact (htest φ n h).1
-    · simp only [test, dif_neg h]
+    · simp only [test, dite_eq_right h]
       exact ⟨contDiff_const, by simp [HasCompactSupport], by simp⟩
   let P : ((Fin d → ℝ) → ℝ) → ℕ → Ω → Prop := fun φ n ω =>
     HasTest φ n ∧ K n ⊆ {p | 0 < u ω p}
   have hPm (φ : (Fin d → ℝ) → ℝ) (n : ℕ) : MeasurableSet {ω | P φ n ω} := by
-    letI : CompactSpace (K n) := isCompact_iff_compactSpace.mp (hK n)
+    let : CompactSpace (K n) := isCompact_iff_compactSpace.mp (hK n)
     have hm := LatticeProb.Scaling.CompactPositivity.measurableSet_forall_pos
       (fun ω => (hu ω).comp (continuous_subtype_val : Continuous (Subtype.val : K n → _)))
       (fun p : K n => hum p)
@@ -68,8 +68,8 @@ theorem exists_noise_version_of_fixed_residual
   let b : ((Fin d → ℝ) → ℝ) → Ω → ℝ := fun φ => if IsTestFun φ then W φ else fun _ => 0
   have hbm (φ : (Fin d → ℝ) → ℝ) : Measurable (b φ) := by
     by_cases hφ : IsTestFun φ
-    · simpa only [b, if_pos hφ] using hWm φ hφ
-    · simp only [b, if_neg hφ]
+    · simpa only [b, ite_eq_left hφ] using hWm φ hφ
+    · simp only [b, ite_eq_right hφ]
       exact measurable_const
   choose W' hW'm hsel hnone using fun φ =>
     LatticeProb.Scaling.MeasurableLocalChoice.exists_measurable_selection
@@ -85,7 +85,7 @@ theorem exists_noise_version_of_fixed_residual
     by_cases hp : ∃ n, P φ n ω
     · obtain ⟨n, hn, heq⟩ := hsel φ ω hp
       exact heq.trans (hω n hn)
-    · simpa only [b, if_pos hφ] using hnone φ ω hp
+    · simpa only [b, ite_eq_left hφ] using hnone φ ω hp
   · have hfixed0 : ∀ ψ : ℝ × (Fin d → ℝ) → ℝ, IsSpaceTimeTest ψ →
         (∀ x, (∫ s : ℝ, ψ (s, x)) = 0) →
         ∀ᵐ ω ∂Q, tsupport ψ ⊆ {p | 0 < u ω p} →

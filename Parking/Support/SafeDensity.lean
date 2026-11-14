@@ -27,9 +27,9 @@ theorem measure_holeCloser_ge_good (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] (t R : ℕ) :
     ((R + 1) ^ d : ℝ) * ((law d ν) {ω | GoodHole ω t R 0}).toReal ≤
       ((law d ν) {ω | HoleCloser ω t}).toReal := by
-  haveI := stackRankLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) :=
+  have := stackRankLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (law d ν) :=
     inferInstanceAs (IsProbabilityMeasure ((iidLaw d ν).prod (stackRankLaw d)))
   let μ := law d ν
   let F := fun (ω : Data d) (y w : Site d) => (goodSafeMass ω t R y w : ℝ)
@@ -64,9 +64,9 @@ theorem measure_holeCloser_ge_good (hd : 1 ≤ d) (ν : Measure ℤ)
     change ((R + 1) ^ d : ℝ) * (if GoodHole ω t R 0 then 1 else 0) ≤ ∑ w ∈ boxFinset 0 R, F ω 0 w
     rw [hout]
     by_cases h : GoodHole ω t R 0
-    · simp only [h, if_true, mul_one]
+    · simp only [h, ite_true, mul_one]
       exact_mod_cast card_safeSites_lower h.2
-    · simp only [h, if_false, mul_zero, le_refl]
+    · simp only [h, ite_false, mul_zero, le_refl]
   exact hOut.trans (htrans ▸ hIn)
 
 end Parking

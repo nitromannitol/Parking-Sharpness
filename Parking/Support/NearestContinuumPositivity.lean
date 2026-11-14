@@ -119,10 +119,10 @@ theorem Parking.ae_pos_of_critical_scale_lower_tail
       Tendsto (fun R : ℝ => ∫ w, F (Parking.barDivisible w R 1 0) ∂(Parking.law d ν)) atTop
         (𝓝 (∫ ω, F (Uc ω 1 0) ∂Q))) :
     ∀ᵐ ω ∂Q, 0 < Uc ω 1 0 := by
-  haveI := hν.prob
-  haveI := Parking.stackRankLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (Parking.law d ν) :=
+  have := hν.prob
+  have := Parking.stackRankLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (Parking.law d ν) :=
     inferInstanceAs (IsProbabilityMeasure ((iidLaw d ν).prod (Parking.stackRankLaw d)))
   apply Parking.ae_pos_of_convergence_in_law_lower_tails (Parking.law d ν) Q
     (fun t ω => (t : ℝ) ^ (-((4 - (d : ℝ)) / 4)) * Parking.uOf ω t 0)

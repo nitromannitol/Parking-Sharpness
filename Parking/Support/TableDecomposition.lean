@@ -31,7 +31,7 @@ theorem table_moment_decomposition (hd : 1 ≤ d) {Ω : Type} [MeasurableSpace �
         rNorm (μ.prod (flatRoundNoiseLaw d)) r
           (fun z => ((matchedState (Φ z.1) ρ (curryRoundNoise z.2) T).departures x : ℝ) -
             matchedMeanU (Φ z.1) ρ T x) := by
-  haveI := flatRoundNoiseLaw_isProbability hd
+  have := flatRoundNoiseLaw_isProbability hd
   let ν := flatRoundNoiseLaw d
   let B : ℝ := ((T * (2 * T + 1) ^ d : ℕ) : ℝ)
   let M : Ω → ℝ := fun ω => matchedMeanU (Φ ω) ρ T x

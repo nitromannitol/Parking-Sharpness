@@ -86,7 +86,7 @@ theorem law_discrepancy_shift (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
   have hset : {ω : Data d | r < |(U ω n z : ℝ) - uOf ω n z|}
       = (shiftData z) ⁻¹' {ω : Data d | r < |(U ω n (0 : Site d) : ℝ) - uOf ω n (0 : Site d)|} := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_preimage]
+    simp only [Set.mem_ofPred_eq, Set.mem_preimage]
     conv_lhs => rw [hz, discrepancy_shiftData]
   rw [hset, ← Measure.map_apply (measurable_shiftData z) hmeasT, law_map_shiftData hd ν z]
 

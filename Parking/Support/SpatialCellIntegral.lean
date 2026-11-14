@@ -73,7 +73,7 @@ theorem parabolic_strip_eq_step (f : ℕ → (Fin d → ℝ) → ℝ) {R : ℝ} 
   classical
   funext p
   rw [LatticeProb.Scaling.TimeCell.step_eq_indicator (by positivity : 0 < 1 / R ^ 2)]
-  simp only [div_eq_mul_inv, one_mul, inv_inv, Set.indicator, Set.mem_setOf_eq]
+  simp only [div_eq_mul_inv, one_mul, inv_inv, Set.indicator, mem_ofPred_eq]
 
 /-- Exact integration of a parabolic cell function over a finite time strip. -/
 theorem integral_parabolic_strip (f : ℕ → (Fin d → ℝ) → ℝ)

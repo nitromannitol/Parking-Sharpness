@@ -83,10 +83,10 @@ theorem exists_horizon_ge_four (d : ℕ) (hd4 : 4 ≤ d) {c₀ : ℝ} (hc₀ : 0
       have h := mul_le_mul_of_nonneg_left hm2 hδ0.le
       rw [mul_add, hcancel] at h
       linarith
-    rw [nearLowerTarget, if_pos (by norm_num : (4:ℕ) ≤ 4), Parking.nearRate,
-      if_neg (by norm_num : ¬(4:ℕ) = 1), if_neg (by norm_num : ¬(4:ℕ) = 2),
-      if_neg (by norm_num : ¬(4:ℕ) = 3), lowerRate, if_neg (by norm_num : ¬(4:ℕ) ≤ 3),
-      if_pos (rfl : (4:ℕ) = 4)]
+    rw [nearLowerTarget, ite_eq_left (by norm_num : (4:ℕ) ≤ 4), Parking.nearRate,
+      ite_eq_right (by norm_num : ¬(4:ℕ) = 1), ite_eq_right (by norm_num : ¬(4:ℕ) = 2),
+      ite_eq_right (by norm_num : ¬(4:ℕ) = 3), lowerRate, ite_eq_right (by norm_num : ¬(4:ℕ) ≤ 3),
+      ite_eq_left (rfl : (4:ℕ) = 4)]
     have hmul : c₀ * Real.log (Real.exp 1 / δ)
         ≤ c₀ * Real.log ((max 2 ⌈Real.exp 1 / δ⌉₊ : ℕ) : ℝ) :=
       mul_le_mul_of_nonneg_left hlogm hc₀.le
@@ -139,7 +139,7 @@ theorem exists_horizon_ge_four (d : ℕ) (hd4 : 4 ≤ d) {c₀ : ℝ} (hc₀ : 0
       have h1 : 12 / c₀ ≤ Real.log (Real.exp 1 / δ) ^ ((2:ℝ) / d) := le_trans hAlow hPA
       rw [div_le_iff₀ hc₀, mul_comm] at h1
       linarith
-    rw [nearLowerTarget, if_neg (by omega), lowerRate, if_neg (by omega), if_neg hd4']
+    rw [nearLowerTarget, ite_eq_right (by omega), lowerRate, ite_eq_right (by omega), ite_eq_right hd4']
     have hmul : c₀ * Real.log (Real.exp 1 / δ) ^ ((2:ℝ) / d)
         ≤ c₀ * Real.log ((max 2 ⌈Real.exp 1 / δ⌉₊ : ℕ) : ℝ) ^ ((2:ℝ) / d) :=
       mul_le_mul_of_nonneg_left hrate hc₀.le
@@ -232,10 +232,10 @@ theorem exists_horizon (d : ℕ) (hd : 1 ≤ d) {c₀ : ℝ} (hc₀ : 0 < c₀) 
     obtain ⟨m, hm2, hm⟩ := h δ hδ0 hδle
     refine ⟨m, hm2, ?_⟩
     have hlr : lowerRate 1 m = ((m : ℕ) : ℝ) ^ ((3:ℝ)/4) := by
-      rw [lowerRate, if_pos (by norm_num : (1:ℕ) ≤ 3)]
+      rw [lowerRate, ite_eq_left (by norm_num : (1:ℕ) ≤ 3)]
       norm_num
     have htgt : nearLowerTarget 1 δ = δ ^ (-((3:ℝ)/4) / (1 - (3:ℝ)/4)) := by
-      rw [nearLowerTarget, if_pos (by norm_num : (1:ℕ) ≤ 4), Parking.nearRate, if_pos rfl]
+      rw [nearLowerTarget, ite_eq_left (by norm_num : (1:ℕ) ≤ 4), Parking.nearRate, ite_eq_left rfl]
       norm_num
     rw [hlr, htgt]
     exact hm
@@ -247,11 +247,11 @@ theorem exists_horizon (d : ℕ) (hd : 1 ≤ d) {c₀ : ℝ} (hc₀ : 0 < c₀) 
     obtain ⟨m, hm2, hm⟩ := h δ hδ0 hδle
     refine ⟨m, hm2, ?_⟩
     have hlr : lowerRate 2 m = ((m : ℕ) : ℝ) ^ ((1:ℝ)/2) := by
-      rw [lowerRate, if_pos (by norm_num : (2:ℕ) ≤ 3)]
+      rw [lowerRate, ite_eq_left (by norm_num : (2:ℕ) ≤ 3)]
       norm_num
     have htgt : nearLowerTarget 2 δ = δ ^ (-((1:ℝ)/2) / (1 - (1:ℝ)/2)) := by
-      rw [nearLowerTarget, if_pos (by norm_num : (2:ℕ) ≤ 4), Parking.nearRate,
-        if_neg (by norm_num : ¬(2:ℕ) = 1), if_pos rfl]
+      rw [nearLowerTarget, ite_eq_left (by norm_num : (2:ℕ) ≤ 4), Parking.nearRate,
+        ite_eq_right (by norm_num : ¬(2:ℕ) = 1), ite_eq_left rfl]
       norm_num
       rw [Real.rpow_neg_one]
     rw [hlr, htgt]
@@ -264,11 +264,11 @@ theorem exists_horizon (d : ℕ) (hd : 1 ≤ d) {c₀ : ℝ} (hc₀ : 0 < c₀) 
     obtain ⟨m, hm2, hm⟩ := h δ hδ0 hδle
     refine ⟨m, hm2, ?_⟩
     have hlr : lowerRate 3 m = ((m : ℕ) : ℝ) ^ ((1:ℝ)/4) := by
-      rw [lowerRate, if_pos (by norm_num : (3:ℕ) ≤ 3)]
+      rw [lowerRate, ite_eq_left (by norm_num : (3:ℕ) ≤ 3)]
       norm_num
     have htgt : nearLowerTarget 3 δ = δ ^ (-((1:ℝ)/4) / (1 - (1:ℝ)/4)) := by
-      rw [nearLowerTarget, if_pos (by norm_num : (3:ℕ) ≤ 4), Parking.nearRate,
-        if_neg (by norm_num : ¬(3:ℕ) = 1), if_neg (by norm_num : ¬(3:ℕ) = 2), if_pos rfl]
+      rw [nearLowerTarget, ite_eq_left (by norm_num : (3:ℕ) ≤ 4), Parking.nearRate,
+        ite_eq_right (by norm_num : ¬(3:ℕ) = 1), ite_eq_right (by norm_num : ¬(3:ℕ) = 2), ite_eq_left rfl]
       norm_num
     rw [hlr, htgt]
     exact hm

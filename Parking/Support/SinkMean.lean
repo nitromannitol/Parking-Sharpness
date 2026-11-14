@@ -35,8 +35,8 @@ theorem sparseSinkMean_zero (p : ℝ) (T : ℕ) : sparseSinkMean (d := d) p T 0 
 /-- The sink mean is no greater than the stationary mean without a sink. -/
 theorem sparseSinkMean_le (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (T : ℕ) (x : Site d) : sparseSinkMean p T x ≤ meanU (law d (threePointLaw p)) T := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   have h := integral_mono
     (integrable_matchedMeanU_bounded hd (iidLaw d (threePointLaw p)) (sparseSinkField T 0)
       (measurable_sparseSinkField T 0) 1 (sparseSinkField_particle_bound T 0) 0 T x)
@@ -57,8 +57,8 @@ theorem sparseSinkMean_far (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 
 /-- The expected sink odometer is superharmonic away from its absorbing site. -/
 theorem sparseSinkMean_superharmonic (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (T : ℕ) (x : Site d) (hx : x ≠ 0) : walkOp (sparseSinkMean p T) x ≤ sparseSinkMean p T x := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
   let μ := iidLaw d (threePointLaw p)
   let f : (Site d → ℤ) → Site d → ℝ := fun η => matchedMeanU (sparseSinkField T 0 η) 0 T
   let g : (Site d → ℤ) → Site d → ℝ := fun η => matchedMeanU (clippedField η) 0 T

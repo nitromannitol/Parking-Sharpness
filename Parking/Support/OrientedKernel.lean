@@ -57,7 +57,7 @@ theorem sum_orientedKern_mul (f : Site d → ℝ) (x : Site d) :
     rw [sum_image (fun i _ j _ hij => hinj hij)]
     have hv : ∀ i : Fin d, orientedKern d x (x - unit i) = (d : ℝ)⁻¹ := by
       intro i
-      exact if_pos ⟨i, rfl⟩
+      exact ite_eq_left ⟨i, rfl⟩
     simp only [hv, ← mul_sum, div_eq_inv_mul]
   · have hne : ¬ ∃ i : Fin d, y = x - unit i := by
       rintro ⟨i, rfl⟩
@@ -85,7 +85,7 @@ theorem sum_mul_orientedKern (f : Site d → ℝ) (x : Site d) :
     rw [sum_image (fun i _ j _ hij => hinj hij)]
     have hv : ∀ i : Fin d, orientedKern d (x + unit i) x = (d : ℝ)⁻¹ := by
       intro i
-      exact if_pos ⟨i, by simp⟩
+      exact ite_eq_left ⟨i, by simp⟩
     simp only [hv, ← sum_mul, div_eq_mul_inv]
   · have hne : ¬ ∃ i : Fin d, x = y - unit i := by
       rintro ⟨i, hi⟩

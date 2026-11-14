@@ -45,7 +45,7 @@ theorem sparse_holeProb_tendsto_zero (hBernstein : External.Bernstein) (hd : 5 �
     Tendsto (holeProb d (threePointLaw p)) atTop (𝓝 0) := by
   obtain ⟨A, c, _, hc, hb⟩ := exists_sparse_hole_exp_bound hBernstein hd
   have hν := criticalLaw_threePointLaw hp (by linarith : 2 * p ≤ 1)
-  haveI := hν.prob
+  have := hν.prob
   have hmean := meanU_tendsto_atTop (d := d) (by omega) (threePointLaw p) hν.nonconst
     (integrable_threePointLaw p _) hν.mean
   have hneg : Tendsto (fun T => -c * meanU (law d (threePointLaw p)) T) atTop atBot := by

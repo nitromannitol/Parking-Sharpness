@@ -67,7 +67,7 @@ theorem exists_near_centered (hd : 1 ≤ d) (hGrowth : Parking.External.Sandpile
   have hfam' : NearFamily δ₀ ν θ M K := hfam
   obtain ⟨hδ₀, hθ, hprob, hmeanν, -, hexp, -⟩ := hfam
   have h0mem : (0 : ℝ) ∈ Set.Icc (0 : ℝ) δ₀ := ⟨le_rfl, hδ₀.le⟩
-  haveI hp0 : IsProbabilityMeasure (ν 0) := hprob 0 h0mem
+  have hp0 : IsProbabilityMeasure (ν 0) := hprob 0 h0mem
   have hM1 : 1 ≤ M :=
     le_trans (one_le_integral_exp_abs hθ (ν 0) (hexp 0 h0mem).1) (hexp 0 h0mem).2
   have hA1 : 1 ≤ refBound θ δ₀ M := by
@@ -78,7 +78,7 @@ theorem exists_near_centered (hd : 1 ≤ d) (hGrowth : Parking.External.Sandpile
   have hc : (0 : ℝ) ≤ 2 * Real.log (refBound θ δ₀ M) / θ := by
     have : 0 ≤ Real.log (refBound θ δ₀ M) := Real.log_nonneg hA1
     positivity
-  haveI hpζ : IsProbabilityMeasure (refZeta θ δ₀ M) := by rw [refZeta]; infer_instance
+  have hpζ : IsProbabilityMeasure (refZeta θ δ₀ M) := by rw [refZeta]; infer_instance
   have hζmean : ∫ z, z ∂(refZeta θ δ₀ M) = 0 := by rw [refZeta]; exact integral_refLaw_id _ _
   have hζv0 : 0 < evariance (id : ℝ → ℝ) (refZeta θ δ₀ M) := by
     rw [refZeta]; exact evariance_refLaw_pos hb hc

@@ -110,9 +110,9 @@ theorem measurable_dyadicSnellSp {d : ℕ} {ΩB : Type*} [mB : MeasurableSpace �
     ∀ k, Measurable (dyadicSnellSp (mB := mB) PB 𝒢 Y B m k) := by
   intro k
   by_cases hk : k ≤ 2 ^ m
-  · simp only [dyadicSnellSp, if_pos hk]
+  · simp only [dyadicSnellSp, ite_eq_left hk]
     exact measurable_dyadicSnellRecSp PB 𝒢 hJoint Y hY B hB m _hintY hintV (2 ^ m - k)
-  · simp only [dyadicSnellSp, if_neg hk]
+  · simp only [dyadicSnellSp, ite_eq_right hk]
     exact measurable_const
 
 
@@ -147,9 +147,9 @@ theorem abs_dyadicSnellSp_le_of_condExp_le {d : ℕ} {ΩB : Type*} [mB : Measura
             (fun β => ih ω β) β)).2
   intro k ω β
   by_cases hk : k ≤ 2 ^ m
-  · simp only [dyadicSnellSp, if_pos hk]
+  · simp only [dyadicSnellSp, ite_eq_left hk]
     exact hrec (2 ^ m - k) ω β
-  · simp only [dyadicSnellSp, if_neg hk, abs_zero]
+  · simp only [dyadicSnellSp, ite_eq_right hk, abs_zero]
     exact hM
 
 
@@ -229,9 +229,9 @@ theorem measurable_dyadicSnellSpE {d : ℕ} {ΩB : Type*} [mB : MeasurableSpace 
     ∀ k, Measurable (dyadicSnellSpE E Y B m k) := by
   intro k
   by_cases hk : k ≤ 2 ^ m
-  · simp only [dyadicSnellSpE, if_pos hk]
+  · simp only [dyadicSnellSpE, ite_eq_left hk]
     exact measurable_dyadicSnellRecSpE E hE Y hY B hB m (2 ^ m - k)
-  · simp only [dyadicSnellSpE, if_neg hk]
+  · simp only [dyadicSnellSpE, ite_eq_right hk]
     exact measurable_const
 
 

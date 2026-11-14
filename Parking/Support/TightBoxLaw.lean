@@ -236,8 +236,8 @@ noncomputable def boxRewardLaw (T : ℝ) (ν : Measure ℤ) (hT : 0 ≤ T) (A : 
 /-- **The field law is a probability measure.** -/
 instance (T : ℝ) (ν : Measure ℤ) [IsProbabilityMeasure ν] (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A)
     (n : ℕ) : IsProbabilityMeasure (boxRewardLaw T ν hT A hA n) := by
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   show IsProbabilityMeasure ((iidLaw 2 (realLaw ν)).map (boxRewardMap T hT A hA n))
   exact inferInstance
 

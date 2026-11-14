@@ -132,16 +132,16 @@ theorem Parking.layerPath_hit_le (hd : 1 ≤ d) (μ : Measure α) [IsProbability
     by_cases hhit : ω ∈ Parking.layerHits X s
     · have heq : ∀ v, Parking.layerHitPotential X T (s + 1) (Function.update ω s v) = 1 := by
         intro v
-        exact if_pos ((hpre ω s v).mpr (Or.inl hhit))
+        exact ite_eq_left ((hpre ω s v).mpr (Or.inl hhit))
       simp only [heq, integral_const, probReal_univ, smul_eq_mul, one_mul]
       simp [Parking.layerHitPotential, hhit]
     · have heq : ∀ v, Parking.layerHitPotential X T (s + 1) (Function.update ω s v) =
           LatticeProb.srwHitBy d (2 * (T - (s + 1))) (X (Function.update ω s v) (s + 1)) := by
         intro v
         by_cases hzero : X (Function.update ω s v) (s + 1) = 0
-        · rw [Parking.layerHitPotential, if_pos ((hpre ω s v).mpr (Or.inr hzero)),
+        · rw [Parking.layerHitPotential, ite_eq_left ((hpre ω s v).mpr (Or.inr hzero)),
             hzero, Parking.srwHitBy_origin]
-        · exact if_neg (fun hh => (hpre ω s v).mp hh |>.elim hhit hzero)
+        · exact ite_eq_right (fun hh => (hpre ω s v).mp hh |>.elim hhit hzero)
       rw [integral_congr_ae (Filter.Eventually.of_forall heq)]
       have hk := hkernel ω s (2 * (T - (s + 1)))
       have htime : 2 * (T - (s + 1)) + 2 = 2 * (T - s) := by omega

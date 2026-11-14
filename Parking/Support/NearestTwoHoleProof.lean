@@ -42,9 +42,9 @@ theorem nearest_two_hole_proof (hBernstein : External.Bernstein) (d : ℕ) (hd :
   obtain ⟨C, hC, hFinal⟩ := exists_two_hole_constant_assembly Cb (holeSceneryConst d) Ci A
     hCb (holeSceneryConst_pos hd3) hCi hA
   refine ⟨C, hC, fun p hp hp4 T x z hxz => ?_⟩
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := roundNoiseLaw_isProbability hd1
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := roundNoiseLaw_isProbability hd1
   let μ := (iidLaw d (threePointLaw p)).prod (roundNoiseLaw d)
   let h := holeProb d (threePointLaw p) T
   let m := meanU (law d (threePointLaw p)) T

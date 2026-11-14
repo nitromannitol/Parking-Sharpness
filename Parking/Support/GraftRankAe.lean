@@ -50,7 +50,7 @@ theorem taggedRank_graft_origin (r : ℕ → ℝ) (ω₁ ω : PData d) (i s : �
 unaffected by the tagging. -/
 theorem taggedRank_graft_of_ne (r : ℕ → ℝ) (ω₁ ω : PData d) {q : Label d × ℕ}
     (hq : q.1.1 ≠ (0 : Site d)) : taggedRank r (graftOrigin ω₁ ω).2.2 q = ω.2.2 q := by
-  rw [taggedRank_apply, if_neg hq]
+  rw [taggedRank_apply, ite_eq_right hq]
   exact graftOrigin_rank_of_ne hq ω₁ ω
 
 /-- **The tagged uniform variables of the grafted realization are pairwise
@@ -97,11 +97,11 @@ theorem rankLaw_ae_avoid_countable (d : ℕ) {ι : Type} [Countable ι] (f : ι 
 theorem ae_avoid_pDataLaw_countable (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     {ι : Type} [Countable ι] (f : ι → ℝ) :
     ∀ᵐ ω ∂(pDataLaw d ν), ∀ (i : ι) (q : LatticeProb.Label d × ℕ), f i ≠ ω.2.2 q := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hmap : (pDataLaw d ν).map (fun ω : PData d => ω.2.2) = LatticeProb.rankLaw d := by
     have h1 : (fun ω : PData d => ω.2.2) = Prod.snd ∘ Prod.snd := rfl
     rw [h1, ← Measure.map_map measurable_snd measurable_snd]

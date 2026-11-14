@@ -20,9 +20,9 @@ component of `Data d`, gives the product law `(iidLaw d ν).prod (orientedStackL
 theorem orientedLaw_map_confStack (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     (orientedLaw d ν).map (fun ω : Data d => (ω.1, ω.2.1)) =
       (iidLaw d ν).prod (orientedStackLaw d) := by
-  haveI := orientedStackLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := orientedStackLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   change ((iidLaw d ν).prod ((orientedStackLaw d).prod (rankLaw d))).map (Prod.map id Prod.fst) = _
   rw [← Measure.map_prod_map _ _ measurable_id measurable_fst,
     Measure.map_id, Measure.map_fst_prod]
@@ -59,7 +59,7 @@ against `orientedLaw d ν`, obtained from `integrable_oriented_U_rpow` at expone
 using the exponential moment supplied by `hν.expMoment`. -/
 theorem integrable_oriented_U (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) : Integrable (fun ω : Data d => (U ω n x : ℝ)) (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, he⟩ := hν.expMoment
   simpa only [Real.rpow_one] using integrable_oriented_U_rpow hd ν hθ
     (integrable_expMax_of_expAbs hθ he) (r := 1) le_rfl n x
@@ -72,7 +72,7 @@ theorem integrable_orientedOdometer_joint (hd : 1 ≤ d) (ν : Measure ℤ) (hν
     (n : ℕ) (x : Site d) :
     Integrable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
       (orientedOdometer z.1 z.2 n x : ℝ)) ((iidLaw d ν).prod (orientedStackLaw d)) := by
-  haveI := hν.prob
+  have := hν.prob
   have hm : Measurable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
       (orientedOdometer z.1 z.2 n x : ℝ)) :=
     (measurable_from_countable' fun m : ℕ => (m : ℝ)).comp
@@ -91,9 +91,9 @@ theorem integral_orientedOdometer_given_mean (hd : 1 ≤ d) (ν : Measure ℤ) (
     (∫ η : Site d → ℤ, ∫ σ : Site d × ℕ → Site d,
       (orientedOdometer η σ n x : ℝ) ∂(orientedStackLaw d) ∂(iidLaw d ν)) =
         meanU (orientedLaw d ν) n := by
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   rw [← integral_prod _ (integrable_orientedOdometer_joint hd ν hν n x)]
   rw [← integral_oriented_confStack hd ν (by
     exact (measurable_from_countable' fun m : ℕ => (m : ℝ)).comp

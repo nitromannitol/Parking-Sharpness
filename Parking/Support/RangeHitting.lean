@@ -61,7 +61,7 @@ theorem measurableSet_visit (x z : Site d) (t : ℕ) :
     MeasurableSet {p : ℕ → Fin d × Bool | ∃ j ≤ t, walkPath x p j = z} := by
   have hrw : {p : ℕ → Fin d × Bool | ∃ j ≤ t, walkPath x p j = z}
       = ⋃ j ∈ Set.Iic t, {p : ℕ → Fin d × Bool | walkPath x p j = z} := by
-    ext p; simp only [Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_Iic, exists_prop]
+    ext p; simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_Iic, exists_prop]
   rw [hrw]
   exact MeasurableSet.biUnion (Set.to_countable _)
     (fun j _ => (Parking.measurable_walkPath x j) (measurableSet_singleton z))
@@ -72,7 +72,7 @@ theorem visit_zero_eq (z : Site d) (t : ℕ) :
     {p : ℕ → Fin d × Bool | ∃ j ≤ t, walkPath z p j = 0}
       = {p : ℕ → Fin d × Bool | ∃ j ≤ t, walkPath (0 : Site d) p j = -z} := by
   ext p
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   constructor
   · rintro ⟨j, hj, h⟩
     exact ⟨j, hj, eq_neg_of_add_eq_zero_right (by rw [← walkPath_eq_add]; exact h)⟩
@@ -136,10 +136,10 @@ theorem tsum_hitZero_le (hd : 1 ≤ d) (t : ℕ) :
     ∑' z : Site d, (if z = 0 then 0 else (walkLaw d) {p | ∃ j ≤ t, walkPath z p j = 0})
       ≤ (t : ℝ≥0∞) := by
   classical
-  haveI : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
   have hzero : (walkLaw d) {p : ℕ → Fin d × Bool | ∃ j ≤ t, walkPath (0 : Site d) p j = 0} = 1 := by
     have huniv : {p : ℕ → Fin d × Bool | ∃ j ≤ t, walkPath (0 : Site d) p j = 0} = Set.univ := by
-      ext p; simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
+      ext p; simp only [Set.mem_ofPred_eq, Set.mem_univ, iff_true]
       exact ⟨0, Nat.zero_le t, rfl⟩
     rw [huniv, measure_univ]
   have hsplit : ∑' z : Site d, (walkLaw d) {p | ∃ j ≤ t, walkPath z p j = 0}
@@ -170,7 +170,7 @@ theorem tsum_hitZero_le (hd : 1 ≤ d) (t : ℕ) :
 /-- The expected range is finite, and at most `t + 1`. -/
 theorem lintegral_rangeCard_le (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
     ∫⁻ p, (Parking.rangeCard x p t : ℝ≥0∞) ∂(walkLaw d) ≤ (t : ℝ≥0∞) + 1 := by
-  haveI : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
   calc ∫⁻ p, (Parking.rangeCard x p t : ℝ≥0∞) ∂(walkLaw d)
       ≤ ∫⁻ _p : ℕ → Fin d × Bool, ((t : ℝ≥0∞) + 1) ∂(walkLaw d) := by
         refine lintegral_mono fun p => ?_
@@ -182,7 +182,7 @@ theorem lintegral_rangeCard_le (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
 /-- The range is integrable, being bounded. -/
 theorem integrable_rangeCard (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
     Integrable (fun p => (Parking.rangeCard x p t : ℝ)) (walkLaw d) := by
-  haveI : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
   refine Integrable.mono' (integrable_const ((t : ℝ) + 1))
     (((measurable_from_countable' (fun n : ℕ => (n : ℝ))).comp
         (measurable_rangeCard x t)).aestronglyMeasurable)
@@ -195,7 +195,7 @@ theorem integrable_rangeCard (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
 /-- `E_x|R_t| ≤ t + 1`, in the reals. -/
 theorem integral_rangeCard_le (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
     ∫ p, (Parking.rangeCard x p t : ℝ) ∂(walkLaw d) ≤ (t : ℝ) + 1 := by
-  haveI : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := Parking.walkLaw_isProbability hd
   calc ∫ p, (Parking.rangeCard x p t : ℝ) ∂(walkLaw d)
       ≤ ∫ _p : ℕ → Fin d × Bool, ((t : ℝ) + 1) ∂(walkLaw d) := by
         refine integral_mono (integrable_rangeCard hd x t) (integrable_const _) fun p => ?_

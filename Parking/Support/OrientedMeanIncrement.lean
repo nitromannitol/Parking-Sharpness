@@ -29,7 +29,7 @@ theorem toNat_add_lower_with_zero_reward (k : ℤ) (m : ℕ) :
     · have hk0 : (k : ℝ) ≤ 0 := (not_le.mp hk).le
       rw [max_eq_left (neg_nonneg.mpr hk0), max_eq_right hk0]
       linarith
-  · simp only [if_neg hm, mul_zero, add_zero]
+  · simp only [ite_eq_right hm, mul_zero, add_zero]
     exact le_max_left _ _
 
 /-- The particle mean's increment `meanU (orientedLaw d ν) (n + 1) - meanU (orientedLaw d
@@ -42,9 +42,9 @@ theorem oriented_mean_increment_noArrival (hd : 1 ≤ d) (ν : Measure ℤ) (hν
       ((iidLaw d ν).prod (orientedStackLaw d)).real
         {z : (Site d → ℤ) × (Site d × ℕ → Site d) | orientedArrivalCount z.1 z.2 n 0 = 0} ≤
       meanU (orientedLaw d ν) (n + 1) - meanU (orientedLaw d ν) n := by
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hiν : Integrable (fun k : ℤ => (k : ℝ)) ν :=
     (integrable_norm_iff (measurable_of_countable _).aestronglyMeasurable).mp
       (by simpa only [Real.norm_eq_abs] using hν.integrable_abs)

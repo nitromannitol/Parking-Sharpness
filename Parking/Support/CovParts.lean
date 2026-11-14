@@ -152,7 +152,7 @@ theorem upperInd_mono (j : ℤ) : Monotone (upperInd j) := by
   by_cases h : j ≤ a
   · have hb : j ≤ b := le_trans h hab
     simp [upperInd, h, hb]
-  · simp only [upperInd, if_neg h]
+  · simp only [upperInd, ite_eq_right h]
     split <;> norm_num
 
 /-- For `j ≥ 1` and a law of nonpositive mean, the covariance of `1{Y ≥ j}` with
@@ -174,11 +174,11 @@ theorem cov_upperInd_ge {j : ℤ} (hj : 1 ≤ j) (hint : Integrable (fun k : ℤ
     intro k
     by_cases hk : k = j
     · subst hk; simp [upperInd]
-    · simp only [if_neg hk]
+    · simp only [ite_eq_right hk]
       unfold upperInd
       by_cases hjk : j ≤ k
       · have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_trans hj hjk
-        simp only [if_pos hjk, one_mul]; linarith
+        simp only [ite_eq_left hjk, one_mul]; linarith
       · simp [hjk]
   have hle : (∫ k, (if k = j then (j : ℝ) else 0) ∂ν)
       ≤ ∫ k, upperInd j k * (k : ℝ) ∂ν := integral_mono hind hmul hpt
@@ -243,8 +243,8 @@ theorem sum_step_le_cov {f : ℤ → ℝ} {B : ℝ} (hfmono : Monotone f) (hfbdd
     have hf1 : f n ≤ f (n + 1) := hfmono (by omega)
     show f n - g n ≤ f (n + 1) - g (n + 1)
     by_cases hn : n + 1 ∈ J
-    · rw [if_pos hn] at h; linarith
-    · rw [if_neg hn] at h; linarith
+    · rw [ite_eq_left hn] at h; linarith
+    · rw [ite_eq_right hn] at h; linarith
   have hgint : Integrable g ν := integrable_of_bdd hgbdd
   have hdint : Integrable (fun y => f y - g y) ν := integrable_of_bdd hdiffbdd
   have hgmul : Integrable (fun k : ℤ => g k * (k : ℝ)) ν := integrable_bdd_mul_cast hgbdd hint
@@ -311,13 +311,13 @@ theorem tsum_step_le_cov {f : ℤ → ℝ} {B : ℝ} (hfmono : Monotone f) (hfbd
     intro j
     show (0 : ℝ) ≤ (if 1 ≤ j then (f j - f (j - 1)) * ((j : ℝ) * (ν {j}).toReal) else 0)
     by_cases hj : 1 ≤ j
-    · rw [if_pos hj]
+    · rw [ite_eq_left hj]
       have hw : 0 ≤ f j - f (j - 1) := by
         have := hfmono (show j - 1 ≤ j by omega); linarith
       have hj0 : (0 : ℝ) ≤ (j : ℝ) := by exact_mod_cast (by omega : (0 : ℤ) ≤ j)
       have := ENNReal.toReal_nonneg (a := ν {j})
       positivity
-    · rw [if_neg hj]
+    · rw [ite_eq_right hj]
   exact ⟨summable_of_sum_le hnn hpart,
     tsum_le_of_sum_le' (cov_cast_nonneg hfmono hfbdd hint) hpart⟩
 

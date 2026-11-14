@@ -57,7 +57,7 @@ theorem measurableSet_injective_family {α ι : Type*} [MeasurableSpace α] [Cou
   have hset : {ω : α | Function.Injective (v ω)}
       = ⋂ q : ι, ⋂ q' : ι, {ω : α | v ω q = v ω q' → q = q'} := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_iInter, Function.Injective]
+    simp only [Set.mem_ofPred_eq, Set.mem_iInter, Function.Injective]
   rw [hset]
   refine MeasurableSet.iInter fun q => MeasurableSet.iInter fun q' => ?_
   by_cases hqq : q = q'
@@ -77,9 +77,9 @@ theorem measurableSet_injective_noise (d : ℕ) :
 /-- **The uniform variables of the noise are almost surely pairwise distinct.** -/
 theorem noiseLaw_ae_injective {d : ℕ} (hd : 1 ≤ d) :
     ∀ᵐ b ∂(noiseLaw d), Function.Injective b.2 := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hmap : (noiseLaw d).map (Prod.snd : PNoise d → (Label d × ℕ → ℝ))
       = LatticeProb.rankLaw d := by
     unfold noiseLaw
@@ -95,11 +95,11 @@ via `measurePreserving_pairSplice`. -/
 theorem measurePreserving_noiseComb {d : ℕ} (hd : 1 ≤ d) (T : Set (Label d)) :
     MeasurePreserving (fun p : PNoise d × PNoise d => noiseComb T p.1 p.2)
       ((noiseLaw d).prod (noiseLaw d)) (noiseLaw d) := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   exact measurePreserving_pairSplice (moveLaw d) (LatticeProb.rankLaw d)
     (LatticeProb.measurePreserving_comb (fun _ : Label d × ℕ => stepLaw d)
       {q : Label d × ℕ | q.1 ∈ T})
@@ -127,25 +127,25 @@ theorem cov_pData_split (d : ℕ) (ν : Measure ℤ) [IsProbabilityMeasure ν]
           (fun a => ∫ b, Z (a, b) ∂(noiseLaw d))
         + ∫ a, cov (noiseLaw d) (fun b => F (a, b)) (fun b => Z (a, b))
             ∂(LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   exact cov_prod_decomp (LatticeProb.iidLaw d ν) (noiseLaw d) F Z hFZ hF hZ hfz
 
 /-- Reading a label of `T` from a splicing gives the first configuration. -/
 theorem noiseComb_fst_of_mem {d : ℕ} {T : Set (Label d)} {ω η : PNoise d}
     {q : Label d × ℕ} (hq : q.1 ∈ T) : (noiseComb T ω η).1 q = ω.1 q := by
-  simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq]
+  simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hq]
 
 /-- The same for the uniform variables. -/
 theorem noiseComb_snd_of_mem {d : ℕ} {T : Set (Label d)} {ω η : PNoise d}
     {q : Label d × ℕ} (hq : q.1 ∈ T) : (noiseComb T ω η).2 q = ω.2 q := by
-  simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq]
+  simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hq]
 
 /-- For `T ⊆ T'`, re-splicing along the smaller set `T` erases the intermediate copy `η`
 entirely: `noiseComb T (noiseComb T' b η) η' = noiseComb T b η'`, checked coordinatewise
@@ -157,8 +157,8 @@ theorem noiseComb_noiseComb {d : ℕ} {T T' : Set (Label d)} (hTT' : T ⊆ T')
     · funext q
       by_cases hq : q.1 ∈ T
       · have hq' : q.1 ∈ T' := hTT' hq
-        simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq, hq']
-      · simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq]
+        simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hq, hq']
+      · simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hq]
 
 /-- Splicing along the empty set of labels reads every coordinate from the second
 argument: `noiseComb ∅ b η = η`. -/
@@ -200,13 +200,13 @@ theorem measurePreserving_pDataComb {d : ℕ} (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] (T : Set (Label d)) :
     MeasurePreserving (fun p : PData d × PData d => pDataComb T p.1 p.2)
       ((pDataLaw d ν).prod (pDataLaw d ν)) (pDataLaw d ν) := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   exact ((measurePreserving_fst (μ := LatticeProb.iidLaw d ν)
       (ν := LatticeProb.iidLaw d ν)).prod
@@ -216,12 +216,12 @@ theorem measurePreserving_pDataComb {d : ℕ} (hd : 1 ≤ d) (ν : Measure ℤ)
 /-- Reading a label outside `T` from a splicing gives the second configuration. -/
 theorem noiseComb_fst_of_notMem {d : ℕ} {T : Set (Label d)} {ω η : PNoise d}
     {q : Label d × ℕ} (hq : q.1 ∉ T) : (noiseComb T ω η).1 q = η.1 q := by
-  simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq]
+  simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hq]
 
 /-- The same for the uniform variables. -/
 theorem noiseComb_snd_of_notMem {d : ℕ} {T : Set (Label d)} {ω η : PNoise d}
     {q : Label d × ℕ} (hq : q.1 ∉ T) : (noiseComb T ω η).2 q = η.2 q := by
-  simp [noiseComb, LatticeProb.comb, Set.mem_setOf_eq, hq]
+  simp [noiseComb, LatticeProb.comb, Set.mem_ofPred_eq, hq]
 
 end Parking
 

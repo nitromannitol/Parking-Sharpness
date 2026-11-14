@@ -147,8 +147,8 @@ conditional mean given the counts. -/
 theorem integral_pDataLaw_meanF {d : ℕ} (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     {F : PData d → ℝ} (hFI : Integrable F (pDataLaw d ν)) :
     ∫ ω, F ω ∂(pDataLaw d ν) = ∫ a, meanF F a ∂(LatticeProb.iidLaw d ν) := by
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   rw [pDataLaw_eq_prod]
   exact integral_prod F (by rwa [pDataLaw_eq_prod] at hFI)
@@ -170,8 +170,8 @@ theorem hasDerivWithinAt_integral_restrictLaw {d : ℕ} (hd : 1 ≤ d) {ν : Mea
       (∑ x ∈ N, cov (pDataLaw d (tiltLaw ν lam)) F (fun ω => ((ω.1 x : ℤ) : ℝ)))
       (Set.Icc 0 θ) lam := by
   classical
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hGm : Measurable (meanF F) := measurable_meanF hd hFm
   have hGb : ∀ a, |meanF F a| ≤ 1 := fun a => by
@@ -210,10 +210,10 @@ theorem hasDerivWithinAt_integral_restrictLaw {d : ℕ} (hd : 1 ≤ d) {ν : Mea
     intro s hs
     have hexps : Integrable (fun k : ℤ => Real.exp (s * k)) ν :=
       integrable_exp_tilt hexp hs.1 hs.2
-    haveI := tiltLaw_isProbability hexps
-    haveI : IsProbabilityMeasure (LatticeProb.iidLaw d (tiltLaw ν s)) := by
+    have := tiltLaw_isProbability hexps
+    have : IsProbabilityMeasure (LatticeProb.iidLaw d (tiltLaw ν s)) := by
       unfold LatticeProb.iidLaw; infer_instance
-    haveI : IsProbabilityMeasure (pDataLaw d (tiltLaw ν s)) := by
+    have : IsProbabilityMeasure (pDataLaw d (tiltLaw ν s)) := by
       rw [pDataLaw_eq_prod]; infer_instance
     have hFb : ∀ ω : PData d, ‖F ω‖ ≤ 1 := fun ω => by
       have h := hF01 ω
@@ -246,10 +246,10 @@ theorem hasDerivWithinAt_integral_restrictLaw {d : ℕ} (hd : 1 ≤ d) {ν : Mea
     rw [integral_restrictLaw hFN hFm, integral_pDataLaw_meanF hd hFI, h1, h2, ← hdens]
     field_simp
   have hmain := hquot.congr hcongr (hcongr lam ⟨hlam0, le_of_lt hlamθ⟩)
-  haveI := tiltLaw_isProbability hexpslam
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d (tiltLaw ν lam)) := by
+  have := tiltLaw_isProbability hexpslam
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d (tiltLaw ν lam)) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (pDataLaw d (tiltLaw ν lam)) := by
+  have : IsProbabilityMeasure (pDataLaw d (tiltLaw ν lam)) := by
     rw [pDataLaw_eq_prod]; infer_instance
   have hmabs : Integrable (fun k : ℤ => |(k : ℝ)|) (tiltLaw ν lam) := hmean.abs
   have hGnorm : ∀ a : Site d → ℤ, ‖meanF F a‖ ≤ 1 := fun a => by
@@ -366,7 +366,7 @@ theorem abs_cov_le_deriv {d : ℕ} (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabil
     (hD : HasDerivAt (fun s => ∫ ω, F ω ∂(restrictLaw d N (tiltLaw ν s) ω₀)) D lam) :
     Integrable (fun ω => F ω * Z ω) (restrictLaw d N (tiltLaw ν lam) ω₀) ∧
       |cov (restrictLaw d N (tiltLaw ν lam) ω₀) F Z| ≤ 3 * D := by
-  haveI : IsProbabilityMeasure (tiltLaw ν lam) :=
+  have : IsProbabilityMeasure (tiltLaw ν lam) :=
     tiltLaw_isProbability (integrable_exp_tilt hexp hlam0 (le_of_lt hlamθ))
   have hmabs : Integrable (fun k : ℤ => |(k : ℝ)|) (tiltLaw ν lam) := hmeanint.abs
   have hbound := abs_cov_restrictLaw_le hd hFN hFrel.1 hFrel.2 hZN hZrel.1 hZrel.2 hFm hZm

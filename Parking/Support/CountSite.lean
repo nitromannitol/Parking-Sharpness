@@ -65,14 +65,14 @@ theorem F_update_monotone {d : ℕ} {F : PData d → ℝ}
 /-- The mean of `F` over the noise is measurable in the counts. -/
 theorem measurable_meanF {d : ℕ} (hd : 1 ≤ d) {F : PData d → ℝ} (hFm : Measurable F) :
     Measurable (meanF F) := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   exact (hFm.stronglyMeasurable.integral_prod_right' (ν := noiseLaw d)).measurable
 
 /-- The mean of `F` over the noise inherits the bounds of `F`. -/
 theorem meanF_mem_Icc {d : ℕ} (hd : 1 ≤ d) {F : PData d → ℝ} (hFm : Measurable F)
     (hF01 : ∀ ω, F ω ∈ Set.Icc (0 : ℝ) 1) (a : Site d → ℤ) :
     meanF F a ∈ Set.Icc (0 : ℝ) 1 := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   have hm : Measurable (fun b : PNoise d => F ((a, b) : PData d)) :=
     hFm.comp (measurable_const.prodMk measurable_id)
   have hi : Integrable (fun b : PNoise d => F ((a, b) : PData d)) (noiseLaw d) :=
@@ -94,7 +94,7 @@ theorem meanF_update_monotone {d : ℕ} (hd : 1 ≤ d) {F : PData d → ℝ} (hF
     (hFmono : ∀ (x₀ : Site d) (ω : PData d), F ω ≤ F (addAt x₀ ω))
     (x : Site d) (a : Site d → ℤ) :
     Monotone (fun k : ℤ => meanF F (Function.update a x k)) := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   intro k k' hk
   have hbdd : ∀ m : ℤ, Integrable (fun b : PNoise d =>
       F ((Function.update a x m, b) : PData d)) (noiseLaw d) := by
@@ -162,9 +162,9 @@ theorem integrable_site_step {d : ℕ} (hd : 1 ≤ d) {ν : Measure ℤ} [IsProb
     Integrable (fun a : Site d → ℤ =>
         ((a x).toNat : ℝ) * (2 * (meanF F a - meanF F (delC x a))))
       (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   have heval : MeasurePreserving (fun a : Site d → ℤ => a x) (LatticeProb.iidLaw d ν) ν :=
     measurePreserving_eval_infinitePi (fun _ : Site d => ν) x
   have hmeanFb : ∀ a : Site d → ℤ, meanF F a ∈ Set.Icc (0 : ℝ) 1 := meanF_mem_Icc hd hFm hF01
@@ -211,9 +211,9 @@ theorem integral_site_step_le {d : ℕ} (hd : 1 ≤ d) {ν : Measure ℤ} [IsPro
     ∫ a, ((a x).toNat : ℝ) * (2 * (meanF F a - meanF F (delC x a)))
         ∂(LatticeProb.iidLaw d ν)
       ≤ 2 * cov (LatticeProb.iidLaw d ν) (meanF F) (fun a => ((a x : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   have hu : MeasurePreserving (fun q : (Site d → ℤ) × ℤ => Function.update q.1 x q.2)
       ((LatticeProb.iidLaw d ν).prod ν) (LatticeProb.iidLaw d ν) :=
     LatticeProb.measurePreserving_update_infinitePi (fun _ : Site d => ν) x
@@ -340,14 +340,14 @@ theorem integral_abs_cov_noise_le {d : ℕ} (hd : 1 ≤ d) {ν : Measure ℤ}
     ∫ a, |cov (noiseLaw d) (fun b => F ((a, b) : PData d)) (fun b => Z ((a, b) : PData d))|
         ∂(LatticeProb.iidLaw d ν)
       ≤ 2 * ∑ x ∈ N, cov (LatticeProb.iidLaw d ν) (meanF F) (fun a => ((a x : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
   have hmeanFm : Measurable (meanF F) := measurable_meanF hd hFm
   have hmeanFb : ∀ a : Site d → ℤ, meanF F a ∈ Set.Icc (0 : ℝ) 1 := meanF_mem_Icc hd hFm hF01
   have hsec : ∀ᵐ a ∂(LatticeProb.iidLaw d ν),

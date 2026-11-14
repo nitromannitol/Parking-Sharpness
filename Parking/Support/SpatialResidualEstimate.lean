@@ -91,7 +91,7 @@ theorem eventually_abs_discreteResidual_le (hd : 1 ≤ d)
         ε * ∫ p in Icc a (T + 1) ×ˢ Metric.closedBall 0 (B + 2), barDivisible w R p.1 p.2 := by
   let K : Set (ℝ × (Fin d → ℝ)) := Icc a (T + 1) ×ˢ Metric.closedBall 0 (B + 2)
   have hK : IsCompact K := isCompact_Icc.prod (isCompact_closedBall _ _)
-  haveI : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
+  have : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
   have hKt : ∀ p ∈ K, 0 ≤ p.1 := fun p hp => ha.le.trans hp.1.1
   have htm := (LatticeProb.Scaling.TimeTest.contDiff_timeDeriv hψ.1).continuous
   have hxm := (contDiff_spaceTime_contOp hψ.1).continuous

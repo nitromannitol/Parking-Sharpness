@@ -30,7 +30,7 @@ theorem exists_meanuOriented_two_upper (ν : Measure ℤ) [IsProbabilityMeasure 
     (realLaw_integral ν measurable_id).trans hmean
   obtain ⟨C, hC, hu⟩ := exists_uOriented_two_moment (realLaw ν) r hr hμmom hμmean
   refine ⟨C, hC, fun n hn => ?_⟩
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   obtain ⟨hi, hb⟩ := hu n hn
   have hui : Integrable (fun η : Site 2 → ℝ => uOriented η n 0) (iidLaw 2 (realLaw ν)) :=
     integrable_abs_of_rpow _ hr1 _ (measurable_uOriented n 0).aestronglyMeasurable hi

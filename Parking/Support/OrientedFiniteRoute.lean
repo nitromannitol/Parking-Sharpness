@@ -122,7 +122,7 @@ theorem integrable_oriented_countSum_rpow (hd : 1 ≤ d) (ν : Measure ℤ) (hν
     Integrable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) =>
       (∑ y ∈ S, (orientedOdometer z.1 z.2 n y : ℝ)) ^ r)
         ((iidLaw d ν).prod (orientedStackLaw d)) := by
-  haveI := hν.prob
+  have := hν.prob
   have h := integral_weighted_rpow_le ((iidLaw d ν).prod (orientedStackLaw d)) S (fun _ => 1)
     (fun y z => (orientedOdometer z.1 z.2 n y : ℝ)) (fun _ _ => zero_le_one)
     (fun _ _ _ => Nat.cast_nonneg _)

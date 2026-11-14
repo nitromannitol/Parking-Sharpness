@@ -31,10 +31,10 @@ theorem not_ae_pOdometer_eq_conf (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilit
       (pOdometer (toPDriver ω) (t + 2) 0 : ℝ) = F ω.1) := by
   classical
   intro h
-  haveI := stepLaw_isProbability hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (Parking.moveLaw d) := by unfold Parking.moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (Parking.moveLaw d) := by unfold Parking.moveLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let i : Fin d := ⟨0, hd⟩
   let a : Fin d × Bool := (i, true)
   let b : Fin d × Bool := (i, false)

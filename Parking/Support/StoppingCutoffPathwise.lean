@@ -118,8 +118,8 @@ theorem cutoffReward_cutoffReward_eq_of_le (F : ℕ → Site d → ℝ) {A A2 : 
   funext k z
   unfold cutoffReward
   by_cases h : (Parking.graphNorm z : ℝ) ≤ A
-  · rw [if_pos h, if_pos h, if_pos (h.trans hA)]
-  · rw [if_neg h, if_neg h]
+  · rw [ite_eq_left h, ite_eq_left h, ite_eq_left (h.trans hA)]
+  · rw [ite_eq_right h, ite_eq_right h]
 
 /-! ### The pathwise cutoff-to-true bound, assembled -/
 

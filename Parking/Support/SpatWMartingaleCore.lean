@@ -57,7 +57,7 @@ theorem walkOp_eq_sum_kern (ψ : Site d → ℝ) (y : Site d) :
   show nbrSum ψ y / (2 * d) = _
   rw [← h1, Finset.sum_div]
   refine Finset.sum_congr rfl fun z hz => ?_
-  rw [kern, if_pos hz]
+  rw [kern, ite_eq_left hz]
   ring
 
 /-! ### The single-instruction conditional mean, at measure level -/
@@ -73,7 +73,7 @@ theorem single_core_measureReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
     (law d ν).real (T ∩ prescribedSet d {(y, j)} (fun _ => x))
       = kern d y x * (law d ν).real T := by
   classical
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hTeq : T ∩ unreadSet d k {(y, j)} = T := by
     refine Set.inter_eq_left.mpr fun ω hω q hq => ?_
     simp only [Finset.mem_singleton] at hq; subst hq; exact hTsub hω
@@ -104,7 +104,7 @@ theorem double_core_measureReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
         prescribedSet d {(y, j), (y', j')} (fun q => if q = (y, j) then x else x'))
       = kern d y x * kern d y' x' * (law d ν).real T := by
   classical
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hTeq : T ∩ unreadSet d k {(y, j), (y', j')} = T := by
     refine Set.inter_eq_left.mpr fun ω hω q hq => ?_
     rw [Finset.mem_insert, Finset.mem_singleton] at hq
@@ -119,7 +119,7 @@ theorem double_core_measureReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
     rw [Finset.prod_pair hne]
     show kern d y (if (y, j) = (y, j) then x else x')
         * kern d y' (if (y', j') = (y, j) then x else x') = kern d y x * kern d y' x'
-    rw [if_pos rfl, if_neg (Ne.symm hne)]
+    rw [ite_eq_left rfl, ite_eq_right (Ne.symm hne)]
   rw [hprod] at hcore
   have hTamb : MeasurableSet T := expFiltration_le d k T hT
   have hcomm : prescribedSet d {(y, j), (y', j')} (fun q => if q = (y, j) then x else x') ∩ T
@@ -144,7 +144,7 @@ theorem single_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     ∫ ω, T.indicator (fun ω => ψ (ω.2.1 (y, j))) ω ∂(law d ν)
       = walkOp ψ y * (law d ν).real T := by
   classical
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hTamb : MeasurableSet T := expFiltration_le d k T hT
   have hpt : ∀ᵐ ω ∂(law d ν),
       T.indicator (fun ω => ψ (ω.2.1 (y, j))) ω
@@ -197,7 +197,7 @@ theorem double_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     ∫ ω, T.indicator (fun ω => ψ (ω.2.1 (y, j)) * ψ' (ω.2.1 (y', j'))) ω ∂(law d ν)
       = walkOp ψ y * walkOp ψ' y' * (law d ν).real T := by
   classical
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hTamb : MeasurableSet T := expFiltration_le d k T hT
   have hpt : ∀ᵐ ω ∂(law d ν),
       T.indicator (fun ω => ψ (ω.2.1 (y, j)) * ψ' (ω.2.1 (y', j'))) ω
@@ -219,10 +219,10 @@ theorem double_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
           rcases hq with rfl | rfl
           · show ω.2.1 (y, j) ∈ ({if (y, j) = (y, j) then ω.2.1 (y, j) else ω.2.1 (y', j')} :
               Set (Site d))
-            rw [if_pos rfl]; rfl
+            rw [ite_eq_left rfl]; rfl
           · show ω.2.1 (y', j') ∈ ({if (y', j') = (y, j) then ω.2.1 (y, j) else ω.2.1 (y', j')} :
               Set (Site d))
-            rw [if_neg (Ne.symm hne)]; rfl
+            rw [ite_eq_right (Ne.symm hne)]; rfl
         exact (Set.indicator_of_mem hmem2
           (fun _ => ψ (ω.2.1 (y, j)) * ψ' (ω.2.1 (y', j')))).symm
       · intro p _ hnep
@@ -233,8 +233,8 @@ theorem double_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
           hc (y, j) (Finset.mem_insert_self _ _)
         have h2 : ω.2.1 (y', j') ∈ ({if (y', j') = (y, j) then p.1 else p.2} : Set (Site d)) :=
           hc (y', j') (Finset.mem_insert_of_mem (Finset.mem_singleton_self _))
-        rw [if_pos rfl] at h1
-        rw [if_neg (Ne.symm hne)] at h2
+        rw [ite_eq_left rfl] at h1
+        rw [ite_eq_right (Ne.symm hne)] at h2
         exact Prod.ext h1.symm h2.symm
     · rw [Set.indicator_of_notMem hωT]
       refine (Finset.sum_eq_zero fun p _ => ?_).symm
@@ -282,7 +282,7 @@ spatial shift (`Parking.law_map_shiftData`), the same shift-invariance argument
 theorem meanU_shift_invariant (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (z : Site d) :
     ∫ ω, (U ω n z : ℝ) ∂(law d ν) = meanU (law d ν) n := by
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   have hmeas : Measurable fun ω : Data d => (U ω n z : ℝ) :=
     (measurable_from_countable' (fun m : ℕ => (m : ℝ))).comp (measurable_U n z)
   have hmap : (law d ν).map (shiftData (-z)) = law d ν := law_map_shiftData hd ν (-z)

@@ -75,8 +75,8 @@ theorem map_clippedRoundHistory (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
     (hclip : ∀ᵐ k ∂ν, clipSparse k = k) :
     ((iidLaw d ν).prod (roundNoiseLaw d)).map clippedRoundHistory =
       (law d ν).map (fun ω => countHistory (Parking.stackObservables ω)) := by
-  haveI := roundNoiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := roundNoiseLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hae : ∀ᵐ ω ∂((iidLaw d ν).prod (roundNoiseLaw d)), clippedField ω.1 = ω.1 :=
     measurePreserving_fst.quasiMeasurePreserving.ae (ae_clippedField ν hclip)
   have he : clippedRoundHistory =ᵐ[((iidLaw d ν).prod (roundNoiseLaw d))] tableHistory := by

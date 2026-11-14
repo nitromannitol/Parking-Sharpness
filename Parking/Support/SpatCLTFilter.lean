@@ -34,8 +34,8 @@ theorem tendsto_charFun_weighted_scenery_sum_filter {ι : Type*} {l : Filter ι}
     Tendsto (fun i : ι => charFun ((iidLaw d (realLaw ν)).map
         (fun η : Site d → ℝ => ∑ w ∈ S i, c i w * η w)) t) l
       (𝓝 (Complex.exp (-((∫ x : ℝ, x ^ 2 ∂(realLaw ν) : ℝ) : ℂ) * (V : ℂ) * (t : ℂ) ^ 2 / 2))) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   set σ2 : ℝ := ∫ x : ℝ, x ^ 2 ∂(realLaw ν) with hσ2
   have hσ2nonneg : 0 ≤ σ2 := by rw [hσ2]; exact integral_nonneg fun x => sq_nonneg x
   have hprodeq : ∀ i : ι, charFun ((iidLaw d (realLaw ν)).map

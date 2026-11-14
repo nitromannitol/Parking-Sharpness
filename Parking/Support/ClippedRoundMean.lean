@@ -26,7 +26,7 @@ theorem holeProb_at_site (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure
   rw [Measure.map_apply (measurable_shiftData x) hS] at h
   have he : (shiftData x) ⁻¹' {ω : Data d | H ω T 0 = 1} = {ω : Data d | H ω T x = 1} := by
     ext ω
-    simp only [Set.mem_preimage, Set.mem_setOf_eq, H_shiftData, zero_add]
+    simp only [Set.mem_preimage, Set.mem_ofPred_eq, H_shiftData, zero_add]
   rw [he] at h
   exact congrArg ENNReal.toReal h
 
@@ -67,8 +67,8 @@ theorem clippedRoundH_eq_indicator (T : ℕ) (x : Site d) (ω : (Site d → ℤ)
 theorem integral_clippedMeanH_eq_holeProb (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hclip : ∀ᵐ k ∂ν, clipSparse k = k) (T : ℕ) (x : Site d) :
     (∫ η, matchedMeanH (clippedField η) 0 T x ∂(iidLaw d ν)) = holeProb d ν T := by
-  haveI := roundNoiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := roundNoiseLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let μ := (iidLaw d ν).prod (roundNoiseLaw d)
   have hi : Integrable (fun ω => (clippedRoundH T x ω : ℝ)) μ :=
     Integrable.of_bound ((measurable_from_countable' fun n : ℕ => (n : ℝ)).comp

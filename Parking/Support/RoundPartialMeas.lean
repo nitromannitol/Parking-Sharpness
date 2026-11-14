@@ -23,7 +23,7 @@ theorem measurable_partialRoundMean {Ω : Type*} [MeasurableSpace Ω]
     (S : Set (RoundSlot d)) [DecidablePred (· ∈ S)] (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     Measurable (fun ω => partialInt (fun _ : RoundSlot d => stepLaw d) S
       (fun ζ => matchedMeanU (roundSigned (A ω) (H ω) ζ) ρ T x) (τ ω)) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   have hm : Measurable (fun p : Ω × (RoundSlot d → Fin d × Bool) => comb S (τ p.1) p.2) :=
     (measurable_comb S).comp ((hτ.comp measurable_fst).prodMk measurable_snd)
   have hf : Measurable (fun p : Ω × (RoundSlot d → Fin d × Bool) =>
@@ -39,6 +39,6 @@ theorem partialRoundMean_bound (hd : 1 ≤ d) (A H : Site d → ℕ)
     |partialInt (fun _ : RoundSlot d => stepLaw d) S
       (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) τ| ≤
         ((T * ((2 * T + 1) ^ d * (2 * d * N)) : ℕ) : ℝ) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   exact abs_partialInt_le _ _ _ _ (roundMeanU_bound hd A H N hA ρ T x) τ
 end Parking

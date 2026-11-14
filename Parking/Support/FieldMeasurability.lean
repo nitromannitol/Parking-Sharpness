@@ -247,7 +247,7 @@ theorem measurable_cutoffBC_meshInterp {Ω' : Type*} [MeasurableSpace Ω']
           |extendGrid y1 m c - extendGrid y2 m c| ≤ dist y1 y2 := by
         intro m hm c hc
         have hmc : (m, c) ∈ S := Finset.mem_product.mpr ⟨hm, hc⟩
-        simp only [extendGrid, dif_pos hmc]
+        simp only [extendGrid, dite_eq_left hmc]
         exact dist_le_pi_dist y1 y2 ⟨(m, c), hmc⟩
       have habs : |meshInterpV (extendGrid y1) R p - meshInterpV (extendGrid y2) R p|
           ≤ dist y1 y2 :=
@@ -280,7 +280,7 @@ theorem measurable_cutoffBC_meshInterp {Ω' : Type*} [MeasurableSpace Ω']
       congr 2
       have hmc : (m, c) ∈ S := Finset.mem_product.mpr ⟨hm, hc⟩
       show Z ω' ((m : ℝ) / R ^ 2, fun i => (c i : ℝ) / R) = extendGrid (π ω') m c
-      simp only [extendGrid, dif_pos hmc]
+      simp only [extendGrid, dite_eq_left hmc]
       rfl
     · have hχ0 : χ p = 0 := image_eq_zero_of_notMem_tsupport hp
       rw [hχ0, zero_mul, zero_mul]

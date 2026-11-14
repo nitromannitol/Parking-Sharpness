@@ -35,13 +35,13 @@ variable {d : ℕ}
 theorem kern_nonneg (d : ℕ) (y x : Site d) : 0 ≤ kern d y x := by
   rw [kern]
   by_cases h : x ∈ nbrFinset y
-  · rw [if_pos h]; positivity
-  · rw [if_neg h]
+  · rw [ite_eq_left h]; positivity
+  · rw [ite_eq_right h]
 
 /-- `kern d y x` vanishes off the neighbor set `nbrFinset y`, directly from its `if`
 definition. -/
 theorem kern_eq_zero_of_notMem {y x : Site d} (h : x ∉ nbrFinset y) : kern d y x = 0 := by
-  rw [kern, if_neg h]
+  rw [kern, ite_eq_right h]
 
 /-- Every neighbor of `x` lies in the sup-distance-`1` box around `x`. -/
 theorem nbrFinset_subset_box (x : Site d) : nbrFinset x ⊆ boxFinset x 1 :=
@@ -53,10 +53,10 @@ theorem kern_shift (v y x : Site d) : kern d (y + v) (x + v) = kern d y x := by
   classical
   rw [kern, kern]
   by_cases h : x ∈ nbrFinset y
-  · rw [if_pos h, if_pos ?_]
+  · rw [ite_eq_left h, ite_eq_left ?_]
     rw [nbrFinset_add y v]
     exact Finset.mem_image.mpr ⟨x, h, rfl⟩
-  · rw [if_neg h, if_neg ?_]
+  · rw [ite_eq_right h, ite_eq_right ?_]
     intro hc
     rw [nbrFinset_add y v, Finset.mem_image] at hc
     obtain ⟨z, hz, hzv⟩ := hc
@@ -100,7 +100,7 @@ theorem kOp_kern (f : Site d → ℝ) (x : Site d) :
     rw [kern_eq_zero_of_notMem hy, zero_mul]
   have hval : ∀ y ∈ nbrFinset x, kern d x y * f y = (2 * (d : ℝ))⁻¹ * f y := by
     intro y hy
-    rw [kern, if_pos hy]
+    rw [kern, ite_eq_left hy]
   rw [kOp, hrestrict, Finset.sum_congr rfl hval, ← Finset.mul_sum,
     walkOp_eq_nbrFinset, div_eq_inv_mul]
 
@@ -136,7 +136,7 @@ theorem kIter_kern (j : ℕ) : kIter 1 (kern d) j = heat d j := by
       have hval : ∀ y ∈ nbrFinset x, heat d j y * kern d y x
           = (2 * (d : ℝ))⁻¹ * heat d j y := by
         intro y hy
-        rw [kern, if_pos (nbrFinset_symm hy)]
+        rw [kern, ite_eq_left (nbrFinset_symm hy)]
         ring
       rw [hrestrict, Finset.sum_congr rfl hval, ← Finset.mul_sum,
         walkOp_eq_nbrFinset, div_eq_inv_mul]

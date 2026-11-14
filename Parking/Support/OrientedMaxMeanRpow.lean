@@ -19,8 +19,8 @@ theorem orientedMaxMean_rpow_le (hd : 1 ≤ d) (F : ℕ → Site d → ℝ) (n :
     {r : ℝ} (hr : 1 ≤ r) :
     orientedMaxMean F n x ^ r
       ≤ ∫ p, orientedMax F n x p ^ r ∂(walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hMn : ∀ p, 0 ≤ orientedMax F n x p := fun p => orientedMax_nonneg F n x p
   have hMi : Integrable (orientedMax F n x) (walkLaw d) := integrable_orientedMax hd F n x
   have hMri : Integrable (fun p => orientedMax F n x p ^ r) (walkLaw d) := by

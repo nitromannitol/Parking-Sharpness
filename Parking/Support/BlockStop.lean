@@ -53,8 +53,8 @@ theorem glue_shiftPath (s : ℕ) (X : ℕ → Site d) :
     glue s X (LatticeProb.shiftPath s X) = X := by
   funext j
   by_cases h : j < s
-  · simp only [glue, if_pos h]
-  · simp only [glue, if_neg h, LatticeProb.shiftPath]
+  · simp only [glue, ite_eq_left h]
+  · simp only [glue, ite_eq_right h, LatticeProb.shiftPath]
     congr 1
     omega
 
@@ -64,8 +64,8 @@ theorem glue_congr_right {s k : ℕ} (X Y Y' : ℕ → Site d)
     (h : ∀ j ≤ k, Y j = Y' j) : ∀ j ≤ s + k, glue s X Y j = glue s X Y' j := by
   intro j hj
   by_cases hjs : j < s
-  · simp only [glue, if_pos hjs]
-  · simp only [glue, if_neg hjs]
+  · simp only [glue, ite_eq_left hjs]
+  · simp only [glue, ite_eq_right hjs]
     exact h (j - s) (by omega)
 
 /-- The glued path depends on the past `X` only through its values up to time `s`. -/
@@ -73,8 +73,8 @@ theorem glue_congr_left {s : ℕ} (X X' Y : ℕ → Site d)
     (h : ∀ j ≤ s, X j = X' j) : glue s X Y = glue s X' Y := by
   funext j
   by_cases hjs : j < s
-  · simp only [glue, if_pos hjs]; exact h j (by omega)
-  · simp only [glue, if_neg hjs]
+  · simp only [glue, ite_eq_left hjs]; exact h j (by omega)
+  · simp only [glue, ite_eq_right hjs]
 
 /-- The stopping time of the block `[s, s+ℓ)`, read in the shifted path. -/
 def blockStop (σ : (ℕ → Site d) → ℕ) (s ℓ : ℕ) (X Y : ℕ → Site d) : ℕ :=
@@ -135,11 +135,11 @@ theorem blockReward_shiftPath (ζ : Site d → ℝ) (σ : (ℕ → Site d) → �
       = ∑ j ∈ Finset.Ico s (min (σ X) (s + ℓ)), ζ (X j) := by
   rw [blockReward]
   by_cases hlt : s < σ X
-  · rw [if_pos hlt, blockStop_shiftPath, LatticeProb.Graph.Zd.sceneryPartialSum,
+  · rw [ite_eq_left hlt, blockStop_shiftPath, LatticeProb.Graph.Zd.sceneryPartialSum,
       Finset.sum_Ico_eq_sum_range]
     refine Finset.sum_congr rfl fun j _ => ?_
     rfl
-  · rw [if_neg hlt, Finset.Ico_eq_empty (by omega), Finset.sum_empty]
+  · rw [ite_eq_right hlt, Finset.Ico_eq_empty (by omega), Finset.sum_empty]
 
 /-- The dyadic block boundaries `0, N, 2N, 4N, …` of `eq:stopping-blocks`. -/
 def blockBound (N : ℕ) : ℕ → ℕ
@@ -217,9 +217,9 @@ theorem measurable_glue (s : ℕ) :
     Measurable (fun p : (ℕ → Site d) × (ℕ → Site d) => glue s p.1 p.2) := by
   refine Measurable.of_eval fun j => ?_
   by_cases h : j < s
-  · simp only [glue, if_pos h]
+  · simp only [glue, ite_eq_left h]
     exact measurable_fst.eval
-  · simp only [glue, if_neg h]
+  · simp only [glue, ite_eq_right h]
     exact measurable_snd.eval
 
 /-- `blockStop` is jointly measurable, composing the measurable stopping time `σ` with the
@@ -248,10 +248,10 @@ theorem measurable_blockReward (ζ : Site d → ℝ) {σ : (ℕ → Site d) → 
             (if blockStop σ s ℓ p.1 p.2 = i then ∑ j ∈ Finset.range i, ζ (p.2 j) else 0) := by
       funext p
       rw [Finset.sum_eq_single (blockStop σ s ℓ p.1 p.2)
-        (fun i _ hi => if_neg (fun h => hi h.symm))
+        (fun i _ hi => ite_eq_right (fun h => hi h.symm))
         (fun hmem => absurd (Finset.mem_range.mpr
           (Nat.lt_succ_of_le (blockStop_le σ s ℓ p.1 p.2))) hmem)]
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       rfl
     rw [heq]
     refine Finset.measurable_sum _ fun i _ => ?_
@@ -271,9 +271,9 @@ theorem abs_blockReward_le (ζ : Site d → ℝ) {B : ℝ} (hB0 : 0 ≤ B) (hB :
   rw [Real.norm_eq_abs, blockReward]
   by_cases hlt : s < σ X
   swap
-  · rw [if_neg hlt, abs_zero]
+  · rw [ite_eq_right hlt, abs_zero]
     positivity
-  rw [if_pos hlt, LatticeProb.Graph.Zd.sceneryPartialSum]
+  rw [ite_eq_left hlt, LatticeProb.Graph.Zd.sceneryPartialSum]
   calc |∑ j ∈ Finset.range (blockStop σ s ℓ X Y), ζ (Y j)|
       ≤ ∑ j ∈ Finset.range (blockStop σ s ℓ X Y), |ζ (Y j)| := Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ _j ∈ Finset.range (blockStop σ s ℓ X Y), B :=
@@ -316,7 +316,7 @@ theorem integral_blockReward_le (hd : 1 ≤ d)
     (s ℓ : ℕ) (x : Site d) :
     ∫ X, (∑ j ∈ Finset.Ico s (min (σ X) (s + ℓ)), ζ (X j)) ∂(LatticeProb.siteWalkLaw d x)
       ≤ ∫ X, (if s < σ X then u ζ ℓ (X s) else 0) ∂(LatticeProb.siteWalkLaw d x) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   have hmeas := measurable_blockReward ζ hσ hσn s ℓ
   have hbdd := abs_blockReward_le ζ hB0 hB σ s ℓ
   have hpast : ∀ X X' Y : ℕ → Site d, (∀ k ≤ s, X k = X' k) →
@@ -324,8 +324,8 @@ theorem integral_blockReward_le (hd : 1 ≤ d)
     intro X X' Y h
     rw [blockReward, blockReward, blockStop, blockStop, glue_congr_left X X' Y h]
     by_cases hlt : s < σ X
-    · rw [if_pos hlt, if_pos ((sigma_gt_congr hσ s h).mp hlt)]
-    · rw [if_neg hlt, if_neg (fun hc => hlt ((sigma_gt_congr hσ s h).mpr hc))]
+    · rw [ite_eq_left hlt, ite_eq_left ((sigma_gt_congr hσ s h).mp hlt)]
+    · rw [ite_eq_right hlt, ite_eq_right (fun hc => hlt ((sigma_gt_congr hσ s h).mpr hc))]
   have hmk := LatticeProb.markov_fixed_general d s x (blockReward ζ σ s ℓ) hmeas hbdd hpast
   have hlhs : ∫ X, (∑ j ∈ Finset.Ico s (min (σ X) (s + ℓ)), ζ (X j))
         ∂(LatticeProb.siteWalkLaw d x)
@@ -339,21 +339,21 @@ theorem integral_blockReward_le (hd : 1 ≤ d)
         ≤ (if s < σ X then u ζ ℓ (X s) else 0) := by
     intro X
     by_cases hlt : s < σ X
-    · rw [if_pos hlt]
+    · rw [ite_eq_left hlt]
       have hcongr : (∫ Y, blockReward ζ σ s ℓ X Y ∂(LatticeProb.siteWalkLaw d (X s)))
           = ∫ Y, LatticeProb.Graph.Zd.sceneryPartialSum ζ (blockStop σ s ℓ X Y) Y
               ∂(LatticeProb.siteWalkLaw d (X s)) :=
         integral_congr_ae (Filter.Eventually.of_forall fun Y => by
-          rw [blockReward, if_pos hlt])
+          rw [blockReward, ite_eq_left hlt])
       rw [hcongr]
       refine (hStopping d hd ζ ℓ (X s)).1 ?_
       exact ⟨blockStop σ s ℓ X, isWalkStopping_blockStop hσ s ℓ X,
         fun Y => blockStop_le σ s ℓ X Y, rfl⟩
-    · rw [if_neg hlt]
+    · rw [ite_eq_right hlt]
       have hcongr : (∫ Y, blockReward ζ σ s ℓ X Y ∂(LatticeProb.siteWalkLaw d (X s)))
           = ∫ _Y : ℕ → Site d, (0:ℝ) ∂(LatticeProb.siteWalkLaw d (X s)) :=
         integral_congr_ae (Filter.Eventually.of_forall fun Y => by
-          rw [blockReward, if_neg hlt])
+          rw [blockReward, ite_eq_right hlt])
       rw [hcongr, integral_zero]
   have hdep : LatticeProb.DependsUpTo s
       (fun X : ℕ → Site d => ∫ Y, blockReward ζ σ s ℓ X Y ∂(LatticeProb.siteWalkLaw d (X s))) := by
@@ -371,16 +371,16 @@ theorem integral_blockReward_le (hd : 1 ≤ d)
     show (if s < σ X then u ζ ℓ (X s) else 0) = if s < σ X' then u ζ ℓ (X' s) else 0
     rw [h s le_rfl]
     by_cases hlt : s < σ X
-    · rw [if_pos hlt, if_pos ((sigma_gt_congr hσ s h).mp hlt)]
-    · rw [if_neg hlt, if_neg (fun hc => hlt ((sigma_gt_congr hσ s h).mpr hc))]
+    · rw [ite_eq_left hlt, ite_eq_left ((sigma_gt_congr hσ s h).mp hlt)]
+    · rw [ite_eq_right hlt, ite_eq_right (fun hc => hlt ((sigma_gt_congr hσ s h).mpr hc))]
   have hmeasU : Measurable (fun X : ℕ → Site d => if s < σ X then u ζ ℓ (X s) else 0) :=
     LatticeProb.measurable_of_dependsUpTo hdepU
   have hubU : ∀ X : ℕ → Site d, ‖(if s < σ X then u ζ ℓ (X s) else 0)‖ ≤ (ℓ : ℝ) * B := by
     intro X
     by_cases hlt : s < σ X
-    · rw [if_pos hlt, Real.norm_eq_abs, abs_of_nonneg (u_nonneg ζ ℓ (X s))]
+    · rw [ite_eq_left hlt, Real.norm_eq_abs, abs_of_nonneg (u_nonneg ζ ℓ (X s))]
       exact u_le_mul_of_le hd hB0 (fun y => le_trans (le_abs_self _) (hB y)) ℓ (X s)
-    · rw [if_neg hlt, norm_zero]
+    · rw [ite_eq_right hlt, norm_zero]
       positivity
   have hubI : ∀ X : ℕ → Site d,
       ‖∫ Y, blockReward ζ σ s ℓ X Y ∂(LatticeProb.siteWalkLaw d (X s))‖ ≤ (ℓ : ℝ) * B := by

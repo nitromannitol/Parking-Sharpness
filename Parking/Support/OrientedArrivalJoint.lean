@@ -46,9 +46,9 @@ theorem integral_orientedArrivalCount_joint (hd : 1 ≤ d) (ν : Measure ℤ) (h
     (∫ z : (Site d → ℤ) × (Site d × ℕ → Site d),
       (orientedArrivalCount z.1 z.2 n x : ℝ) ∂((iidLaw d ν).prod (orientedStackLaw d))) =
         meanU (orientedLaw d ν) n := by
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   rw [integral_prod _ (integrable_orientedArrivalCount_joint hd ν hν n x)]
   simp only [integral_orientedArrivalCount_given hd, orientedOp]
   rw [integral_div, integral_finsetSum _ (fun i _ =>
@@ -64,9 +64,9 @@ theorem integral_orientedOdometer_joint (hd : 1 ≤ d) (ν : Measure ℤ) (hν :
     (∫ z : (Site d → ℤ) × (Site d × ℕ → Site d),
       (orientedOdometer z.1 z.2 n x : ℝ) ∂((iidLaw d ν).prod (orientedStackLaw d))) =
         meanU (orientedLaw d ν) n := by
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   rw [integral_prod _ (integrable_orientedOdometer_joint hd ν hν n x)]
   exact integral_orientedOdometer_given_mean hd ν hν n x
 

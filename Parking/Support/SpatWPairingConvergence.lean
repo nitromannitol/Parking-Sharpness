@@ -238,7 +238,7 @@ theorem tendsto_integral_barDivisible_pairing_of_lipschitz {Ω : Type} [Measurab
     htight_barDivisible_fixedTime hd ν hequicont t ht K hK
   set f' : ℝ → (Fin d → ℝ) → Data d → ℝ := fun R z w => barDivisible w R t z with hf'def
   set g' : (Fin d → ℝ) → Ω → ℝ := fun z ω => Uc ω t z with hg'def
-  haveI hPconst : ∀ _ : ℝ, IsProbabilityMeasure (law d ν) := fun _ => inferInstance
+  have hPconst : ∀ _ : ℝ, IsProbabilityMeasure (law d ν) := fun _ => inferInstance
   have hconv : Tendsto (fun R : ℝ => ∫ w, Φ (fun z => f' R z w) ∂(law d ν)) atTop
       (𝓝 (∫ ω, Φ (fun z => g' z ω) ∂Q)) :=
     @LatticeProb.tendsto_integral_of_fdd_of_equicontinuous'

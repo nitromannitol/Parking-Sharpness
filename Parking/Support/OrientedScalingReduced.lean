@@ -26,7 +26,7 @@ open MeasureTheory Filter Topology LatticeProb
 /-- Every polynomial moment of a critical one-site law is finite. -/
 theorem CriticalLaw.integrable_rpow {ν : Measure ℤ} (hν : CriticalLaw ν) {r : ℝ}
     (hr : 0 ≤ r) : Integrable (fun k : ℤ => |(k : ℝ)| ^ r) ν := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
   obtain ⟨K, _hK, hbd⟩ := rpow_le_const_mul_exp hr hθ
   refine Integrable.mono' (hexp.const_mul K)
@@ -54,8 +54,8 @@ theorem integrable_limit_of_weak (ν : Measure ℤ) (hν : CriticalLaw ν)
             uOriented (fun y => (w.1 y : ℝ)) ⌊(n : ℝ) * (1 : ℝ)⌋₊ 0)
           ∂(orientedLaw 2 ν)) atTop (𝓝 (∫ ω, F (V ω) ∂Q))) :
     (∀ᵐ ω ∂Q, 0 ≤ V ω) ∧ Integrable V Q := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   simp only [mul_one, Nat.floor_natCast] at hweak
   set X : ℕ → Data 2 → ℝ := fun n w =>
     (n : ℝ) ^ (-(1 : ℝ) / 4) * uOriented (fun y => (w.1 y : ℝ)) n 0 with hX
@@ -144,9 +144,9 @@ theorem oriented_scaling_of_weak (ν : Measure ℤ) (hν : CriticalLaw ν)
       Integrable (Uc 1) Q ∧ μ = ∫ ω, Uc 1 ω ∂Q ∧ 0 < μ ∧
       Tendsto (fun n : ℕ => (n : ℝ) ^ (-(1 : ℝ) / 4) *
         meanuOriented (orientedLaw 2 ν) n) atTop (𝓝 μ) := by
-  haveI := hν.prob
-  haveI := hQ
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have := hQ
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   obtain ⟨hnn, hint⟩ :=
     integrable_limit_of_weak ν hν Q (Uc 1) (hmeas 1 one_pos) (hlaw 1 one_pos)
   have hlim := meanuOriented_tendsto_of_weak ν hν Q (Uc 1)

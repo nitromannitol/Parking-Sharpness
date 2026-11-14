@@ -30,7 +30,7 @@ dominated by `|a y|` via `Integrable.mono'`. -/
 theorem integrable_negPart_coord {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (y : Site d) :
     Integrable (fun a : Site d → ℤ => (((-(a y)).toNat : ℕ) : ℝ)) (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   refine Integrable.mono' (integrable_coord hint y).abs ?_ ?_
   · exact ((measurable_from_top :
@@ -52,9 +52,9 @@ coordinate `Prod.fst` is measure-preserving between the two. -/
 theorem integrable_pDataLaw_of_counts (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
     {G : (Site d → ℤ) → ℝ} (hG : Integrable G (LatticeProb.iidLaw d ν)) :
     Integrable (fun ω : PData d => G ω.1) (pDataLaw d ν) := by
-  haveI := Parking.stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have := Parking.stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hmp : MeasurePreserving (Prod.fst : PData d → (Site d → ℤ))
       (pDataLaw d ν) (LatticeProb.iidLaw d ν) := by
     unfold pDataLaw
@@ -69,7 +69,7 @@ theorem integrable_initialHoles (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbability
         ∑ x ∈ rangeFinset (0 : Site d) w t, (((-(ω.1 x)).toNat : ℕ) : ℝ))
       (restrictLaw d N ν ω₀) := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hmeas : Measurable fun ω : PData d =>
       ∑ x ∈ rangeFinset (0 : Site d) w t, (((-(ω.1 x)).toNat : ℕ) : ℝ) := by

@@ -32,7 +32,7 @@ theorem matchedMeanH_nonneg (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) 
 `matchedHoles_le_initial` bounds it pointwise for every round noise outcome. -/
 theorem matchedMeanH_le_initial (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
     (T : ℕ) (x : Site d) : matchedMeanH η ρ T x ≤ ((-η x).toNat : ℝ) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have h := integral_mono (integrable_matchedHoles hd η ρ T x (roundNoiseLaw d))
     (integrable_const ((-η x).toNat : ℝ))
       (fun σ => Nat.cast_le.mpr (matchedHoles_le_initial η ρ σ T x))
@@ -42,14 +42,14 @@ theorem matchedMeanH_le_initial (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label
 exactly the initial hole size. -/
 theorem matchedMeanH_zero (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ) (x : Site d) :
     matchedMeanH η ρ 0 x = ((-η x).toNat : ℝ) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   simp [matchedMeanH, matchedState, initial]
 
 /-- `matchedMeanH`, as a function of the initial field `η` alone, is measurable: it factors
 through the measurable state map `matchedState` and integrates a measurable count. -/
 theorem measurable_matchedMeanH (hd : 1 ≤ d) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     Measurable (fun η : Site d → ℤ => matchedMeanH η ρ T x) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have hS := measurableState_matchedState ⟨0, hd⟩
     (Ω := (Site d → ℤ) × RoundNoise d) Prod.fst (fun _ => ρ) Prod.snd
     measurable_fst measurable_const measurable_snd T
@@ -75,8 +75,8 @@ theorem matchedMeanH_bellman (hd : 1 ≤ d) (η : Site d → ℤ)
     matchedMeanH η ρ (T + 1) x =
       ∫ τ, matchedMeanH (roundSigned (fun y => (η y).toNat) (fun y => (-η y).toNat) τ) ρ T x
         ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI := roundNoiseLaw_isProbability hd
+  have := stepLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   let Q := Measure.infinitePi fun _ : RoundSlot d => stepLaw d
   have hfi := integrable_matchedHoles hd η ρ (T + 1) x (roundNoiseLaw d)
   change (∫ σ, ((matchedState η ρ σ (T + 1)).holes x : ℝ) ∂(roundNoiseLaw d)) = _

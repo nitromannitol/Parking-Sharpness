@@ -72,10 +72,10 @@ most one. -/
 theorem integral_graftSurvivalObs_le_one (hd : 1 ≤ d) {ν : Measure ℤ}
     [IsProbabilityMeasure ν] (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) (ω₁ : PData d) (t : ℕ) :
     ∫ ω, graftSurvivalObs w r ω₁ t ω ∂(pDataLaw d ν) ≤ 1 := by
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
+  have : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
   have hle : ∀ ω : PData d, graftSurvivalObs w r ω₁ t ω ≤ 1 := fun ω =>
     (graftSurvivalObs_mem_Icc w r ω₁ t ω).2
   have hI : Integrable (graftSurvivalObs (d := d) w r ω₁ t) (pDataLaw d ν) := by
@@ -117,7 +117,7 @@ theorem integral_graftSurvivalObs_le_exp (hd : 1 ≤ d) {ν : Measure ℤ}
           (graftSurvivalObs w r ω₁ t) (fun ω => ((ω.1 x : ℤ) : ℝ)))
         (Set.Icc 0 lam₁) s := by
     intro s hs
-    haveI := hprob s hs
+    have := hprob s hs
     exact (hasDerivWithinAt_integral_restrictLaw hd hint hexp hs.1
       (lt_of_le_of_lt hs.2 hlam₁θ) (hnonpos s hs).1 (puncturedBox d t) (baseData hd)
       (dependsOn_graftSurvivalObs w r ω₁ t) (measurable_graftSurvivalObs w r ω₁ t)
@@ -131,7 +131,7 @@ theorem integral_graftSurvivalObs_le_exp (hd : 1 ≤ d) {ν : Measure ℤ}
       ≤ 3 * ∑ x ∈ puncturedBox d t, cov (pDataLaw d (tiltLaw ν s))
           (graftSurvivalObs w r ω₁ t) (fun ω => ((ω.1 x : ℤ) : ℝ)) := by
     intro s hs
-    haveI := hprob s hs
+    have := hprob s hs
     have hmain := graft_mean_mul_mean_le_covSum (ν := tiltLaw ν s) hd (hnonpos s hs).1.abs
       (hnonpos s hs).2 w r hc t (subset_refl (puncturedBox d t)) (baseData hd)
       (ae_graftSurvivalObs_mul_graftHoleObs hd (tiltLaw ν s) w hP t)
@@ -174,7 +174,7 @@ theorem integral_graftSurvivalObs_le_exp (hd : 1 ≤ d) {ν : Measure ℤ}
         = ∫ ω, graftSurvivalObs w r ω₁ t ω ∂(pDataLaw d ν))
   have h1 : (∫ ω, graftSurvivalObs w r ω₁ t ω
       ∂(restrictLaw d (puncturedBox d t) (tiltLaw ν lam₁) (baseData hd))) ≤ 1 := by
-    haveI := hprob lam₁ (Set.right_mem_Icc.mpr (le_of_lt hlam₁))
+    have := hprob lam₁ (Set.right_mem_Icc.mpr (le_of_lt hlam₁))
     have hrw : (∫ ω, graftSurvivalObs w r ω₁ t ω
           ∂(restrictLaw d (puncturedBox d t) (tiltLaw ν lam₁) (baseData hd)))
         = ∫ ω, graftSurvivalObs w r ω₁ t ω ∂(pDataLaw d (tiltLaw ν lam₁)) :=

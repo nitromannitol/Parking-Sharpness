@@ -65,9 +65,9 @@ theorem ae_forall_zeroIntegral_residual_on_compact
       ∀ ψ : ℝ × (Fin d → ℝ) → ℝ, IsSpaceTimeTest ψ → tsupport ψ ⊆ K →
         (∀ x, (∫ s : ℝ, ψ (s, x)) = 0) →
         (∫ p, u ω p * spaceTimeResidualTest ψ p) = 0 := by
-  letI : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  let : CompactSpace K := isCompact_iff_compactSpace.mp hK
   let μ : Measure K := volume.comap Subtype.val
-  haveI : IsFiniteMeasure μ := ⟨by
+  have : IsFiniteMeasure μ := ⟨by
     apply (Measure.comap_apply_le Subtype.val volume nullMeasurableSet_univ).trans_lt
     simpa using hK.measure_lt_top (μ := volume)⟩
   let T := {ψ : ℝ × (Fin d → ℝ) → ℝ // IsSpaceTimeTest ψ ∧ tsupport ψ ⊆ K ∧

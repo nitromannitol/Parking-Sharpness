@@ -47,7 +47,7 @@ theorem orientedSupCharge_moment (hd : 2 ≤ d) (ν : Measure ℤ) (hν : Critic
         ((iidLaw d ν).prod (orientedStackLaw d)) ∧
       (∫ z, orientedSupCharge d N n z ^ p ∂((iidLaw d ν).prod (orientedStackLaw d))) ≤
         ∫ ω : Data d, (U ω n 0 : ℝ) ^ p ∂(orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   have hd1 : 1 ≤ d := by omega
   have h := integral_weighted_rpow_le ((iidLaw d ν).prod (orientedStackLaw d))
     (boxFinset (0 : Site d) N)

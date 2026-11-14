@@ -93,9 +93,9 @@ theorem exists_integral_norm_boxRewardMap_le (ν : Measure ℤ) (hν : CriticalL
         (iidLaw 2 (realLaw ν)) ∧
       (∫ η, ‖boxRewardMap 1 (zero_le_one) A hA n η‖ ∂(iidLaw 2 (realLaw ν))) ≤
         K * (1 + A) ^ (1 / 2 + 2 / p) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   have hp0 : (0:ℝ) < p := by linarith
   obtain ⟨K0, hK0nn, hK0all⟩ := exists_yfieldSup3_L2_moment ν hν p hp
   refine ⟨(9 * K0) ^ (1 / p), by positivity, fun A hA n hn => ?_⟩

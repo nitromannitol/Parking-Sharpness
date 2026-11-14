@@ -319,7 +319,7 @@ variable {d : ℕ}
 theorem resampleLaw_map_fst (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1) :
     (resampleLaw d ν p).map (fun c : Site d → ℤ × ℤ => fun i => (c i).1)
       = LatticeProb.iidLaw d ν := by
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   rw [resampleLaw, LatticeProb.iidLaw_map_pi d (resampleOne ν p) measurable_fst,
     resampleOne_map_fst ν hp]
 
@@ -327,7 +327,7 @@ theorem resampleLaw_map_fst (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : �
 theorem resampleLaw_map_snd (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1) :
     (resampleLaw d ν p).map (fun c : Site d → ℤ × ℤ => fun i => (c i).2)
       = LatticeProb.iidLaw d ν := by
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   rw [resampleLaw, LatticeProb.iidLaw_map_pi d (resampleOne ν p) measurable_snd,
     resampleOne_map_snd ν hp]
 
@@ -335,7 +335,7 @@ theorem resampleLaw_map_snd (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : �
 theorem resampleLaw_map_eval (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1)
     (x : Site d) :
     (resampleLaw d ν p).map (fun c : Site d → ℤ × ℤ => c x) = resampleOne ν p := by
-  haveI := resampleOne_isProbability ν hp
+  have := resampleOne_isProbability ν hp
   rw [resampleLaw, LatticeProb.iidLaw]
   exact Measure.infinitePi_map_eval _ x
 

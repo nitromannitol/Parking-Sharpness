@@ -27,7 +27,7 @@ theorem sum_roundDiff (hd : 1 ≤ d) (e : Fin K ↪ Site d × ℕ)
       ∫ ζ, matchedMeanU (roundSigned A H ζ) ρ T x
         ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   let P : ℕ → ℝ := fun n => partialInt (fun _ : RoundSlot d => stepLaw d)
     (revealPrefix (slotEnumeration e) n) (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) τ
   have hsum : (∑ j : Fin K, roundDiff e A H ρ T x j τ) = P K - P 0 := by

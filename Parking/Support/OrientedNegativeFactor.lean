@@ -57,9 +57,9 @@ theorem integrable_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measur
     Integrable (fun z : (Site d → ℤ) × (Site d × ℕ → Site d) => max (-(z.1 x : ℝ)) 0 *
       (if orientedArrivalCount z.1 z.2 n x = 0 then (1 : ℝ) else 0))
       ((iidLaw d ν).prod (orientedStackLaw d)) := by
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hηI : Integrable (fun η : Site d → ℤ => |(η x : ℝ)|) (iidLaw d ν) :=
     integrable_comp_mp (measurePreserving_eval_infinitePi (fun _ : Site d => ν) x)
       (fun k : ℤ => |(k : ℝ)|) (measurable_of_countable _).aestronglyMeasurable hν.integrable_abs
@@ -73,9 +73,9 @@ theorem integrable_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measur
       (Measurable.ite hmN measurable_const measurable_const)).aestronglyMeasurable
     (Filter.Eventually.of_forall fun z => ?_)
   by_cases hz : orientedArrivalCount z.1 z.2 n x = 0
-  · rw [if_pos hz, mul_one, Real.norm_eq_abs, abs_of_nonneg (le_max_right _ _)]
+  · rw [ite_eq_left hz, mul_one, Real.norm_eq_abs, abs_of_nonneg (le_max_right _ _)]
     exact max_le (neg_le_abs _) (abs_nonneg _)
-  · simp only [if_neg hz, mul_zero, norm_zero]
+  · simp only [ite_eq_right hz, mul_zero, norm_zero]
     exact abs_nonneg _
 
 /-- The joint version of `integral_oriented_noArrival_negative_given`: integrating the
@@ -90,9 +90,9 @@ theorem integral_oriented_noArrival_negative_joint (hd : 1 ≤ d) (ν : Measure 
       (∫ k : ℤ, max (-(k : ℝ)) 0 ∂ν) *
         ((iidLaw d ν).prod (orientedStackLaw d)).real
           {z : (Site d → ℤ) × (Site d × ℕ → Site d) | orientedArrivalCount z.1 z.2 n x = 0} := by
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   rw [integral_prod_symm _ (integrable_oriented_noArrival_negative_joint hd ν hν n x)]
   simp only [integral_oriented_noArrival_negative_given ν]
   rw [integral_const_mul]

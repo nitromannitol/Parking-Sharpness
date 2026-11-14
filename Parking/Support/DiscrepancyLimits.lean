@@ -29,8 +29,8 @@ theorem discrepancy_moment_tendsto_zero {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
       meanu (law d ν) n| ^ q) (law d ν)) ∧
     Tendsto (fun n : ℕ => ∫ ω, |((U ω n 0 : ℝ) - uOf ω n 0) /
       meanu (law d ν) n| ^ q ∂(law d ν)) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   have hi := fun n => integrable_diff_rpow hd ν hθ hexp hq n
@@ -70,8 +70,8 @@ theorem ae_discrepancy_tendsto_zero {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∀ᵐ ω ∂(law d ν), Tendsto (fun n : ℕ => ((U ω n 0 : ℝ) - uOf ω n 0) /
       meanu (law d ν) n) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   apply ae_tendsto_zero_of_summable_tails
   intro ε hε
   obtain ⟨c, hc, N, hN⟩ := exists_discrepancy_tail hd hd3 hGrowth hBern hConc hGN ν hν ε hε
@@ -83,7 +83,7 @@ theorem ae_discrepancy_tendsto_zero {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
   have heq : {ω : Data d | ε < |((U ω n 0 : ℝ) - uOf ω n 0) / meanu (law d ν) n|} =
       {ω : Data d | ε * meanu (law d ν) n < |(U ω n 0 : ℝ) - uOf ω n 0|} := by
     ext ω
-    simp only [Set.mem_setOf_eq, abs_div, abs_of_pos hn.2.1, lt_div_iff₀ hn.2.1]
+    simp only [Set.mem_ofPred_eq, abs_div, abs_of_pos hn.2.1, lt_div_iff₀ hn.2.1]
   rw [heq]
   exact hN n hnN
 end Parking

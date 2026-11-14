@@ -148,8 +148,8 @@ theorem linPotential_single (n : ℕ) (z x : Site d) :
         simpa only [sub_eq_add_neg] using h
       rw [hshift]
       by_cases hxz : x = z
-      · rw [if_pos hxz, if_pos (by rw [hxz]; abel)]
-      · rw [if_neg hxz, if_neg (fun hc => hxz (sub_eq_zero.mp hc))]
+      · rw [ite_eq_left hxz, ite_eq_left (by rw [hxz]; abel)]
+      · rw [ite_eq_right hxz, ite_eq_right (fun hc => hxz (sub_eq_zero.mp hc))]
 
 /-- **The exact coordinatewise sensitivity of `V`.**  Changing `η` at one site
 `z` by `δ` changes `V_n(x)` by EXACTLY `δ * green d n (x - z)`: no one-sided

@@ -69,7 +69,7 @@ theorem Parking.measure_layerEvent (μ : Measure X) [IsProbabilityMeasure μ]
         intro ω
         ext v
         by_cases hω : ω ∈ Parking.layerEvent F B n
-        · rw [if_pos hω]
+        · rw [ite_eq_left hω]
           change (∀ k < n + 1, F (Function.update ω n v) k ∈ B k) ↔
             F (Function.update ω n v) n ∈ B n
           refine ⟨fun h => h n (by omega), fun h k hk => ?_⟩
@@ -77,7 +77,7 @@ theorem Parking.measure_layerEvent (μ : Measure X) [IsProbabilityMeasure μ]
           · rw [hpast ω n k v hk]
             exact hω k hk
           · exact h
-        · rw [if_neg hω]
+        · rw [ite_eq_right hω]
           change (∀ k < n + 1, F (Function.update ω n v) k ∈ B k) ↔ False
           refine ⟨fun h => hω (fun k hk => ?_), False.elim⟩
           rw [← hpast ω n k v hk]
@@ -88,11 +88,11 @@ theorem Parking.measure_layerEvent (μ : Measure X) [IsProbabilityMeasure μ]
         intro ω
         rw [hsec]
         by_cases hω : ω ∈ Parking.layerEvent F B n
-        · rw [if_pos hω, Set.indicator_of_mem hω]
+        · rw [ite_eq_left hω, Set.indicator_of_mem hω]
           have hm : Measurable (fun v => F (Function.update ω n v) n) := by
             fun_prop
           rw [← Measure.map_apply hm (hB n), hlaw]
-        · rw [if_neg hω, Set.indicator_of_notMem hω, measure_empty]
+        · rw [ite_eq_right hω, Set.indicator_of_notMem hω, measure_empty]
       change P (Parking.layerEvent F B (n + 1)) = _
       rw [← hT.map_eq, Measure.map_apply hT.measurable hAs,
         Measure.prod_apply (hT.measurable hAs)]
@@ -122,7 +122,7 @@ theorem Parking.map_layers (μ : Measure X) [IsProbabilityMeasure μ]
   have heq : F ⁻¹' Set.pi (↑s) t = Parking.layerEvent F B n := by
     ext ω
     simp only [Set.mem_preimage, Set.mem_pi, Finset.mem_coe,
-      Parking.layerEvent, Set.mem_setOf_eq]
+      Parking.layerEvent, Set.mem_ofPred_eq]
     constructor
     · intro h k _
       by_cases hk : k ∈ s

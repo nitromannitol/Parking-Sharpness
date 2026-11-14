@@ -40,8 +40,8 @@ theorem spatial_fixed_test_residual_ae
     {ψ : ℝ × (Fin d → ℝ) → ℝ} (hψ : IsSpaceTimeTest ψ) :
     ∀ᵐ ω ∂Q, tsupport ψ ⊆ {p | 0 < Uc ω p.1 p.2} →
       (∫ p, Uc ω p.1 p.2 * spaceTimeResidualTest ψ p) = W (fun x => ∫ s : ℝ, ψ (s, x)) ω := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨T, hT, hTsupp, _, _, hsource⟩ :=
     exists_tendsto_scenePair_time_quadrature_with_support hd hd3 ν hν.integrable_abs hψ
   obtain ⟨H, hH⟩ := hψ.2.1.isCompact.exists_bound_of_continuousOn
@@ -74,7 +74,7 @@ theorem spatial_fixed_test_residual_ae
     · have hx := (hB0 p hp).trans (le_max_left B0 1)
       simpa only [Metric.mem_closedBall, dist_zero_right] using
         hx.trans (show B ≤ B + 2 by linarith)
-  haveI : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
+  have : IsFiniteMeasure (volume.restrict K) := ⟨by simpa using hK.measure_lt_top (μ := volume)⟩
   let φ : (Fin d → ℝ) → ℝ := fun x => ∫ s : ℝ, ψ (s, x)
   have hφ : IsTestFun φ := isTestFun_timeIntegral hψ
   have hAc := continuous_spaceTimeResidualTest hψ

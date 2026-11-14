@@ -19,8 +19,8 @@ variable {d : ℕ}
 theorem integral_noArrivalWeight_le_one (hd : 1 ≤ d) (η : Site d → ℤ) (K : ℕ)
     (hη : ∀ y, (η y).toNat ≤ K) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     ∫ σ, noArrivalWeight η ρ σ T x ∂(roundNoiseLaw d) ≤ 1 := by
-  haveI := stepLaw_isProbability hd
-  haveI := roundNoiseLaw_isProbability hd
+  have := stepLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   let Q := Measure.infinitePi fun _ : RoundSlot d => stepLaw d
   induction T with
   | zero => simp only [noArrivalWeight_zero, integral_const, probReal_univ, one_smul, le_refl]

@@ -89,7 +89,7 @@ theorem Parking.map_matchedObservables (hd : 1 ≤ d) (ν : Measure ℤ)
          fun tx : ℕ × Site d => Parking.A ω tx.1 tx.2,
          fun tx : ℕ × Site d => Parking.H ω tx.1 tx.2,
          fun ti : ℕ × Label d => (LatticeProb.state (Parking.toDriver ω) ti.1).active ti.2)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw
     infer_instance
   have hm := Parking.measurable_matchedMoves ⟨0, hd⟩
@@ -131,9 +131,9 @@ measures. -/
 theorem Parking.coupledLaw_isProbability (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1) :
     IsProbabilityMeasure (Parking.coupledLaw d ν p) := by
-  haveI := Parking.resampleOne_isProbability ν hp
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI := Parking.roundNoiseLaw_isProbability hd
+  have := Parking.resampleOne_isProbability ν hp
+  have := LatticeProb.rankLaw_isProbability d
+  have := Parking.roundNoiseLaw_isProbability hd
   unfold Parking.coupledLaw Parking.resampleLaw LatticeProb.iidLaw
   infer_instance
 
@@ -158,12 +158,12 @@ theorem Parking.map_coupledProjection (hd : 1 ≤ d) (ν : Measure ℤ)
     (Parking.coupledLaw d ν p).map (Parking.coupledProjection b) =
       (((LatticeProb.iidLaw d ν).prod (LatticeProb.rankLaw d)).prod
         (Parking.roundNoiseLaw d)) := by
-  haveI := Parking.resampleOne_isProbability ν hp
-  haveI : IsProbabilityMeasure (Parking.resampleLaw d ν p) := by
+  have := Parking.resampleOne_isProbability ν hp
+  have : IsProbabilityMeasure (Parking.resampleLaw d ν p) := by
     unfold Parking.resampleLaw LatticeProb.iidLaw
     infer_instance
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI := Parking.roundNoiseLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have := Parking.roundNoiseLaw_isProbability hd
   have hconf : (Parking.resampleLaw d ν p).map (Parking.coupledConf b) =
       LatticeProb.iidLaw d ν := by
     cases b
@@ -199,7 +199,7 @@ state identity therefore transfers any measurable state event, including positio
 theorem Parking.map_coupledParticleData (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1) (b : Bool) :
     (Parking.coupledLaw d ν p).map (Parking.coupledParticleData b) = Parking.pDataLaw d ν := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw
     infer_instance
   have hm := Parking.measurable_matchedMoves ⟨0, hd⟩

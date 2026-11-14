@@ -68,7 +68,7 @@ theorem linIncrement_update (s : Finset (Site d)) (n m : ℕ) (x y : Site d)
   rw [extendField_update]
   have hζi : extendField s ζ (i : Site d) = ζ i := by
     unfold extendField
-    rw [dif_pos i.2]
+    rw [dite_eq_left i.2]
   have h1 := linPotential_update (extendField s ζ) n x (i : Site d) v
   have h2 := linPotential_update (extendField s ζ) m y (i : Site d) v
   rw [hζi] at h1 h2
@@ -227,7 +227,7 @@ theorem exists_linPotential_increment_concentration (hd : 1 ≤ d) (ν0 : Measur
             - ∫ η', (linPotential η' n x - linPotential η' m y) ∂(iidLaw d ν0)|}
           = s.restrict ⁻¹' {ζ | r ≤ |linIncrement s n m x y ζ - mu|} := by
         ext η
-        simp only [Set.mem_setOf_eq, Set.mem_preimage]
+        simp only [Set.mem_ofPred_eq, Set.mem_preimage]
         rw [hrestrict η, hmean]
       rw [hset, ← iidLaw_map_restrict d ν0 s, Measure.map_apply hmeasR hTmeas]
     have hnorm2 : l2Norm (fun z => green d n (x - z) - green d m (y - z)) = lTwoNorm ℓ' := by
@@ -245,7 +245,7 @@ theorem exists_linPotential_increment_concentration (hd : 1 ≤ d) (ν0 : Measur
       rw [Equiv.symm_apply_apply, linIncrementWeight, sq_abs]
     have hne' : s.Nonempty := by
       obtain ⟨i0, _⟩ := hex; exact ⟨(i0 : Site d), i0.2⟩
-    haveI : Nonempty s := ⟨⟨hne'.choose, hne'.choose_spec⟩⟩
+    have : Nonempty s := ⟨⟨hne'.choose, hne'.choose_spec⟩⟩
     have hnormInf : supAbs (fun z => green d n (x - z) - green d m (y - z)) = lInfNorm ℓ' := by
       unfold supAbs lInfNorm
       have hfnn : ∀ z : Site d, 0 ≤ |green d n (x - z) - green d m (y - z)| := fun z => abs_nonneg _
@@ -308,13 +308,13 @@ theorem exists_linPotential_increment_concentration (hd : 1 ≤ d) (ν0 : Measur
       exact hconst ζ0 (s.restrict η)
     have hmean0 : (∫ η', (linPotential η' n x - linPotential η' m y) ∂(iidLaw d ν0))
         = linIncrement s n m x y ζ0 := by
-      haveI : IsProbabilityMeasure (iidLaw d ν0) := by unfold iidLaw; infer_instance
+      have : IsProbabilityMeasure (iidLaw d ν0) := by unfold iidLaw; infer_instance
       rw [integral_congr_ae (Filter.Eventually.of_forall hallη), integral_const, probReal_univ,
         one_smul]
     have hempty : {η | r ≤ |(linPotential η n x - linPotential η m y)
           - ∫ η', (linPotential η' n x - linPotential η' m y) ∂(iidLaw d ν0)|} = ∅ := by
       ext η
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
       rw [hallη η, hmean0, sub_self, abs_zero]
       exact not_le.mpr hr
     rw [hempty, measure_empty]

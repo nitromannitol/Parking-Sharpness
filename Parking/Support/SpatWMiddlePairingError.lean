@@ -86,8 +86,8 @@ theorem tendsto_signedMiddle_sub_barOdometer_pairing_zero (hd : 1 ≤ d) (hd3 : 
     Tendsto (fun R : ℝ => ((law d ν) {w |
       a < |signedMiddle w R φ - ∫ x, barOdometer w R 1 x * contOp d φ x|}).toReal)
       atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (law d ν) := law_isProb hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (law d ν) := law_isProb hd ν
   obtain ⟨B₁, hB₁, hφB₁⟩ := exists_norm_bound_of_hasCompactSupport hφ.2
   obtain ⟨B₂, hB₂, hgB₂⟩ := exists_norm_bound_of_hasCompactSupport (hasCompactSupport_contOp hφ)
   let B := max B₁ B₂

@@ -47,7 +47,7 @@ theorem relabel_relabel (σ : Equiv.Perm ℕ) (p : Label d) :
     relabel σ⁻¹ (relabel σ p) = p := by
   unfold relabel
   by_cases h : p.1 = 0
-  · simp only [h, if_pos]
+  · simp only [h, ite_eq_left]
     exact Prod.ext h.symm (by simp)
   · simp [h]
 
@@ -56,7 +56,7 @@ theorem relabel_relabel' (σ : Equiv.Perm ℕ) (p : Label d) :
     relabel σ (relabel σ⁻¹ p) = p := by
   unfold relabel
   by_cases h : p.1 = 0
-  · simp only [h, if_pos]
+  · simp only [h, ite_eq_left]
     exact Prod.ext h.symm (by simp)
   · simp [h]
 
@@ -100,11 +100,11 @@ theorem relabel_lt_toNat {σ : Equiv.Perm ℕ} {k : ℕ} (hk : ∀ i, k ≤ i �
     (p.2 < (η p.1).toNat) ↔ ((relabel σ p).2 < (η p.1).toNat) := by
   unfold relabel
   by_cases h : p.1 = 0
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     simp only
     rw [h, heta]
     exact lt_iff_perm_lt hk p.2
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
 
 /-- The candidate sets are invariant under the relabelling, on a configuration
 whose value at the origin is `k`. -/
@@ -301,7 +301,7 @@ surely. -/
 theorem rankLaw_ne (a b : Label d × ℕ) (hab : a ≠ b) :
     ∀ᵐ r ∂(LatticeProb.rankLaw d), r a ≠ r b := by
   classical
-  haveI : IsProbabilityMeasure (volume.restrict (Set.Icc (0 : ℝ) 1)) := ⟨by simp⟩
+  have : IsProbabilityMeasure (volume.restrict (Set.Icc (0 : ℝ) 1)) := ⟨by simp⟩
   set U : Measure ℝ := volume.restrict (Set.Icc (0 : ℝ) 1) with hU
   have hmeas : Measurable fun r : Label d × ℕ → ℝ => ((r a, r b) : ℝ × ℝ) :=
     (measurable_pi_apply a).prodMk (measurable_pi_apply b)
@@ -384,12 +384,12 @@ theorem relabelPair_injective (σ : Equiv.Perm ℕ) :
 theorem map_pLaw_relabelData (hd : 1 ≤ d) (σ : Equiv.Perm ℕ)
     (μ : Measure (Site d → ℤ)) [IsProbabilityMeasure μ] :
     (pLaw d μ).map (relabelData σ) = pLaw d μ := by
-  haveI : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
+  have : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
     LatticeProb.instructionLaw_isProbability hd 0
-  haveI : IsProbabilityMeasure (volume.restrict (Set.Icc (0 : ℝ) 1)) := ⟨by simp⟩
-  haveI : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
+  have : IsProbabilityMeasure (volume.restrict (Set.Icc (0 : ℝ) 1)) := ⟨by simp⟩
+  have : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
     unfold LatticeProb.moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   have hmove : (LatticeProb.moveLaw d).map
       (fun f : Label d × ℕ → Site d => fun q => f (relabel σ q.1, q.2))
       = LatticeProb.moveLaw d :=
@@ -474,11 +474,11 @@ theorem exchangeable_particle (hd : 1 ≤ d) (μ : Measure (Site d → ℤ))
         (fun ω => fun q : ℕ × ℕ =>
           (LatticeProb.pState (LatticeProb.toPDriver ω) q.1).active (0, q.2)) := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
+  have : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
     LatticeProb.instructionLaw_isProbability hd 0
-  haveI : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
+  have : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
     unfold LatticeProb.moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   set A : Set (LatticeProb.PData d) := {ω | ω.1 0 = (k : ℤ)} with hAdef
   have hAmeas : MeasurableSet A := by
     have : A = (fun ω : LatticeProb.PData d => ω.1 0) ⁻¹' {(k : ℤ)} := rfl

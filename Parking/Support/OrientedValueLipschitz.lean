@@ -32,8 +32,8 @@ theorem abs_orientedTerminalValue_sub_le (hd : 1 ≤ d) {n : ℕ}
     {σ : (ℕ → Fin d × Bool) → ℕ} (hσ : IsStoppingTimeLE n σ) (F G : ℕ → Site d → ℝ)
     (x : Site d) {c : ℝ} (hdiff : ∀ (k : ℕ) (y : Site d), |F k y - G k y| ≤ c) :
     |orientedTerminalValue F x σ - orientedTerminalValue G x σ| ≤ c := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hF := integrable_orientedTerminalReward hd hσ F x
   have hG := integrable_orientedTerminalReward hd hσ G x
   have hsub : orientedTerminalValue F x σ - orientedTerminalValue G x σ
@@ -54,8 +54,8 @@ theorem neg_le_orientedTerminalValue (hd : 1 ≤ d) {n : ℕ}
     {σ : (ℕ → Fin d × Bool) → ℕ} (hσ : IsStoppingTimeLE n σ) (F : ℕ → Site d → ℝ)
     (x : Site d) {M : ℝ} (hbound : ∀ (k : ℕ) (y : Site d), |F k y| ≤ M) :
     |orientedTerminalValue F x σ| ≤ M := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hF := integrable_orientedTerminalReward hd hσ F x
   calc |orientedTerminalValue F x σ|
       ≤ ∫ p, |F (σ p) (orientedPath x p (σ p))| ∂(walkLaw d) := abs_integral_le_integral_abs

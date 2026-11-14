@@ -30,7 +30,7 @@ power of the particle odometer `U ω n x` is integrable under `orientedLaw d ν`
 theorem integrable_oriented_U_rpow_of_critical (hd : 1 ≤ d) (ν : Measure ℤ)
     (hν : CriticalLaw ν) {r : ℝ} (hr : 1 ≤ r) (n : ℕ) (x : Site d) :
     Integrable (fun ω : Data d => (U ω n x : ℝ) ^ r) (orientedLaw d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
   exact integrable_oriented_U_rpow hd ν hθ (integrable_expMax_of_expAbs hθ hexp) hr n x
 
@@ -40,8 +40,8 @@ theorem oriented_half_moment_le (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critica
     {r : ℝ} (hr : 2 ≤ r) {m n : ℕ} (hmn : m ≤ n) :
     (∫ ω : Data d, (U ω m 0 : ℝ) ^ (r / 2) ∂(orientedLaw d ν)) ^ (1 / r)
       ≤ ((∫ ω : Data d, (U ω n 0 : ℝ) ^ r ∂(orientedLaw d ν)) ^ (1 / r)) ^ ((1 : ℝ) / 2) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd ν
   have hr0 : (0 : ℝ) < r := by linarith
   have hhalf : (1 : ℝ) ≤ r / 2 := by linarith
   have hIm : Integrable (fun ω : Data d => (U ω m 0 : ℝ) ^ (r / 2)) (orientedLaw d ν) :=
@@ -106,7 +106,7 @@ theorem exists_oriented_U_moment_recursion (hBern : External.Bernstein) :
   obtain ⟨C, hC, hb⟩ := exists_oriented_wErr_moment_law hBern
   refine ⟨2 * C, by positivity, fun d hd2 ν hν n r hr => ?_⟩
   have hd : 1 ≤ d := by omega
-  haveI := hν.prob
+  have := hν.prob
   have hr0 : (0 : ℝ) < r := by linarith
   have hr1 : (1 : ℝ) ≤ r := by linarith
   set A : ℝ := (∫ ω : Data d, (U ω n 0 : ℝ) ^ r ∂(orientedLaw d ν)) ^ (1 / r) with hAdef

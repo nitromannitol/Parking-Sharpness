@@ -201,14 +201,14 @@ theorem S_mono_of_coupling (hd : 1 ≤ d) {μ μ' : Measure (Site d → ℤ)}
     (hI' : Integrable (fun ω : Data d =>
       (LatticeProb.survivorsFrom (toDriver ω) t 0 : ℝ)) (dataLaw d μ')) :
     S (dataLaw d μ) t ≤ S (dataLaw d μ') t := by
-  haveI : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
+  have : IsProbabilityMeasure (LatticeProb.displacementLaw d) :=
     LatticeProb.instructionLaw_isProbability hd 0
-  haveI : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
+  have : IsProbabilityMeasure (LatticeProb.moveLaw d) := by
     unfold LatticeProb.moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
   set RL : Measure ((Label d × ℕ → Site d) × (Label d × ℕ → ℝ)) :=
     (LatticeProb.moveLaw d).prod (LatticeProb.rankLaw d) with hRL
-  haveI : IsProbabilityMeasure RL := by rw [hRL]; infer_instance
+  have : IsProbabilityMeasure RL := by rw [hRL]; infer_instance
   have hcomp : (fun ω : LatticeProb.PData d =>
         (pSurvivorsFrom (LatticeProb.toPDriver ω) t 0 : ℝ))
       = (fun z => (survOf (d := d) t 0 z : ℝ))
@@ -277,7 +277,7 @@ theorem H_mean_mono_of_coupling (hd : 1 ≤ d) {μ μ' : Measure (Site d → ℤ
     (hI : Integrable (fun ω : Data d => (H ω t 0 : ℝ)) (dataLaw d μ))
     (hI' : Integrable (fun ω : Data d => (H ω t 0 : ℝ)) (dataLaw d μ')) :
     ∫ ω, (H ω t 0 : ℝ) ∂(dataLaw d μ') ≤ ∫ ω, (H ω t 0 : ℝ) ∂(dataLaw d μ) := by
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   have hg : Measurable fun ω : Data d => (H ω t 0 : ℝ) :=
     (measurable_from_countable' fun n : ℕ => (n : ℝ)).comp (measurable_H t 0)
   have hk1 : Measurable fun p : ((Site d → ℤ) × (Site d → ℤ)) × Randomness d =>
@@ -306,8 +306,8 @@ theorem H_mean_mono_of_coupling (hd : 1 ≤ d) {μ μ' : Measure (Site d → ℤ
     · rw [hm2]; exact hI'
   have haeconf : ∀ᵐ p ∂(Q.prod (stackRankLaw d)), ∀ x, p.1.1 x ≤ p.1.2 x :=
     (Measure.quasiMeasurePreserving_fst).ae hmono
-  haveI := LatticeProb.stackLaw_isProbability (d := d) hd
-  haveI := LatticeProb.rankLaw_isProbability d
+  have := LatticeProb.stackLaw_isProbability (d := d) hd
+  have := LatticeProb.rankLaw_isProbability d
   have haestack : ∀ᵐ p ∂(Q.prod (stackRankLaw d)), ∀ q : Site d × ℕ, p.2.1 q ∈ nbrFinset q.1 :=
     (Measure.quasiMeasurePreserving_snd).ae
       ((Measure.quasiMeasurePreserving_fst).ae (stackLaw_ae_nbr hd))

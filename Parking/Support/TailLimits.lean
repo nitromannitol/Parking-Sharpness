@@ -57,7 +57,7 @@ theorem ae_tendsto_zero_of_summable_tails {Ω : Type*} [MeasurableSpace Ω]
     have h := ae_eventually_notMem (μ := μ)
       (tsum_measure_ne_top_of_summable μ (fun n => {ω | 1 / (k + 1 : ℝ) < |f n ω|})
         (hs _ (by positivity)))
-    simpa only [Set.mem_setOf_eq, not_lt] using h
+    simpa only [Set.mem_ofPred_eq, not_lt] using h
   filter_upwards [ae_all_iff.mpr hae] with ω hω
   apply Metric.tendsto_atTop.mpr
   intro ε hε

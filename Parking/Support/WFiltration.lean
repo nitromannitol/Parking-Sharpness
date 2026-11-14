@@ -131,7 +131,7 @@ stack. -/
 theorem wTrunc_stack_of_read (i₀ : Fin d) (n i : ℕ) (ω : Data d) {k : ℕ} (hk : k < i) :
     (wTrunc i₀ n i ω).2.1 (wPair i₀ n k ω) = ω.2.1 (wPair i₀ n k ω) := by
   show (if ∃ j, j < i ∧ wPair i₀ n j ω = wPair i₀ n k ω then _ else _) = _
-  rw [if_pos ⟨k, hk, rfl⟩]
+  rw [ite_eq_left ⟨k, hk, rfl⟩]
 
 /-- **Erasing the unread instructions does not change the steps the exploration
 has already taken.** -/
@@ -166,9 +166,9 @@ theorem wTrunc_wTrunc (i₀ : Fin d) (n : ℕ) {i j : ℕ} (hij : i ≤ j) (ω :
       else q.1 + unit i₀) = if ∃ k, k < i ∧ wPair i₀ n k ω = q then ω.2.1 q else q.1 + unit i₀
   by_cases h : ∃ k, k < i ∧ wPair i₀ n k ω = q
   · obtain ⟨k, hk, rfl⟩ := h
-    rw [if_pos (hcond.mpr ⟨k, hk, rfl⟩), if_pos ⟨k, hk, rfl⟩]
+    rw [ite_eq_left (hcond.mpr ⟨k, hk, rfl⟩), ite_eq_left ⟨k, hk, rfl⟩]
     exact wTrunc_stack_of_read i₀ n j ω (by omega)
-  · rw [if_neg h, if_neg fun hc => h (hcond.mp hc)]
+  · rw [ite_eq_right h, ite_eq_right fun hc => h (hcond.mp hc)]
 
 /-! ### The filtration -/
 
@@ -183,7 +183,7 @@ theorem measurable_wTrunc (i₀ : Fin d) (n i : ℕ) : Measurable (wTrunc i₀ n
     have : {ω : Data d | ∃ k, k < i ∧ wPair i₀ n k ω = q}
         = ⋃ k ∈ Finset.range i, (wPair i₀ n k) ⁻¹' {q} := by
       ext ω
-      simp only [Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_preimage, Set.mem_singleton_iff,
+      simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_preimage, Set.mem_singleton_iff,
         Finset.mem_range, exists_prop]
     rw [this]
     exact MeasurableSet.biUnion (Finset.range i).countable_toSet

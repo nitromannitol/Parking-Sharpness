@@ -25,7 +25,7 @@ theorem walkOp_green_escape_barrier (hd : 3 ≤ d) (m : ℝ) :
     simpa only [mul_comm] using
       walkOp_mul_const (fun y : Site d => 1 - srwGreenInf d y / srwGreenInf d 0) m 0
   rw [he, walkOp_sub, walkOp_const (by omega : 1 ≤ d), walkOp_div_const, walkOp_srwGreenInf hd,
-    if_pos rfl, escapeConst, fullGreen_eq_srwGreenInf]
+    ite_eq_left rfl, escapeConst, fullGreen_eq_srwGreenInf]
   field_simp
   ring
 

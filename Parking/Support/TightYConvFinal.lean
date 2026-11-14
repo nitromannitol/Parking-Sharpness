@@ -32,7 +32,7 @@ theorem hYconv_unconditional (ν : Measure ℤ) (hν : CriticalLaw ν)
       ∃ c : ℝ, Tendsto (fun n => ∫ w, f (Y A n w) ∂(orientedLaw 2 ν)) atTop (𝓝 c) := by
   intro A f hfb hflip
   obtain ⟨ΩB, mΩB, PB, B, hBmeas, hBQuarter, hBcont⟩ := exists_isQuarterBrownian_cont
-  haveI : IsProbabilityMeasure PB :=
+  have : IsProbabilityMeasure PB :=
     (isGaussianProcess_quarterBrownian hBQuarter).isProbabilityMeasure
   obtain ⟨Yfield, hYmeas, hYmod, hYcont⟩ := exists_continuousOn_modification_contZ_box
     (v := ∫ x : ℝ, x ^ 2 ∂(realLaw ν)) (realLaw_sq_integral_pos ν hν).le zero_le_one

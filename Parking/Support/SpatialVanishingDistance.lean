@@ -155,8 +155,8 @@ theorem exists_spatial_vanishing_distance (hd : 1 ≤ d) (hd3 : d ≤ 3)
           |Parking.barOdometer w R p.1 p.2 - Parking.barDivisible w R p.1 p.2|}).toReal)
         atTop (𝓝 0) := by
   intro K hK hKpos ε hε
-  haveI := hν.prob
-  haveI := Parking.law_isProb hd ν
+  have := hν.prob
+  have := Parking.law_isProb hd ν
   obtain ⟨C, hC0, hKC⟩ := exists_radius_of_isCompact K hK
   obtain ⟨s_min, hs_min_pos, hs_minCs, hs_min⟩ :=
     exists_time_bounds K hK hKpos C (fun p hp => (hKC p hp).1)
@@ -224,7 +224,7 @@ theorem exists_spatial_vanishing_distance (hd : 1 ≤ d) (hd3 : d ≤ 3)
       ⊆ ⋃ q ∈ mesh, {w : Data d |
           ε / R ^ ((d : ℝ) / 2 - 2) < |(U w q.1 q.2 : ℝ) - uOf w q.1 q.2|} := by
     intro w hw
-    simp only [Set.mem_setOf_eq] at hw
+    simp only [Set.mem_ofPred_eq] at hw
     set g : ℕ × Site d → ℝ := fun q => |(U w q.1 q.2 : ℝ) - uOf w q.1 q.2| with hg_def
     set M : ℝ := mesh.sup' hmesh_ne g with hM_def
     have hmesh_ne' := hmesh_ne
@@ -260,7 +260,7 @@ theorem exists_spatial_vanishing_distance (hd : 1 ≤ d) (hd3 : d ≤ 3)
     have hMeq : M = |(U w q0.1 q0.2 : ℝ) - uOf w q0.1 q0.2| := by
       rw [hM_def, hq0eq, hg_def]
     rw [Set.mem_iUnion₂]
-    exact ⟨q0, hq0mem, by rw [Set.mem_setOf_eq, ← hMeq]; exact hlt⟩
+    exact ⟨q0, hq0mem, by rw [Set.mem_ofPred_eq, ← hMeq]; exact hlt⟩
   have hmeasure_le : (law d ν) {w : Data d | ε < ⨆ p ∈ K,
         |barOdometer w R p.1 p.2 - barDivisible w R p.1 p.2|}
       ≤ ∑ q ∈ mesh, (law d ν) {w : Data d |

@@ -40,13 +40,13 @@ theorem instructionLaw_singleton_eq (y x : Site d) :
 than `1`. -/
 theorem instructionLaw_compl_lt_one (hd : 1 ≤ d) {y x : Site d} (hx : x ∈ nbrFinset y) :
     instructionLaw y ({x} : Set (Site d))ᶜ < 1 := by
-  haveI := instructionLaw_isProbability hd y
+  have := instructionLaw_isProbability hd y
   have h2d : (2 * (d : ℝ≥0∞)) ≠ 0 := by
     simp only [ne_eq, mul_eq_zero, Nat.cast_eq_zero, not_or]
     exact ⟨two_ne_zero, by omega⟩
   have h2d' : (2 * (d : ℝ≥0∞)) ≠ ⊤ := by simp [ENNReal.mul_eq_top]
   have hpos : 0 < instructionLaw y ({x} : Set (Site d)) := by
-    rw [instructionLaw_singleton_eq, if_pos hx, mul_one]
+    rw [instructionLaw_singleton_eq, ite_eq_left hx, mul_one]
     exact ENNReal.inv_pos.mpr h2d'
   have hcompl : instructionLaw y ({x} : Set (Site d))ᶜ
       = 1 - instructionLaw y ({x} : Set (Site d)) := by
@@ -63,7 +63,7 @@ theorem stackLaw_pi_no_hit (hd : 1 ≤ d) (y x : Site d) (N k : ℕ) :
     stackLaw d ((↑(({y} : Finset (Site d)) ×ˢ Finset.Ico N (N + k)) : Set (Site d × ℕ)).pi
         (fun _ => ({x} : Set (Site d))ᶜ))
       = (instructionLaw y ({x} : Set (Site d))ᶜ) ^ k := by
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
   rw [stackLaw, Measure.infinitePi_pi _ (fun q _ => (measurableSet_singleton x).compl)]
   have hconst : ∀ q ∈ ({y} : Finset (Site d)) ×ˢ Finset.Ico N (N + k),
@@ -112,7 +112,7 @@ union over `N` of the null sets it identifies. -/
 theorem ae_stackLaw_hits (hd : 1 ≤ d) :
     ∀ᵐ σ ∂(stackLaw d), ∀ y x : Site d, x ∈ nbrFinset y →
       {j : ℕ | σ (y, j) = x}.Infinite := by
-  haveI := stackLaw_isProbability (d := d) hd
+  have := stackLaw_isProbability (d := d) hd
   rw [ae_all_iff]
   intro y
   rw [ae_all_iff]
@@ -145,10 +145,10 @@ second projections `stackRankLaw d → stackLaw d` and `law d ν → stackRankLa
 theorem ae_law_stack_hits (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     ∀ᵐ ω ∂(law d ν), ∀ y x : Site d, x ∈ nbrFinset y →
       {j : ℕ | ω.2.1 (y, j) = x}.Infinite := by
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
   have : IsProbabilityMeasure (stackRankLaw d) := by unfold stackRankLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have h1 : ∀ᵐ s ∂(stackRankLaw d), ∀ y x : Site d, x ∈ nbrFinset y →
       {j : ℕ | s.1 (y, j) = x}.Infinite :=
@@ -160,7 +160,7 @@ theorem ae_law_stack_hits (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
 theorem ae_Ulimit_top_of_exists (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     ∀ᵐ ω ∂(law d ν), (∃ y : Site d, Parking.Ulimit ω y = ⊤) →
       ∀ x : Site d, Parking.Ulimit ω x = ⊤ := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hstep : ∀ᵐ ω ∂(law d ν), ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1 :=
     ae_stack_nbr hd (LatticeProb.iidLaw d ν)

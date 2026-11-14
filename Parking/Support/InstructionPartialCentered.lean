@@ -32,10 +32,10 @@ theorem instruction_partial_centered_bounds (hd : 3 ≤ d) (A H : Site d → ℕ
         if j < A v then walkOp (fun y => fullGreen d (y - x) ^ 2) v else 0 := by
   classical
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   dsimp only
   by_cases hj : j < A v
-  · rw [if_pos hj]
+  · rw [ite_eq_left hj]
     obtain ⟨m, hm⟩ := instruction_partial_influence hd A H N hA v j hj ρ T x S τ
     have h := centered_influence_bounds (stepLaw d)
       (fun a : Fin d × Bool => partialInt (fun _ : RoundSlot d => stepLaw d)
@@ -46,7 +46,7 @@ theorem instruction_partial_centered_bounds (hd : 3 ≤ d) (A H : Site d → ℕ
       (fun a => ⟨(hm a).1, (hm a).2, fullGreen_le_escapeConst hd _⟩)
     refine ⟨h.1, h.2.trans_eq ?_⟩
     exact integral_stepLaw_add hd1 (fun y => fullGreen d (y - x) ^ 2) v
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
     have hf (a : Fin d × Bool) : partialInt (fun _ : RoundSlot d => stepLaw d)
         (insert (Sum.inl (v, j)) S) (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x)
           (Function.update τ (Sum.inl (v, j)) a) =

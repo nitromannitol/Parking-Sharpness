@@ -58,7 +58,7 @@ theorem instruction_partial_hole_factor_any (hd : 3 ≤ d) (A H : Site d → ℕ
     (∫ a, f a * g a ∂(stepLaw d)) ≤ Real.exp (roundHoleCost d A x z q) *
       ((∫ a, f a ∂(stepLaw d)) * ∫ a, g a ∂(stepLaw d)) := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   have hunused (hq : ∀ τ a, roundSigned A H (Function.update τ q a) = roundSigned A H τ)
       (hc : roundHoleCost d A x z q = 0) :
       (∫ a, partialInt (fun _ : RoundSlot d => stepLaw d) (insert q S)
@@ -78,10 +78,10 @@ theorem instruction_partial_hole_factor_any (hd : 3 ≤ d) (A H : Site d → ℕ
   | inl q =>
       rcases q with ⟨v, j⟩
       by_cases hj : j < A v
-      · simpa only [roundHoleCost, if_pos hj] using
+      · simpa only [roundHoleCost, ite_eq_left hj] using
           instruction_partial_hole_factor hd A H v j hj ρ T x z S τ
       · exact hunused (fun ζ a => roundSigned_update_unused A H ζ v j (Nat.le_of_not_gt hj) a)
-          (by simp only [roundHoleCost, if_neg hj])
+          (by simp only [roundHoleCost, ite_eq_right hj])
   | inr p => exact hunused (fun ζ a => roundSigned_update_inr A H ζ p a) rfl
 
 /-- The factor compares the after-reveal product to the before-reveal product pointwise. -/
@@ -99,7 +99,7 @@ theorem round_hole_reveal_section (hd : 3 ≤ d) (A H : Site d → ℕ)
           (fun ζ => matchedMeanH (roundSigned A H ζ) ρ T z) τ) := by
   classical
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   have hm (v : Site d) :
       Measurable (fun ζ : RoundSlot d → Fin d × Bool => matchedMeanH (roundSigned A H ζ) ρ T v) :=
     (measurable_matchedMeanH hd1 ρ T v).comp

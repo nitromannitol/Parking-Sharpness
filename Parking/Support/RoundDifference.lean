@@ -49,7 +49,7 @@ theorem roundDiff_update_eq_centered (hd : 1 ≤ d) (e : Fin K ↪ Site d × ℕ
             (Function.update τ (Sum.inl (e j)) b)
       f a - ∫ b, f b ∂(stepLaw d) := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   unfold roundDiff
   simp only [revealPrefix_succ]
   apply partialInt_reveal_eq_centered _ _ _ (notMem_revealPrefix (slotEnumeration e) j)
@@ -79,7 +79,7 @@ theorem roundDiff_section_zero (hd : 1 ≤ d) (e : Fin K ↪ Site d × ℕ)
     (τ : RoundSlot d → Fin d × Bool) :
     ∫ a, roundDiff e A H ρ T x j (Function.update τ (Sum.inl (e j)) a) ∂(stepLaw d) = 0 := by
   classical
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   let f : (Fin d × Bool) → ℝ := fun b => partialInt (fun _ : RoundSlot d => stepLaw d)
     (insert (Sum.inl (e j)) (revealPrefix (slotEnumeration e) j.val))
       (fun ζ => matchedMeanU (roundSigned A H ζ) ρ T x) (Function.update τ (Sum.inl (e j)) b)

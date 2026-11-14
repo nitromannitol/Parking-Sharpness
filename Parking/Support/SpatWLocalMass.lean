@@ -27,7 +27,7 @@ theorem spatialLocalMass_nonneg {d : ℕ} (w : Data d) {R : ℝ} (hR : 0 ≤ R) 
 critical law `ν`, being a finite sum of the integrable odometer terms `integrable_U_law`. -/
 theorem integrable_spatialLocalMass {d : ℕ} (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (R B : ℝ) : Integrable (fun w => spatialLocalMass w R B) (law d ν) := by
-  haveI := hν.prob
+  have := hν.prob
   exact (integrable_finsetSum _ fun y _ =>
     integrable_U_law hd ν hν.integrable_abs ⌊R ^ 2⌋₊ y).const_mul _
 
@@ -38,7 +38,7 @@ theorem exists_integral_spatialLocalMass_le {d : ℕ} (hd : 1 ≤ d) (hd3 : d �
     (ν : Measure ℤ) (hν : CriticalLaw ν) {B : ℝ} (hB : 0 < B) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 2 ≤ R →
       ∫ w, spatialLocalMass w R B ∂law d ν ≤ C := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨c, C, hc, hcC, hmean, _⟩ :=
     (Frozen.growth hGrowth hBernstein d hd ν hν).1 hd3
   have hC : 0 ≤ C := hc.le.trans hcC

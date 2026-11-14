@@ -37,9 +37,9 @@ theorem exists_yfieldSup3_moment (ν : Measure ℤ) (hν : CriticalLaw ν) (p : 
       Integrable (fun η : Site 2 → ℝ => (yfieldSup3 A hA R n η) ^ p) (iidLaw 2 (realLaw ν)) ∧
       (∫ η : Site 2 → ℝ, (yfieldSup3 A hA R n η) ^ p ∂(iidLaw 2 (realLaw ν))) ≤
         D * (((R : ℝ) + 1) ^ 2) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   have hp1 : (1:ℝ) ≤ p := by linarith
   have hp2 : (0:ℝ) ≤ p / 2 := by linarith
   set K0 : ℝ := (2:ℝ) ^ (p - 1) with hK0def

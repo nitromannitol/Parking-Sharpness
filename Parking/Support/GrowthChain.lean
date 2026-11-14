@@ -37,7 +37,7 @@ theorem growth_of_master (hGrowth : Parking.External.SandpileGrowth)
       (∀ t : ℕ,
         c / ((t : ℝ) + 1) ≤ S (law d ν) t ∧
           S (law d ν) t ≤ C * Real.log ((t : ℝ) + 2) / ((t : ℝ) + 1))) := by
-  haveI := hν.prob
+  have := hν.prob
   have hint := hν.integrable_abs
   have hdec := S_antitone hd ν hint
   have hpos : ∀ t : ℕ, 0 ≤ S (law d ν) t := fun t => S_nonneg _ t

@@ -33,14 +33,14 @@ theorem exists_integral_rNorm_orientedMax_le (ν : Measure ℤ) (hν : CriticalL
         (iidLaw 2 (realLaw ν)) ∧
       ∫ η, rNorm (walkLaw 2) 8 (orientedMax (orientedPotential η) n 0)
         ∂(iidLaw 2 (realLaw ν)) ≤ C * (n : ℝ) ^ ((1 : ℝ) / 4) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   obtain ⟨C, hC, hmom⟩ := exists_orientedMax_moment (realLaw ν) 8 (by norm_num)
     (integrable_rpow_realLaw ν hν 8 (by norm_num)) (realLaw_mean ν hν)
   refine ⟨C, hC, fun n hn => ?_⟩
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   set F : ((ℕ → Fin 2 × Bool) → (Site 2 → ℝ) → ℝ) :=
     fun p η => orientedMax (orientedPotential η) n 0 p with hFdef
   obtain ⟨hgi_joint, hrnorm⟩ := hmom n hn

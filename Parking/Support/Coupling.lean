@@ -34,11 +34,11 @@ variable {d : ℕ}
 theorem abs_stepVec_le_one (b : Fin d × Bool) (i : Fin d) : |stepVec b i| ≤ 1 := by
   unfold stepVec
   by_cases hb : b.2
-  · simp only [hb, if_true]
+  · simp only [hb, ite_true]
     by_cases hij : i = b.1
     · subst hij; simp [unit, Pi.single_eq_same]
     · simp [unit, Pi.single_eq_of_ne hij]
-  · simp only [hb, Bool.false_eq_true, if_false]
+  · simp only [hb, Bool.false_eq_true, ite_false]
     by_cases hij : i = b.1
     · subst hij; simp [unit, Pi.single_eq_same]
     · simp [unit, Pi.single_eq_of_ne hij]
@@ -169,8 +169,7 @@ label indices at each site. -/
 theorem candidates_mono {η η' : Site d → ℤ} (h : ∀ x, η x ≤ η' x) (y : Site d) (r : ℕ) :
     candidates η y r ⊆ candidates η' y r := by
   intro p hp
-  simp only [candidates, Finset.mem_biUnion, Finset.mem_map, Finset.mem_range,
-    Function.Embedding.coeFn_mk] at hp ⊢
+  simp only [candidates, Finset.mem_biUnion, Finset.mem_map, Finset.mem_range] at hp ⊢
   obtain ⟨x, hx, i, hi, rfl⟩ := hp
   exact ⟨x, hx, i, lt_of_lt_of_le hi (Int.toNat_le_toNat (h x)), rfl⟩
 

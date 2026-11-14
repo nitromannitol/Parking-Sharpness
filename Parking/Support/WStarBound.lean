@@ -78,8 +78,8 @@ theorem measurable_wMax_prod (n : ℕ) (x : Site d) :
 measurable `wMax`. -/
 theorem measurable_wStar (hd : 1 ≤ d) (n : ℕ) (x : Site d) :
     Measurable fun ω : Data d => wStar ω n x := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   exact ((measurable_wMax_prod (d := d) n x).stronglyMeasurable.integral_prod_right'
     (ν := walkLaw d)).measurable
 
@@ -108,8 +108,8 @@ theorem wMax_le_conf (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d)
 walk law. -/
 theorem wStar_le_conf (hd : 1 ≤ d) (ω : Data d) (n : ℕ) (x : Site d) :
     wStar ω n x ≤ wCoef d n * confBox ω x (3 * n) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   calc wStar ω n x = ∫ p, wMax ω n x p ∂(walkLaw d) := rfl
     _ ≤ ∫ _p, wCoef d n * confBox ω x (3 * n) ∂(walkLaw d) :=
         integral_mono (integrable_wMax hd ω n x) (integrable_const _)
@@ -188,7 +188,7 @@ theorem integral_abs_wErr_rpow_shift (hd : 1 ≤ d) (ν : Measure ℤ)
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * max (k : ℝ) 0)) ν)
     {r : ℝ} (hr : 1 ≤ r) (m : ℕ) (z : Site d) :
     ∫ ω, |wErr ω m z| ^ r ∂(law d ν) = ∫ ω, |wErr ω m 0| ^ r ∂(law d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
   have hti : TranslationInvariant (LatticeProb.iidLaw d ν) := fun w =>
     iidLaw_map_shiftConf' ν w

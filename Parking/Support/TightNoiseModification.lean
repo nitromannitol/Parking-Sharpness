@@ -305,7 +305,7 @@ theorem exists_continuous_modification_contZBoxProcess_everywhere {v T A : ℝ} 
     by_contra hωN
     apply hω
     rw [hY'def]
-    simp only [if_neg hωN]
+    simp only [ite_eq_right hωN]
   refine ⟨Y', fun z => Measurable.ite hNmeas measurable_const (hYmeas z), fun z => ?_, fun ω => ?_⟩
   · have hYY' : Y z =ᵐ[contNoiseLaw] Y' z :=
       ae_iff.mpr (measure_mono_null (hagree z) hNnull)

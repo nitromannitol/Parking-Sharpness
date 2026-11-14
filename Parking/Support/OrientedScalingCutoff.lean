@@ -47,8 +47,8 @@ theorem oriented_scaling_of_cutoff (ν : Measure ℤ) (hν : CriticalLaw ν)
       Integrable (Uc 1) Q ∧ μ = ∫ ω, Uc 1 ω ∂Q ∧ 0 < μ ∧
       Tendsto (fun n : ℕ => (n : ℝ) ^ (-(1 : ℝ) / 4) *
         meanuOriented (orientedLaw 2 ν) n) atTop (𝓝 μ) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw 2 ν) := orientedLaw_isProbability (by norm_num) ν
   obtain ⟨C8, _hC8pos, hC8⟩ := exists_rescaled_uOriented_eighth ν hν
   obtain ⟨C1, hC1pos, hC1⟩ := exists_meanuOriented_two_upper ν hν.mean 8 (by norm_num)
     (hν.integrable_rpow (by norm_num))

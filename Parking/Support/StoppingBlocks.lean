@@ -45,9 +45,9 @@ theorem clipField_bound (ζ : Site d → ℝ) (R : ℕ) (y : Site d) :
   classical
   rw [clipField]
   by_cases hy : y ∈ boxFinset (0 : Site d) R
-  · rw [if_pos hy]
+  · rw [ite_eq_left hy]
     exact Finset.single_le_sum (f := fun z => |ζ z|) (fun z _ => abs_nonneg _) hy
-  · rw [if_neg hy, abs_zero]
+  · rw [ite_eq_right hy, abs_zero]
     exact Finset.sum_nonneg fun z _ => abs_nonneg _
 
 /-- The bound `∑ z ∈ boxFinset 0 R, |ζ z|` used for the clipped field is nonnegative, as a
@@ -59,7 +59,7 @@ theorem clipField_nonneg_bound (ζ : Site d → ℝ) (R : ℕ) :
 /-- The clipped field agrees with `ζ` at every site inside the box of radius `R`. -/
 theorem clipField_eq_of_mem (ζ : Site d → ℝ) {R : ℕ} {y : Site d}
     (hy : y ∈ boxFinset (0 : Site d) R) : clipField ζ R y = ζ y := by
-  rw [clipField, if_pos hy]
+  rw [clipField, ite_eq_left hy]
 
 /-- On the event that the walk has stayed in the box of radius `t`, the clipped field
 gives the same odometer at the walk's position, provided the box is large enough. -/
@@ -99,8 +99,8 @@ theorem dependsUpTo_blockU (ζ : Site d → ℝ) {σ : (ℕ → Site d) → ℕ}
   show (if s < σ X then u ζ ℓ (X s) else 0) = if s < σ X' then u ζ ℓ (X' s) else 0
   rw [hσeq]
   by_cases hlt : s < σ X'
-  · rw [if_pos hlt, if_pos hlt, h s (by have := hσn X'; omega)]
-  · rw [if_neg hlt, if_neg hlt]
+  · rw [ite_eq_left hlt, ite_eq_left hlt, h s (by have := hσn X'; omega)]
+  · rw [ite_eq_right hlt, ite_eq_right hlt]
 
 /-- The block reward `∑_{s ≤ j < min(σ X, s + ℓ)} ζ(X j)` is integrable: by
 `dependsUpTo_blockSum` it depends on finitely many coordinates, and it is bounded, in
@@ -110,7 +110,7 @@ theorem integrable_blockSum (hd : 1 ≤ d) (ζ : Site d → ℝ) {B : ℝ} (hB0 
     (hσ : LatticeProb.IsWalkStopping σ) {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) (x : Site d) :
     Integrable (fun X : ℕ → Site d => ∑ j ∈ Finset.Ico s (min (σ X) (s + ℓ)), ζ (X j))
       (LatticeProb.siteWalkLaw d x) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   refine (integrable_const ((n : ℝ) * B)).mono'
     (LatticeProb.measurable_of_dependsUpTo
       (dependsUpTo_blockSum ζ hσ hσn s ℓ)).aestronglyMeasurable
@@ -133,15 +133,15 @@ theorem integrable_blockU (hd : 1 ≤ d) (ζ : Site d → ℝ) {B : ℝ} (hB0 : 
     (hσ : LatticeProb.IsWalkStopping σ) {n : ℕ} (hσn : ∀ X, σ X ≤ n) (s ℓ : ℕ) (x : Site d) :
     Integrable (fun X : ℕ → Site d => if s < σ X then u ζ ℓ (X s) else 0)
       (LatticeProb.siteWalkLaw d x) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   refine (integrable_const ((ℓ : ℝ) * B)).mono'
     (LatticeProb.measurable_of_dependsUpTo
       (dependsUpTo_blockU ζ hσ hσn s ℓ)).aestronglyMeasurable
     (Filter.Eventually.of_forall fun X => ?_)
   by_cases hlt : s < σ X
-  · rw [if_pos hlt, Real.norm_eq_abs, abs_of_nonneg (u_nonneg ζ ℓ (X s))]
+  · rw [ite_eq_left hlt, Real.norm_eq_abs, abs_of_nonneg (u_nonneg ζ ℓ (X s))]
     exact u_le_mul_of_le hd hB0 (fun y => le_trans (le_abs_self _) (hB y)) ℓ (X s)
-  · rw [if_neg hlt, norm_zero]
+  · rw [ite_eq_right hlt, norm_zero]
     positivity
 
 /-! ### The block decomposition of the whole reward -/
@@ -151,7 +151,7 @@ through time `t`, restating `LatticeProb.ae_image_subset_boxFinset` as a pointwi
 membership statement. -/
 theorem ae_mem_boxFinset (hd : 1 ≤ d) (t : ℕ) (x : Site d) :
     ∀ᵐ X ∂(LatticeProb.siteWalkLaw d x), ∀ j ≤ t, X j ∈ boxFinset x t := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   filter_upwards [LatticeProb.ae_image_subset_boxFinset hd x t] with X hX j hj
   exact hX (Finset.mem_image_of_mem X (Finset.mem_range.mpr (by omega)))
 
@@ -169,7 +169,7 @@ theorem integral_stopping_reward_le (hd : 1 ≤ d) (hStopping : Parking.External
               u ζ (blockBound N (k + 1) - blockBound N k) (X (blockBound N k)) else 0)
             ∂(LatticeProb.siteWalkLaw d (0 : Site d)) := by
   classical
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   set W := LatticeProb.siteWalkLaw d (0 : Site d) with hW
   set R : ℕ := 3 * n + N with hR
   set ζ' : Site d → ℝ := clipField ζ R with hζ'
@@ -231,7 +231,7 @@ theorem integral_stopping_reward_le (hd : 1 ≤ d) (hStopping : Parking.External
     refine integral_congr_ae ?_
     filter_upwards [hae] with X hX
     by_cases hlt : blockBound N k < σ X
-    · rw [if_pos hlt, if_pos hlt]
+    · rw [ite_eq_left hlt, ite_eq_left hlt]
       have hbk : blockBound N k ≤ n := by have := hσn X; omega
       have hmem : X (blockBound N k) ∈ boxFinset (0 : Site d) n := hX _ hbk
       have hsz : n + (blockBound N (k + 1) - blockBound N k) ≤ R := by
@@ -241,7 +241,7 @@ theorem integral_stopping_reward_le (hd : 1 ≤ d) (hStopping : Parking.External
         have h3 : max N (2 * n) ≤ N + 2 * n := by omega
         omega
       rw [hζ', u_clipField_eq hd ζ hmem hsz]
-    · rw [if_neg hlt, if_neg hlt]
+    · rw [ite_eq_right hlt, ite_eq_right hlt]
   rw [hstep1, hstep3]
   refine Finset.sum_le_sum fun k hk => ?_
   rw [← hstep5 k]

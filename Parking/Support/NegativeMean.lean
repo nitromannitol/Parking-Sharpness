@@ -16,7 +16,7 @@ open MeasureTheory
 dominated by the integrable absolute value `hν.integrable_abs`. -/
 theorem CriticalLaw.integrable_negativePart {ν : Measure ℤ} (hν : CriticalLaw ν) :
     Integrable (fun k : ℤ => max (-(k : ℝ)) 0) ν := by
-  haveI := hν.prob
+  have := hν.prob
   have hi : Integrable (fun k : ℤ => (k : ℝ)) ν :=
     (integrable_norm_iff (measurable_of_countable _).aestronglyMeasurable).mp
       (by simpa only [Real.norm_eq_abs] using hν.integrable_abs)
@@ -28,7 +28,7 @@ shows both `∫ max(k, 0)` and `∫ max(-k, 0)` equal `(1/2) * ∫ |k|`, so the 
 inherits the same positive value. -/
 theorem CriticalLaw.negativePart_mean_pos {ν : Measure ℤ} (hν : CriticalLaw ν) :
     0 < ∫ k : ℤ, max (-(k : ℝ)) 0 ∂ν := by
-  haveI := hν.prob
+  have := hν.prob
   have hi : Integrable (fun k : ℤ => (k : ℝ)) ν :=
     (integrable_norm_iff (measurable_of_countable _).aestronglyMeasurable).mp
       (by simpa only [Real.norm_eq_abs] using hν.integrable_abs)

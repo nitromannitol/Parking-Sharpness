@@ -29,9 +29,9 @@ theorem exists_orientedMax_log_mean (hd : 3 ≤ d)
       (∫ ω : (ℕ → Fin d × Bool) × (Site d → ℝ),
         orientedMax (orientedPotential ω.2) n 0 ω.1 ∂((walkLaw d).prod (iidLaw d μ))) ≤
           C * Real.log ((n : ℝ) + 1) := by
-  haveI := stepLaw_isProbability (d := d) (by omega)
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
-  haveI : IsProbabilityMeasure (iidLaw d μ) := by unfold iidLaw; infer_instance
+  have := stepLaw_isProbability (d := d) (by omega)
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d μ) := by unfold iidLaw; infer_instance
   obtain ⟨τ, A, hτ, hA, hb⟩ := exists_orientedPotential_exponential hd μ hi hm hθ he
   refine ⟨(A + 2) / τ, by positivity, fun n hn => ?_⟩
   let Q := (walkLaw d).prod (iidLaw d μ)

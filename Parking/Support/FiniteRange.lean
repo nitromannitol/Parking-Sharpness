@@ -116,7 +116,7 @@ theorem pState_agree_box (h : AgreesOnBox z ρ D E) :
                 simpa using abs_stepVec_le_one (D.move (p, s)) i)
           · have hEq : pNextPos D (pState D s) s p = (pState D s).pos p := by
               simp only [pNextPos]
-              rw [if_neg hA]
+              rw [ite_eq_right hA]
             rw [hEq]
             exact boxFinset_mono (by omega) (pPos_mem_boxFinset D s hp)
         have harr' : pArrivalsAt D (pState D s) s (pNextPos D (pState D s) s p)

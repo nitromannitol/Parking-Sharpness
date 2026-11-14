@@ -65,7 +65,7 @@ theorem isTestFun_finset_sum {m : ℕ} {φ : Fin m → (Fin d → ℝ) → ℝ} 
 pushforward law. -/
 theorem variance_eq_integral_sq_realLaw (ν : Measure ℤ) (hν : CriticalLaw ν) :
     variance (fun k : ℤ => (k : ℝ)) ν = ∫ x : ℝ, x ^ 2 ∂(realLaw ν) := by
-  haveI := hν.prob
+  have := hν.prob
   rw [variance_eq_integral measurable_intCastReal.aemeasurable]
   have hmean : ν[fun k : ℤ => (k : ℝ)] = 0 := hν.mean
   simp only [hmean, sub_zero]

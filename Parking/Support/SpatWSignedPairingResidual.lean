@@ -26,8 +26,8 @@ theorem tendsto_signedPair_sub_scenePair_sub_pairing_zero {d : ℕ}
     {a : ℝ} (ha : 0 < a) :
     Tendsto (fun R : ℝ => ((law d ν) {w | a < |signedPair w R φ - scenePair w R φ
       - ∫ x, barDivisible w R 1 x * contOp d φ x|}).toReal) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   let E₁ := fun R (w : Data d) => signedMiddle w R φ -
     ∫ x, barOdometer w R 1 x * contOp d φ x
   let E₂ := fun R (w : Data d) => (∫ x, barOdometer w R 1 x * contOp d φ x) -

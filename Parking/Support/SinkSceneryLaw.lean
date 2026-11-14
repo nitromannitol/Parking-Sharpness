@@ -30,7 +30,7 @@ theorem exists_sparseSinkMeanU_subgaussian (hd : 5 ≤ d) :
   classical
   obtain ⟨V, hV, hsg⟩ := exists_pinnedSparseBoxField_subgaussian hd
   refine ⟨V, hV, fun ν hν T v x => ?_⟩
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let S := boxFinset x T
   let a : ℤ := -((T * (2 * T + 1) ^ d + 1 : ℕ) : ℤ)
   have ha : a ≤ 0 := by dsimp only [a]; omega
@@ -48,7 +48,7 @@ theorem exists_sparseSinkMeanU_subgaussian (hd : 5 ≤ d) :
       simp only [pinnedSparseBoxField, sparseSinkField, horizonSink, Function.update_self]
       rfl
     · simp only [pinnedSparseBoxField, sparseSinkField, horizonSink, Function.update_of_ne hyv,
-        sparseBoxField, dif_pos hyS, Finset.restrict, clippedField]
+        sparseBoxField, dite_eq_left hyS, Finset.restrict, clippedField]
   have hm : (∫ ξ, f ξ ∂(Measure.pi (fun _ : S => ν))) =
       ∫ η, matchedMeanU (sparseSinkField T v η) 0 T x ∂(iidLaw d ν) := by
     rw [← hmap, integral_map hR.aemeasurable hf.aestronglyMeasurable]
@@ -69,7 +69,7 @@ theorem exists_sparseSink_scenery_moment (hd : 5 ≤ d) :
         ∫ ζ, matchedMeanU (sparseSinkField T v ζ) 0 T x ∂(iidLaw d ν)) ≤ C * Real.sqrt r := by
   obtain ⟨V, _hV, hsg⟩ := exists_sparseSinkMeanU_subgaussian hd
   refine ⟨2 * Real.exp ((V : ℝ) / 2), by positivity, fun ν hν T v x r hr => ?_⟩
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   exact (subgaussian_rNorm_le _ _
     (((measurable_matchedMeanU (by omega) 0 T x).comp (measurable_sparseSinkField T v)).sub_const _)
     V (hsg ν T v x) r hr).2

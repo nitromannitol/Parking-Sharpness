@@ -58,7 +58,7 @@ theorem matchedMeanU_nonneg (η : Site d → ℤ) (ρ : Label d × ℕ → ℝ)
 theorem matchedMeanU_le_candidates (hd : 1 ≤ d) (η : Site d → ℤ)
     (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     matchedMeanU η ρ T x ≤ ((T * (candidates η x T).card : ℕ) : ℝ) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have h := integral_mono (integrable_matchedOdometer hd η ρ T x)
     (integrable_const ((T * (candidates η x T).card : ℕ) : ℝ))
     (fun σ => Nat.cast_le.mpr (matchedOdometer_le_candidates η ρ σ T x))
@@ -70,8 +70,8 @@ theorem matchedMeanU_bellman (hd : 1 ≤ d) (η : Site d → ℤ)
     matchedMeanU η ρ (T + 1) x = ((η x).toNat : ℝ) +
       ∫ τ, matchedMeanU (roundSigned (fun y => (η y).toNat) (fun y => (-η y).toNat) τ) ρ T x
         ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI := roundNoiseLaw_isProbability hd
+  have := stepLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   let Q := Measure.infinitePi fun _ : RoundSlot d => stepLaw d
   let f : RoundNoise d → ℝ := fun σ => ((matchedState η ρ σ (T + 1)).departures x : ℝ)
   have hfi : Integrable f (roundNoiseLaw d) := integrable_matchedOdometer hd η ρ (T + 1) x

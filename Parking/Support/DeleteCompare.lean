@@ -154,12 +154,12 @@ theorem integral_deleted {d : ℕ} (hd : 1 ≤ d) {F : PData d → ℝ} (hFm : M
     (a : Site d → ℤ) (x : Site d) (i : ℕ) :
     ∫ b, deleted F a x i b ∂(noiseLaw d)
       = ∫ b, F (delAt x ((a, b) : PData d)) ∂(noiseLaw d) := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
   have hmp := measurePreserving_relabelNoise hd x (Equiv.swap i ((a x).toNat - 1))
   have hpair : Measurable fun b : PNoise d =>
       (((fun y => if y = x then a y - 1 else a y) : Site d → ℤ), b) :=

@@ -252,7 +252,7 @@ theorem exists_srwGreen_diag_le (hd : 1 ≤ d) :
     · have hd3 : 3 ≤ d := by omega
       obtain ⟨C₁, hC₁, hC₁le⟩ := exists_sum_rpow_le (p := (3 : ℝ) / 2) (by norm_num)
       refine ⟨1 + C₀ * C₁, by positivity, fun t => ?_⟩
-      have hg : greenScale d t = 1 := by simp only [greenScale, if_neg h1, if_neg h2]
+      have hg : greenScale d t = 1 := by simp only [greenScale, ite_eq_right h1, ite_eq_right h2]
       have hterm : ∀ n ∈ Finset.range t, C₀ / Real.sqrt ((n : ℝ) + 1) ^ d
           ≤ C₀ * ((n : ℝ) + 1) ^ (-(3 : ℝ) / 2) := by
         intro n _
@@ -297,7 +297,7 @@ theorem exists_meanRange_lower (hd : 1 ≤ d) :
     ∃ c : ℝ, 0 < c ∧ ∀ (x : Site d) (t : ℕ),
       c * (((t : ℝ) + 1) / greenScale d t)
         ≤ ∫ X, (LatticeProb.rangeCard X t : ℝ) ∂(LatticeProb.siteWalkLaw d x) := by
-  haveI : NeZero d := ⟨by omega⟩
+  have : NeZero d := ⟨by omega⟩
   obtain ⟨C, hC, hCle⟩ := exists_srwGreen_diag_le hd
   refine ⟨C⁻¹, by positivity, fun x t => ?_⟩
   have hgpos : 0 < greenScale d t := greenScale_pos d t

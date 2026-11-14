@@ -43,10 +43,10 @@ theorem setMoves_originMoveOf (ω : PData d) : setMoves (originMoveOf ω) ω = �
   funext q
   show (if q.1 = ((0 : Site d), 0) then originMoveOf ω q.2 else ω.2.1 q) = ω.2.1 q
   by_cases hq : q.1 = ((0 : Site d), 0)
-  · rw [if_pos hq]
+  · rw [ite_eq_left hq]
     show ω.2.1 ((((0 : Site d), 0) : Label d), q.2) = ω.2.1 q
     rw [← hq]
-  · rw [if_neg hq]
+  · rw [ite_eq_right hq]
 
 /-- The walk of the bottom particle at the origin after grafting is that of the
 prescribed realization `ω₁`, by `graftOrigin_move_zero`. -/
@@ -81,7 +81,7 @@ theorem jointObs_graftOrigin (k t : ℕ) (ω₁ ω : PData d) :
 theorem moveLaw_map_originMove (d : ℕ) (hd : 1 ≤ d) :
     (moveLaw d).map (fun m : Label d × ℕ → Fin d × Bool =>
       fun s : ℕ => m ((((0 : Site d), 0) : Label d), s)) = walkLaw d := by
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
   have hinj : Function.Injective (fun s : ℕ => ((((0 : Site d), 0) : Label d), s)) := by
     intro a b h
     exact congrArg Prod.snd h
@@ -106,12 +106,12 @@ theorem integral_indicator_mul_originMove (hd : 1 ≤ d) {ν : Measure ℤ}
         * Bd (originMoveOf ω) ∂(pDataLaw d ν))
       = (ν {(k : ℤ)}).toReal * ∫ p, Bd p ∂(walkLaw d) := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
   have hcnt : MeasurableSet {a : Site d → ℤ | a (0 : Site d) = (k : ℤ)} := by
     have hm : Measurable fun a : Site d → ℤ => a (0 : Site d) := measurable_pi_apply _
     exact hm (measurableSet_singleton ((k : ℤ)))
@@ -195,7 +195,7 @@ theorem integral_indicator_mul_originMove (hd : 1 ≤ d) {ν : Measure ℤ}
       exact h.symm
     rw [hstep1]
     have hBi : Integrable Bd (walkLaw d) := by
-      haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+      have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
       exact (integrable_const M).mono' hBm.aestronglyMeasurable
         (Filter.Eventually.of_forall fun p => by rw [Real.norm_eq_abs]; exact hBb p)
     have h := integral_map (μ := moveLaw d)

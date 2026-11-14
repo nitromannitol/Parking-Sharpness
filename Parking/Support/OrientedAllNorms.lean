@@ -31,7 +31,7 @@ theorem exists_orientedGreen_sq_rates (hd : 2 ≤ d) :
       simpa [orientedKappa] using hb n hn
     · obtain ⟨C, hC, hb⟩ := exists_orientedGreen_high_sq_bound (d := d) (by omega)
       refine ⟨1, C, by norm_num, hC, fun n hn => ?_⟩
-      simp only [orientedKappa, if_neg hd2, if_neg hd3, mul_one]
+      simp only [orientedKappa, ite_eq_right hd2, ite_eq_right hd3, mul_one]
       exact ⟨one_le_orientedGreen_sq n hn, hb n hn⟩
 
 /-- For a centered, nonconstant, absolutely integrable law `ν` with positive variance,

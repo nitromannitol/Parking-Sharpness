@@ -24,7 +24,7 @@ theorem exists_oriented_finite_route_moment (hBern : External.Bernstein) :
           ∂(orientedLaw d ν)) ^ (1 / r) + r) := by
   obtain ⟨C, hC, hb⟩ := exists_oriented_truncated_route_moment hBern
   refine ⟨C, hC, fun d hd ν hν S m l n hm r hr => ?_⟩
-  haveI := hν.prob
+  have := hν.prob
   let Q := (iidLaw d ν).prod (orientedStackLaw d)
   let B := C * (Real.sqrt r * (∫ ω : Data d, (U ω n 0 : ℝ) ^ (r / 2)
     ∂(orientedLaw d ν)) ^ (1 / r) + r)

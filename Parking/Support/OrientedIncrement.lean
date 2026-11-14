@@ -53,9 +53,9 @@ theorem exists_oriented_potential_increment (μ : Measure ℝ) [IsProbabilityMea
         |orientedPotentialAlong n j ω - orientedPotentialAlong n k ω| ^ r
           ∂((walkLaw 2).prod (iidLaw 2 μ))) ^ (1 / r) ≤ C * ((k - j : ℕ) : ℝ) ^ ((1 : ℝ) / 4) := by
   have hr0 : 0 < r := by linarith
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
-  haveI : IsProbabilityMeasure (iidLaw 2 μ) := by unfold iidLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have : IsProbabilityMeasure (iidLaw 2 μ) := by unfold iidLaw; infer_instance
   obtain ⟨A, hA, hsc⟩ := exists_oriented_potential_scenery_bound μ r (by linarith) hmom hmean
   obtain ⟨B, hB, hwc⟩ := exists_orientedCount_load_moment (r / 2) (by linarith)
   let K := A ^ (r / 2) * B

@@ -68,13 +68,13 @@ theorem graftOrigin_relabelAt_zero (σ : Equiv.Perm ℕ) (ω₁ ω : PData d) :
   · funext q
     simp only [graftOrigin, relabelAt]
     by_cases hq : q.1.1 = (0 : Site d)
-    · rw [if_pos hq, if_pos hq]
-    · rw [if_neg hq, if_neg hq, if_neg hq]
+    · rw [ite_eq_left hq, ite_eq_left hq]
+    · rw [ite_eq_right hq, ite_eq_right hq, ite_eq_right hq]
   · funext q
     simp only [graftOrigin, relabelAt]
     by_cases hq : q.1.1 = (0 : Site d)
-    · rw [if_pos hq, if_pos hq]
-    · rw [if_neg hq, if_neg hq, if_neg hq]
+    · rw [ite_eq_left hq, ite_eq_left hq]
+    · rw [ite_eq_right hq, ite_eq_right hq, ite_eq_right hq]
 
 /-- Relabeling the particles at another site commutes with the graft. -/
 theorem graftOrigin_relabelAt {x₀ : Site d} (hx₀ : x₀ ≠ (0 : Site d)) (σ : Equiv.Perm ℕ)
@@ -87,14 +87,14 @@ theorem graftOrigin_relabelAt {x₀ : Site d} (hx₀ : x₀ ≠ (0 : Site d)) (�
     simp only [graftOrigin, relabelAt]
     by_cases hq : q.1.1 = (0 : Site d)
     · have hne : ¬ (q.1.1 = x₀) := by rw [hq]; exact fun hh => hx₀ hh.symm
-      rw [if_pos hq, if_neg hne, if_pos hq]
-    · rw [if_neg hq, if_neg hq]
+      rw [ite_eq_left hq, ite_eq_right hne, ite_eq_left hq]
+    · rw [ite_eq_right hq, ite_eq_right hq]
   · funext q
     simp only [graftOrigin, relabelAt]
     by_cases hq : q.1.1 = (0 : Site d)
     · have hne : ¬ (q.1.1 = x₀) := by rw [hq]; exact fun hh => hx₀ hh.symm
-      rw [if_pos hq, if_neg hne, if_pos hq]
-    · rw [if_neg hq, if_neg hq]
+      rw [ite_eq_left hq, ite_eq_right hne, ite_eq_left hq]
+    · rw [ite_eq_right hq, ite_eq_right hq]
 
 /-- Adding a particle at the origin is erased by the graft. -/
 theorem graftOrigin_addAt_zero (ω₁ ω : PData d) :
@@ -122,8 +122,8 @@ theorem graftOrigin_addAt {x₀ : Site d} (hx₀ : x₀ ≠ (0 : Site d)) (ω₁
   simp only [graftOrigin, addAt, addParticle]
   by_cases hx : x = (0 : Site d)
   · have hne : ¬ (x = x₀) := by rw [hx]; exact fun hh => hx₀ hh.symm
-    rw [if_pos hx, if_neg hne, if_pos hx]
-  · rw [if_neg hx, if_neg hx]
+    rw [ite_eq_left hx, ite_eq_right hne, ite_eq_left hx]
+  · rw [ite_eq_right hx, ite_eq_right hx]
 
 /-- Deleting a particle at another site commutes with the graft. -/
 theorem graftOrigin_delAt {x₀ : Site d} (hx₀ : x₀ ≠ (0 : Site d)) (ω₁ ω : PData d) :
@@ -133,8 +133,8 @@ theorem graftOrigin_delAt {x₀ : Site d} (hx₀ : x₀ ≠ (0 : Site d)) (ω₁
   simp only [graftOrigin, delAt]
   by_cases hx : x = (0 : Site d)
   · have hne : ¬ (x = x₀) := by rw [hx]; exact fun hh => hx₀ hh.symm
-    rw [if_pos hx, if_neg hne, if_pos hx]
-  · rw [if_neg hx, if_neg hx]
+    rw [ite_eq_left hx, ite_eq_right hne, ite_eq_left hx]
+  · rw [ite_eq_right hx, ite_eq_right hx]
 
 /-- `graftOrigin ω₁` is measurable in `ω`: each of its three coordinates is either the
 constant `ω₁`-value at the origin or a coordinate projection of `ω` elsewhere. -/
@@ -182,7 +182,7 @@ theorem tieInvariant_of_ties_at_origin {x₀ : Site d} {σ : Equiv.Perm ℕ} {D'
   have hfix : ∀ p : Label d, p.1 = (0 : Site d) → permLabel x₀ σ p = p := by
     intro p hp
     have hne : ¬ (p.1 = x₀) := by rw [hp]; exact fun hh => hx₀ hh.symm
-    simp only [permLabel, if_neg hne]
+    simp only [permLabel, ite_eq_right hne]
   intro t a b h
   by_cases hab : a = b
   · subst hab
@@ -244,8 +244,8 @@ theorem graftTagged_tie_origin (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) {ω
   exfalso
   have hp0 : p ≠ ((0 : Site d), 0) := fun hh => hp (congrArg Prod.fst hh)
   have hq0 : q ≠ ((0 : Site d), 0) := fun hh => hq (congrArg Prod.fst hh)
-  have hsp : taggedSource p = p := by unfold taggedSource; rw [if_neg hp]
-  have hsq : taggedSource q = q := by unfold taggedSource; rw [if_neg hq]
+  have hsp : taggedSource p = p := by unfold taggedSource; rw [ite_eq_right hp]
+  have hsq : taggedSource q = q := by unfold taggedSource; rw [ite_eq_right hq]
   have hrp : (taggedDriver w r (graftOrigin ω₁ ω)).rank (p, s)
       = (graftOrigin ω₁ ω).2.2 (taggedSource p, s) :=
     taggedRank_apply_of_ne r (graftOrigin ω₁ ω).2.2 p s hp0
@@ -283,13 +283,13 @@ theorem taggedActive_graft_relabelAt (w : ℕ → Fin d × Bool) (r : ℕ → �
       = (pState (taggedDriver w r (graftOrigin ω₁ ω)) t).active ((0 : Site d), 0) := by
   have hD := relabelDriver_tagged_ne w r hx₀ σ (graftOrigin ω₁ ω)
   have hfix : permLabel x₀ σ ((0 : Site d), 0) = ((0 : Site d), 0) := by
-    simp only [permLabel, if_neg (fun hh : (0 : Site d) = x₀ => hx₀ hh.symm)]
+    simp only [permLabel, ite_eq_right (fun hh : (0 : Site d) = x₀ => hx₀ hh.symm)]
   have hσ' : ∀ i, ((taggedDriver w r (graftOrigin ω₁ ω)).eta x₀).toNat ≤ i → σ i = i := by
     intro i hi
     refine hσ i ?_
     have heta : (taggedDriver w r (graftOrigin ω₁ ω)).eta x₀ = ω.1 x₀ := by
       show addParticle (0 : Site d) (graftOrigin ω₁ ω).1 x₀ = ω.1 x₀
-      rw [addParticle, if_neg hx₀]
+      rw [addParticle, ite_eq_right hx₀]
       exact graftOrigin_eta_of_ne hx₀ ω₁ ω
     rwa [heta] at hi
   have h := (pState_perm hD hσ' (tieInvariant_of_base_ties hx₀ hD

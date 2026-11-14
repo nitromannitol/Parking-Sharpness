@@ -59,7 +59,7 @@ theorem walkOp_nbrProjVal (i₀ : Fin d) (u : Site d → ℝ) (y : Site d) :
   simp only [walkOp, nbrSum]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [if_pos (mem_nbrFinset_add y i), if_pos (mem_nbrFinset_sub y i)]
+  rw [ite_eq_left (mem_nbrFinset_add y i), ite_eq_left (mem_nbrFinset_sub y i)]
 
 
 /-! ### The pair and the round the exploration reads at step `i` -/
@@ -81,13 +81,13 @@ theorem wXi_eq_disc (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (ω : Data d) :
   set ω' : Data d := wProj i₀ ω with hω'
   have hpair : wPair i₀ n i ω = (blockPrefix ω' n (n - 1)).getD i (padSite d n, i) := rfl
   by_cases hi : i < (blockPrefix ω' n (n - 1)).length
-  · have hround : wRound i₀ n i ω = roundOf ω' (wPair i₀ n i ω) := if_pos hi
+  · have hround : wRound i₀ n i ω = roundOf ω' (wPair i₀ n i ω) := ite_eq_left hi
     have hmap : wXi i₀ n i ω = wInc ω' n (wPair i₀ n i ω) := by
       rw [wXi, List.getD_eq_getElem _ _ (by simpa using hi), List.getElem_map]
       congr 1
       rw [hpair, List.getD_eq_getElem _ _ hi]
     rw [hmap, hround, wInc]
-  · have hround : wRound i₀ n i ω = 0 := if_neg hi
+  · have hround : wRound i₀ n i ω = 0 := ite_eq_right hi
     have hpad : wPair i₀ n i ω = (padSite d n, i) := by
       rw [hpair, List.getD_eq_default _ _ (Nat.le_of_not_lt hi)]
     have hbox : padSite d n ∉ boxFinset (0 : Site d) n := by
@@ -150,14 +150,14 @@ theorem wRound_congr_of_reads (i₀ : Fin d) (η : Site d → ℤ) (ρ : Label d
     have hrq' : explIdx i₀ η ρ n i σ ∈ blockAt ω' (blockRad n r) r := by
       rw [← hblocks K hKle hKmin r hr1 hrK]
       exact hrq
-    rw [if_pos hi, if_pos hi', ← hidx, roundOf_eq_of_mem_blockAt hr1 hrq,
+    rw [ite_eq_left hi, ite_eq_left hi', ← hidx, roundOf_eq_of_mem_blockAt hr1 hrq,
       roundOf_eq_of_mem_blockAt hr1 hrq']
   · have hlen : (blockPrefix ω n (n - 1)).length ≤ i := Nat.le_of_not_lt hi
     have hlen' : (blockPrefix ω n ((n - 1) - 1)).length ≤ i :=
       le_trans (length_blockPrefix_mono ω n (by omega)) hlen
     have heq : blockPrefix ω n (n - 1) = blockPrefix ω' n (n - 1) :=
       blockPrefix_congr (hblocks (n - 1) le_rfl hlen')
-    rw [if_neg hi, if_neg (by rw [← heq]; exact hi)]
+    rw [ite_eq_right hi, ite_eq_right (by rw [← heq]; exact hi)]
 
 /-- The round the exploration reads at step `i` is unchanged by erasing the instructions it
 has not read by step `i`: the case `k = i` of `wRound_congr_of_reads`. -/
@@ -210,10 +210,10 @@ theorem measurable_wRound (i₀ : Fin d) (n i : ℕ) : Measurable (wRound i₀ n
     obtain ⟨s, h1, h2, hqs⟩ := mem_blockPrefix.mp hqmem
     have hqs2 : wPair i₀ n i ω ∈ blockAt (wProj i₀ ω2) (blockRad n s) s := by
       rw [← hblock s h1 h2]; exact hqs
-    rw [wRound, wRound, if_pos hi, if_pos hi', ← hpair,
+    rw [wRound, wRound, ite_eq_left hi, ite_eq_left hi', ← hpair,
       roundOf_eq_of_mem_blockAt h1 hqs, roundOf_eq_of_mem_blockAt h1 hqs2]
   · have hi' : ¬ i < (blockPrefix (wProj i₀ ω2) n (n - 1)).length := by rw [← hL]; exact hi
-    rw [wRound, wRound, if_neg hi, if_neg hi']
+    rw [wRound, wRound, ite_eq_right hi, ite_eq_right hi']
 
 /-- The pair the exploration reads at step `i` is measurable for the sigma-algebra of what
 the exploration has revealed by step `i`. -/
@@ -266,9 +266,9 @@ theorem wTrunc_update (i₀ : Fin d) (n i : ℕ) (ω : Data d) (q : Site d × �
     = if ∃ k, k < i ∧ wPair i₀ n k ω = z then ω.2.1 z else z.1 + unit i₀
   by_cases h : ∃ k, k < i ∧ wPair i₀ n k ω = z
   · obtain ⟨k, hk, rfl⟩ := h
-    rw [if_pos (hcond.mpr ⟨k, hk, rfl⟩), if_pos ⟨k, hk, rfl⟩]
+    rw [ite_eq_left (hcond.mpr ⟨k, hk, rfl⟩), ite_eq_left ⟨k, hk, rfl⟩]
     exact Function.update_of_ne (hfresh k hk) _ _
-  · rw [if_neg h, if_neg fun hc => h (hcond.mp hc)]
+  · rw [ite_eq_right h, ite_eq_right fun hc => h (hcond.mp hc)]
 
 
 /-! ### The conditional mean of the increments vanishes -/
@@ -323,7 +323,7 @@ theorem wEvent_update_iff (hd : 1 ≤ d) (i₀ : Fin d) (n i : ℕ) (q : Site d 
       rw [← wPair_wTrunc_self i₀ n i ω', ← wPair_wTrunc_self i₀ n i ω, hω]
     have h2 : wRound i₀ n i ω' = wRound i₀ n i ω := by
       rw [← wRound_wTrunc i₀ n i ω', ← wRound_wTrunc i₀ n i ω, hω]
-    simp only [Set.mem_inter_iff, Set.mem_preimage, wEvent, Set.mem_setOf_eq, hω, h1, h2]
+    simp only [Set.mem_inter_iff, Set.mem_preimage, wEvent, Set.mem_ofPred_eq, hω, h1, h2]
   constructor
   · intro h
     exact (htrans (htr (Or.inr h.2.1))).mp h
@@ -403,14 +403,14 @@ theorem setIntegral_eval_piece (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ)
       = ((law d ν) ((wTrunc i₀ n i ⁻¹' B) ∩ wEvent i₀ n i q s)).toReal
         * ∫ z, g z ∂(instructionLaw q.1) := by
   classical
-  haveI hinst : ∀ p : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) p.1) :=
+  have hinst : ∀ p : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) p.1) :=
     fun p => instructionLaw_isProbability hd p.1
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by unfold stackRankLaw; infer_instance
+  have : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
+  have : IsProbabilityMeasure (stackRankLaw d) := by unfold stackRankLaw; infer_instance
   set E : Set (Data d) := (wTrunc i₀ n i ⁻¹' B) ∩ wEvent i₀ n i q s with hEdef
   have hE : MeasurableSet E := by
     refine MeasurableSet.inter ((measurable_wTrunc i₀ n i) hB) ?_
@@ -555,11 +555,11 @@ theorem setIntegral_wXi_eq_zero (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ)
 theorem condExp_wXi (hd : 1 ≤ d) (i₀ : Fin d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (n : ℕ) (hn : 1 ≤ n) (i : ℕ) :
     (law d ν)[wXi i₀ n i | wFiltration i₀ n i] =ᵐ[law d ν] 0 := by
-  haveI := stackLaw_isProbability (d := d) hd
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := stackLaw_isProbability (d := d) hd
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
+  have : IsProbabilityMeasure (law d ν) := by unfold law; infer_instance
   refine (MeasureTheory.ae_eq_condExp_of_forall_setIntegral_eq (wFiltration_le i₀ n i)
     (integrable_wXi hd i₀ ν n hn i)
     (fun s _ _ => (integrable_zero _ _ _).integrableOn)

@@ -34,9 +34,9 @@ theorem exists_sparseSink_noise_moment (hBernstein : External.Bernstein) (hd : 5
   have ha : 0 ≤ a := Real.sqrt_nonneg _
   refine ⟨Cb * (a + escapeConst d), mul_pos hCb (by linarith), fun p hp hp4 T v x r hr => ?_⟩
   have hr0 : 0 < r := by linarith
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI := flatRoundNoiseLaw_isProbability hd1
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := flatRoundNoiseLaw_isProbability hd1
   let μ := (iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)
   let m := meanU (law d (threePointLaw p)) T
   let X := rNorm μ r (clippedTableU T 0)

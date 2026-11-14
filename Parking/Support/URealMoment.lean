@@ -48,11 +48,11 @@ theorem u_le_mul_posBox (hd : 1 ≤ d) (η : Site d → ℝ) (n : ℕ) (x : Site
   have h2 : ∀ y, ξ y ≤ B := by
     intro y
     by_cases hy : y ∈ boxFinset x n
-    · simp only [hξdef, if_pos hy]
+    · simp only [hξdef, ite_eq_left hy]
       exact le_trans (le_max_left (η y) 0)
         (Finset.single_le_sum (f := fun z => max (η z) 0)
           (fun z _ => le_max_right (η z) 0) hy)
-    · simp only [hξdef, if_neg hy]
+    · simp only [hξdef, ite_eq_right hy]
       exact hB
   rw [h1]
   exact u_le_mul_of_le hd hB h2 n x
@@ -105,7 +105,7 @@ theorem integrable_u_pow_iid (hd : 1 ≤ d) (ν : Measure ℝ) [IsProbabilityMea
   classical
   match r, hpow with
   | 0, _ =>
-    haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+    have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
       inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
     simp
   | (m + 1), hpow =>

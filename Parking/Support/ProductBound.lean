@@ -129,7 +129,7 @@ theorem integrable_section_of_section {d : ℕ} {Z : PData d → ℝ} {N : Finse
     (a : Site d → ℤ) :
     Integrable (fun b : PNoise d => Z ((a, b) : PData d)) (noiseLaw d) := by
   classical
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   set a₁ : Site d → ℤ := fun y => if y ∈ N then a y else a₀ y with ha₁
   have heq : ∀ b : PNoise d, Z ((a, b) : PData d) = Z ((a₁, b) : PData d) := by
     intro b
@@ -165,14 +165,14 @@ theorem integrable_sections {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure �
     (hZlipadd : ∀ (x₀ : Site d) (ω : PData d), |Z (addAt x₀ ω) - Z ω| ≤ 1)
     (hZI : Integrable Z (pDataLaw d ν)) (a : Site d → ℤ) :
     Integrable (fun b : PNoise d => Z ((a, b) : PData d)) (noiseLaw d) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
+  have : IsProbabilityMeasure (stepLaw d) := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) 1)) :=
     LatticeProb.uniformUnit_isProbability
-  haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
+  have : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (noiseLaw d) := by unfold noiseLaw; infer_instance
   obtain ⟨a₀, h₀⟩ := (hZI.prod_right_ae).exists
   exact integrable_section_of_section hZm hZN hZlipadd hd h₀ a
 
@@ -185,7 +185,7 @@ theorem meanF_update_lipschitz {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasur
     (y : Site d) (a : Site d → ℤ) (k k' : ℤ) :
     |meanF Z (Function.update a y k) - meanF Z (Function.update a y k')|
       ≤ |(k : ℝ) - (k' : ℝ)| := by
-  haveI := noiseLaw_isProbability hd
+  have := noiseLaw_isProbability hd
   have hsec : ∀ c : Site d → ℤ,
       Integrable (fun b : PNoise d => Z ((c, b) : PData d)) (noiseLaw d) :=
     fun c => integrable_sections hd hZm hZN hZlipadd hZI c
@@ -208,10 +208,10 @@ theorem cov_pData_coord {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν] (
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (x : Site d) :
     cov (pDataLaw d ν) F (fun ω => ((ω.1 x : ℤ) : ℝ))
       = cov (LatticeProb.iidLaw d ν) (meanF F) (fun a => ((a x : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (pDataLaw d ν) := by
     rw [pDataLaw_eq_prod]; infer_instance
   have hFb : ∀ ω : PData d, ‖F ω‖ ≤ 1 := by
     intro ω
@@ -273,10 +273,10 @@ theorem abs_cov_pData_le {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν] 
     (hFZI : Integrable (fun ω => F ω * Z ω) (pDataLaw d ν)) :
     |cov (pDataLaw d ν) F Z|
       ≤ 3 * ∑ x ∈ N, cov (pDataLaw d ν) F (fun ω => ((ω.1 x : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (pDataLaw d ν) := by
     rw [pDataLaw_eq_prod]; infer_instance
   have hFb : ∀ ω : PData d, ‖F ω‖ ≤ 1 := by
     intro ω
@@ -365,10 +365,10 @@ theorem abs_cov_restrictLaw_le {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasur
     Integrable (fun ω => F ω * Z ω) (restrictLaw d N ν ω₀) ∧
       |cov (restrictLaw d N ν ω₀) F Z|
         ≤ 3 * ∑ x ∈ N, cov (pDataLaw d ν) F (fun ω => ((ω.1 x : ℤ) : ℝ)) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := noiseLaw_isProbability hd
-  haveI : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
+  have := noiseLaw_isProbability hd
+  have : IsProbabilityMeasure (pDataLaw d ν) := by rw [pDataLaw_eq_prod]; infer_instance
   have hFb : ∀ ω : PData d, ‖F ω‖ ≤ 1 := by
     intro ω
     have h := hF01 ω

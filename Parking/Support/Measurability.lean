@@ -42,7 +42,7 @@ instance instMeasurableSingletonPi (s : Finset (Site d)) :
   intro c
   have : ({c} : Set (s → ℤ)) = ⋂ x : s, {f : s → ℤ | f x = c x} := by
     ext f
-    simp only [Set.mem_singleton_iff, Set.mem_iInter, Set.mem_setOf_eq]
+    simp only [Set.mem_singleton_iff, Set.mem_iInter, Set.mem_ofPred_eq]
     exact ⟨fun h x => by rw [h], fun h => funext h⟩
   rw [this]
   exact MeasurableSet.iInter fun x => measurableSet_eq_fun (measurable_pi_apply x) measurable_const
@@ -65,7 +65,7 @@ theorem candidates_eq_candidatesOf (η : Site d → ℤ) (z : Site d) (r : ℕ) 
     candidates η z r = candidatesOf z r (fun x => η (x : Site d)) := by
   ext p
   simp only [candidates, candidatesOf, Finset.mem_biUnion, Finset.mem_map, Finset.mem_range,
-    Function.Embedding.coeFn_mk, true_and, Finset.univ_eq_attach, Finset.mem_attach,
+    true_and, Finset.univ_eq_attach, Finset.mem_attach,
     Subtype.exists]
   constructor
   · rintro ⟨x, hx, i, hi, rfl⟩
@@ -381,7 +381,7 @@ site `q.1`, by pushing `instructionLaw_compl_nbr` forward along the coordinate e
 map. -/
 theorem stackLaw_ae_nbr (hd : 1 ≤ d) :
     ∀ᵐ σ ∂(stackLaw d), ∀ q : Site d × ℕ, σ q ∈ nbrFinset q.1 := by
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
   rw [MeasureTheory.ae_all_iff]
   intro q

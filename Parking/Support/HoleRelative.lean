@@ -26,8 +26,8 @@ theorem matchedMeanH_addParticle_relative (hd : 3 ≤ d) (η : Site d → ℤ) (
     escapePotential d x v * matchedMeanH η ρ T x ≤ matchedMeanH (addParticle v η) ρ T x ∧
       matchedMeanH (addParticle v η) ρ T x ≤ matchedMeanH η ρ T x := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
-  haveI := roundNoiseLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
+  have := roundNoiseLaw_isProbability hd1
   have hwm (s : ℕ) := measurable_singleHoleWeight hd η v ρ T s x
   have hwb (σ : RoundNoise d) (s : ℕ) :
       ‖singleHoleWeight η v ρ σ T s x‖ ≤ ((-η x).toNat : ℝ) := by

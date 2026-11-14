@@ -278,12 +278,12 @@ theorem tendsto_integral_spatialStopValueCutoff (hd1 : 1 ≤ d) (hd3 : d ≤ 3)
   set cutoffCont : Ω' → SpatBCF d := fun ω' =>
     Parking.cutoffBC χ (fun p => Z ω' p.1 p.2) hχ.1.continuous hχ.2.1 (hZcont ω')
     with hcutoffCont
-  haveI hνprob : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have hνprob : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.stackLaw d) := LatticeProb.stackLaw_isProbability hd1
-  haveI : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
-  haveI hlawprob : IsProbabilityMeasure (Parking.law d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.stackLaw d) := LatticeProb.stackLaw_isProbability hd1
+  have : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  have hlawprob : IsProbabilityMeasure (Parking.law d ν) := by
     unfold Parking.law; infer_instance
   set νR : ℝ → Measure (SpatBCF d) := fun R => (Parking.law d ν).map (cutoffDisc R) with hνR
   set νlim : Measure (SpatBCF d) := Q'.map cutoffCont with hνlim
@@ -291,9 +291,9 @@ theorem tendsto_integral_spatialStopValueCutoff (hd1 : 1 ≤ d) (hd3 : d ≤ 3)
     Parking.measurable_cutoffBC_linHatInterp d hd1 R χ hχ.1.continuous hχ.2.1
   have hmeasZ : Measurable cutoffCont :=
     Parking.measurable_cutoffBC_linearField Z hZcont hZmeas χ hχ.1.continuous hχ.2.1
-  haveI hpmR : ∀ R, IsProbabilityMeasure (νR R) := fun R =>
+  have hpmR : ∀ R, IsProbabilityMeasure (νR R) := fun R =>
     inferInstance
-  haveI hpmlim : IsProbabilityMeasure νlim :=
+  have hpmlim : IsProbabilityMeasure νlim :=
     inferInstance
   have hlim : ∀ G : BoundedContinuousFunction (SpatBCF d) ℝ,
       Tendsto (fun R : ℝ => ∫ y, G y ∂(νR R)) atTop (𝓝 (∫ y, G y ∂νlim)) := by

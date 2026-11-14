@@ -24,7 +24,7 @@ theorem probability_eq_integral_of_fibers {Ω M : Type*} [MeasurableSpace Ω]
     (hfib : ∀ m, μ.real (E ∩ {ω | F ω = m}) = w m * μ.real {ω | F ω = m}) :
     μ.real E = ∫ ω, w (F ω) ∂μ := by
   have hw : Measurable w := measurable_of_countable w
-  haveI : IsProbabilityMeasure (μ.map F) := inferInstance
+  have : IsProbabilityMeasure (μ.map F) := inferInstance
   have hi : Integrable w (μ.map F) := (integrable_const (1 : ℝ)).mono'
     hw.aestronglyMeasurable (Filter.Eventually.of_forall fun m => by
       rw [Real.norm_eq_abs, abs_of_nonneg (hw0 m)]

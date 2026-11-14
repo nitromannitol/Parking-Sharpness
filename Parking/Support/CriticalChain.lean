@@ -43,7 +43,7 @@ moment: it is at most `n` times the configuration summed over the box of radius
 theorem integrable_uOf (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (n : ℕ) (x : Site d) :
     Integrable (fun ω : Data d => uOf ω n x) (law d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hti : TranslationInvariant (LatticeProb.iidLaw d ν) :=
     fun v => iidLaw_map_shiftConf' ν v
@@ -69,7 +69,7 @@ moment. -/
 theorem integrable_U_law (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (n : ℕ) (x : Site d) :
     Integrable (fun ω : Data d => (U ω n x : ℝ)) (law d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hti : TranslationInvariant (LatticeProb.iidLaw d ν) :=
     fun v => iidLaw_map_shiftConf' ν v
@@ -91,9 +91,9 @@ theorem integrable_U_law (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure
 theorem meanU_eq_integral_meanUgiven (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (n : ℕ) :
     meanU (law d ν) n = ∫ η, meanUgiven d η n 0 ∂(LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   have hlaw : law d ν = (LatticeProb.iidLaw d ν).prod (stackRankLaw d) := rfl
   have hI : Integrable (fun ω : Data d => (U ω n 0 : ℝ))
       ((LatticeProb.iidLaw d ν).prod (stackRankLaw d)) := by
@@ -106,9 +106,9 @@ theorem meanU_eq_integral_meanUgiven (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbab
 theorem meanu_eq_integral_u (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (n : ℕ) :
     meanu (law d ν) n = ∫ η, u (fun y => ((η y : ℤ) : ℝ)) n 0 ∂(LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   have hlaw : law d ν = (LatticeProb.iidLaw d ν).prod (stackRankLaw d) := rfl
   have hI : Integrable (fun ω : Data d => uOf ω n 0)
       ((LatticeProb.iidLaw d ν).prod (stackRankLaw d)) := by
@@ -124,9 +124,9 @@ theorem meanu_eq_integral_u (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeas
 theorem meanu_le_meanU (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (n : ℕ) :
     meanu (law d ν) n ≤ meanU (law d ν) n := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   have hlaw : law d ν = (LatticeProb.iidLaw d ν).prod (stackRankLaw d) := rfl
   have hIu : Integrable (fun ω : Data d => uOf ω n 0)
       ((LatticeProb.iidLaw d ν).prod (stackRankLaw d)) := by
@@ -138,7 +138,7 @@ theorem meanu_le_meanU (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure �
   refine integral_mono ?_ ?_ fun η => Parking.Frozen.comparison d hd η n 0
   · have := hIu.integral_prod_left
     refine Integrable.congr this (Filter.Eventually.of_forall fun η => ?_)
-    haveI := stackRankLaw_isProbability (d := d) hd
+    have := stackRankLaw_isProbability (d := d) hd
     simp [uOf]
   · exact hIU.integral_prod_left
 
@@ -161,7 +161,7 @@ theorem cor_critical_of_critical_density
           ≤ Parking.meanU (Parking.law d ν) n := by
   obtain ⟨c, hc, hall⟩ := hcd
   refine ⟨c, hc, fun d hd ν hprob hnc hint hmean => ?_⟩
-  haveI := hprob
+  have := hprob
   obtain ⟨C, hC, hlog⟩ := (hall d hd ν hprob hnc hint hmean).2
   exact ⟨C, hC, fun n hn => max_le (meanu_le_meanU hd ν hint n) (hlog n hn)⟩
 

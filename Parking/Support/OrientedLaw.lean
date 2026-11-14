@@ -26,7 +26,7 @@ theorem orientedInstructionLaw_isProbability (hd : 1 ≤ d) (y : Site d) :
 product of the probability measures `orientedInstructionLaw_isProbability`. -/
 theorem orientedStackLaw_isProbability (hd : 1 ≤ d) :
     IsProbabilityMeasure (orientedStackLaw d) := by
-  haveI : ∀ p : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw p.1) :=
+  have : ∀ p : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw p.1) :=
     fun p => orientedInstructionLaw_isProbability hd p.1
   unfold orientedStackLaw
   infer_instance
@@ -36,9 +36,9 @@ the i.i.d. scenery law, the stack law and the rank law, each already known to be
 probability measure. -/
 theorem orientedLaw_isProbability (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (orientedLaw d ν) := by
-  haveI := orientedStackLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := orientedStackLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   unfold orientedLaw
   infer_instance
 
@@ -48,9 +48,9 @@ by `orientedLaw_map_conf`, and casting each coordinate to `ℝ` turns that into 
 law of `realLaw ν`. -/
 theorem orientedLaw_map_confReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     (orientedLaw d ν).map (fun ω : Data d => confReal ω) = iidLaw d (realLaw ν) := by
-  haveI := orientedStackLaw_isProbability hd
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := orientedStackLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let f : (Site d → ℤ) → Site d → ℝ := fun η y => (η y : ℝ)
   have hf : Measurable f := Measurable.of_eval fun y =>
     measurable_intCastReal.comp (measurable_pi_apply y)

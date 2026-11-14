@@ -69,9 +69,9 @@ theorem pNextPos_present (h : AgreesOnPresent D E) {S : State d}
     (hS : ∀ p, S.active p = true → p.2 < (D.eta p.1).toNat) (t : ℕ) (p : Label d) :
     pNextPos D S t p = pNextPos E S t p := by
   by_cases hp : S.active p = true
-  · simp only [pNextPos, hp, if_pos, h.move p t (hS p hp)]
+  · simp only [pNextPos, hp, ite_eq_left, h.move p t (hS p hp)]
   · simp only [Bool.not_eq_true] at hp
-    simp only [pNextPos, hp, Bool.false_eq_true, if_false]
+    simp only [pNextPos, hp, Bool.false_eq_true, ite_false]
 
 /-- The particles arriving at a site are the same. -/
 theorem pArrivalsAt_present (h : AgreesOnPresent D E) {S : State d}

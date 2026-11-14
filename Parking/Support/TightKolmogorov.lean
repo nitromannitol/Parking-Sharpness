@@ -127,8 +127,8 @@ theorem exists_orientedGridReward_moment_bound (ν : Measure ℤ) (hν : Critica
         C * ((n : ℝ) ^ (-(1 : ℝ) / 2) *
           (Real.sqrt (((min m'.toNat N - min m.toNat N : ℕ) : ℝ)) +
             |(j' - j : ℝ) - (((min m'.toNat N - min m.toNat N : ℕ) : ℝ)) / 2| + 1 / 2)) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hp0 : (0 : ℝ) ≤ p := le_trans (by norm_num) hp
   have hpp : (0 : ℝ) < p := lt_of_lt_of_le (by norm_num) hp
   obtain ⟨C, hC, hb⟩ := exists_oriented_potential_scenery_bound (realLaw ν) p hp
@@ -371,7 +371,7 @@ theorem exists_orientedGridReward_moment_rpow_le (ν : Measure ℤ) (hν : Criti
     exact h1
   rcases lt_or_ge m' m with hlt | hle
   · -- m' < m: swap the pair
-    rw [max_eq_left hlt.le, min_eq_right hlt.le, if_neg (not_le.mpr hlt)] at hBle
+    rw [max_eq_left hlt.le, min_eq_right hlt.le, ite_eq_right (not_le.mpr hlt)] at hBle
     have hb' := hb n N m' m j' j hm'0 hlt.le
     have hcongr : (fun η : Site 2 → ℝ => |orientedGridReward n N η m j -
             orientedGridReward n N η m' j'| ^ p)
@@ -385,7 +385,7 @@ theorem exists_orientedGridReward_moment_rpow_le (ν : Measure ℤ) (hν : Criti
       (le_trans hb'.2 (mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left hBle hnn) hC.le))
   · -- m ≤ m'
-    rw [max_eq_right hle, min_eq_left hle, if_pos hle] at hBle
+    rw [max_eq_right hle, min_eq_left hle, ite_eq_left hle] at hBle
     have hb' := hb n N m m' j j' hm0 hle
     refine ⟨hb'.1, ?_⟩
     exact hraise _ (integral_nonneg fun η => Real.rpow_nonneg (abs_nonneg _) _)
@@ -455,8 +455,8 @@ theorem exists_orientedGridReward_moment_of_close (ν : Measure ℤ) (hν : Crit
       Real.sqrt |(m : ℝ) - m'| := Real.sqrt_le_sqrt hΔle
   have hd : |(if m ≤ m' then ((j' : ℝ) - j) else ((j : ℝ) - j'))| = |(j : ℝ) - j'| := by
     by_cases h : m ≤ m'
-    · rw [if_pos h, abs_sub_comm]
-    · rw [if_neg h]
+    · rw [ite_eq_left h, abs_sub_comm]
+    · rw [ite_eq_right h]
   have htri : |(if m ≤ m' then ((j' : ℝ) - j) else ((j : ℝ) - j')) -
         ((min (max m m').toNat N - min (min m m').toNat N : ℕ) : ℝ) / 2| ≤
       |(j : ℝ) - j'| + ((min (max m m').toNat N - min (min m m').toNat N : ℕ) : ℝ) / 2 := by
@@ -520,8 +520,8 @@ theorem exists_orientedGridReward_single_moment (ν : Measure ℤ) (hν : Critic
       (∫ η : Site 2 → ℝ, |orientedGridReward n N η m j| ^ p ∂(iidLaw 2 (realLaw ν))) ≤
         (C * (Real.sqrt (((N - m.toNat : ℕ) : ℝ)) + 1 / 2)) ^ (p / 2) *
           (n : ℝ) ^ (-(p / 4)) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hp0 : (0 : ℝ) ≤ p := le_trans (by norm_num) hp
   have hpp : (0 : ℝ) < p := lt_of_lt_of_le (by norm_num) hp
   obtain ⟨C, hC, hb⟩ := exists_oriented_potential_scenery_bound (realLaw ν) p hp
@@ -783,9 +783,9 @@ theorem exists_orientedBoxReward_far_moment (ν : Measure ℤ) (hν : CriticalLa
         M * (dist u u') ^ (p / 4) := by
   obtain ⟨C₁, hC₁, hb⟩ := exists_orientedGridReward_moment_rpow_le ν hν p hp
   obtain ⟨C₂, hC₂, hsingle⟩ := exists_orientedGridReward_single_moment ν hν p hp
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   have hp0 : (0 : ℝ) ≤ p := le_trans (by norm_num) hp
   have hp4 : (0 : ℝ) ≤ p / 4 := by positivity
   have hp2 : (0 : ℝ) ≤ p / 2 := by positivity
@@ -1077,11 +1077,11 @@ theorem exists_orientedBoxReward_far_moment (ν : Measure ℤ) (hν : CriticalLa
           ⌊Real.sqrt n * u 1 + (n : ℝ) * u 0 / 2⌋ -
         (((⌊(n : ℝ) * u' 0⌋ : ℝ) - ⌊(n : ℝ) * u 0⌋) / 2)| := by
       by_cases h : ⌊(n : ℝ) * u 0⌋ ≤ ⌊(n : ℝ) * u' 0⌋
-      · rw [if_pos h, abs_of_nonpos (sub_nonpos.mpr (by exact_mod_cast h :
+      · rw [ite_eq_left h, abs_of_nonpos (sub_nonpos.mpr (by exact_mod_cast h :
             (⌊(n : ℝ) * u 0⌋ : ℝ) ≤ ⌊(n : ℝ) * u' 0⌋))]
         congr 1
         ring
-      · rw [if_neg h]
+      · rw [ite_eq_right h]
         have hlt : ⌊(n : ℝ) * u' 0⌋ < ⌊(n : ℝ) * u 0⌋ := not_le.mp h
         rw [abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le :
             (⌊(n : ℝ) * u' 0⌋ : ℝ) ≤ ⌊(n : ℝ) * u 0⌋))]

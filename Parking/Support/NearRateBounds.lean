@@ -40,21 +40,21 @@ theorem exists_kappa_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
       ((N : ℝ) ≤ C₀ * cutoffEnv d δ) → Parking.kappa d N ≤ C * kappaEnv d δ := by
   by_cases h1 : d = 1
   · refine ⟨max 1 C₀, lt_of_lt_of_le one_pos (le_max_left _ _), fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.kappa, if_pos h1, kappaEnv, if_pos h1]
+    rw [Parking.kappa, ite_eq_left h1, kappaEnv, ite_eq_left h1]
     have h := rpow_le_env (α := 4) (β := (1 : ℝ) / 2) (k := 3) (x := (N : ℝ)) (δ := δ)
       hC₀ (by norm_num) (by norm_num) hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_pos h1] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_left h1] at hN; exact hN)
     have he : (4 : ℝ) * ((1 : ℝ) / 2) = 2 := by norm_num
     rwa [he] at h
   by_cases h2 : d = 2
   · obtain ⟨C, hC, hCle⟩ := exists_log_le_env (α := 2) (k := 3) (C₀ := C₀) (c := 2) hC₀
       (by norm_num) (by norm_num)
     refine ⟨C, hC, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.kappa, if_neg h1, if_pos h2, kappaEnv, if_neg h1]
+    rw [Parking.kappa, ite_eq_right h1, ite_eq_left h2, kappaEnv, ite_eq_right h1]
     exact hCle (N : ℝ) δ hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_neg h1, if_pos h2] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_right h1, ite_eq_left h2] at hN; exact hN)
   · refine ⟨1, one_pos, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.kappa, if_neg h1, if_neg h2, kappaEnv, if_neg h1, one_mul, env_log δ]
+    rw [Parking.kappa, ite_eq_right h1, ite_eq_right h2, kappaEnv, ite_eq_right h1, one_mul, env_log δ]
     exact one_le_bigL hδ0 hδ1
 
 /-- `max_x g_N(x)` at the cutoff, in the same scale `kappaEnv` as `κ_d(N)`: `env 2 3`
@@ -66,22 +66,22 @@ theorem exists_greenMaxRate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
       Parking.External.greenMaxRate d N ≤ C * kappaEnv d δ := by
   by_cases h1 : d = 1
   · refine ⟨max 1 C₀, lt_of_lt_of_le one_pos (le_max_left _ _), fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.External.greenMaxRate, if_pos h1, kappaEnv, if_pos h1]
+    rw [Parking.External.greenMaxRate, ite_eq_left h1, kappaEnv, ite_eq_left h1]
     have h := rpow_le_env (α := 4) (β := (1 : ℝ) / 2) (k := 3) (x := (N : ℝ)) (δ := δ)
       hC₀ (by norm_num) (by norm_num) hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_pos h1] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_left h1] at hN; exact hN)
     have he : (4 : ℝ) * ((1 : ℝ) / 2) = 2 := by norm_num
     rwa [he] at h
   by_cases h2 : d = 2
   · obtain ⟨C, hC, hCle⟩ := exists_log_le_env (α := 2) (k := 3) (C₀ := C₀) (c := 0) hC₀
       (by norm_num) (le_refl 0)
     refine ⟨C, hC, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.External.greenMaxRate, if_neg h1, if_pos h2, kappaEnv, if_neg h1,
+    rw [Parking.External.greenMaxRate, ite_eq_right h1, ite_eq_left h2, kappaEnv, ite_eq_right h1,
       show Real.log (N : ℝ) = Real.log ((N : ℝ) + 0) by rw [add_zero]]
     exact hCle (N : ℝ) δ hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_neg h1, if_pos h2] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_right h1, ite_eq_left h2] at hN; exact hN)
   · refine ⟨1, one_pos, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.External.greenMaxRate, if_neg h1, if_neg h2, kappaEnv, if_neg h1, one_mul,
+    rw [Parking.External.greenMaxRate, ite_eq_right h1, ite_eq_right h2, kappaEnv, ite_eq_right h1, one_mul,
       env_log δ]
     exact one_le_bigL hδ0 hδ1
 
@@ -97,11 +97,11 @@ theorem exists_phi_le_env (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀ : 0 < C�
       fun N δ hδ0 hδ1 hN => ?_⟩
     have hE1 : 1 ≤ cutoffEnv 1 δ := one_le_cutoffEnv 1 hδ0 hδ1
     have hN1 : (N : ℝ) + 1 ≤ (C₀ + 1) * env 4 3 δ := by
-      rw [cutoffEnv, if_pos rfl] at hN hE1; nlinarith
+      rw [cutoffEnv, ite_eq_left rfl] at hN hE1; nlinarith
     have h := rpow_le_env (α := 4) (β := (3 : ℝ) / 4) (k := 3) (x := (N : ℝ) + 1) (δ := δ)
       (by linarith : (0 : ℝ) < C₀ + 1) (by norm_num) (by norm_num) hδ0 hδ1
       (by positivity) hN1
-    rw [Parking.phi, if_pos (by norm_num), rateEnv, if_pos rfl]
+    rw [Parking.phi, ite_eq_left (by norm_num), rateEnv, ite_eq_left rfl]
     have he : (4 : ℝ) * ((3 : ℝ) / 4) = 3 := by norm_num
     rw [he] at h
     have hexp : (4 - ((1 : ℕ) : ℝ)) / 4 = (3 : ℝ) / 4 := by norm_num
@@ -112,11 +112,11 @@ theorem exists_phi_le_env (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀ : 0 < C�
       fun N δ hδ0 hδ1 hN => ?_⟩
     have hE1 : 1 ≤ cutoffEnv 2 δ := one_le_cutoffEnv 2 hδ0 hδ1
     have hN1 : (N : ℝ) + 1 ≤ (C₀ + 1) * env 2 3 δ := by
-      rw [cutoffEnv, if_neg (by norm_num), if_pos rfl] at hN hE1; nlinarith
+      rw [cutoffEnv, ite_eq_right (by norm_num), ite_eq_left rfl] at hN hE1; nlinarith
     have h := rpow_le_env (α := 2) (β := (1 : ℝ) / 2) (k := 3) (x := (N : ℝ) + 1) (δ := δ)
       (by linarith : (0 : ℝ) < C₀ + 1) (by norm_num) (by norm_num) hδ0 hδ1
       (by positivity) hN1
-    rw [Parking.phi, if_pos (by norm_num), rateEnv, if_neg (by norm_num), if_pos rfl]
+    rw [Parking.phi, ite_eq_left (by norm_num), rateEnv, ite_eq_right (by norm_num), ite_eq_left rfl]
     have he : (2 : ℝ) * ((1 : ℝ) / 2) = 1 := by norm_num
     rw [he] at h
     have hexp : (4 - ((2 : ℕ) : ℝ)) / 4 = (1 : ℝ) / 2 := by norm_num
@@ -127,12 +127,12 @@ theorem exists_phi_le_env (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀ : 0 < C�
       fun N δ hδ0 hδ1 hN => ?_⟩
     have hE1 : 1 ≤ cutoffEnv 3 δ := one_le_cutoffEnv 3 hδ0 hδ1
     have hN1 : (N : ℝ) + 1 ≤ (C₀ + 1) * env 2 2 δ := by
-      rw [cutoffEnv, if_neg (by norm_num), if_neg (by norm_num)] at hN hE1; nlinarith
+      rw [cutoffEnv, ite_eq_right (by norm_num), ite_eq_right (by norm_num)] at hN hE1; nlinarith
     have h := rpow_le_env (α := 2) (β := (1 : ℝ) / 4) (k := 2) (x := (N : ℝ) + 1) (δ := δ)
       (by linarith : (0 : ℝ) < C₀ + 1) (by norm_num) (by norm_num) hδ0 hδ1
       (by positivity) hN1
-    rw [Parking.phi, if_pos (by norm_num), rateEnv, if_neg (by norm_num),
-      if_neg (by norm_num), if_pos rfl]
+    rw [Parking.phi, ite_eq_left (by norm_num), rateEnv, ite_eq_right (by norm_num),
+      ite_eq_right (by norm_num), ite_eq_left rfl]
     have he : (2 : ℝ) * ((1 : ℝ) / 4) = 1 / 2 := by norm_num
     rw [he] at h
     have hexp : (4 - ((3 : ℕ) : ℝ)) / 4 = (1 : ℝ) / 4 := by norm_num
@@ -140,9 +140,9 @@ theorem exists_phi_le_env (d : ℕ) (hd : 1 ≤ d) {C₀ : ℝ} (hC₀ : 0 < C�
   · obtain ⟨C, hC, hCle⟩ := exists_log_le_env (α := 2) (k := 2) (C₀ := C₀) (c := 2) hC₀
       (by norm_num) (by norm_num)
     refine ⟨C, hC, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.phi, if_neg (by omega : ¬ d ≤ 3), rateEnv, if_neg h1, if_neg h2, if_neg h3]
+    rw [Parking.phi, ite_eq_right (by omega : ¬ d ≤ 3), rateEnv, ite_eq_right h1, ite_eq_right h2, ite_eq_right h3]
     exact hCle (N : ℝ) δ hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_neg h1, if_neg h2] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_right h1, ite_eq_right h2] at hN; exact hN)
 
 /-- The `L²` norm of the Green function at the cutoff, in the scale `rateEnv`: a power
 below dimension four via `rpow_le_env`, and from dimension four on a bound built by
@@ -155,30 +155,30 @@ theorem exists_greenL2Rate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
   by_cases h1 : d = 1
   · subst h1
     refine ⟨max 1 C₀, lt_of_lt_of_le one_pos (le_max_left _ _), fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.External.greenL2Rate, if_pos rfl, rateEnv, if_pos rfl]
+    rw [Parking.External.greenL2Rate, ite_eq_left rfl, rateEnv, ite_eq_left rfl]
     have h := rpow_le_env (α := 4) (β := (3 : ℝ) / 4) (k := 3) (x := (N : ℝ)) (δ := δ)
       hC₀ (by norm_num) (by norm_num) hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_pos rfl] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_left rfl] at hN; exact hN)
     have he : (4 : ℝ) * ((3 : ℝ) / 4) = 3 := by norm_num
     rwa [he] at h
   by_cases h2 : d = 2
   · subst h2
     refine ⟨max 1 C₀, lt_of_lt_of_le one_pos (le_max_left _ _), fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.External.greenL2Rate, if_neg (by norm_num), if_pos rfl, rateEnv,
-      if_neg (by norm_num), if_pos rfl]
+    rw [Parking.External.greenL2Rate, ite_eq_right (by norm_num), ite_eq_left rfl, rateEnv,
+      ite_eq_right (by norm_num), ite_eq_left rfl]
     have h := rpow_le_env (α := 2) (β := (1 : ℝ) / 2) (k := 3) (x := (N : ℝ)) (δ := δ)
       hC₀ (by norm_num) (by norm_num) hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_neg (by norm_num), if_pos rfl] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_right (by norm_num), ite_eq_left rfl] at hN; exact hN)
     have he : (2 : ℝ) * ((1 : ℝ) / 2) = 1 := by norm_num
     rwa [he] at h
   by_cases h3 : d = 3
   · subst h3
     refine ⟨max 1 C₀, lt_of_lt_of_le one_pos (le_max_left _ _), fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.External.greenL2Rate, if_neg (by norm_num), if_neg (by norm_num),
-      if_pos rfl, rateEnv, if_neg (by norm_num), if_neg (by norm_num), if_pos rfl]
+    rw [Parking.External.greenL2Rate, ite_eq_right (by norm_num), ite_eq_right (by norm_num),
+      ite_eq_left rfl, rateEnv, ite_eq_right (by norm_num), ite_eq_right (by norm_num), ite_eq_left rfl]
     have h := rpow_le_env (α := 2) (β := (1 : ℝ) / 4) (k := 2) (x := (N : ℝ)) (δ := δ)
       hC₀ (by norm_num) (by norm_num) hδ0 hδ1 (Nat.cast_nonneg N)
-      (by rw [cutoffEnv, if_neg (by norm_num), if_neg (by norm_num)] at hN; exact hN)
+      (by rw [cutoffEnv, ite_eq_right (by norm_num), ite_eq_right (by norm_num)] at hN; exact hN)
     have he : (2 : ℝ) * ((1 : ℝ) / 4) = 1 / 2 := by norm_num
     rwa [he] at h
   by_cases h4 : d = 4
@@ -188,10 +188,10 @@ theorem exists_greenL2Rate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     have hL := one_le_bigL hδ0 hδ1
     have hlog : Real.log (N : ℝ) ≤ C * Real.log (Real.exp 1 / δ) := by
       have h := hCle (N : ℝ) δ hδ0 hδ1 (Nat.cast_nonneg N)
-        (by rw [cutoffEnv, if_neg h1, if_neg h2] at hN; exact hN)
+        (by rw [cutoffEnv, ite_eq_right h1, ite_eq_right h2] at hN; exact hN)
       rwa [add_zero, env_log δ] at h
-    rw [Parking.External.greenL2Rate, if_neg h1, if_neg h2, if_neg h3, if_pos h4,
-      rateEnv, if_neg h1, if_neg h2, if_neg h3, env_log δ]
+    rw [Parking.External.greenL2Rate, ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, ite_eq_left h4,
+      rateEnv, ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, env_log δ]
     calc Real.sqrt (Real.log (N : ℝ))
         ≤ Real.sqrt (C * Real.log (Real.exp 1 / δ)) := Real.sqrt_le_sqrt hlog
       _ = Real.sqrt C * Real.sqrt (Real.log (Real.exp 1 / δ)) :=
@@ -204,8 +204,8 @@ theorem exists_greenL2Rate_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
               ≤ Real.sqrt (Real.log (Real.exp 1 / δ) ^ 2) := Real.sqrt_le_sqrt hsq
             _ = Real.log (Real.exp 1 / δ) := Real.sqrt_sq (by linarith)
   · refine ⟨1, one_pos, fun N δ hδ0 hδ1 hN => ?_⟩
-    rw [Parking.External.greenL2Rate, if_neg h1, if_neg h2, if_neg h3, if_neg h4,
-      rateEnv, if_neg h1, if_neg h2, if_neg h3, one_mul, env_log δ]
+    rw [Parking.External.greenL2Rate, ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, ite_eq_right h4,
+      rateEnv, ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, one_mul, env_log δ]
     exact one_le_bigL hδ0 hδ1
 
 /-- `Parking.resolventThreshold` is positive: each of its three dimension cases is a
@@ -251,10 +251,10 @@ theorem exists_rHigh_le_env (d : ℕ) {C₀ : ℝ} (hC₀ : 0 < C₀) :
     have hE0 : (0 : ℝ) ≤ env 0 1 δ := (env_pos hδ0 hδ1).le
     nlinarith [hstep, hlog, rConst_pos]
   by_cases h1 : d = 1
-  · exact main 4 3 (by norm_num) (fun δ _ _ => by rw [cutoffEnv, if_pos h1])
+  · exact main 4 3 (by norm_num) (fun δ _ _ => by rw [cutoffEnv, ite_eq_left h1])
   by_cases h2 : d = 2
-  · exact main 2 3 (by norm_num) (fun δ _ _ => by rw [cutoffEnv, if_neg h1, if_pos h2])
-  · exact main 2 2 (by norm_num) (fun δ _ _ => by rw [cutoffEnv, if_neg h1, if_neg h2])
+  · exact main 2 3 (by norm_num) (fun δ _ _ => by rw [cutoffEnv, ite_eq_right h1, ite_eq_left h2])
+  · exact main 2 2 (by norm_num) (fun δ _ _ => by rw [cutoffEnv, ite_eq_right h1, ite_eq_right h2])
 
 /-- **From dimension four on the `L²` Green rate is of the order of the square root of
 the logarithm**, which is what makes `√r ‖g_N‖₂` of the order of `log(e/δ)` there rather
@@ -279,13 +279,13 @@ theorem exists_greenL2Rate_sqrt_le (d : ℕ) (hd4 : 4 ≤ d) {C₀ : ℝ} (hC₀
   by_cases h4 : d = 4
   · have hlog : Real.log (N : ℝ) ≤ C * env 0 1 δ := by
       have h := hCle (N : ℝ) δ hδ0 hδ1 (Nat.cast_nonneg N)
-        (by rw [cutoffEnv, if_neg h1, if_neg h2] at hN; exact hN)
+        (by rw [cutoffEnv, ite_eq_right h1, ite_eq_right h2] at hN; exact hN)
       rwa [add_zero] at h
-    rw [Parking.External.greenL2Rate, if_neg h1, if_neg h2, if_neg h3, if_pos h4]
+    rw [Parking.External.greenL2Rate, ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, ite_eq_left h4]
     calc Real.sqrt (Real.log (N : ℝ)) ≤ Real.sqrt (C * env 0 1 δ) := Real.sqrt_le_sqrt hlog
       _ = Real.sqrt C * Real.sqrt (env 0 1 δ) := Real.sqrt_mul hC.le _
       _ ≤ (Real.sqrt C + 1) * Real.sqrt (env 0 1 δ) := by nlinarith
-  · rw [Parking.External.greenL2Rate, if_neg h1, if_neg h2, if_neg h3, if_neg h4]
+  · rw [Parking.External.greenL2Rate, ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, ite_eq_right h4]
     nlinarith [hsq1, Real.sqrt_nonneg C]
 
 

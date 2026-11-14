@@ -64,8 +64,8 @@ theorem nearest_of_spatial_scaling (hGrowth : Parking.External.SandpileGrowth)
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) :
     Tendsto (fun t : ℕ => ((Parking.law d ν) {ω | Parking.HoleCloser ω t}).toReal)
       atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := Parking.law_isProb hd ν
+  have := hν.prob
+  have := Parking.law_isProb hd ν
   obtain ⟨Ω, _, Q, _, W, Uc, v, _hwhite, hWmeas, hUm, _hvm, _hzero, hct, hmono,
     _hBrownian, hFDD, hclose, htight, hdisp1, hdisp2⟩ :=
     Parking.Frozen.spatial_scaling hGrowth hBernstein

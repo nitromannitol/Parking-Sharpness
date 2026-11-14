@@ -306,7 +306,7 @@ theorem greenL2Rate_le_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) :
   have h1 : d ≠ 1 := by omega
   have h2 : d ≠ 2 := by omega
   have h3 : d ≠ 3 := by omega
-  rw [if_neg h1, if_neg h2, if_neg h3]
+  rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3]
   split_ifs with h4
   · linarith
   · linarith
@@ -315,11 +315,11 @@ theorem greenL2Rate_le_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) :
 definition. -/
 theorem greenMaxRate_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) :
     Parking.External.greenMaxRate d n = 1 := by
-  rw [Parking.External.greenMaxRate, if_neg (by omega : d ≠ 1), if_neg (by omega : d ≠ 2)]
+  rw [Parking.External.greenMaxRate, ite_eq_right (by omega : d ≠ 1), ite_eq_right (by omega : d ≠ 2)]
 
 /-- From dimension four on, `κ_d(n) = 1`, directly from `kappa`'s definition. -/
 theorem kappa_high {d : ℕ} (hd4 : 4 ≤ d) (n : ℕ) : kappa d n = 1 := by
-  rw [kappa, if_neg (by omega : d ≠ 1), if_neg (by omega : d ≠ 2)]
+  rw [kappa, ite_eq_right (by omega : d ≠ 1), ite_eq_right (by omega : d ≠ 2)]
 
 /-- For `n ≥ 2`, `√(log n) ≤ log n / √(log 2)`, from `√(log 2) ≤ √(log n)`
 (`log_two_le_log`) multiplied through by `√(log n)`. -/
@@ -437,8 +437,8 @@ theorem integrable_expMax_of_expAbs {ν : Measure ℤ} {θ : ℝ} (hθ : 0 < θ)
 measure whenever `ν` is. -/
 theorem law_isProb (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (law d ν) := by
-  haveI := stackRankLaw_isProbability (d := d) hd
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
+  have := stackRankLaw_isProbability (d := d) hd
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ν))
   exact inferInstanceAs
     (IsProbabilityMeasure ((LatticeProb.iidLaw d ν).prod (stackRankLaw d)))
@@ -451,7 +451,7 @@ theorem exists_critical_moment (hd : 1 ≤ d) (hBern : Parking.External.Bernstei
       (∫ ω, ((U ω n 0 : ℕ) : ℝ) ^ r ∂(law d ν)) ^ (1 / r)
         ≤ C * (meanu (law d ν) n + Real.sqrt r * l2Norm (green d n)
             + r * greenMax d n + r * ((n : ℝ) + 1) ^ (2 / r) * kappa d n) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   obtain ⟨C₁, hC₁, h1⟩ := upper_step_one hd hBern ν hθ hexp
@@ -496,8 +496,8 @@ theorem exists_target (hd : 1 ≤ d) (hBern : Parking.External.Bernstein)
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       Integrable (fun ω => ((U ω n 0 : ℕ) : ℝ)) (law d ν) ∧
       meanU (law d ν) n ≤ C * (meanu (law d ν) n + Real.log n) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   obtain ⟨C, hC, hCle⟩ := exists_critical_moment hd hBern hConc ν hν

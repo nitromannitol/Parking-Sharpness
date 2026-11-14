@@ -68,14 +68,14 @@ theorem integrable_linPotential (ν0 : Measure ℝ) [IsProbabilityMeasure ν0]
 theorem integrable_linPotential_critical (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) :
     Integrable (fun η => linPotential η n x) (iidLaw d (realLaw ν)) := by
-  haveI := hν.prob
+  have := hν.prob
   exact integrable_linPotential (realLaw ν) ((realLaw_memLp_two ν hν).integrable one_le_two) n x
 
 /-- **`E[V_n(x)] = 0` under the critical density.** -/
 theorem integral_linPotential_eq_zero_critical (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) :
     ∫ η, linPotential η n x ∂(iidLaw d (realLaw ν)) = 0 := by
-  haveI := hν.prob
+  have := hν.prob
   exact integral_linPotential_eq_zero (realLaw ν) (realLaw_mean ν hν)
     ((realLaw_memLp_two ν hν).integrable one_le_two) n x
 
@@ -151,7 +151,7 @@ theorem integrable_linPotential_diff_sq (ν0 : Measure ℝ) [IsProbabilityMeasur
 theorem integrable_linPotential_sq_critical (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (x : Site d) :
     Integrable (fun η => (linPotential η n x) ^ 2) (iidLaw d (realLaw ν)) := by
-  haveI := hν.prob
+  have := hν.prob
   exact integrable_linPotential_sq (realLaw ν) ((realLaw_memLp_two ν hν).integrable one_le_two)
     (realLaw_memLp_two ν hν).integrable_sq n x
 
@@ -161,7 +161,7 @@ theorem integrable_linPotential_diff_sq_critical (ν : Measure ℤ) (hν : Criti
     (n m : ℕ) (x y : Site d) :
     Integrable (fun η => (linPotential η n x - linPotential η m y) ^ 2)
       (iidLaw d (realLaw ν)) := by
-  haveI := hν.prob
+  have := hν.prob
   exact integrable_linPotential_diff_sq (realLaw ν)
     ((realLaw_memLp_two ν hν).integrable one_le_two) (realLaw_memLp_two ν hν).integrable_sq n m x y
 

@@ -48,8 +48,8 @@ theorem tendsto_scenePair_barDivisible_barOdometer_joint_fdd
       hsuprep, hjointFDD, hequicont⟩ := hOdometer d hd hd3 ν hν
   refine ⟨Ω, mΩ, Q, hQ, W, Uc, ?_⟩
   intro m k φ sp hφ hsp F
-  haveI := hν.prob
-  haveI := Parking.law_isProb hd ν
+  have := hν.prob
+  have := Parking.law_isProb hd ν
   set Y : ℝ → Data d → Fin k → ℝ := fun R w j =>
     Parking.barOdometer w R (sp j).1 (sp j).2 - Parking.barDivisible w R (sp j).1 (sp j).2
     with hYdef

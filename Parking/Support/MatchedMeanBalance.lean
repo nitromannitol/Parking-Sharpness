@@ -25,8 +25,8 @@ theorem integral_matchedArrivals (hd : 1 ≤ d) (η : Site d → ℤ) (K : ℕ)
     (hη : ∀ y, (η y).toNat ≤ K) (ρ : Label d × ℕ → ℝ) (t : ℕ) (x : Site d) :
     ∫ σ, ((matchedArrivals η ρ σ t x).card : ℝ) ∂(roundNoiseLaw d) =
       walkOp (fun y => ∫ σ, (matchedCount η ρ σ t y : ℝ) ∂(roundNoiseLaw d)) x := by
-  haveI := stepLaw_isProbability hd
-  haveI := roundNoiseLaw_isProbability hd
+  have := stepLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   let Q := Measure.infinitePi fun _ : RoundSlot d => stepLaw d
   let F : RoundNoise d → ℝ := fun σ => ((matchedArrivals η ρ σ t x).card : ℝ)
   have hb (σ : RoundNoise d) : ‖F σ‖ ≤ (((2 * (t + 1) + 1) ^ d * K : ℕ) : ℝ) := by
@@ -53,7 +53,7 @@ theorem integral_matchedSigned_succ (hd : 1 ≤ d) (η : Site d → ℤ) (K : �
         (∫ σ, ((matchedState η ρ σ (t + 1)).holes x : ℝ) ∂(roundNoiseLaw d)) =
       walkOp (fun y => ∫ σ, (matchedCount η ρ σ t y : ℝ) ∂(roundNoiseLaw d)) x -
         ∫ σ, ((matchedState η ρ σ t).holes x : ℝ) ∂(roundNoiseLaw d) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   rw [← integral_sub (integrable_matchedCount_bounded hd η K hη ρ (t + 1) x _)
     (integrable_matchedHoles hd η ρ (t + 1) x _)]
   have he (σ : RoundNoise d) : (matchedCount η ρ σ (t + 1) x : ℝ) -
@@ -69,7 +69,7 @@ theorem matchedMeanU_succ (hd : 1 ≤ d) (η : Site d → ℤ) (K : ℕ)
     (hη : ∀ y, (η y).toNat ≤ K) (ρ : Label d × ℕ → ℝ) (t : ℕ) (x : Site d) :
     matchedMeanU η ρ (t + 1) x = matchedMeanU η ρ t x +
       ∫ σ, (matchedCount η ρ σ t x : ℝ) ∂(roundNoiseLaw d) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have he (σ : RoundNoise d) : ((matchedState η ρ σ (t + 1)).departures x : ℝ) =
       ((matchedState η ρ σ t).departures x : ℝ) + (matchedCount η ρ σ t x : ℝ) := Nat.cast_add _ _
   unfold matchedMeanU
@@ -84,7 +84,7 @@ theorem matchedMeanU_signed_balance (hd : 1 ≤ d) (η : Site d → ℤ) (K : �
     walkOp (matchedMeanU η ρ t) x - matchedMeanU η ρ t x =
       (∫ σ, (matchedCount η ρ σ t x : ℝ) ∂(roundNoiseLaw d)) -
         (∫ σ, ((matchedState η ρ σ t).holes x : ℝ) ∂(roundNoiseLaw d)) - (η x : ℝ) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   induction t with
   | zero =>
       have hm : matchedMeanU η ρ 0 = 0 := by funext y; simp [matchedMeanU, matchedState, initial]

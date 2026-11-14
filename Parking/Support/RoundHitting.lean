@@ -57,7 +57,7 @@ theorem Parking.integral_roundDifference_hitBy_le (hd : 1 ≤ d) (m : ℕ) (x : 
     ∫ q, LatticeProb.srwHitBy d m (Parking.roundDifference x u v q.1 q.2)
         ∂((Parking.stepLaw d).prod (Parking.stepLaw d)) ≤
       LatticeProb.srwHitBy d (m + 2) x := by
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   have hint : Integrable (fun q : (Fin d × Bool) × (Fin d × Bool) =>
       LatticeProb.srwHitBy d m (Parking.roundDifference x u v q.1 q.2))
       ((Parking.stepLaw d).prod (Parking.stepLaw d)) :=
@@ -68,16 +68,16 @@ theorem Parking.integral_roundDifference_hitBy_le (hd : 1 ≤ d) (m : ℕ) (x : 
   rw [integral_prod _ hint]
   cases u <;> cases v
   · simpa [Parking.roundDifference] using Parking.srwHitBy_mono (d := d) x (show m ≤ m + 2 by omega)
-  · simp only [Parking.roundDifference, Bool.false_eq_true, if_false, if_true, add_zero]
+  · simp only [Parking.roundDifference, Bool.false_eq_true, ite_false, ite_true, add_zero]
     rw [Parking.integral_stepLaw_add hd, integral_const, probReal_univ, smul_eq_mul, one_mul]
     exact le_trans (Parking.walkOp_srwHitBy_le hd m x)
       (Parking.srwHitBy_mono x (show m + 1 ≤ m + 2 by omega))
-  · simp only [Parking.roundDifference, Bool.false_eq_true, if_false, if_true, add_zero]
+  · simp only [Parking.roundDifference, Bool.false_eq_true, ite_false, ite_true, add_zero]
     simp only [integral_const, probReal_univ, smul_eq_mul, one_mul]
     rw [Parking.integral_stepLaw_add hd]
     exact le_trans (Parking.walkOp_srwHitBy_le hd m x)
       (Parking.srwHitBy_mono x (show m + 1 ≤ m + 2 by omega))
-  · simp only [Parking.roundDifference, if_true]
+  · simp only [Parking.roundDifference, ite_true]
     simp_rw [Parking.integral_stepLaw_add hd]
     exact le_trans (Parking.walkOp_mono hd (Parking.walkOp_srwHitBy_le hd m) x)
       (Parking.walkOp_srwHitBy_le hd (m + 1) x)
@@ -97,8 +97,8 @@ walk model used by the parking process. -/
 theorem Parking.walkLaw_hitZero_eq (hd : 1 ≤ d) (x : Site d) (t : ℕ) :
     (Parking.walkLaw d) {p | ∃ s ≤ t, Parking.walkPath x p s = 0} =
       ENNReal.ofReal (LatticeProb.srwHitBy d t x) := by
-  haveI : NeZero d := ⟨by omega⟩
-  haveI := Parking.stepLaw_isProbability hd
+  have : NeZero d := ⟨by omega⟩
+  have := Parking.stepLaw_isProbability hd
   let M : (ℕ → Fin d × Bool) → ℕ → Site d := fun p n => Parking.stepVec (p n)
   have hM : Measurable M := Measurable.of_eval fun n =>
     (measurable_of_countable Parking.stepVec).comp (measurable_pi_apply n)
@@ -138,7 +138,7 @@ theorem Parking.roundPath_hit_le (hd : 1 ≤ d)
     (Parking.roundNoiseLaw d) {σ | ∃ s ≤ T, X σ s = 0} ≤
       (Parking.walkLaw d) {p | ∃ s ≤ 2 * T, Parking.walkPath x p s = 0} := by
   classical
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   rw [Parking.walkLaw_hitZero_eq hd x (2 * T)]
   apply Parking.layerPath_hit_le hd
     (Measure.infinitePi fun _ : Parking.RoundSlot d => Parking.stepLaw d) X hX x hX0 hpast

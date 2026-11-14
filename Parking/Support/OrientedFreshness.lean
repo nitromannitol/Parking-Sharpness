@@ -20,7 +20,7 @@ theorem orientedOdometer_indep_stack_coord (hd : 1 ≤ d) (η : Site d → ℤ)
     (n : ℕ) (x : Site d) (q : Site d × ℕ) (hq : layerHeight x ≤ layerHeight q.1) :
     IndepFun (fun σ : Site d × ℕ → Site d => orientedOdometer η σ n x)
       (fun σ => σ q) (orientedStackLaw d) := by
-  haveI : ∀ p : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw p.1) :=
+  have : ∀ p : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw p.1) :=
     fun p => orientedInstructionLaw_isProbability hd p.1
   apply indepFun_of_update_invariant (fun p : Site d × ℕ => orientedInstructionLaw p.1)
     (0 : Site d) _ (measurable_orientedOdometer _ _ measurable_const measurable_id n x)

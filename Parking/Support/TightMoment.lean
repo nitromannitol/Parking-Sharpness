@@ -90,8 +90,8 @@ theorem exists_orientedRescaledPotential_moment_bound (ν : Measure ℤ) (hν : 
       (∫ η : Site 2 → ℝ, |orientedRescaledPotential n s y η -
           orientedRescaledPotential n s' y' η| ^ p ∂(iidLaw 2 (realLaw ν))) ^ (2 / p) ≤
         C * ((n : ℝ) ^ (-(1 : ℝ) / 2) * (Real.sqrt h + |(D : ℝ) - (h : ℝ) / 2|)) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   have hp0 : (0 : ℝ) ≤ p := le_trans (by norm_num) hp
   have hpp : (0 : ℝ) < p := lt_of_lt_of_le (by norm_num) hp
   obtain ⟨C, hC, hb⟩ := exists_oriented_potential_scenery_bound (realLaw ν) p hp

@@ -45,7 +45,7 @@ theorem integral_table_green (hd : 3 ≤ d) (x y : Site d) (j : RoundSlot d) :
     ∫ τ, fullGreen d (x + stepVec (τ j) - y)
       ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d) =
       fullGreen d (x - y) - if x = y then 1 else 0 := by
-  haveI := stepLaw_isProbability (by omega : 1 ≤ d)
+  have := stepLaw_isProbability (by omega : 1 ≤ d)
   have hm : (Measure.infinitePi fun _ : RoundSlot d => stepLaw d).map (fun τ => τ j) =
       stepLaw d := Measure.infinitePi_map_eval _ j
   calc

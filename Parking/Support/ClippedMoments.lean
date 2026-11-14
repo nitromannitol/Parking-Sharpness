@@ -29,7 +29,7 @@ theorem integral_clippedTableU_rpow_shift (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) 
     (T : ℕ) (x : Site d) {r : ℝ} (hr : 1 ≤ r) :
     ∫ ω, clippedTableU T x ω ^ r ∂((iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)) =
       ∫ ω, clippedTableU T 0 ω ^ r ∂((iidLaw d (threePointLaw p)).prod (flatRoundNoiseLaw d)) := by
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
   rw [integral_clippedTableU hd _ (ae_clipSparse_threePointLaw p) T x _
     (measurable_rpow_const (by linarith)),
     integral_clippedTableU hd _ (ae_clipSparse_threePointLaw p) T 0 _

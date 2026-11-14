@@ -58,7 +58,7 @@ theorem meanU_one_eq_S_zero (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeas
 /-- The mean divisible odometer is positive at every positive horizon under a critical law. -/
 theorem meanu_pos (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν)
     (n : ℕ) (hn : 1 ≤ n) : 0 < meanu (law d ν) n := by
-  haveI := hν.prob
+  have := hν.prob
   have hm : 0 < meanu (law d ν) 1 := by
     rw [meanu_one_eq_S_zero, S_zero_eq hd]
     exact integral_toNat_pos ν hν.nonconst hν.integrable_abs hν.mean

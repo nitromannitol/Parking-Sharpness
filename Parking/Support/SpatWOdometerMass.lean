@@ -48,8 +48,8 @@ theorem integrable_uncurry_barOdometer (hd : 1 ≤ d) (ν : Measure ℤ)
     {R : ℝ} (hR : 0 ≤ R) (t : ℝ) (K : Set (Fin d → ℝ)) (hK : IsCompact K) :
     Integrable (fun p : Data d × (Fin d → ℝ) => barOdometer p.1 R t p.2)
       ((law d ν).prod (volume.restrict K)) := by
-  haveI := law_isProb hd ν
-  haveI : IsFiniteMeasure (volume.restrict K) :=
+  have := law_isProb hd ν
+  have : IsFiniteMeasure (volume.restrict K) :=
     ⟨by rw [Measure.restrict_apply_univ]; exact hK.measure_lt_top⟩
   apply (integrable_prod_iff' (measurable_uncurry_barOdometer R t).aestronglyMeasurable).mpr
   constructor
@@ -70,7 +70,7 @@ theorem integral_local_barOdometer_eq (hd : 1 ≤ d) (ν : Measure ℤ)
     Integrable (fun w => ∫ x in K, barOdometer w R t x) (law d ν) ∧
       (∫ w, (∫ x in K, barOdometer w R t x) ∂law d ν) =
         volume.real K * (R ^ ((d : ℝ) / 2 - 2) * meanU (law d ν) ⌊t * R ^ 2⌋₊) := by
-  haveI := law_isProb hd ν
+  have := law_isProb hd ν
   have hi := integrable_uncurry_barOdometer hd ν hint hR t K hK
   refine ⟨hi.integral_prod_left, ?_⟩
   rw [integral_integral_swap hi]
@@ -86,7 +86,7 @@ theorem exists_integral_local_barOdometer_le (hd : 1 ≤ d) (hd3 : d ≤ 3)
     ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 2 ≤ R →
       Integrable (fun w => ∫ x in K, barOdometer w R 1 x) (law d ν) ∧
         (∫ w, (∫ x in K, barOdometer w R 1 x) ∂law d ν) ≤ C := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨c, C, hc, hcC, hmean, _⟩ :=
     (Frozen.growth hGrowth hBernstein d hd ν hν).1 hd3
   have hC : 0 ≤ C := hc.le.trans hcC

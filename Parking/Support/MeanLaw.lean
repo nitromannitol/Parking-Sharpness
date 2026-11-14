@@ -28,7 +28,7 @@ theorem matchedMeanU_priority (η : Site d → ℤ) (ρ ρ' : Label d × ℕ →
 /-- The conditional mean odometer is measurable as a function of the initial field. -/
 theorem measurable_matchedMeanU (hd : 1 ≤ d) (ρ : Label d × ℕ → ℝ) (T : ℕ) (x : Site d) :
     Measurable (fun η : Site d → ℤ => matchedMeanU η ρ T x) := by
-  haveI := roundNoiseLaw_isProbability hd
+  have := roundNoiseLaw_isProbability hd
   have hS := measurableState_matchedState ⟨0, hd⟩
     (Ω := (Site d → ℤ) × RoundNoise d) Prod.fst (fun _ => ρ) Prod.snd
     measurable_fst measurable_const measurable_snd T

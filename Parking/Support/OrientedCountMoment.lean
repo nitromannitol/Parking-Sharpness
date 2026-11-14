@@ -58,7 +58,7 @@ theorem exists_orientedCount_moment (p : ℝ) (hp : 2 ≤ p) :
       (∫ ω : ℕ → Fin 2 × Bool,
         |(orientedFirstCount ω j h : ℝ) - (h : ℝ) / 2| ^ p ∂(walkLaw 2)) ^ (2 / p) ≤
         C * (h : ℝ) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
+  have := stepLaw_isProbability (d := 2) (by norm_num)
   have hi : Integrable (fun b => |orientedCenteredDirection b| ^ p) (stepLaw 2) := by
     simp only [abs_orientedCenteredDirection]
     exact integrable_const _

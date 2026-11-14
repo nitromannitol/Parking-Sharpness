@@ -44,10 +44,10 @@ theorem agreesOnPresent_taggedDriver (w : ℕ → Fin d × Bool) (r : ℕ → �
   · show taggedMove w ω.2.1 (p, s) = taggedMove w ω'.2.1 (p, s)
     rw [taggedMove_apply, taggedMove_apply]
     by_cases h0 : p.1 = (0 : Site d)
-    · rw [if_pos h0, if_pos h0]
+    · rw [ite_eq_left h0, ite_eq_left h0]
       by_cases h2 : p.2 = 0
-      · rw [if_pos h2, if_pos h2]
-      · rw [if_neg h2, if_neg h2]
+      · rw [ite_eq_left h2, ite_eq_left h2]
+      · rw [ite_eq_right h2, ite_eq_right h2]
         refine hm ((0, p.2 - 1), s) ?_
         have hval : (taggedDriver w r ω).eta p.1 = ω.1 (0 : Site d) + 1 := by
           show addParticle (0 : Site d) ω.1 p.1 = ω.1 (0 : Site d) + 1
@@ -55,19 +55,19 @@ theorem agreesOnPresent_taggedDriver (w : ℕ → Fin d × Bool) (r : ℕ → �
         rw [hval] at hp
         show p.2 - 1 < (ω.1 (0 : Site d)).toNat
         omega
-    · rw [if_neg h0, if_neg h0]
+    · rw [ite_eq_right h0, ite_eq_right h0]
       refine hm (p, s) ?_
       have hval : (taggedDriver w r ω).eta p.1 = ω.1 p.1 := by
         show addParticle (0 : Site d) ω.1 p.1 = ω.1 p.1
-        simp only [addParticle, if_neg h0]
+        simp only [addParticle, ite_eq_right h0]
       rwa [hval] at hp
   · show taggedRank r ω.2.2 (p, s) = taggedRank r ω'.2.2 (p, s)
     rw [taggedRank_apply, taggedRank_apply]
     by_cases h0 : p.1 = (0 : Site d)
-    · rw [if_pos h0, if_pos h0]
+    · rw [ite_eq_left h0, ite_eq_left h0]
       by_cases h2 : p.2 = 0
-      · rw [if_pos h2, if_pos h2]
-      · rw [if_neg h2, if_neg h2]
+      · rw [ite_eq_left h2, ite_eq_left h2]
+      · rw [ite_eq_right h2, ite_eq_right h2]
         refine hr ((0, p.2 - 1), s) ?_
         have hval : (taggedDriver w r ω).eta p.1 = ω.1 (0 : Site d) + 1 := by
           show addParticle (0 : Site d) ω.1 p.1 = ω.1 (0 : Site d) + 1
@@ -75,11 +75,11 @@ theorem agreesOnPresent_taggedDriver (w : ℕ → Fin d × Bool) (r : ℕ → �
         rw [hval] at hp
         show p.2 - 1 < (ω.1 (0 : Site d)).toNat
         omega
-    · rw [if_neg h0, if_neg h0]
+    · rw [ite_eq_right h0, ite_eq_right h0]
       refine hr (p, s) ?_
       have hval : (taggedDriver w r ω).eta p.1 = ω.1 p.1 := by
         show addParticle (0 : Site d) ω.1 p.1 = ω.1 p.1
-        simp only [addParticle, if_neg h0]
+        simp only [addParticle, ite_eq_right h0]
       rwa [hval] at hp
 
 /-- **`F` is symmetric in the particles present**, at the realizations whose
@@ -94,11 +94,11 @@ theorem symmetricInParticles_survivalObs (w : ℕ → Fin d × Bool) (r : ℕ �
     with hS
   by_cases hmem : ω ∈ S
   · have h1 : relabelAt x₀ σ ω ∈ S := by
-      rw [hS, Set.mem_setOf_eq, h]
+      rw [hS, Set.mem_ofPred_eq, h]
       exact hmem
     rw [Set.indicator_of_mem h1, Set.indicator_of_mem hmem]
   · have h1 : relabelAt x₀ σ ω ∉ S := by
-      rw [hS, Set.mem_setOf_eq, h]
+      rw [hS, Set.mem_ofPred_eq, h]
       exact hmem
     rw [Set.indicator_of_notMem h1, Set.indicator_of_notMem hmem]
 
@@ -114,11 +114,11 @@ theorem readsParticles_survivalObs (w : ℕ → Fin d × Bool) (r : ℕ → ℝ)
     with hS
   by_cases hmem : ω ∈ S
   · have h1 : ω' ∈ S := by
-      rw [hS, Set.mem_setOf_eq, ← h]
+      rw [hS, Set.mem_ofPred_eq, ← h]
       exact hmem
     rw [Set.indicator_of_mem hmem, Set.indicator_of_mem h1]
   · have h1 : ω' ∉ S := by
-      rw [hS, Set.mem_setOf_eq, ← h]
+      rw [hS, Set.mem_ofPred_eq, ← h]
       exact hmem
     rw [Set.indicator_of_notMem hmem, Set.indicator_of_notMem h1]
 
@@ -147,11 +147,11 @@ theorem dependsOn_survivalObs (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) (t :
     with hS
   by_cases hmem : ω ∈ S
   · have h1 : ω' ∈ S := by
-      rw [hS, Set.mem_setOf_eq, ← h]
+      rw [hS, Set.mem_ofPred_eq, ← h]
       exact hmem
     rw [Set.indicator_of_mem hmem, Set.indicator_of_mem h1]
   · have h1 : ω' ∉ S := by
-      rw [hS, Set.mem_setOf_eq, ← h]
+      rw [hS, Set.mem_ofPred_eq, ← h]
       exact hmem
     rw [Set.indicator_of_notMem hmem, Set.indicator_of_notMem h1]
 

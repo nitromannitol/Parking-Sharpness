@@ -42,8 +42,8 @@ theorem FtrueScaled_eq_const_mul (η : Site 2 → ℝ) (n : ℕ) :
 multiple of the integrable maximal functional `Parking.orientedMax` plus a constant. -/
 theorem integrable_happBadBound {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) :
     Integrable (happBadBound hA n η) (walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   unfold happBadBound
   exact (integrable_orientedMax (by norm_num) (orientedPotential η) n 0).const_mul _
     |>.add (integrable_const _)
@@ -52,8 +52,8 @@ theorem integrable_happBadBound {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 
 via its indicator preserves integrability. -/
 theorem integrable_indicator_happBadBound {A : ℝ} (hA : 0 ≤ A) (n : ℕ) (η : Site 2 → ℝ) :
     Integrable (Set.indicator (walkBad n A) (happBadBound hA n η)) (walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   exact (integrable_happBadBound hA n η).indicator (measurableSet_walkBad n A)
 
 /-! ### The per-`σ` terminal-value bound -/
@@ -64,8 +64,8 @@ theorem abs_orientedTerminalValue_Ftrue_sub_Fcut_le {A : ℝ} (hA : 0 < A) (n : 
     (η : Site 2 → ℝ) {σ : (ℕ → Fin 2 × Bool) → ℕ} (hσ : IsStoppingTimeLE n σ) :
     |orientedTerminalValue (FtrueScaled η n) 0 σ - orientedTerminalValue (FcutReward hA.le n η) 0 σ|
       ≤ ∫ p, Set.indicator (walkBad n A) (happBadBound hA.le n η) p ∂(walkLaw 2) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   have hF := integrable_orientedTerminalReward (by norm_num : (1:ℕ) ≤ 2) hσ (FtrueScaled η n) 0
   have hG := integrable_orientedTerminalReward (by norm_num : (1:ℕ) ≤ 2) hσ (FcutReward hA.le n η) 0
   have hsub : orientedTerminalValue (FtrueScaled η n) 0 σ

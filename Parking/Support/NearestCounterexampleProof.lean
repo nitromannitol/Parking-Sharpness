@@ -37,10 +37,10 @@ theorem nearest_counterexample_eventual (hBernstein : External.Bernstein) (d : �
     have h := (le_div_iff₀ (by positivity : 0 < 32 * B)).mp (min_le_right (1 / 4) (1 / (32 * B)))
     change p * (32 * B) ≤ 1 at h
     nlinarith
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI := stackRankLaw_isProbability hd1
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d (threePointLaw p)) :=
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have := stackRankLaw_isProbability hd1
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (law d (threePointLaw p)) :=
     inferInstanceAs (IsProbabilityMeasure ((iidLaw d (threePointLaw p)).prod (stackRankLaw d)))
   let k : ℝ := C * Real.exp 1
   let D : ℝ := ((8 * d + 1 : ℕ) : ℝ) ^ d
@@ -88,10 +88,10 @@ theorem nearest_counterexample_proof (hBernstein : External.Bernstein) (d : ℕ)
     ∃ p : ℝ, 0 < p ∧ p < 1 / 2 ∧ ∃ c : ℝ, 0 < c ∧
       c ≤ liminf (fun t : ℕ => ((law d (threePointLaw p)) {ω | HoleCloser ω t}).toReal) atTop := by
   obtain ⟨p, hp, hp2, c, hc, he⟩ := nearest_counterexample_eventual hBernstein d hd
-  haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
-  haveI := stackRankLaw_isProbability (by omega : 1 ≤ d)
-  haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (law d (threePointLaw p)) :=
+  have := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
+  have := stackRankLaw_isProbability (by omega : 1 ≤ d)
+  have : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure (law d (threePointLaw p)) :=
     inferInstanceAs (IsProbabilityMeasure ((iidLaw d (threePointLaw p)).prod (stackRankLaw d)))
   have hb : IsBoundedUnder (fun x y : ℝ => x ≤ y) atTop
       (fun t : ℕ => ((law d (threePointLaw p)) {ω | HoleCloser ω t}).toReal) := by

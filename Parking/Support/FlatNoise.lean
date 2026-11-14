@@ -37,14 +37,14 @@ theorem measurable_curryRoundNoise : Measurable (curryRoundNoise (d := d)) :=
 /-- `flatRoundNoiseLaw` is a probability measure, since each factor `stepLaw d` is. -/
 theorem flatRoundNoiseLaw_isProbability (hd : 1 ≤ d) :
     IsProbabilityMeasure (flatRoundNoiseLaw d) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   unfold flatRoundNoiseLaw
   infer_instance
 
 /-- Flattening the independent round tables preserves their law. -/
 theorem map_curryRoundNoise (hd : 1 ≤ d) :
     (flatRoundNoiseLaw d).map curryRoundNoise = roundNoiseLaw d := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   exact Measure.infinitePi_map_curry (fun _ : ℕ => fun _ : RoundSlot d => stepLaw d)
 
 /-- A fresh entry cannot change the state before its round. -/

@@ -72,7 +72,7 @@ theorem round_hole_product_factor (hd : 3 ≤ d) (A H : Site d → ℕ)
             ∂(Measure.infinitePi fun _ : RoundSlot d => stepLaw d)) := by
   classical
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   have hm (v : Site d) :
       Measurable (fun ζ : RoundSlot d → Fin d × Bool => matchedMeanH (roundSigned A H ζ) ρ T v) :=
     (measurable_matchedMeanH hd1 ρ T v).comp

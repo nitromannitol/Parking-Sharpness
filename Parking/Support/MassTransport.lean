@@ -62,8 +62,7 @@ theorem card_filter_candidates_eq_sum (η : Site d → ℤ) (z : Site d) (r : �
       = ((Finset.range (η a).toNat).filter fun i => P (a, i)).map
         ⟨fun i => (a, i), by intro u v h; simpa using h⟩ := by
     ext p
-    simp only [Finset.mem_filter, Finset.mem_map, Finset.mem_range,
-      Function.Embedding.coeFn_mk]
+    simp only [Finset.mem_filter, Finset.mem_map, Finset.mem_range]
     constructor
     · rintro ⟨⟨hc, hP⟩, hfst⟩
       refine ⟨p.2, ⟨?_, ?_⟩, ?_⟩
@@ -222,7 +221,7 @@ theorem mean_activity_eq_survivors (hd : 1 ≤ d) [IsProbabilityMeasure μ]
     (hint : Integrable (fun η : Site d → ℤ => |((η 0 : ℤ) : ℝ)|) μ) (t : ℕ) :
     ∫ ω, (Parking.A ω t 0 : ℝ) ∂(dataLaw d μ) = Parking.S (dataLaw d μ) t := by
   classical
-  haveI := stackRankLaw_isProbability (d := d) hd
+  have := stackRankLaw_isProbability (d := d) hd
   have hae := ae_stack_nbr hd μ
   have hIsent : ∀ a b : Site d,
       Integrable (fun ω : Data d => (sentTo ω t a b : ℝ)) (dataLaw d μ) :=

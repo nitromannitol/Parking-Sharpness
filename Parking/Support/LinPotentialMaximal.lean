@@ -233,9 +233,9 @@ theorem exists_linPotential_point_tail (hd1 : 1 ≤ d) (ν : Measure ℤ) (hν :
       ((iidLaw d (realLaw ν)) {η | r ≤ |linPotential η n y|}).toReal
         ≤ C * Real.exp (-(c * min (r ^ 2 / (l2Norm (fun z => green d n (y - z))) ^ 2)
             (r / supAbs (fun z => green d n (y - z))))) := by
-  haveI := hν.prob
-  haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
+  have := hν.prob
+  have hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => realLaw ν))
   obtain ⟨θ, hθ, hexpabs⟩ := realLaw_expMoment ν hν
   obtain ⟨c, C, hc, hC, hmain⟩ :=
@@ -273,9 +273,9 @@ theorem exists_linPotential_maximal_tail (hd1 : 1 ≤ d) (ν : Measure ℤ) (hν
       ((iidLaw d (realLaw ν))
           {η | ∃ y ∈ boxFinset (0 : Site d) A, M ≤ |linPotential η n y|}).toReal
         ≤ C * (2 * A + 1) ^ d * Real.exp (-(c * min (M ^ 2 / (n : ℝ) ^ 2) (M / (n : ℝ)))) := by
-  haveI := hν.prob
-  haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
+  have := hν.prob
+  have hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => realLaw ν))
   obtain ⟨c0, C0, hc0, hC0, hpt⟩ := exists_linPotential_point_tail hd1 ν hν
   set Cg1 : ℝ := 1 + Real.sqrt (LatticeProb.diagConst d / Real.sqrt 2 ^ d) with hCg1def

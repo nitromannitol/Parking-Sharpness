@@ -38,7 +38,7 @@ theorem measurableSet_Ulimit_top (x : Site d) :
   have hset : {ω : Data d | Parking.Ulimit ω x = ⊤}
       = ⋂ M : ℕ, ⋃ n : ℕ, {ω : Data d | M ≤ Parking.U ω n x} := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_iInter, Set.mem_iUnion, Ulimit_eq_top_iff]
+    simp only [Set.mem_ofPred_eq, Set.mem_iInter, Set.mem_iUnion, Ulimit_eq_top_iff]
   rw [hset]
   exact MeasurableSet.iInter fun M => MeasurableSet.iUnion fun n =>
     measurableSet_le measurable_const (measurable_U n x)
@@ -50,7 +50,7 @@ theorem measurableSet_forall_Ulimit_top (d : ℕ) :
   have hset : {ω : Data d | ∀ x : Site d, Parking.Ulimit ω x = ⊤}
       = ⋂ x : Site d, {ω : Data d | Parking.Ulimit ω x = ⊤} := by
     ext ω
-    simp only [Set.mem_setOf_eq, Set.mem_iInter]
+    simp only [Set.mem_ofPred_eq, Set.mem_iInter]
   rw [hset]
   exact MeasurableSet.iInter fun x => measurableSet_Ulimit_top x
 
@@ -60,7 +60,7 @@ theorem preimage_shiftData_forall_top (v : Site d) :
     shiftData (d := d) v ⁻¹' {ω : Data d | ∀ x : Site d, Parking.Ulimit ω x = ⊤}
       = {ω : Data d | ∀ x : Site d, Parking.Ulimit ω x = ⊤} := by
   ext ω
-  simp only [Set.mem_preimage, Set.mem_setOf_eq, Ulimit_shiftData]
+  simp only [Set.mem_preimage, Set.mem_ofPred_eq, Ulimit_shiftData]
   constructor
   · intro h x
     have hx := h (x - v)
@@ -76,8 +76,8 @@ theorem ae_forall_Ulimit_top (hGrowth : Parking.External.SandpileGrowth)
     (hGreenNorms : Parking.External.GreenNorms)
     (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) :
     ∀ᵐ ω ∂(law d ν), ∀ x : Site d, Parking.Ulimit ω x = ⊤ := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   have hAm : MeasurableSet {ω : Data d | ∀ x : Site d, Parking.Ulimit ω x = ⊤} :=
     measurableSet_forall_Ulimit_top d
   have hv : LatticeProb.unit (⟨0, hd⟩ : Fin d) ≠ (0 : Site d) := LatticeProb.unit_ne_zero _

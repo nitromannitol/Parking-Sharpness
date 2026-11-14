@@ -42,7 +42,7 @@ theorem escapePotential_self (hd : 3 ≤ d) (x : Site d) : escapePotential d x x
 theorem integral_step_escapePotential_ge (hd : 3 ≤ d) (x y : Site d) :
     escapePotential d x y ≤ ∫ a, escapePotential d x (y + stepVec a) ∂(stepLaw d) := by
   have hd1 : 1 ≤ d := by omega
-  haveI := stepLaw_isProbability hd1
+  have := stepLaw_isProbability hd1
   have hg : 0 < escapeConst d := lt_of_lt_of_le zero_lt_one (one_le_escapeConst hd)
   have hi : Integrable (fun a : Fin d × Bool => fullGreen d (y + stepVec a - x)) (stepLaw d) :=
     Integrable.of_bound (measurable_from_countable' _).aestronglyMeasurable (escapeConst d)

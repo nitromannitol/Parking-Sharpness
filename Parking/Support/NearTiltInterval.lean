@@ -314,7 +314,7 @@ theorem exists_near_tilt_bound {d : ℕ} (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ 
         Integrable (fun ω => (LatticeProb.survivorsFrom (toDriver ω) t 0 : ℝ)) (law d (ν δ)) ∧
           S (law d (ν δ)) t ≤ C * rangeExp d (c * δ ^ 2) t := by
   obtain ⟨hδ₀, hθ, hprob, hmeanδ, -, hmom, -⟩ := hfam
-  haveI : IsProbabilityMeasure (ν 0) := hprob 0 ⟨le_rfl, hδ₀.le⟩
+  have : IsProbabilityMeasure (ν 0) := hprob 0 ⟨le_rfl, hδ₀.le⟩
   have hM1 : (1 : ℝ) ≤ M :=
     le_trans (one_le_integral_absMoment hθ.le (hmom 0 ⟨le_rfl, hδ₀.le⟩).1)
       (hmom 0 ⟨le_rfl, hδ₀.le⟩).2
@@ -335,7 +335,7 @@ theorem exists_near_tilt_bound {d : ℕ} (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ 
     le_trans hδ1 (le_trans (min_le_right _ _) (le_trans (min_le_right _ _) (min_le_left _ _)))
   have hδAθ : δ ≤ A * θ :=
     le_trans hδ1 (le_trans (min_le_right _ _) (le_trans (min_le_right _ _) (min_le_right _ _)))
-  haveI : IsProbabilityMeasure (ν δ) := hprob δ ⟨hδ0.le, hδδ₀⟩
+  have : IsProbabilityMeasure (ν δ) := hprob δ ⟨hδ0.le, hδδ₀⟩
   have hexpδ := (hmom δ ⟨hδ0.le, hδδ₀⟩).1
   have hMδ := (hmom δ ⟨hδ0.le, hδδ₀⟩).2
   have hmeanδ' : ∫ k, (k : ℝ) ∂(ν δ) = -δ := hmeanδ δ ⟨hδ0.le, hδδ₀⟩

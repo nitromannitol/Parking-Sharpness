@@ -33,7 +33,7 @@ theorem Parking.measurable_shiftRoundNoise (v : Site d) :
 permutes the i.i.d. layers of step instructions via the injective `shiftRoundSlot`. -/
 theorem Parking.roundNoiseLaw_map_shift (hd : 1 ≤ d) (v : Site d) :
     (Parking.roundNoiseLaw d).map (Parking.shiftRoundNoise v) = Parking.roundNoiseLaw d := by
-  haveI := Parking.stepLaw_isProbability hd
+  have := Parking.stepLaw_isProbability hd
   change (Measure.infinitePi fun _ : ℕ =>
     Measure.infinitePi fun _ : Parking.RoundSlot d => Parking.stepLaw d).map
     (fun (σ : Parking.RoundNoise d) t q => σ t (Parking.shiftRoundSlot v q)) = _
@@ -60,12 +60,12 @@ theorem Parking.measurable_shiftCoupledData (v : Site d) :
 theorem Parking.coupledLaw_map_shift (hd : 1 ≤ d) (ν : Measure ℤ)
     [IsProbabilityMeasure ν] {p : ℝ≥0∞} (hp : p ≤ 1) (v : Site d) :
     (Parking.coupledLaw d ν p).map (Parking.shiftCoupledData v) = Parking.coupledLaw d ν p := by
-  haveI := Parking.resampleOne_isProbability ν hp
-  haveI : IsProbabilityMeasure (Parking.resampleLaw d ν p) := by
+  have := Parking.resampleOne_isProbability ν hp
+  have : IsProbabilityMeasure (Parking.resampleLaw d ν p) := by
     unfold Parking.resampleLaw LatticeProb.iidLaw
     infer_instance
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI := Parking.roundNoiseLaw_isProbability hd
+  have := LatticeProb.rankLaw_isProbability d
+  have := Parking.roundNoiseLaw_isProbability hd
   have hc : Measurable (fun c : Site d → ℤ × ℤ => fun x => c (x + v)) :=
     Measurable.of_eval fun x => measurable_pi_apply (x + v)
   change (((Parking.resampleLaw d ν p).prod (rankLaw d)).prod (Parking.roundNoiseLaw d)).map

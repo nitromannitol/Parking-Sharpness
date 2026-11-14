@@ -75,9 +75,9 @@ theorem labelLT_perm_iff_of_index_zero {x₀ : Site d} {σ : Equiv.Perm ℕ}
     (h0 : p.2 = 0 ∨ q.2 = 0) :
     labelLT (permLabel x₀ σ p) (permLabel x₀ σ q) ↔ labelLT p q := by
   have hp : permLabel x₀ σ p = (p.1, σ p.2) := by
-    simp only [permLabel, if_pos hx]
+    simp only [permLabel, ite_eq_left hx]
   have hq : permLabel x₀ σ q = (q.1, σ q.2) := by
-    simp only [permLabel, if_pos (hpq ▸ hx)]
+    simp only [permLabel, ite_eq_left (hpq ▸ hx)]
   rw [hp, hq, labelLT, labelLT, labelKey, labelKey, labelKey, labelKey,
     Prod.Lex.toLex_lt_toLex, Prod.Lex.toLex_lt_toLex]
   rcases h0 with h0 | h0
@@ -103,10 +103,10 @@ theorem labelLT_perm_iff_of_fixes_zero {x₀ : Site d} {σ : Equiv.Perm ℕ}
         · exact Or.inr h5
       exact labelLT_perm_iff_of_index_zero hσ0 hx hpq h0
     · have hp : permLabel x₀ σ p = p := by
-        simp only [permLabel, if_neg hx]
+        simp only [permLabel, ite_eq_right hx]
       have hq : permLabel x₀ σ q = q := by
         have hxq : q.1 ≠ x₀ := fun hh => hx (hh ▸ hpq ▸ rfl)
-        simp only [permLabel, if_neg hxq]
+        simp only [permLabel, ite_eq_right hxq]
       rw [hp, hq]
   · exact labelLT_perm_iff_of_sites_ne hpq
 

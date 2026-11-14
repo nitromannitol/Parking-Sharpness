@@ -41,7 +41,7 @@ theorem exists_routing_mean (hd : 1 ≤ d) (hBern : Parking.External.Bernstein)
             (∫ ω, ((Parking.U ω n 0 : ℕ) : ℝ) ^ r ∂(Parking.law d ν)) ^ (1 / r)) + r) := by
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   have hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν := integrable_abs_of_absMoment hθ hexpabs
-  haveI hlawP : IsProbabilityMeasure (Parking.law d ν) := law_isProb hd ν
+  have hlawP : IsProbabilityMeasure (Parking.law d ν) := law_isProb hd ν
   obtain ⟨Cw, hCw, hw0⟩ := Parking.Frozen.w_moment hBern d hd
   have hw := hw0 ν inferInstance θ hθ hexp
   refine ⟨2 * Cw, by positivity, fun n hn r hr => ?_⟩
@@ -96,10 +96,10 @@ theorem exists_routing_mean_uniform (hd : 1 ≤ d) (hBern : Parking.External.Ber
   obtain ⟨Cw, hCw, hwu⟩ := exists_wErr_moment_const_uniform (d := d) hd hBern
   refine ⟨2 * Cw, by positivity, ?_⟩
   intro ν hprobν θ hθ hexpabs n hn r hr
-  haveI := hprobν
+  have := hprobν
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   have hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν := integrable_abs_of_absMoment hθ hexpabs
-  haveI hlawP : IsProbabilityMeasure (Parking.law d ν) := law_isProb hd ν
+  have hlawP : IsProbabilityMeasure (Parking.law d ν) := law_isProb hd ν
   have hr1 : (1 : ℝ) ≤ r := by linarith
   have hr0 : (0 : ℝ) < r := by linarith
   obtain ⟨Cw', -, hw0'⟩ := Parking.Frozen.w_moment hBern d hd

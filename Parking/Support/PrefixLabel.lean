@@ -31,12 +31,12 @@ theorem mem_prefixSet_succ {α : Type*} [Inhabited α] (s : Finset α) {i : ℕ}
     rcases Nat.lt_succ_iff_lt_or_eq.mp hlt with h1 | h1
     · exact Or.inl ⟨h, h1⟩
     · refine Or.inr ?_
-      rw [enumLabel, dif_pos hi]
+      rw [enumLabel, dite_eq_left hi]
       have h2 : s.equivFin ⟨p, h⟩ = ⟨i, hi⟩ := Fin.ext h1
       rw [← h2, Equiv.symm_apply_apply]
   · rintro (⟨h, hlt⟩ | rfl)
     · exact ⟨h, Nat.lt_succ_of_lt hlt⟩
-    · rw [enumLabel, dif_pos hi]
+    · rw [enumLabel, dite_eq_left hi]
       refine ⟨(s.equivFin.symm ⟨i, hi⟩).2, ?_⟩
       have h3 : (⟨((s.equivFin.symm ⟨i, hi⟩ : {x // x ∈ s}) : α),
           (s.equivFin.symm ⟨i, hi⟩).2⟩ : {x // x ∈ s}) = s.equivFin.symm ⟨i, hi⟩ := rfl
@@ -46,7 +46,7 @@ theorem mem_prefixSet_succ {α : Type*} [Inhabited α] (s : Finset α) {i : ℕ}
 /-- The `i`-th label of the enumeration belongs to the set. -/
 theorem enumLabel_mem {α : Type*} [Inhabited α] (s : Finset α) {i : ℕ} (hi : i < s.card) :
     enumLabel s i ∈ s := by
-  rw [enumLabel, dif_pos hi]
+  rw [enumLabel, dite_eq_left hi]
   exact (s.equivFin.symm ⟨i, hi⟩).2
 
 /-- Two splicings whose label sets agree away from one label agree at every

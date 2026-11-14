@@ -47,7 +47,7 @@ theorem exists_rNorm_diff_bound (hd : 1 ≤ d) (hBern : Parking.External.Bernste
         C * ((n : ℝ) + 1) ^ (1 / r) *
           (Real.sqrt (r * kappa d n *
             (∫ ω, (U ω n 0 : ℝ) ^ r ∂(law d ν)) ^ (1 / r)) + r) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   have hexp := integrable_expMax_of_expAbs hθ hexpabs
   obtain ⟨C, hC, hbound⟩ := exists_wErr_moment_const hd hBern ν hθ hexp

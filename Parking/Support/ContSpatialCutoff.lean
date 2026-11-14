@@ -78,11 +78,11 @@ def contCutoffReward (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) (k : ℝ) (
 
 /-- Inside the box (`‖y‖ < A`), the cutoff reward equals the true reward. -/
 theorem contCutoffReward_eq_of_lt (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) (k : ℝ) (y : Fin d → ℝ)
-    (hy : ‖y‖ < A) : contCutoffReward G A k y = G k y := if_pos hy
+    (hy : ‖y‖ < A) : contCutoffReward G A k y = G k y := ite_eq_left hy
 
 /-- Outside the box (`A ≤ ‖y‖`), the cutoff reward vanishes. -/
 theorem contCutoffReward_eq_zero_of_le (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) (k : ℝ) (y : Fin d → ℝ)
-    (hy : A ≤ ‖y‖) : contCutoffReward G A k y = 0 := if_neg (not_lt.mpr hy)
+    (hy : A ≤ ‖y‖) : contCutoffReward G A k y = 0 := ite_eq_right (not_lt.mpr hy)
 
 /-- **A bound on the true reward bounds the cutoff reward, everywhere.** -/
 theorem abs_contCutoffReward_le (G : ℝ → (Fin d → ℝ) → ℝ) (A : ℝ) {M : ℝ} (hM : 0 ≤ M)
@@ -124,7 +124,7 @@ theorem measurableSet_contExitEvent {ΩB' : Type*} [MeasurableSpace ΩB']
     (hT0 : 0 ≤ T) : MeasurableSet (contExitEvent B' A T) := by
   have hEeq : contExitEvent B' A T = {β | ∃ s ≤ T.toNNReal, A ≤ ‖B' s β - 0‖} := by
     ext β
-    simp only [contExitEvent, sub_zero, Set.mem_setOf_eq]
+    simp only [contExitEvent, sub_zero, Set.mem_ofPred_eq]
     constructor
     · rintro ⟨s, hs, hA⟩
       exact ⟨s, (Real.le_toNNReal_iff_coe_le hT0).2 hs, hA⟩

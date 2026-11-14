@@ -35,7 +35,7 @@ theorem matchedMeanH_addParticle_of_far (η : Site d → ℤ) (ρ : Label d × �
   apply matchedMeanH_agree_box
   intro y hy
   have hne : y ≠ v := fun he => hv (he ▸ hy)
-  simp only [addParticle, if_neg hne]
+  simp only [addParticle, ite_eq_right hne]
 
 /-- Only finitely many potentially used entries can affect the future mean at a site. -/
 theorem roundMeanH_agree_finite (A H : Site d → ℕ) (N : ℕ) (hA : ∀ y, A y ≤ N)

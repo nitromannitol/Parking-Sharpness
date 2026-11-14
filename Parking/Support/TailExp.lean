@@ -134,7 +134,7 @@ theorem rangeExp_le_rangePow {d : ℕ} (hd : 1 ≤ d) {a : ℝ} (ha : 0 < a) (t 
     rangeExp d a t
       ≤ ∫ p, (Real.exp (-(a * (1 : ℝ)))) ^ (rangeCard (0 : Site d) p t - 1)
           ∂(walkLaw d) := by
-  haveI : IsProbabilityMeasure (walkLaw d) := walkLaw_isProbability (d := d) hd
+  have : IsProbabilityMeasure (walkLaw d) := walkLaw_isProbability (d := d) hd
   have hq : Real.exp (-(a * (1 : ℝ))) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     linarith

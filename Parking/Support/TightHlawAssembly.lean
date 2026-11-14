@@ -53,10 +53,10 @@ theorem tendsto_integral_boxRewardLaw_of_lipschitz (ν : Measure ℤ) (hν : Cri
     {L0' : ℝ≥0} (hΦ0lip : LipschitzWith L0' Φ0) :
     Tendsto (fun n => ∫ G, Φ0 G ∂(boxRewardLaw T ν hT A hA n)) atTop
       (𝓝 (∫ G, Φ0 G ∂(contBoxRewardLaw T hT A hA Y hYmeas hYcont))) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
-  haveI hne : Nonempty (rewardBox T A) :=
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have hne : Nonempty (rewardBox T A) :=
     ⟨⟨⟨0, Set.left_mem_Icc.mpr hT⟩, ⟨-(2 * A), Set.left_mem_Icc.mpr (by linarith)⟩⟩⟩
   have hΦ0lip' : ∀ G G' : C(rewardBox T A, ℝ), |Φ0 G - Φ0 G'| ≤ (L0' : ℝ) * dist G G' := by
     intro G G'
@@ -166,9 +166,9 @@ theorem hlaw_orientedBoxReward (ν : Measure ℤ) (hν : CriticalLaw ν)
     ∀ Φ0 : BoundedContinuousFunction C(rewardBox T A, ℝ) ℝ,
       Tendsto (fun n => ∫ G, Φ0 G ∂(boxRewardLaw T ν hT A hA n)) atTop
         (𝓝 (∫ G, Φ0 G ∂(contBoxRewardLaw T hT A hA Y hYmeas hYcont))) := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   set μs : ℕ → ProbabilityMeasure C(rewardBox T A, ℝ) := fun n =>
     ⟨boxRewardLaw T ν hT A hA n, inferInstance⟩ with hμs
   set μ : ProbabilityMeasure C(rewardBox T A, ℝ) :=

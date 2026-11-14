@@ -24,8 +24,8 @@ theorem eventually_discrepancy_relative_norm {d : ℕ} (hd : 1 ≤ d) (hd3 : d �
       rNorm (law d ν) (rHigh n) (fun ω => (U ω n 0 : ℝ) - uOf ω n 0) /
         (ε * meanu (law d ν) n) ≤ (n : ℝ) ^ (-((1 : ℝ) / 16)) ∧
         0 < ε * meanu (law d ν) n ∧ Real.log n ≤ rHigh n := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨C, hC, hMom⟩ := exists_discrepancy_moment hd hd3 hGrowth hBern hConc hGN ν hν
   obtain ⟨b, _B, hb, _hB, hBP⟩ := (hGrowth d hd (realLaw ν) (realLaw_isProbability ν)
     (realLaw_mean ν hν) (realLaw_evariance_pos ν hν) (realLaw_evariance_lt_top ν hν)

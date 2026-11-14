@@ -35,8 +35,8 @@ theorem exists_odometer_lower_prob (hGrowth : Parking.External.SandpileGrowth)
     ∃ c a : ℝ, 0 < c ∧ 0 < a ∧ ∀ n : ℕ, 2 ≤ n →
       a ≤ (law d ν).real
         {ω : Data d | c * (meanu (law d ν) n + Real.log n) < ((U ω n 0 : ℕ) : ℝ)} := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨θ, hθ, hexpabs⟩ := hν.expMoment
   obtain ⟨c₁, C₁, hc₁, hc₁C₁, hmaster⟩ :=
     Parking.Frozen.master hGrowth hBernstein d hd ν

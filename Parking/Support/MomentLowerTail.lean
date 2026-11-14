@@ -56,7 +56,7 @@ theorem exists_exponential_lower_tail {Ω : Type} [MeasurableSpace Ω]
   let l := -Real.log (1 / 2 : ℝ)
   have hl : 0 < l := neg_pos.mpr (Real.log_neg (by norm_num) (by norm_num))
   refine ⟨Real.exp (2 * l), δ * l, Real.exp_pos _, mul_pos hδ hl, fun μ hμ X m b hm hb hi hn => ?_⟩
-  letI := hμ
+  let := hμ
   have hg0 : 0 < g := by linarith
   by_cases hr : 2 ≤ δ * m
   · have hm0 : 0 < m := by nlinarith

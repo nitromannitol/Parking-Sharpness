@@ -174,9 +174,9 @@ theorem RanksDistinct.relabelAt {d : ℕ} (x₀ : Site d) (σ : Equiv.Perm ℕ) 
   subst hxy
   subst hts
   by_cases hx : x = x₀
-  · rw [if_pos hx, if_pos hx] at hij
+  · rw [ite_eq_left hx, ite_eq_left hx] at hij
     rw [σ.injective hij]
-  · rw [if_neg hx, if_neg hx] at hij
+  · rw [ite_eq_right hx, ite_eq_right hx] at hij
     rw [hij]
 
 end Parking

@@ -23,7 +23,7 @@ theorem meanU_growth (hGrowth : Parking.External.SandpileGrowth)
     (4 ≤ d → ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       c * Real.log n ≤ meanU (law d ν) n ∧
         meanU (law d ν) n ≤ C * Real.log n) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, hexp⟩ := hν.expMoment
   obtain ⟨a, A, ha, haA, hM⟩ := Parking.Frozen.master hGrowth hBernstein
     d hd ν hν.prob hν.nonconst hν.mean θ hθ hexp

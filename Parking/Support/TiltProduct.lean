@@ -53,7 +53,7 @@ theorem prod_coords {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure ν]
     Integrable (fun a : Site d → ℤ => ∏ y ∈ N, w y (a y)) (LatticeProb.iidLaw d ν)
     ∧ ∫ a, ∏ y ∈ N, w y (a y) ∂(LatticeProb.iidLaw d ν) = ∏ y ∈ N, ∫ k, w y k ∂ν := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   induction N using Finset.induction_on with
   | empty => simp
@@ -108,10 +108,10 @@ theorem integral_iidLaw_tilt {d : ℕ} {ν : Measure ℤ} [IsProbabilityMeasure 
   classical
   have hZpos : 0 < ∫ k, Real.exp (s * k) ∂ν := integral_exp_pos hexps
   have hZne : (∫ k, Real.exp (s * k) ∂ν) ≠ 0 := ne_of_gt hZpos
-  haveI := tiltLaw_isProbability hexps
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := tiltLaw_isProbability hexps
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d (tiltLaw ν s)) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d (tiltLaw ν s)) := by
     unfold LatticeProb.iidLaw; infer_instance
   induction N using Finset.induction_on with
   | empty =>

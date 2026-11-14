@@ -105,8 +105,8 @@ theorem integral_ite_le_holder {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω
     intro ω
     rw [hg]
     by_cases h : ω ∈ A
-    · rw [Set.indicator_of_mem h, if_pos h, one_mul]
-    · rw [Set.indicator_of_notMem h, if_neg h, zero_mul]
+    · rw [Set.indicator_of_mem h, ite_eq_left h, one_mul]
+    · rw [Set.indicator_of_notMem h, ite_eq_right h, zero_mul]
   have hgpow : ∀ ω : Ω, g ω ^ (5/4 : ℝ) = Set.indicator A (1 : Ω → ℝ) ω := by
     intro ω
     rw [hg]
@@ -132,7 +132,7 @@ theorem measureReal_gt_le_div {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω)
   have h := mul_meas_ge_le_integral_of_nonneg (Filter.Eventually.of_forall hf0) hf s
   have hsub : {ω | s < f ω} ⊆ {ω | s ≤ f ω} := by
     intro ω hω
-    simp only [Set.mem_setOf_eq] at hω ⊢
+    simp only [Set.mem_ofPred_eq] at hω ⊢
     exact le_of_lt hω
   have hmono : μ.real {ω | s < f ω} ≤ μ.real {ω | s ≤ f ω} := by
     refine measureReal_mono hsub ?_

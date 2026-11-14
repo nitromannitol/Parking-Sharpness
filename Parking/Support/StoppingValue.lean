@@ -117,8 +117,8 @@ theorem stopValue_consNat (hd : 1 ≤ d) {n : ℕ} {σ : (ℕ → Fin d × Bool)
     stopValue η x σ
       = η x + ∫ u : Fin d × Bool, stopValue η (x + stepVec u)
           (fun r => σ (consNat u r) - 1) ∂(stepLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hi : Integrable (stopReward η x σ) (walkLaw d) :=
     integrable_stopReward hd hσ η x
   have hfin : ∀ f : Fin d × Bool → ℝ, Integrable f (stepLaw d) := fun f =>
@@ -155,7 +155,7 @@ theorem stopValue_of_zero {σ : (ℕ → Fin d × Bool) → ℕ}
 theorem stopValue_le (hd : 1 ≤ d) (η : Site d → ℝ) :
     ∀ (n : ℕ) (x : Site d) (σ : (ℕ → Fin d × Bool) → ℕ), IsStoppingTimeLE n σ →
       stopValue η x σ ≤ u η n x := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   intro n
   induction n with
   | zero =>
@@ -198,7 +198,7 @@ theorem stopValue_le (hd : 1 ≤ d) (η : Site d → ℝ) :
 /-- **The odometer is the value of one bounded stopping rule.** -/
 theorem u_mem_stopValues (hd : 1 ≤ d) (η : Site d → ℝ) :
     ∀ (n : ℕ) (x : Site d), u η n x ∈ stopValues d η n x := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   intro n
   induction n with
   | zero =>

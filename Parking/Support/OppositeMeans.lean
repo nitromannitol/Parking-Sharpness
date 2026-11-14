@@ -31,12 +31,12 @@ theorem Parking.discrepancyOppositePairs_eq (c : Site d → ℤ × ℤ) (z : Sit
   by_cases hz : 0 < (c z).2 - (c z).1 <;> by_cases h0 : 0 < (c 0).2 - (c 0).1
   · have hzr : (0 : ℝ) < ((c z).2 : ℝ) - (c z).1 := by exact_mod_cast hz
     have h0r : (0 : ℝ) < ((c 0).2 : ℝ) - (c 0).1 := by exact_mod_cast h0
-    simp only [hz, h0, decide_true, if_true, Nat.cast_zero, Parking.dPos, Parking.dNeg,
+    simp only [hz, h0, decide_true, ite_true, Nat.cast_zero, Parking.dPos, Parking.dNeg,
       max_eq_right (by linarith : ((c z).1 : ℝ) - (c z).2 ≤ 0),
       max_eq_right (by linarith : ((c 0).1 : ℝ) - (c 0).2 ≤ 0), mul_zero, zero_mul, add_zero]
   · have hzr : (0 : ℝ) < ((c z).2 : ℝ) - (c z).1 := by exact_mod_cast hz
     have h0r : ((c 0).2 : ℝ) - (c 0).1 ≤ 0 := by exact_mod_cast le_of_not_gt h0
-    simp only [hz, h0, decide_true, decide_false, Bool.true_eq_false, if_false, Nat.cast_mul, hc,
+    simp only [hz, h0, decide_true, decide_false, Bool.true_eq_false, ite_false, Nat.cast_mul, hc,
       abs_of_pos hzr, abs_of_nonpos h0r, Parking.dPos, Parking.dNeg,
       max_eq_left (le_of_lt hzr), max_eq_right h0r,
       max_eq_right (by linarith : ((c z).1 : ℝ) - (c z).2 ≤ 0),
@@ -44,7 +44,7 @@ theorem Parking.discrepancyOppositePairs_eq (c : Site d → ℤ × ℤ) (z : Sit
     ring
   · have hzr : ((c z).2 : ℝ) - (c z).1 ≤ 0 := by exact_mod_cast le_of_not_gt hz
     have h0r : (0 : ℝ) < ((c 0).2 : ℝ) - (c 0).1 := by exact_mod_cast h0
-    simp only [hz, h0, decide_true, decide_false, Bool.false_eq_true, if_false, Nat.cast_mul, hc,
+    simp only [hz, h0, decide_true, decide_false, Bool.false_eq_true, ite_false, Nat.cast_mul, hc,
       abs_of_nonpos hzr, abs_of_pos h0r, Parking.dPos, Parking.dNeg,
       max_eq_right hzr, max_eq_left (le_of_lt h0r),
       max_eq_left (by linarith : 0 ≤ ((c z).1 : ℝ) - (c z).2),
@@ -52,7 +52,7 @@ theorem Parking.discrepancyOppositePairs_eq (c : Site d → ℤ × ℤ) (z : Sit
     ring
   · have hzr : ((c z).2 : ℝ) - (c z).1 ≤ 0 := by exact_mod_cast le_of_not_gt hz
     have h0r : ((c 0).2 : ℝ) - (c 0).1 ≤ 0 := by exact_mod_cast le_of_not_gt h0
-    simp only [hz, h0, decide_false, if_true, Nat.cast_zero, Parking.dPos, Parking.dNeg,
+    simp only [hz, h0, decide_false, ite_true, Nat.cast_zero, Parking.dPos, Parking.dNeg,
       max_eq_right hzr, max_eq_right h0r, mul_zero, zero_mul, add_zero]
 
 /-- A positive-part label count has the prescribed mean under the one-site law. -/
@@ -104,7 +104,7 @@ theorem Parking.lintegral_resample_pair (ν : Measure ℤ) [IsProbabilityMeasure
     (f g : ℤ × ℤ → ℝ≥0∞) :
     ∫⁻ c, f (c z) * g (c 0) ∂(Parking.resampleLaw d ν p) =
       (∫⁻ q, f q ∂(Parking.resampleOne ν p)) * ∫⁻ q, g q ∂(Parking.resampleOne ν p) := by
-  haveI := Parking.resampleOne_isProbability ν hp
+  have := Parking.resampleOne_isProbability ν hp
   have hmap : (Parking.resampleLaw d ν p).map (fun c => (c z, c 0)) =
       (Parking.resampleOne ν p).prod (Parking.resampleOne ν p) :=
     Measure.infinitePi_map_eval_prod hz

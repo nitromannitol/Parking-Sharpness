@@ -30,8 +30,8 @@ theorem integral_indicator_orientedMax_le {A : ℝ} (_hA : 0 < A) (n : ℕ) (η 
     ∫ p, Set.indicator (walkBad n A) (orientedMax (orientedPotential η) n 0) p ∂(walkLaw 2)
       ≤ ((walkLaw 2).real (walkBad n A)) ^ ((7 : ℝ) / 8) *
           rNorm (walkLaw 2) 8 (orientedMax (orientedPotential η) n 0) := by
-  haveI := stepLaw_isProbability (d := 2) (by norm_num)
-  haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability (d := 2) (by norm_num)
+  have : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
   have hg0 : 0 ≤ᵐ[walkLaw 2] orientedMax (orientedPotential η) n 0 :=
     Filter.Eventually.of_forall (fun p => orientedMax_nonneg _ n 0 p)
   have hgm : AEStronglyMeasurable (orientedMax (orientedPotential η) n 0) (walkLaw 2) :=

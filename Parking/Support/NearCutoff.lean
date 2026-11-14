@@ -75,7 +75,7 @@ theorem exists_resolventThreshold_le (d : ℕ) {CR a₀ : ℝ} (hCR : 0 < CR) (h
         _ = CL ^ 2 * Real.log (Real.exp 1 / δ) ^ 2 := by ring
   by_cases h1 : d = 1
   · refine ⟨CR * a₀ ^ (-(2 : ℝ)) * CL ^ 3, by positivity, fun δ hδ0 hδ1 ha1 => ?_⟩
-    rw [Parking.resolventThreshold, cutoffEnv, if_pos h1, if_pos h1, rpow_scaled ha₀ hδ0, env]
+    rw [Parking.resolventThreshold, cutoffEnv, ite_eq_left h1, ite_eq_left h1, rpow_scaled ha₀ hδ0, env]
     have hpos : (0 : ℝ) ≤ CR * a₀ ^ (-(2 : ℝ)) * δ ^ (-(4 : ℝ)) := by positivity
     calc CR * (a₀ ^ (-(2 : ℝ)) * δ ^ (-(4 : ℝ))
             * Real.log (Real.exp 1 / (a₀ * δ ^ 2)) ^ 3)
@@ -88,7 +88,7 @@ theorem exists_resolventThreshold_le (d : ℕ) {CR a₀ : ℝ} (hCR : 0 < CR) (h
             * (δ ^ (-(4 : ℝ)) * Real.log (Real.exp 1 / δ) ^ 3) := by ring
   by_cases h2 : d = 2
   · refine ⟨CR * a₀⁻¹ * CL ^ 3, by positivity, fun δ hδ0 hδ1 ha1 => ?_⟩
-    rw [Parking.resolventThreshold, cutoffEnv, if_neg h1, if_neg h1, if_pos h2, if_pos h2,
+    rw [Parking.resolventThreshold, cutoffEnv, ite_eq_right h1, ite_eq_right h1, ite_eq_left h2, ite_eq_left h2,
       inv_scaled hδ0, env]
     have hpos : (0 : ℝ) ≤ CR * a₀⁻¹ * δ ^ (-(2 : ℝ)) := by positivity
     calc CR * (a₀⁻¹ * δ ^ (-(2 : ℝ)) * Real.log (Real.exp 1 / (a₀ * δ ^ 2)) ^ 3)
@@ -98,7 +98,7 @@ theorem exists_resolventThreshold_le (d : ℕ) {CR a₀ : ℝ} (hCR : 0 < CR) (h
           mul_le_mul_of_nonneg_left (key δ hδ0 hδ1 ha1).1 hpos
       _ = CR * a₀⁻¹ * CL ^ 3 * (δ ^ (-(2 : ℝ)) * Real.log (Real.exp 1 / δ) ^ 3) := by ring
   · refine ⟨CR * a₀⁻¹ * CL ^ 2, by positivity, fun δ hδ0 hδ1 ha1 => ?_⟩
-    rw [Parking.resolventThreshold, cutoffEnv, if_neg h1, if_neg h1, if_neg h2, if_neg h2,
+    rw [Parking.resolventThreshold, cutoffEnv, ite_eq_right h1, ite_eq_right h1, ite_eq_right h2, ite_eq_right h2,
       inv_scaled hδ0, env]
     have hpos : (0 : ℝ) ≤ CR * a₀⁻¹ * δ ^ (-(2 : ℝ)) := by positivity
     calc CR * (a₀⁻¹ * δ ^ (-(2 : ℝ)) * Real.log (Real.exp 1 / (a₀ * δ ^ 2)) ^ 2)

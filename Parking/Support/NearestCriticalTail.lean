@@ -20,7 +20,7 @@ open MeasureTheory ProbabilityTheory LatticeProb Filter Topology Parking.Critica
 critical law's exponential moment bound via `Parking.integrable_abs_pow_of_exp_moment`. -/
 theorem Parking.CriticalScale.realLaw_thirdMoment (ν : Measure ℤ)
     (hν : Parking.CriticalLaw ν) : Integrable (fun z : ℝ => |z| ^ 3) (Parking.realLaw ν) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨θ, hθ, he⟩ := Parking.realLaw_expMoment ν hν
   exact Parking.integrable_abs_pow_of_exp_moment _ hθ he 3
 
@@ -66,10 +66,10 @@ theorem Parking.CriticalScale.scaled_event {s L x : ℝ} (hs : 0 < s) :
 theorem Parking.CriticalScale.lowerTailRemainder_tendsto (d : ℕ) (L a : ℝ) :
     Tendsto (fun t : ℕ => lowerTailRemainder d t L a) atTop (𝓝 0) := by
   by_cases hd : d = 2
-  · simpa only [lowerTailRemainder, if_pos hd, zero_mul, neg_div] using
+  · simpa only [lowerTailRemainder, ite_eq_left hd, zero_mul, neg_div] using
       (log_rpow_mul_neg_rpow_tendsto ((7 : ℝ) / 4) ((1 : ℝ) / 2) (by norm_num)).mul_const
         (L ^ (a / 2))
-  · simpa only [lowerTailRemainder, if_neg hd, zero_mul, neg_div] using
+  · simpa only [lowerTailRemainder, ite_eq_right hd, zero_mul, neg_div] using
       (log_rpow_mul_neg_rpow_tendsto ((3 : ℝ) / 4) ((1 : ℝ) / 4) (by norm_num)).mul_const
         (L ^ (a / 4))
 
@@ -107,7 +107,7 @@ theorem Parking.exists_scaled_lower_tail_constants
       ∀ᶠ t : ℕ in atTop,
         (Parking.law d ν) {ω | (t : ℝ) ^ (-((4 - (d : ℝ)) / 4)) * Parking.uOf ω t 0 ≤ 1 / L} ≤
           ENNReal.ofReal (C * L ^ (-c) + C * Parking.CriticalScale.lowerTailRemainder d t L 1) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨ν₀, M, hν₀, hv, hM⟩ := exists_moment_parameters (Parking.realLaw ν)
     (realLaw_variance_pos ν hν)
   obtain ⟨c, C, hc, hC, hb⟩ :=
@@ -126,7 +126,7 @@ theorem Parking.exists_scaled_lower_tail_constants
   have he : {ω : Parking.Data d | (t : ℝ) ^ (-((4 - (d : ℝ)) / 4)) * Parking.uOf ω t 0 ≤ 1 / L} =
       {ω : Parking.Data d | Parking.uOf ω t 0 ≤ (t : ℝ) ^ ((4 - (d : ℝ)) / 4) / L} := by
     ext ω
-    simp only [Set.mem_setOf_eq, Real.rpow_neg htR.le]
+    simp only [Set.mem_ofPred_eq, Real.rpow_neg htR.le]
     exact scaled_event (Real.rpow_pos_of_pos htR _)
   rw [he]
   exact hraw

@@ -259,10 +259,10 @@ theorem exposure_core_given (hd : 1 ≤ d) (s : Finset (Site d × ℕ))
         * ∫ p : Randomness d, Set.indicator W (fun _ => (1 : ℝ)) ((η, p) : Data d)
             ∂(stackRankLaw d) := by
   classical
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
     fun q => instructionLaw_isProbability hd q.1
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by
     unfold stackRankLaw stackLaw
     infer_instance
   set i₀ : Fin d := ⟨0, hd⟩ with hi₀
@@ -378,17 +378,17 @@ theorem exposure_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν
       = (∏ q ∈ s, kern d q.1 (f q))
         * ∫ ω, Set.indicator (A ∩ unreadSet d k s) (fun _ => (1 : ℝ)) ω ∂(law d ν) := by
   classical
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by
     unfold stackRankLaw stackLaw
-    haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+    have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
       fun q => instructionLaw_isProbability hd q.1
     infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by
+  have : IsProbabilityMeasure (law d ν) := by
     unfold law
-    haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+    have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
       unfold LatticeProb.iidLaw; infer_instance
-    haveI : IsProbabilityMeasure ((LatticeProb.stackLaw d).prod (LatticeProb.rankLaw d)) :=
+    have : IsProbabilityMeasure ((LatticeProb.stackLaw d).prod (LatticeProb.rankLaw d)) :=
       inferInstanceAs (IsProbabilityMeasure (stackRankLaw d))
     infer_instance
   set i₀ : Fin d := ⟨0, hd⟩ with hi₀
@@ -414,7 +414,7 @@ theorem exposure_core (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν
       exact (expFiltration_le_updInvSpace (d := d) k s (fun q => q.1 + unit i₀) k le_rfl A hA
         q₀ hq₀ η σ r hσ hB0).mpr hA1
   have hlawprod : law d ν = (LatticeProb.iidLaw d ν).prod (stackRankLaw d) := rfl
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hleft : ∫ ω, Set.indicator (prescribedSet d s f ∩ W) (fun _ => (1 : ℝ)) ω ∂(law d ν)
       = ∫ η, ∫ p : Randomness d, Set.indicator W (fun _ => (1 : ℝ)) ((η, p) : Data d)
@@ -464,21 +464,21 @@ theorem exposure_condExp (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure
         (∏ q ∈ s, Set.indicator {ω' : Data d | U ω' k q.1 ≤ q.2} (fun _ => (1 : ℝ)) ω)
           * ∏ q ∈ s, kern d q.1 (f q) := by
   classical
-  haveI := rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (stackRankLaw d) := by
+  have := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by
     unfold stackRankLaw stackLaw
-    haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
+    have : ∀ q : Site d × ℕ, IsProbabilityMeasure (instructionLaw (d := d) q.1) :=
       fun q => instructionLaw_isProbability hd q.1
     infer_instance
-  haveI : IsProbabilityMeasure (law d ν) := by
+  have : IsProbabilityMeasure (law d ν) := by
     unfold law
-    haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+    have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
       unfold LatticeProb.iidLaw; infer_instance
-    haveI : IsProbabilityMeasure ((LatticeProb.stackLaw d).prod (LatticeProb.rankLaw d)) :=
+    have : IsProbabilityMeasure ((LatticeProb.stackLaw d).prod (LatticeProb.rankLaw d)) :=
       inferInstanceAs (IsProbabilityMeasure (stackRankLaw d))
     infer_instance
   have hle := expFiltration_le d k
-  haveI : IsFiniteMeasure ((law d ν).trim hle) := isFiniteMeasure_trim hle
+  have : IsFiniteMeasure ((law d ν).trim hle) := isFiniteMeasure_trim hle
   set C : ℝ := ∏ q ∈ s, kern d q.1 (f q) with hC
   set E : Set (Data d) := unreadSet d k s ∩ prescribedSet d s f with hE
   have hEmeas : MeasurableSet E :=

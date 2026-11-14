@@ -57,7 +57,7 @@ theorem oriented_walk_of_steps (d : ℕ) (hd : 2 ≤ d) (ν : Measure ℤ) (hν 
           (μ' * (n : ℝ) ^ ((1 : ℝ) / 4))) atTop (𝓝 1) ∧
         Tendsto (fun t : ℕ => S (orientedLaw d ν) t /
           (μ' / 4 * (t : ℝ) ^ (-(3 : ℝ) / 4))) atTop (𝓝 1)) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨c₂, hc₂, hlo₂⟩ := exists_meanU_oriented_two_lower ν hν
   obtain ⟨c₂', hc₂', hlo₂'⟩ :=
     exists_meanuOriented_two_lower ν hν.nonconst hν.integrable_abs hν.mean

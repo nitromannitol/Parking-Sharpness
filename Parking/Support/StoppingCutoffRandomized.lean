@@ -296,9 +296,9 @@ theorem tendsto_measure_stoppingSup_sub_cutoffStoppingSup_zero
                     (fun k y => -linPotential η (⌊s * R ^ 2⌋₊ - k) (latticePoint R x + y))
                     (⌈R ^ 3⌉₊ : ℝ) ⌊s * R ^ 2⌋₊|}).toReal)
       atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
+  have := hν.prob
+  have hν0P : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have hμP : IsProbabilityMeasure (iidLaw d (realLaw ν)) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => realLaw ν))
   obtain ⟨c, C, hc, hC, hmax⟩ := exists_linPotential_maximal_tail_time_shift hd1 ν hν
   have hn0tendsto : Tendsto (fun R : ℝ => (⌊s * R ^ 2⌋₊ : ℕ)) atTop atTop :=

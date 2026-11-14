@@ -62,7 +62,7 @@ theorem noArrivals_eq_prod (A : Site d → ℕ) (x : Site d) (τ : RoundSlot d �
       ∏ q ∈ incomingSlots A x, entryAvoids x q (τ q) := by
   classical
   by_cases hz : (countArrivals A τ x).card = 0
-  · rw [if_pos hz]
+  · rw [ite_eq_left hz]
     symm
     apply Finset.prod_eq_one
     intro q hq
@@ -73,8 +73,8 @@ theorem noArrivals_eq_prod (A : Site d → ℕ) (x : Site d) (τ : RoundSlot d �
       have hm := (mem_countArrivals A τ x y j).mpr ⟨Finset.mem_range.mp hj, he⟩
       rw [Finset.card_eq_zero.mp hz] at hm
       exact Finset.notMem_empty _ hm
-    exact if_neg hn
-  · rw [if_neg hz]
+    exact ite_eq_right hn
+  · rw [ite_eq_right hz]
     symm
     have hne : (countArrivals A τ x).Nonempty := Finset.card_pos.mp (Nat.pos_of_ne_zero hz)
     obtain ⟨q, hq⟩ := hne
@@ -82,5 +82,5 @@ theorem noArrivals_eq_prod (A : Site d → ℕ) (x : Site d) (τ : RoundSlot d �
     obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hq
     have hji := Finset.mem_filter.mp hj
     apply Finset.prod_eq_zero ((mem_incomingSlots A x y j).mpr ⟨hy, Finset.mem_range.mp hji.1⟩)
-    exact if_pos hji.2
+    exact ite_eq_left hji.2
 end Parking

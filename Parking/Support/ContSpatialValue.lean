@@ -52,9 +52,9 @@ theorem isNaturalStopping_const {Ω E : Type*} [MeasurableSpace E] (B : ℝ≥0 
     (c : ℝ≥0) : IsNaturalStopping B (fun _ => c) := by
   intro t
   by_cases h : c ≤ t
-  · simp only [h, Set.setOf_true]
+  · simp only [h, Set.ofPred_true]
     exact @MeasurableSet.univ Ω (pathSigma B t)
-  · simp only [h, Set.setOf_false]
+  · simp only [h, Set.ofPred_false]
     exact @MeasurableSet.empty Ω (pathSigma B t)
 
 /-- **A stopping time of a `(Fin d → ℝ)`-valued process**: a stopping time of the natural
@@ -123,7 +123,7 @@ theorem spatialContPayoffs_zero_eq_singleton {d : ℕ} {ΩB : Type*} [Measurable
     (hG0 : ∀ y, G 0 y = 0) :
     spatialContPayoffs B PB G 0 = {0} := by
   ext a
-  simp only [spatialContPayoffs, Set.mem_setOf_eq, Set.mem_singleton_iff]
+  simp only [spatialContPayoffs, Set.mem_ofPred_eq, Set.mem_singleton_iff]
   constructor
   · rintro ⟨τ, _, hτT, _, rfl⟩
     have hτ0 : ∀ β, τ β = 0 := fun β => by

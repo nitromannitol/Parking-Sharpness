@@ -46,7 +46,7 @@ theorem lintegral_u_xi_shift (hd : 1 ≤ d) (δ : ℝ) (ν : Measure ℤ) [IsPro
     (ℓ : ℕ) (y : Site d) {g : ℝ → ℝ≥0∞} (hg : Measurable g) :
     ∫⁻ η, g (u (Parking.xi δ η) ℓ y) ∂(LatticeProb.iidLaw d ν)
       = ∫⁻ η, g (u (Parking.xi δ η) ℓ 0) ∂(LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hsm : Measurable (fun η : Site d → ℤ => fun x => η (x + y)) :=
     Measurable.of_eval fun x => measurable_pi_apply (x + y)
@@ -74,8 +74,8 @@ theorem lintegral_prod_u_xi (hd : 1 ≤ d) (δ : ℝ) (ν : Measure ℤ) [IsProb
     ∫⁻ p, ENNReal.ofReal (u (Parking.xi δ p.1) ℓ (p.2 s) ^ (5:ℕ))
         ∂((LatticeProb.iidLaw d ν).prod (LatticeProb.siteWalkLaw d (0 : Site d)))
       = ∫⁻ η, ENNReal.ofReal (u (Parking.xi δ η) ℓ 0 ^ (5:ℕ)) ∂(LatticeProb.iidLaw d ν) := by
-  haveI : NeZero d := ⟨by omega⟩
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : NeZero d := ⟨by omega⟩
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hg : Measurable (fun t : ℝ => ENNReal.ofReal (t ^ (5:ℕ))) :=
     ENNReal.measurable_ofReal.comp (measurable_id.pow_const 5)
@@ -100,7 +100,7 @@ theorem integrable_u_xi_pow (hd : 1 ≤ d) {δ θ : ℝ} (hθ : 0 < θ)
     (ν : Measure ℤ) [IsProbabilityMeasure ν]
     (hexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) ν) (r ℓ : ℕ) (y : Site d) :
     Integrable (fun η : Site d → ℤ => u (Parking.xi δ η) ℓ y ^ r) (LatticeProb.iidLaw d ν) := by
-  haveI : IsProbabilityMeasure (shiftLaw δ ν) := inferInstance
+  have : IsProbabilityMeasure (shiftLaw δ ν) := inferInstance
   have hexp' : Integrable (fun z : ℝ => Real.exp (θ * |z|)) (shiftLaw δ ν) :=
     integrable_exp_abs_shiftLaw θ δ hθ.le ν hexp
   have hmax : Integrable (fun t : ℝ => max t 0 ^ r) (shiftLaw δ ν) :=
@@ -144,9 +144,9 @@ theorem blockTerm_bound (hd : 1 ≤ d) (δ : ℝ) (η : Site d → ℤ)
   have hG0 : 0 ≤ G := Finset.sum_nonneg fun _ _ => abs_nonneg _
   by_cases hlt : blockBound N k < σ X
   swap
-  · rw [if_neg hlt]
+  · rw [ite_eq_right hlt]
     positivity
-  rw [if_pos hlt]
+  rw [ite_eq_left hlt]
   have hbk : blockBound N k ≤ n := by have := hσn X; omega
   have hmem : X (blockBound N k) ∈ boxFinset (0 : Site d) n := hX _ hbk
   have hsucc : blockBound N (k + 1) ≤ L := by

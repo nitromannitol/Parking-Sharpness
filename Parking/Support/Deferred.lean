@@ -73,11 +73,11 @@ theorem state_congr {D D' : Driver d} (hs : StepsToNeighbour D)
         intro p
         unfold nextPos
         by_cases hact : (state D t).active p = true
-        · rw [if_pos hact, if_pos hact, instructionIndex_congr heta]
+        · rw [ite_eq_left hact, ite_eq_left hact, instructionIndex_congr heta]
           exact hst _ _ (by
             rw [← instructionIndex_congr heta]
             exact instructionIndex_lt hs t p hact)
-        · rw [if_neg hact, if_neg hact]
+        · rw [ite_eq_right hact, ite_eq_right hact]
       have harr : ∀ x, arrivalsAt D (state D t) t x = arrivalsAt D' (state D t) t x := by
         intro x
         unfold arrivalsAt

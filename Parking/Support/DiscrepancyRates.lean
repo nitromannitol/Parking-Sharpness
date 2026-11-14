@@ -57,7 +57,7 @@ theorem greenMaxRate_le_kappa {d n : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3) (hn : 2
   interval_cases d
   · simp [Parking.External.greenMaxRate, kappa]
   · simp only [Parking.External.greenMaxRate, kappa, show (2 : ℕ) ≠ 1 by decide,
-      if_false, if_true]
+      ite_false, ite_true]
     exact Real.log_le_log (by exact_mod_cast (by omega : 0 < n)) (by linarith)
   · simp [Parking.External.greenMaxRate, kappa]
 end Parking
@@ -73,7 +73,7 @@ theorem exists_U_rHigh_low {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     ∃ K : ℝ, 0 < K ∧ ∀ n : ℕ, 2 ≤ n →
       (∫ ω, (U ω n 0 : ℝ) ^ rHigh n ∂(law d ν)) ^ (1 / rHigh n)
         ≤ K * Real.sqrt (rHigh n) * (n : ℝ) ^ ((4 - (d : ℝ)) / 4) := by
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨C, hC, hcrit⟩ := exists_critical_moment hd hBern hConc ν hν
   obtain ⟨⟨_cL, CL, _hcL, hCL, hL⟩, ⟨_cM, CM, _hcM, hCM, hM⟩⟩ := hGN d hd
   obtain ⟨_b, B, _hb, hB, hBP⟩ := (hGrowth d hd (realLaw ν) (realLaw_isProbability ν)

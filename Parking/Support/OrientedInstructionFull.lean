@@ -132,7 +132,7 @@ theorem exists_oriented_finite_instr_moment (hBern : External.Bernstein) :
   obtain ⟨C, hC, hb⟩ := exists_oriented_instr_moment hBern
   refine ⟨C, hC, fun d hd2 ν hν N n r hr => ?_⟩
   have hd : 1 ≤ d := by omega
-  haveI := hν.prob
+  have := hν.prob
   set Q := (iidLaw d ν).prod (orientedStackLaw d) with hQdef
   set S : Finset (Site d) := boxFinset (0 : Site d) N with hSdef
   set B : ℝ := C * (Real.sqrt r * (∫ ω : Data d, (U ω (n - 1) 0 : ℝ) ^ (r / 2)
@@ -183,9 +183,9 @@ theorem exists_oriented_wErr_moment (hBern : External.Bernstein) :
   obtain ⟨C, hC, hb⟩ := exists_oriented_finite_instr_moment hBern
   refine ⟨C, hC, fun d hd2 ν hν n r hr => ?_⟩
   have hd : 1 ≤ d := by omega
-  haveI := hν.prob
-  haveI := orientedStackLaw_isProbability hd
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have := orientedStackLaw_isProbability hd
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   have hae : ∀ᵐ z ∂((iidLaw d ν).prod (orientedStackLaw d)),
       wErrOriented z.1 z.2 n 0 = orientedFiniteInstr (boxFinset (0 : Site d) (n + 1)) n z := by
     have hz := (Measure.quasiMeasurePreserving_snd (μ := iidLaw d ν)
@@ -214,7 +214,7 @@ theorem exists_oriented_wErr_moment_law (hBern : External.Bernstein) :
   obtain ⟨C, hC, hb⟩ := exists_oriented_finite_instr_moment hBern
   refine ⟨C, hC, fun d hd2 ν hν n r hr => ?_⟩
   have hd : 1 ≤ d := by omega
-  haveI := hν.prob
+  have := hν.prob
   set F : (Site d → ℤ) × (Site d × ℕ → Site d) → ℝ :=
     fun z => |orientedFiniteInstr (boxFinset (0 : Site d) (n + 1)) n z| ^ r with hFdef
   have hFm : Measurable F :=

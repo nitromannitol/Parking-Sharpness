@@ -28,9 +28,9 @@ theorem exists_dtail_moment (ν : Measure ℤ) (hν : CriticalLaw ν) (n1 : ℕ)
           (LatticeProb.dtail (fun m => levelInc A hA n m η) n1) ^ p) (iidLaw 2 (realLaw ν)) ∧
       (∫ η : Site 2 → ℝ, (LatticeProb.dtail (fun m => levelInc A hA n m η) n1) ^ p
           ∂(iidLaw 2 (realLaw ν))) ≤ C := by
-  haveI : IsProbabilityMeasure ν := hν.prob
-  haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
-  haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
+  have : IsProbabilityMeasure ν := hν.prob
+  have : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
+  have : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   obtain ⟨K, hKnn, hKall⟩ := exists_levelInc_tail_moment ν hν p (by linarith) n1
   refine ⟨K, hKnn, fun A hA => ?_⟩
   obtain ⟨C, hCnn, hCbd, hbound⟩ := hKall A hA

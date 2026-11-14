@@ -81,7 +81,7 @@ theorem integral_pow_u_xi_le (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Measure 
     ∫ η, u (Parking.xi δ η) m 0 ^ (k + 2) ∂(LatticeProb.iidLaw d (ν δ))
       ≤ ∫ η, u η m 0 ^ (k + 2) ∂(LatticeProb.iidLaw d (refZeta θ δ₀ M)) := by
   obtain ⟨hδ₀, hθ, hprob, hmeanν, -, hexp, -⟩ := hfam
-  haveI hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
+  have hpν : IsProbabilityMeasure (ν δ) := hprob δ hδ
   have hintexp : Integrable (fun k : ℤ => Real.exp (θ * |(k : ℝ)|)) (ν δ) := (hexp δ hδ).1
   have hMle : ∫ k, Real.exp (θ * |(k : ℝ)|) ∂(ν δ) ≤ M := (hexp δ hδ).2
   have hM1 : 1 ≤ M := le_trans (one_le_integral_exp_abs hθ (ν δ) hintexp) hMle
@@ -93,7 +93,7 @@ theorem integral_pow_u_xi_le (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Measure 
     have h1 : (1:ℝ) ≤ Real.exp (θ * δ₀) := Real.one_le_exp (by positivity)
     nlinarith
   set μ : Measure ℝ := shiftLaw δ (ν δ) with hμ
-  haveI : IsProbabilityMeasure μ := by rw [hμ]; infer_instance
+  have : IsProbabilityMeasure μ := by rw [hμ]; infer_instance
   have hintid : Integrable (fun k : ℤ => ((k : ℝ))) (ν δ) :=
     integrable_intCast_of_exp hθ (ν δ) hintexp
   have hμmean : ∫ z, z ∂μ = 0 := by
@@ -123,7 +123,7 @@ theorem integral_pow_u_xi_le (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Measure 
     intro f Kf hf hfL
     rw [refZeta, ← hA]
     exact convex_integral_le_refLaw hθ hA1 hμexp hμA hμmean hf hfL
-  haveI hpζ : IsProbabilityMeasure (refZeta θ δ₀ M) := by rw [refZeta]; infer_instance
+  have hpζ : IsProbabilityMeasure (refZeta θ δ₀ M) := by rw [refZeta]; infer_instance
   have hIζ : Integrable (fun η : Site d → ℝ => u η m 0 ^ (k + 2))
       (LatticeProb.iidLaw d (refZeta θ δ₀ M)) := by
     have hexpζ : Integrable (fun z : ℝ => Real.exp ((θ/2) * |z|)) (refZeta θ δ₀ M) := by
@@ -160,7 +160,7 @@ theorem exists_mean_le_phi (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
     refine ⟨C, hC, fun m hm => ?_⟩
     have hm0 : (0:ℝ) ≤ (m:ℝ) := Nat.cast_nonneg m
     have hrate : (m:ℝ) ^ ((4 - (d:ℝ)) / 4) ≤ phi d m := by
-      rw [phi, if_pos hd3]
+      rw [phi, ite_eq_left hd3]
       exact Real.rpow_le_rpow hm0 (by linarith) (by
         have : (d:ℝ) ≤ 3 := by exact_mod_cast hd3
         linarith)
@@ -170,7 +170,7 @@ theorem exists_mean_le_phi (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
     refine ⟨C, hC, fun m hm => ?_⟩
     have hm2 : (2:ℝ) ≤ (m:ℝ) := by exact_mod_cast hm
     have hrate : Real.log (m:ℝ) ≤ phi d m := by
-      rw [phi, if_neg (by omega : ¬ d ≤ 3)]
+      rw [phi, ite_eq_right (by omega : ¬ d ≤ 3)]
       exact Real.log_le_log (by linarith) (by linarith)
     exact le_trans (h m hm).2 (by nlinarith [hrate])
   · have hd5 : 5 ≤ d := by omega
@@ -178,7 +178,7 @@ theorem exists_mean_le_phi (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
     refine ⟨C, hC, fun m hm => ?_⟩
     have hm2 : (2:ℝ) ≤ (m:ℝ) := by exact_mod_cast hm
     have hrate : Real.log ((m:ℝ) + 1) ≤ phi d m := by
-      rw [phi, if_neg (by omega : ¬ d ≤ 3)]
+      rw [phi, ite_eq_right (by omega : ¬ d ≤ 3)]
       exact Real.log_le_log (by linarith) (by linarith)
     have hle := (h m hm).2
     have : Real.log ((m : ℕ) + 1 : ℝ) = Real.log ((m:ℝ) + 1) := by norm_num
@@ -213,7 +213,7 @@ theorem exists_zeta_moment (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGr
     ∃ C : ℝ, 0 < C ∧ ∀ m : ℕ,
       (∫ η, |u η m 0| ^ (5:ℝ) ∂(LatticeProb.iidLaw d ζ)) ^ ((1:ℝ)/5) ≤ C * phi d m := by
   classical
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ζ) :=
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ζ) :=
     inferInstanceAs (IsProbabilityMeasure (Measure.infinitePi fun _ : Site d => ζ))
   obtain ⟨C0, hC0, hmeanle⟩ :=
     exists_mean_le_phi (d := d) hd hGrowth ζ hmean hv0 hvT ⟨θ', hθ', hexp'⟩
@@ -305,7 +305,7 @@ theorem exists_step1 (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGrowth)
   have hfam' : NearFamily δ₀ ν θ M K := hfam
   obtain ⟨hδ₀, hθ, hprob, hmeanν, -, hexp, -⟩ := hfam
   have h0mem : (0:ℝ) ∈ Set.Icc (0:ℝ) δ₀ := ⟨le_rfl, hδ₀.le⟩
-  haveI hp0 : IsProbabilityMeasure (ν 0) := hprob 0 h0mem
+  have hp0 : IsProbabilityMeasure (ν 0) := hprob 0 h0mem
   have hM1 : 1 ≤ M :=
     le_trans (one_le_integral_exp_abs hθ (ν 0) (hexp 0 h0mem).1) (hexp 0 h0mem).2
   have hA1 : 1 ≤ refBound θ δ₀ M := by
@@ -316,7 +316,7 @@ theorem exists_step1 (hd : 1 ≤ d) (hGrowth : Parking.External.SandpileGrowth)
   have hc : (0:ℝ) ≤ 2 * Real.log (refBound θ δ₀ M) / θ := by
     have : 0 ≤ Real.log (refBound θ δ₀ M) := Real.log_nonneg hA1
     positivity
-  haveI hpζ : IsProbabilityMeasure (refZeta θ δ₀ M) := by rw [refZeta]; infer_instance
+  have hpζ : IsProbabilityMeasure (refZeta θ δ₀ M) := by rw [refZeta]; infer_instance
   have hζmean : ∫ z, z ∂(refZeta θ δ₀ M) = 0 := by rw [refZeta]; exact integral_refLaw_id _ _
   have hζv0 : 0 < evariance (id : ℝ → ℝ) (refZeta θ δ₀ M) := by
     rw [refZeta]; exact evariance_refLaw_pos hb hc

@@ -66,24 +66,24 @@ theorem taggedRank_apply_of_ne (r : ℕ → ℝ) (v : Label d × ℕ → ℝ) (p
   unfold taggedRank taggedSource
   by_cases h0 : p.1 = 0
   · have h2 : p.2 ≠ 0 := fun h2 => hp (Prod.ext h0 h2)
-    rw [if_pos h0, if_pos h0, if_neg h2]
-  · rw [if_neg h0, if_neg h0]
+    rw [ite_eq_left h0, ite_eq_left h0, ite_eq_right h2]
+  · rw [ite_eq_right h0, ite_eq_right h0]
 
 /-- The source map is injective on the non-tagged labels. -/
 theorem taggedSource_inj {p q : Label d} (hp : p ≠ ((0 : Site d), 0))
     (hq : q ≠ ((0 : Site d), 0)) (h : taggedSource p = taggedSource q) : p = q := by
   unfold taggedSource at h
   by_cases hp0 : p.1 = 0 <;> by_cases hq0 : q.1 = 0
-  · rw [if_pos hp0, if_pos hq0] at h
+  · rw [ite_eq_left hp0, ite_eq_left hq0] at h
     have h2 : p.2 - 1 = q.2 - 1 := congrArg Prod.snd h
     have hp2 : p.2 ≠ 0 := fun hh => hp (Prod.ext hp0 hh)
     have hq2 : q.2 ≠ 0 := fun hh => hq (Prod.ext hq0 hh)
     exact Prod.ext (hp0.trans hq0.symm) (by omega)
-  · rw [if_pos hp0, if_neg hq0] at h
+  · rw [ite_eq_left hp0, ite_eq_right hq0] at h
     exact absurd (congrArg Prod.fst h).symm hq0
-  · rw [if_neg hp0, if_pos hq0] at h
+  · rw [ite_eq_right hp0, ite_eq_left hq0] at h
     exact absurd (congrArg Prod.fst h) hp0
-  · rw [if_neg hp0, if_neg hq0] at h
+  · rw [ite_eq_right hp0, ite_eq_right hq0] at h
     exact h
 
 /-- **Every tie in the tagged driver involves the tagged label.**  The non-tagged
@@ -152,9 +152,9 @@ theorem permLabel_snd_eq_zero_iff {x₀ : Site d} {σ : Equiv.Perm ℕ}
   by_cases hx : (0 : Site d) = x₀
   · have h0 : σ 0 = 0 := by
       have h := congrArg Prod.snd hfix
-      simpa only [permLabel, if_pos hx] using h
+      simpa only [permLabel, ite_eq_left hx] using h
     have hval : (permLabel x₀ σ ((0 : Site d), j)).2 = σ j := by
-      simp only [permLabel, if_pos hx]
+      simp only [permLabel, ite_eq_left hx]
     rw [hval]
     constructor
     · intro h
@@ -162,7 +162,7 @@ theorem permLabel_snd_eq_zero_iff {x₀ : Site d} {σ : Equiv.Perm ℕ}
     · intro h
       rw [h, h0]
   · have hval : (permLabel x₀ σ ((0 : Site d), j)).2 = j := by
-      simp only [permLabel, if_neg hx]
+      simp only [permLabel, ite_eq_right hx]
     rw [hval]
 
 /-- A relabeling of the particles present at a site that fixes the tagged label
@@ -215,14 +215,14 @@ def shiftPerm (σ : Equiv.Perm ℕ) : Equiv.Perm ℕ where
     intro i
     by_cases h : i = 0
     · subst h; rfl
-    · simp only [if_neg h, Nat.succ_ne_zero, if_false, Nat.add_sub_cancel,
+    · simp only [ite_eq_right h, Nat.succ_ne_zero, ite_false, Nat.add_sub_cancel,
         Equiv.symm_apply_apply]
       omega
   right_inv := by
     intro i
     by_cases h : i = 0
     · subst h; rfl
-    · simp only [if_neg h, Nat.succ_ne_zero, if_false, Nat.add_sub_cancel,
+    · simp only [ite_eq_right h, Nat.succ_ne_zero, ite_false, Nat.add_sub_cancel,
         Equiv.apply_symm_apply]
       omega
 
@@ -234,7 +234,7 @@ definition. -/
 theorem shiftPerm_apply_ne (σ : Equiv.Perm ℕ) {i : ℕ} (h : i ≠ 0) :
     shiftPerm σ i = σ (i - 1) + 1 := by
   show (if i = 0 then 0 else σ (i - 1) + 1) = σ (i - 1) + 1
-  rw [if_neg h]
+  rw [ite_eq_right h]
 
 /-- **Relabeling the particles present at a site other than the origin** carries
 over to the tagged realization by the same permutation. -/
@@ -247,25 +247,25 @@ theorem relabelDriver_tagged_ne (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) {x
     have hfst : (permLabel x₀ σ p).1 = p.1 := rfl
     by_cases h0 : p.1 = (0 : Site d)
     · have hne : ¬ (p.1 = x₀) := by rw [h0]; exact h0x
-      have hsnd : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, if_neg hne]
-      rw [taggedMove_apply, taggedMove_apply, hfst, hsnd, if_pos h0, if_pos h0]
+      have hsnd : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, ite_eq_right hne]
+      rw [taggedMove_apply, taggedMove_apply, hfst, hsnd, ite_eq_left h0, ite_eq_left h0]
       by_cases h2 : p.2 = 0
-      · rw [if_pos h2, if_pos h2]
-      · rw [if_neg h2, if_neg h2, relabelAt_move]
-        simp only [if_neg h0x]
-    · rw [taggedMove_apply, taggedMove_apply, hfst, if_neg h0, if_neg h0, relabelAt_move]
+      · rw [ite_eq_left h2, ite_eq_left h2]
+      · rw [ite_eq_right h2, ite_eq_right h2, relabelAt_move]
+        simp only [ite_eq_right h0x]
+    · rw [taggedMove_apply, taggedMove_apply, hfst, ite_eq_right h0, ite_eq_right h0, relabelAt_move]
       rfl
   · show taggedRank r (relabelAt x₀ σ ω).2.2 (p, s) = taggedRank r ω.2.2 (permLabel x₀ σ p, s)
     have hfst : (permLabel x₀ σ p).1 = p.1 := rfl
     by_cases h0 : p.1 = (0 : Site d)
     · have hne : ¬ (p.1 = x₀) := by rw [h0]; exact h0x
-      have hsnd : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, if_neg hne]
-      rw [taggedRank_apply, taggedRank_apply, hfst, hsnd, if_pos h0, if_pos h0]
+      have hsnd : (permLabel x₀ σ p).2 = p.2 := by simp only [permLabel, ite_eq_right hne]
+      rw [taggedRank_apply, taggedRank_apply, hfst, hsnd, ite_eq_left h0, ite_eq_left h0]
       by_cases h2 : p.2 = 0
-      · rw [if_pos h2, if_pos h2]
-      · rw [if_neg h2, if_neg h2, relabelAt_rank]
-        simp only [if_neg h0x]
-    · rw [taggedRank_apply, taggedRank_apply, hfst, if_neg h0, if_neg h0, relabelAt_rank]
+      · rw [ite_eq_left h2, ite_eq_left h2]
+      · rw [ite_eq_right h2, ite_eq_right h2, relabelAt_rank]
+        simp only [ite_eq_right h0x]
+    · rw [taggedRank_apply, taggedRank_apply, hfst, ite_eq_right h0, ite_eq_right h0, relabelAt_rank]
       rfl
 
 /-- **Relabeling the particles present at the origin** carries over to the
@@ -280,35 +280,35 @@ theorem relabelDriver_tagged_origin (w : ℕ → Fin d × Bool) (r : ℕ → ℝ
     have hfst : (permLabel (0 : Site d) (shiftPerm σ) p).1 = p.1 := rfl
     by_cases h0 : p.1 = (0 : Site d)
     · have hsnd : (permLabel (0 : Site d) (shiftPerm σ) p).2 = shiftPerm σ p.2 := by
-        simp only [permLabel, if_pos h0]
-      rw [taggedMove_apply, taggedMove_apply, hfst, hsnd, if_pos h0, if_pos h0]
+        simp only [permLabel, ite_eq_left h0]
+      rw [taggedMove_apply, taggedMove_apply, hfst, hsnd, ite_eq_left h0, ite_eq_left h0]
       by_cases h2 : p.2 = 0
-      · rw [h2, shiftPerm_zero, if_pos rfl, if_pos rfl]
-      · rw [if_neg h2, shiftPerm_apply_ne σ h2,
-          if_neg (Nat.succ_ne_zero (σ (p.2 - 1))), Nat.add_sub_cancel, relabelAt_move,
-          if_pos rfl]
+      · rw [h2, shiftPerm_zero, ite_eq_left rfl, ite_eq_left rfl]
+      · rw [ite_eq_right h2, shiftPerm_apply_ne σ h2,
+          ite_eq_right (Nat.succ_ne_zero (σ (p.2 - 1))), Nat.add_sub_cancel, relabelAt_move,
+          ite_eq_left rfl]
     · have hsnd : (permLabel (0 : Site d) (shiftPerm σ) p).2 = p.2 := by
-        simp only [permLabel, if_neg h0]
-      rw [taggedMove_apply, taggedMove_apply, hfst, hsnd, if_neg h0, if_neg h0,
-        relabelAt_move, if_neg h0]
-      simp only [permLabel, if_neg h0]
+        simp only [permLabel, ite_eq_right h0]
+      rw [taggedMove_apply, taggedMove_apply, hfst, hsnd, ite_eq_right h0, ite_eq_right h0,
+        relabelAt_move, ite_eq_right h0]
+      simp only [permLabel, ite_eq_right h0]
   · show taggedRank r (relabelAt 0 σ ω).2.2 (p, s)
         = taggedRank r ω.2.2 (permLabel 0 (shiftPerm σ) p, s)
     have hfst : (permLabel (0 : Site d) (shiftPerm σ) p).1 = p.1 := rfl
     by_cases h0 : p.1 = (0 : Site d)
     · have hsnd : (permLabel (0 : Site d) (shiftPerm σ) p).2 = shiftPerm σ p.2 := by
-        simp only [permLabel, if_pos h0]
-      rw [taggedRank_apply, taggedRank_apply, hfst, hsnd, if_pos h0, if_pos h0]
+        simp only [permLabel, ite_eq_left h0]
+      rw [taggedRank_apply, taggedRank_apply, hfst, hsnd, ite_eq_left h0, ite_eq_left h0]
       by_cases h2 : p.2 = 0
-      · rw [h2, shiftPerm_zero, if_pos rfl, if_pos rfl]
-      · rw [if_neg h2, shiftPerm_apply_ne σ h2,
-          if_neg (Nat.succ_ne_zero (σ (p.2 - 1))), Nat.add_sub_cancel, relabelAt_rank,
-          if_pos rfl]
+      · rw [h2, shiftPerm_zero, ite_eq_left rfl, ite_eq_left rfl]
+      · rw [ite_eq_right h2, shiftPerm_apply_ne σ h2,
+          ite_eq_right (Nat.succ_ne_zero (σ (p.2 - 1))), Nat.add_sub_cancel, relabelAt_rank,
+          ite_eq_left rfl]
     · have hsnd : (permLabel (0 : Site d) (shiftPerm σ) p).2 = p.2 := by
-        simp only [permLabel, if_neg h0]
-      rw [taggedRank_apply, taggedRank_apply, hfst, hsnd, if_neg h0, if_neg h0,
-        relabelAt_rank, if_neg h0]
-      simp only [permLabel, if_neg h0]
+        simp only [permLabel, ite_eq_right h0]
+      rw [taggedRank_apply, taggedRank_apply, hfst, hsnd, ite_eq_right h0, ite_eq_right h0,
+        relabelAt_rank, ite_eq_right h0]
+      simp only [permLabel, ite_eq_right h0]
 
 /-- The induced permutation at the origin fixes every index at or above the
 count the tagged realization carries there. -/
@@ -345,13 +345,13 @@ theorem taggedActive_relabelAt (w : ℕ → Fin d × Bool) (r : ℕ → ℝ) {x�
     rw [h, hfix]
   · have hD := relabelDriver_tagged_ne w r hx σ ω
     have hfix : permLabel x₀ σ ((0 : Site d), 0) = ((0 : Site d), 0) := by
-      simp only [permLabel, if_neg (fun hh : (0 : Site d) = x₀ => hx hh.symm)]
+      simp only [permLabel, ite_eq_right (fun hh : (0 : Site d) = x₀ => hx hh.symm)]
     have hσ' : ∀ i, ((taggedDriver w r ω).eta x₀).toNat ≤ i → σ i = i := by
       intro i hi
       refine hσ i ?_
       have heta : (taggedDriver w r ω).eta x₀ = ω.1 x₀ := by
         show addParticle (0 : Site d) ω.1 x₀ = ω.1 x₀
-        simp only [addParticle, if_neg hx]
+        simp only [addParticle, ite_eq_right hx]
       rwa [heta] at hi
     have h := (pState_perm hD hσ' (tieInvariant_tagged w r hinj hfix hD) t).active
       ((0 : Site d), 0)

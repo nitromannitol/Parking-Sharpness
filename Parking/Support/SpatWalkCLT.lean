@@ -101,7 +101,7 @@ theorem spat_integral_stepLaw_cexp (d : ℕ) (hd : 1 ≤ d) (x : ℝ) (Λ : Fin 
         Complex.exp (((x * Λ b.1 * (if b.2 then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I)
         ∂(stepLaw d)
       = ((1 / d : ℝ) * ∑ ℓ : Fin d, Real.cos (x * Λ ℓ) : ℂ) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   have hfin : ∀ b : Fin d × Bool,
       Integrable (fun b' =>
         Complex.exp (((x * Λ b'.1 * (if b'.2 then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I))
@@ -125,7 +125,7 @@ theorem spat_integral_stepLaw_cexp (d : ℕ) (hd : 1 ≤ d) (x : ℝ) (Λ : Fin 
     show Complex.exp (((x * Λ ℓ * (if (true:Bool) then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I)
         + Complex.exp (((x * Λ ℓ * (if (false:Bool) then (1:ℝ) else -1) : ℝ) : ℂ) * Complex.I)
         = (2 * Real.cos (x * Λ ℓ) : ℂ)
-    rw [if_pos rfl, if_neg (by decide), et, ef]
+    rw [ite_eq_left rfl, ite_eq_right (by decide), et, ef]
     have hkey := hcos2 (↑(x * Λ ℓ) : ℂ)
     have hcr : Complex.cos (↑(x * Λ ℓ) : ℂ) = (↑(Real.cos (x * Λ ℓ)) : ℂ) := by
       rw [Complex.ofReal_cos]
@@ -151,8 +151,8 @@ theorem charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → 
       = ∏ j ∈ Finset.range ⌊(n:ℝ)*T⌋₊, ((1/d:ℝ) * ∑ ℓ : Fin d,
           Real.cos ((∑ i, if j < ⌊(n:ℝ)*ts i⌋₊ then t i ℓ else 0) / Real.sqrt n) : ℂ) := by
   classical
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   set k : Fin m → ℕ := fun i => ⌊(n:ℝ)*ts i⌋₊ with hk
   set K : ℕ := ⌊(n:ℝ)*T⌋₊ with hK
   set Λ : ℕ → Fin d → ℝ := fun j ℓ => ∑ i, if j < k i then t i ℓ else 0 with hΛdef
@@ -184,9 +184,9 @@ theorem charFun_spatWalkFdd (d m : ℕ) (hd : 1 ≤ d) (t : Fin m → Fin d → 
       (∑ ℓ : Fin d, Λ j ℓ * coordStep ℓ b) = Λ j b.1 * (if b.2 then (1:ℝ) else -1) := by
     intro j b
     rw [Finset.sum_eq_single b.1]
-    · rw [coordStep_eq, if_pos rfl]
+    · rw [coordStep_eq, ite_eq_left rfl]
     · intro ℓ _ hne
-      rw [coordStep_eq, if_neg hne, mul_zero]
+      rw [coordStep_eq, ite_eq_right hne, mul_zero]
     · intro h; exact absurd (Finset.mem_univ b.1) h
   have hcombY : ∀ p : ℕ → Fin d × Bool,
       (∑ i, ∑ ℓ, t i ℓ * spatialScaledSite n (walkPath (0:Site d) p (k i)) ℓ)
@@ -865,9 +865,9 @@ theorem hWalk_of_isBrownianSpace (d : ℕ) (hd1 : 1 ≤ d) (_hd3 : d ≤ 3)
         Finset.sum_congr rfl fun i' _ => by rw [hmineq i i']
     rw [hQeq]
     exact hdisclim
-  haveI : Fact (1 ≤ d) := ⟨hd1⟩
-  haveI := stepLaw_isProbability (d := d) hd1
-  haveI hwlp : IsProbabilityMeasure (walkLaw d) := by
+  have : Fact (1 ≤ d) := ⟨hd1⟩
+  have := stepLaw_isProbability (d := d) hd1
+  have hwlp : IsProbabilityMeasure (walkLaw d) := by
     unfold walkLaw; infer_instance
   have hTID : TendstoInDistribution Xdisc atTop Z (fun _ : ℕ => walkLaw d) PB :=
     LatticeProb.Scaling.CramerWold.tendstoInDistribution_of_tendsto_charFun_linearCombination

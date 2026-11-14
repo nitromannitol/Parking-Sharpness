@@ -179,7 +179,7 @@ independent under `walkLaw d`, since `walkLaw d` is an infinite product measure
 theorem iIndep_coord_walk (hd : 1 ≤ d) :
     iIndep (fun j : ℕ => MeasurableSpace.comap (fun p : ℕ → Fin d × Bool => p j) inferInstance)
       (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   exact (iIndepFun_infinitePi (Ω := fun _ : ℕ => Fin d × Bool) (P := fun _ : ℕ => stepLaw d)
     (X := fun (_ : ℕ) (b : Fin d × Bool) => b) (fun _ => Measurable.of_discrete)).iIndep
 
@@ -203,8 +203,8 @@ theorem indep_coord_coordFiltration (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ) :
 /-- `coordSum ℓ k` is integrable, being bounded by the constant `k` (`abs_coordSum_le`). -/
 theorem integrable_coordSum (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ) :
     Integrable (coordSum ℓ k) (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   exact Integrable.mono' (integrable_const (k : ℝ))
     (measurable_coordSum hd ℓ k).aestronglyMeasurable
     (Filter.Eventually.of_forall fun p => by
@@ -213,8 +213,8 @@ theorem integrable_coordSum (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ) :
 /-- The square of `coordSum ℓ k` is integrable, being bounded by the constant `k²`. -/
 theorem integrable_coordSum_sq (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ) :
     Integrable (fun p => (coordSum ℓ k p) ^ 2) (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   refine Integrable.mono' (integrable_const ((k : ℝ) ^ 2))
     ((measurable_coordSum hd ℓ k).pow_const 2).aestronglyMeasurable
     (Filter.Eventually.of_forall fun p => ?_)
@@ -225,7 +225,7 @@ theorem integrable_coordSum_sq (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ) :
 /-- **The mean of one coordinate's step, read at the `k`-th direction of the walk.** -/
 theorem integral_coordStep_eval (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ) :
     ∫ p : ℕ → Fin d × Bool, coordStep ℓ (p k) ∂(walkLaw d) = 0 := by
-  haveI := stepLaw_isProbability hd
+  have := stepLaw_isProbability hd
   have hmap : (walkLaw d).map (fun p : ℕ → Fin d × Bool => p k) = stepLaw d :=
     Measure.infinitePi_map_eval _ _
   have hmeas : Measurable (fun b : Fin d × Bool => coordStep ℓ b) := Measurable.of_discrete
@@ -242,8 +242,8 @@ time `k`, vanishes almost everywhere: `step k` is independent of that filtration
 (`indep_coord_coordFiltration`) and has zero mean (`integral_coordStep_eval`). -/
 theorem condExp_coordStep_coordFiltration (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ) :
     (walkLaw d)[fun p => coordStep ℓ (p k) | coordFiltration hd ℓ k] =ᵐ[walkLaw d] 0 := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hSM : StronglyMeasurable[MeasurableSpace.comap
       (fun p : ℕ → Fin d × Bool => p k) inferInstance] (fun p : ℕ → Fin d × Bool =>
       coordStep ℓ (p k)) := by
@@ -266,8 +266,8 @@ theorem condExp_coordStep_coordFiltration (hd : 1 ≤ d) (ℓ : Fin d) (k : ℕ)
 conditional mean zero (`condExp_coordStep_coordFiltration`). -/
 theorem martingale_coordSum (hd : 1 ≤ d) (ℓ : Fin d) :
     Martingale (coordSum ℓ) (coordFiltration hd ℓ) (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   refine martingale_of_condExp_sub_eq_zero_nat (stronglyAdapted_coordFiltration hd ℓ)
     (integrable_coordSum hd ℓ) fun i => ?_
   have heq : (coordSum ℓ (i + 1) - coordSum ℓ i) = fun p => coordStep ℓ (p i) := by
@@ -285,8 +285,8 @@ touches coordinate `ℓ` with probability `1/d`, and moves it by exactly `±1` w
 theorem condExp_sq_coordSum_sub (hd : 1 ≤ d) (ℓ : Fin d) (i : ℕ) :
     (walkLaw d)[fun p => (coordSum ℓ (i + 1) p) ^ 2 - (coordSum ℓ i p) ^ 2 |
         coordFiltration hd ℓ i] =ᵐ[walkLaw d] fun _ => 1 / (d : ℝ) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hstepMeas : Measurable (fun p : ℕ → Fin d × Bool => coordStep ℓ (p i)) :=
     (Measurable.of_discrete (f := fun b : Fin d × Bool => coordStep ℓ b)).comp
       (measurable_pi_apply i)
@@ -388,8 +388,8 @@ theorem condExp_sq_coordSum_sub (hd : 1 ≤ d) (ℓ : Fin d) (i : ℕ) :
 /-- **`(Parking.coordSum ℓ)²` is a submartingale for `Parking.coordFiltration`.** -/
 theorem submartingale_coordSum_sq (hd : 1 ≤ d) (ℓ : Fin d) :
     Submartingale (fun k p => (coordSum ℓ k p) ^ 2) (coordFiltration hd ℓ) (walkLaw d) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   refine submartingale_of_condExp_sub_nonneg_nat
     (fun i => ((stronglyAdapted_coordFiltration hd ℓ i)).pow 2) (integrable_coordSum_sq hd ℓ)
     fun i => ?_
@@ -403,8 +403,8 @@ theorem submartingale_coordSum_sq (hd : 1 ≤ d) (ℓ : Fin d) :
 /-- **`E[(coordSum ℓ n)²] ≤ n/d`.** -/
 theorem integral_coordSum_sq_le (hd : 1 ≤ d) (ℓ : Fin d) (n : ℕ) :
     ∫ p, (coordSum ℓ n p) ^ 2 ∂(walkLaw d) ≤ n / d := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   have hdR : (0:ℝ) < d := by exact_mod_cast hd
   induction n with
   | zero =>
@@ -442,8 +442,8 @@ that the `ℓ`-th coordinate ever exits a window of half-width `A` before time `
 at most `n/(d·A²)`. -/
 theorem measureReal_sup_coordSum_sq_le (hd : 1 ≤ d) (ℓ : Fin d) (n : ℕ) {A : ℝ} (hA : 0 < A) :
     (walkLaw d).real {p | ∃ k ≤ n, A ≤ |coordSum ℓ k p|} ≤ (n : ℝ) / (d * A ^ 2) := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
   set ε : ℝ≥0 := (A ^ 2).toNNReal with hεdef
   have hεcoe : (ε : ℝ) = A ^ 2 := by rw [hεdef, Real.coe_toNNReal]; positivity
   have hmax := maximal_ineq (ε := ε) (submartingale_coordSum_sq hd ℓ)
@@ -453,7 +453,7 @@ theorem measureReal_sup_coordSum_sq_le (hd : 1 ≤ d) (ℓ : Fin d) (n : ℕ) {A
           fun k => (coordSum ℓ k ω) ^ 2}
       = {p | ∃ k ≤ n, A ≤ |coordSum ℓ k p|} := by
     ext p
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     rw [Finset.le_sup'_iff]
     constructor
     · rintro ⟨k, hk, hkle⟩
@@ -503,14 +503,14 @@ theorem measureReal_sup_walkPath_graphNorm_le (hd : 1 ≤ d) (n : ℕ) {A : ℝ}
     (walkLaw d).real
         {p | ∃ k ≤ n, (d : ℝ) * A ≤ (graphNorm (walkPath (0 : Site d) p k) : ℝ)}
       ≤ (n : ℝ) / A ^ 2 := by
-  haveI := stepLaw_isProbability hd
-  haveI : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
-  haveI hne : Nonempty (Fin d) := ⟨(⟨0, hd⟩ : Fin d)⟩
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  have hne : Nonempty (Fin d) := ⟨(⟨0, hd⟩ : Fin d)⟩
   have hsub : {p | ∃ k ≤ n, (d : ℝ) * A ≤ (graphNorm (walkPath (0 : Site d) p k) : ℝ)}
       ⊆ ⋃ ℓ : Fin d, {p | ∃ k ≤ n, A ≤ |coordSum ℓ k p|} := by
     rintro p ⟨k, hk, hkle⟩
     by_contra hcon
-    simp only [Set.mem_iUnion, Set.mem_setOf_eq, not_exists] at hcon
+    simp only [Set.mem_iUnion, Set.mem_ofPred_eq, not_exists] at hcon
     have hall : ∀ ℓ : Fin d, |coordSum ℓ k p| < A := by
       intro ℓ
       rcases lt_or_ge (|coordSum ℓ k p|) A with h | h

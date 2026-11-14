@@ -168,8 +168,8 @@ directed law's configuration marginal. -/
 theorem integrable_toNat_iid (ν : Measure ℤ) (hν : CriticalLaw ν)
     (a : Site d) :
     Integrable (fun η : Site d → ℤ => (((η a).toNat : ℕ) : ℝ)) (iidLaw d ν) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
+  have := hν.prob
+  have : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   exact integrable_toNat_eta (fun v => iidLaw_map_shiftConf' ν v)
     (integrable_eval_iid (d := d) ν hν.integrable_abs 0) a
 
@@ -177,8 +177,8 @@ theorem integrable_toNat_iid (ν : Measure ℤ) (hν : CriticalLaw ν)
 theorem meanU_eq_sum_S_oriented (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) (n : ℕ) :
     Parking.meanU (orientedLaw d ν) n
       = ∑ s ∈ Finset.range n, Parking.S (orientedLaw d ν) s := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd ν
   exact meanU_eq_sum_S' (μ := iidLaw d ν) (orientedLaw_map_conf hd ν)
     (fun v => orientedLaw_map_shiftData hd ν v) (ae_orientedLaw_nbr hd ν)
     (integrable_toNat_iid ν hν) n
@@ -186,8 +186,8 @@ theorem meanU_eq_sum_S_oriented (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critica
 /-- **The activity of the directed walk decreases.** -/
 theorem S_antitone_oriented (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalLaw ν) :
     Antitone (Parking.S (orientedLaw d ν)) := by
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd ν
+  have := hν.prob
+  have : IsProbabilityMeasure (orientedLaw d ν) := orientedLaw_isProbability hd ν
   intro s t hst
   exact integral_mono
     (integrable_survivorsFrom' (orientedLaw_map_conf hd ν) (integrable_toNat_iid ν hν) t 0)

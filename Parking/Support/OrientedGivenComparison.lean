@@ -19,7 +19,7 @@ the arrival-count mean identity `integral_orientedArrivalCount_given` and monoto
 theorem uOriented_le_mean_orientedOdometer (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) (x : Site d) :
     uOriented (fun y => (η y : ℝ)) n x ≤
       ∫ σ : Site d × ℕ → Site d, (orientedOdometer η σ n x : ℝ) ∂(orientedStackLaw d) := by
-  haveI := orientedStackLaw_isProbability hd
+  have := orientedStackLaw_isProbability hd
   induction n generalizing x with
   | zero => simp [uOriented, orientedOdometer]
   | succ n ih =>

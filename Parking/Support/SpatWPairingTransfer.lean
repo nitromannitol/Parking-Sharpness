@@ -64,8 +64,8 @@ theorem tendsto_barOdometer_sub_barDivisible_pairing_zero (hd : 1 ≤ d) (hd3 : 
     Tendsto (fun R : ℝ => ((law d ν) {w | a <
       |(∫ x, barOdometer w R 1 x * g x) - ∫ x, barDivisible w R 1 x * g x|}).toReal)
       atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   let K := tsupport g
   have hK : IsCompact K := hgs
   obtain ⟨M, hM, hb⟩ := exists_bound_h_on_K hK hg
@@ -108,8 +108,8 @@ theorem tendsto_barOdometer_pairing_sub_barDivisible_pairing_zero
     (hgs : HasCompactSupport g) {a : ℝ} (ha : 0 < a) :
     Tendsto (fun R : ℝ => ((law d ν) {w | a < |(∫ x, barOdometer w R t x * g x) -
       ∫ x, barDivisible w R t x * g x|}).toReal) atTop (𝓝 0) := by
-  haveI := hν.prob
-  haveI := law_isProb hd ν
+  have := hν.prob
+  have := law_isProb hd ν
   obtain ⟨B, hB, hb⟩ := exists_norm_bound_of_hasCompactSupport hgs
   let K := Metric.closedBall (0 : Fin d → ℝ) B
   have hK : IsCompact K := isCompact_closedBall _ _

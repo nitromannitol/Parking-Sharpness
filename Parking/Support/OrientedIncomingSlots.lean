@@ -78,7 +78,7 @@ theorem oriented_noArrival_count_fiber (hd : 1 ≤ d) (η : Site d → ℤ) (n :
       (1 - (d : ℝ)⁻¹) ^ (∑ i, m i) *
         (orientedStackLaw d).real {σ : Site d × ℕ → Site d |
           (fun i : Fin d => orientedOdometer η σ n (x - unit i)) = m} := by
-  haveI : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
+  have : ∀ q : Site d × ℕ, IsProbabilityMeasure (orientedInstructionLaw q.1) :=
     fun q => orientedInstructionLaw_isProbability hd q.1
   let A : Set (Site d × ℕ → Site d) := {σ |
     (fun i : Fin d => orientedOdometer η σ n (x - unit i)) = m}

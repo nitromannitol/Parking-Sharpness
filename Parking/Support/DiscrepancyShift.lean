@@ -52,10 +52,10 @@ theorem Parking.discrepancySlot_shift (p : Label d) :
   have hm := Parking.discrepancyMoving_shift c ρ a' a b' b ha hb hS t p
   unfold Parking.discrepancySlot
   by_cases hp : Parking.discrepancyMoving c' ρ' a' b' S' t p
-  · rw [if_pos hp, if_pos (hm.mp hp)]
+  · rw [ite_eq_left hp, ite_eq_left (hm.mp hp)]
     change Sum.inl (S'.pos p + v, _) = Sum.inl _
     rw [Parking.rankIn_shift v ρ 0 _ _ hA p, ha, hb, hS.pos, sub_add_cancel]
-  · rw [if_neg hp, if_neg (fun h => hp (hm.mpr h))]
+  · rw [ite_eq_right hp, ite_eq_right (fun h => hp (hm.mpr h))]
     rfl
 
 variable (τ : Parking.RoundSlot d → Fin d × Bool)
@@ -69,11 +69,11 @@ theorem Parking.discrepancyNextPos_shift (p : Label d) :
   have hm := Parking.discrepancyMoving_shift c ρ a' a b' b ha hb hS t p
   unfold Parking.discrepancyNextPos
   by_cases hp : Parking.discrepancyMoving c' ρ' a' b' S' t p
-  · rw [if_pos hp, if_pos (hm.mp hp)]
+  · rw [ite_eq_left hp, ite_eq_left (hm.mp hp)]
     dsimp only
     rw [Parking.discrepancySlot_shift c ρ a' a b' b ha hb hS, hS.pos]
     abel
-  · rw [if_neg hp, if_neg (fun h => hp (hm.mpr h))]
+  · rw [ite_eq_right hp, ite_eq_right (fun h => hp (hm.mpr h))]
     exact hS.pos p
 
 /-- Arrival sets of each sign are translation covariant. -/
