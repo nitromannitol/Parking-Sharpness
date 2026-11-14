@@ -1,6 +1,7 @@
 import Parking.Support.LinCovarianceGlue
 import Parking.Support.SpatWSceneryFdd
 import Parking.Support.LinInterp
+import Parking.Support.SpatWalkCLT
 
 /-!
 # Covariances of scenery pairings
@@ -10,6 +11,7 @@ an inner product of their weights.
 -/
 
 open MeasureTheory ProbabilityTheory Filter Topology LatticeProb
+open scoped NNReal
 open LatticeProb.Walk (sceneryBox exists_norm_le_of_hasCompactSupport
   tendsto_latticeSum_mul_rpow tsum_eq_sceneryBox_sum
   exists_norm_bound_of_hasCompactSupport mem_sceneryBox_of_ne_zero)
@@ -342,5 +344,21 @@ theorem sum_mul_green_eq_sum_heat {d : ℕ} (S : Finset (Site d))
       ∑ k ∈ Finset.range n, ∑ y ∈ S, f y * heat d k (x - y) := by
   simp_rw [green, Finset.mul_sum]
   exact Finset.sum_comm
+
+/-- The rescaled random walk tested at a fixed time converges to the Brownian average. -/
+theorem tendsto_integral_test_spatialScaledWalk {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
+    (B : ℝ≥0 → ΩB → EuclideanSpace ℝ (Fin d)) (hB : IsBrownianSpace d 0 B PB)
+    {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) (x : Fin d → ℝ)
+    {a : ℝ} (ha : 0 ≤ a) :
+    Tendsto (fun n : ℕ => ∫ p, φ (x + spatialScaledSite n
+      (walkPath (0 : Site d) p ⌊(n : ℝ) * a⌋₊)) ∂(walkLaw d)) atTop
+      (𝓝 (∫ β, φ (x + ofBrownianSpace B (Real.toNNReal a) β) ∂PB)) := by
+  let F : BoundedContinuousFunction (Fin 1 → (Fin d → ℝ)) ℝ :=
+    (ofCompactSupport φ hφ.1.continuous hφ.2).compContinuous
+      ⟨fun v => x + v 0, continuous_const.add (continuous_apply 0)⟩
+  have h := hWalk_of_isBrownianSpace d hd hd3 ΩB PB B hB (a + 1) (by linarith)
+    1 (fun _ => a) (fun _ => ⟨ha, by linarith⟩) F
+  simpa [F, BoundedContinuousFunction.compContinuous_apply, ofCompactSupport] using h
 
 end Parking
