@@ -54,7 +54,7 @@ theorem Parking.Frozen.subcritical (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ)
           ∂(Parking.walkLaw d)
 -- FROZEN-STATEMENT-END
 := by
-  haveI := hprob
+  have := hprob
   subst ha
   exact ⟨Parking.subcritical_a_pos hint hexp hmean hlam₁ hlam₁θ hnonpos,
     fun k hk hνk t w =>

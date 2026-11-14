@@ -127,7 +127,7 @@ theorem uconc_kIter_zero_of_not_mem {d : ℕ} {r : ℕ}
   | zero =>
       intro z hz
       simp only [kIter]
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hz0
       subst z
       exact hz (mem_boxFinset_iff.mpr (fun i => by simp))
@@ -377,7 +377,7 @@ theorem Parking.External.uConcentration : Parking.External.UConcentration
 -- FROZEN-STATEMENT-END
 := by
   intro d hd r K hK ν hν θ hθ hexp
-  letI : IsProbabilityMeasure ν := hν
+  let : IsProbabilityMeasure ν := hν
   obtain ⟨C, hC, hmain⟩ := Parking.weighted_exp_conc_Lq
     θ (∫ z, Real.exp (θ * |z|) ∂ν) hθ
   refine ⟨C, hC, ?_⟩
@@ -454,7 +454,7 @@ theorem Parking.External.uConcentration : Parking.External.UConcentration
     change |F0 (e ξ) - F0 (e (Function.update ξ j v))| ≤ _
     rw [hupd]
     have hi : Parking.extendField s (e ξ) (i : Parking.Site d) = ξ j := by
-      rw [Parking.extendField, dif_pos i.property]
+      rw [Parking.extendField, dite_eq_left i.property]
       exact heval
     rw [hi] at hbase
     simpa [i, hℓ'def, heval, mul_comm] using hbase
@@ -507,12 +507,12 @@ theorem Parking.External.uConcentration : Parking.External.UConcentration
     simp only [hℓ'def, Equiv.symm_apply_apply]
   have hnormInf : Parking.supAbs (Parking.kGreen r K n) =
       LatticeProb.lInfNorm ℓ' := by
-    letI : Nonempty s := ⟨⟨0, hzero_mem⟩⟩
+    let : Nonempty s := ⟨⟨0, hzero_mem⟩⟩
     have hNpos : 0 < N := by
       rw [hNdef]
       exact Fintype.card_pos_iff.mpr (by infer_instance)
-    letI : NeZero N := ⟨Nat.ne_of_gt hNpos⟩
-    letI : Nonempty (Fin N) := ⟨⟨0, hNpos⟩⟩
+    let : NeZero N := ⟨Nat.ne_of_gt hNpos⟩
+    let : Nonempty (Fin N) := ⟨⟨0, hNpos⟩⟩
     unfold Parking.supAbs LatticeProb.lInfNorm
     have hfnn : ∀ z : Parking.Site d, 0 ≤ |Parking.kGreen r K n z| :=
       fun z => abs_nonneg _

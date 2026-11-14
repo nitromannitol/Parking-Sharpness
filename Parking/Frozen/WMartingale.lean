@@ -45,7 +45,7 @@ theorem Parking.Frozen.w_martingale (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ)
 -- FROZEN-STATEMENT-END
 := by
   classical
-  haveI := hprob
+  have := hprob
   set i₀ : Fin d := ⟨0, hd⟩ with hi₀
   have hn1 : 1 ≤ n := by omega
   have hae : ∀ᵐ ω ∂(Parking.law d ν), ∀ i : ℕ,

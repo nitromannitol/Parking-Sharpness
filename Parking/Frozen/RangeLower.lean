@@ -47,15 +47,15 @@ theorem Parking.Frozen.range_lower (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ)
 -- FROZEN-STATEMENT-END
 := by
   classical
-  haveI := hprob
+  have := hprob
   have hlaw : Parking.law d ν = Parking.dataLaw d (LatticeProb.iidLaw d ν) := rfl
   have hti : Parking.TranslationInvariant (LatticeProb.iidLaw d ν) :=
     fun v => Parking.iidLaw_map_shiftConf' ν v
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
-  haveI := Parking.stackLaw_isProbability (d := d) hd
-  haveI := LatticeProb.rankLaw_isProbability d
-  haveI : IsProbabilityMeasure (Parking.law d ν) := by
+  have := Parking.stackLaw_isProbability (d := d) hd
+  have := LatticeProb.rankLaw_isProbability d
+  have : IsProbabilityMeasure (Parking.law d ν) := by
     unfold Parking.law; infer_instance
   have hmap : (LatticeProb.iidLaw d ν).map (fun η : Parking.Site d → ℤ => η 0) = ν := by
     show (MeasureTheory.Measure.infinitePi fun _ : Parking.Site d => ν).map

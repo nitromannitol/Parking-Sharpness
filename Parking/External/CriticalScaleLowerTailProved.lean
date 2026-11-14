@@ -151,14 +151,14 @@ theorem Parking.External.cslt_green_walk {d n : ℕ} (x y : Parking.Site d) :
     apply summable_of_ne_finset_zero (s := Finset.range n)
     intro k hk
     simp only [F]
-    rw [if_neg]
+    rw [ite_eq_right]
     exact Nat.not_lt_of_ge (Nat.le_of_not_gt (by simpa using hk))
   have hF : ∀ z : Parking.Site d, (∑' k, F k z) =
       Parking.CriticalScale.greenTime d n z y := by
     intro z
     rw [tsum_eq_sum (s := Finset.range n) (fun k hk => by
       simp only [F]
-      rw [if_neg]
+      rw [ite_eq_right]
       exact Nat.not_lt_of_ge (Nat.le_of_not_gt (by simpa using hk)))]
     change (∑ k ∈ Finset.range n, if k < n then
         LatticeProb.LocalCLT.heatKernel d k z y else 0) =
@@ -171,12 +171,12 @@ theorem Parking.External.cslt_green_walk {d n : ℕ} (x y : Parking.Site d) :
         if k < n then Parking.CriticalScale.heatKernel d (k + 1) x y else 0 := by
     intro k
     by_cases hk : k < n
-    · simp only [F, if_pos hk]
+    · simp only [F, ite_eq_left hk]
       change Parking.walkOp (fun z =>
         LatticeProb.LocalCLT.heatKernel d k z y) x =
           LatticeProb.LocalCLT.heatKernel d (k + 1) x y
       rfl
-    · simp only [F, if_neg hk]
+    · simp only [F, ite_eq_right hk]
       simp [Parking.walkOp, LatticeProb.nbrSum]
   rw [show (fun z => Parking.CriticalScale.greenTime d n z y) =
       (fun z => ∑' k, F k z) by funext z; exact (hF z).symm]
@@ -185,7 +185,7 @@ theorem Parking.External.cslt_green_walk {d n : ℕ} (x y : Parking.Site d) :
       Parking.CriticalScale.heatKernel d (k + 1) x y else 0)) =
       ∑ k ∈ Finset.range n, Parking.CriticalScale.heatKernel d (k + 1) x y := by
     rw [tsum_eq_sum (s := Finset.range n) (fun k hk => by
-      rw [if_neg]
+      rw [ite_eq_right]
       exact Nat.not_lt_of_ge (Nat.le_of_not_gt (by simpa using hk)))]
     apply Finset.sum_congr rfl
     intro k hk
@@ -316,7 +316,7 @@ theorem Parking.External.criticalScaleLowerTail : Parking.External.CriticalScale
     Sandpile.exists_critical_toppling_bound hVar' hBerry' d hd hd3 ν₀ M hν₀ a ha ha'
   refine ⟨c, C, hc, hC, ?_⟩
   intro ν hprob hmean hvarpos hvar_top hint hν₀var hM t L ht hL hLa
-  letI : IsProbabilityMeasure ν := hprob
+  let : IsProbabilityMeasure ν := hprob
   have hvar_ge : ν₀ ^ 2 ≤ variance (id : ℝ → ℝ) ν := by
     have htmp : (ENNReal.ofReal (ν₀ ^ 2)).toReal ≤
         (evariance (id : ℝ → ℝ) ν).toReal :=
@@ -347,9 +347,9 @@ theorem Parking.External.criticalScaleLowerTail : Parking.External.CriticalScale
       {σ : Sandpile.Site d → ℝ |
         Sandpile.odometer σ t 0 ≤ (t : ℝ) ^ ((4 - (d : ℝ)) / 4) / L} := by
     ext σ
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     rw [congrFun (hodo σ) 0]
-  letI : IsProbabilityMeasure (Parking.CriticalScale.centeredMassLaw d ν) :=
+  let : IsProbabilityMeasure (Parking.CriticalScale.centeredMassLaw d ν) :=
     Parking.CriticalScale.centeredMassLaw_isProbability d ν
   have hPtop : Parking.CriticalScale.centeredMassLaw d ν
       {σ | Parking.CriticalScale.odometer σ t 0 ≤

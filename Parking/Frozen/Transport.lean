@@ -50,11 +50,11 @@ theorem Parking.Frozen.transport (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ)
             (LatticeProb.state (Parking.toDriver ω) t).active (0, 0) = true}).toReal)
 -- FROZEN-STATEMENT-END
 := by
-  haveI := hprob
+  have := hprob
   have hlaw : Parking.law d ν = Parking.dataLaw d (LatticeProb.iidLaw d ν) := rfl
   have hti : Parking.TranslationInvariant (LatticeProb.iidLaw d ν) :=
     fun v => Parking.iidLaw_map_shiftConf' ν v
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hmap : (LatticeProb.iidLaw d ν).map (fun η : Parking.Site d → ℤ => η 0) = ν := by
     show (MeasureTheory.Measure.infinitePi fun _ : Parking.Site d => ν).map

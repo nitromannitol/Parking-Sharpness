@@ -40,9 +40,9 @@ theorem Parking.Frozen.density_compare (d : ℕ) (hd : 1 ≤ d)
         ≤ ∫ η, ((η 0 : ℤ) : ℝ) ∂μ' - ∫ η, ((η 0 : ℤ) : ℝ) ∂μ
 -- FROZEN-STATEMENT-END
 := by
-  haveI := hprob
-  haveI := hprob'
-  haveI := hQ
+  have := hprob
+  have := hprob'
+  have := hQ
   have hti : Parking.TranslationInvariant μ :=
     Parking.translationInvariant_of_coupling hfst hQti
   have hti' : Parking.TranslationInvariant μ' :=

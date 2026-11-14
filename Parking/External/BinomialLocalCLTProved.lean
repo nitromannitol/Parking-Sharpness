@@ -90,7 +90,7 @@ private theorem binomialLocalCLT_proof : Parking.External.BinomialLocalCLT := by
     have hbinomEq : Parking.binomLaw m ((j + (m : ℤ)) / 2) = binomPMF m j := by
       rw [hidx]
       unfold Parking.binomLaw binomPMF
-      rw [if_pos hnonneg]
+      rw [ite_eq_left hnonneg]
     have hgdEq : 2 * (Real.exp (-((j : ℝ) / Real.sqrt (m : ℝ)) ^ 2 / 2) / Real.sqrt (2 * Real.pi))
         = 2 * gaussianDensity ((j : ℝ) / Real.sqrt (m : ℝ)) := by
       unfold gaussianDensity

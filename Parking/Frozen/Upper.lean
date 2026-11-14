@@ -51,7 +51,7 @@ theorem Parking.Frozen.upper (hGrowth : Parking.External.SandpileGrowth)
 := by
   have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
   have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
-  haveI := hν.prob
+  have := hν.prob
   obtain ⟨Ct, hCt, ht⟩ :=
     Parking.exists_target hd hBernstein hConcentration hGrowth hGreenNorms ν hν
   obtain ⟨Cm, hCm, hm⟩ := Parking.exists_critical_moment hd hBernstein hConcentration ν hν

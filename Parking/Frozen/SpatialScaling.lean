@@ -137,8 +137,8 @@ theorem Parking.Frozen.spatial_scaling (hGrowth : Parking.External.SandpileGrowt
   have hMinimum : Parking.External.HeatStrongMinimum := Parking.External.heatStrongMinimum
   obtain ⟨Ω, mΩ, Q, hQ, W, Z, Uc, hW, hWmeas, hZeq, hZcont, hUc0, hUccont, hUcmono, hUcmeas,
       hsuprep, hjointFDD, hequicont⟩ := hOdometer d hd hd3 ν hν
-  haveI := hν.prob
-  haveI := Parking.law_isProb hd ν
+  have := hν.prob
+  have := Parking.law_isProb hd ν
   have hfixed : ∀ ψ : ℝ × (Fin d → ℝ) → ℝ, Parking.IsSpaceTimeTest ψ →
       ∀ᵐ ω ∂Q, tsupport ψ ⊆ {p | 0 < Uc ω p.1 p.2} →
       -(∫ p : ℝ × (Fin d → ℝ), Uc ω p.1 p.2 * deriv (fun s => ψ (s, p.2)) p.1)

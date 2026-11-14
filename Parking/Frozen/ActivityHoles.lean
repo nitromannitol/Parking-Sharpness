@@ -29,7 +29,7 @@ theorem Parking.Frozen.activity_holes (d : ℕ) (hd : 1 ≤ d)
         = ∫ η, ((η 0 : ℤ) : ℝ) ∂μ
 -- FROZEN-STATEMENT-END
 := by
-  haveI := hprob
+  have := hprob
   exact ⟨Parking.integrable_A_data hd hti hint t 0,
     Parking.integrable_H_data hd hti hint t 0,
     Parking.activity_holes_main hd hti hint t⟩

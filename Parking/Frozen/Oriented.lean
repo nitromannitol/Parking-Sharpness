@@ -42,7 +42,7 @@ theorem Parking.Frozen.oriented (d : ℕ) (hd : 2 ≤ d) (ν : Measure ℤ)
           ≤ Parking.meanuOriented (Parking.orientedLaw d ν) n)
 -- FROZEN-STATEMENT-END
 := by
-  letI : IsProbabilityMeasure ν := hprob
+  let : IsProbabilityMeasure ν := hprob
   refine ⟨?_, ?_, ?_⟩
   · intro hd2 r hr hmom
     subst d

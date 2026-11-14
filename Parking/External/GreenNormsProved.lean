@@ -112,7 +112,7 @@ private theorem exists_greenMax_lower_of_eventual (d : ℕ) (hd : 1 ≤ d)
     show ∑ j ∈ Finset.range 1, Parking.heat d j 0 = 1
     rw [Finset.sum_range_one]
     show (if (0 : Parking.Site d) = 0 then (1 : ℝ) else 0) = 1
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   have hM1 : 0 < Parking.greenMax d 1 :=
     lt_of_lt_of_le (by rw [hgreen10]; norm_num) (le_ciSup hbdd1 0)
   have hMmono : Monotone (fun n => Parking.greenMax d n) := by
@@ -206,7 +206,7 @@ private theorem exists_max_lower_one :
       c * Parking.External.greenMaxRate 1 n ≤ Parking.greenMax 1 n := by
   have hrateeq : ∀ n : ℕ, Parking.External.greenMaxRate 1 n = Real.sqrt (n : ℝ) := by
     intro n
-    rw [Parking.External.greenMaxRate, if_pos rfl, Real.sqrt_eq_rpow]
+    rw [Parking.External.greenMaxRate, ite_eq_left rfl, Real.sqrt_eq_rpow]
   obtain ⟨c₁, hc₁, hsum⟩ := sum_heat_two_mul_ge 1 one_pos
   obtain ⟨c₀, hc₀, hev⟩ : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ n : ℕ, 16 ≤ n →
       c₀ * Parking.External.greenMaxRate 1 n ≤ Parking.greenMax 1 n := by
@@ -253,7 +253,7 @@ private theorem exists_max_lower_two :
       c * Parking.External.greenMaxRate 2 n ≤ Parking.greenMax 2 n := by
   have hrateeq : ∀ n : ℕ, Parking.External.greenMaxRate 2 n = Real.log (n : ℝ) := by
     intro n
-    rw [Parking.External.greenMaxRate, if_neg (by norm_num), if_pos rfl]
+    rw [Parking.External.greenMaxRate, ite_eq_right (by norm_num), ite_eq_left rfl]
   obtain ⟨c₁, hc₁, hsum⟩ := sum_heat_two_mul_ge 2 (by norm_num)
   obtain ⟨c₀, hc₀, hev⟩ : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ n : ℕ, 16 ≤ n →
       c₀ * Parking.External.greenMaxRate 2 n ≤ Parking.greenMax 2 n := by
@@ -324,7 +324,7 @@ private theorem exists_max_lower_high {d : ℕ} (hd3 : 3 ≤ d) :
       c * Parking.External.greenMaxRate d n ≤ Parking.greenMax d n := by
   refine ⟨1, one_pos, fun n hn => ?_⟩
   have hrateeq : Parking.External.greenMaxRate d n = 1 := by
-    rw [Parking.External.greenMaxRate, if_neg (by omega), if_neg (by omega)]
+    rw [Parking.External.greenMaxRate, ite_eq_right (by omega), ite_eq_right (by omega)]
   rw [hrateeq, one_mul]
   have hbdd : BddAbove (Set.range fun x => Parking.green d n x) :=
     ⟨n, by rintro _ ⟨x, rfl⟩; exact Parking.green_le (by omega) n x⟩
@@ -335,7 +335,7 @@ private theorem exists_max_lower_high {d : ℕ} (hd3 : 3 ≤ d) :
       (Finset.mem_range.mpr (by omega))
   have h3 : Parking.heat d 0 0 = 1 := by
     show (if (0 : Parking.Site d) = 0 then (1 : ℝ) else 0) = 1
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   linarith [h1, h2, h3]
 
 /-! ### The max-norm upper bound, dimension by dimension. -/
@@ -366,7 +366,7 @@ private theorem exists_max_upper_one :
       _ ≤ (1 / Real.sqrt 2) * Real.sqrt n :=
           mul_le_mul_of_nonneg_left hraten (by positivity)
   have hrateeq : Parking.External.greenMaxRate 1 n = Real.sqrt (n : ℝ) := by
-    rw [Parking.External.greenMaxRate, if_pos rfl, Real.sqrt_eq_rpow]
+    rw [Parking.External.greenMaxRate, ite_eq_left rfl, Real.sqrt_eq_rpow]
   rw [hrateeq]
   nlinarith [hub, hle, hBnonneg, Real.sqrt_nonneg (n : ℝ)]
 
@@ -396,7 +396,7 @@ private theorem exists_max_upper_two :
       _ ≤ ((1 + B) / Real.log 2) * Real.log n :=
           mul_le_mul_of_nonneg_left hraten (by positivity)
   have hrateeq : Parking.External.greenMaxRate 2 n = Real.log (n : ℝ) := by
-    rw [Parking.External.greenMaxRate, if_neg (by norm_num), if_pos rfl]
+    rw [Parking.External.greenMaxRate, ite_eq_right (by norm_num), ite_eq_left rfl]
   rw [hrateeq]
   nlinarith [hub, hle, hBnonneg]
 
@@ -411,7 +411,7 @@ private theorem exists_max_upper_high {d : ℕ} (hd3 : 3 ≤ d) :
     nlinarith [mul_nonneg hs hgc]
   refine ⟨1 + 3 * (Real.sqrt 2 ^ d * LatticeProb.greenConst d), hCpos, fun n hn => ?_⟩
   have hrateeq : Parking.External.greenMaxRate d n = 1 := by
-    rw [Parking.External.greenMaxRate, if_neg (by omega), if_neg (by omega)]
+    rw [Parking.External.greenMaxRate, ite_eq_right (by omega), ite_eq_right (by omega)]
   rw [hrateeq, mul_one]
   have hn1 : 1 ≤ n := by omega
   have hbdd : BddAbove (Set.range fun x => Parking.green d n x) :=

@@ -42,7 +42,7 @@ theorem Parking.Frozen.exposure (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ)
               (fun _ => (1 : ℝ)) ω) * ∏ q ∈ s, Parking.kern d q.1 (f q)
 -- FROZEN-STATEMENT-END
 := by
-  haveI := hprob
+  have := hprob
   refine ⟨fun k x => ⟨fun ω => Parking.expOdometer d k ω x,
     Parking.measurable_expOdometer k x, Parking.U_succ_ae_eq_expOdometer hd ν k x⟩, ?_⟩
   intro k s f

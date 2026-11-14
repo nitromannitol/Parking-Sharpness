@@ -70,7 +70,7 @@ theorem Parking.Frozen.product (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ)
       ≤ 3 * D
 -- FROZEN-STATEMENT-END
 := by
-  letI : IsProbabilityMeasure ν := hprob
+  let : IsProbabilityMeasure ν := hprob
   obtain ⟨hlam0, hlamlam₁⟩ := hlam
   have hlamθ : lam < θ := lt_of_le_of_lt hlamlam₁ hlam₁θ
   obtain ⟨hmeanint, hmeanle⟩ := hnonpos lam ⟨hlam0, hlamlam₁⟩

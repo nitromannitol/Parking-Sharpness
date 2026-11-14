@@ -43,7 +43,7 @@ theorem Parking.Frozen.w_moment (hBernstein : Parking.External.Bernstein) (d : �
 := by
   obtain ⟨C, hC, hCle⟩ := Parking.exists_wErr_moment_const_uniform hd hBernstein
   refine ⟨C, hC, fun ν hprob θ hθ hexp n hn r hr2 => ?_⟩
-  haveI := hprob
+  have := hprob
   refine ⟨?_, ?_, hCle ν hprob θ hθ hexp n hn r hr2, ?_⟩
   · exact fun m _ => Parking.integrable_abs_wErr_rpow hd ν hθ hexp (by linarith) m 0
   · exact Parking.integrable_wStar_rpow hd ν hθ hexp (by linarith) n 0

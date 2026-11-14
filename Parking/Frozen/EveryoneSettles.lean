@@ -49,8 +49,8 @@ theorem Parking.Frozen.everyone_settles (hGrowth : Parking.External.SandpileGrow
 := by
   have hGreenNorms : Parking.External.GreenNorms := Parking.External.greenNorms
   have hConcentration : Parking.External.UConcentration := Parking.External.uConcentration
-  haveI := hν.prob
-  haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+  have := hν.prob
+  have : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   filter_upwards
     [Parking.ae_settle_and_fill hGrowth hBernstein hConcentration hGreenNorms d hd ν hν,

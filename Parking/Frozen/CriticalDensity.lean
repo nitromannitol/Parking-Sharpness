@@ -37,6 +37,6 @@ theorem Parking.Frozen.critical_density :
 := by
   refine ⟨1 / 16, by norm_num, ?_⟩
   intro d hd ν hprob hnc hint hmean
-  haveI := hprob
+  have := hprob
   exact Parking.critical_density_of_coupling hd ν hprob hnc hint
     (Parking.coupling_bound hd ν hint hmean)

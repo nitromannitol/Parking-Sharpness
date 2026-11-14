@@ -99,7 +99,7 @@ theorem Parking.Frozen.near_divisible (hGrowth : Parking.External.SandpileGrowth
       exact mul_le_mul_of_nonneg_right (le_max_left _ _) (hrateNonneg δ hδ0 hδ1)
     have hlow5 : ENNReal.ofReal (cL * Real.log (Real.exp 1 / δ) ^ ((2 : ℝ) / d))
         ≤ Parking.meanuLimit (Parking.law d (ν δ)) := by
-      rw [Parking.nearLowerTarget, if_neg (by omega : ¬ d ≤ 4)] at hlowδ
+      rw [Parking.nearLowerTarget, ite_eq_right (by omega : ¬ d ≤ 4)] at hlowδ
       exact hlowδ
     refine ⟨hup, fun h4 => absurd h4 (by omega), fun _ => hlow5, fun _ _ => ⟨hlow5, ?_⟩⟩
     refine le_trans hpsiδ (ENNReal.ofReal_le_ofReal ?_)
@@ -113,7 +113,7 @@ theorem Parking.Frozen.near_divisible (hGrowth : Parking.External.SandpileGrowth
     have hlowδ := hlower δ ⟨hδ0, hδLle⟩
     have hupδ := hupper δ ⟨hδ0.le, hδ₀le⟩ hδ0 hδ1
     refine ⟨hupδ, fun h4 => ?_, fun h5 => ?_, fun h5 hbdd => absurd ⟨h5, hbdd⟩ hcase⟩
-    · rw [Parking.nearLowerTarget, if_pos h4] at hlowδ
+    · rw [Parking.nearLowerTarget, ite_eq_left h4] at hlowδ
       exact hlowδ
-    · rw [Parking.nearLowerTarget, if_neg (by omega : ¬ d ≤ 4)] at hlowδ
+    · rw [Parking.nearLowerTarget, ite_eq_right (by omega : ¬ d ≤ 4)] at hlowδ
       exact hlowδ

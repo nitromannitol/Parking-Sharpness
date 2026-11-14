@@ -33,5 +33,5 @@ theorem Parking.Frozen.subcritical_tail
         Parking.S (Parking.law d ν) t ≤ C * Real.exp (-(c * (t : ℝ) ^ ((d : ℝ) / (d + 2))))
 -- FROZEN-STATEMENT-END
 := by
-  haveI := hprob
+  have := hprob
   exact Parking.exists_tail_bounds hDV hd hint hmean hpos hθ hexp

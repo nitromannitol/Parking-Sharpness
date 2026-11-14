@@ -296,7 +296,7 @@ private theorem upper_log_of_crude
     (hexp : Integrable (fun z => Real.exp (θ * |z|)) ν) :
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       Sandpile.meanOdometer (Sandpile.centeredMassLaw d ν) n ≤ C * Real.log (n + 1) := by
-  haveI := hprob
+  have := hprob
   obtain ⟨K, hK, hcrude⟩ := Sandpile.exists_crude_log_upper
     Sandpile.External.greenBoundsHigh hd ν hprob hmean hvar hvar' θ
     (∫ z, Real.exp (θ * |z|) ∂ν) hθ hexp le_rfl
@@ -331,7 +331,7 @@ private theorem upper_power_of_bounded
     ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, 2 ≤ n →
       Sandpile.meanOdometer (Sandpile.centeredMassLaw d ν) n ≤
         C * (Real.log n) ^ ((2 : ℝ) / d) := by
-  haveI := hprob
+  have := hprob
   obtain ⟨b, hb⟩ := hbounded
   let γ : ℝ := (d : ℝ) / 2 + 1
   let s₀ : ℝ := max 1 (-b + 1)
@@ -390,7 +390,7 @@ private theorem sandpileGrowth_proof
       Sandpile.External.ContinuumOptimalStopping ΩB) :
     Parking.External.SandpileGrowth := by
   intro d hd ν hprob hmean hvar hvar' hexp
-  haveI := hprob
+  have := hprob
   obtain ⟨θ, hθ, hexpint⟩ := hexp
   have hpos : Integrable (fun z : ℝ => max z 0) ν := by
     exact (LatticeProb.integrable_id_of_exp_moment ν θ hθ hexpint).abs.mono'
