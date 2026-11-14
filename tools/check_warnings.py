@@ -3,7 +3,10 @@
 
 The only accepted warnings are one Lean `declaration uses 'sorry'` diagnostic
 for each manifest theorem in state `DRAFT_SORRY`.  Any missing, duplicate,
-misplaced, or differently worded warning makes the check fail.
+misplaced, or differently worded warning makes the check fail.  Only warnings
+located in this repository's own modules (`Parking.lean`, `Parking/`,
+`ParkingAudit/`) are counted; warnings that Lean prints for the modules of a
+dependency are not this repository's to fix and are ignored.
 """
 
 from __future__ import annotations
@@ -33,6 +36,9 @@ SORRY_WARNING_RE = re.compile(
 # diagnostic and says nothing about any declaration, and repairing it would
 # mean running `lake update`, which the project forbids.
 LAKE_NOTICE_RE = re.compile(r"manifest out of date")
+LOCATION_RE = re.compile(r"(?P<path>.+?\.lean):[0-9]+:[0-9]+: ")
+OWN_ROOTS = ("Parking/", "ParkingAudit/")
+OWN_FILES = ("Parking.lean",)
 
 
 def expected_draft_files() -> Counter[str]:
@@ -60,6 +66,17 @@ def repo_relative(path_text: str) -> str:
         except ValueError:
             return str(path)
     return str(path)
+
+
+def is_own_module(warning_text: str) -> bool:
+    """Whether a warning is located in a module of this repository.
+
+    A warning without a source location is counted, so that nothing is hidden."""
+    location = LOCATION_RE.match(warning_text)
+    if location is None:
+        return True
+    path = repo_relative(location.group("path"))
+    return path in OWN_FILES or path.startswith(OWN_ROOTS)
 
 
 def main() -> int:
@@ -92,7 +109,7 @@ def main() -> int:
     for raw_line in build.stdout.splitlines():
         line = ANSI_RE.sub("", raw_line)
         warning = WARNING_RE.fullmatch(line)
-        if warning is None:
+        if warning is None or not is_own_module(warning.group(1)):
             continue
         if LAKE_NOTICE_RE.search(warning.group(1)):
             continue
