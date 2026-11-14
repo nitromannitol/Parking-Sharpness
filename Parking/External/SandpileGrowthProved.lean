@@ -384,7 +384,7 @@ theorems (`Sandpile.Frozen.mean_growth_le_three`, `mean_growth_four` and `high_f
 together with the helper lemmas above, given the three cited local-CLT and optimal-stopping
 hypotheses. -/
 private theorem sandpileGrowth_proof
-    (hLocalCLT : Sandpile.External.LocalCLT)
+    (_hLocalCLT : Sandpile.External.LocalCLT)
     (hStab : Sandpile.External.ContinuumStoppingStability.{0})
     (hOS : ∀ (ΩB : Type) [MeasurableSpace ΩB],
       Sandpile.External.ContinuumOptimalStopping ΩB) :
