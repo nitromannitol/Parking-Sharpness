@@ -2,6 +2,8 @@ import Parking.Support.LinCovarianceGlue
 import Parking.Support.SpatWSceneryFdd
 import Parking.Support.LinInterp
 import Parking.Support.SpatWalkCLT
+import Parking.Support.RangeResolvent
+import Parking.Support.ErrorUnroll
 
 /-!
 # Covariances of scenery pairings
@@ -344,6 +346,98 @@ theorem sum_mul_green_eq_sum_heat {d : ℕ} (S : Finset (Site d))
       ∑ k ∈ Finset.range n, ∑ y ∈ S, f y * heat d k (x - y) := by
   simp_rw [green, Finset.mul_sum]
   exact Finset.sum_comm
+
+/-- The expectation of a bounded function of the walk equals its heat-kernel pairing. -/
+theorem integral_walkPath_eq_tsum_heat {d : ℕ} (hd : 1 ≤ d) (n : ℕ)
+    (f : Site d → ℝ) {C : ℝ} (hf : ∀ y, ‖f y‖ ≤ C) :
+    (∫ p, f (walkPath (0 : Site d) p n) ∂(walkLaw d)) =
+      ∑' y : Site d, heat d n y * f y := by
+  have : NeZero d := ⟨by omega⟩
+  have hwm : Measurable (walkPath (0 : Site d)) :=
+    Measurable.of_eval fun j => measurable_walkPath 0 j
+  have hfm : Measurable (fun X : ℕ → Site d => f (X n)) :=
+    (measurable_of_countable f).comp (measurable_pi_apply n)
+  calc
+    _ = ∫ X, f (X n) ∂(LatticeProb.siteWalkLaw d 0) := by
+      rw [← map_walkLaw_walkPath hd (0 : Site d),
+        integral_map hwm.aemeasurable hfm.aestronglyMeasurable]
+    _ = (LatticeProb.walkOp^[n] f) 0 :=
+      LatticeProb.integral_apply_eq_walkOp_iterate d n f hf 0
+    _ = _ := iterate_walkOp_apply_zero n f
+
+/-- A finite heat-kernel pairing is a translated walk expectation. -/
+theorem sum_mul_heat_eq_integral_walkPath {d : ℕ} (hd : 1 ≤ d) (n : ℕ)
+    (x : Site d) (S : Finset (Site d)) (f : Site d → ℝ) {C : ℝ}
+    (hf : ∀ y, ‖f y‖ ≤ C) (hS : ∀ y ∉ S, heat d n (x - y) = 0) :
+    (∑ y ∈ S, f y * heat d n (x - y)) =
+      ∫ p, f (x + walkPath (0 : Site d) p n) ∂(walkLaw d) := by
+  have hsum := (Equiv.addLeft x).tsum_eq (fun y : Site d => heat d n (x - y) * f y)
+  have heq : (∑' y : Site d, heat d n (x - y) * f y) =
+      ∑' z : Site d, heat d n z * f (x + z) := by
+    calc
+      _ = ∑' z : Site d, heat d n (x - (x + z)) * f (x + z) := hsum.symm
+      _ = _ := by
+        apply tsum_congr
+        intro z
+        rw [show x - (x + z) = -z by abel, heat_neg]
+  calc
+    _ = ∑ y ∈ S, heat d n (x - y) * f y := by
+      apply Finset.sum_congr rfl
+      intro y hy
+      ring
+    _ = ∑' y : Site d, heat d n (x - y) * f y := by
+      symm
+      apply tsum_eq_sum
+      intro y hy
+      rw [hS y hy, zero_mul]
+    _ = _ := by
+      rw [heq, ← integral_walkPath_eq_tsum_heat hd n (fun z => f (x + z))
+        (fun z => hf (x + z))]
+
+/-- A finite Green-kernel pairing is the sum of translated walk expectations. -/
+theorem sum_mul_green_eq_sum_integral_walkPath {d : ℕ} (hd : 1 ≤ d)
+    (n : ℕ) (x : Site d) (S : Finset (Site d)) (f : Site d → ℝ) {C : ℝ}
+    (hf : ∀ y, ‖f y‖ ≤ C) (hS : LatticeProb.boxFinset x n ⊆ S) :
+    (∑ y ∈ S, f y * green d n (x - y)) =
+      ∑ k ∈ Finset.range n, ∫ p, f (x + walkPath (0 : Site d) p k) ∂(walkLaw d) := by
+  rw [sum_mul_green_eq_sum_heat]
+  apply Finset.sum_congr rfl
+  intro k hk
+  apply sum_mul_heat_eq_integral_walkPath hd k x S f hf
+  intro y hy
+  apply heat_eq_zero_of_notMem_box
+  intro hm
+  apply hy
+  apply hS
+  apply LatticeProb.mem_boxFinset_iff.mpr
+  intro i
+  have hi := LatticeProb.mem_boxFinset_iff.mp hm i
+  simp only [Pi.sub_apply, Pi.zero_apply, sub_zero] at hi
+  have hkn : (k : ℤ) ≤ n := by exact_mod_cast (Finset.mem_range.mp hk).le
+  exact (by simpa only [abs_sub_comm] using hi : |y i - x i| ≤ (k : ℤ)).trans hkn
+
+/-- The rescaled grid covariance is a time sum of walk averages. -/
+theorem scaled_integral_scenePair_mul_linPotential_eq_walk {d : ℕ} (hd : 1 ≤ d)
+    (ν : Measure ℤ) (hν : CriticalLaw ν) {φ : (Fin d → ℝ) → ℝ} (hφtest : IsTestFun φ)
+    {B R : ℝ} (hB : 0 < B) (hR : 1 ≤ R)
+    (hφ : ∀ x, φ x ≠ 0 → ‖x‖ ≤ B) (n : ℕ) (x : Site d) :
+    R ^ ((d : ℝ) / 2 - 2) *
+      (∫ w, scenePair w R φ * linPotential (confReal w) n x ∂(law d ν)) =
+    variance (fun k : ℤ => (k : ℝ)) ν * (R ^ (-(2 : ℝ)) *
+      ∑ k ∈ Finset.range n, ∫ p, φ (fun i =>
+        ((x i : ℝ) + (walkPath (0 : Site d) p k i : ℝ)) / R) ∂(walkLaw d)) := by
+  obtain ⟨C, _, hC⟩ := exists_norm_le_of_hasCompactSupport hφtest.1.continuous hφtest.2
+  rw [scaled_integral_scenePair_mul_linPotential hd ν hν hB hR hφ n x,
+    sum_mul_green_eq_sum_integral_walkPath hd n x _
+      (fun y => φ (fun i => (y i : ℝ) / R)) (fun y => hC _)
+      Finset.subset_union_right]
+  congr 3
+  funext k
+  apply integral_congr_ae
+  filter_upwards with p
+  congr 1
+  funext i
+  simp only [Pi.add_apply, Int.cast_add]
 
 /-- The rescaled random walk tested at a fixed time converges to the Brownian average. -/
 theorem tendsto_integral_test_spatialScaledWalk {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
