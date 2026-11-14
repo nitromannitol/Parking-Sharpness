@@ -232,8 +232,8 @@ theorem tendsto_scenePair_fdd (hd : 1 ≤ d) (ν : Measure ℤ) (hν : CriticalL
   set Z := fun (ω : ↥(l2Basis (volume : Measure (Fin d → ℝ))) → ℝ) (i : Fin m) =>
     contW (d := d) v (φ i) ω with hZdef
   have hXm : ∀ R : ℝ, Measurable (X R) := fun R =>
-    measurable_pi_lambda _ fun i => measurable_scenePair hB (hbound i) (le_max_right R 1)
-  have hZm : Measurable Z := measurable_pi_lambda _ fun i => measurable_contW v (φ i)
+    Measurable.of_eval fun i => measurable_scenePair hB (hbound i) (le_max_right R 1)
+  have hZm : Measurable Z := Measurable.of_eval fun i => measurable_contW v (φ i)
   -- A single reusable fact: `(max R 1) ^ (-(d:ℝ)/2) → 0`.
   have hRpow0 : Tendsto (fun R : ℝ => (max R 1) ^ (-(d : ℝ) / 2)) atTop (𝓝 0) := by
     have hcompose : Tendsto (fun R : ℝ => max R 1) atTop atTop :=

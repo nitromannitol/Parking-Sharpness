@@ -35,7 +35,7 @@ comap of the erasure map `eraseCoordinates b S`. -/
 `b i` (for `i ∈ S`) or the measurable projection `z ↦ z.2 i` (for `i ∉ S`). -/
 theorem measurable_eraseCoordinates (b : Π i, X i) (S : Set ι) :
     Measurable (eraseCoordinates (Ω := Ω) b S) := by
-  refine measurable_fst.prodMk (measurable_pi_lambda _ fun i => ?_)
+  refine measurable_fst.prodMk (Measurable.of_eval fun i => ?_)
   by_cases hi : i ∈ S
   · simpa only [if_pos hi] using (measurable_const : Measurable (fun _ : Ω × (Π i, X i) => b i))
   · simp only [if_neg hi]

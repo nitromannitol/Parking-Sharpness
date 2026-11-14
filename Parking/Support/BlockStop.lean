@@ -215,7 +215,7 @@ theorem sum_blockReward (ζ : Site d → ℝ) (σ : (ℕ → Site d) → ℕ) (N
 reads off one factor by cases on whether it is before `s`. -/
 theorem measurable_glue (s : ℕ) :
     Measurable (fun p : (ℕ → Site d) × (ℕ → Site d) => glue s p.1 p.2) := by
-  refine measurable_pi_lambda _ fun j => ?_
+  refine Measurable.of_eval fun j => ?_
   by_cases h : j < s
   · simp only [glue, if_pos h]
     exact measurable_fst.eval

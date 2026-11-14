@@ -224,7 +224,7 @@ theorem measurable_boxRewardMap (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A
     funext fun η => boxRewardMap_eq_boxFieldAssemble T hT A hA n η
   rw [hfact]
   exact (continuous_boxFieldAssemble T hT A hA n).measurable.comp
-    (measurable_pi_lambda _ fun m => measurable_pi_lambda _ fun j =>
+    (Measurable.of_eval fun m => Measurable.of_eval fun j =>
       measurable_orientedGridReward n ⌊(n : ℝ) * T⌋₊ m j)
 
 /-- The law of the rescaled box-reward field at scale `n`: the pushforward of
@@ -239,7 +239,7 @@ instance (T : ℝ) (ν : Measure ℤ) [IsProbabilityMeasure ν] (hT : 0 ≤ T) (
   haveI : IsProbabilityMeasure (realLaw ν) := realLaw_isProbability ν
   haveI : IsProbabilityMeasure (iidLaw 2 (realLaw ν)) := by unfold iidLaw; infer_instance
   show IsProbabilityMeasure ((iidLaw 2 (realLaw ν)).map (boxRewardMap T hT A hA n))
-  exact Measure.isProbabilityMeasure_map (measurable_boxRewardMap T hT A hA n).aemeasurable
+  exact inferInstance
 
 end Parking
 

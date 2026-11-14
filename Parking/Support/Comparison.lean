@@ -268,7 +268,7 @@ theorem comparison_of_labelOrder (hd : 1 ≤ d) (η : Site d → ℤ) (n : ℕ) 
   induction n generalizing x with
   | zero =>
       have h0 : ∀ s : Randomness d, (U ((η, s) : Data d) 0 x : ℝ) = 0 := fun s => by
-        norm_num
+        exact_mod_cast (rfl : U ((η, s) : Data d) 0 x = 0)
       show (0 : ℝ) ≤ ∫ s, (U ((η, s) : Data d) 0 x : ℝ) ∂(stackRankLaw d)
       rw [integral_congr_ae (Filter.Eventually.of_forall h0)]
       simp

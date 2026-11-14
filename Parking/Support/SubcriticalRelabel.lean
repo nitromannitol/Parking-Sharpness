@@ -128,6 +128,7 @@ theorem labelLT_same_fst (x : Site d) (i j : ℕ) :
     labelLT ((x, i) : Label d) (x, j) ↔ i < j := by
   rw [labelLT_iff_lex]
   simp
+  exact fun h => absurd h (lt_irrefl _)
 
 /-- A comparison with the tagged label, read as a lexicographic comparison. -/
 theorem labelLT_origin_iff (q : Label d) :

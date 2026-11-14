@@ -61,7 +61,7 @@ theorem stackRankLaw_isProbability (hd : 1 ≤ d) : IsProbabilityMeasure (stackR
 /-- Translating a configuration by `v` is measurable, since each coordinate
 `x ↦ η (x + v)` is a coordinate projection. -/
 theorem measurable_shiftConf (v : Site d) : Measurable (shiftConf (d := d) v) :=
-  measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)
+  Measurable.of_eval fun x => measurable_pi_apply (x + v)
 
 /-- Translating the full data triple by `v` is measurable, combining
 `measurable_shiftConf`, `measurable_shiftStack` and `measurable_shiftRank`

@@ -38,7 +38,7 @@ def scaledLaplaceLaw (b : ℝ) : Measure ℝ := laplaceLaw.map (fun x : ℝ => b
 /-- The scaled Laplace law is a probability measure, as the pushforward of the
 probability measure `laplaceLaw` along the measurable scaling map. -/
 instance scaledLaplaceLaw_isProbability (b : ℝ) : IsProbabilityMeasure (scaledLaplaceLaw b) :=
-  Measure.isProbabilityMeasure_map (by fun_prop : Measurable (fun x : ℝ => b * x)).aemeasurable
+  inferInstanceAs (IsProbabilityMeasure (laplaceLaw.map fun x : ℝ => b * x))
 
 /-- The identity function is integrable under the scaled Laplace law, since it is a
 constant multiple of the identity under the unscaled `laplaceLaw`. -/

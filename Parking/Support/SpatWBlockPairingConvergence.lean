@@ -107,7 +107,7 @@ theorem tendsto_integral_barDivisible_block_pairings_of_lipschitz
       funext fun w => hbar (V R w) w R hR
     rw [heq]
     exact hFlip.continuous.measurable.comp ((hVm R).prodMk
-      (measurable_pi_lambda _ fun j => measurable_integral_barDivisible_mul R t K hK (h j) (hh j)))
+      (Measurable.of_eval fun j => measurable_integral_barDivisible_mul R t K hK (h j) (hh j)))
   haveI : ∀ _ : ℝ, IsProbabilityMeasure (law d ν) := fun _ => inferInstance
   have hconv := LatticeProb.Scaling.FddBlockTightness.tendsto_integral_of_fdd_of_equicontinuous
     (Φ := Φ) hK (Filter.Eventually.of_forall hVm) hVlimm
@@ -148,14 +148,14 @@ theorem tendstoInDistribution_barDivisible_block_pairings
       (fun _ : ℝ => law d ν) Q := by
   have hXm : ∀ R, Measurable fun w =>
       (V R w, fun j => ∫ x in K, barDivisible w R t x * h j x) := fun R =>
-    (hVm R).prodMk (measurable_pi_lambda _ fun j =>
+    (hVm R).prodMk (Measurable.of_eval fun j =>
       measurable_integral_barDivisible_mul R t K hK (h j) (hh j))
   have hZm : Measurable fun ω =>
       (Vlim ω, fun j => ∫ x in K, Uc ω t x * h j x) :=
-    hVlimm.prodMk (measurable_pi_lambda _ fun j =>
+    hVlimm.prodMk (Measurable.of_eval fun j =>
       measurable_integral_Uc_mul hUcmeas hUccont t K hK (h j) (hh j))
   refine ⟨fun R => (hXm R).aemeasurable, hZm.aemeasurable, ?_⟩
-  rw [tendsto_iff_forall_lipschitz_integral_tendsto]
+  refine tendsto_iff_forall_lipschitz_integral_tendsto.mpr ?_
   intro F hFb hFlip
   obtain ⟨M, hM⟩ := hFb
   obtain ⟨LF, hLF⟩ := hFlip

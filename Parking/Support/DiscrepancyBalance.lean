@@ -47,7 +47,7 @@ theorem Parking.discrepancyAt_zero (c : Site d → ℤ × ℤ) (ρ : Label d × 
   rw [Parking.discrepancyState, Parking.candidates_zero, Finset.filter_map]
   congr 1
   exact Finset.filter_true_of_mem fun i hi =>
-    ⟨by simpa [initial] using Finset.mem_range.mp hi, rfl⟩
+    ⟨by simp [initial]; exact Int.lt_toNat.mp (Finset.mem_range.mp hi), rfl⟩
 
 /-- At time `0` every label at `x` shares the sign `discrepancySign c (x, 0)`, so the signed
 count of one sign is `discrepancyConf c x` and the other is `0`, via `discrepancyAt_zero`. -/

@@ -83,7 +83,7 @@ theorem oriented_noArrival_count_fiber (hd : 1 ≤ d) (η : Site d → ℤ) (n :
   let A : Set (Site d × ℕ → Site d) := {σ |
     (fun i : Fin d => orientedOdometer η σ n (x - unit i)) = m}
   have hA : MeasurableSet A :=
-    (measurable_pi_lambda _ fun i =>
+    (Measurable.of_eval fun i =>
       measurable_orientedOdometer _ _ measurable_const measurable_id n (x - unit i))
       (measurableSet_singleton m)
   have hinv : ∀ q ∈ orientedIncomingSlots x m, ∀ σ : Site d × ℕ → Site d,

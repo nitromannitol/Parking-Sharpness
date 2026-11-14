@@ -381,7 +381,7 @@ theorem measurable_cutoffBC_linHatInterp (d : ℕ) (hd : 1 ≤ d) (R : ℝ)
   set Z := linHatBoxSites d R0 with hZ
   set π : Data d → (Z → ℝ) := fun w z => confReal w (z : Site d) with hπ
   have hπmeas : Measurable π :=
-    measurable_pi_lambda _ fun z => (measurable_pi_apply (z : Site d)).comp measurable_confReal
+    Measurable.of_eval fun z => (measurable_pi_apply (z : Site d)).comp measurable_confReal
   set h : (Z → ℝ) → BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ :=
     fun y => cutoffBC χ (linHatInterp (extendField Z y) R) hχ1 hχ2
       (continuous_linHatInterp _ R) with hh

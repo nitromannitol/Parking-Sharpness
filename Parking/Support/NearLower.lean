@@ -67,7 +67,7 @@ theorem integral_u_shift_le_meanu (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ → Mea
   haveI : IsProbabilityMeasure (LatticeProb.iidLaw d (ν δ)) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hxim : ∀ e : ℝ, Measurable (fun η : Site d → ℤ => Parking.xi e η) := fun e =>
-    measurable_pi_lambda _ fun y =>
+    Measurable.of_eval fun y =>
       (measurable_intCastReal.comp (measurable_pi_apply y)).add_const e
   have hmap : ∀ e : ℝ, ∫ ζ, u ζ m 0 ∂(LatticeProb.iidLaw d (shiftLaw e (ν δ)))
       = ∫ η, u (Parking.xi e η) m 0 ∂(LatticeProb.iidLaw d (ν δ)) := by

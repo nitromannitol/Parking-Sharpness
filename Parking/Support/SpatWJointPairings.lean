@@ -46,19 +46,19 @@ theorem tendstoInDistribution_scenePair_barDivisible_pairings
     (fun i => scenePair w R (φ i), fun j => barDivisible w R (sp j).1 (sp j).2)
   let Vlim := fun ω => (fun i => W (φ i) ω, fun j => Uc ω (sp j).1 (sp j).2)
   have hVm : ∀ R, Measurable (V R) := fun R =>
-    (measurable_pi_lambda _ fun _ => measurable_scenePair_any_R R).prodMk
-      (measurable_pi_lambda _ fun j => measurable_barDivisible R (sp j).1 (sp j).2)
+    (Measurable.of_eval fun _ => measurable_scenePair_any_R R).prodMk
+      (Measurable.of_eval fun j => measurable_barDivisible R (sp j).1 (sp j).2)
   have hVlimm : Measurable Vlim :=
-    (measurable_pi_lambda _ fun i => hWmeas (φ i) (hφ i)).prodMk
-      (measurable_pi_lambda _ fun j => hUcmeas (sp j).1 (sp j).2)
+    (Measurable.of_eval fun i => hWmeas (φ i) (hφ i)).prodMk
+      (Measurable.of_eval fun j => hUcmeas (sp j).1 (sp j).2)
   have hfdd : ∀ (n : ℕ) (x : Fin n → (Fin d → ℝ)), (∀ j, x j ∈ K) →
       TendstoInDistribution (fun R w => (V R w, fun j => barDivisible w R 1 (x j))) atTop
         (fun ω => (Vlim ω, fun j => Uc ω 1 (x j))) (fun _ : ℝ => law d ν) Q := by
     intro n x _
     apply LatticeProb.Scaling.Slutsky.tendstoInDistribution_of_tendsto_integral
-      (fun R => ((hVm R).prodMk (measurable_pi_lambda _ fun j =>
+      (fun R => ((hVm R).prodMk (Measurable.of_eval fun j =>
         measurable_barDivisible R 1 (x j))).aemeasurable)
-      ((hVlimm.prodMk (measurable_pi_lambda _ fun j => hUcmeas 1 (x j))).aemeasurable)
+      ((hVlimm.prodMk (Measurable.of_eval fun j => hUcmeas 1 (x j))).aemeasurable)
     intro F
     let points := Fin.append sp (fun j => ((1 : ℝ), x j))
     have hpoints : ∀ j, 0 < (points j).1 := by

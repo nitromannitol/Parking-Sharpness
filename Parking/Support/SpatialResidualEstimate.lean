@@ -22,7 +22,7 @@ is measurable. -/
 theorem measurable_parabolicIndex (R : ℝ) :
     Measurable (fun p : ℝ × (Fin d → ℝ) => (⌊p.1 * R ^ 2⌋₊, latticePoint R p.2)) := by
   exact (Nat.measurable_floor.comp (measurable_fst.mul_const _)).prodMk
-    (measurable_pi_lambda _ fun i => Int.measurable_floor.comp
+    (Measurable.of_eval fun i => Int.measurable_floor.comp
       (measurable_const.mul ((measurable_pi_apply i).comp measurable_snd)))
 
 /-- The discrete time-difference test `parabolicTimeTest ψ R` is measurable, since it

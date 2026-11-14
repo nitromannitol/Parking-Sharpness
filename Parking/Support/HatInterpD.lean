@@ -68,7 +68,7 @@ theorem abs_prod_sub_prod_le {ι : Type*} [DecidableEq ι] :
       have hPg : (0:ℝ) ≤ ∏ i ∈ s, g i :=
         Finset.prod_nonneg fun i hi => hg0 i (Finset.mem_insert_of_mem hi)
       have hPg1 : ∏ i ∈ s, g i ≤ 1 :=
-        Finset.prod_le_one (fun i hi => hg0 i (Finset.mem_insert_of_mem hi))
+        Finset.prod_le_one₀ (fun i hi => hg0 i (Finset.mem_insert_of_mem hi))
           (fun i hi => hg1 i (Finset.mem_insert_of_mem hi))
       have hfa0 := hf0 a (Finset.mem_insert_self a s)
       have hihs := ih f g (fun i hi => hf0 i (Finset.mem_insert_of_mem hi))
@@ -103,7 +103,7 @@ theorem hatProd_nonneg (x : Fin d → ℝ) (c : Site d) : 0 ≤ hatProd x c :=
 
 /-- **The `d`-dimensional space weight is at most one.** -/
 theorem hatProd_le_one (x : Fin d → ℝ) (c : Site d) : hatProd x c ≤ 1 :=
-  Finset.prod_le_one (fun _i _ => hat1_nonneg _) (fun _i _ => hat1_le_one _)
+  Finset.prod_le_one₀ (fun _i _ => hat1_nonneg _) (fun _i _ => hat1_le_one _)
 
 /-- **At the zero lattice point, evaluated at itself, the weight is one.** -/
 @[simp] theorem hatProd_self (c : Site d) :

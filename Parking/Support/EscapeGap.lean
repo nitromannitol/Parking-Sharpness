@@ -28,7 +28,7 @@ theorem lazyKernel_le_origin (hd : 1 ≤ d) (n : ℕ) (x : Site d) :
   apply div_le_div_of_nonneg_right _ (by positivity)
   apply Finset.sum_le_sum
   intro c _
-  apply Finset.prod_le_prod (fun i _ => P1_nonneg _ _)
+  apply Finset.prod_le_prod₀ (fun i _ => P1_nonneg _ _)
   intro i _
   exact P1_le_max _ _
 

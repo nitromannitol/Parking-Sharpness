@@ -81,7 +81,7 @@ theorem measurable_barDivisible_in_x (w : Data d) (R s : ℝ) :
   unfold barDivisible
   apply Measurable.const_mul
   apply (LatticeProb.measurable_from_countable' (uOf w ⌊s * R ^ 2⌋₊ : Site d → ℝ)).comp
-  exact measurable_pi_lambda _ (fun i => Int.measurable_floor.comp
+  exact Measurable.of_eval (fun i => Int.measurable_floor.comp
     (measurable_const.mul (measurable_pi_apply i)))
 
 /-- `g` is bounded and (globally) measurable, restricted to `K`.  The "niceness" predicate the

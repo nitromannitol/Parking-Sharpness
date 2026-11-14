@@ -232,7 +232,7 @@ def netTest (k : ℕ) (a η : ℝ) (hη : 0 < η) : BoundedContinuousFunction (F
       have hx : ∀ z : Fin k → ℝ, 0 ≤ ∏ j, clampAt a η (z j) ∧ (∏ j, clampAt a η (z j)) ≤ 1 := by
         intro z
         refine ⟨Finset.prod_nonneg fun j _ => clampAt_nonneg a η _ hη, ?_⟩
-        exact Finset.prod_le_one (fun j _ => clampAt_nonneg a η _ hη)
+        exact Finset.prod_le_one₀ (fun j _ => clampAt_nonneg a η _ hη)
           (fun j _ => clampAt_le_one a η _)
       have h1 := hx x
       have h2 := hx y
@@ -254,7 +254,7 @@ theorem netTest_nonneg (k : ℕ) (a η : ℝ) (hη : 0 < η) (y : Fin k → ℝ)
 theorem netTest_le_one (k : ℕ) (a η : ℝ) (hη : 0 < η) (y : Fin k → ℝ) :
     netTest k a η hη y ≤ 1 := by
   rw [netTest_apply]
-  exact Finset.prod_le_one (fun j _ => clampAt_nonneg a η _ hη) (fun j _ => clampAt_le_one a η _)
+  exact Finset.prod_le_one₀ (fun j _ => clampAt_nonneg a η _ hη) (fun j _ => clampAt_le_one a η _)
 
 /-- `netTest k a η hη y = 1` once every coordinate `y j ≥ a`, since then every factor
 `clampAt a η (y j)` equals `1`. -/
@@ -275,7 +275,7 @@ composed with the measurable tuple `X`. -/
 theorem measurable_netTest {Ω : Type*} [MeasurableSpace Ω] {k : ℕ} {a η : ℝ} (hη : 0 < η)
     (X : Fin k → Ω → ℝ) (hX : ∀ j, Measurable (X j)) :
     Measurable fun w => netTest k a η hη (fun j => X j w) :=
-  (netTest k a η hη).continuous.measurable.comp (measurable_pi_lambda _ hX)
+  (netTest k a η hη).continuous.measurable.comp (Measurable.of_eval hX)
 
 /-- `w ↦ netTest k a η hη (fun j => X j w)` is integrable against any probability measure,
 being measurable and bounded between `0` and the constant `1`. -/

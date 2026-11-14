@@ -70,7 +70,7 @@ theorem card_filter_candidates_eq_sum (η : Site d → ℤ) (z : Site d) (r : �
       · have := (mem_candidates_iff.mp hc).2
         rwa [hfst] at this
       · rwa [← hfst, Prod.mk.eta]
-      · rw [← hfst, Prod.mk.eta]
+      · rw [← hfst]; rfl
     · rintro ⟨i, ⟨hi, hP⟩, rfl⟩
       refine ⟨⟨mem_candidates (mem_boxFinset_iff.mp ha) hi, hP⟩, rfl⟩
   rw [hset, Finset.card_map]

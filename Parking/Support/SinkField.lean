@@ -26,7 +26,7 @@ def sparseSinkField (T : ℕ) (v : Site d) (η : Site d → ℤ) : Site d → �
 at the single site `v` to the fixed value forced by `horizonSink`. -/
 theorem measurable_sparseSinkField (T : ℕ) (v : Site d) : Measurable (sparseSinkField T v) := by
   classical
-  apply measurable_pi_lambda
+  apply Measurable.of_eval
   intro y
   by_cases hy : y = v
   · subst y

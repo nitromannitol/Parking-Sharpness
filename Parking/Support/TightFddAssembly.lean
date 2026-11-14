@@ -39,9 +39,9 @@ theorem tendstoInDistribution_orientedBoxReward (ν : Measure ℤ) (hν : Critic
   set σ2 : ℝ := ∫ x : ℝ, x ^ 2 ∂(realLaw ν) with hσ2def
   have hσ2 : 0 ≤ σ2 := (realLaw_sq_integral_pos ν hν).le
   have hXm : ∀ n : ℕ, Measurable (fun ω : Site 2 → ℝ => fun k => orientedBoxReward T n ω (u k)) :=
-    fun n => measurable_pi_lambda _ fun k => measurable_orientedBoxReward T n (u k)
+    fun n => Measurable.of_eval fun k => measurable_orientedBoxReward T n (u k)
   have hZm : Measurable (fun ω : contNoiseSpace => fun k => contZ σ2 T (u k 0) (u k 1) ω) :=
-    measurable_pi_lambda _ fun k => measurable_contZ σ2 T (u k 0) (u k 1)
+    Measurable.of_eval fun k => measurable_contZ σ2 T (u k 0) (u k 1)
   refine tendstoInDistribution_of_tendsto_charFun_linearCombination hXm hZm fun t => ?_
   rw [charFun_map_contZ_linearCombination T u t hσ2]
   exact tendsto_charFun_orientedBoxReward_linearCombination ν hν hBinomial T u hu0 huT t

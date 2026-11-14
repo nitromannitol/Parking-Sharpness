@@ -26,8 +26,8 @@ namespace Parking
 theorem lintegral_enorm_rpow_gaussianReal_one_lt_top (p : ℝ≥0) (hp : p ≠ 0) :
     (∫⁻ x : ℝ, ‖x‖ₑ ^ (p : ℝ) ∂(gaussianReal (0 : ℝ) 1)) < ⊤ := by
   have hmem : MemLp id p (gaussianReal (0 : ℝ) 1) := memLp_id_gaussianReal p
-  have h2 := hmem.2
-  rw [eLpNorm_nnreal_eq_lintegral hp] at h2
+  have h2 := hmem.eLpNorm_lt_top
+  rw [eLpNorm_nnreal_eq_lintegral hp aestronglyMeasurable_id] at h2
   simp only [id] at h2
   have hppos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast pos_iff_ne_zero.mpr hp
   have hp1 : (0 : ℝ) < 1 / (p : ℝ) := div_pos one_pos hppos

@@ -49,9 +49,9 @@ theorem Parking.ae_pos_of_convergence_in_law_lower_tails
     (hsmall : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧
       ∀ᶠ n : ℕ in atTop, P {ω | Xn n ω ≤ δ} ≤ ENNReal.ofReal ε) :
     ∀ᵐ ω ∂Q, 0 < X ω := by
-  let μ : ProbabilityMeasure ℝ := ⟨Q.map X, Measure.isProbabilityMeasure_map hX.aemeasurable⟩
+  let μ : ProbabilityMeasure ℝ := ⟨Q.map X, inferInstance⟩
   let μs : ℕ → ProbabilityMeasure ℝ := fun n =>
-    ⟨P.map (Xn n), Measure.isProbabilityMeasure_map (hXn n).aemeasurable⟩
+    ⟨P.map (Xn n), inferInstance⟩
   have hweak : Tendsto μs atTop (𝓝 μ) := by
     apply ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mpr
     intro F

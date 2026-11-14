@@ -147,6 +147,7 @@ theorem ae_law_stack_hits (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
       {j : ℕ | ω.2.1 (y, j) = x}.Infinite := by
   haveI := stackLaw_isProbability (d := d) hd
   haveI := rankLaw_isProbability d
+  have : IsProbabilityMeasure (stackRankLaw d) := by unfold stackRankLaw; infer_instance
   haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have h1 : ∀ᵐ s ∂(stackRankLaw d), ∀ y x : Site d, x ∈ nbrFinset y →

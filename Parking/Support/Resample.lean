@@ -78,7 +78,9 @@ theorem resampleOne_isProbability (ν : Measure ℤ) [IsProbabilityMeasure ν] {
 resampled configuration has the same law as `η`", at one site. -/
 theorem resampleOne_map_snd (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞}
     (hp : p ≤ 1) : (resampleOne ν p).map Prod.snd = ν := by
-  rw [resampleOne, Measure.map_add _ _ measurable_snd, Measure.map_smul, Measure.map_smul]
+  rw [resampleOne, Measure.map_add _ _ measurable_snd,
+    Measure.map_smul (hf := measurable_snd.aemeasurable),
+    Measure.map_smul (hf := measurable_snd.aemeasurable)]
   have h1 : (ν.map fun k : ℤ => (k, k)).map Prod.snd = ν := by
     rw [Measure.map_map measurable_snd measurable_diagInt]
     exact Measure.map_id
@@ -89,7 +91,9 @@ theorem resampleOne_map_snd (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : �
 same computation as `resampleOne_map_snd` with `Prod.fst` in place of `Prod.snd`. -/
 theorem resampleOne_map_fst (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : ℝ≥0∞}
     (hp : p ≤ 1) : (resampleOne ν p).map Prod.fst = ν := by
-  rw [resampleOne, Measure.map_add _ _ measurable_fst, Measure.map_smul, Measure.map_smul]
+  rw [resampleOne, Measure.map_add _ _ measurable_fst,
+    Measure.map_smul (hf := measurable_fst.aemeasurable),
+    Measure.map_smul (hf := measurable_fst.aemeasurable)]
   have h1 : (ν.map fun k : ℤ => (k, k)).map Prod.fst = ν := by
     rw [Measure.map_map measurable_fst measurable_diagInt]
     exact Measure.map_id
@@ -100,7 +104,9 @@ theorem resampleOne_map_fst (ν : Measure ℤ) [IsProbabilityMeasure ν] {p : �
 independent part distinguishes the two coordinates. -/
 theorem resampleOne_map_swap (ν : Measure ℤ) (p : ℝ≥0∞) :
     (resampleOne ν p).map Prod.swap = resampleOne ν p := by
-  rw [resampleOne, Measure.map_add _ _ measurable_swap, Measure.map_smul, Measure.map_smul]
+  rw [resampleOne, Measure.map_add _ _ measurable_swap,
+    Measure.map_smul (hf := measurable_swap.aemeasurable),
+    Measure.map_smul (hf := measurable_swap.aemeasurable)]
   have h1 : (ν.map fun k : ℤ => (k, k)).map Prod.swap = ν.map fun k : ℤ => (k, k) := by
     rw [Measure.map_map measurable_swap measurable_diagInt]
     rfl

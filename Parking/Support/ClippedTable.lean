@@ -25,7 +25,7 @@ def clippedField (η : Site d → ℤ) : Site d → ℤ := fun y => clipSparse (
 /-- `clippedField` is measurable, mapping each coordinate through the countable clipping
 function `clipSparse`. -/
 theorem measurable_clippedField : Measurable (clippedField (d := d)) :=
-  measurable_pi_lambda _ fun y =>
+  Measurable.of_eval fun y =>
     (measurable_from_countable' clipSparse).comp (measurable_pi_apply y)
 
 /-- Every clipped-field value is at most one particle in size, `(clippedField η y).toNat ≤ 1`,

@@ -24,7 +24,7 @@ theorem mgf_bounded_differences_finite {ι X : Type*} [Fintype ι] [DecidableEq 
   classical
   let e := (Fintype.equivFin ι).symm
   let r : (Fin (Fintype.card ι) → X) → ι → X := fun w i => w (e.symm i)
-  have hr : Measurable r := measurable_pi_lambda _ fun i => measurable_pi_apply (e.symm i)
+  have hr : Measurable r := Measurable.of_eval fun i => measurable_pi_apply (e.symm i)
   have he (w : Fin (Fintype.card ι) → X) (i : Fin (Fintype.card ι)) (a : X) :
       r (Function.update w i a) = Function.update (r w) (e i) a := by
     funext j

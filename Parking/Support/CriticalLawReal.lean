@@ -34,7 +34,7 @@ measure. -/
 instance realLaw_isProbability (ν : Measure ℤ) [IsProbabilityMeasure ν] :
     IsProbabilityMeasure (realLaw ν) := by
   rw [realLaw]
-  exact Measure.isProbabilityMeasure_map measurable_intCastReal.aemeasurable
+  exact inferInstance
 
 /-- Integrability transports across the pushforward `realLaw ν = ν.map Int.cast`. -/
 theorem realLaw_integrable_iff (ν : Measure ℤ) [IsProbabilityMeasure ν] {f : ℝ → ℝ}

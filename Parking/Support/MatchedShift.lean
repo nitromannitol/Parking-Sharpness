@@ -123,6 +123,7 @@ theorem Parking.pSettles_shift (hD : Parking.PShiftDriver v D' D)
   unfold Parking.pSettles
   rw [hS.active, hhole]
   simp only [labelLT, Parking.pNextPos_shift hD hS, hcard]
+  congr
 
 /-- One step of the particle-driven state is a `ShiftState`-preserving translation, assembled
 from `pSettles_shift`, `pNextPos_shift`, `pArrivalsAt_shift` and `pActiveAt_shift` field by

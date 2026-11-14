@@ -113,7 +113,7 @@ def optStop (n : ℕ) (η : Site d → ℤ) (X : ℕ → Site d) : ℕ :=
 /-- Casting an integer configuration to a real-valued one is measurable, coordinate by
 coordinate, via `measurable_intCastReal`. -/
 theorem measurable_intField : Measurable (fun η : Site d → ℤ => (fun y => ((η y : ℤ) : ℝ))) :=
-  measurable_pi_lambda _ fun y => measurable_intCastReal.comp (measurable_pi_apply y)
+  Measurable.of_eval fun y => measurable_intCastReal.comp (measurable_pi_apply y)
 
 /-- The odometer of the real cast of an integer configuration is measurable in that
 configuration, by composing `measurable_u_eval` with `measurable_intField`. -/

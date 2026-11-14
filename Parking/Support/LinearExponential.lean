@@ -43,7 +43,7 @@ theorem linear_exponential_pi (μ : Measure ℝ) [IsProbabilityMeasure μ]
   rw [integral_fintype_prod_eq_prod (fun (i : Fin N) (z : ℝ) => Real.exp ((τ * a i) * z))]
   calc (∏ i : Fin N, ∫ z : ℝ, Real.exp ((τ * a i) * z) ∂μ) ≤
       ∏ i : Fin N, Real.exp (D * (τ * a i) ^ 2) :=
-        Finset.prod_le_prod (fun i _ => integral_nonneg fun z => (Real.exp_pos _).le)
+        Finset.prod_le_prod₀ (fun i _ => integral_nonneg fun z => (Real.exp_pos _).le)
           (fun i _ => (hb (τ * a i) (ht i)).2)
     _ = _ := by
       rw [← Real.exp_sum]

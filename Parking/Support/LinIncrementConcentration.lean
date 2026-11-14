@@ -170,7 +170,7 @@ theorem exists_linPotential_increment_concentration (hd : 1 ≤ d) (ν0 : Measur
       linPotential η n x - linPotential η m y = linIncrement s n m x y (s.restrict η) :=
     fun η => (linIncrement_restrict n m x y η).symm
   have hmeasR : Measurable (s.restrict : (Site d → ℝ) → (s → ℝ)) :=
-    measurable_pi_lambda _ fun k => measurable_pi_apply (k : Site d)
+    Measurable.of_eval fun k => measurable_pi_apply (k : Site d)
   have hFm : Measurable (linIncrement s n m x y) := measurable_linIncrement hd s n m x y
   set mu : ℝ := ∫ ζ, linIncrement s n m x y ζ ∂(Measure.pi fun _ : s => ν0) with hmudef
   have hmean : (∫ η', (linPotential η' n x - linPotential η' m y) ∂(iidLaw d ν0)) = mu := by

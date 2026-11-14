@@ -39,7 +39,7 @@ theorem oriented_noArrival_probability_given (hd : 1 ≤ d) (η : Site d → ℤ
   haveI := orientedStackLaw_isProbability hd
   apply probability_eq_integral_of_fibers (orientedStackLaw d)
     (fun σ : Site d × ℕ → Site d => fun i : Fin d => orientedOdometer η σ n (x - unit i))
-    (measurable_pi_lambda _ fun i =>
+    (Measurable.of_eval fun i =>
       measurable_orientedOdometer _ _ measurable_const measurable_id n (x - unit i))
     {σ : Site d × ℕ → Site d | orientedArrivalCount η σ n x = 0}
     (fun m : Fin d → ℕ => (1 - (d : ℝ)⁻¹) ^ (∑ i, m i))

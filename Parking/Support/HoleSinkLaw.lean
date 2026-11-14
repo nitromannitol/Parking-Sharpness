@@ -45,7 +45,7 @@ theorem holeProb_eq_mul_sink_noArrival (hd : 1 ≤ d) {p : ℝ} (hp : 0 < p) (hp
   have hiF : Integrable F μ := (integrable_const _).indicator hG
   have hinv (η : Site d → ℤ) (ξ : FlatRoundNoise d) : F (Function.update η 0 0, ξ) = F (η, ξ) := by
     have he : (Function.update η 0 0, ξ) ∈ G ↔ (η, ξ) ∈ G := by
-      dsimp only [G, Set.mem_setOf_eq]
+      dsimp only [G, Set.mem_ofPred_eq]
       rw [sparseSinkField_update]
     dsimp only [F]
     by_cases hg : (η, ξ) ∈ G

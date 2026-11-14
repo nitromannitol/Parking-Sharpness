@@ -132,7 +132,7 @@ theorem measurable_contBoxRewardMap (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 �
     (Y : (Fin 2 → ℝ) → contNoiseSpace → ℝ) (hYmeas : ∀ z, Measurable (Y z)) (n : ℕ) :
     Measurable (contBoxRewardMap T hT A hA Y n) :=
   (continuous_boxFieldAssemble T hT A hA n).measurable.comp
-    (measurable_pi_lambda _ fun m => measurable_pi_lambda _ fun j =>
+    (Measurable.of_eval fun m => Measurable.of_eval fun j =>
       measurable_contZGrid T hT A hA Y hYmeas n m j)
 
 /-- **The box-restriction of the everywhere-continuous modification**, as an element of

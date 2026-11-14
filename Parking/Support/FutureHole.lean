@@ -54,7 +54,7 @@ theorem measurable_futureHoleValue (hd : 1 ≤ d) (η : Site d → ℤ)
   have hA := measurable_matchedCount ⟨0, hd⟩ (fun _ : RoundNoise d => η) (fun _ => ρ) id
     measurable_const measurable_const measurable_id s
   apply (measurable_matchedMeanH hd ρ (T - s) x).comp
-  apply measurable_pi_lambda
+  apply Measurable.of_eval
   intro y
   exact ((measurable_from_countable' fun n : ℕ => (n : ℤ)).comp
     ((measurable_pi_apply y).comp hA)).sub

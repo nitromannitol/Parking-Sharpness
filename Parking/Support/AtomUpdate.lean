@@ -37,7 +37,7 @@ theorem quasiMeasurePreserving_update_infinitePi_atom {ι X : Type*}
     QuasiMeasurePreserving (fun ω : ι → X => Function.update ω j b)
       (Measure.infinitePi (fun _ : ι => μ)) (Measure.infinitePi (fun _ : ι => μ)) := by
   have hm : Measurable (fun ω : ι → X => Function.update ω j b) :=
-    measurable_pi_lambda _ fun k => by
+    Measurable.of_eval fun k => by
       by_cases hk : k = j
       · subst k; simp
       · simpa [hk] using (measurable_pi_apply k : Measurable (fun ω : ι → X => ω k))

@@ -77,7 +77,7 @@ of the direction sequence. -/
 theorem measurable_walkFddVec (m n : ℕ) (ts : Fin m → ℝ) : Measurable (walkFddVec m n ts) := by
   have hv : Measurable (fun (p : ℕ → Fin 2 × Bool) (i : Fin m) =>
       orientedScaledSite n (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊)) :=
-    measurable_pi_lambda _ fun i =>
+    Measurable.of_eval fun i =>
       measurable_of_finite_dependence (d := 2) (by norm_num) _ _
         (fun p q hpq => by rw [orientedPath_congr (0 : Site 2) _ (fun j hj => hpq j hj)])
   exact (PiLp.continuous_toLp 2 _).measurable.comp hv
@@ -87,7 +87,7 @@ def walkFddLaw (m n : ℕ) (ts : Fin m → ℝ) : ProbabilityMeasure (EuclideanS
   ⟨(walkLaw 2).map (walkFddVec m n ts), by
     haveI := stepLaw_isProbability (d := 2) (by norm_num)
     haveI : IsProbabilityMeasure (walkLaw 2) := by unfold walkLaw; infer_instance
-    exact Measure.isProbabilityMeasure_map (measurable_walkFddVec m n ts).aemeasurable⟩
+    exact inferInstance⟩
 
 end Parking
 

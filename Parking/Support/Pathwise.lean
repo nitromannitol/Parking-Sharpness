@@ -241,7 +241,7 @@ theorem measurable_of_finite_dependence (hd : 1 ≤ d) (n : ℕ)
     refine (h _ _ fun i hi => ?_).symm
     simp only [he, dif_pos hi]
   rw [hfac]
-  exact Measurable.of_discrete.comp (measurable_pi_lambda _ fun i => measurable_pi_apply _)
+  exact Measurable.of_discrete.comp (Measurable.of_eval fun i => measurable_pi_apply _)
 
 /-- `wMax ω n x` is measurable, by `measurable_of_finite_dependence` applied to its
 finite dependence on the first `n` directions (`wMax_congr`). -/

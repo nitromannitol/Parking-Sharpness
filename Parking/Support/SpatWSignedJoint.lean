@@ -85,7 +85,7 @@ theorem tendsto_spatial_signed_joint
       ∫ x, barDivisible w R 1 x * g l x)
   have hYm : ∀ R, Measurable (Y R) := by
     intro R
-    apply measurable_pi_lambda
+    apply Measurable.of_eval
     intro i
     refine Fin.addCases (fun j => ?_) (fun l => ?_) i
     · simp only [Y, Fin.append_left]

@@ -329,6 +329,7 @@ theorem ae_stack_nbr (hd : 1 ≤ d) (μ : Measure (Site d → ℤ)) [IsProbabili
     ∀ᵐ ω ∂(dataLaw d μ), ∀ q : Site d × ℕ, ω.2.1 q ∈ nbrFinset q.1 := by
   haveI := stackLaw_isProbability (d := d) hd
   haveI := rankLaw_isProbability d
+  have := stackRankLaw_isProbability (d := d) hd
   have h1 : ∀ᵐ s ∂(stackRankLaw d), ∀ q : Site d × ℕ, s.1 q ∈ nbrFinset q.1 :=
     (Measure.quasiMeasurePreserving_fst).ae (stackLaw_ae_nbr hd)
   exact (Measure.quasiMeasurePreserving_snd).ae h1

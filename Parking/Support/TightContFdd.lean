@@ -59,7 +59,7 @@ theorem whiteNoiseOf_sum {ι : Type*} (S : Finset ι) (c : ι → ℝ) (φ : ι 
   | empty =>
       simp only [Finset.sum_empty]
       have hf : MemLp (fun _ : ℝ × ℝ => (0 : ℝ)) 2 (volume : Measure (ℝ × ℝ)) :=
-        ⟨aestronglyMeasurable_zero, by rw [eLpNorm_zero']; exact ENNReal.zero_lt_top⟩
+        MemLp.zero'
       have h := LatticeProb.whiteNoiseOf_smul (volume : Measure (ℝ × ℝ)) (0 : ℝ) hf
       simp only [zero_smul, zero_mul] at h
       filter_upwards [h] with ω hω

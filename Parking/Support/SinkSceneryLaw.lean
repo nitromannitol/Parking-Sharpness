@@ -37,7 +37,7 @@ theorem exists_sparseSinkMeanU_subgaussian (hd : 5 ≤ d) :
   let f : (S → ℤ) → ℝ := fun ξ => matchedMeanU (pinnedSparseBoxField S v a ξ) 0 T x
   have hf : Measurable f := measurable_from_countable' _
   have hR : Measurable (S.restrict : (Site d → ℤ) → S → ℤ) :=
-    measurable_pi_lambda _ fun y => measurable_pi_apply y.val
+    Measurable.of_eval fun y => measurable_pi_apply y.val
   have hmap := iidLaw_map_restrict d ν S
   have he (η : Site d → ℤ) : f (S.restrict η) = matchedMeanU (sparseSinkField T v η) 0 T x := by
     apply matchedMeanU_agree_box

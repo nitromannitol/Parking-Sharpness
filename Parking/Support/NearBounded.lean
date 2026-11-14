@@ -91,7 +91,7 @@ theorem integral_pow_u_xi_le_twoPoint (hd : 1 ≤ d) {δ₀ : ℝ} {ν : ℝ →
       (LatticeProb.iidLaw d (twoPointLaw Bd)) :=
     integrable_u_pow_iid hd _ (k + 2) (integrable_twoPointLaw _ _) m 0
   have hxim : Measurable (fun η : Site d → ℤ => Parking.xi δ η) :=
-    measurable_pi_lambda _ fun y =>
+    Measurable.of_eval fun y =>
       (measurable_intCastReal.comp (measurable_pi_apply y)).add_const δ
   have hmapped : ∫ η, u η m 0 ^ (k + 2) ∂(LatticeProb.iidLaw d μ)
       = ∫ η, u (Parking.xi δ η) m 0 ^ (k + 2) ∂(LatticeProb.iidLaw d (ν δ)) := by

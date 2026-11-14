@@ -56,9 +56,9 @@ theorem tendsto_integral_scenePair_spaceTime_functional
   let Nice : ((ℝ × (Fin d → ℝ)) → ℝ) → Prop := fun v =>
     Measurable v ∧ ∃ A : ℝ, ∀ p ∈ K, |v p| ≤ A
   have hVm : ∀ R : ℝ, Measurable (fun w : Data d => fun i => scenePair w R (φ i)) :=
-    fun R => measurable_pi_lambda _ fun _ => measurable_scenePair_any_R R
+    fun R => Measurable.of_eval fun _ => measurable_scenePair_any_R R
   have hWm : Measurable (fun ω => fun i => W (φ i) ω) :=
-    measurable_pi_lambda _ fun i => hWmeas (φ i) (hφ i)
+    Measurable.of_eval fun i => hWmeas (φ i) (hφ i)
   have hn : ∀ᶠ R : ℝ in atTop, ∀ w : Data d,
       Nice (fun p => barDivisible w R p.1 p.2) := by
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with R hR w
@@ -76,9 +76,9 @@ theorem tendsto_integral_scenePair_spaceTime_functional
       (fun _ : ℝ => law d ν) Q := by
     intro n sp hsp
     apply LatticeProb.Scaling.Slutsky.tendstoInDistribution_of_tendsto_integral
-      (fun R => ((hVm R).prodMk (measurable_pi_lambda _ fun j =>
+      (fun R => ((hVm R).prodMk (Measurable.of_eval fun j =>
         measurable_barDivisible R (sp j).1 (sp j).2)).aemeasurable)
-      ((hWm.prodMk (measurable_pi_lambda _ fun j =>
+      ((hWm.prodMk (Measurable.of_eval fun j =>
         hUcmeas (sp j).1 (sp j).2)).aemeasurable)
     exact hjointFDD m n φ sp hφ (fun j => hKt _ (hsp j))
   exact LatticeProb.Scaling.FddNiceFunctional.tendsto_integral hK

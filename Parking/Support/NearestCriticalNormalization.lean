@@ -37,7 +37,7 @@ theorem Parking.CriticalScale.odometer_centered {d : ℕ} (hd : 1 ≤ d)
 /-- The affine mass-centering map `η ↦ (x ↦ 1 + 2dη x)` is measurable. -/
 theorem Parking.CriticalScale.measurable_centered (d : ℕ) :
     Measurable (fun η : Site d → ℝ => fun x => 1 + 2 * (d : ℝ) * η x) := by
-  exact measurable_pi_lambda _ fun x => measurable_const.add ((measurable_pi_apply x).const_mul _)
+  exact Measurable.of_eval fun x => measurable_const.add ((measurable_pi_apply x).const_mul _)
 
 /-- `centeredMassLaw d ν` is the pushforward of the i.i.d. law `iidLaw d ν` under the
 mass-centering map `η ↦ 1 + 2dη`. -/
@@ -69,7 +69,7 @@ theorem Parking.CriticalScale.centeredMassLaw_isProbability (d : ℕ) (ν : Meas
     [IsProbabilityMeasure ν] : IsProbabilityMeasure (centeredMassLaw d ν) := by
   unfold centeredMassLaw
   haveI : IsProbabilityMeasure (ν.map fun z => 1 + 2 * (d : ℝ) * z) :=
-    Measure.isProbabilityMeasure_map (by fun_prop)
+    inferInstance
   unfold iidLaw
   infer_instance
 

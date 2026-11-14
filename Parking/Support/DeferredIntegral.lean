@@ -157,7 +157,7 @@ theorem nbrProj_update (i₀ : Fin d) (σ : Site d × ℕ → Site d) (q₀ : Si
 /-- `nbrProj i₀` is measurable. -/
 theorem measurable_nbrProj (i₀ : Fin d) :
     Measurable fun σ : Site d × ℕ → Site d => nbrProj i₀ σ := by
-  refine measurable_pi_lambda _ fun q => ?_
+  refine Measurable.of_eval fun q => ?_
   refine Measurable.ite ?_ (measurable_pi_apply q) measurable_const
   exact (measurable_pi_apply q) (Finset.measurableSet _)
 

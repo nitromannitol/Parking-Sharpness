@@ -59,10 +59,10 @@ theorem Parking.measurable_particleObservables :
   have hS := Parking.measurableState_pState (d := d)
     (Ω := Parking.PData d) Prod.fst (fun ω => ω.2.1) (fun ω => ω.2.2)
     measurable_fst (measurable_fst.comp measurable_snd) (measurable_snd.comp measurable_snd)
-  refine (measurable_pi_lambda _ fun tx : ℕ × Site d => (hS tx.1).2.2.2 tx.2).prodMk
-    ((measurable_pi_lambda _ fun tx : ℕ × Site d => ?_).prodMk
-      ((measurable_pi_lambda _ fun tx : ℕ × Site d => (hS tx.1).2.2.1 tx.2).prodMk
-        (measurable_pi_lambda _ fun ti : ℕ × Label d => (hS ti.1).1 ti.2)))
+  refine (Measurable.of_eval fun tx : ℕ × Site d => (hS tx.1).2.2.2 tx.2).prodMk
+    ((Measurable.of_eval fun tx : ℕ × Site d => ?_).prodMk
+      ((Measurable.of_eval fun tx : ℕ × Site d => (hS tx.1).2.2.1 tx.2).prodMk
+        (Measurable.of_eval fun ti : ℕ × Label d => (hS ti.1).1 ti.2)))
   exact (measurable_from_countable' (Finset.card (α := Label d))).comp
     (Parking.measurable_matchActive Prod.fst _ measurable_fst (hS tx.1) tx.1 tx.2)
 

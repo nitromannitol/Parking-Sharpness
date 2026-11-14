@@ -127,7 +127,7 @@ theorem gridSup_gt_iff (η : Site d → ℝ) (z0 : Site d) (n0 A2 : ℕ) (t : �
       ∃ m ∈ Finset.range (n0 + 1), ∃ y ∈ boxFinset (0 : Site d) A2,
         t < |linPotential η m (z0 + y)| := by
   unfold gridSup
-  rw [Finset.lt_sup'_iff]
+  refine Iff.trans (Finset.lt_sup'_iff _) ?_
   constructor
   · rintro ⟨⟨m, y⟩, hmem, hlt⟩
     obtain ⟨hm, hy⟩ := Finset.mem_product.mp hmem

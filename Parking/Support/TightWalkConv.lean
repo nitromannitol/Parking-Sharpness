@@ -73,7 +73,7 @@ data, measurable, exactly the function `Parking.walkFddVec` wraps into `Euclidea
 theorem measurable_walkFddVecPlain (m n : ℕ) (ts : Fin m → ℝ) :
     Measurable (fun (p : ℕ → Fin 2 × Bool) (i : Fin m) =>
       orientedScaledSite n (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊)) :=
-  measurable_pi_lambda _ fun i =>
+  Measurable.of_eval fun i =>
     measurable_of_finite_dependence (d := 2) (by norm_num) _ _
       (fun p q hpq => by rw [orientedPath_congr (0 : Site 2) _ (fun j hj => hpq j hj)])
 
@@ -128,7 +128,7 @@ theorem hWalk_of_quarterBrownian {ΩB : Type} [MeasurableSpace ΩB] (PB : Measur
       orientedScaledSite n (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊)) :=
     fun n => measurable_walkFddVecPlain m n ts
   have hZm : Measurable (fun β : ΩB => fun i : Fin m => B (Real.toNNReal (ts i)) β) :=
-    measurable_pi_lambda _ fun i => (hBmeas (Real.toNNReal (ts i)))
+    Measurable.of_eval fun i => (hBmeas (Real.toNNReal (ts i)))
   have hcomb : ∀ t : Fin m → ℝ, Tendsto (fun n : ℕ => charFun (((fun _ : ℕ => walkLaw 2) n).map
       (fun p => ∑ k, t k * (fun i : Fin m => orientedScaledSite n
         (orientedPath (0 : Site 2) p ⌊(n : ℝ) * ts i⌋₊)) k)) (1 : ℝ)) atTop

@@ -30,7 +30,7 @@ theorem linear_abs_lower_infinitePi {ι : Type*} (μ : Measure ℝ) [IsProbabili
   let read : (ι → ℝ) → Fin S.card → ℝ := fun ξ i => ξ (v i)
   have hread : MeasurePreserving read (Measure.infinitePi fun _ : ι => μ)
       (Measure.pi fun _ : Fin S.card => μ) :=
-    ⟨measurable_pi_lambda _ (fun i => measurable_pi_apply (v i)), infinitePi_map_comp μ v hv⟩
+    ⟨Measurable.of_eval (fun i => measurable_pi_apply (v i)), infinitePi_map_comp μ v hv⟩
   have he : ∀ f : ι → ℝ, (∑ i : Fin S.card, f (v i)) = ∑ j ∈ S, f j := by
     intro f
     exact (e.sum_comp (fun j : S => f j.val)).trans (Finset.sum_coe_sort S f)

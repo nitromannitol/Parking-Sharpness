@@ -150,6 +150,8 @@ theorem pSettledAt_eq (D : PDriver d) (t : ℕ) (x : Site d) :
   rw [hp'.2]
   simp only [decide_eq_true_eq, hp'.1, true_and]
   simp only [prec, pHoleCount]
+  apply Iff.of_eq
+  congr
 
 /-- The number of arrivals at `x` that settle is `min(arrivals, holes)`, applying
 `card_filter_countLT_lt` to the total, irreflexive, transitive priority order

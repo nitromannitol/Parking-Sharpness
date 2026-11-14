@@ -26,7 +26,7 @@ theorem orientedOdometers_indep_upper_stacks {ι : Type*} (hd : 1 ≤ d) (η : S
     fun q => orientedInstructionLaw_isProbability hd q.1
   apply indepFun_of_erasure_invariant (fun q : Site d × ℕ => orientedInstructionLaw q.1)
     {q : Site d × ℕ | h ≤ layerHeight q.1} (fun _ => (0 : Site d)) _
-    (measurable_pi_lambda _ fun i =>
+    (Measurable.of_eval fun i =>
       measurable_orientedOdometer _ _ measurable_const measurable_id n (x i))
   intro σ
   funext i

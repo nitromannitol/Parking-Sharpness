@@ -31,7 +31,7 @@ theorem map_walkLaw_walkPath (hd : 1 ≤ d) (x : Site d) :
   haveI : NeZero d := ⟨by omega⟩
   haveI := Parking.stepLaw_isProbability hd
   let M : (ℕ → Fin d × Bool) → ℕ → Site d := fun p n => Parking.stepVec (p n)
-  have hM : Measurable M := measurable_pi_lambda _ fun n =>
+  have hM : Measurable M := Measurable.of_eval fun n =>
     (measurable_of_countable Parking.stepVec).comp (measurable_pi_apply n)
   have hMLaw : (Parking.walkLaw d).map M
       = Measure.infinitePi fun _ : ℕ => LatticeProb.incLaw d := by
@@ -55,7 +55,7 @@ theorem rangeExp_eq (hd : 1 ≤ d) (a : ℝ) (t : ℕ) :
           ∂(LatticeProb.siteWalkLaw d 0) := by
   haveI : NeZero d := ⟨by omega⟩
   have hwm : Measurable (Parking.walkPath (0 : Site d)) :=
-    measurable_pi_lambda _ fun j => Parking.measurable_walkPath 0 j
+    Measurable.of_eval fun j => Parking.measurable_walkPath 0 j
   have hfm : Measurable fun X : ℕ → Site d =>
       Real.exp (-(a * (LatticeProb.rangeCard X t : ℝ))) :=
     (LatticeProb.measurable_from_countable'

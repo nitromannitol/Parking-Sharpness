@@ -45,7 +45,7 @@ theorem measurable_of_candidates' (e : α → Site d → ℤ) (he : Measurable e
     Measurable f := by
   refine measurable_of_countable_partition
     (fun a : α => (fun x : ↥(boxFinset z r) => e a (x : Site d)))
-    (measurable_pi_lambda _ fun x => (measurable_pi_apply (x : Site d)).comp he)
+    (Measurable.of_eval fun x => (measurable_pi_apply (x : Site d)).comp he)
     f (fun c a => g (candidatesOf z r c) a) (fun c => hg _) fun a => ?_
   rw [h a, candidates_eq_candidatesOf]
 
@@ -121,8 +121,6 @@ theorem measurable_pState (t : ℕ) :
           unfold LatticeProb.pActiveAt
           rw [Finset.filter_filter]
           congr 1
-          refine Finset.filter_congr fun q _ => ?_
-          simp [and_assoc]
         simp only [hrw]
         exact measurable_card_filter_candidates' (fun ω : LatticeProb.PData d => ω.1) heta y t _
           fun q => hbool _ _ (hbool _ _ (hact q) (hposeq q y)) measurable_const
@@ -168,8 +166,6 @@ theorem measurable_pState (t : ℕ) :
           unfold LatticeProb.pArrivalsAt
           rw [Finset.filter_filter]
           congr 1
-          refine Finset.filter_congr fun q _ => ?_
-          simp [and_assoc]
         simp only [hrw]
         refine measurable_card_filter_candidates' (fun ω : LatticeProb.PData d => ω.1) heta
           x (t + 1) _ fun q => ?_
@@ -277,10 +273,10 @@ the active count, the hole count, and the active flag) is measurable, assembling
 already-known measurability of each of its four component fields. -/
 theorem measurable_stackObservables :
     Measurable (LatticeProb.stackObservables (d := d)) := by
-  refine Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-    (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-      (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-        (measurable_pi_lambda _ fun ti => ?_)))
+  refine Measurable.prodMk (Measurable.of_eval fun tx => ?_)
+    (Measurable.prodMk (Measurable.of_eval fun tx => ?_)
+      (Measurable.prodMk (Measurable.of_eval fun tx => ?_)
+        (Measurable.of_eval fun ti => ?_)))
   · exact measurable_particleOdometer tx.1 tx.2
   · exact measurable_activeCount tx.1 tx.2
   · exact measurable_holeCount tx.1 tx.2
@@ -293,10 +289,10 @@ construction is measurable: three of its four fields follow directly from
 theorem measurable_pObservables :
     Measurable (LatticeProb.pObservables (d := d)) := by
   obtain ⟨hact, -, hhol, hdep⟩ := measurable_pState (d := d) 0
-  refine Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-    (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-      (Measurable.prodMk (measurable_pi_lambda _ fun tx => ?_)
-        (measurable_pi_lambda _ fun ti => ?_)))
+  refine Measurable.prodMk (Measurable.of_eval fun tx => ?_)
+    (Measurable.prodMk (Measurable.of_eval fun tx => ?_)
+      (Measurable.prodMk (Measurable.of_eval fun tx => ?_)
+        (Measurable.of_eval fun ti => ?_)))
   · exact (measurable_pState (d := d) tx.1).2.2.2 tx.2
   · exact by
       have := measurable_pState (d := d) tx.1
@@ -317,8 +313,6 @@ theorem measurable_pObservables :
           (LatticeProb.pState (LatticeProb.toPDriver ω) tx.1) tx.1 tx.2).card = _
         unfold LatticeProb.pActiveAt
         congr 1
-        refine Finset.filter_congr fun q _ => ?_
-        simp
       simp only [hrw]
       exact measurable_card_filter_candidates' (fun ω : LatticeProb.PData d => ω.1)
         measurable_fst tx.2 tx.1 _ fun q =>

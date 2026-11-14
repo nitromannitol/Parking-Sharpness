@@ -49,7 +49,7 @@ theorem ergodic_map_of_semiconj {Ω Ω' : Type*} [MeasurableSpace Ω] [Measurabl
     (hT : Ergodic T μ) (hΦ : Measurable Φ)
     (hS : MeasurePreserving S (μ.map Φ) (μ.map Φ))
     (hcomm : ∀ ω, Φ (T ω) = S (Φ ω)) : Ergodic S (μ.map Φ) := by
-  haveI : IsProbabilityMeasure (μ.map Φ) := Measure.isProbabilityMeasure_map hΦ.aemeasurable
+  haveI : IsProbabilityMeasure (μ.map Φ) := inferInstance
   refine ⟨hS, LatticeProb.preErgodic_of_prob_eq_zero_or_one ?_⟩
   intro A hA hinv
   have hpre : T ⁻¹' (Φ ⁻¹' A) = Φ ⁻¹' A := by
@@ -68,7 +68,7 @@ theorem instructionLaw_map_add (y : Site d) :
     (instructionLaw (0 : Site d)).map (fun z : Site d => z + y) = instructionLaw y := by
   have hmeas : Measurable (fun z : Site d => z + y) := measurable_id.add measurable_const
   simp only [instructionLaw]
-  rw [Measure.map_smul, Measure.map_finset_sum' hmeas.aemeasurable]
+  rw [Measure.map_smul (hf := hmeas.aemeasurable), Measure.map_finset_sum' hmeas.aemeasurable]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Measure.map_add _ _ hmeas, Measure.map_dirac' hmeas, Measure.map_dirac' hmeas,
@@ -129,11 +129,11 @@ def unflatten (ω : Slot d → Cell d) : Data d :=
 projection composed with the measurable `cellInt`, `cellSite` or `cellReal`. -/
 theorem measurable_unflatten : Measurable (unflatten (d := d)) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
-  · exact measurable_pi_lambda _ fun x => measurable_cellInt.comp (measurable_pi_apply _)
-  · exact measurable_pi_lambda _ fun q =>
+  · exact Measurable.of_eval fun x => measurable_cellInt.comp (measurable_pi_apply _)
+  · exact Measurable.of_eval fun q =>
       (measurable_cellSite.comp
         (measurable_pi_apply (Sum.inr (Sum.inl q) : Slot d))).add_const q.1
-  · exact measurable_pi_lambda _ fun p => measurable_cellReal.comp (measurable_pi_apply _)
+  · exact Measurable.of_eval fun p => measurable_cellReal.comp (measurable_pi_apply _)
 
 /-- `slotShift v` is injective, by cases on the three summands of `Slot d`, using
 `shiftLabel_injective` on the label summand. -/
@@ -207,20 +207,20 @@ theorem unflatten_eq_comp : unflatten (d := d) = gatherCells ∘ splitSlots := r
 /-- `splitSlots` is measurable, as each of its three outputs is a coordinate projection. -/
 theorem measurable_splitSlots : Measurable (splitSlots (d := d)) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
-  · exact measurable_pi_lambda _ fun x => measurable_pi_apply (Sum.inl x : Slot d)
-  · exact measurable_pi_lambda _ fun q => measurable_pi_apply (Sum.inr (Sum.inl q) : Slot d)
-  · exact measurable_pi_lambda _ fun p => measurable_pi_apply (Sum.inr (Sum.inr p) : Slot d)
+  · exact Measurable.of_eval fun x => measurable_pi_apply (Sum.inl x : Slot d)
+  · exact Measurable.of_eval fun q => measurable_pi_apply (Sum.inr (Sum.inl q) : Slot d)
+  · exact Measurable.of_eval fun p => measurable_pi_apply (Sum.inr (Sum.inr p) : Slot d)
 
 /-- `gatherCells` is measurable, as each of its three outputs composes a coordinate projection
 with the measurable `cellInt`, `cellSite` or `cellReal`. -/
 theorem measurable_gatherCells : Measurable (gatherCells (d := d)) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
-  · exact measurable_pi_lambda _ fun x =>
+  · exact Measurable.of_eval fun x =>
       measurable_cellInt.comp ((measurable_pi_apply x).comp measurable_fst)
-  · exact measurable_pi_lambda _ fun q =>
+  · exact Measurable.of_eval fun q =>
       (measurable_cellSite.comp
         ((measurable_pi_apply q).comp (measurable_fst.comp measurable_snd))).add_const q.1
-  · exact measurable_pi_lambda _ fun p =>
+  · exact Measurable.of_eval fun p =>
       measurable_cellReal.comp ((measurable_pi_apply p).comp (measurable_snd.comp measurable_snd))
 
 /-! ### The law of the flattened data -/
@@ -239,9 +239,9 @@ instance cellLaw_isProb (ν : Measure ℤ) [IsProbabilityMeasure ν] (i : Slot d
     IsProbabilityMeasure (cellLaw ν i) := by
   haveI := uniformUnit_isProbability
   rcases i with x | q | p
-  · exact Measure.isProbabilityMeasure_map measurable_inl.aemeasurable
-  · exact Measure.isProbabilityMeasure_map (measurable_inr.comp measurable_inl).aemeasurable
-  · exact Measure.isProbabilityMeasure_map (measurable_inr.comp measurable_inr).aemeasurable
+  · simp only [cellLaw, Sum.elim_inl]; infer_instance
+  · simp only [cellLaw, Sum.elim_inr, Sum.elim_inl]; infer_instance
+  · simp only [cellLaw, Sum.elim_inr]; infer_instance
 
 /-- The law of the flattened driving data. -/
 def flatLaw (d : ℕ) [Fact (1 ≤ d)] (ν : Measure ℤ) [IsProbabilityMeasure ν] :
@@ -339,13 +339,13 @@ theorem prodCellLaw_map_gatherCells (ν : Measure ℤ) [IsProbabilityMeasure ν]
     rfl
   have hgm2 : Measurable (fun b : Site d × ℕ → Cell d => fun q : Site d × ℕ =>
       cellSite (b q) + q.1) :=
-    measurable_pi_lambda _ fun q =>
+    Measurable.of_eval fun q =>
       (measurable_cellSite.comp (measurable_pi_apply q)).add_const q.1
   have hgm3 : Measurable (fun c : Label d × ℕ → Cell d => fun p : Label d × ℕ =>
       cellReal (c p)) :=
-    measurable_pi_lambda _ fun p => measurable_cellReal.comp (measurable_pi_apply p)
+    Measurable.of_eval fun p => measurable_cellReal.comp (measurable_pi_apply p)
   have hgm1 : Measurable (fun a : Site d → Cell d => fun x : Site d => cellInt (a x)) :=
-    measurable_pi_lambda _ fun x => measurable_cellInt.comp (measurable_pi_apply x)
+    Measurable.of_eval fun x => measurable_cellInt.comp (measurable_pi_apply x)
   rw [show (gatherCells (d := d))
       = Prod.map (fun a : Site d → Cell d => fun x : Site d => cellInt (a x))
           (Prod.map (fun b : Site d × ℕ → Cell d => fun q : Site d × ℕ => cellSite (b q) + q.1)

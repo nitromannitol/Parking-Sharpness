@@ -764,7 +764,7 @@ theorem hWalk_of_isBrownianSpace (d : ℕ) (hd1 : 1 ≤ d) (_hd3 : d ≤ 3)
       (finProdFinEquiv.symm k).2 with hXcontdef
   have hXdiscm : ∀ n : ℕ, Measurable (Xdisc n) := by
     intro n
-    apply measurable_pi_lambda
+    apply Measurable.of_eval
     intro k
     show Measurable (fun p => spatialScaledSite n
       (walkPath (0 : Site d) p ⌊(n:ℝ) * ts (finProdFinEquiv.symm k).1⌋₊)

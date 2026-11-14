@@ -23,7 +23,7 @@ theorem measurable_uncurry_spaceTime_barDivisible (R : ℝ) :
     Nat.measurable_floor.comp ((measurable_fst.comp measurable_snd).mul_const _)
   have hx : Measurable (fun p : Data d × (ℝ × (Fin d → ℝ)) =>
       latticePoint R p.2.2) :=
-    measurable_pi_lambda _ fun i => Int.measurable_floor.comp
+    Measurable.of_eval fun i => Int.measurable_floor.comp
       (measurable_const.mul ((measurable_pi_apply i).comp
         (measurable_snd.comp measurable_snd)))
   exact (measurable_eval_var _ (hn.prodMk hx)

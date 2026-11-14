@@ -114,18 +114,18 @@ theorem tendsto_scenePair_linHatInterp_joint_fdd_signedResidual
   have hXm : ∀ R : ℝ, Measurable (fun w : Data d =>
       (fun i => scenePair w R (φ i), fun j => linHatInterp (fun y => (w.1 y : ℝ)) R (sp j))) :=
     fun R => Measurable.prodMk
-      (measurable_pi_lambda _ fun i => measurable_scenePair_any_R R)
-      (measurable_pi_lambda _ fun j => measurable_linHatInterp R (sp j))
+      (Measurable.of_eval fun i => measurable_scenePair_any_R R)
+      (Measurable.of_eval fun j => measurable_linHatInterp R (sp j))
   have hYm : ∀ R : ℝ, Measurable (fun w : Data d =>
       fun l : Fin q => signedPair w R (χ l) - scenePair w R (χ l) - L l w) :=
-    fun R => measurable_pi_lambda _ fun l =>
+    fun R => Measurable.of_eval fun l =>
       ((measurable_signedPair R (χ l)).sub (measurable_scenePair_any_R R)).sub (hLmeas l)
   have hZM : Measurable (fun ω' : Ω' =>
       (fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω',
         fun j => Z ω' (sp j).1 (sp j).2)) :=
     Measurable.prodMk
-      (measurable_pi_lambda _ fun i => measurable_const.mul (hWmeas i))
-      (measurable_pi_lambda _ fun j => hZmeas j)
+      (Measurable.of_eval fun i => measurable_const.mul (hWmeas i))
+      (Measurable.of_eval fun j => hZmeas j)
   have hY : ∀ ε : ℝ, 0 < ε → Tendsto (fun R : ℝ =>
       ((law d ν) {w | ε < ‖(fun l : Fin q =>
           signedPair w R (χ l) - scenePair w R (χ l) - L l w)‖}).toReal) atTop (𝓝 0) :=

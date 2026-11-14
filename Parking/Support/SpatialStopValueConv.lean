@@ -292,9 +292,9 @@ theorem tendsto_integral_spatialStopValueCutoff (hd1 : 1 ≤ d) (hd3 : d ≤ 3)
   have hmeasZ : Measurable cutoffCont :=
     Parking.measurable_cutoffBC_linearField Z hZcont hZmeas χ hχ.1.continuous hχ.2.1
   haveI hpmR : ∀ R, IsProbabilityMeasure (νR R) := fun R =>
-    Measure.isProbabilityMeasure_map (hmeasR R).aemeasurable
+    inferInstance
   haveI hpmlim : IsProbabilityMeasure νlim :=
-    Measure.isProbabilityMeasure_map hmeasZ.aemeasurable
+    inferInstance
   have hlim : ∀ G : BoundedContinuousFunction (SpatBCF d) ℝ,
       Tendsto (fun R : ℝ => ∫ y, G y ∂(νR R)) atTop (𝓝 (∫ y, G y ∂νlim)) := by
     intro G

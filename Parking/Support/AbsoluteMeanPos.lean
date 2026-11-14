@@ -37,7 +37,7 @@ theorem integral_abs_discrepancy_pos (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Cr
     (q.2 : ℝ) = u (fun x => (q.1 x : ℝ)) (t + 2) 0
   have hP : MeasurableSet {q | P q} := measurableSet_eq_fun
     ((measurable_from_countable' fun k : ℕ => (k : ℝ)).comp measurable_snd)
-    ((measurable_u_eval (t + 2) 0).comp (measurable_pi_lambda _ fun x =>
+    ((measurable_u_eval (t + 2) 0).comp (Measurable.of_eval fun x =>
       measurable_intCastReal.comp ((measurable_pi_apply x).comp measurable_fst)))
   have hmap : ∀ᵐ q ∂((law d ν).map (fun ω : Data d => (ω.1, U ω (t + 2) 0))), P q :=
     (ae_map_iff (measurable_fst.prodMk (measurable_U (t + 2) 0)).aemeasurable hP).mpr hs

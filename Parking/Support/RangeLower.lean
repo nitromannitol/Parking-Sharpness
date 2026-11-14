@@ -164,7 +164,7 @@ theorem measurable_rangeCard (x : Site d) (t : ℕ) :
     · rintro ⟨j, hj, rfl⟩; exact ⟨⟨j, hj⟩, rfl⟩
     · rintro ⟨j, rfl⟩; exact ⟨j.val, j.isLt, rfl⟩
   have hproj : Measurable fun (p : ℕ → Fin d × Bool) (j : Fin (t + 1)) => walkPath x p j.val :=
-    measurable_pi_lambda _ fun j => measurable_walkPath x j.val
+    Measurable.of_eval fun j => measurable_walkPath x j.val
   have hfun : (fun p : ℕ → Fin d × Bool => Parking.rangeCard x p t)
       = (fun q : Fin (t + 1) → Site d => (Finset.univ.image q).card)
         ∘ (fun (p : ℕ → Fin d × Bool) (j : Fin (t + 1)) => walkPath x p j.val) := by
@@ -188,7 +188,7 @@ theorem iidLaw_cylinder (ν : Measure ℤ) [IsProbabilityMeasure ν] (R : Finset
       = Measure.pi fun _ : {x // x ∈ R} => ν :=
     LatticeProb.infinitePi_map_comp ν (fun k : {x // x ∈ R} => (k : Site d)) hv
   have hmeas : Measurable fun (ω : Site d → ℤ) (k : {x // x ∈ R}) => ω (k : Site d) :=
-    measurable_pi_lambda _ fun k => measurable_pi_apply _
+    Measurable.of_eval fun k => measurable_pi_apply _
   have hpi : MeasurableSet (Set.univ.pi fun k : {x // x ∈ R} => A (k : Site d)) :=
     MeasurableSet.univ_pi fun k => hA _
   have hpre : {η : Site d → ℤ | ∀ x ∈ R, η x ∈ A x}
@@ -221,7 +221,7 @@ def firstWalk (ω : PData d) : ℕ → Fin d × Bool := fun j => ω.2.1 (((0 : S
 /-- `firstWalk` is measurable, being a projection of the walk coordinates onto the label
 `(0, 0)`. -/
 theorem measurable_firstWalk : Measurable (firstWalk (d := d)) :=
-  measurable_pi_lambda _ fun _ =>
+  Measurable.of_eval fun _ =>
     (measurable_pi_apply _).comp (measurable_fst.comp measurable_snd)
 
 /-- The position of the walk from `x` after `s` steps of the first particle's own walk is
@@ -333,7 +333,7 @@ theorem map_firstWalk (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure ν
   haveI : IsProbabilityMeasure (moveLaw d) := by unfold moveLaw; infer_instance
   have hg : Measurable fun m : Label d × ℕ → Fin d × Bool =>
       fun j : ℕ => m (((0 : Site d), 0), j) :=
-    measurable_pi_lambda _ fun j => measurable_pi_apply _
+    Measurable.of_eval fun j => measurable_pi_apply _
   have hfst : ((moveLaw d).prod (LatticeProb.rankLaw d)).map Prod.fst = moveLaw d :=
     Measure.fst_prod
   calc ((moveLaw d).prod (LatticeProb.rankLaw d)).map
@@ -379,7 +379,7 @@ theorem pDataLaw_walkGood (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasur
   rw [lintegral_const_mul' _ _ (measure_ne_top ν {m})]
   congr 1
   rw [← map_firstWalk hd ν, lintegral_map hpow
-    (measurable_pi_lambda _ fun _ => (measurable_pi_apply _).comp measurable_fst)]
+    (Measurable.of_eval fun _ => (measurable_pi_apply _).comp measurable_fst)]
 
 /-! ### The good event sits inside the survival event -/
 
@@ -407,7 +407,7 @@ theorem measurable_active_pdata (t : ℕ) (p : Label d) :
   have hrecode : Measurable fun ω : PData d =>
       ((ω.1, (fun q => stepVec (ω.2.1 q), ω.2.2)) : LatticeProb.PData d) :=
     measurable_fst.prodMk
-      ((measurable_pi_lambda _ fun q =>
+      ((Measurable.of_eval fun q =>
         hmeas.comp ((measurable_pi_apply q).comp (measurable_fst.comp measurable_snd))).prodMk
         (measurable_snd.comp measurable_snd))
   have hcomp : (fun ω : PData d => (pState (toPDriver ω) t).active p)
@@ -458,7 +458,7 @@ theorem map_conf_active_agree (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMe
   have hrecode : Measurable fun ω : PData d =>
       ((ω.1, (fun q => stepVec (ω.2.1 q), ω.2.2)) : LatticeProb.PData d) :=
     measurable_fst.prodMk
-      ((measurable_pi_lambda _ fun q =>
+      ((Measurable.of_eval fun q =>
         hmeas.comp ((measurable_pi_apply q).comp (measurable_fst.comp measurable_snd))).prodMk
         (measurable_snd.comp measurable_snd))
   have hlaw : (pDataLaw d ν).map (fun ω : PData d =>
@@ -607,7 +607,7 @@ theorem measurable_confActive_stack :
     Measurable fun ω : Data d =>
       ((ω.1, fun ti : ℕ × Label d => (LatticeProb.state (toDriver ω) ti.1).active ti.2) :
         (Site d → ℤ) × (ℕ × Label d → Bool)) :=
-  measurable_fst.prodMk (measurable_pi_lambda _ fun ti => (measurable_state ti.1).1 ti.2)
+  measurable_fst.prodMk (Measurable.of_eval fun ti => (measurable_state ti.1).1 ti.2)
 
 /-- The pair of the origin's configuration and the full activity field is measurable in
 the particle-driven construction, by pairing the measurable projection to the
@@ -617,7 +617,7 @@ theorem measurable_confActive_particle :
       ((ω.1, fun ti : ℕ × Label d => (pState (toPDriver ω) ti.1).active ti.2) :
         (Site d → ℤ) × (ℕ × Label d → Bool)) :=
   measurable_fst.prodMk
-    (measurable_pi_lambda _ fun ti => measurable_active_pdata ti.1 ti.2)
+    (Measurable.of_eval fun ti => measurable_active_pdata ti.1 ti.2)
 
 /-- The joint probability of the configuration at the origin and the survival of
 the first particle there is the same in the two constructions. -/

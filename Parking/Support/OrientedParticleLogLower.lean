@@ -45,6 +45,7 @@ theorem exists_meanU_oriented_log_lower (hd : 2 ≤ d) (ν : Measure ℤ) (hν :
       c * Real.log ((n : ℝ) + 1) ≤ meanU (orientedLaw d ν) n := by
   obtain ⟨c, L, hc, hL, hs⟩ := oriented_mean_exp_increment hd ν hν
   apply logarithmic_growth_of_exp_increment (meanU (orientedLaw d ν)) _ hc hL hs
-  simp [meanU, U, LatticeProb.particleOdometer]
+  have h0 : ∀ ω : Data d, (state (toDriver ω) 0).departures 0 = 0 := fun _ => rfl
+  simp [meanU, U, LatticeProb.particleOdometer, h0]
 
 end Parking

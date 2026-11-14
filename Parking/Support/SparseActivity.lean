@@ -27,6 +27,13 @@ theorem ae_sparse_H_le_one {p : ℝ} (hp : 0 < p) (hp4 : p ≤ 1 / 4)
     (t : ℕ) (x : Site d) : ∀ᵐ ω ∂(law d (threePointLaw p)), H ω t x ≤ 1 := by
   haveI := threePointLaw_isProbability hp.le (by linarith : 2 * p ≤ 1)
   haveI : IsProbabilityMeasure (iidLaw d (threePointLaw p)) := by unfold iidLaw; infer_instance
+  have := LatticeProb.rankLaw_isProbability d
+  have : SFinite (LatticeProb.stackLaw d) := by
+    by_cases h : ∀ q : Site d × ℕ, IsProbabilityMeasure (LatticeProb.instructionLaw q.1)
+    · unfold LatticeProb.stackLaw; infer_instance
+    · have h0 : LatticeProb.stackLaw d = 0 := by
+        unfold LatticeProb.stackLaw Measure.infinitePi; exact dite_eq_right h
+      rw [h0]; infer_instance
   have ha : ∀ᵐ ω ∂(law d (threePointLaw p)), clippedField ω.1 = ω.1 :=
     Measure.quasiMeasurePreserving_fst.ae
       (ae_clippedField (threePointLaw p) (ae_clipSparse_threePointLaw p))

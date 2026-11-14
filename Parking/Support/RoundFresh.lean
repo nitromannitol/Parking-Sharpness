@@ -38,7 +38,7 @@ finitely many directions among themselves while preserving their equal weights. 
 theorem Parking.map_reverseDirection :
     (Parking.stepLaw d).map Parking.reverseDirection = Parking.stepLaw d := by
   have hm : Measurable (Parking.reverseDirection (d := d)) := measurable_from_countable' _
-  rw [Parking.stepLaw, Measure.map_smul, Measure.map_finset_sum' hm.aemeasurable]
+  rw [Parking.stepLaw, Measure.map_smul (hf := hm.aemeasurable), Measure.map_finset_sum' hm.aemeasurable]
   simp_rw [Measure.map_dirac' hm]
   congr 1
   exact Equiv.sum_comp ⟨Parking.reverseDirection, Parking.reverseDirection,
@@ -78,7 +78,7 @@ theorem Parking.map_predictable_roundPairs (hd : 1 ≤ d)
   classical
   haveI := Parking.stepLaw_isProbability hd
   apply Parking.map_layers
-  · refine measurable_pi_lambda _ fun n => ?_
+  · refine Measurable.of_eval fun n => ?_
     have hrev : Measurable (Parking.reverseDirection (d := d)) := measurable_from_countable' _
     exact (LatticeProb.measurable_eval_var _ ((measurable_pi_apply n).comp hi)
       (fun σ q => σ n q) (fun q => (measurable_pi_apply q).comp (measurable_pi_apply n))).prodMk

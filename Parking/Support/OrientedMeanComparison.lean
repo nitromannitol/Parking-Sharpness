@@ -25,7 +25,7 @@ theorem meanuOriented_le_meanU (hd : 1 ≤ d) (ν : Measure ℤ) (hν : Critical
   haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let f : (Site d → ℤ) → ℝ := fun η => uOriented (fun y => (η y : ℝ)) n 0
   have hm : Measurable f := (measurable_uOriented n 0).comp
-    (measurable_pi_lambda _ fun y => measurable_intCastReal.comp (measurable_pi_apply y))
+    (Measurable.of_eval fun y => measurable_intCastReal.comp (measurable_pi_apply y))
   have hI := (integrable_orientedOdometer_joint hd ν hν n 0).integral_prod_left
   have hfI : Integrable f (iidLaw d ν) := hI.mono' hm.aestronglyMeasurable
     (Filter.Eventually.of_forall fun η => by

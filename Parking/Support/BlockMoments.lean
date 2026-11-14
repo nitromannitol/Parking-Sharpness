@@ -49,7 +49,7 @@ theorem lintegral_u_xi_shift (hd : 1 ≤ d) (δ : ℝ) (ν : Measure ℤ) [IsPro
   haveI : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hsm : Measurable (fun η : Site d → ℤ => fun x => η (x + y)) :=
-    measurable_pi_lambda _ fun x => measurable_pi_apply (x + y)
+    Measurable.of_eval fun x => measurable_pi_apply (x + y)
   have hshift : (LatticeProb.iidLaw d ν).map (fun η : Site d → ℤ => fun x => η (x + y))
       = LatticeProb.iidLaw d ν := iidLaw_map_shiftConf ν y
   have hkey : ∀ η : Site d → ℤ,

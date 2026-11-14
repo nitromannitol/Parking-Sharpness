@@ -45,7 +45,7 @@ theorem measurable_intCastReal : Measurable (fun k : ℤ => (k : ℝ)) :=
 /-- `confReal` is measurable, as the coordinatewise real cast composed with the
 projection to the underlying configuration. -/
 theorem measurable_confReal : Measurable (fun ω : Data d => confReal ω) :=
-  measurable_pi_lambda _ fun y =>
+  Measurable.of_eval fun y =>
     measurable_intCastReal.comp ((measurable_pi_apply y).comp measurable_fst)
 
 /-- The integer sandpile odometer `uOf` agrees with the real-field odometer `u`
@@ -64,7 +64,7 @@ theorem law_map_confReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilityMeasure
       = (fun η : Site d → ℤ => fun y => ((η y : ℤ) : ℝ)) ∘ (Prod.fst : Data d → (Site d → ℤ)) :=
     rfl
   have hmeas : Measurable (fun η : Site d → ℤ => fun y => ((η y : ℤ) : ℝ)) :=
-    measurable_pi_lambda _ fun y => measurable_intCastReal.comp (measurable_pi_apply y)
+    Measurable.of_eval fun y => measurable_intCastReal.comp (measurable_pi_apply y)
   have hfst : (law d ν).map (Prod.fst : Data d → (Site d → ℤ)) = LatticeProb.iidLaw d ν :=
     dataLaw_map_fst hd (LatticeProb.iidLaw d ν)
   rw [hcomp, ← Measure.map_map hmeas measurable_fst, hfst, LatticeProb.iidLaw,
@@ -105,7 +105,7 @@ theorem exists_uConc (hd : 1 ≤ d) (hConc : Parking.External.UConcentration)
   set ν' : Measure ℝ := ν.map (fun k : ℤ => (k : ℝ)) with hν'
   haveI : IsProbabilityMeasure ν' := by
     rw [hν']
-    exact Measure.isProbabilityMeasure_map measurable_intCastReal.aemeasurable
+    exact inferInstance
   have hexp' : Integrable (fun z : ℝ => Real.exp (θ * |z|)) ν' := by
     rw [hν']
     refine (integrable_map_measure ?_ measurable_intCastReal.aemeasurable).mpr hexp

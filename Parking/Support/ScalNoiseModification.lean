@@ -237,7 +237,9 @@ theorem exists_continuous_modification_contZ {v T q : ℝ} (hv : 0 ≤ v) (hq : 
   refine isKolmogorovProcess_contZ (by norm_num) (by linarith)
     (measurablePair_contZ v T) ?_
   intro u v'
-  rw [ENNReal.coe_nnreal_eq]
-  exact kolmogorovCondition_contZ hv (by linarith) hC hbound u v'
+  have h := kolmogorovCondition_contZ hv (by linarith) hC hbound u v'
+  rw [show ENNReal.ofReal (2 ^ q * v * C) = ENNReal.ofNNReal ⟨2 ^ q * v * C, by positivity⟩
+    from (ENNReal.coe_nnreal_eq ⟨2 ^ q * v * C, by positivity⟩).symm] at h
+  exact h
 
 end Parking

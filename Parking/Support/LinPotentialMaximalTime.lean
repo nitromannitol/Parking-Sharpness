@@ -258,7 +258,7 @@ theorem exists_linPotential_maximal_tail_time_shift (hd1 : 1 ≤ d) (ν : Measur
     with hTdef
   have hTmeas : MeasurableSet T := measurableSet_maximal_tail_time_event N A M
   have hfmeas : Measurable (fun η : Site d → ℝ => fun x => η (x + z0)) :=
-    measurable_pi_lambda _ fun x => measurable_pi_apply (x + z0)
+    Measurable.of_eval fun x => measurable_pi_apply (x + z0)
   have hshift : (iidLaw d (realLaw ν)).map (fun η : Site d → ℝ => fun x => η (x + z0))
       = iidLaw d (realLaw ν) := LatticeProb.iidLaw_map_shiftConf (realLaw ν) z0
   have hpre : (fun η : Site d → ℝ => fun x => η (x + z0)) ⁻¹' T

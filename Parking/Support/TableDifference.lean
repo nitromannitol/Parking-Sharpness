@@ -60,7 +60,7 @@ theorem measurable_tableDiff (hd : 1 ≤ d) (η : Site d → ℤ) (ρ : Label d 
         measurable_curryRoundNoise (n / K)
       change Measurable (fun ω => tableDiff η ρ T x e hK (n + 1) ω)
       simp only [tableDiff_succ]
-      exact measurable_roundDiff hd e _ _ _ hA (measurable_pi_lambda _ hS.2.2.1)
+      exact measurable_roundDiff hd e _ _ _ hA (Measurable.of_eval hS.2.2.1)
         ((measurable_pi_apply (n / K)).comp measurable_curryRoundNoise) ρ _ x _
 
 /-- Updating the fresh coordinate changes only the current table in the reveal increment. -/

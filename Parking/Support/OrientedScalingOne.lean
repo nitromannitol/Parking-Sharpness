@@ -44,7 +44,7 @@ theorem tendstoInDistribution_id_of_integral_bcf
   forall_aemeasurable := hX
   aemeasurable_limit := aemeasurable_id
   tendsto := by
-    rw [ProbabilityMeasure.tendsto_iff_forall_integral_tendsto]
+    refine ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mpr ?_
     intro f
     simpa [integral_map (hX _) f.continuous.aestronglyMeasurable, Measure.map_id] using h f
 
@@ -56,7 +56,7 @@ theorem tendsto_integral_bcf_of_tendstoInDistribution {Ω' : Type*} [MeasurableS
     (h : TendstoInDistribution X atTop Z (fun _ => P) Q) (F : BoundedContinuousFunction ℝ ℝ) :
     Tendsto (fun n => ∫ ω, F (X n ω) ∂P) atTop (𝓝 (∫ ω, F (Z ω) ∂Q)) := by
   have h2 := h.tendsto
-  rw [ProbabilityMeasure.tendsto_iff_forall_integral_tendsto] at h2
+  replace h2 := ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp h2
   have h3 := h2 F
   simpa [integral_map (h.forall_aemeasurable _) F.continuous.aestronglyMeasurable,
     integral_map h.aemeasurable_limit F.continuous.aestronglyMeasurable] using h3
@@ -178,7 +178,7 @@ theorem selfsimilar_of_weak (ν : Measure ℤ) (hν : CriticalLaw ν)
   intro T hT
   set L : Measure ℝ := Q.map (Uc 1) with hLdef
   haveI hL : IsProbabilityMeasure L :=
-    Measure.isProbabilityMeasure_map (hmeas 1 one_pos).aemeasurable
+    inferInstance
   have hint : ∀ F : BoundedContinuousFunction ℝ ℝ, ∫ x, F x ∂L = ∫ ω, F (Uc 1 ω) ∂Q := by
     intro F
     rw [hLdef, integral_map (hmeas 1 one_pos).aemeasurable F.continuous.aestronglyMeasurable]

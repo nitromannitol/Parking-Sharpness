@@ -52,7 +52,7 @@ theorem orientedLaw_map_confReal (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbabilit
   haveI := LatticeProb.rankLaw_isProbability d
   haveI : IsProbabilityMeasure (iidLaw d ν) := by unfold iidLaw; infer_instance
   let f : (Site d → ℤ) → Site d → ℝ := fun η y => (η y : ℝ)
-  have hf : Measurable f := measurable_pi_lambda _ fun y =>
+  have hf : Measurable f := Measurable.of_eval fun y =>
     measurable_intCastReal.comp (measurable_pi_apply y)
   have hcomp : (fun ω : Data d => confReal ω) = f ∘ Prod.fst := rfl
   rw [hcomp, ← Measure.map_map hf measurable_fst, orientedLaw, Measure.map_fst_prod]

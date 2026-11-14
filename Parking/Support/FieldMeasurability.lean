@@ -222,7 +222,7 @@ theorem measurable_cutoffBC_meshInterp {Ω' : Type*} [MeasurableSpace Ω']
     fun mc => ((mc.1 : ℝ) / R ^ 2, fun i => (mc.2 i : ℝ) / R) with hsamplePt
   set π : Ω' → (S → ℝ) := fun ω' zc => Z ω' (samplePt (zc : ℤ × Site d)) with hπ
   have hπmeas : Measurable π :=
-    measurable_pi_lambda _ fun zc => hmeas (samplePt (zc : ℤ × Site d))
+    Measurable.of_eval fun zc => hmeas (samplePt (zc : ℤ × Site d))
   set extendGrid : (S → ℝ) → ℤ → Site d → ℝ :=
     fun y m c => if h : (m, c) ∈ S then y ⟨(m, c), h⟩ else 0 with hextendGrid
   set h : (S → ℝ) → BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ :=

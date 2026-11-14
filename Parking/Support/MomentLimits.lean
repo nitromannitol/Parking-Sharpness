@@ -23,9 +23,9 @@ theorem rNorm_mono_exponent {Ω : Type} [MeasurableSpace Ω]
     (f : Ω → ℝ) (hm : AEStronglyMeasurable f μ)
     (hpi : Integrable (fun ω => |f ω| ^ p) μ) (hqi : Integrable (fun ω => |f ω| ^ q) μ) :
     rNorm μ p f ≤ rNorm μ q f := by
-  rw [← eLpNorm_toReal_eq μ hp f hpi, ← eLpNorm_toReal_eq μ (hp.trans hpq) f hqi]
-  exact ENNReal.toReal_mono (eLpNorm_ne_top μ (hp.trans hpq) f hqi)
-    (eLpNorm_le_eLpNorm_of_exponent_le (ENNReal.ofReal_le_ofReal hpq) hm)
+  rw [← eLpNorm_toReal_eq μ hp f hm hpi, ← eLpNorm_toReal_eq μ (hp.trans hpq) f hm hqi]
+  exact ENNReal.toReal_mono (eLpNorm_ne_top μ (hp.trans hpq) f hm hqi)
+    (eLpNorm_le_eLpNorm_of_exponent_le (ENNReal.ofReal_le_ofReal hpq))
 
 /-- Raising the moment norm back to its exponent recovers the moment. -/
 theorem rNorm_rpow {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω)

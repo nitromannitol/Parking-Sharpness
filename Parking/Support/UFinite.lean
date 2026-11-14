@@ -132,7 +132,7 @@ theorem integral_u_iid_eq_pi (hd : 1 ≤ d) (μ : Measure ℝ) [IsProbabilityMea
       ∫ η : (boxFinset x n) → ℝ, u (extendField (boxFinset x n) η) n x
         ∂(Measure.pi (fun _ => μ)) := by
   have hm : Measurable ((boxFinset x n).restrict : (Site d → ℝ) → ((boxFinset x n) → ℝ)) :=
-    measurable_pi_lambda _ fun y => measurable_pi_apply (y : Site d)
+    Measurable.of_eval fun y => measurable_pi_apply (y : Site d)
   have hF := (lipschitzWith_u_extendField hd (boxFinset x n) n x).continuous.measurable
   rw [← iidLaw_map_restrict d μ (boxFinset x n),
     integral_map hm.aemeasurable hF.aestronglyMeasurable]
@@ -143,7 +143,7 @@ theorem integrable_u_iid (hd : 1 ≤ d) (μ : Measure ℝ) [IsProbabilityMeasure
     (hμ : Integrable (id : ℝ → ℝ) μ) (n : ℕ) (x : Site d) :
     Integrable (fun η => u η n x) (iidLaw d μ) := by
   have hm : Measurable ((boxFinset x n).restrict : (Site d → ℝ) → ((boxFinset x n) → ℝ)) :=
-    measurable_pi_lambda _ fun y => measurable_pi_apply (y : Site d)
+    Measurable.of_eval fun y => measurable_pi_apply (y : Site d)
   have hp : MeasurePreserving (boxFinset x n).restrict (iidLaw d μ)
       (Measure.pi (fun _ : boxFinset x n => μ)) := ⟨hm, iidLaw_map_restrict d μ _⟩
   have hi := integrable_real_lipschitz (lipschitzWith_u_extendField hd (boxFinset x n) n x)

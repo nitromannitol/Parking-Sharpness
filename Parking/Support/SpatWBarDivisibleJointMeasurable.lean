@@ -46,7 +46,7 @@ theorem measurable_uncurry_barDivisible (R t : ℝ) :
     Measurable (fun p : Data d × (Fin d → ℝ) => barDivisible p.1 R t p.2) := by
   set n : ℕ := ⌊t * R ^ 2⌋₊ with hn
   have hq : Measurable (fun p : Data d × (Fin d → ℝ) => latticePoint R p.2) :=
-    (measurable_pi_lambda _ (fun i => Int.measurable_floor.comp
+    (Measurable.of_eval (fun i => Int.measurable_floor.comp
       (measurable_const.mul (measurable_pi_apply i)))).comp measurable_snd
   have hf : ∀ y : Site d, Measurable (fun p : Data d × (Fin d → ℝ) => uOf p.1 n y) :=
     fun y => (measurable_uOf n y).comp measurable_fst

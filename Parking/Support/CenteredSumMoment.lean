@@ -25,7 +25,7 @@ theorem exists_centered_sum_moment {ι α : Type*} [MeasurableSpace α]
       (∫ ω : ι → α, |∑ i ∈ S, f (ω i)| ^ p ∂(Measure.infinitePi fun _ : ι => μ)) ^ (2 / p) ≤
         C * (S.card : ℝ) := by
   let ν := μ.map f
-  haveI : IsProbabilityMeasure ν := Measure.isProbabilityMeasure_map hf.aemeasurable
+  haveI : IsProbabilityMeasure ν := inferInstance
   have hνmom : Integrable (fun z : ℝ => |z| ^ p) ν :=
     (integrable_map_measure (measurable_abs.pow_const p).aestronglyMeasurable
       hf.aemeasurable).mpr hmom
@@ -37,7 +37,7 @@ theorem exists_centered_sum_moment {ι α : Type*} [MeasurableSpace α]
   let mapField : (ι → α) → ι → ℝ := fun ω i => f (ω i)
   have hmap : MeasurePreserving mapField (Measure.infinitePi fun _ : ι => μ)
       (Measure.infinitePi fun _ : ι => ν) :=
-    ⟨measurable_pi_lambda _ (fun i => hf.comp (measurable_pi_apply i)),
+    ⟨Measurable.of_eval (fun i => hf.comp (measurable_pi_apply i)),
       LatticeProb.infinitePi_map_pi μ hf⟩
   obtain ⟨hI, hB⟩ := hb S (fun _ => 1)
   simp only [one_mul, one_pow, sum_const, nsmul_eq_mul, mul_one] at hI hB

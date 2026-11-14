@@ -140,16 +140,16 @@ theorem graftOrigin_delAt {x₀ : Site d} (hx₀ : x₀ ≠ (0 : Site d)) (ω₁
 constant `ω₁`-value at the origin or a coordinate projection of `ω` elsewhere. -/
 theorem measurable_graftOrigin (ω₁ : PData d) : Measurable (graftOrigin (d := d) ω₁) := by
   refine Measurable.prodMk ?_ (Measurable.prodMk ?_ ?_)
-  · refine measurable_pi_lambda _ fun x => ?_
+  · refine Measurable.of_eval fun x => ?_
     by_cases hx : x = (0 : Site d)
     · simp [hx]
     · simpa [graftOrigin, hx] using (measurable_fst.eval : Measurable fun ω : PData d => ω.1 x)
-  · refine measurable_pi_lambda _ fun q => ?_
+  · refine Measurable.of_eval fun q => ?_
     by_cases hq : q.1.1 = (0 : Site d)
     · simp [hq]
     · simpa [graftOrigin, hq] using
         (measurable_snd.fst.eval : Measurable fun ω : PData d => ω.2.1 q)
-  · refine measurable_pi_lambda _ fun q => ?_
+  · refine Measurable.of_eval fun q => ?_
     by_cases hq : q.1.1 = (0 : Site d)
     · simp [hq]
     · simpa [graftOrigin, hq] using

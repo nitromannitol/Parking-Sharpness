@@ -23,9 +23,9 @@ def Parking.shiftCoupledData (v : Site d) (ω : Parking.CoupledData d) : Parking
 /-- Shifting the round-table noise by `v` is measurable. -/
 theorem Parking.measurable_shiftRoundNoise (v : Site d) :
     Measurable (Parking.shiftRoundNoise v) := by
-  apply measurable_pi_lambda
+  apply Measurable.of_eval
   intro t
-  apply measurable_pi_lambda
+  apply Measurable.of_eval
   intro q
   exact (measurable_pi_apply (Parking.shiftRoundSlot v q)).comp (measurable_pi_apply t)
 
@@ -41,7 +41,7 @@ theorem Parking.roundNoiseLaw_map_shift (hd : 1 ≤ d) (v : Site d) :
     (fun _ : ℕ => Measure.infinitePi fun _ : Parking.RoundSlot d => Parking.stepLaw d)
     (f := fun (_ : ℕ) (τ : Parking.RoundSlot d → Fin d × Bool) (q : Parking.RoundSlot d) =>
       τ (Parking.shiftRoundSlot v q))
-    (fun _ => measurable_pi_lambda _ fun q => measurable_pi_apply (Parking.shiftRoundSlot v q))
+    (fun _ => Measurable.of_eval fun q => measurable_pi_apply (Parking.shiftRoundSlot v q))
   simpa only [Parking.roundNoiseLaw,
     LatticeProb.infinitePi_map_comp' (Parking.stepLaw d) (Parking.shiftRoundSlot v)
     (Parking.shiftRoundSlot_injective v)] using h
@@ -52,7 +52,7 @@ measurability of shifting a configuration and of `LatticeProb.shiftRank`. -/
 theorem Parking.measurable_shiftCoupledData (v : Site d) :
     Measurable (Parking.shiftCoupledData v) := by
   have hc : Measurable (fun c : Site d → ℤ × ℤ => fun x => c (x + v)) :=
-    measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)
+    Measurable.of_eval fun x => measurable_pi_apply (x + v)
   exact (hc.prodMap (LatticeProb.measurable_shiftRank v)).prodMap
     (Parking.measurable_shiftRoundNoise v)
 
@@ -67,7 +67,7 @@ theorem Parking.coupledLaw_map_shift (hd : 1 ≤ d) (ν : Measure ℤ)
   haveI := LatticeProb.rankLaw_isProbability d
   haveI := Parking.roundNoiseLaw_isProbability hd
   have hc : Measurable (fun c : Site d → ℤ × ℤ => fun x => c (x + v)) :=
-    measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)
+    Measurable.of_eval fun x => measurable_pi_apply (x + v)
   change (((Parking.resampleLaw d ν p).prod (rankLaw d)).prod (Parking.roundNoiseLaw d)).map
     (Prod.map (Prod.map (fun c : Site d → ℤ × ℤ => fun x => c (x + v)) (LatticeProb.shiftRank v))
       (Parking.shiftRoundNoise v)) = _

@@ -191,7 +191,7 @@ def eraseAt (z : Site d) (ω : Data d) : Data d := (Function.update ω.1 z 0, ω
 whether it is `z`. -/
 theorem measurable_eraseAt (z : Site d) : Measurable (eraseAt (d := d) z) := by
   refine Measurable.prodMk ?_ measurable_snd
-  refine measurable_pi_lambda _ fun y => ?_
+  refine Measurable.of_eval fun y => ?_
   simp only [Function.update_apply]
   by_cases hy : y = z
   · simp only [hy]

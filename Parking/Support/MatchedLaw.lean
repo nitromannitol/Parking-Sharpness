@@ -29,7 +29,7 @@ theorem Parking.map_matchedMoveLayers (hd : 1 ≤ d) (η : Site d → ℤ)
   haveI := Parking.stepLaw_isProbability hd
   let i₀ : Fin d := ⟨0, hd⟩
   apply Parking.map_layers
-  · exact measurable_pi_lambda _ fun t => measurable_pi_lambda _ fun p =>
+  · exact Measurable.of_eval fun t => Measurable.of_eval fun p =>
       (measurable_pi_apply (p, t)).comp
         (Parking.measurable_matchedMoves i₀ (fun _ => η) (fun _ => ρ) id
           measurable_const measurable_const measurable_id)
@@ -61,11 +61,11 @@ theorem Parking.map_matchedMoves (hd : 1 ≤ d) (η : Site d → ℤ)
   let B : (ℕ × Label d → Fin d × Bool) → Label d × ℕ → Fin d × Bool :=
     fun m q => m q.swap
   have hF : Measurable F := by
-    refine measurable_pi_lambda _ fun t => measurable_pi_lambda _ fun p => ?_
+    refine Measurable.of_eval fun t => Measurable.of_eval fun p => ?_
     exact (measurable_pi_apply (p, t)).comp
       (Parking.measurable_matchedMoves ⟨0, hd⟩ (fun _ => η) (fun _ => ρ) id
         measurable_const measurable_const measurable_id)
-  have hB : Measurable B := measurable_pi_lambda _ fun q => measurable_pi_apply q.swap
+  have hB : Measurable B := Measurable.of_eval fun q => measurable_pi_apply q.swap
   have heq : Parking.matchedMoves η ρ = (B ∘ C) ∘ F := rfl
   rw [heq, ← Measure.map_map (hB.comp C.measurable) hF,
     Parking.map_matchedMoveLayers hd η ρ,

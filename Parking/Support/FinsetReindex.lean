@@ -32,12 +32,12 @@ theorem finEquivIndex_apply (ξ : Fin (Fintype.card ι) → ℝ) (k : ι) :
 /-- `finEquivIndex` is measurable, since each coordinate is a coordinate projection
 precomposed with `Fintype.equivFin`. -/
 theorem measurable_finEquivIndex : Measurable (finEquivIndex ι) :=
-  measurable_pi_lambda _ fun k => measurable_pi_apply (Fintype.equivFin ι k)
+  Measurable.of_eval fun k => measurable_pi_apply (Fintype.equivFin ι k)
 
 /-- The inverse of `finEquivIndex` is measurable, by the same coordinate-projection
 argument as `measurable_finEquivIndex`. -/
 theorem measurable_finEquivIndex_symm : Measurable (finEquivIndex ι).symm :=
-  measurable_pi_lambda _ fun j => measurable_pi_apply ((Fintype.equivFin ι).symm j)
+  Measurable.of_eval fun j => measurable_pi_apply ((Fintype.equivFin ι).symm j)
 
 /-- **The `Fin N` reindexing of a `Fintype`-indexed product measure is measure preserving.** -/
 theorem measurePreserving_finEquivIndex (ν0 : Measure ℝ) [IsProbabilityMeasure ν0] :

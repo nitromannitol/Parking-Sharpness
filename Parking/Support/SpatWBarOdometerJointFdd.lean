@@ -77,17 +77,17 @@ theorem tendsto_scenePair_barDivisible_barOdometer_joint_fdd
   have hXm : ∀ R : ℝ, AEMeasurable (fun w => (fun i => Parking.scenePair w R (φ i),
       fun j => Parking.barDivisible w R (sp j).1 (sp j).2)) (Parking.law d ν) :=
     fun R => (Measurable.prodMk
-      (measurable_pi_lambda _ fun i => Parking.measurable_scenePair_any_R R)
-      (measurable_pi_lambda _ fun j => Parking.measurable_barDivisible R (sp j).1 (sp j).2)
+      (Measurable.of_eval fun i => Parking.measurable_scenePair_any_R R)
+      (Measurable.of_eval fun j => Parking.measurable_barDivisible R (sp j).1 (sp j).2)
       : Measurable _).aemeasurable
   have hYm : ∀ R : ℝ, AEMeasurable (Y R) (Parking.law d ν) := fun R =>
-    (measurable_pi_lambda _ fun j =>
+    (Measurable.of_eval fun j =>
       (Parking.measurable_barOdometer R (sp j).1 (sp j).2).sub
         (Parking.measurable_barDivisible R (sp j).1 (sp j).2)).aemeasurable
   have hZm : AEMeasurable (fun ω => (fun i => W (φ i) ω, fun j => Uc ω (sp j).1 (sp j).2)) Q :=
     (Measurable.prodMk
-      (measurable_pi_lambda _ fun i => hWmeas (φ i) (hφ i))
-      (measurable_pi_lambda _ fun j => hUcmeas (sp j).1 (sp j).2)
+      (Measurable.of_eval fun i => hWmeas (φ i) (hφ i))
+      (Measurable.of_eval fun j => hUcmeas (sp j).1 (sp j).2)
       : Measurable _).aemeasurable
   have hjoint := LatticeProb.Scaling.Slutsky.tendsto_prodMk_of_tendsto_zero
     hXm hYm hZm (hjointFDD m k φ sp hφ hsp) hYzero

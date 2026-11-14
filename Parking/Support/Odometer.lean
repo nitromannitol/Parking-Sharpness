@@ -83,7 +83,7 @@ theorem activeCount_zero (D : Driver d) (x : Site d) :
   rw [show state D 0 = initial D.eta from rfl, candidates_zero]
   rw [Finset.filter_map, Finset.card_map,
     Finset.filter_true_of_mem (fun i hi =>
-      ⟨by simpa [initial] using Finset.mem_range.mp hi, rfl⟩),
+      ⟨by simp [initial]; exact Int.lt_toNat.mp (Finset.mem_range.mp hi), rfl⟩),
     Finset.card_range]
 
 /-! ### The active count after a round -/

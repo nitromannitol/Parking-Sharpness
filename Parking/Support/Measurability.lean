@@ -50,7 +50,7 @@ instance instMeasurableSingletonPi (s : Finset (Site d)) :
 /-- Restricting the initial field to a finite set of sites is a measurable operation. -/
 theorem measurable_restrict_eta (s : Finset (Site d)) :
     Measurable fun ω : Data d => (fun x : s => ω.1 (x : Site d)) :=
-  measurable_pi_lambda _ fun x => (measurable_pi_apply (x : Site d)).comp measurable_fst
+  Measurable.of_eval fun x => (measurable_pi_apply (x : Site d)).comp measurable_fst
 
 /-- The candidate set computed from the configuration on the box alone. -/
 def candidatesOf (z : Site d) (r : ℕ) (c : ↥(boxFinset z r) → ℤ) :
@@ -145,8 +145,6 @@ theorem measurable_state (t : ℕ) :
           unfold activeAt
           rw [Finset.filter_filter]
           congr 1
-          refine Finset.filter_congr fun q _ => ?_
-          simp [and_assoc]
         simp only [hrw]
         exact measurable_card_filter_candidates y t _ fun q =>
           hbool _ _ (hbool _ _ (hact q) (hposeq q y)) measurable_const
@@ -197,8 +195,6 @@ theorem measurable_state (t : ℕ) :
           unfold arrivalsAt
           rw [Finset.filter_filter]
           congr 1
-          refine Finset.filter_congr fun q _ => ?_
-          simp [and_assoc]
         simp only [hrw]
         refine measurable_card_filter_candidates x (t + 1) _ fun q => ?_
         refine hbool _ _ (hbool _ _ (hact q) ?_) (hR q)
@@ -293,8 +289,6 @@ theorem measurable_activeAt_card (t : ℕ) (y : Site d) :
     intro ω
     unfold activeAt
     congr 1
-    refine Finset.filter_congr fun q _ => ?_
-    simp
   simp only [hrw]
   refine measurable_card_filter_candidates y t _ fun q => ?_
   exact (measurable_from_countable' fun b : Bool × Bool => b.1 && b.2).comp

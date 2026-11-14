@@ -53,7 +53,7 @@ theorem exists_linPotential_increment_moment (hd : 1 ≤ d) (ν0 : Measure ℝ)
       linPotential η n x - linPotential η m y = linIncrement s n m x y (s.restrict η) :=
     fun η => (linIncrement_restrict n m x y η).symm
   have hmeasR : Measurable (s.restrict : (Site d → ℝ) → (s → ℝ)) :=
-    measurable_pi_lambda _ fun k => measurable_pi_apply (k : Site d)
+    Measurable.of_eval fun k => measurable_pi_apply (k : Site d)
   have hFcont : Continuous (linIncrement s n m x y) :=
     (lipschitzWith_linPotential_extendField hd s n x).continuous.sub
       (lipschitzWith_linPotential_extendField hd s m y).continuous

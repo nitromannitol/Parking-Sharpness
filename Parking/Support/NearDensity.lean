@@ -41,7 +41,7 @@ def pairField (F : ℤ × ℤ → ℤ) (c : Site d → ℤ × ℤ) : Site d → 
 /-- `pairField F` is measurable, being `F` composed coordinatewise with each projection
 `c ↦ c x`. -/
 theorem measurable_pairField (F : ℤ × ℤ → ℤ) : Measurable (pairField (d := d) F) :=
-  measurable_pi_lambda _ fun x =>
+  Measurable.of_eval fun x =>
     (measurable_from_countable' F).comp (measurable_pi_apply x)
 
 /-- The coupling of two configuration fields read off independent copies of a
@@ -62,7 +62,7 @@ theorem pairCoupling_isProbability (π : Measure (ℤ × ℤ)) [IsProbabilityMea
     (F G : ℤ × ℤ → ℤ) : IsProbabilityMeasure (pairCoupling d π F G) := by
   haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
-  exact Measure.isProbabilityMeasure_map (measurable_pairPair F G).aemeasurable
+  unfold pairCoupling; infer_instance
 
 /-- The first marginal of `pairCoupling d π F G` is `iidLaw d (π.map F)`: pushing forward by
 `Prod.fst` first collapses to the coordinatewise map `pairField F`. -/
@@ -95,13 +95,13 @@ theorem pairCoupling_translationInvariant (π : Measure (ℤ × ℤ))
   haveI : IsProbabilityMeasure (LatticeProb.iidLaw d π) := by
     unfold LatticeProb.iidLaw; infer_instance
   have hshift : Measurable (fun c : Site d → ℤ × ℤ => fun x => c (x + v)) :=
-    measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)
+    Measurable.of_eval fun x => measurable_pi_apply (x + v)
   have hmeasT : Measurable
       (fun p : (Site d → ℤ) × (Site d → ℤ) =>
         (Parking.shiftConf v p.1, Parking.shiftConf v p.2)) := by
     refine Measurable.prodMk ?_ ?_
-    · exact (measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)).comp measurable_fst
-    · exact (measurable_pi_lambda _ fun x => measurable_pi_apply (x + v)).comp measurable_snd
+    · exact (Measurable.of_eval fun x => measurable_pi_apply (x + v)).comp measurable_fst
+    · exact (Measurable.of_eval fun x => measurable_pi_apply (x + v)).comp measurable_snd
   rw [pairCoupling, Measure.map_map hmeasT (measurable_pairPair F G)]
   have hcomp : (fun p : (Site d → ℤ) × (Site d → ℤ) =>
         (Parking.shiftConf v p.1, Parking.shiftConf v p.2))
@@ -192,7 +192,7 @@ theorem S_sub_couplingCost_le (hd : 1 ≤ d) (nd0 nc : Measure ℤ)
     unfold LatticeProb.iidLaw; infer_instance
   have hmnmeas : Measurable minPair := measurable_from_countable' minPair
   haveI hpm : IsProbabilityMeasure (pi.map minPair) :=
-    Measure.isProbabilityMeasure_map hmnmeas.aemeasurable
+    inferInstance
   haveI hpim : IsProbabilityMeasure (LatticeProb.iidLaw d (pi.map minPair)) := by
     unfold LatticeProb.iidLaw; infer_instance
   -- integrability of the two coordinates and of the minimum under the coupling

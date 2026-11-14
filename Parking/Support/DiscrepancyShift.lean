@@ -90,7 +90,7 @@ theorem Parking.discrepancyArrivalsSign_shift (x : Site d) (sgn : Bool) :
   simp only [Finset.mem_filter, Function.comp_def, LatticeProb.shiftLabelEmb_apply,
     hS.active, Parking.discrepancyNextPos_shift c ρ a' a b' b ha hb hS,
     sub_eq_iff_eq_add, Parking.discrepancySign, LatticeProb.shiftLabel]
-  rfl
+  exact Iff.symm (Iff.trans Finset.mem_filter (and_congr_left' Finset.mem_filter))
 
 end
 

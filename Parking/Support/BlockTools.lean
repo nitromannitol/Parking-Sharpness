@@ -99,7 +99,7 @@ theorem integral_ite_le_holder {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω
   have hgmem : MemLp g (ENNReal.ofReal (5/4)) μ :=
     MemLp.indicator hA (memLp_const (1:ℝ))
   have hfmem : MemLp f (ENNReal.ofReal 5) μ :=
-    ⟨hfm, lt_top_iff_ne_top.mpr (eLpNorm_ne_top μ (by norm_num) f hf)⟩
+    lt_top_iff_ne_top.mpr (eLpNorm_ne_top μ (by norm_num) f hfm hf)
   have hmain := integral_mul_le_Lp_mul_Lq_of_nonneg hconj hg0 hf0' hgmem hfmem
   have hpt : ∀ ω : Ω, g ω * f ω = if ω ∈ A then f ω else 0 := by
     intro ω

@@ -21,7 +21,7 @@ theorem orientedInstructionLaw_map_sub (v y : Site d) :
     (orientedInstructionLaw (y + v)).map (fun z : Site d => z - v) = orientedInstructionLaw y := by
   have hm : Measurable (fun z : Site d => z - v) := measurable_id.sub measurable_const
   simp only [orientedInstructionLaw]
-  rw [Measure.map_smul, Measure.map_finset_sum' hm.aemeasurable]
+  rw [Measure.map_smul (hf := hm.aemeasurable), Measure.map_finset_sum' hm.aemeasurable]
   congr 1
   apply sum_congr rfl
   intro i _

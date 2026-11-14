@@ -210,8 +210,7 @@ instance (T : ℝ) (hT : 0 ≤ T) (A : ℝ) (hA : 0 ≤ A)
     (Y : (Fin 2 → ℝ) → contNoiseSpace → ℝ) (hYmeas : ∀ z, Measurable (Y z))
     (hYcont : ∀ ω, ContinuousOn (fun z => Y z ω) (orientedBox T A)) :
     IsProbabilityMeasure (contBoxRewardLaw T hT A hA Y hYmeas hYcont) :=
-  Measure.isProbabilityMeasure_map
-    (measurable_contBoxLimitMap T hT A hA Y hYmeas hYcont).aemeasurable
+  by unfold contBoxRewardLaw; infer_instance
 
 end Parking
 

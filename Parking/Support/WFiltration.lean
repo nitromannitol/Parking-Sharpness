@@ -178,7 +178,7 @@ union of events determined by the pairs read at the earlier steps. -/
 theorem measurable_wTrunc (i₀ : Fin d) (n i : ℕ) : Measurable (wTrunc i₀ n i) := by
   classical
   refine measurable_fst.prodMk (Measurable.prodMk ?_ (measurable_snd.comp measurable_snd))
-  refine measurable_pi_lambda _ fun q => ?_
+  refine Measurable.of_eval fun q => ?_
   have hset : MeasurableSet {ω : Data d | ∃ k, k < i ∧ wPair i₀ n k ω = q} := by
     have : {ω : Data d | ∃ k, k < i ∧ wPair i₀ n k ω = q}
         = ⋃ k ∈ Finset.range i, (wPair i₀ n k) ⁻¹' {q} := by

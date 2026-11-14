@@ -83,9 +83,9 @@ theorem tendstoInDistribution_barDivisible_fdd {Ω : Type} [MeasurableSpace Ω] 
     TendstoInDistribution (fun R w k => barDivisible w R t (x k)) atTop
       (fun ω k => Uc ω t (x k)) (fun _ : ℝ => law d ν) Q := by
   have hXm : ∀ R : ℝ, AEMeasurable (fun w => fun k => barDivisible w R t (x k)) (law d ν) :=
-    fun R => (measurable_pi_lambda _ fun k => measurable_barDivisible R t (x k)).aemeasurable
+    fun R => (Measurable.of_eval fun k => measurable_barDivisible R t (x k)).aemeasurable
   have hZm : AEMeasurable (fun ω => fun k => Uc ω t (x k)) Q :=
-    (measurable_pi_lambda _ fun k => hUcmeas t (x k)).aemeasurable
+    (Measurable.of_eval fun k => hUcmeas t (x k)).aemeasurable
   refine LatticeProb.Scaling.Slutsky.tendstoInDistribution_of_tendsto_integral hXm hZm ?_
   intro G
   set φ : Fin 0 → (Fin d → ℝ) → ℝ := Fin.elim0 with hφdef
@@ -281,11 +281,9 @@ theorem tendstoInDistribution_barDivisible_pairing {Ω : Type} [MeasurableSpace 
       (fun ω => ∫ x in K, Uc ω t x * h x) (fun _ : ℝ => law d ν) Q := by
   set μs : ℝ → ProbabilityMeasure ℝ := fun R =>
     ⟨(law d ν).map (fun w => ∫ x in K, barDivisible w R t x * h x),
-      Measure.isProbabilityMeasure_map
-        (measurable_integral_barDivisible_mul R t K hK h hh).aemeasurable⟩ with hμsdef
+      inferInstance⟩ with hμsdef
   set μ : ProbabilityMeasure ℝ := ⟨Q.map (fun ω => ∫ x in K, Uc ω t x * h x),
-      Measure.isProbabilityMeasure_map
-        (measurable_integral_Uc_mul hUcmeas hUccont t K hK h hh).aemeasurable⟩ with hμdef
+      inferInstance⟩ with hμdef
   have hmapL : ∀ (R : ℝ) (g : ℝ → ℝ), Continuous g →
       ∫ y, g y ∂(μs R : Measure ℝ) = ∫ w, g (∫ x in K, barDivisible w R t x * h x) ∂(law d ν) :=
     fun R g hg => by

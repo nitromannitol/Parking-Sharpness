@@ -112,7 +112,7 @@ theorem integrable_linPotential_mul (ν0 : Measure ℝ) [IsProbabilityMeasure ν
     integrable_sum_mul_sum_pi (fun i : S => a (i : Site d)) (fun j : S => b (j : Site d))
       ν0 hint hsq
   have hmeasR : Measurable (S.restrict : (Site d → ℝ) → (S → ℝ)) :=
-    measurable_pi_lambda _ fun k => measurable_pi_apply (k : Site d)
+    Measurable.of_eval fun k => measurable_pi_apply (k : Site d)
   have hFint' : Integrable F ((iidLaw d ν0).map S.restrict) := by
     rw [iidLaw_map_restrict d ν0 S]; exact hFint
   have hcomp : Integrable (F ∘ S.restrict) (iidLaw d ν0) :=

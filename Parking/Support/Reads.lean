@@ -118,8 +118,6 @@ theorem measurable_activeAt_filter_card (t : ℕ) (y : Site d) (P : Label d → 
     unfold activeAt
     rw [Finset.filter_filter]
     congr 1
-    refine Finset.filter_congr fun q _ => ?_
-    simp [and_assoc]
   simp only [hrw]
   exact measurable_card_filter_candidates y t _ fun q =>
     hbool _ _ (hbool _ _ (hact q) (hposeq q)) measurable_const

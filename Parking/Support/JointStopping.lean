@@ -51,7 +51,7 @@ theorem measurable_uncurry_stopping {σ : (Site d → ℤ) → (ℕ → Site d) 
     measurable_from_prod_countable_left (fun a => hm (pathTrunc n a))
   have hr : Measurable (fun p : (Site d → ℤ) × (ℕ → Site d) =>
       (p.1, fun i : Fin (n + 1) => p.2 i)) :=
-    measurable_fst.prodMk (measurable_pi_lambda _ fun i => measurable_snd.eval)
+    measurable_fst.prodMk (Measurable.of_eval fun i => measurable_snd.eval)
   have heq : Function.uncurry σ
       = (fun p : (Site d → ℤ) × (Fin (n + 1) → Site d) => σ p.1 (pathTrunc n p.2))
         ∘ (fun p : (Site d → ℤ) × (ℕ → Site d) => (p.1, fun i : Fin (n + 1) => p.2 i)) := by
@@ -80,7 +80,7 @@ theorem measurable_xi_pair (δ : ℝ) :
 the configuration alone. -/
 theorem measurable_xiField (δ : ℝ) :
     Measurable (fun η : Site d → ℤ => Parking.xi δ η) :=
-  measurable_pi_lambda _ fun y =>
+  Measurable.of_eval fun y =>
     (measurable_intCastReal.comp (measurable_pi_apply y)).add_const δ
 
 /-- The odometer `(η, y) ↦ u (Parking.xi δ η) ℓ y` at horizon `ℓ` is jointly

@@ -270,8 +270,8 @@ theorem isKolmogorovProcess_contZBoxProcess {v T A : ℝ} (hv : 0 ≤ v) (hT : 0
       (measurable_contZBoxProcess v T A hT hA t)).mono le_rfl
       (le_of_eq (Prod.borelSpace (α := ℝ) (β := ℝ)).measurable_eq.symm)
   · intro s t
-    rw [ENNReal.coe_nnreal_eq]
-    exact lintegral_edist_contZBoxProcess_rpow_sixteen_le hv T A hT hA s t
+    exact (lintegral_edist_contZBoxProcess_rpow_sixteen_le hv T A hT hA s t).trans_eq
+      (by congr 1; exact (ENNReal.coe_nnreal_eq ⟨_, _⟩).symm)
 
 /-- **The jointly continuous modification of the box-clamped noise field.**  The Kolmogorov
 condition above holds at exponent `q = 4`, above the space-time index dimension `2`, so the

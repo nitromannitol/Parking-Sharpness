@@ -44,7 +44,7 @@ theorem noiseLaw_isProbability {d : ℕ} (hd : 1 ≤ d) : IsProbabilityMeasure (
 theorem measurable_delAt {d : ℕ} (x : Site d) : Measurable (fun ω : PData d => delAt x ω) := by
   unfold delAt
   refine Measurable.prodMk ?_ measurable_snd
-  refine measurable_pi_lambda _ fun y => ?_
+  refine Measurable.of_eval fun y => ?_
   show Measurable fun ω : PData d => if y = x then ω.1 y - 1 else ω.1 y
   by_cases hy : y = x
   · have he : (fun ω : PData d => if y = x then ω.1 y - 1 else ω.1 y)

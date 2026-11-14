@@ -87,7 +87,7 @@ theorem integral_comp_u_iid_eq_pi (hd : 1 ≤ d) (μ : Measure ℝ) [IsProbabili
       ∫ η : (boxFinset x n) → ℝ, Φ (u (extendField (boxFinset x n) η) n x)
         ∂(Measure.pi (fun _ => μ)) := by
   have hm : Measurable ((boxFinset x n).restrict : (Site d → ℝ) → ((boxFinset x n) → ℝ)) :=
-    measurable_pi_lambda _ fun y => measurable_pi_apply (y : Site d)
+    Measurable.of_eval fun y => measurable_pi_apply (y : Site d)
   have hF : Measurable fun η : (boxFinset x n) → ℝ => Φ (u (extendField (boxFinset x n) η) n x) :=
     (hΦL.comp (lipschitzWith_u_extendField hd (boxFinset x n) n x)).continuous.measurable
   rw [← iidLaw_map_restrict d μ (boxFinset x n),

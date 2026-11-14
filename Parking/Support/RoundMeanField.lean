@@ -81,7 +81,7 @@ theorem measurable_roundSigned {Ω : Type*} [MeasurableSpace Ω]
     (A H : Ω → Site d → ℕ) (τ : Ω → RoundSlot d → Fin d × Bool)
     (hA : Measurable A) (hH : Measurable H) (hτ : Measurable τ) :
     Measurable (fun ω => roundSigned (A ω) (H ω) (τ ω)) := by
-  apply measurable_pi_lambda
+  apply Measurable.of_eval
   intro x
   exact ((measurable_from_countable' fun s : Finset (RoundSlot d) => (s.card : ℤ)).comp
     (measurable_countArrivals A τ hA hτ x)).sub
@@ -93,7 +93,7 @@ theorem measurable_roundWithout {Ω : Type*} [MeasurableSpace Ω]
     (hA : Measurable A) (hH : Measurable H) (hτ : Measurable τ) (v : Site d) (j : ℕ) :
     Measurable (fun ω => roundWithout (A ω) (H ω) (τ ω) v j) := by
   classical
-  apply measurable_pi_lambda
+  apply Measurable.of_eval
   intro x
   exact ((measurable_from_countable' fun s : Finset (RoundSlot d) =>
     ((s.erase (Sum.inl (v, j))).card : ℤ)).comp (measurable_countArrivals A τ hA hτ x)).sub

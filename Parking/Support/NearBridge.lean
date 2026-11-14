@@ -51,7 +51,7 @@ theorem integral_uOf_rpow_le_xi (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
   have hG : Measurable (fun ζ : Site d → ℝ => |u ζ n 0| ^ r) :=
     (measurable_u_eval n 0).abs.pow_const r
   have hxim : ∀ e : ℝ, Measurable (fun η : Site d → ℤ => Parking.xi e η) := fun e =>
-    measurable_pi_lambda _ fun y =>
+    Measurable.of_eval fun y =>
       (measurable_intCastReal.comp (measurable_pi_apply y)).add_const e
   have hmap : ∀ e : ℝ, ∫ ζ, |u ζ n 0| ^ r ∂(LatticeProb.iidLaw d (shiftLaw e ν))
       = ∫ η, |u (Parking.xi e η) n 0| ^ r ∂(LatticeProb.iidLaw d ν) := by
@@ -67,7 +67,7 @@ theorem integral_uOf_rpow_le_xi (hd : 1 ≤ d) (ν : Measure ℤ) [IsProbability
     intro e
     haveI : IsProbabilityMeasure (shiftLaw e ν) := by
       rw [shiftLaw]
-      exact Measure.isProbabilityMeasure_map (measurable_intShift e).aemeasurable
+      exact inferInstance
     have hexpe : Integrable (fun z : ℝ => Real.exp (θ * |z|)) (shiftLaw e ν) :=
       integrable_exp_abs_shiftLaw θ e hθ.le ν hexpabs
     have hpow : Integrable (fun t : ℝ => max t 0 ^ (⌈r⌉₊)) (shiftLaw e ν) :=

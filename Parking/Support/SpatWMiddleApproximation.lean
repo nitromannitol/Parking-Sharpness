@@ -24,7 +24,7 @@ theorem measurable_scaledWalkTest (φ : (Fin d → ℝ) → ℝ) (R : ℝ) :
     Measurable (scaledWalkTest φ R) := by
   apply (measurable_from_countable' (fun y : Site d => R ^ 2 *
     (walkOp (fun z => φ (fun j => (z j : ℝ) / R)) y - φ (fun j => (y j : ℝ) / R)))).comp
-  exact measurable_pi_lambda _ (fun i => Int.measurable_floor.comp
+  exact Measurable.of_eval (fun i => Int.measurable_floor.comp
     (measurable_const.mul (measurable_pi_apply i)))
 
 /-- The rescaled parking odometer is measurable in space. -/
@@ -33,7 +33,7 @@ theorem measurable_barOdometer_in_x (w : Data d) (R s : ℝ) :
   unfold barOdometer
   apply Measurable.const_mul
   apply (measurable_from_countable' (fun y : Site d => (U w ⌊s * R ^ 2⌋₊ y : ℝ))).comp
-  exact measurable_pi_lambda _ (fun i => Int.measurable_floor.comp
+  exact Measurable.of_eval (fun i => Int.measurable_floor.comp
     (measurable_const.mul (measurable_pi_apply i)))
 
 /-- The rescaled parking odometer is integrable on every compact ball. -/

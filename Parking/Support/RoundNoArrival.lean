@@ -85,7 +85,7 @@ theorem integral_noArrivals_le_exp (hd : 1 ≤ d) (A : Site d → ℕ) (x : Site
   rw [integral_finset_prod_coordinates _ _ (entryAvoids x) (fun q => measurable_from_countable' _)]
   have hprod : (∏ q ∈ incomingSlots A x, ∫ b, entryAvoids x q b ∂(stepLaw d)) ≤
       ∏ q ∈ incomingSlots A x, Real.exp (-entryEntranceProb x q) := by
-    apply Finset.prod_le_prod
+    apply Finset.prod_le_prod₀
     · intro q _
       exact integral_nonneg (entryAvoids_nonneg x q)
     · intro q _

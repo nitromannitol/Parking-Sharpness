@@ -133,7 +133,7 @@ theorem cov_comp_measurePreserving {α β : Type} [MeasurableSpace α] [Measurab
 
 /-- Deleting a particle at a site is measurable on the counts. -/
 theorem measurable_delC {d : ℕ} (x : Site d) : Measurable (delC x) := by
-  refine measurable_pi_lambda _ fun y => ?_
+  refine Measurable.of_eval fun y => ?_
   show Measurable fun a : Site d → ℤ => if y = x then a y - 1 else a y
   by_cases hy : y = x
   · have he : (fun a : Site d → ℤ => if y = x then a y - 1 else a y)

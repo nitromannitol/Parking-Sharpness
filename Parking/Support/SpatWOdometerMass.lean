@@ -19,7 +19,7 @@ theorem measurable_uncurry_barOdometer (R t : ℝ) :
     Measurable (fun p : Data d × (Fin d → ℝ) => barOdometer p.1 R t p.2) := by
   let n := ⌊t * R ^ 2⌋₊
   have hq : Measurable (fun p : Data d × (Fin d → ℝ) => latticePoint R p.2) :=
-    (measurable_pi_lambda _ (fun i => Int.measurable_floor.comp
+    (Measurable.of_eval (fun i => Int.measurable_floor.comp
       (measurable_const.mul (measurable_pi_apply i)))).comp measurable_snd
   have hf : ∀ y : Site d, Measurable (fun p : Data d × (Fin d → ℝ) => (U p.1 n y : ℝ)) :=
     fun y => ((measurable_from_countable' fun k : ℕ => (k : ℝ)).comp
