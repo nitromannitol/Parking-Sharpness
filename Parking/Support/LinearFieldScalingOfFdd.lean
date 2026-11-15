@@ -1,5 +1,6 @@
 import Parking.Support.SandpileLawBridge
 import Parking.Support.LinearFieldMeasurable
+import Parking.Support.LinHatMeasurable
 import Sandpile.Frozen.HeatPotentialInvariance
 import Sandpile.Support.StopFieldCoupling
 import Sandpile.Support.MainExplWeak
@@ -361,5 +362,168 @@ theorem eventually_oscillation_linHatInterp
     exact ⟨p.1, p.2, q.1, q.2, hpq, hdiff⟩
   exact eventually_oscillation_le_of_map (Parking.law d ν)
     (Sandpile.centeredMassLaw d (ν.map (fun k : ℤ => (k : ℝ)))) A hA hmap φ hφ f g heq htight'
+
+/-- Uniform bounds on scenery coordinates and on a field over the cutoff support control the
+joint scenery and cutoff-field distance. -/
+theorem dist_joint_cutoff_le {d m : ℕ} (χ f g : ℝ × (Fin d → ℝ) → ℝ)
+    (hχ : Continuous χ) (hχc : HasCompactSupport χ) (hf : Continuous f) (hg : Continuous g)
+    (u v : Fin m → ℝ) {M δ : ℝ} (hM : 0 ≤ M) (hδ : 0 ≤ δ)
+    (hχM : ∀ p, |χ p| ≤ M) (huv : ∀ i, |u i - v i| ≤ δ)
+    (hfg : ∀ p ∈ tsupport χ, |f p - g p| ≤ δ) :
+    dist (u, Parking.cutoffBC χ f hχ hχc hf) (v, Parking.cutoffBC χ g hχ hχc hg) ≤
+      max δ (M * δ) := by
+  rw [Prod.dist_eq]
+  apply max_le_max
+  · apply (dist_pi_le_iff hδ).2
+    intro i
+    simpa only [Real.dist_eq] using huv i
+  · exact dist_cutoffBC_le χ f g hχ hχc hf hg hM hδ hχM hfg
+
+/-- Joint weak convergence of scenery pairings and a cutoff linear field. -/
+theorem tendsto_integral_joint_linear_field
+    (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν) [IsProbabilityMeasure (Parking.law d ν)]
+    {Ω' : Type} [MeasurableSpace Ω'] (Q' : Measure Ω') [IsProbabilityMeasure Q']
+    (WD : (Sandpile.Continuum.Space d → ℝ) → Ω' → ℝ)
+    (W : ((Fin d → ℝ) → ℝ) → Ω' → ℝ)
+    (Z : Ω' → ℝ → (Fin d → ℝ) → ℝ)
+    (hWD : Sandpile.Continuum.IsWhiteNoise d WD Q')
+    (hZcont : ∀ ω, Continuous fun p : ℝ × (Fin d → ℝ) => Z ω p.1 p.2)
+    (hZmeas : ∀ t x, Measurable fun ω => Z ω t x)
+    (hWmeas : ∀ φ, Parking.IsTestFun φ → Measurable (W φ))
+    (hLB : ∀ (ζ : Sandpile.Site d → ℝ) (R : ℝ), 1 ≤ R →
+      ∀ p : ℝ × (Fin d → ℝ), 0 ≤ p.1 → Parking.linHatInterp ζ R p =
+        Sandpile.Frozen.HeatPotentialInvariance.linInterp d R ζ p.1 (WithLp.toLp 2 p.2))
+    (hW : ∀ φ, Parking.IsTestFun φ → W φ =ᵐ[Q'] WD (fun y => φ (WithLp.ofLp y)))
+    (hZ : ∀ t x, 0 ≤ t → (fun ω => Z ω t x) =ᵐ[Q']
+      fun ω => Sandpile.Continuum.gaussianPotential d
+        (variance (fun k : ℤ => (k : ℝ)) ν) WD t (WithLp.toLp 2 x) ω)
+    (m : ℕ) (φ : Fin m → (Fin d → ℝ) → ℝ) (hφ : ∀ i, Parking.IsTestFun (φ i))
+    (hjoint : ∀ (p : ℕ) (sp : Fin p → ℝ × (Fin d → ℝ)), (∀ j, 0 ≤ (sp j).1) →
+      TendstoInDistribution
+        (fun (R : ℝ) (w : Parking.Data d) =>
+          ((fun i => Parking.scenePair w R (φ i)),
+            (fun j => Parking.linHatInterp (fun y => (w.1 y : ℝ)) R (sp j)))) atTop
+        (fun ω => ((fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) *
+          WD (fun y => φ i (WithLp.ofLp y)) ω),
+          (fun j => Sandpile.Continuum.gaussianPotential d
+            (variance (fun k : ℤ => (k : ℝ)) ν) WD (sp j).1 (WithLp.toLp 2 (sp j).2) ω)))
+        (fun _ => Parking.law d ν) Q')
+    (χ : ℝ × (Fin d → ℝ) → ℝ) (hχ : Parking.IsSpaceTimeTest χ)
+    (F : BoundedContinuousFunction
+      ((Fin m → ℝ) × BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ) ℝ) :
+    Tendsto (fun R : ℝ => ∫ w : Parking.Data d,
+      F (fun i => Parking.scenePair w R (φ i),
+        Parking.cutoffBC χ (Parking.linHatInterp (fun y => (w.1 y : ℝ)) R)
+          hχ.1.continuous hχ.2.1 (Parking.continuous_linHatInterp _ R)) ∂(Parking.law d ν))
+      atTop (𝓝 (∫ ω, F
+        (fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω,
+          Parking.cutoffBC χ (fun p => Z ω p.1 p.2) hχ.1.continuous hχ.2.1 (hZcont ω)) ∂Q')) := by
+  classical
+  borelize (BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ)
+  let : TopologicalSpace (Fin m) :=
+    (inferInstance : MetricSpace (Fin m)).toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
+  let K := tsupport χ
+  have hK : IsCompact K := hχ.2.1
+  let : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  have hKtime : ∀ p ∈ K, 0 ≤ p.1 := fun p hp => (hχ.2.2 p hp).le
+  let f : ℝ → Parking.Data d → K ⊕ Fin m → ℝ := fun R w =>
+    Sum.elim (fun p : K => Parking.linHatInterp (fun y => (w.1 y : ℝ)) R p.1)
+      (fun i => Parking.scenePair w R (φ i))
+  let g : Ω' → K ⊕ Fin m → ℝ := fun ω =>
+    Sum.elim (fun p : K => Z ω p.1.1 p.1.2)
+      (fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω)
+  let X : ℝ → Parking.Data d → (Fin m → ℝ) ×
+      BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ := fun R w =>
+    (fun i => Parking.scenePair w R (φ i),
+      Parking.cutoffBC χ (Parking.linHatInterp (fun y => (w.1 y : ℝ)) R)
+        hχ.1.continuous hχ.2.1 (Parking.continuous_linHatInterp _ R))
+  let Y : Ω' → (Fin m → ℝ) × BoundedContinuousFunction (ℝ × (Fin d → ℝ)) ℝ := fun ω =>
+    (fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω,
+      Parking.cutoffBC χ (fun p => Z ω p.1 p.2) hχ.1.continuous hχ.2.1 (hZcont ω))
+  have hX : ∀ R, AEMeasurable (X R) (Parking.law d ν) := by
+    intro R
+    have hs := (hjoint 0 (fun i => Fin.elim0 i) (fun i => Fin.elim0 i)).forall_aemeasurable R
+    exact hs.fst.prodMk (Parking.measurable_cutoffBC_linHatInterp d hd R χ
+      hχ.1.continuous hχ.2.1).aemeasurable
+  have hY : AEMeasurable Y Q' := by
+    apply Measurable.aemeasurable
+    apply Measurable.prodMk
+    · exact Measurable.of_eval fun i => (hWmeas (φ i) (hφ i)).const_mul _
+    · exact Parking.measurable_cutoffBC_linearField Z hZcont hZmeas χ
+        hχ.1.continuous hχ.2.1
+  have hg : ∀ x, AEMeasurable (fun ω => g ω x) Q' := by
+    intro x
+    cases x with
+    | inl p => exact (hZmeas p.1.1 p.1.2).aemeasurable
+    | inr i => exact ((hWmeas (φ i) (hφ i)).const_mul _).aemeasurable
+  have hc : ∀ᵐ ω ∂Q', Continuous (g ω) := by
+    apply Filter.Eventually.of_forall
+    intro ω
+    apply continuous_sumElim.2
+    exact ⟨(hZcont ω).comp continuous_subtype_val, continuous_of_discreteTopology⟩
+  have hfdd : ∀ (k : ℕ) (x : Fin k → K ⊕ Fin m), TendstoInDistribution
+      (fun R ω j => f R ω (x j)) atTop (fun ω j => g ω (x j))
+      (fun _ => Parking.law d ν) Q' := by
+    intro k x
+    have hh := tendstoInDistribution_mixed_field d ν Q' WD W Z
+      hW hZ m φ hφ hjoint K hKtime k x
+    apply hh.congr
+    · intro R
+      filter_upwards [] with w
+      funext j
+      cases x j <;> rfl
+    · filter_upwards [] with ω
+      funext j
+      cases x j <;> rfl
+  have htight := eventually_oscillation_linHatInterp d hd hd3 ν hν Q' WD hWD hLB K hK hKtime
+  have hsum := eventually_oscillation_sum (Parking.law d ν) m
+    (fun R w (p : K) => Parking.linHatInterp (fun y => (w.1 y : ℝ)) R p.1)
+    (fun R w i => Parking.scenePair w R (φ i)) htight
+  have htight' : ∀ ε η : ℝ, 0 < ε → 0 < η → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ R in atTop,
+      (Parking.law d ν) {ω | ∃ x y : K ⊕ Fin m, dist x y < δ ∧
+        η < |f R ω x - f R ω y|} ≤ ENNReal.ofReal ε := by
+    simpa only [f] using hsum
+  let C := Parking.cutoffBC χ (fun _ => 1) hχ.1.continuous hχ.2.1 continuous_const
+  let M : ℝ := ‖C‖ + 1
+  have hM : 0 < M := by dsimp [M]; positivity
+  have hχM : ∀ p, |χ p| ≤ M := by
+    intro p
+    have hp := C.norm_coe_le_norm p
+    change ‖χ p * (1 : ℝ)‖ ≤ ‖C‖ at hp
+    rw [mul_one, Real.norm_eq_abs] at hp
+    dsimp [M]
+    linarith
+  have hcontrol : ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ R w ω,
+      (∀ x, |f R w x - g ω x| ≤ ρ) → dist (X R w) (Y ω) ≤ ε := by
+    intro ε hε
+    let ρ : ℝ := ε / (M + 1)
+    have hρ : 0 < ρ := by dsimp [ρ]; positivity
+    refine ⟨ρ, hρ, ?_⟩
+    intro R w ω hclose
+    have hfield : ∀ p ∈ tsupport χ,
+        |Parking.linHatInterp (fun y => (w.1 y : ℝ)) R p - Z ω p.1 p.2| ≤ ρ := by
+      intro p hp
+      simpa only [f, g, Sum.elim_inl] using hclose (Sum.inl ⟨p, hp⟩)
+    have hscene : ∀ i, |Parking.scenePair w R (φ i) -
+        Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω| ≤ ρ := by
+      intro i
+      simpa only [f, g, Sum.elim_inr] using hclose (Sum.inr i)
+    have hbound := dist_joint_cutoff_le χ
+      (Parking.linHatInterp (fun y => (w.1 y : ℝ)) R) (fun p => Z ω p.1 p.2)
+      hχ.1.continuous hχ.2.1 (Parking.continuous_linHatInterp _ R) (hZcont ω)
+      (fun i => Parking.scenePair w R (φ i))
+      (fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω)
+      hM.le hρ.le hχM hscene hfield
+    have hρle : ρ ≤ ε := by
+      dsimp [ρ]
+      exact div_le_self hε.le (by linarith)
+    have hMρ : M * ρ ≤ ε := by
+      dsimp [ρ]
+      rw [← mul_div_assoc, div_le_iff₀ (by linarith : 0 < M + 1)]
+      nlinarith
+    exact hbound.trans (max_le hρle hMρ)
+  have hres := tendstoInDistribution_of_compact_field (Parking.law d ν) Q' f g X Y
+    hX hY hg hc hfdd htight' hcontrol
+  exact (tendstoInDistribution_iff_forall_integral_rclike_tendsto ℝ hX hY).mp hres F
 
 end Parking.Support
