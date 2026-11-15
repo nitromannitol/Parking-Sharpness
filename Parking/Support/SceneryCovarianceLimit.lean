@@ -64,4 +64,43 @@ theorem integral_mul_contFiniteGreen_eq_integral_brownian {d : ℕ} (hd : 1 ≤ 
       simp [f, ofBrownianSpace, hω]
       congr 1
 
+/-- The natural parabolic mesh changes a fixed-time walk index by a bounded amount. -/
+theorem floor_sq_time_sub_floor_mesh_le (R a : ℝ) (ha : 0 ≤ a) :
+    0 ≤ (⌊R ^ 2 * a⌋₊ : ℝ) - (⌊(⌊R ^ 2⌋₊ : ℝ) * a⌋₊ : ℝ) ∧
+      (⌊R ^ 2 * a⌋₊ : ℝ) - (⌊(⌊R ^ 2⌋₊ : ℝ) * a⌋₊ : ℝ) ≤ a + 1 := by
+  have hn : (⌊R ^ 2⌋₊ : ℝ) ≤ R ^ 2 := Nat.floor_le (sq_nonneg R)
+  have hn' : R ^ 2 < (⌊R ^ 2⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one _
+  have hprod : (⌊R ^ 2⌋₊ : ℝ) * a ≤ R ^ 2 * a :=
+    mul_le_mul_of_nonneg_right hn ha
+  have hprod' : R ^ 2 * a ≤ ((⌊R ^ 2⌋₊ : ℝ) + 1) * a :=
+    mul_le_mul_of_nonneg_right hn'.le ha
+  have hfloor : (⌊R ^ 2 * a⌋₊ : ℝ) ≤ R ^ 2 * a :=
+    Nat.floor_le (mul_nonneg (sq_nonneg R) ha)
+  have hfloor' : (⌊R ^ 2⌋₊ : ℝ) * a <
+      (⌊(⌊R ^ 2⌋₊ : ℝ) * a⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one _
+  have hmono : ⌊(⌊R ^ 2⌋₊ : ℝ) * a⌋₊ ≤ ⌊R ^ 2 * a⌋₊ := Nat.floor_mono hprod
+  constructor
+  · exact sub_nonneg.mpr (by exact_mod_cast hmono)
+  · nlinarith
+
+/-- A coordinate of a walk changes by at most the number of elapsed steps. -/
+theorem abs_walkPath_add_sub_le {d : ℕ} (x : Site d) (p : ℕ → Fin d × Bool)
+    (m k : ℕ) (i : Fin d) :
+    |walkPath x p (m + k) i - walkPath x p m i| ≤ (k : ℤ) := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      have hstep := abs_stepVec_le_one (p (m + k)) i
+      have heq : walkPath x p (m + (k + 1)) i - walkPath x p m i =
+          (walkPath x p (m + k) i - walkPath x p m i) + stepVec (p (m + k)) i := by
+        change (walkPath x p (m + k) i + stepVec (p (m + k)) i) -
+          walkPath x p m i = _
+        ring
+      rw [heq]
+      calc
+        _ ≤ |walkPath x p (m + k) i - walkPath x p m i| +
+            |stepVec (p (m + k)) i| := abs_add_le _ _
+        _ ≤ (k : ℤ) + 1 := add_le_add ih hstep
+        _ = ((k + 1 : ℕ) : ℤ) := by push_cast; rfl
+
 end Parking
