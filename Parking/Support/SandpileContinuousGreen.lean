@@ -141,4 +141,90 @@ theorem continuous_extend_nonnegative {d : ℕ} {Ω : Type}
     Continuous fun p : ℝ × (Fin d → ℝ) => Y (Real.toNNReal p.1, p.2) ω :=
   (hY ω).comp ((continuous_real_toNNReal.comp continuous_fst).prodMk continuous_snd)
 
+/-- A continuous Gaussian potential admits a measurable version with growth on every strip. -/
+theorem exists_everywhere_regular_version {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    {v : ℝ} (hv : 0 ≤ v) {Ω : Type} [MeasurableSpace Ω]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (W : (Space d → ℝ) → Ω → ℝ) (hW : IsWhiteNoise d W P)
+    (Y : (ℝ≥0 × (Fin d → ℝ)) → Ω → ℝ)
+    (hYm : ∀ p, Measurable (Y p)) (hYc : ∀ ω, Continuous fun p => Y p ω)
+    (hYmod : ∀ p, Y p =ᵐ[P] fun ω => gaussianPotential d v W p.1 (WithLp.toLp 2 p.2) ω) :
+    ∃ Z : Ω → ℝ → (Fin d → ℝ) → ℝ,
+      (∀ ω, Continuous fun p : ℝ × (Fin d → ℝ) => Z ω p.1 p.2) ∧
+      (∀ t x, Measurable fun ω => Z ω t x) ∧
+      (∀ t x, 0 ≤ t → (fun ω => Z ω t x) =ᵐ[P]
+        fun ω => gaussianPotential d v W t (WithLp.toLp 2 x) ω) ∧
+      (∀ ω x, Z ω 0 x = 0) ∧
+      (∀ ω T, 0 < T → ∃ C k : ℝ, ∀ p ∈ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Fin d → ℝ)),
+        |Z ω p.1 p.2| ≤ C * (1 + ‖p.2‖) ^ k) := by
+  classical
+  let Y' : ℝ × (Fin d → ℝ) → Ω → ℝ := fun p => Y (Real.toNNReal p.1, p.2)
+  have hY'm : ∀ p, Measurable (Y' p) := fun p => hYm _
+  have hY'c : ∀ ω, Continuous fun p => Y' p ω := continuous_extend_nonnegative Y hYc
+  have hY'mod : ∀ p : ℝ × (Fin d → ℝ), 0 ≤ p.1 → Y' p =ᵐ[P]
+      fun ω => gaussianPotential d v W p.1 (WithLp.toLp 2 p.2) ω := by
+    intro p hp
+    have h := hYmod (Real.toNNReal p.1, p.2)
+    simpa only [Y', Real.coe_toNNReal p.1 hp] using h
+  have hzero := ae_zero_time hW Y hYc hYmod
+  have henvelope : ∀ n : ℕ, ∀ᵐ ω ∂P, ∃ C : ℝ,
+      ∀ t ∈ Set.Icc (0 : ℝ) ((n : ℝ) + 1), ∀ x : Space d,
+        |Y' (t, WithLp.ofLp x) ω| ≤ C * (1 + ‖x‖) := by
+    intro n
+    apply Sandpile.Support.exists_ae_linear_envelope hd hd3 hv (by positivity) P W hW
+      Y' hY'm _ hY'c
+    intro p hp
+    exact hY'mod p hp.1
+  have hgood : ∀ᵐ ω ∂P, (∀ x, Y (0, x) ω = 0) ∧ ∀ n : ℕ, ∃ C : ℝ,
+      ∀ t ∈ Set.Icc (0 : ℝ) ((n : ℝ) + 1), ∀ x : Space d,
+        |Y' (t, WithLp.ofLp x) ω| ≤ C * (1 + ‖x‖) :=
+    hzero.and (ae_all_iff.mpr henvelope)
+  obtain ⟨N, hNsub, hNm, hNnull⟩ := exists_measurable_superset_of_null (ae_iff.mp hgood)
+  let Z : Ω → ℝ → (Fin d → ℝ) → ℝ := fun ω t x => if ω ∈ N then 0 else Y' (t, x) ω
+  have hNae : ∀ᵐ ω ∂P, ω ∉ N := by
+    rw [ae_iff]
+    simpa using hNnull
+  refine ⟨Z, ?_, ?_, ?_, ?_, ?_⟩
+  · intro ω
+    by_cases hω : ω ∈ N
+    · simpa only [Z, ite_eq_left hω] using (continuous_const :
+        Continuous (fun _ : ℝ × (Fin d → ℝ) => (0 : ℝ)))
+    · simpa only [Z, ite_eq_right hω] using hY'c ω
+  · intro t x
+    exact measurable_const.ite hNm (hY'm (t, x))
+  · intro t x ht
+    filter_upwards [hNae, hY'mod (t, x) ht] with ω hω hω'
+    simpa only [Z, ite_eq_right hω] using hω'
+  · intro ω x
+    by_cases hω : ω ∈ N
+    · simp only [Z, ite_eq_left hω]
+    · have hg := not_not.mp (fun h => hω (hNsub h))
+      simpa only [Z, ite_eq_right hω, Y', Real.toNNReal_zero] using hg.1 x
+  · intro ω T hT
+    by_cases hω : ω ∈ N
+    · refine ⟨0, 1, ?_⟩
+      intro p hp
+      simp only [Z, ite_eq_left hω, abs_zero, zero_mul, le_refl]
+    · have hg := not_not.mp (fun h => hω (hNsub h))
+      let n := ⌈T⌉₊
+      obtain ⟨C, hC⟩ := hg.2 n
+      let L : (Fin d → ℝ) →L[ℝ] Space d :=
+        (PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin d => ℝ)).symm.toContinuousLinearMap
+      let M : ℝ := max 1 ‖L‖
+      have hM : 1 ≤ M := le_max_left _ _
+      have hLM : ‖L‖ ≤ M := le_max_right _ _
+      refine ⟨|C| * M, 1, ?_⟩
+      intro p hp
+      have ht : p.1 ∈ Set.Icc (0 : ℝ) ((n : ℝ) + 1) := ⟨hp.1.1, by
+        have hceil : T ≤ n := Nat.le_ceil T
+        linarith [hp.1.2]⟩
+      have hb := hC p.1 ht (WithLp.toLp 2 p.2)
+      have hL : ‖(WithLp.toLp 2 p.2 : Space d)‖ ≤ ‖L‖ * ‖p.2‖ := L.le_opNorm p.2
+      have harg : 1 + ‖(WithLp.toLp 2 p.2 : Space d)‖ ≤ M * (1 + ‖p.2‖) := by
+        nlinarith [mul_nonneg (sub_nonneg.mpr hLM) (norm_nonneg p.2)]
+      have hb' : |Y' (p.1, p.2) ω| ≤ |C| * (M * (1 + ‖p.2‖)) :=
+        hb.trans ((mul_le_mul_of_nonneg_right (le_abs_self C) (by positivity)).trans
+          (mul_le_mul_of_nonneg_left harg (abs_nonneg C)))
+      simpa only [Z, ite_eq_right hω, Real.rpow_one, mul_assoc] using hb'
+
 end Parking
