@@ -364,4 +364,83 @@ theorem tendsto_integral_timeCell_of_pointwise
   rw [← hgInt]
   exact hconv.congr' (hint.mono fun R h => h.symm)
 
+/-- Parabolic time-cell averages converge to the Brownian Green pairing. -/
+theorem tendsto_integral_timeCell_walk {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
+    (B : ℝ≥0 → ΩB → EuclideanSpace ℝ (Fin d)) (hB : IsBrownianSpace d 0 B PB)
+    {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) (x : Fin d → ℝ)
+    (z : ℝ → Site d) (hz : Tendsto (fun R : ℝ => fun i => (z R i : ℝ) / R) atTop (𝓝 x))
+    (N : ℝ → ℕ) {r : ℝ} (hr : 0 ≤ r)
+    (hN : Tendsto (fun R : ℝ => (N R : ℝ) * (1 / R ^ 2)) atTop (𝓝 r)) :
+    Tendsto (fun R : ℝ => ∫ a, LatticeProb.Scaling.TimeCell.step (1 / R ^ 2) (N R)
+      (fun n => ∫ p, φ (fun i => ((z R i : ℝ) +
+        (walkPath (0 : Site d) p n i : ℝ)) / R) ∂(walkLaw d)) a) atTop
+      (𝓝 (∫ y, φ y * External.contFiniteGreen d r x y)) := by
+  have : IsProbabilityMeasure (walkLaw d) := walkLaw_isProbability hd
+  obtain ⟨M, _, hM⟩ := LatticeProb.Walk.exists_norm_le_of_hasCompactSupport
+    hφ.1.continuous hφ.2
+  let q : ℝ → ℕ → ℝ := fun R n => ∫ p, φ (fun i => ((z R i : ℝ) +
+    (walkPath (0 : Site d) p n i : ℝ)) / R) ∂(walkLaw d)
+  let f : ℝ → ℝ := fun a => ∫ β, φ (x + ofBrownianSpace B a.toNNReal β) ∂PB
+  have hq : ∀ a : ℝ, 0 ≤ a → Tendsto (fun R : ℝ => q R ⌊R ^ 2 * a⌋₊) atTop (𝓝 (f a)) := by
+    intro a ha
+    exact tendsto_integral_test_walkPath_moving hd hd3 ΩB PB B hB hφ x z hz ha
+  have hbound : ∀ R n, ‖q R n‖ ≤ M := by
+    intro R n
+    have h := norm_integral_le_of_norm_le_const (μ := walkLaw d)
+      (f := fun p => φ (fun i => ((z R i : ℝ) +
+        (walkPath (0 : Site d) p n i : ℝ)) / R)) (C := M)
+      (Eventually.of_forall fun p => by simpa [Real.norm_eq_abs] using hM (fun i =>
+        ((z R i : ℝ) + (walkPath (0 : Site d) p n i : ℝ)) / R))
+    simpa [q, probReal_univ] using h
+  have hlim := tendsto_integral_timeCell_of_pointwise q f N hr hN hq hbound
+  rw [integral_mul_contFiniteGreen_eq_integral_brownian hd ΩB PB B hB hφ hr x]
+  exact hlim
+
+/-- The covariance at moving space-time grid points converges to the Green pairing. -/
+theorem tendsto_scaled_integral_scenePair_mul_linPotential {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
+    (B : ℝ≥0 → ΩB → EuclideanSpace ℝ (Fin d)) (hB : IsBrownianSpace d 0 B PB)
+    (ν : Measure ℤ) (hν : CriticalLaw ν) {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ)
+    (x : Fin d → ℝ) (z : ℝ → Site d)
+    (hz : Tendsto (fun R : ℝ => fun i => (z R i : ℝ) / R) atTop (𝓝 x))
+    (N : ℝ → ℕ) {r : ℝ} (hr : 0 ≤ r)
+    (hN : Tendsto (fun R : ℝ => (N R : ℝ) * (1 / R ^ 2)) atTop (𝓝 r)) :
+    Tendsto (fun R : ℝ => R ^ ((d : ℝ) / 2 - 2) *
+      (∫ w, scenePair w R φ * linPotential (confReal w) (N R) (z R) ∂(law d ν))) atTop
+      (𝓝 (variance (fun k : ℤ => (k : ℝ)) ν *
+        ∫ y, φ y * External.contFiniteGreen d r x y)) := by
+  obtain ⟨A, hA, hφA⟩ := LatticeProb.Walk.exists_norm_bound_of_hasCompactSupport hφ.2
+  have h := (tendsto_integral_timeCell_walk hd hd3 ΩB PB B hB hφ x z hz N hr hN).const_mul
+    (variance (fun k : ℤ => (k : ℝ)) ν)
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with R hR
+  exact (scaled_integral_scenePair_mul_linPotential_eq_timeCell hd ν hν hφ hA hR
+    hφA (N R) (z R)).symm
+
+/-- A floor corner approaches its underlying point after rescaling. -/
+theorem tendsto_floor_corner_div (x : ℝ) (b : Bool) :
+    Tendsto (fun R : ℝ => ((⌊R * x⌋ + (if b then 1 else 0) : ℤ) : ℝ) / R)
+      atTop (𝓝 x) := by
+  have hinv : Tendsto (fun R : ℝ => 1 / R) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop tendsto_id
+  have hbound : ∀ᶠ R : ℝ in atTop,
+      |((⌊R * x⌋ + (if b then 1 else 0) : ℤ) : ℝ) / R - x| ≤ 1 / R := by
+    filter_upwards [eventually_ge_atTop (1 : ℝ)] with R hR
+    have hRpos : 0 < R := by linarith
+    have hfloor : (⌊R * x⌋ : ℝ) ≤ R * x := Int.floor_le _
+    have hfloor' : R * x < (⌊R * x⌋ : ℝ) + 1 := Int.lt_floor_add_one _
+    have hc : |((⌊R * x⌋ + (if b then 1 else 0) : ℤ) : ℝ) - R * x| ≤ 1 := by
+      cases b <;> simp only [Bool.false_eq_true, ↓reduceIte, Int.cast_add,
+        Int.cast_one, add_zero] <;> rw [abs_le] <;> constructor <;> linarith
+    have heq : ((⌊R * x⌋ + (if b then 1 else 0) : ℤ) : ℝ) / R - x =
+        (((⌊R * x⌋ + (if b then 1 else 0) : ℤ) : ℝ) - R * x) / R := by
+      field_simp
+    rw [heq, abs_div, abs_of_pos hRpos]
+    exact div_le_div_of_nonneg_right hc hRpos.le
+  have hz : Tendsto (fun R : ℝ =>
+      |((⌊R * x⌋ + (if b then 1 else 0) : ℤ) : ℝ) / R - x|) atTop (𝓝 0) :=
+    squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) hbound hinv
+  exact (tendsto_iff_norm_sub_tendsto_zero).2 (by simpa [Real.norm_eq_abs] using hz)
+
 end Parking
