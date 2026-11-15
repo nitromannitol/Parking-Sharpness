@@ -103,4 +103,22 @@ theorem abs_walkPath_add_sub_le {d : ℕ} (x : Site d) (p : ℕ → Fin d × Boo
         _ ≤ (k : ℤ) + 1 := add_le_add ih hstep
         _ = ((k + 1 : ℕ) : ℤ) := by push_cast; rfl
 
+/-- The two fixed-time parabolic meshes sample walk positions a bounded distance apart. -/
+theorem abs_walkPath_floor_sq_sub_floor_mesh_le {d : ℕ}
+    (p : ℕ → Fin d × Bool) (R a : ℝ) (ha : 0 ≤ a) (i : Fin d) :
+    |(walkPath (0 : Site d) p ⌊R ^ 2 * a⌋₊ i : ℝ) -
+      (walkPath (0 : Site d) p ⌊(⌊R ^ 2⌋₊ : ℝ) * a⌋₊ i : ℝ)| ≤ a + 1 := by
+  let m := ⌊(⌊R ^ 2⌋₊ : ℝ) * a⌋₊
+  let n := ⌊R ^ 2 * a⌋₊
+  have hmn : m ≤ n := Nat.floor_mono (mul_le_mul_of_nonneg_right
+    (Nat.floor_le (sq_nonneg R)) ha)
+  have hwalk := abs_walkPath_add_sub_le (0 : Site d) p m (n - m) i
+  rw [Nat.add_sub_of_le hmn] at hwalk
+  have hwalk' : |(walkPath (0 : Site d) p n i : ℝ) -
+      (walkPath (0 : Site d) p m i : ℝ)| ≤ ((n - m : ℕ) : ℝ) := by
+    exact_mod_cast hwalk
+  have hcast : ((n - m : ℕ) : ℝ) = (n : ℝ) - (m : ℝ) := Nat.cast_sub hmn
+  rw [hcast] at hwalk'
+  exact hwalk'.trans (floor_sq_time_sub_floor_mesh_le R a ha).2
+
 end Parking
