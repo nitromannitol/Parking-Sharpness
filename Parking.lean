@@ -623,6 +623,7 @@ import Parking.Support.BarPotential
 import Parking.External.LinearFieldScaling
 import Parking.External.LinearFieldScalingProved
 import Parking.External.SpatialOdometerScaling
+import Parking.External.SpatialOdometerScalingProved
 import Parking.Support.SpatialGreenPairing
 import Parking.External.HeatInteriorRegularity
 import Parking.External.HeatInteriorRegularityProved

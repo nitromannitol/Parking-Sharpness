@@ -504,5 +504,6 @@ the two main theorems discharge it.
 | `ext-heat-interior-regularity-proved` | `Parking.External.heatInteriorRegularity` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, hypoelliptic interior regularity); proved from the shared library interior regularity of continuous weak solutions of the heat equation | SEALED |
 | `ext-heat-compactness-proved` | `Parking.External.heatCompactness` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, classical parabolic compactness); proved from the shared library compactness of nonnegative classical solutions of the heat equation | SEALED |
 | `ext-linear-field-scaling-proved` | `Parking.External.linearFieldScaling_holds` | parking.tex:1756-1767 (prop:spatial-scaling, linear field scaling limit) | SEALED |
+| `ext-spatial-odometer-scaling-proved` | `Parking.External.spatialOdometerScaling_of_dsp` | parking.tex:1756-1767 (prop:spatial-scaling, spatial odometer scaling limit) | SEALED |
 
 <!-- FROZEN-SURFACE-END -->

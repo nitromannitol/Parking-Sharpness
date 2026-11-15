@@ -9,6 +9,7 @@ import Parking.Frozen.OrientedWalk
 import Parking.External.Stopping
 import Parking.External.HeatInteriorRegularityProved
 import Parking.External.HeatCompactnessProved
+import Parking.External.SpatialOdometerScalingProved
 
 /-!
 # Main results
@@ -28,7 +29,11 @@ proof; they are assumed, not proved, and are listed with their statements in `AS
 Two of them, the interior regularity and the compactness of solutions of the heat equation
 (`External.HeatInteriorRegularity`, `External.HeatCompactness`), are proved from the shared
 library as `Parking.External.heatInteriorRegularity` and `Parking.External.heatCompactness`;
-`Parking.nearest'` is Theorem 1.5 with both discharged.
+`Parking.nearest'` is Theorem 1.5 with both discharged.  The spatial odometer scaling limit
+(`External.SpatialOdometerScaling`) is derived from the continuum stopping stability of the
+divisible sandpile (`Sandpile.External.ContinuumStoppingStability`) as
+`Parking.External.spatialOdometerScaling_of_dsp`, and `Parking.nearest''` is `Parking.nearest'`
+with that stability in place of the spatial odometer scaling limit.
 
 * `Parking.subcritical_tail`: below the critical density, `S_t` decays like
   `exp(-t^{d/(d+2)})`, with matching upper and lower bounds.
@@ -40,13 +45,15 @@ library as `Parking.External.heatInteriorRegularity` and `Parking.External.heatC
 * `Parking.nearest`: for `d ≤ 3` the chance that the origin is closer to an unfilled hole than
   to an active particle after round `t` tends to zero.
 * `Parking.nearest'`: the same statement without the two heat equation hypotheses.
+* `Parking.nearest''`: the statement of `Parking.nearest'` with the spatial odometer scaling
+  limit replaced by the continuum stopping stability of the divisible sandpile.
 * `Parking.nearest_counterexample`: for `d ≥ 5` there is a three-point law for which that chance
   stays bounded below.
 * `Parking.near`: `E U_∞(0)` diverges at the rate `nearRate d δ` as the mean `-δ` rises to zero.
 * `Parking.oriented_walk`: the growth of `E U_n(0)` for the oriented walk, with the constant
   of the limit in `d = 2`.
 
-All nine reduce to the standard axioms (`propext`, `Classical.choice`, `Quot.sound`); see
+All ten reduce to the standard axioms (`propext`, `Classical.choice`, `Quot.sound`); see
 `Parking/Meta/AxiomsAudit.lean`.
 -/
 
@@ -165,6 +172,21 @@ theorem Parking.nearest' (hGrowth : Parking.External.SandpileGrowth)
       atTop (𝓝 0) :=
   Parking.nearest hGrowth hBernstein hOdometer Parking.External.heatInteriorRegularity
     Parking.External.heatCompactness hBerry d hd hd3 ν hν
+
+/-- **Theorem 1.5** (`thm:nearest`) with the interior regularity and the compactness of solutions
+of the heat equation discharged as in `Parking.nearest'`, and the spatial odometer scaling limit
+derived from the continuum stopping stability of the divisible sandpile by
+`Parking.External.spatialOdometerScaling_of_dsp`. -/
+theorem Parking.nearest'' (hGrowth : Parking.External.SandpileGrowth)
+    (hBernstein : Parking.External.Bernstein)
+    (hStab : Sandpile.External.ContinuumStoppingStability.{0})
+    (hBerry : Parking.External.MultivariateBerryEsseen)
+    (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ)
+    (hν : Parking.CriticalLaw ν) :
+    Tendsto (fun t : ℕ => ((Parking.law d ν) {ω | Parking.HoleCloser ω t}).toReal)
+      atTop (𝓝 0) :=
+  Parking.nearest' hGrowth hBernstein (Parking.External.spatialOdometerScaling_of_dsp hStab) hBerry
+    d hd hd3 ν hν
 
 /-- **Theorem 1.6** (`thm:nearest-counterexample`).  The certified statement is
 `Parking.Frozen.nearest_counterexample`. -/

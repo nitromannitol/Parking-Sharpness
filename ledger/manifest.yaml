@@ -734,3 +734,14 @@ nodes:
     provider: Parking.External.linearFieldScaling_holds
     approved: "2026-11-14"
 
+  - id: ext-spatial-odometer-scaling-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:1756-1767 (prop:spatial-scaling, spatial odometer scaling limit)
+    file: Parking/External/SpatialOdometerScalingProved.lean
+    export: Parking.External.spatialOdometerScaling_of_dsp
+    state: SEALED
+    frozen_sha256: ecad2a81ea3924781a92e547ccce1d20c0f1061bb13a4a299dcc0386e27ed198
+    provider: Parking.External.spatialOdometerScaling_of_dsp
+    approved: "2026-11-14"
+
