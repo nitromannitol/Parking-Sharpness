@@ -4,6 +4,7 @@ import Parking.Support.LinInterp
 import Parking.Support.SpatWalkCLT
 import Parking.Support.RangeResolvent
 import Parking.Support.ErrorUnroll
+import LatticeProb.Prob.Scaling.TimeCell
 
 /-!
 # Covariances of scenery pairings
@@ -438,6 +439,23 @@ theorem scaled_integral_scenePair_mul_linPotential_eq_walk {d : ℕ} (hd : 1 ≤
   congr 1
   funext i
   simp only [Pi.add_apply, Int.cast_add]
+
+/-- The rescaled grid covariance is an integral over parabolic time cells. -/
+theorem scaled_integral_scenePair_mul_linPotential_eq_timeCell {d : ℕ} (hd : 1 ≤ d)
+    (ν : Measure ℤ) (hν : CriticalLaw ν) {φ : (Fin d → ℝ) → ℝ} (hφtest : IsTestFun φ)
+    {B R : ℝ} (hB : 0 < B) (hR : 1 ≤ R)
+    (hφ : ∀ x, φ x ≠ 0 → ‖x‖ ≤ B) (n : ℕ) (x : Site d) :
+    R ^ ((d : ℝ) / 2 - 2) *
+      (∫ w, scenePair w R φ * linPotential (confReal w) n x ∂(law d ν)) =
+    variance (fun k : ℤ => (k : ℝ)) ν *
+      ∫ t, LatticeProb.Scaling.TimeCell.step (1 / R ^ 2) n
+        (fun k => ∫ p, φ (fun i =>
+          ((x i : ℝ) + (walkPath (0 : Site d) p k i : ℝ)) / R) ∂(walkLaw d)) t := by
+  rw [scaled_integral_scenePair_mul_linPotential_eq_walk hd ν hν hφtest hB hR hφ,
+    LatticeProb.Scaling.TimeCell.integral_step (by positivity)]
+  congr 2
+  rw [show (-(2 : ℝ)) = -((2 : ℕ) : ℝ) by norm_num,
+    Real.rpow_neg (by positivity), Real.rpow_natCast, one_div]
 
 /-- The rescaled random walk tested at a fixed time converges to the Brownian average. -/
 theorem tendsto_integral_test_spatialScaledWalk {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
