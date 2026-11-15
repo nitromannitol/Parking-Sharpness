@@ -526,4 +526,90 @@ theorem tendsto_integral_joint_linear_field
     hX hY hg hc hfdd htight' hcontrol
   exact (tendstoInDistribution_iff_forall_integral_rclike_tendsto ℝ hX hY).mp hres F
 
+/-- Joint finite-dimensional convergence and heat-potential tightness imply the linear field scaling limit. -/
+theorem linearFieldScaling_of_fdd
+    (hCG : ∀ (d : ℕ), 1 ≤ d → d ≤ 3 → ∀ v : ℝ, 0 < v →
+    ∃ (Ω' : Type) (_ : MeasurableSpace Ω') (Q' : Measure Ω') (_ : IsProbabilityMeasure Q')
+      (WD : (Sandpile.Continuum.Space d → ℝ) → Ω' → ℝ)
+      (W : ((Fin d → ℝ) → ℝ) → Ω' → ℝ) (Z : Ω' → ℝ → (Fin d → ℝ) → ℝ),
+      Sandpile.Continuum.IsWhiteNoise d WD Q' ∧
+      (∀ φ, Parking.IsTestFun φ → W φ =ᵐ[Q'] WD (fun y => φ (WithLp.ofLp y))) ∧
+      (∀ t x, 0 ≤ t → (fun ω' => Z ω' t x) =ᵐ[Q']
+        fun ω' => Sandpile.Continuum.gaussianPotential d v WD t (WithLp.toLp 2 x) ω') ∧
+      (∀ ω', Continuous fun p : ℝ × (Fin d → ℝ) => Z ω' p.1 p.2) ∧
+      (∀ ω' T, 0 < T → ∃ C k : ℝ, ∀ p ∈ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Fin d → ℝ)),
+        |Z ω' p.1 p.2| ≤ C * (1 + ‖p.2‖) ^ k) ∧
+      Parking.IsSpatialWhiteNoise d 1 Q' W ∧
+      (∀ φ, Parking.IsTestFun φ → Measurable (W φ)) ∧
+      (∀ ω' t x, 0 ≤ t → Z ω' t x
+          = Real.sqrt v * W (fun y => Parking.External.contFiniteGreen d t x y) ω') ∧
+      (∀ ω' x, Z ω' 0 x = 0) ∧
+      (∀ r x, Measurable fun ω' => Z ω' r x) ∧
+      (∀ r x s y, 0 ≤ r → 0 ≤ s →
+        Integrable (fun ω' => Z ω' r x * Z ω' s y) Q' ∧
+        ∫ ω', Z ω' r x * Z ω' s y ∂Q'
+          = v * ∫ a in Set.Ioc (0 : ℝ) r, ∫ b in Set.Ioc (0 : ℝ) s,
+              Parking.External.contHeatKernel d (a + b) x y) ∧
+      (∀ φ, Parking.IsTestFun φ → ∀ t x, 0 ≤ t →
+        Integrable (fun ω' => W φ ω' * Z ω' t x) Q' ∧
+        ∫ ω', W φ ω' * Z ω' t x ∂Q'
+          = Real.sqrt v * ∫ y, φ y * Parking.External.contFiniteGreen d t x y))
+    (hLB : ∀ (d : ℕ) (ζ : Sandpile.Site d → ℝ) (R : ℝ), 1 ≤ R → ∀ p : ℝ × (Fin d → ℝ), 0 ≤ p.1 →
+    Parking.linHatInterp ζ R p =
+      Sandpile.Frozen.HeatPotentialInvariance.linInterp d R ζ p.1 (WithLp.toLp 2 p.2))
+    (hFdd : ∀ (d : ℕ), 1 ≤ d → d ≤ 3 →
+    ∀ (ν : Measure ℤ) [IsProbabilityMeasure (Parking.law d ν)], Parking.CriticalLaw ν →
+    ∀ (ΩW : Type) [MeasurableSpace ΩW] (PW : Measure ΩW) [IsProbabilityMeasure PW]
+      (WD : (Sandpile.Continuum.Space d → ℝ) → ΩW → ℝ),
+      Sandpile.Continuum.IsWhiteNoise d WD PW →
+    ∀ (m p' : ℕ) (φ : Fin m → (Fin d → ℝ) → ℝ) (sp : Fin p' → ℝ × (Fin d → ℝ)),
+      (∀ i, Parking.IsTestFun (φ i)) → (∀ j, 0 ≤ (sp j).1) →
+      TendstoInDistribution
+        (fun (R : ℝ) (w : Parking.Data d) =>
+          ((fun i => Parking.scenePair w R (φ i)),
+            (fun j => Parking.linHatInterp (fun y => (w.1 y : ℝ)) R (sp j))))
+        atTop
+        (fun ω =>
+          ((fun i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) *
+              WD (fun y => φ i (WithLp.ofLp y)) ω),
+            (fun j => Sandpile.Continuum.gaussianPotential d
+              (variance (fun k : ℤ => (k : ℝ)) ν) WD (sp j).1 (WithLp.toLp 2 (sp j).2) ω)))
+        (fun _ => Parking.law d ν) PW)
+    : Parking.External.LinearFieldScaling := by
+  intro d hd hd3 ν hν
+  let : IsProbabilityMeasure ν := hν.prob
+  let : IsProbabilityMeasure (LatticeProb.iidLaw d ν) := by
+    unfold LatticeProb.iidLaw
+    infer_instance
+  let : IsProbabilityMeasure (LatticeProb.stackLaw d) := LatticeProb.stackLaw_isProbability hd
+  let : IsProbabilityMeasure (LatticeProb.rankLaw d) := LatticeProb.rankLaw_isProbability d
+  let : IsProbabilityMeasure (Parking.law d ν) := by
+    unfold Parking.law
+    infer_instance
+  have hv := criticalLaw_variance_pos ν hν
+  obtain ⟨Ω', hΩ', Q', hQ', WD, W, Z, hWD, hW, hZ, hZcont, _, hnoise, hWmeas,
+    hpair, hzero, hZmeas, hcov, hcross⟩ := hCG d hd hd3 _ hv
+  let : MeasurableSpace Ω' := hΩ'
+  let : IsProbabilityMeasure Q' := hQ'
+  refine ⟨Ω', hΩ', Q', hQ', W, Z, hZcont, hnoise, hWmeas, hpair, hzero, hZmeas,
+    hcov, ?_, hcross, ?_⟩
+  · intro χ hχ F
+    let φ : Fin 0 → (Fin d → ℝ) → ℝ := Fin.elim0
+    apply tendsto_integral_snd_of_joint (Parking.law d ν) Q'
+      (fun R w i => Parking.scenePair w R (φ i))
+      (fun R w => Parking.cutoffBC χ (Parking.linHatInterp (fun y => (w.1 y : ℝ)) R)
+        hχ.1.continuous hχ.2.1 (Parking.continuous_linHatInterp _ R))
+      (fun ω i => Real.sqrt (variance (fun k : ℤ => (k : ℝ)) ν) * W (φ i) ω)
+      (fun ω => Parking.cutoffBC χ (fun p => Z ω p.1 p.2)
+        hχ.1.continuous hχ.2.1 (hZcont ω)) ?_ F
+    intro G
+    exact tendsto_integral_joint_linear_field d hd hd3 ν hν Q' WD W Z hWD hZcont hZmeas
+      hWmeas (hLB d) hW hZ 0 φ (fun i => Fin.elim0 i)
+      (fun p sp hsp => hFdd d hd hd3 ν hν Ω' Q' WD hWD 0 p φ sp
+        (fun i => Fin.elim0 i) hsp) χ hχ G
+  · intro m φ hφ χ hχ F
+    exact tendsto_integral_joint_linear_field d hd hd3 ν hν Q' WD W Z hWD hZcont hZmeas
+      hWmeas (hLB d) hW hZ m φ hφ
+      (fun p sp hsp => hFdd d hd hd3 ν hν Ω' Q' WD hWD m p φ sp hφ hsp) χ hχ F
+
 end Parking.Support
