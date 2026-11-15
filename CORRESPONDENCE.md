@@ -501,5 +501,7 @@ the two main theorems discharge it.
 | `thm-nearest` | `Parking.Frozen.nearest` | `parking.tex:266-275`, `thm:nearest` | PROVED |
 | `ext-oriented-stopping-stability` | `Parking.External.OrientedStoppingStability` | parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling) | FROZEN |
 | `ext-spatial-stopping-stability` | `Parking.External.SpatialStoppingStability` | parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling) | FROZEN |
+| `ext-heat-interior-regularity-proved` | `Parking.External.heatInteriorRegularity` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, hypoelliptic interior regularity); proved from the shared library interior regularity of continuous weak solutions of the heat equation | SEALED |
+| `ext-heat-compactness-proved` | `Parking.External.heatCompactness` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, classical parabolic compactness); proved from the shared library compactness of nonnegative classical solutions of the heat equation | SEALED |
 
 <!-- FROZEN-SURFACE-END -->

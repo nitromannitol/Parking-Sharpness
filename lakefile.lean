@@ -5,7 +5,7 @@ open Lake DSL
 package «parking_sharpness» where
 
 require «lattice-probability» from git
-  "https://github.com/nitromannitol/Lattice-Probability.git" @ "d36783565c4de41cce5cf079ddd5ace3efe6a8ff"
+  "https://github.com/nitromannitol/Lattice-Probability.git" @ "7ab7f25507502a17bd1d71220bc1862804162c64"
 
 require «divisible_sandpile» from git
   "https://github.com/nitromannitol/Divisible-Sandpile-Percolation.git" @

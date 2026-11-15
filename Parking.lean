@@ -624,6 +624,7 @@ import Parking.External.LinearFieldScaling
 import Parking.External.SpatialOdometerScaling
 import Parking.Support.SpatialGreenPairing
 import Parking.External.HeatInteriorRegularity
+import Parking.External.HeatInteriorRegularityProved
 import Parking.External.HeatStrongMinimum
 import Parking.External.HeatStrongMinimumProved
 import Parking.Support.SpatWLinFdd
@@ -657,6 +658,7 @@ import Parking.Support.SpatialNoiseCancellation
 import Parking.Support.SpaceTimeContOp
 import Parking.Support.SpatialDifferenceQuotient
 import Parking.External.HeatCompactness
+import Parking.External.HeatCompactnessProved
 import Parking.Support.SpatialDerivativeLimit
 import Parking.Support.SpatWBlockPairingConvergence
 import Parking.Support.SpatWTaylor

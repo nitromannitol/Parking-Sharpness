@@ -7,6 +7,8 @@ import Parking.Frozen.NearestCounterexample
 import Parking.Frozen.Near
 import Parking.Frozen.OrientedWalk
 import Parking.External.Stopping
+import Parking.External.HeatInteriorRegularityProved
+import Parking.External.HeatCompactnessProved
 
 /-!
 # Main results
@@ -23,6 +25,10 @@ odometer (`External.Stopping`, quoted from Bou-Rabee, Peres and Sava-Huss) as a
 hypothesis, and here it is discharged by `Parking.External.stopping`, which proves it from the
 shared library.  The remaining hypotheses named `External.*` are results the paper cites without
 proof; they are assumed, not proved, and are listed with their statements in `ASSUMPTIONS.md`.
+Two of them, the interior regularity and the compactness of solutions of the heat equation
+(`External.HeatInteriorRegularity`, `External.HeatCompactness`), are proved from the shared
+library as `Parking.External.heatInteriorRegularity` and `Parking.External.heatCompactness`;
+`Parking.nearest'` is Theorem 1.5 with both discharged.
 
 * `Parking.subcritical_tail`: below the critical density, `S_t` decays like
   `exp(-t^{d/(d+2)})`, with matching upper and lower bounds.
@@ -33,13 +39,14 @@ proof; they are assumed, not proved, and are listed with their statements in `AS
   and `d ≥ 5`.
 * `Parking.nearest`: for `d ≤ 3` the chance that the origin is closer to an unfilled hole than
   to an active particle after round `t` tends to zero.
+* `Parking.nearest'`: the same statement without the two heat equation hypotheses.
 * `Parking.nearest_counterexample`: for `d ≥ 5` there is a three-point law for which that chance
   stays bounded below.
 * `Parking.near`: `E U_∞(0)` diverges at the rate `nearRate d δ` as the mean `-δ` rises to zero.
 * `Parking.oriented_walk`: the growth of `E U_n(0)` for the oriented walk, with the constant
   of the limit in `d = 2`.
 
-All eight reduce to the standard axioms (`propext`, `Classical.choice`, `Quot.sound`); see
+All nine reduce to the standard axioms (`propext`, `Classical.choice`, `Quot.sound`); see
 `Parking/Meta/AxiomsAudit.lean`.
 -/
 
@@ -144,6 +151,20 @@ theorem Parking.nearest (hGrowth : Parking.External.SandpileGrowth)
       atTop (𝓝 0) := by
   exact Parking.Frozen.nearest hGrowth hBernstein hOdometer hInterior
     hCompact hBerry d hd hd3 ν hν
+
+/-- **Theorem 1.5** (`thm:nearest`) with the interior regularity and the compactness of solutions
+of the heat equation discharged by `Parking.External.heatInteriorRegularity` and
+`Parking.External.heatCompactness`. -/
+theorem Parking.nearest' (hGrowth : Parking.External.SandpileGrowth)
+    (hBernstein : Parking.External.Bernstein)
+    (hOdometer : Parking.External.SpatialOdometerScaling)
+    (hBerry : Parking.External.MultivariateBerryEsseen)
+    (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ)
+    (hν : Parking.CriticalLaw ν) :
+    Tendsto (fun t : ℕ => ((Parking.law d ν) {ω | Parking.HoleCloser ω t}).toReal)
+      atTop (𝓝 0) :=
+  Parking.nearest hGrowth hBernstein hOdometer Parking.External.heatInteriorRegularity
+    Parking.External.heatCompactness hBerry d hd hd3 ν hν
 
 /-- **Theorem 1.6** (`thm:nearest-counterexample`).  The certified statement is
 `Parking.Frozen.nearest_counterexample`. -/

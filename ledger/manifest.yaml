@@ -701,3 +701,25 @@ nodes:
     provider: Parking.External.SpatialStoppingStability
     approved: "2026-11-12"
 
+  - id: ext-heat-interior-regularity-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:1800-1820 (prop:spatial-scaling, Step 3, hypoelliptic interior regularity); proved from the shared library interior regularity of continuous weak solutions of the heat equation
+    file: Parking/External/HeatInteriorRegularityProved.lean
+    export: Parking.External.heatInteriorRegularity
+    state: SEALED
+    frozen_sha256: f1d06b81442bb74076bf0c32f344e0a8a68be5ca889ed32e5b3088c636a548a8
+    provider: Parking.External.heatInteriorRegularity
+    approved: "2026-11-14"
+
+  - id: ext-heat-compactness-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:1800-1820 (prop:spatial-scaling, Step 3, classical parabolic compactness); proved from the shared library compactness of nonnegative classical solutions of the heat equation
+    file: Parking/External/HeatCompactnessProved.lean
+    export: Parking.External.heatCompactness
+    state: SEALED
+    frozen_sha256: 9a949dc1ecdd0e68cfec3f345ac2706705e19a9bea0baaae5b16906f8c8c918f
+    provider: Parking.External.heatCompactness
+    approved: "2026-11-14"
+

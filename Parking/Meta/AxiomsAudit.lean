@@ -4,7 +4,8 @@ import Parking.MainTheorems
 # Axioms audit
 
 Building this module prints the axiom dependencies of the eight main theorems of
-`Parking/MainTheorems.lean`.  Each must report exactly the three standard foundational axioms
+`Parking/MainTheorems.lean` and of `Parking.nearest'`, Theorem 1.5 with its two heat equation
+hypotheses discharged.  Each must report exactly the three standard foundational axioms
 of Mathlib: `propext`, `Classical.choice`, `Quot.sound`.
 
 The results the paper cites without proof are not axioms here: each is a `Prop` in
@@ -20,6 +21,7 @@ This file is not imported by the library root; the report runs when it is built 
 #print axioms Parking.growth
 #print axioms Parking.trichotomy
 #print axioms Parking.nearest
+#print axioms Parking.nearest'
 #print axioms Parking.nearest_counterexample
 #print axioms Parking.near
 #print axioms Parking.oriented_walk
