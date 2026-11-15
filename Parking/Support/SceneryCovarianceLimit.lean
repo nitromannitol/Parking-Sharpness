@@ -277,4 +277,91 @@ theorem tendsto_integral_test_walkPath_moving {d : ℕ} (hd : 1 ≤ d) (hd3 : d 
   have hsum := hdiff.add hfixed
   simpa [F, G] using hsum
 
+/-- Bounded averages sampled on a parabolic time mesh converge under integration. -/
+theorem tendsto_integral_timeCell_of_pointwise
+    (q : ℝ → ℕ → ℝ) (f : ℝ → ℝ) (N : ℝ → ℕ) {r M : ℝ} (hr : 0 ≤ r)
+    (hN : Tendsto (fun R : ℝ => (N R : ℝ) * (1 / R ^ 2)) atTop (𝓝 r))
+    (hq : ∀ a : ℝ, 0 ≤ a → Tendsto (fun R : ℝ => q R ⌊R ^ 2 * a⌋₊) atTop (𝓝 (f a)))
+    (hM : ∀ R n, ‖q R n‖ ≤ M) :
+    Tendsto (fun R : ℝ => ∫ a, LatticeProb.Scaling.TimeCell.step
+      (1 / R ^ 2) (N R) (q R) a) atTop (𝓝 (∫ a in Set.Ioo 0 r, f a)) := by
+  let T := r + 1
+  let F : ℝ → ℝ → ℝ := fun R => LatticeProb.Scaling.TimeCell.step (1 / R ^ 2) (N R) (q R)
+  let g : ℝ → ℝ := (Set.Ico 0 r).indicator f
+  have hT : 0 < T := by dsimp [T]; linarith
+  have hNT : ∀ᶠ R : ℝ in atTop, (N R : ℝ) * (1 / R ^ 2) < T :=
+    hN.eventually (Iio_mem_nhds (show r < T by dsimp [T]; linarith))
+  have hint : ∀ᶠ R : ℝ in atTop, (∫ a, F R a) = ∫ a in Set.Icc 0 T, F R a := by
+    filter_upwards [eventually_ge_atTop (1 : ℝ), hNT] with R hR hEnd
+    have hh : 0 < 1 / R ^ 2 := by positivity
+    rw [← integral_indicator measurableSet_Icc]
+    apply integral_congr_ae
+    apply Eventually.of_forall
+    intro a
+    by_cases ha : a ∈ Set.Icc 0 T
+    · simp [ha]
+    · rw [Set.indicator_of_notMem ha]
+      apply LatticeProb.Scaling.TimeCell.step_eq_zero hh.le
+      intro hm
+      apply ha
+      exact ⟨hm.1, hm.2.le.trans hEnd.le⟩
+  have hconv : Tendsto (fun R : ℝ => ∫ a in Set.Icc 0 T, F R a) atTop
+      (𝓝 (∫ a in Set.Icc 0 T, g a)) := by
+    refine tendsto_integral_filter_of_norm_le_const ?_ ?_ ?_
+    · exact Eventually.of_forall fun R => (LatticeProb.Scaling.TimeCell.integrable_step
+        (N R) (q R)).aestronglyMeasurable.restrict
+    · refine ⟨M, ?_⟩
+      filter_upwards [eventually_ge_atTop (1 : ℝ)] with R hR
+      have hh : 0 < 1 / R ^ 2 := by positivity
+      refine Eventually.of_forall fun a => ?_
+      rw [show F R = (Set.Ico 0 ((N R : ℝ) * (1 / R ^ 2))).indicator
+        (fun a => q R ⌊a / (1 / R ^ 2)⌋₊) from
+        LatticeProb.Scaling.TimeCell.step_eq_indicator hh (N R) (q R)]
+      by_cases ha : a ∈ Set.Ico 0 ((N R : ℝ) * (1 / R ^ 2))
+      · rw [Set.indicator_of_mem ha]
+        exact hM R ⌊a / (1 / R ^ 2)⌋₊
+      · simp only [Set.indicator_of_notMem ha, norm_zero]
+        exact (norm_nonneg (q R 0)).trans (hM R 0)
+    · filter_upwards [ae_restrict_mem measurableSet_Icc, ae_restrict_of_ae (Measure.ae_ne volume r)] with a ha har
+      rcases lt_or_gt_of_ne har with hlt | hgt
+      · have he : ∀ᶠ R : ℝ in atTop, a < (N R : ℝ) * (1 / R ^ 2) :=
+          hN.eventually (Ioi_mem_nhds hlt)
+        have heq : (fun R : ℝ => F R a) =ᶠ[atTop] (fun R : ℝ => q R ⌊R ^ 2 * a⌋₊) := by
+          filter_upwards [eventually_ge_atTop (1 : ℝ), he] with R hR hEnd
+          have hh : 0 < 1 / R ^ 2 := by positivity
+          rw [show F R a = LatticeProb.Scaling.TimeCell.step (1 / R ^ 2) (N R) (q R) a from rfl,
+            LatticeProb.Scaling.TimeCell.step_eq hh _ _ ⟨ha.1, hEnd⟩]
+          congr 1
+          field_simp
+        have hg : g a = f a := by simp [g, Set.mem_Ico.mpr ⟨ha.1, hlt⟩]
+        rw [hg]
+        exact (hq a ha.1).congr' heq.symm
+      · have he : ∀ᶠ R : ℝ in atTop, (N R : ℝ) * (1 / R ^ 2) < a :=
+          hN.eventually (Iio_mem_nhds hgt)
+        have heq : (fun R : ℝ => F R a) =ᶠ[atTop] (fun _ => (0 : ℝ)) := by
+          filter_upwards [eventually_ge_atTop (1 : ℝ), he] with R hR hEnd
+          apply LatticeProb.Scaling.TimeCell.step_eq_zero (by positivity)
+          intro hm
+          linarith [hm.2]
+        have hnot : a ∉ Set.Ico 0 r := by
+          intro hm
+          linarith [hm.2]
+        have hg : g a = 0 := by simp [g, hnot]
+        rw [hg]
+        exact tendsto_const_nhds.congr' heq.symm
+  have hgInt : (∫ a in Set.Icc 0 T, g a) = ∫ a in Set.Ioo 0 r, f a := by
+    rw [show g = (Set.Ico 0 r).indicator f from rfl,
+      integral_indicator measurableSet_Ico, Measure.restrict_restrict measurableSet_Ico]
+    have hset : Set.Ico (0 : ℝ) r ∩ Set.Icc 0 T = Set.Ico 0 r := by
+      ext a
+      simp only [Set.mem_inter_iff, Set.mem_Ico, Set.mem_Icc]
+      constructor
+      · exact fun h => h.1
+      · intro h
+        exact ⟨h, h.1, h.2.le.trans (by dsimp [T]; linarith)⟩
+    rw [hset]
+    exact setIntegral_congr_set Ioo_ae_eq_Ico.symm
+  rw [← hgInt]
+  exact hconv.congr' (hint.mono fun R h => h.symm)
+
 end Parking
