@@ -1,11 +1,12 @@
 import Parking.External.LinearFieldScaling
 import Sandpile.Continuum.Kernel
 import Sandpile.Support.ContBMSquare
+import Sandpile.Support.ContBMTimeBound
 import Sandpile.Support.ExplNoiseFubini
 import Parking.Support.SpatialGreenPairing
 
 /-!
-# Brownian Green kernels in coordinate and Euclidean form
+# Brownian Green kernels and spatial white noise in coordinates
 -/
 
 open MeasureTheory ProbabilityTheory
@@ -36,6 +37,44 @@ theorem memLp_contFiniteGreen (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3)
   convert h using 1
   ext y
   exact contFiniteGreen_eq_greenTimeBM d t ht x y
+
+/-- Away from the diagonal the finite-time Green kernel is positive at positive times. -/
+theorem contFiniteGreen_pos_of_ne {d : ℕ} (hd : 1 ≤ d) {t : ℝ} (ht : 0 < t)
+    {x y : Fin d → ℝ} (hxy : x ≠ y) : 0 < External.contFiniteGreen d t x y := by
+  have hne : (WithLp.toLp 2 x : Sandpile.Continuum.Space d) ≠ WithLp.toLp 2 y := by
+    intro h
+    exact hxy (congrArg WithLp.ofLp h)
+  rw [contFiniteGreen_eq_greenTimeBM d t ht.le x y,
+    Sandpile.Continuum.greenTimeBM, intervalIntegral.integral_of_le ht.le,
+    integral_Ioc_eq_integral_Ioo]
+  have hint := Sandpile.Support.integrableOn_heatKernelBM_time hd (t := t) hne
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Set.Ioo (0 : ℝ) t)]
+      fun s => Sandpile.Continuum.heatKernelBM d s (WithLp.toLp 2 x) (WithLp.toLp 2 y) := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with s hs
+    exact Sandpile.Support.heatKernelBM_nonneg d hs.1.le _ _
+  rw [setIntegral_pos_iff_support_of_nonneg_ae hnonneg hint]
+  refine ((Measure.measure_Ioo_pos volume).2 ht).trans_le (measure_mono ?_)
+  intro s hs
+  exact ⟨ne_of_gt (Sandpile.Support.heatKernelBM_pos hd hs.1 _ _), hs⟩
+
+/-- A positive-time Green kernel is not a compactly supported test function. -/
+theorem not_isTestFun_contFiniteGreen {d : ℕ} (hd : 1 ≤ d) {t : ℝ} (ht : 0 < t)
+    (x : Fin d → ℝ) : ¬ IsTestFun (External.contFiniteGreen d t x) := by
+  let : Nonempty (Fin d) := ⟨⟨0, hd⟩⟩
+  have hsub : ({x}ᶜ : Set (Fin d → ℝ)) ⊆
+      Function.support (External.contFiniteGreen d t x) := by
+    intro y hy
+    have hxy : x ≠ y := by simpa only [Set.mem_compl_iff, Set.mem_singleton_iff, ne_eq,
+      eq_comm] using hy
+    exact ne_of_gt (contFiniteGreen_pos_of_ne hd ht hxy)
+  have hfull : tsupport (External.contFiniteGreen d t x) = Set.univ := by
+    apply Set.eq_univ_of_univ_subset
+    rw [← (dense_compl_singleton x).closure_eq]
+    exact closure_mono hsub
+  intro htest
+  have hcompact : IsCompact (tsupport (External.contFiniteGreen d t x)) := htest.2
+  rw [hfull] at hcompact
+  exact (not_compactSpace_iff.mpr inferInstance) (isCompact_univ_iff.mp hcompact)
 
 /-- Coordinate transport followed by the white-noise isometry. -/
 noncomputable def sandpileNoiseMap {d : ℕ} {Ω : Type} [MeasurableSpace Ω]
@@ -194,7 +233,7 @@ theorem sandpile_isSpatialWhiteNoise {d : ℕ} {Ω : Type} [MeasurableSpace Ω]
       exact Real.sq_sqrt hv
 
 /-- The coordinate noise and every version of the Gaussian potential form a Green pairing. -/
-theorem parkingNoiseOfSandpile {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+theorem parking_noise_of_sandpile {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
     {Ω : Type} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
     {W : (Sandpile.Continuum.Space d → ℝ) → Ω → ℝ}
     (hW : Sandpile.Continuum.IsWhiteNoise d W P) (v : ℝ) (hv : 0 ≤ v) :
