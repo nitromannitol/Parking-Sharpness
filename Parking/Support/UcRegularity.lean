@@ -1,4 +1,5 @@
 import Parking.Support.ValueBridge
+import Parking.Support.ValueContinuity
 import Sandpile.Frozen.BrownianValueMonotone
 import Sandpile.Support.MainExplContValueMeas
 import Sandpile.Support.ContValueScaling
@@ -25,7 +26,10 @@ The argument combines the value bridge `Parking.Support.valueBridge` with three 
   continuity of the modified value, gives measurability at every point.
 * On the null set the field is replaced by zero, whose value is zero.
 
-Joint continuity of the value of a continuous reward of polynomial growth is a hypothesis.
+* Joint continuity of the value of a continuous reward of polynomial growth is
+  `Parking.Support.valueContinuity`. The regularity statement is first proved from an arbitrary
+  such continuity statement (`ucRegularity_of_valueContinuity`) and then without hypothesis
+  (`ucRegularity`).
 -/
 
 open MeasureTheory ProbabilityTheory Filter Topology
@@ -353,5 +357,40 @@ theorem ucRegularity_of_valueContinuity
       (tendsto_pi_nhds.2 fun ω' => ((hUccont ω').continuousAt.tendsto).comp hulim)
   · intro ω' T x hT
     rw [hUc, max_eq_left hT]
+
+/-- **Regularity of the Brownian value field.** For a continuous field `Z` of polynomial growth
+and zero initial value that agrees almost surely with the Gaussian heat potential of a white
+noise at every nonnegative time, and a measurable continuous Brownian motion started at zero,
+there is a measurable null event outside which the value field `Parking.contUc` of `Z`, modified
+to vanish on that event, is zero at time zero, jointly continuous, nondecreasing in time and
+coordinatewise measurable, and agrees with `Parking.contUc` at every nonnegative time. -/
+theorem ucRegularity :
+  ∀ (d : ℕ), 1 ≤ d → d ≤ 3 → ∀ v : ℝ, 0 < v →
+    ∀ (Ω' : Type) [MeasurableSpace Ω'] (Q' : Measure Ω') [IsProbabilityMeasure Q']
+      (WD : (Sandpile.Continuum.Space d → ℝ) → Ω' → ℝ) (Z : Ω' → ℝ → (Fin d → ℝ) → ℝ),
+      Sandpile.Continuum.IsWhiteNoise d WD Q' →
+      (∀ t x, 0 ≤ t → (fun ω' => Z ω' t x) =ᵐ[Q']
+        fun ω' => Sandpile.Continuum.gaussianPotential d v WD t (WithLp.toLp 2 x) ω') →
+      (∀ ω', Continuous fun p : ℝ × (Fin d → ℝ) => Z ω' p.1 p.2) →
+      (∀ ω' T, 0 < T → ∃ C k : ℝ, ∀ p ∈ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Fin d → ℝ)),
+        |Z ω' p.1 p.2| ≤ C * (1 + ‖p.2‖) ^ k) →
+      (∀ ω' x, Z ω' 0 x = 0) →
+      (∀ r x, Measurable fun ω' => Z ω' r x) →
+    ∀ (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
+      (B : ℝ≥0 → ΩB → EuclideanSpace ℝ (Fin d)),
+      LatticeProb.IsBrownianSpace d 0 B PB → (∀ β, Continuous fun s => B s β) →
+      (∀ s, Measurable (B s)) →
+    ∃ N : Set Ω', MeasurableSet N ∧ Q' N = 0 ∧
+      ∀ (Z' : Ω' → ℝ → (Fin d → ℝ) → ℝ) (Uc : Ω' → ℝ → (Fin d → ℝ) → ℝ),
+        (∀ ω' t x, Z' ω' t x = Set.indicator Nᶜ (fun ω'' => Z ω'' t x) ω') →
+        (∀ ω' T x, Uc ω' T x =
+          Parking.contUc (Parking.ofBrownianSpace B) PB Z' ω' (max T 0) x) →
+        (∀ ω' x, Uc ω' 0 x = 0) ∧
+        (∀ ω', Continuous fun p : ℝ × (Fin d → ℝ) => Uc ω' p.1 p.2) ∧
+        (∀ ω' x, Monotone fun s => Uc ω' s x) ∧
+        (∀ s x, Measurable fun ω' => Uc ω' s x) ∧
+        (∀ ω' T x, 0 ≤ T →
+          Uc ω' T x = Parking.contUc (Parking.ofBrownianSpace B) PB Z' ω' T x) :=
+  ucRegularity_of_valueContinuity valueContinuity
 
 end Parking.Support
