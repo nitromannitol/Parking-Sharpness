@@ -140,8 +140,11 @@ theorem exists_brownianDiscount_cutoff_gap_of_growth_uniform (d : ℕ) (p : ℕ)
     _ = K * 2 ^ p * (2 ^ (j + 1) * A) ^ p := by rw [hpow]; ring
 
 /-- The rescaled odometer and the Brownian value can be coupled uniformly on a compact
-interval of positive times and a compact set of spatial points. -/
-theorem dlt4_scaling_of_version_uniform
+interval of positive times and a compact set of spatial points, given a coupling of the
+rescaled mass field with the Gaussian potential version on every compact subset of the strip.
+The coupling may keep track of an additional family of events `Ex R`, which then stay
+small on the coupling that is produced. -/
+theorem dlt4_scaling_of_coupling_uniform
     (hStab : Sandpile.External.ContinuumStoppingStability.{u})
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (ν : Measure ℝ) [IsProbabilityMeasure ν]
@@ -167,24 +170,36 @@ theorem dlt4_scaling_of_version_uniform
     (hZgrow : ∀ᵐ ω ∂PW, ∃ C k : ℝ,
       ∀ q ∈ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Sandpile.Continuum.Space d)),
         |Z q.1 q.2 ω| ≤ C * (1 + ‖q.2‖) ^ k)
-    (ε δ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) :
+    (ε δ : ℝ) (hε : 0 < ε) (hδ : 0 < δ)
+    (Ex : ℝ → Set ((Sandpile.Site d → ℝ) × ΩW))
+    (hcoup : ∀ C : Set (ℝ × Sandpile.Continuum.Space d), IsCompact C →
+      C ⊆ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Sandpile.Continuum.Space d)) →
+      ∀ η δ' : ℝ, 0 < η → 0 < δ' →
+        ∃ R₀ : ℝ, 0 < R₀ ∧ ∀ R : ℝ, R₀ ≤ R →
+          ∃ P : Measure ((Sandpile.Site d → ℝ) × ΩW), IsProbabilityMeasure P ∧
+            P.map Prod.fst = Sandpile.centeredMassLaw d ν ∧
+            P.map Prod.snd = PW ∧
+            P ({p | ∃ q ∈ C,
+                η < |Sandpile.Frozen.HeatPotentialInvariance.linInterp d R
+                      (Sandpile.scenery d p.1) q.1 q.2 - Z q.1 q.2 p.2|} ∪ Ex R)
+              ≤ ENNReal.ofReal δ') :
     ∃ R₀ : ℝ, 0 < R₀ ∧ ∀ R : ℝ, R₀ ≤ R →
       ∃ P : Measure ((Sandpile.Site d → ℝ) × ΩW), IsProbabilityMeasure P ∧
         P.map Prod.fst = Sandpile.centeredMassLaw d ν ∧
         P.map Prod.snd = PW ∧
-        P {p | ∃ S ∈ Set.Icc T₀ T, ∃ u ∈ K,
+        P ({p | ∃ S ∈ Set.Icc T₀ T, ∃ u ∈ K,
             ε < |R ^ (-(2 - (d : ℝ) / 2)) *
                   Sandpile.odometerOf (Sandpile.scenery d p.1) ⌊S * R ^ 2⌋₊
                     (fun i => ⌊R * u i⌋)
                 - Sandpile.Continuum.brownianValue (B u) PB
                     (fun t y => Z t y p.2)
-                    S u|}
+                    S u|} ∪ Ex R)
           ≤ ENNReal.ofReal δ := by
   classical
   have hT : 0 < T := lt_of_lt_of_le hT₀ hT₀T
   have hBmM : ∀ (y : Space d) (t : ℝ≥0), Measurable (B y t) :=
     fun y t => (hBm y t).measurable
-  obtain ⟨hfdd, htight⟩ := Sandpile.Frozen.heat_potential_invariance d (by omega) hd3
+  obtain ⟨-, htight⟩ := Sandpile.Frozen.heat_potential_invariance d (by omega) hd3
     ν hmean hvar hvar' θ₀ hθ₀ hexp PW W hW T hT
   obtain ⟨ρ, hρ, hKρ⟩ := hK.isBounded.subset_closedBall_lt 0 (0 : Space d)
   have hKn : ∀ u ∈ K, ‖u‖ ≤ ρ := fun u hu => by
@@ -230,8 +245,7 @@ theorem dlt4_scaling_of_version_uniform
     (fun i s y => by simpa only [abs_neg] using hGM i s y) (ε / 8) (2 * η) (3 * η)
     (by positivity)
   obtain ⟨Rm, hRm, hmesh⟩ := Sandpile.exists_parabolic_mesh_threshold d a ha
-  obtain ⟨Rc, hRc, hcoup⟩ := Sandpile.Continuum.heat_field_coupling_of_version d hd hd3 ν
-    ΩW PW W hW Z hZmod T hT hZcont hfdd htight C hCc hCs η (δ / 5) hη hδ5
+  obtain ⟨Rc, hRc, hcoup'⟩ := hcoup C hCc hCs η (δ / 5) hη hδ5
   refine ⟨max (1 + 1 / T₀) (max Rs (max Rm Rc)),
     lt_of_lt_of_le (by positivity) (le_max_left _ _), ?_⟩
   intro R hR
@@ -255,7 +269,7 @@ theorem dlt4_scaling_of_version_uniform
     have : (1 : ℝ) ≤ S * R ^ 2 :=
       hTR.trans (mul_le_mul_of_nonneg_right hS.1 (sq_nonneg R))
     exact_mod_cast this
-  obtain ⟨P, hP, hPf, hPs, hPgap⟩ := hcoup R hRcm
+  obtain ⟨P, hP, hPf, hPs, hPgap⟩ := hcoup' R hRcm
   obtain ⟨Gw, hGwm, hGw⟩ := hwenv R hR1
   refine ⟨P, hP, hPf, hPs, ?_⟩
   set v : (Site d → ℝ) → ℝ → Space d → ℝ := fun σ s y =>
@@ -277,15 +291,18 @@ theorem dlt4_scaling_of_version_uniform
   have hsub : {p : (Site d → ℝ) × ΩW | ∃ S ∈ Set.Icc T₀ T, ∃ u ∈ K,
       ε < |R ^ (-(2 - (d : ℝ) / 2)) *
             odometerOf (scenery d p.1) ⌊S * R ^ 2⌋₊ (fun i => ⌊R * u i⌋)
-          - brownianValue (B u) PB (z p.2) S u|} ⊆
-      (Prod.fst ⁻¹' ((badM ∪ badO) ∪ Gwᶜ)) ∪ badG ∪ (Prod.snd ⁻¹' (badC ∪ Nz)) := by
+          - brownianValue (B u) PB (z p.2) S u|} ∪ Ex R ⊆
+      (Prod.fst ⁻¹' ((badM ∪ badO) ∪ Gwᶜ)) ∪ (badG ∪ Ex R) ∪ (Prod.snd ⁻¹' (badC ∪ Nz)) := by
     intro p hp
+    rcases hp with hp | hp
+    swap
+    · exact Or.inl (Or.inr (Or.inr hp))
     by_cases hm : p.1 ∈ badM ∪ badO
     · exact Or.inl (Or.inl (Or.inl hm))
     by_cases hw : p.1 ∈ Gwᶜ
     · exact Or.inl (Or.inl (Or.inr hw))
     by_cases hg : p ∈ badG
-    · exact Or.inl (Or.inr hg)
+    · exact Or.inl (Or.inr (Or.inl hg))
     by_cases hc : p.2 ∈ badC
     · exact Or.inr (Or.inl hc)
     by_cases hzb : p.2 ∈ Nz
@@ -519,9 +536,9 @@ theorem dlt4_scaling_of_version_uniform
     rw [he] at huerr
     rw [hηdef] at hb
     linarith only [hb, huerr, hε]
-  calc P _ ≤ centeredMassLaw d ν ((badM ∪ badO) ∪ Gwᶜ) + P badG + PW (badC ∪ Nz) :=
+  calc P _ ≤ centeredMassLaw d ν ((badM ∪ badO) ∪ Gwᶜ) + P (badG ∪ Ex R) + PW (badC ∪ Nz) :=
         measure_error_le_of_marginals (centeredMassLaw d ν) PW P hPf hPs
-          ((badM ∪ badO) ∪ Gwᶜ) (badC ∪ Nz) badG _ hsub
+          ((badM ∪ badO) ∪ Gwᶜ) (badC ∪ Nz) (badG ∪ Ex R) _ hsub
     _ ≤ ((ENNReal.ofReal (δ / 5) + ENNReal.ofReal (δ / 5)) + ENNReal.ofReal (δ / 5))
           + ENNReal.ofReal (δ / 5) + (0 + ENNReal.ofReal (δ / 5)) := by
         refine add_le_add (add_le_add ?_ hPgap) ?_
@@ -535,5 +552,62 @@ theorem dlt4_scaling_of_version_uniform
           ← ENNReal.ofReal_add (by positivity) (by positivity)]
         congr 1
         ring
+
+/-- The rescaled odometer and the Brownian value can be coupled uniformly on a compact
+interval of positive times and a compact set of spatial points. -/
+theorem dlt4_scaling_of_version_uniform
+    (hStab : Sandpile.External.ContinuumStoppingStability.{u})
+    (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    (ν : Measure ℝ) [IsProbabilityMeasure ν]
+    (hmean : ∫ z, z ∂ν = 0) (hvar : 0 < evariance id ν) (hvar' : evariance id ν < ⊤)
+    (θ₀ : ℝ) (hθ₀ : 0 < θ₀) (hexp : Integrable (fun z => Real.exp (θ₀ * |z|)) ν)
+    (ΩW : Type v) [MeasurableSpace ΩW] (PW : Measure ΩW) [IsProbabilityMeasure PW]
+    (W : (Sandpile.Continuum.Space d → ℝ) → ΩW → ℝ)
+    (hW : Sandpile.Continuum.IsWhiteNoise d W PW)
+    (Z : ℝ → Sandpile.Continuum.Space d → ΩW → ℝ)
+    (hZmod : ∀ (t : ℝ) (x : Sandpile.Continuum.Space d),
+      Z t x =ᵐ[PW] fun ω =>
+        Sandpile.Continuum.gaussianPotential d (variance id ν) W t x ω)
+    (ΩB : Type u) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
+    (B : Sandpile.Continuum.Space d → ℝ≥0 → ΩB → Sandpile.Continuum.Space d)
+    (hB : ∀ y : Sandpile.Continuum.Space d, Sandpile.Continuum.IsBrownian d y (B y) PB)
+    (hBc : ∀ (y : Sandpile.Continuum.Space d) (ω : ΩB), Continuous fun s => B y s ω)
+    (hBm : ∀ (y : Sandpile.Continuum.Space d) (t : ℝ≥0), StronglyMeasurable (B y t))
+    (K : Set (Sandpile.Continuum.Space d)) (hK : IsCompact K)
+    (T₀ T : ℝ) (hT₀ : 0 < T₀) (hT₀T : T₀ ≤ T)
+    (hZcont : ∀ᵐ ω ∂PW, ContinuousOn (fun q : ℝ × Sandpile.Continuum.Space d =>
+        Z q.1 q.2 ω)
+      (Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Sandpile.Continuum.Space d))))
+    (hZgrow : ∀ᵐ ω ∂PW, ∃ C k : ℝ,
+      ∀ q ∈ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Sandpile.Continuum.Space d)),
+        |Z q.1 q.2 ω| ≤ C * (1 + ‖q.2‖) ^ k)
+    (ε δ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) :
+    ∃ R₀ : ℝ, 0 < R₀ ∧ ∀ R : ℝ, R₀ ≤ R →
+      ∃ P : Measure ((Sandpile.Site d → ℝ) × ΩW), IsProbabilityMeasure P ∧
+        P.map Prod.fst = Sandpile.centeredMassLaw d ν ∧
+        P.map Prod.snd = PW ∧
+        P {p | ∃ S ∈ Set.Icc T₀ T, ∃ u ∈ K,
+            ε < |R ^ (-(2 - (d : ℝ) / 2)) *
+                  Sandpile.odometerOf (Sandpile.scenery d p.1) ⌊S * R ^ 2⌋₊
+                    (fun i => ⌊R * u i⌋)
+                - Sandpile.Continuum.brownianValue (B u) PB
+                    (fun t y => Z t y p.2)
+                    S u|}
+          ≤ ENNReal.ofReal δ := by
+  classical
+  have hT : 0 < T := lt_of_lt_of_le hT₀ hT₀T
+  obtain ⟨hfdd, htight⟩ := Sandpile.Frozen.heat_potential_invariance d (by omega) hd3
+    ν hmean hvar hvar' θ₀ hθ₀ hexp PW W hW T hT
+  obtain ⟨R₀, hR₀, h⟩ := dlt4_scaling_of_coupling_uniform hStab d hd hd3 ν hmean hvar hvar' θ₀
+    hθ₀ hexp ΩW PW W hW Z hZmod ΩB PB B hB hBc hBm K hK T₀ T hT₀ hT₀T hZcont hZgrow ε δ hε hδ
+    (fun _ => ∅) (fun C hC hCT η δ' hη hδ' => by
+      obtain ⟨Rc, hRc, hc⟩ := Sandpile.Continuum.heat_field_coupling_of_version d hd hd3 ν
+        ΩW PW W hW Z hZmod T hT hZcont hfdd htight C hC hCT η δ' hη hδ'
+      refine ⟨Rc, hRc, fun R hR => ?_⟩
+      obtain ⟨P, hP, h1, h2, h3⟩ := hc R hR
+      exact ⟨P, hP, h1, h2, by simpa only [Set.union_empty] using h3⟩)
+  refine ⟨R₀, hR₀, fun R hR => ?_⟩
+  obtain ⟨P, hP, h1, h2, h3⟩ := h R hR
+  exact ⟨P, hP, h1, h2, by simpa only [Set.union_empty] using h3⟩
 
 end Parking.Support
