@@ -473,4 +473,26 @@ theorem tendsto_integral_test_spatialScaledWalk {d : ℕ} (hd : 1 ≤ d) (hd3 : 
     1 (fun _ => a) (fun _ => ⟨ha, by linarith⟩) F
   simpa [F, BoundedContinuousFunction.compContinuous_apply, ofCompactSupport] using h
 
+/-- The fixed-time walk convergence also holds along the parabolic mesh. -/
+theorem tendsto_integral_test_spatialScaledWalk_floor_sq {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    (ΩB : Type) [MeasurableSpace ΩB] (PB : Measure ΩB) [IsProbabilityMeasure PB]
+    (B : ℝ≥0 → ΩB → EuclideanSpace ℝ (Fin d)) (hB : IsBrownianSpace d 0 B PB)
+    {φ : (Fin d → ℝ) → ℝ} (hφ : IsTestFun φ) (x : Fin d → ℝ)
+    {a : ℝ} (ha : 0 ≤ a) :
+    Tendsto (fun R : ℝ => ∫ p, φ (x + spatialScaledSite ⌊R ^ 2⌋₊
+      (walkPath (0 : Site d) p ⌊(⌊R ^ 2⌋₊ : ℝ) * a⌋₊)) ∂(walkLaw d)) atTop
+      (𝓝 (∫ β, φ (x + ofBrownianSpace B (Real.toNNReal a) β) ∂PB)) := by
+  exact (tendsto_integral_test_spatialScaledWalk hd hd3 ΩB PB B hB hφ x ha).comp
+    (tendsto_nat_floor_atTop.comp (tendsto_pow_atTop two_ne_zero))
+
+/-- The natural parabolic mesh has asymptotically the same spatial scale. -/
+theorem tendsto_sqrt_floor_sq_div :
+    Tendsto (fun R : ℝ => Real.sqrt (⌊R ^ 2⌋₊ : ℝ) / R) atTop (𝓝 1) := by
+  have h : Tendsto (fun R : ℝ => Real.sqrt ((⌊R ^ 2⌋₊ : ℝ) / R ^ 2)) atTop (𝓝 1) := by
+    simpa only [Real.sqrt_one, Function.comp_def] using (Real.continuous_sqrt.tendsto 1).comp
+      (tendsto_nat_floor_div_atTop.comp (tendsto_pow_atTop two_ne_zero))
+  apply h.congr'
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with R hR
+  simp [Real.sqrt_div, Real.sqrt_sq_eq_abs, abs_of_nonneg hR]
+
 end Parking
