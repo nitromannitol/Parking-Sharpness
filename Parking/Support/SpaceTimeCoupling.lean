@@ -16,7 +16,7 @@ open scoped NNReal ENNReal
 
 universe u v
 
-namespace Sandpile
+namespace Parking.Support
 
 /-- A common finite-family threshold controls the two-reward gap at every horizon in an
 interval of positive times. -/
@@ -92,10 +92,6 @@ theorem stability_gap_of_two_rewards_uniform
     Sandpile.Continuum.brownianDiscount (B x) PB (fun s y => -G i s y) T| ≤ ε at hmid
   linarith
 
-
-
-namespace Continuum
-
 /-- The Brownian cutoff radius may be chosen uniformly for horizons below a fixed bound. -/
 theorem exists_brownianDiscount_cutoff_gap_of_growth_uniform (d : ℕ) (p : ℕ) {K T₁ ε : ℝ}
     (hK : 0 ≤ K) (hT₁ : 0 < T₁) (hε : 0 < ε) :
@@ -143,16 +139,9 @@ theorem exists_brownianDiscount_cutoff_gap_of_growth_uniform (d : ℕ) (p : ℕ)
     _ ≤ K * (2 * (2 ^ (j + 1) * A)) ^ p := mul_le_mul_of_nonneg_left hstep hK
     _ = K * 2 ^ p * (2 ^ (j + 1) * A) ^ p := by rw [hpow]; ring
 
-
-end Continuum
-
-end Sandpile
-
-
-set_option maxHeartbeats 400000 in
 /-- The rescaled odometer and the Brownian value can be coupled uniformly on a compact
 interval of positive times and a compact set of spatial points. -/
-theorem Sandpile.dlt4_scaling_of_version_uniform
+theorem dlt4_scaling_of_version_uniform
     (hStab : Sandpile.External.ContinuumStoppingStability.{u})
     (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3)
     (ν : Measure ℝ) [IsProbabilityMeasure ν]
@@ -216,7 +205,7 @@ theorem Sandpile.dlt4_scaling_of_version_uniform
     PW Z T hT.le hmeasZ hZcont hZgrow (δ / 5) hδ5
   obtain ⟨A₁, hA₁4, hA₁⟩ := Sandpile.exists_walk_cutoff_stoppingSup_gap d hd 1
     (K := Kw) (T := T) (ε := ε / 8) hKw hT (by positivity)
-  obtain ⟨A₂, hA₂4, hA₂⟩ := Sandpile.Continuum.exists_brownianDiscount_cutoff_gap_of_growth_uniform
+  obtain ⟨A₂, hA₂4, hA₂⟩ := exists_brownianDiscount_cutoff_gap_of_growth_uniform
     d mz (K := (mz : ℝ)) (T₁ := T) (ε := ε / 8) (Nat.cast_nonneg mz) hT (by positivity)
   set ρ' : ℝ := ρ + Real.sqrt d + 1 with hρ'def
   have hρ'0 : 0 ≤ ρ' := by rw [hρ'def]; positivity
@@ -236,7 +225,7 @@ theorem Sandpile.dlt4_scaling_of_version_uniform
   have hM : (0 : ℝ) ≤ M := le_max_right _ _
   obtain ⟨a, ha, hosc⟩ := (htight C hCc hCs).2 (δ / 5) η hδ5 hη
   obtain ⟨N, G, hGc, hGM, hnear⟩ := exists_cutoff_reward_family d A T hA0 M η a hM hη ha
-  obtain ⟨Rs, hRs, hstab⟩ := Sandpile.stability_gap_of_two_rewards_uniform hStab d hd ΩB PB B hB T₀ T hT₀ hT₀T
+  obtain ⟨Rs, hRs, hstab⟩ := stability_gap_of_two_rewards_uniform hStab d hd ΩB PB B hB T₀ T hT₀ hT₀T
     K hK N (fun i s y => -G i s y) (fun i => (hGc i).neg) (M + η)
     (fun i s y => by simpa only [abs_neg] using hGM i s y) (ε / 8) (2 * η) (3 * η)
     (by positivity)
@@ -546,3 +535,5 @@ theorem Sandpile.dlt4_scaling_of_version_uniform
           ← ENNReal.ofReal_add (by positivity) (by positivity)]
         congr 1
         ring
+
+end Parking.Support
