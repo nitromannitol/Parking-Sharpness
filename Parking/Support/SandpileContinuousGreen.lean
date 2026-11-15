@@ -1,4 +1,5 @@
 import Parking.Support.SandpileNoiseBridge
+import Parking.Support.SpatialNoiseCongruence
 import Sandpile.Support.MeanAVersion
 import Sandpile.Support.LimFieldVersion
 
@@ -226,5 +227,149 @@ theorem exists_everywhere_regular_version {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 
         hb.trans ((mul_le_mul_of_nonneg_right (le_abs_self C) (by positivity)).trans
           (mul_le_mul_of_nonneg_left harg (abs_nonneg C)))
       simpa only [Z, ite_eq_right hω, Real.rpow_one, mul_assoc] using hb'
+
+/-- Products of coordinatewise versions of scaled white noise have the expected integral. -/
+theorem scaled_whiteNoise_product {d : ℕ} {Ω : Type} [MeasurableSpace Ω]
+    {P : Measure Ω} {W : (Space d → ℝ) → Ω → ℝ} (hW : IsWhiteNoise d W P)
+    (f g : Space d → ℝ) (hf : MemLp f 2 volume) (hg : MemLp g 2 volume)
+    (a b : ℝ) (X Y : Ω → ℝ)
+    (hX : X =ᵐ[P] fun ω => a * W f ω) (hY : Y =ᵐ[P] fun ω => b * W g ω) :
+    Integrable (fun ω => X ω * Y ω) P ∧
+      ∫ ω, X ω * Y ω ∂P = (a * b) * ∫ x, f x * g x := by
+  have hXm : MemLp X 2 P := (memLp_congr_ae hX).2 ((hW.gaussian.hasGaussianLaw_eval f).memLp_two.const_mul a)
+  have hYm : MemLp Y 2 P := (memLp_congr_ae hY).2 ((hW.gaussian.hasGaussianLaw_eval g).memLp_two.const_mul b)
+  refine ⟨hXm.integrable_mul hYm, ?_⟩
+  calc
+    _ = ∫ ω, (a * b) * (W f ω * W g ω) ∂P := by
+      apply integral_congr_ae
+      filter_upwards [hX, hY] with ω hx hy
+      rw [hx, hy]
+      ring
+    _ = _ := by rw [integral_const_mul, hW.cov f g hf hg]
+
+/-- The covariance of any coordinatewise version of the Gaussian potential. -/
+theorem gaussianPotential_version_covariance {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    {v : ℝ} (hv : 0 ≤ v) {Ω : Type} [MeasurableSpace Ω] {P : Measure Ω}
+    {W : (Space d → ℝ) → Ω → ℝ} (hW : IsWhiteNoise d W P)
+    (Z : Ω → ℝ → (Fin d → ℝ) → ℝ)
+    (hZ : ∀ t x, 0 ≤ t → (fun ω => Z ω t x) =ᵐ[P]
+      fun ω => gaussianPotential d v W t (WithLp.toLp 2 x) ω)
+    (r s : ℝ) (x y : Fin d → ℝ) (hr : 0 ≤ r) (hs : 0 ≤ s) :
+    Integrable (fun ω => Z ω r x * Z ω s y) P ∧
+      ∫ ω, Z ω r x * Z ω s y ∂P =
+        v * ∫ a in Set.Ioc (0 : ℝ) r, ∫ b in Set.Ioc (0 : ℝ) s,
+          External.contHeatKernel d (a + b) x y := by
+  have h := scaled_whiteNoise_product hW
+    (greenTimeBM d r (WithLp.toLp 2 x)) (greenTimeBM d s (WithLp.toLp 2 y))
+    (Sandpile.Support.memLp_greenTimeBM hd hd3 hr _) (Sandpile.Support.memLp_greenTimeBM hd hd3 hs _)
+    (Real.sqrt v) (Real.sqrt v) (fun ω => Z ω r x) (fun ω => Z ω s y)
+    (hZ r x hr) (hZ s y hs)
+  refine ⟨h.1, ?_⟩
+  rw [h.2, ← sq, Real.sq_sqrt hv,
+    Sandpile.Support.integral_greenTimeBM_mul_two_interval hd hd3 hr hs,
+    intervalIntegral.integral_of_le hr]
+  congr 1
+  apply integral_congr_ae
+  filter_upwards with a
+  rw [intervalIntegral.integral_of_le hs]
+  apply integral_congr_ae
+  filter_upwards with b
+  have hnorm : ‖(WithLp.toLp 2 x : Space d) - WithLp.toLp 2 y‖ ^ 2 =
+      ∑ i, (x i - y i) ^ 2 := by
+    rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+    simp only [PiLp.sub_apply, Real.norm_eq_abs, sq_abs]
+  simp only [External.contHeatKernel, heatKernelBM, hnorm]
+
+/-- The covariance of a transported test coordinate and a Gaussian potential version. -/
+theorem gaussianPotential_version_test_covariance {d : ℕ} (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    {v : ℝ} {Ω : Type} [MeasurableSpace Ω] {P : Measure Ω}
+    {WD : (Space d → ℝ) → Ω → ℝ} (hWD : IsWhiteNoise d WD P)
+    (W : ((Fin d → ℝ) → ℝ) → Ω → ℝ) (Z : Ω → ℝ → (Fin d → ℝ) → ℝ)
+    (hW : ∀ φ, IsTestFun φ → W φ =ᵐ[P] WD (fun y => φ (WithLp.ofLp y)))
+    (hZ : ∀ t x, 0 ≤ t → (fun ω => Z ω t x) =ᵐ[P]
+      fun ω => gaussianPotential d v WD t (WithLp.toLp 2 x) ω)
+    (φ : (Fin d → ℝ) → ℝ) (hφ : IsTestFun φ) (t : ℝ) (x : Fin d → ℝ) (ht : 0 ≤ t) :
+    Integrable (fun ω => W φ ω * Z ω t x) P ∧
+      ∫ ω, W φ ω * Z ω t x ∂P =
+        Real.sqrt v * ∫ y, φ y * External.contFiniteGreen d t x y := by
+  have h := scaled_whiteNoise_product hWD (fun y => φ (WithLp.ofLp y))
+    (greenTimeBM d t (WithLp.toLp 2 x)) (memLp_test_comp_ofLp φ hφ)
+    (Sandpile.Support.memLp_greenTimeBM hd hd3 ht _) 1 (Real.sqrt v)
+    (W φ) (fun ω => Z ω t x) (by simpa only [one_mul] using hW φ hφ) (hZ t x ht)
+  refine ⟨h.1, ?_⟩
+  rw [h.2, one_mul, ← integral_comp_ofLp d (fun y => φ y * External.contFiniteGreen d t x y)]
+  congr 1
+  apply integral_congr_ae
+  filter_upwards with y
+  rw [contFiniteGreen_eq_greenTimeBM d t ht x (WithLp.ofLp y)]
+
+/-- A continuous Green field and its spatial white noise on a common probability space. -/
+theorem exists_continuous_green_field (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3)
+    (v : ℝ) (hv : 0 < v) :
+    ∃ (Ω : Type) (_ : MeasurableSpace Ω) (P : Measure Ω) (_ : IsProbabilityMeasure P)
+      (WD : (Space d → ℝ) → Ω → ℝ)
+      (W : ((Fin d → ℝ) → ℝ) → Ω → ℝ) (Z : Ω → ℝ → (Fin d → ℝ) → ℝ),
+      IsWhiteNoise d WD P ∧
+      (∀ φ, IsTestFun φ → W φ =ᵐ[P] WD (fun y => φ (WithLp.ofLp y))) ∧
+      (∀ t x, 0 ≤ t → (fun ω => Z ω t x) =ᵐ[P]
+        fun ω => gaussianPotential d v WD t (WithLp.toLp 2 x) ω) ∧
+      (∀ ω, Continuous fun p : ℝ × (Fin d → ℝ) => Z ω p.1 p.2) ∧
+      (∀ ω T, 0 < T → ∃ C k : ℝ, ∀ p ∈ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Fin d → ℝ)),
+        |Z ω p.1 p.2| ≤ C * (1 + ‖p.2‖) ^ k) ∧
+      IsSpatialWhiteNoise d 1 P W ∧
+      (∀ φ, IsTestFun φ → Measurable (W φ)) ∧
+      (∀ ω t x, 0 ≤ t → Z ω t x = Real.sqrt v * W (External.contFiniteGreen d t x) ω) ∧
+      (∀ ω x, Z ω 0 x = 0) ∧
+      (∀ t x, Measurable fun ω => Z ω t x) ∧
+      (∀ r x s y, 0 ≤ r → 0 ≤ s →
+        Integrable (fun ω => Z ω r x * Z ω s y) P ∧
+        ∫ ω, Z ω r x * Z ω s y ∂P =
+          v * ∫ a in Set.Ioc (0 : ℝ) r, ∫ b in Set.Ioc (0 : ℝ) s,
+            External.contHeatKernel d (a + b) x y) ∧
+      (∀ φ, IsTestFun φ → ∀ t x, 0 ≤ t →
+        Integrable (fun ω => W φ ω * Z ω t x) P ∧
+        ∫ ω, W φ ω * Z ω t x ∂P =
+          Real.sqrt v * ∫ y, φ y * External.contFiniteGreen d t x y) := by
+  classical
+  obtain ⟨Ω, mΩ, P, hP, WD, hWD⟩ := Sandpile.Continuum.exists_isWhiteNoise d
+  let _ : MeasurableSpace Ω := mΩ
+  let _ : IsProbabilityMeasure P := hP
+  obtain ⟨Y, hYm, hYc, hYmod⟩ := exists_measurable_continuous_gaussianPotential hd hd3 hv.le P WD hWD
+  obtain ⟨Z, hZc, hZm, hZmod, hZ0, hZgrowth⟩ :=
+    exists_everywhere_regular_version hd hd3 hv.le P WD hWD Y hYm hYc hYmod
+  let W0 : ((Fin d → ℝ) → ℝ) → Ω → ℝ :=
+    fun φ ω => if φ = 0 then 0 else WD (fun y => φ (WithLp.ofLp y)) ω
+  have hW0eq : ∀ φ, W0 φ =ᵐ[P] WD (fun y => φ (WithLp.ofLp y)) := by
+    intro φ
+    by_cases hφ : φ = 0
+    · subst φ
+      have hz : (fun y : Space d => (0 : (Fin d → ℝ) → ℝ) (WithLp.ofLp y)) = 0 := by
+        ext y
+        simp only [Pi.zero_apply]
+      simp only [W0, ite_true, hz]
+      exact (sandpile_whiteNoise_zero_ae hWD).symm
+    · exact Filter.Eventually.of_forall fun ω => by simp only [W0, ite_eq_right hφ]
+  have hW0m : ∀ φ, IsTestFun φ → Measurable (W0 φ) := by
+    intro φ hφ
+    by_cases hz : φ = 0
+    · simp only [W0, hz, ↓reduceIte]; exact measurable_const
+    · simpa only [W0, ite_eq_right hz] using hWD.meas _ (memLp_test_comp_ofLp φ hφ)
+  obtain ⟨W, htest, hpair⟩ := exists_noise_with_green_coordinates hd v hv W0 Z
+    (fun ω => by simp [W0]) hZ0
+  have hWeq : ∀ φ, IsTestFun φ → W φ =ᵐ[P] WD (fun y => φ (WithLp.ofLp y)) := by
+    intro φ hφ
+    rw [htest φ hφ]
+    exact hW0eq φ
+  have hbase : IsSpatialWhiteNoise d 1 P (fun φ ω => WD (fun y => φ (WithLp.ofLp y)) ω) := by
+    simpa only [Real.sqrt_one, one_mul] using sandpile_isSpatialWhiteNoise hWD 1 (by norm_num)
+  refine ⟨Ω, mΩ, P, hP, WD, W, Z, hWD, hWeq, hZmod, hZc, hZgrowth,
+    isSpatialWhiteNoise_congr hbase hWeq, ?_, hpair, hZ0, hZm, ?_, ?_⟩
+  · intro φ hφ
+    rw [htest φ hφ]
+    exact hW0m φ hφ
+  · intro r x s y hr hs
+    exact gaussianPotential_version_covariance hd hd3 hv.le hWD Z hZmod r s x y hr hs
+  · intro φ hφ t x ht
+    exact gaussianPotential_version_test_covariance hd hd3 hWD W Z hWeq hZmod φ hφ t x ht
 
 end Parking
