@@ -3,6 +3,7 @@ import Parking.Support.LinearFieldMeasurable
 import Sandpile.Frozen.HeatPotentialInvariance
 import Sandpile.Support.StopFieldCoupling
 import Sandpile.Support.MainExplWeak
+import Mathlib.Topology.MetricSpace.Gluing
 
 /-!
 # Joint scaling of scenery and the linear field
@@ -13,6 +14,11 @@ Auxiliary results for the joint scaling of the scenery and the interpolated line
 open MeasureTheory ProbabilityTheory Filter Topology
 
 namespace Parking.Support
+
+noncomputable local instance (n : ℕ) : MetricSpace (Fin n) :=
+  MetricSpace.induced Fin.val Fin.val_injective inferInstance
+
+attribute [local instance] Metric.metricSpaceSum
 
 /-- Joint convergence of integrals implies convergence of integrals in the second coordinate. -/
 theorem tendsto_integral_snd_of_joint
@@ -235,5 +241,50 @@ theorem tendstoInDistribution_mixed_field
     cases hx : x j <;> simp [s, sp, hx]
   rw [hsource, hlimit] at h
   exact h
+
+/-- Adjoining finitely many isolated coordinates preserves field equicontinuity. -/
+theorem eventually_oscillation_sum
+    {Ω E : Type*} [MeasurableSpace Ω] [MetricSpace E]
+    (μ : Measure Ω) (n : ℕ) (f : ℝ → Ω → E → ℝ) (a : ℝ → Ω → Fin n → ℝ)
+    (htight : ∀ ε η : ℝ, 0 < ε → 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ∀ᶠ R in atTop,
+      μ {ω | ∃ x y : E, dist x y < ρ ∧ η < |f R ω x - f R ω y|} ≤ ENNReal.ofReal ε) :
+    ∀ ε η : ℝ, 0 < ε → 0 < η → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ R in atTop,
+      μ {ω | ∃ x y : E ⊕ Fin n, dist x y < δ ∧
+        η < |Sum.elim (f R ω) (a R ω) x - Sum.elim (f R ω) (a R ω) y|}
+        ≤ ENNReal.ofReal ε := by
+  intro ε η hε hη
+  obtain ⟨ρ, hρ, hρbound⟩ := htight ε η hε hη
+  refine ⟨min ρ 1, lt_min hρ zero_lt_one, ?_⟩
+  filter_upwards [hρbound] with R hbound
+  apply (measure_mono ?_).trans hbound
+  intro ω hω
+  obtain ⟨x, y, hxy, hdiff⟩ := hω
+  cases x with
+  | inl x =>
+    cases y with
+    | inl y =>
+      refine ⟨x, y, ?_, ?_⟩
+      · change dist x y < min ρ 1 at hxy
+        exact lt_of_lt_of_le hxy (min_le_left _ _)
+      · simpa only [Sum.elim_inl] using hdiff
+    | inr j =>
+      have h1 : 1 ≤ dist (Sum.inl x : E ⊕ Fin n) (Sum.inr j) := Metric.Sum.one_le_dist_inl_inr
+      exact False.elim ((not_le_of_gt (lt_of_lt_of_le hxy (min_le_right _ _))) h1)
+  | inr i =>
+    cases y with
+    | inl y =>
+      have h1 : 1 ≤ dist (Sum.inr i : E ⊕ Fin n) (Sum.inl y) := Metric.Sum.one_le_dist_inr_inl
+      exact False.elim ((not_le_of_gt (lt_of_lt_of_le hxy (min_le_right _ _))) h1)
+    | inr j =>
+      change dist (i : ℕ) (j : ℕ) < min ρ 1 at hxy
+      have hlt : dist (i : ℕ) (j : ℕ) < 1 :=
+        lt_of_lt_of_le hxy (min_le_right ρ 1)
+      have hij : i = j := by
+        by_contra hne
+        have hv : (i : ℕ) ≠ (j : ℕ) := fun h => hne (Fin.ext h)
+        exact (not_le_of_gt hlt) (Nat.pairwise_one_le_dist hv)
+      subst j
+      simp only [Sum.elim_inr, sub_self, abs_zero] at hdiff
+      exact False.elim ((not_lt_of_ge hη.le) hdiff)
 
 end Parking.Support
