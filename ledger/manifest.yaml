@@ -723,3 +723,14 @@ nodes:
     provider: Parking.External.heatCompactness
     approved: "2026-11-14"
 
+  - id: ext-linear-field-scaling-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:1756-1767 (prop:spatial-scaling, linear field scaling limit)
+    file: Parking/External/LinearFieldScalingProved.lean
+    export: Parking.External.linearFieldScaling_holds
+    state: SEALED
+    frozen_sha256: fdda2eb64599bb93d200448a0ad4adc9d3e9b034770c022fb78758a9bb3471d1
+    provider: Parking.External.linearFieldScaling_holds
+    approved: "2026-11-14"
+

@@ -621,6 +621,7 @@ import Parking.Support.Terminal
 import Parking.Support.LinInterp
 import Parking.Support.BarPotential
 import Parking.External.LinearFieldScaling
+import Parking.External.LinearFieldScalingProved
 import Parking.External.SpatialOdometerScaling
 import Parking.Support.SpatialGreenPairing
 import Parking.External.HeatInteriorRegularity

@@ -1,4 +1,5 @@
 import Parking.MainTheorems
+import Parking.External.LinearFieldScalingProved
 
 /-!
 # Axioms audit
@@ -16,6 +17,7 @@ This file is not imported by the library root; the report runs when it is built 
 (`lake build Parking.Meta.AxiomsAudit`), as continuous integration does on every push.
 -/
 
+#print axioms Parking.External.linearFieldScaling_holds
 #print axioms Parking.subcritical_tail
 #print axioms Parking.master
 #print axioms Parking.growth
