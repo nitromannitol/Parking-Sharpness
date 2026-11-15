@@ -3,6 +3,7 @@ import Sandpile.Continuum.Kernel
 import Sandpile.Support.ContBMSquare
 import Sandpile.Support.ContBMTimeBound
 import Sandpile.Support.ExplNoiseFubini
+import Sandpile.Support.ExplGreenFubini
 import Parking.Support.SpatialGreenPairing
 
 /-!
@@ -149,6 +150,107 @@ theorem integral_comp_ofLp (d : ℕ) (f : (Fin d → ℝ) → ℝ) :
     (∫ y : Sandpile.Continuum.Space d, f (WithLp.ofLp y)) = ∫ x, f x := by
   exact (PiLp.volume_preserving_ofLp (Fin d)).integral_comp
     (MeasurableEquiv.toLp 2 (Fin d → ℝ)).symm.measurableEmbedding f
+
+/-- The spatial mass of the finite-time Green kernel is its time horizon. -/
+theorem integral_contFiniteGreen (d : ℕ) (hd : 1 ≤ d) (t : ℝ) (ht : 0 ≤ t)
+    (x : Fin d → ℝ) : (∫ y, External.contFiniteGreen d t x y) = t := by
+  rw [← integral_comp_ofLp d (External.contFiniteGreen d t x)]
+  simp_rw [contFiniteGreen_eq_greenTimeBM d t ht]
+  simpa only [WithLp.toLp_ofLp] using
+    (Sandpile.Support.integrable_greenTimeBM_and_integral_eq hd ht (WithLp.toLp 2 x)).2
+
+/-- Two distinct heat-kernel centers can be separated by a spatial point. -/
+theorem heatKernelBM_lt_at_reflection {d : ℕ} (hd : 1 ≤ d) {a : ℝ} (ha : 0 < a)
+    (x z : Sandpile.Continuum.Space d) (hxz : x ≠ z) :
+    Sandpile.Continuum.heatKernelBM d a z (x + (x - z)) <
+      Sandpile.Continuum.heatKernelBM d a x (x + (x - z)) := by
+  have hd' : (0 : ℝ) < d := by exact_mod_cast hd
+  have hn : 0 < ‖x - z‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hxz)
+  have hx : x - (x + (x - z)) = -(x - z) := by abel
+  have hz : z - (x + (x - z)) = -((2 : ℝ) • (x - z)) := by
+    simp only [two_smul]
+    abel
+  have hnorm : ‖x - (x + (x - z))‖ ^ 2 < ‖z - (x + (x - z))‖ ^ 2 := by
+    rw [hx, hz, norm_neg, norm_neg, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (by norm_num : (0 : ℝ) < 2)]
+    nlinarith [sq_pos_of_pos hn]
+  unfold Sandpile.Continuum.heatKernelBM
+  apply mul_lt_mul_of_pos_left _ (Real.rpow_pos_of_pos (by positivity) _)
+  apply Real.exp_lt_exp.mpr
+  have hden : 0 < 2 * a := by positivity
+  apply (div_lt_div_iff_of_pos_right hden).2
+  nlinarith
+
+/-- Distinct positive-time Green kernels differ at a point off both diagonals. -/
+theorem greenTimeBM_lt_at_reflection {d : ℕ} (hd : 1 ≤ d) {t : ℝ} (ht : 0 < t)
+    (x z : Sandpile.Continuum.Space d) (hxz : x ≠ z) :
+    Sandpile.Continuum.greenTimeBM d t z (x + (x - z)) <
+      Sandpile.Continuum.greenTimeBM d t x (x + (x - z)) := by
+  let y := x + (x - z)
+  have hx : x ≠ y := by
+    intro heq
+    apply hxz
+    dsimp [y] at heq
+    have h : x - z = 0 := by
+      have := congrArg (fun w : Sandpile.Continuum.Space d => w - x) heq
+      simpa using this.symm
+    exact sub_eq_zero.mp h
+  have hz : z ≠ y := by
+    intro heq
+    apply hxz
+    dsimp [y] at heq
+    have hid : z - (x + (x - z)) = -((2 : ℝ) • (x - z)) := by
+      simp only [two_smul]
+      abel
+    have h : (2 : ℝ) • (x - z) = 0 := by
+      have hzero : z - (x + (x - z)) = 0 := sub_eq_zero.mpr heq
+      simpa only [hid, neg_eq_zero] using hzero
+    exact sub_eq_zero.mp ((smul_eq_zero.mp h).resolve_left (by norm_num))
+  have hxi := Sandpile.Support.integrableOn_heatKernelBM_time hd (t := t) hx
+  have hzi := Sandpile.Support.integrableOn_heatKernelBM_time hd (t := t) hz
+  have hlt : ∀ a : ℝ, 0 < a →
+      Sandpile.Continuum.heatKernelBM d a z y < Sandpile.Continuum.heatKernelBM d a x y :=
+    fun _ ha => heatKernelBM_lt_at_reflection hd ha x z hxz
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Set.Ioo (0 : ℝ) t)]
+      (fun a => Sandpile.Continuum.heatKernelBM d a x y -
+        Sandpile.Continuum.heatKernelBM d a z y) := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with a ha
+    exact (sub_pos.mpr (hlt a ha.1)).le
+  have hpos : 0 < ∫ a in Set.Ioo (0 : ℝ) t,
+      (Sandpile.Continuum.heatKernelBM d a x y - Sandpile.Continuum.heatKernelBM d a z y) := by
+    rw [setIntegral_pos_iff_support_of_nonneg_ae hnonneg (hxi.sub hzi)]
+    refine ((Measure.measure_Ioo_pos volume).2 ht).trans_le (measure_mono ?_)
+    intro a ha
+    exact ⟨ne_of_gt (sub_pos.mpr (hlt a ha.1)), ha⟩
+  rw [integral_sub hxi hzi] at hpos
+  change Sandpile.Continuum.greenTimeBM d t z y < Sandpile.Continuum.greenTimeBM d t x y
+  rw [Sandpile.Continuum.greenTimeBM, Sandpile.Continuum.greenTimeBM,
+    intervalIntegral.integral_of_le ht.le, intervalIntegral.integral_of_le ht.le,
+    integral_Ioc_eq_integral_Ioo, integral_Ioc_eq_integral_Ioo]
+  linarith
+
+/-- A positive-time Green kernel determines both its horizon and its center. -/
+theorem contFiniteGreen_inj {d : ℕ} (hd : 1 ≤ d) {t s : ℝ} (ht : 0 < t) (hs : 0 < s)
+    (x z : Fin d → ℝ) (h : External.contFiniteGreen d t x = External.contFiniteGreen d s z) :
+    t = s ∧ x = z := by
+  have hts : t = s := by
+    calc
+      t = ∫ y, External.contFiniteGreen d t x y := (integral_contFiniteGreen d hd t ht.le x).symm
+      _ = ∫ y, External.contFiniteGreen d s z y := by rw [h]
+      _ = s := integral_contFiniteGreen d hd s hs.le z
+  refine ⟨hts, ?_⟩
+  subst s
+  by_contra hxz
+  have hne : (WithLp.toLp 2 x : Sandpile.Continuum.Space d) ≠ WithLp.toLp 2 z := by
+    intro heq
+    exact hxz (congrArg WithLp.ofLp heq)
+  let y : Sandpile.Continuum.Space d := WithLp.toLp 2 x + (WithLp.toLp 2 x - WithLp.toLp 2 z)
+  have hlt := greenTimeBM_lt_at_reflection hd ht (WithLp.toLp 2 x) (WithLp.toLp 2 z) hne
+  have heq := congrFun h (WithLp.ofLp y)
+  rw [contFiniteGreen_eq_greenTimeBM d t ht.le x (WithLp.ofLp y),
+    contFiniteGreen_eq_greenTimeBM d t ht.le z (WithLp.ofLp y)] at heq
+  simp only [WithLp.toLp_ofLp] at heq
+  exact (ne_of_gt hlt) heq
 
 /-- A test function remains square integrable in Euclidean coordinates. -/
 theorem memLp_test_comp_ofLp {d : ℕ} (φ : (Fin d → ℝ) → ℝ) (hφ : IsTestFun φ) :
