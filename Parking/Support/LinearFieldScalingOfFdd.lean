@@ -287,4 +287,79 @@ theorem eventually_oscillation_sum
       simp only [Sum.elim_inr, sub_self, abs_zero] at hdiff
       exact False.elim ((not_lt_of_ge hη.le) hdiff)
 
+/-- The linear field is equicontinuous in probability on each compact nonnegative-time set. -/
+theorem eventually_oscillation_linHatInterp
+    (d : ℕ) (hd : 1 ≤ d) (hd3 : d ≤ 3) (ν : Measure ℤ) (hν : Parking.CriticalLaw ν)
+    {Ω' : Type} [MeasurableSpace Ω'] (Q' : Measure Ω') [IsProbabilityMeasure Q']
+    (WD : (Sandpile.Continuum.Space d → ℝ) → Ω' → ℝ)
+    (hWD : Sandpile.Continuum.IsWhiteNoise d WD Q')
+    (hLB : ∀ (ζ : Sandpile.Site d → ℝ) (R : ℝ), 1 ≤ R →
+      ∀ p : ℝ × (Fin d → ℝ), 0 ≤ p.1 →
+        Parking.linHatInterp ζ R p =
+          Sandpile.Frozen.HeatPotentialInvariance.linInterp d R ζ p.1 (WithLp.toLp 2 p.2))
+    (K : Set (ℝ × (Fin d → ℝ))) (hK : IsCompact K) (hKtime : ∀ p ∈ K, 0 ≤ p.1) :
+    ∀ ε η : ℝ, 0 < ε → 0 < η → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ R in atTop,
+      (Parking.law d ν) {w | ∃ p q : K, dist p q < δ ∧
+        η < |Parking.linHatInterp (fun y => (w.1 y : ℝ)) R p.1 -
+          Parking.linHatInterp (fun y => (w.1 y : ℝ)) R q.1|} ≤ ENNReal.ofReal ε := by
+  let : IsProbabilityMeasure ν := hν.prob
+  obtain ⟨hprob, hmean, hvar, hfinite, ⟨θ, hθ, hexp⟩, _⟩ := Parking.criticalLaw_moments ν hν
+  let : IsProbabilityMeasure (ν.map (fun k : ℤ => (k : ℝ))) := hprob
+  let ψ : (ℝ × (Fin d → ℝ)) → ℝ × Sandpile.Continuum.Space d :=
+    fun p => (p.1, WithLp.toLp 2 p.2)
+  have hψ : Continuous ψ :=
+    continuous_fst.prodMk ((PiLp.continuous_toLp 2 _).comp continuous_snd)
+  let K' : Set (ℝ × Sandpile.Continuum.Space d) := ψ '' K
+  have hK' : IsCompact K' := hK.image hψ
+  obtain ⟨M, hM⟩ := (hK.image continuous_fst).bddAbove
+  let T : ℝ := max M 1
+  have hT : 0 < T := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hKT : K' ⊆ Set.Icc (0 : ℝ) T ×ˢ (Set.univ : Set (Sandpile.Continuum.Space d)) := by
+    rintro _ ⟨p, hp, rfl⟩
+    refine ⟨⟨hKtime p hp, ?_⟩, Set.mem_univ _⟩
+    exact le_trans (hM ⟨p, hp, rfl⟩) (le_max_left _ _)
+  obtain ⟨_, htight⟩ := Sandpile.Frozen.heat_potential_invariance d (by omega) hd3
+    (ν.map (fun k : ℤ => (k : ℝ))) hmean hvar hfinite θ hθ hexp Q' WD hWD T hT
+  let A : Parking.Data d → Sandpile.Site d → ℝ :=
+    fun w y => 1 + 2 * (d : ℝ) * (w.1 y : ℝ)
+  have hA : Measurable A := by
+    apply Measurable.of_eval
+    intro y
+    exact measurable_const.add (measurable_const.mul
+      (measurable_intCastReal.comp ((measurable_pi_apply y).comp measurable_fst)))
+  have hmap : (Parking.law d ν).map A =
+      Sandpile.centeredMassLaw d (ν.map (fun k : ℤ => (k : ℝ))) :=
+    Parking.law_map_mass d hd ν
+  let φ : K → K' := fun p => ⟨ψ p.1, ⟨p.1, p.2, rfl⟩⟩
+  have hφ : UniformContinuous φ := by
+    let : CompactSpace K := isCompact_iff_compactSpace.mp hK
+    exact CompactSpace.uniformContinuous_of_continuous
+      ((hψ.comp continuous_subtype_val).subtype_mk _)
+  let f : ℝ → Parking.Data d → K → ℝ :=
+    fun R w p => Parking.linHatInterp (fun y => (w.1 y : ℝ)) R p.1
+  let g : ℝ → (Sandpile.Site d → ℝ) → K' → ℝ := fun R σ p =>
+    Sandpile.Frozen.HeatPotentialInvariance.linInterp d R (Sandpile.scenery d σ) p.1.1 p.1.2
+  have heq : ∀ᶠ R : ℝ in atTop, ∀ w p, f R w p = g R (A w) (φ p) := by
+    filter_upwards [eventually_ge_atTop 1] with R hR w p
+    have hs : Sandpile.scenery d (A w) = fun y => (w.1 y : ℝ) := by
+      funext y
+      have hd0 : (2 * (d : ℝ)) ≠ 0 := by positivity
+      simp only [Sandpile.scenery, A]
+      field_simp
+      ring
+    simpa only [f, g, φ, ψ, hs] using hLB (fun y => (w.1 y : ℝ)) R hR p.1
+      (hKtime p.1 p.2)
+  have htight' : ∀ ε η : ℝ, 0 < ε → 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ∀ᶠ R in atTop,
+      (Sandpile.centeredMassLaw d (ν.map (fun k : ℤ => (k : ℝ))))
+        {σ | ∃ p q : K', dist p q < ρ ∧ η < |g R σ p - g R σ q|} ≤ ENNReal.ofReal ε := by
+    intro ε η hε hη
+    obtain ⟨ρ, hρ, hbound⟩ := (htight K' hK' hKT).2 ε η hε hη
+    refine ⟨ρ, hρ, ?_⟩
+    filter_upwards [eventually_ge_atTop 1] with R hR
+    apply (measure_mono ?_).trans (hbound R hR)
+    rintro σ ⟨p, q, hpq, hdiff⟩
+    exact ⟨p.1, p.2, q.1, q.2, hpq, hdiff⟩
+  exact eventually_oscillation_le_of_map (Parking.law d ν)
+    (Sandpile.centeredMassLaw d (ν.map (fun k : ℤ => (k : ℝ)))) A hA hmap φ hφ f g heq htight'
+
 end Parking.Support
