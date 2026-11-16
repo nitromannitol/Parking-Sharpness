@@ -1,9 +1,7 @@
-{
- "version": "1.2.0",
+{"version": "1.2.0",
  "packagesDir": ".lake/packages",
- "packages": [
-  {
-   "url": "https://github.com/leanprover-community/mathlib4.git",
+ "packages":
+ [{"url": "https://github.com/leanprover-community/mathlib4.git",
    "type": "git",
    "subDir": null,
    "scope": "",
@@ -12,10 +10,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "065356127b1dc0016f66b7283ce0ce2c4055aa55",
    "inherited": false,
-   "configFile": "lakefile.lean"
-  },
-  {
-   "url": "https://github.com/nitromannitol/Divisible-Sandpile-Percolation.git",
+   "configFile": "lakefile.lean"},
+  {"url": "https://github.com/nitromannitol/Divisible-Sandpile-Percolation.git",
    "type": "git",
    "subDir": null,
    "scope": "",
@@ -24,22 +20,18 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "58c21b8399823c3b5d1208608ceeac2ce5cefb5d",
    "inherited": false,
-   "configFile": "lakefile.lean"
-  },
-  {
-   "url": "https://github.com/nitromannitol/Lattice-Probability.git",
+   "configFile": "lakefile.lean"},
+  {"url": "https://github.com/nitromannitol/Lattice-Probability.git",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "7ab7f25507502a17bd1d71220bc1862804162c64",
-   "name": "\u00ablattice-probability\u00bb",
+   "rev": "89de1230d02e1a737a9c7ecd776d34070be014ee",
+   "name": "«lattice-probability»",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "7ab7f25507502a17bd1d71220bc1862804162c64",
+   "inputRev": "89de1230d02e1a737a9c7ecd776d34070be014ee",
    "inherited": false,
-   "configFile": "lakefile.lean"
-  },
-  {
-   "url": "https://github.com/leanprover-community/plausible",
+   "configFile": "lakefile.lean"},
+  {"url": "https://github.com/leanprover-community/plausible",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -48,10 +40,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/LeanSearchClient",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/LeanSearchClient",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -60,10 +50,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/import-graph",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/import-graph",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -72,10 +60,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/ProofWidgets4",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/ProofWidgets4",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -84,10 +70,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.lean"
-  },
-  {
-   "url": "https://github.com/leanprover-community/aesop",
+   "configFile": "lakefile.lean"},
+  {"url": "https://github.com/leanprover-community/aesop",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -96,10 +80,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "master",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/quote4",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/quote4",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -108,10 +90,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "master",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/batteries",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/batteries",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -120,10 +100,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover/lean4-cli",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover/lean4-cli",
    "type": "git",
    "subDir": null,
    "scope": "leanprover",
@@ -132,10 +110,7 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "v4.35.0-rc2",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  }
- ],
+   "configFile": "lakefile.toml"}],
  "name": "parking_sharpness",
  "lakeDir": ".lake",
- "fixedToolchain": false
-}
+ "fixedToolchain": false}
