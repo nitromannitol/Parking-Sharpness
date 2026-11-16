@@ -1,17 +1,24 @@
 import Parking.External.BernsteinProved
-import Parking.MainTheorems
+import Parking.Support.TableBernstein
 
 /-!
-# An application of the martingale Bernstein inequalities
+# A moment bound for the table martingale
 
-The nearest-hole counterexample follows with the Bernstein moment estimates supplied.
+The table noise moment bound holds using the martingale Bernstein estimates.
 -/
 
-open Filter
+open MeasureTheory
+open LatticeProb.MomentNorm (rNorm)
 
-/-- In dimension at least five, the nearest-hole probability can stay bounded away from zero. -/
-theorem Parking.nearest_counterexample_of_bernstein (d : ℕ) (hd : 5 ≤ d) :
-    ∃ p : ℝ, 0 < p ∧ p < 1 / 2 ∧ ∃ c : ℝ, 0 < c ∧
-      c ≤ liminf (fun t : ℕ =>
-        ((Parking.law d (Parking.threePointLaw p)) {ω | Parking.HoleCloser ω t}).toReal) atTop :=
-  Parking.nearest_counterexample Parking.External.bernstein d hd
+/-- The table noise moment bound with the Bernstein input supplied. -/
+theorem Parking.exists_table_noise_moment_bound_of_bernstein :
+    ∃ C : ℝ, 0 < C ∧ ∀ (d : ℕ), 3 ≤ d → ∀ (η : Parking.Site d → ℤ),
+      (∀ y, (η y).toNat ≤ 1) → ∀ (ρ : Parking.Label d × ℕ → ℝ) (T : ℕ)
+      (x : Parking.Site d) (r : ℝ), 2 ≤ r →
+      rNorm (Parking.flatRoundNoiseLaw d) r (fun ω =>
+        ((Parking.matchedState η ρ (Parking.curryRoundNoise ω) T).departures x : ℝ) -
+          Parking.matchedMeanU η ρ T x) ≤
+        C * (Real.sqrt r * (∫ ω, Parking.greenWeightedOdometer η ρ
+          (Parking.curryRoundNoise ω) T x T ^ (r / 2)
+          ∂(Parking.flatRoundNoiseLaw d)) ^ (1 / r) + r * Parking.escapeConst d) :=
+  Parking.exists_table_noise_moment_bound Parking.External.bernstein
