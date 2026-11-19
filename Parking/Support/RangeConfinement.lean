@@ -200,6 +200,24 @@ theorem exists_lower_tail_of_confinement (hd : 1 ≤ d) {ν : Measure ℤ} [IsPr
       C⁻¹ * Real.exp (-(K * (t : ℝ) ^ ((d : ℝ) / ((d : ℝ) + 2)))) ≤ S (law d ν) t :=
   exists_lower_tail_of_range_moment hd (range_moment_lower_bound d hd) hint hmean hpos hθ hexp
 
+/-- The upper range moment estimate alone implies both subcritical tail bounds. -/
+theorem exists_tail_bounds_of_upper_range_moment (hd : 1 ≤ d)
+    (hUpper : ∀ a : ℝ, 0 < a → ∃ c C : ℝ, 0 < c ∧ 1 ≤ C ∧
+      ∀ t : ℕ, 1 ≤ t →
+        rangeExp d a t ≤ C * Real.exp (-(c * (t : ℝ) ^ ((d : ℝ) / ((d : ℝ) + 2)))))
+    {ν : Measure ℤ} [IsProbabilityMeasure ν]
+    (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
+    (hmean : ∫ k, (k : ℝ) ∂ν < 0) (hpos : 0 < ν (Set.Ioi (0 : ℤ)))
+    {θ : ℝ} (hθ : 0 < θ) (hexp : Integrable (fun k : ℤ => Real.exp (θ * k)) ν) :
+    ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ t : ℕ, 1 ≤ t →
+      C⁻¹ * Real.exp (-(C * (t : ℝ) ^ ((d : ℝ) / ((d : ℝ) + 2)))) ≤ S (law d ν) t ∧
+        S (law d ν) t ≤ C * Real.exp (-(c * (t : ℝ) ^ ((d : ℝ) / ((d : ℝ) + 2)))) := by
+  obtain ⟨K, C₁, _, hC₁, hlow⟩ :=
+    exists_lower_tail_of_confinement hd hint hmean hpos hθ hexp
+  obtain ⟨c, C₂, hc, _, hup⟩ :=
+    exists_upper_tail_of_range_moment hd hUpper hint hmean hθ hexp
+  exact two_sided_combine hC₁ hc hlow hup
+
 /-- Both subcritical tail bounds hold without a range hypothesis in dimension one. -/
 theorem exists_tail_bounds_one {ν : Measure ℤ} [IsProbabilityMeasure ν]
     (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
