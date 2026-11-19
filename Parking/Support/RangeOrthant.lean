@@ -128,6 +128,67 @@ theorem half_le_pow_mul_walkDisplacementSmall_orthant (hd : 1 ≤ d) (n : ℕ)
   simp only [walkDisplacementSmall, Set.mem_ofPred_eq, walkPath_reflectDirections,
     graphNorm_reflectSite]
 
+/-- The path stays in a box of radius `2 * R` and finishes in its concentric
+box of radius `R`. -/
+def walkBoxBlock (x : Site d) (n : ℕ) (R : ℝ) : Set (ℕ → Fin d × Bool) :=
+  {p | (∀ k ≤ n, ∀ i, |(walkPath x p k i : ℝ)| ≤ 2 * R) ∧
+    ∀ i, |(walkPath x p n i : ℝ)| ≤ R}
+
+/-- From the inner box, a short walk remains in the outer box and returns to
+the inner box with probability at least `2⁻ᵈ⁻¹`. -/
+theorem half_le_pow_mul_walkBoxBlock (hd : 1 ≤ d) (n : ℕ) (x : Site d)
+    {r R : ℝ} (hr : 0 < r) (hn : (n : ℝ) ≤ r ^ 2 / 2)
+    (hR : (d : ℝ) * r ≤ R) (hx : ∀ i, |(x i : ℝ)| ≤ R) :
+    (1 : ℝ) / 2 ≤ (2 : ℝ) ^ d * (walkLaw d).real (walkBoxBlock x n R) := by
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  let q : Fin d → Bool := fun i => decide (x i ≤ 0)
+  have hsub : walkDisplacementSmall n r ∩ endpointOrthant n q ⊆ walkBoxBlock x n R := by
+    intro p hp
+    have hsmall : ∀ k ≤ n,
+        (graphNorm (walkPath (0 : Site d) p k) : ℝ) < (d : ℝ) * r := hp.1
+    have hcoord (k : ℕ) (hk : k ≤ n) (i : Fin d) :
+        |(walkPath (0 : Site d) p k i : ℝ)| ≤ R := by
+      have hnat : (walkPath (0 : Site d) p k i).natAbs ≤
+          graphNorm (walkPath (0 : Site d) p k) := by
+        apply Finset.single_le_sum (f := fun j : Fin d =>
+          (walkPath (0 : Site d) p k j).natAbs)
+        · intro _ _; omega
+        · exact Finset.mem_univ i
+      have hcast : ((walkPath (0 : Site d) p k i).natAbs : ℝ) ≤
+          (graphNorm (walkPath (0 : Site d) p k) : ℝ) := Nat.cast_le.mpr hnat
+      have := hsmall k hk
+      rw [Nat.cast_natAbs, Int.cast_abs] at hcast
+      linarith
+    constructor
+    · intro k hk i
+      rw [walkPath_eq_add_walkPath_zero]
+      simp only [Pi.add_apply, Int.cast_add]
+      exact (abs_add_le _ _).trans (by simpa only [two_mul] using
+        (add_le_add (hx i) (hcoord k hk i)))
+    · intro i
+      rw [walkPath_eq_add_walkPath_zero]
+      simp only [Pi.add_apply, Int.cast_add]
+      have hz := hcoord n le_rfl i
+      have hor := hp.2 i
+      have hx' := abs_le.mp (hx i)
+      have hz' := abs_le.mp hz
+      apply abs_le.mpr
+      by_cases hi : x i ≤ 0
+      · have hxi : (x i : ℝ) ≤ 0 := by exact_mod_cast hi
+        have hzi : (0 : ℝ) ≤ (walkPath (0 : Site d) p n i : ℝ) := by
+          have : 0 ≤ walkPath (0 : Site d) p n i := by simpa [q, hi] using hor
+          exact_mod_cast this
+        constructor <;> linarith [hx'.1, hx'.2, hz'.1, hz'.2]
+      · have hxi : (0 : ℝ) ≤ (x i : ℝ) := by exact_mod_cast (le_of_lt (lt_of_not_ge hi))
+        have hzi : (walkPath (0 : Site d) p n i : ℝ) ≤ 0 := by
+          have : walkPath (0 : Site d) p n i ≤ 0 := by simpa [q, hi] using hor
+          exact_mod_cast this
+        constructor <;> linarith [hx'.1, hx'.2, hz'.1, hz'.2]
+  have hprob := measureReal_mono (μ := walkLaw d) hsub (measure_ne_top _ _)
+  exact (half_le_pow_mul_walkDisplacementSmall_orthant hd n hr hn q).trans
+    (mul_le_mul_of_nonneg_left hprob (by positivity))
+
 end Parking
 
 end
