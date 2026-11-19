@@ -87,6 +87,19 @@ theorem rangeExp_ge_exp_mul_confinement_probability {d : ℕ} (hd : 1 ≤ d)
   exact (mul_le_mul_of_nonneg_left hprob (Real.exp_nonneg _)).trans
     (rangeExp_ge_exp_mul_range_probability hd ha B.card t)
 
+/-- The range moment decreases with the time horizon. -/
+theorem rangeExp_antitone_time {d : ℕ} (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a) :
+    Antitone (rangeExp d a) := by
+  intro s t hst
+  change (∫ p, Real.exp (-(a * (rangeCard (0 : Site d) p t : ℝ))) ∂(walkLaw d)) ≤
+    ∫ p, Real.exp (-(a * (rangeCard (0 : Site d) p s : ℝ))) ∂(walkLaw d)
+  refine integral_mono (integrable_rangeExpFun hd ha t) (integrable_rangeExpFun hd ha s) ?_
+  intro p
+  apply Real.exp_le_exp.mpr
+  have hcard : (rangeCard (0 : Site d) p s : ℝ) ≤ (rangeCard (0 : Site d) p t : ℝ) := by
+    exact_mod_cast rangeCard_mono (walkPath (0 : Site d) p) hst
+  nlinarith
+
 /-- The upper range moment estimate in dimension one follows from the range resolvent bound. -/
 theorem range_moment_upper_bound_one (a : ℝ) (ha : 0 < a) :
     ∃ c C : ℝ, 0 < c ∧ 1 ≤ C ∧ ∀ t : ℕ, 1 ≤ t →
