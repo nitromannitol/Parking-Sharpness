@@ -219,7 +219,13 @@ The Bernstein input is proved as `Parking.External.bernstein`, the multivariate 
 input as `Parking.External.multivariateBerryEsseen`, and both heat inputs are proved.
 `SpatialOdometerScaling` is proved assuming `Sandpile.External.ContinuumStoppingStability`.
 The full range asymptotic `DonskerVaradhanRange` remains an assumption of the registered
-Theorem 1.1, while `Parking.subcritical_tail_of_range_count` supplies the two-sided estimate.
+Theorem 1.1, while `Parking.subcritical_tail_of_range_count` proves the two-sided tail
+estimate without it. Instead, for each `d ≥ 1` and `a > 0`, the development proves upper
+and lower bounds of stretched-exponential order `exp(-const · t^{d/(d+2)})` for
+`E₀ exp(-a|R_t|)`, with positive constants depending on `d, a`. These bounds do not
+assert the logarithmic limit or its constant. The upper bound uses lattice-animal counting
+(Kesten, *Percolation Theory for Mathematicians*, p. 85), an alternative to the argument
+in Varadhan's lecture notes; see [Correspondence](CORRESPONDENCE.md).
 The other unproved leaves used by the main results are `OrientedStoppingStability` and the
 two divisible-sandpile inputs `ContinuumStoppingStability` and `ContinuumOptimalStopping`
 described below.

@@ -282,7 +282,20 @@ states, up to the notation below.
 - `thm-subcritical-tail`: the Donsker-Varadhan estimate for the range, which
   the paper cites at `parking.tex:117-121` and uses at `parking.tex:2514-2517`
   to turn the two bounds in `|R_t|` into the two bounds in `t`, is the explicit
-  hypothesis `Parking.External.DonskerVaradhanRange`.
+  hypothesis `Parking.External.DonskerVaradhanRange` in the frozen and main
+  statements.  The alternative `Parking.subcritical_tail_of_range_count` proves
+  Theorem 1.1 without that limit.  For every `d ≥ 1` and `a > 0`, writing
+  `F(t) = E₀ exp(-a |R_t|)` and `α = d/(d+2)`, it proves separately that there
+  are positive constants `c, K` and constants `C, D ≥ 1`, depending on `d, a`,
+  such that, for every integer `t ≥ 1`,
+  `exp(-K t^α) ≤ D F(t)` and `F(t) ≤ C exp(-c t^α)`.
+  These order bounds do not assert the frozen logarithmic limit or identify its
+  constant.  The lower bound uses confinement; the upper bound combines a
+  heat-kernel survival estimate with exponential counting of connected ranges.
+  The lattice-animal counting argument is from Kesten, *Percolation Theory for
+  Mathematicians*, p. 85; it is not in Varadhan's large-deviation lecture notes,
+  whose upper-bound proof uses a torus occupation-measure argument.  This is a
+  deviation from the cited proof of the range limit.
 - `lem-near-tilt`: the proof does not use two of the hypotheses the family
   `Parking.NearFamily` carries, the nonconstancy of the law at `\delta = 0` and
   the coupling of expected absolute difference `K\delta`.  The paper's Step 1
