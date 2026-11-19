@@ -3,6 +3,7 @@ import Parking.MainTheoremsBernsteinProved
 import Parking.MainTheoremsBernsteinConsequences
 import Parking.External.LinearFieldScalingProved
 import Parking.External.SpatialOdometerScalingProved
+import Parking.Support.RangeConfinement
 
 /-!
 # Axioms audit
@@ -44,3 +45,5 @@ This file is not imported by the library root; the report runs when it is built 
 #print axioms Parking.nearest_lower_bound_of_bernstein
 #print axioms Parking.near_of_bernstein
 #print axioms Parking.oriented_walk_of_bernstein
+#print axioms Parking.range_moment_lower_bound
+#print axioms Parking.exists_lower_tail_of_confinement

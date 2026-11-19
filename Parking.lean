@@ -709,3 +709,4 @@ import Parking.MainTheoremsBernsteinProved
 import Parking.MainTheoremsBernsteinConsequences
 
 import Parking.Support.TailRangeBounds
+import Parking.Support.RangeConfinement
