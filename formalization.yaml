@@ -54,7 +54,7 @@ related_formalizations:
     note: >-
       The formalization (Sandpile) of the divisible sandpile paper that this
       paper quotes its growth estimate from.  Pinned git dependency at commit
-      58c21b8399823c3b5d1208608ceeac2ce5cefb5d; the growth of the mean
+      27e12336fefa22e6163aaa0f1f752538fcb97844; the growth of the mean
       divisible sandpile odometer is proved from it under that formalization's
       continuum stopping stability and continuum optimal stopping inputs.
 
@@ -70,14 +70,16 @@ status:
     oriented walk (Theorem 1.8), and the lemmas and propositions of Sections 2
     to 9 behind them, 41 paper statements in all. The manifest registers eleven
     cited propositions. ASSUMPTIONS.md records their statements and companion
-    proofs. Bernstein, linear field scaling, spatial fixed-time tightness, and
-    the two heat inputs have unconditional proofs. Sandpile growth and spatial
+    proofs. Bernstein, multivariate Berry-Esseen, linear field scaling, spatial
+    fixed-time tightness, and the two heat inputs have unconditional proofs.
+    The two-sided subcritical tail estimate is also proved without the full
+    range asymptotic. Sandpile growth and spatial
     odometer scaling have proofs conditional on continuum stopping inputs in
     Divisible-Sandpile-Percolation. Spatial fixed-time tightness and spatial
     stopping stability are hypotheses of no registered result. The unproved
-    leaves used by the main results are the range estimate, multivariate
-    Berry-Esseen, oriented stopping stability, continuum stopping stability,
-    and continuum optimal stopping. The Bernstein-supplied main theorem variants
+    leaves used by the registered main results are the full range asymptotic,
+    oriented stopping stability, continuum stopping stability, and continuum
+    optimal stopping. The Bernstein-supplied main theorem variants
     are in Parking/MainTheoremsBernsteinProved.lean and
     Parking/MainTheoremsBernsteinConsequences.lean.
     Not formalized: the proof-overview and related-work

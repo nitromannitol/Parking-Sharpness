@@ -57,6 +57,9 @@ it. The nine `*_of_bernstein` results in `Parking/MainTheoremsBernsteinProved.le
 and `Parking/MainTheoremsBernsteinConsequences.lean` also supply the proved Bernstein input.
 `nearest_heat_of_bernstein` supplies the heat inputs, and
 `nearest_stability_of_bernstein` replaces spatial odometer scaling by continuum stopping stability.
+`nearest_of_proved_berry` also supplies the Berry–Esseen comparison, while
+`nearest_of_continuum_stopping` takes only the two continuum stopping inputs from the
+divisible sandpile as additional hypotheses.
 
 | Paper | Lean declaration | Content |
 | --- | --- | --- |
@@ -73,9 +76,9 @@ and `Parking/MainTheoremsBernsteinConsequences.lean` also supply the proved Bern
 negative mean, a positive chance of a particle and an exponential moment,
 `C⁻¹ exp(-C t^{d/(d+2)}) ≤ S_t ≤ C exp(-c t^{d/(d+2)})` for `t ≥ 1`, where `S_t` is the
 expected number of particles started at the origin still active after round `t`. Hypothesis:
-`DonskerVaradhanRange`. The lower bound holds without that input in every dimension by
-`Parking.exists_lower_tail_of_confinement`. In dimension one, `Parking.exists_tail_bounds_one`
-proves both bounds without that input.
+`DonskerVaradhanRange`. The two-sided bound is also proved without that input by
+`Parking.subcritical_tail_of_range_count`; its proof uses bounds on walk confinement and the
+number of connected ranges.
 
 **Theorem 1.2 (master, `thm:master`).** The display above. Hypotheses: `SandpileGrowth`,
 `Bernstein` (the collected Green estimates and the U-concentration estimate, `GreenNorms` and
@@ -212,11 +215,14 @@ cited results; none is a hypothesis of any registered result. `LinearFieldScalin
 `SpatialFixedTimeTightness` have unconditional proofs; `SpatialStoppingStability` has no
 companion proof.
 
-The Bernstein input is proved as `Parking.External.bernstein`, and both heat inputs are proved.
+The Bernstein input is proved as `Parking.External.bernstein`, the multivariate Berry–Esseen
+input as `Parking.External.multivariateBerryEsseen`, and both heat inputs are proved.
 `SpatialOdometerScaling` is proved assuming `Sandpile.External.ContinuumStoppingStability`.
-The remaining unproved leaves used by the main results are `DonskerVaradhanRange`,
-`MultivariateBerryEsseen`, `OrientedStoppingStability`, and the two divisible-sandpile inputs
-`ContinuumStoppingStability` and `ContinuumOptimalStopping` described below.
+The full range asymptotic `DonskerVaradhanRange` remains an assumption of the registered
+Theorem 1.1, while `Parking.subcritical_tail_of_range_count` supplies the two-sided estimate.
+The other unproved leaves used by the main results are `OrientedStoppingStability` and the
+two divisible-sandpile inputs `ContinuumStoppingStability` and `ContinuumOptimalStopping`
+described below.
 
 The growth of the mean divisible sandpile odometer (`SandpileGrowth`) is also proved, in
 `Parking/External/SandpileGrowthProved.lean`, from the formalization of that paper; that theorem
@@ -300,10 +306,10 @@ parameter is bound before it.
   is proved, with only the three standard axioms, through independent implementations of the
   Lean kernel. See [`ParkingAudit/README.md`](ParkingAudit/README.md) and
   [`ParkingAudit/COMPARATOR_RUNS.md`](ParkingAudit/COMPARATOR_RUNS.md).
-- **Pinned toolchain and dependencies.** Lean `v4.32.0`; mathlib at revision
-  `81a5d257c8e410db227a6665ed08f64fea08e997`, Lattice-Probability at commit
-  `9d44b4d4670df393bb86ac5a4e042f215001cddf` and Divisible-Sandpile-Percolation at commit
-  `cd8b15a32d00b1eec48f8747339e2d0cfaa73a21`, recorded in [`lean-toolchain`](lean-toolchain),
+- **Pinned toolchain and dependencies.** Lean `v4.35.0-rc2`; mathlib at revision
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55`, Lattice-Probability at commit
+  `89de1230d02e1a737a9c7ecd776d34070be014ee` and Divisible-Sandpile-Percolation at commit
+  `27e12336fefa22e6163aaa0f1f752538fcb97844`, recorded in [`lean-toolchain`](lean-toolchain),
   [`lakefile.lean`](lakefile.lean) and [`lake-manifest.json`](lake-manifest.json) (see
   [Building](#building)).
 - **The paper is part of the repository.** The statement map refers to the version in
@@ -335,11 +341,11 @@ The dependencies are public repositories, pinned to exact commits in
 [`lake-manifest.json`](lake-manifest.json):
 
 - mathlib: `https://github.com/leanprover-community/mathlib4` at
-  `81a5d257c8e410db227a6665ed08f64fea08e997`.
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55`.
 - Lattice-Probability: `https://github.com/nitromannitol/Lattice-Probability` at
-  `9d44b4d4670df393bb86ac5a4e042f215001cddf`.
+  `89de1230d02e1a737a9c7ecd776d34070be014ee`.
 - Divisible-Sandpile-Percolation: `https://github.com/nitromannitol/Divisible-Sandpile-Percolation`
-  at `cd8b15a32d00b1eec48f8747339e2d0cfaa73a21`.
+  at `27e12336fefa22e6163aaa0f1f752538fcb97844`.
 
 To reproduce the axiom reports and build the comparator libraries:
 

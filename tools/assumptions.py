@@ -33,6 +33,9 @@ def companions(nodes):
     out = {
         "Bernstein": {"id": "Parking.External.bernstein",
                       "file": "Parking/External/BernsteinProved.lean", "unconditional": True},
+        "MultivariateBerryEsseen": {"id": "Parking.External.multivariateBerryEsseen",
+                                     "file": "Parking/External/MultivariateBerryEsseenProved.lean",
+                                     "unconditional": True},
         "SpatialFixedTimeTightness": {
             "id": "Parking.External.spatialFixedTimeTightness",
             "file": "Parking/External/SpatialFixedTimeTightnessProved.lean", "unconditional": True},
