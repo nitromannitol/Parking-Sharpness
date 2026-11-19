@@ -26,6 +26,67 @@ def RangeMomentLowerBound : Prop :=
     ∃ K C : ℝ, 0 < K ∧ 1 ≤ C ∧ ∀ t : ℕ, 1 ≤ t →
       Real.exp (-(K * (t : ℝ) ^ ((d : ℝ) / ((d : ℝ) + 2)))) ≤ C * rangeExp d a t
 
+/-- Confining the walk to a range of at most `m` sites gives a lower bound on
+its range moment. -/
+theorem rangeExp_ge_exp_mul_range_probability {d : ℕ} (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a)
+    (m t : ℕ) :
+    Real.exp (-(a * (m : ℝ))) * (LatticeProb.siteWalkLaw d 0).real
+      {X : ℕ → Site d | LatticeProb.rangeCard X t ≤ m} ≤ rangeExp d a t := by
+  have : NeZero d := ⟨by omega⟩
+  rw [rangeExp_eq hd]
+  set S : Set (ℕ → Site d) := {X | LatticeProb.rangeCard X t ≤ m} with hS
+  have hSm : MeasurableSet S := by
+    change MeasurableSet ((fun X : ℕ → Site d => LatticeProb.rangeCard X t) ⁻¹'
+      {k : ℕ | k ≤ m})
+    exact (LatticeProb.measurable_rangeCard t) MeasurableSet.of_discrete
+  have hfm : Measurable fun X : ℕ → Site d =>
+      Real.exp (-(a * (LatticeProb.rangeCard X t : ℝ))) :=
+    (LatticeProb.measurable_from_countable'
+      (fun k : ℕ => Real.exp (-(a * (k : ℝ))))).comp (LatticeProb.measurable_rangeCard t)
+  have hint : Integrable (fun X : ℕ → Site d =>
+      Real.exp (-(a * (LatticeProb.rangeCard X t : ℝ)))) (LatticeProb.siteWalkLaw d 0) := by
+    refine Integrable.of_bound hfm.aestronglyMeasurable 1
+      (Filter.Eventually.of_forall fun X => ?_)
+    rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    exact Real.exp_le_one_iff.mpr (neg_nonpos.mpr (mul_nonneg ha (Nat.cast_nonneg _)))
+  have hind : Integrable (fun X : ℕ → Site d =>
+      Real.exp (-(a * (m : ℝ))) * S.indicator 1 X) (LatticeProb.siteWalkLaw d 0) :=
+    ((integrable_const (1 : ℝ)).indicator hSm).const_mul _
+  calc Real.exp (-(a * (m : ℝ))) * (LatticeProb.siteWalkLaw d 0).real S
+      = ∫ X, Real.exp (-(a * (m : ℝ))) * S.indicator 1 X
+          ∂(LatticeProb.siteWalkLaw d 0) := by
+        rw [integral_const_mul, integral_indicator_one hSm]
+    _ ≤ ∫ X, Real.exp (-(a * (LatticeProb.rangeCard X t : ℝ)))
+          ∂(LatticeProb.siteWalkLaw d 0) := by
+        refine integral_mono hind hint fun X => ?_
+        by_cases hX : X ∈ S
+        · rw [Set.indicator_of_mem hX]
+          simp only [Pi.one_apply, mul_one]
+          apply Real.exp_le_exp.mpr
+          have hcard : (LatticeProb.rangeCard X t : ℝ) ≤ (m : ℝ) := by
+            exact_mod_cast hX
+          nlinarith
+        · rw [Set.indicator_of_notMem hX, mul_zero]
+          exact Real.exp_nonneg _
+
+/-- Confinement to a finite set bounds the range moment from below, as in
+Varadhan, *Large Deviations*, Lecture 9 (Spring 2010), pp. 1–2. -/
+theorem rangeExp_ge_exp_mul_confinement_probability {d : ℕ} (hd : 1 ≤ d)
+    {a : ℝ} (ha : 0 ≤ a) (B : Finset (Site d)) (t : ℕ) :
+    Real.exp (-(a * (B.card : ℝ))) * (LatticeProb.siteWalkLaw d 0).real
+      {X : ℕ → Site d | ∀ j ≤ t, X j ∈ B} ≤ rangeExp d a t := by
+  have : NeZero d := ⟨by omega⟩
+  have hsub : {X : ℕ → Site d | ∀ j ≤ t, X j ∈ B} ⊆
+      {X : ℕ → Site d | LatticeProb.rangeCard X t ≤ B.card} := by
+    intro X hX
+    apply Finset.card_le_card
+    intro x hx
+    obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hx
+    exact hX j (Nat.le_of_lt_succ (Finset.mem_range.mp hj))
+  have hprob := measureReal_mono (μ := LatticeProb.siteWalkLaw d 0) hsub (measure_ne_top _ _)
+  exact (mul_le_mul_of_nonneg_left hprob (Real.exp_nonneg _)).trans
+    (rangeExp_ge_exp_mul_range_probability hd ha B.card t)
+
 /-- The upper range moment estimate in dimension one follows from the range resolvent bound. -/
 theorem range_moment_upper_bound_one (a : ℝ) (ha : 0 < a) :
     ∃ c C : ℝ, 0 < c ∧ 1 ≤ C ∧ ∀ t : ℕ, 1 ≤ t →
