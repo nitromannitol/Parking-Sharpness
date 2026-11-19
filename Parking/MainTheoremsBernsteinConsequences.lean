@@ -101,9 +101,7 @@ theorem Parking.nearest_lower_bound_of_bernstein (d : ℕ)
     ∃ p : ℝ, 0 < p ∧ p < 1 / 2 ∧ ∃ c : ℝ, 0 < c ∧
       c ≤ liminf (fun t : ℕ =>
         ((Parking.law d (Parking.threePointLaw p)) {ω | Parking.HoleCloser ω t}).toReal) atTop :=
-  by
-    have h : Parking.External.Bernstein := Parking.External.bernstein
-    exact?
+  Parking.nearest_counterexample Parking.External.bernstein d hd
 
 /-- The result with the Bernstein estimate supplied. -/
 theorem Parking.near_of_bernstein (hGrowth : Parking.External.SandpileGrowth)

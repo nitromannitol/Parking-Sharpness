@@ -704,3 +704,6 @@ import Parking.Support.SpatialSceneryAlgebra
 import Parking.Support.SpatialResidualCutoff
 import Parking.Support.SpatialFixedTestPDE
 import Parking.MainTheorems
+
+import Parking.MainTheoremsBernsteinProved
+import Parking.MainTheoremsBernsteinConsequences

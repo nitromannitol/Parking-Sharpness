@@ -1,4 +1,6 @@
 import Parking.MainTheorems
+import Parking.MainTheoremsBernsteinProved
+import Parking.MainTheoremsBernsteinConsequences
 import Parking.External.LinearFieldScalingProved
 import Parking.External.SpatialOdometerScalingProved
 
@@ -32,3 +34,13 @@ This file is not imported by the library root; the report runs when it is built 
 #print axioms Parking.nearest_counterexample
 #print axioms Parking.near
 #print axioms Parking.oriented_walk
+
+#print axioms Parking.master_of_bernstein
+#print axioms Parking.growth_of_bernstein
+#print axioms Parking.trichotomy_of_bernstein
+#print axioms Parking.nearest_of_bernstein
+#print axioms Parking.nearest_heat_of_bernstein
+#print axioms Parking.nearest_stability_of_bernstein
+#print axioms Parking.nearest_lower_bound_of_bernstein
+#print axioms Parking.near_of_bernstein
+#print axioms Parking.oriented_walk_of_bernstein
