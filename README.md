@@ -73,7 +73,8 @@ and `Parking/MainTheoremsBernsteinConsequences.lean` also supply the proved Bern
 negative mean, a positive chance of a particle and an exponential moment,
 `C⁻¹ exp(-C t^{d/(d+2)}) ≤ S_t ≤ C exp(-c t^{d/(d+2)})` for `t ≥ 1`, where `S_t` is the
 expected number of particles started at the origin still active after round `t`. Hypothesis:
-`DonskerVaradhanRange`.
+`DonskerVaradhanRange`. In dimension one, `Parking.exists_upper_tail_one` proves the upper
+bound without that input.
 
 **Theorem 1.2 (master, `thm:master`).** The display above. Hypotheses: `SandpileGrowth`,
 `Bernstein` (the collected Green estimates and the U-concentration estimate, `GreenNorms` and
