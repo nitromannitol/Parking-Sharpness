@@ -84,6 +84,50 @@ theorem measureReal_le_pow_mul_endpointOrthant (hd : 1 ≤ d) (n : ℕ)
       simp only [hs, Finset.sum_const, Finset.card_univ, Fintype.card_fun,
         Fintype.card_bool, Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow, Nat.cast_ofNat]
 
+/-- A walk remains within the graph-norm radius `d * r` through time `n`. -/
+def walkDisplacementSmall (n : ℕ) (r : ℝ) : Set (ℕ → Fin d × Bool) :=
+  {p | ∀ k ≤ n, (graphNorm (walkPath (0 : Site d) p k) : ℝ) < (d : ℝ) * r}
+
+/-- The small-displacement event is measurable. -/
+theorem measurableSet_walkDisplacementSmall (n : ℕ) (r : ℝ) :
+    MeasurableSet (walkDisplacementSmall (d := d) n r) := by
+  have heq : walkDisplacementSmall (d := d) n r =
+      {p | ∃ k ≤ n, (d : ℝ) * r ≤ (graphNorm (walkPath (0 : Site d) p k) : ℝ)}ᶜ := by
+    ext p
+    simp only [walkDisplacementSmall, Set.mem_ofPred_eq, Set.mem_compl_iff, not_exists,
+      not_and, not_le]
+  rw [heq]
+  exact (measurableSet_walkPath_graphNorm_ge n ((d : ℝ) * r)).compl
+
+/-- A short walk has a uniform chance to stay close and finish in a prescribed orthant. -/
+theorem half_le_pow_mul_walkDisplacementSmall_orthant (hd : 1 ≤ d) (n : ℕ)
+    {r : ℝ} (hr : 0 < r) (hn : (n : ℝ) ≤ r ^ 2 / 2) (q : Fin d → Bool) :
+    (1 : ℝ) / 2 ≤ (2 : ℝ) ^ d * (walkLaw d).real
+      (walkDisplacementSmall n r ∩ endpointOrthant n q) := by
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  let E : Set (ℕ → Fin d × Bool) :=
+    {p | ∃ k ≤ n, (d : ℝ) * r ≤ (graphNorm (walkPath (0 : Site d) p k) : ℝ)}
+  have hE : MeasurableSet E := measurableSet_walkPath_graphNorm_ge n ((d : ℝ) * r)
+  have hEc : walkDisplacementSmall (d := d) n r = Eᶜ := by
+    ext p
+    simp only [walkDisplacementSmall, E, Set.mem_ofPred_eq, Set.mem_compl_iff, not_exists,
+      not_and, not_le]
+  have hsmall : (walkLaw d).real E ≤ 1 / 2 := by
+    have hbound := measureReal_sup_walkPath_graphNorm_le hd n hr
+    have hr2 : 0 < r ^ 2 := sq_pos_of_pos hr
+    exact hbound.trans ((div_le_iff₀ hr2).2 (by nlinarith [hn]))
+  have hlarge : (1 : ℝ) / 2 ≤ (walkLaw d).real (walkDisplacementSmall n r) := by
+    have hsum := measureReal_add_measureReal_compl (μ := walkLaw d) hE
+    rw [probReal_univ] at hsum
+    rw [hEc]
+    linarith
+  refine hlarge.trans (measureReal_le_pow_mul_endpointOrthant hd n q _
+    (measurableSet_walkDisplacementSmall n r) ?_)
+  intro s p
+  simp only [walkDisplacementSmall, Set.mem_ofPred_eq, walkPath_reflectDirections,
+    graphNorm_reflectSite]
+
 end Parking
 
 end
