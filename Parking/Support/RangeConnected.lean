@@ -8,7 +8,7 @@ The range of the nearest-neighbour walk is connected, and therefore belongs to
 an exponentially bounded family of finite sets of the same cardinality.
 -/
 
-open LatticeProb LatticeProb.Percolation.Peierls
+open MeasureTheory LatticeProb LatticeProb.Percolation.Peierls
 
 noncomputable section
 
@@ -75,6 +75,50 @@ theorem exists_walkRange_cover : ∃ K : ℕ, ∀ (m : ℕ),
   · exact Finset.mem_image.mpr ⟨0, Finset.mem_range.mpr (Nat.zero_lt_succ t), by simp [walkPath]⟩
   · exact hm
   · exact walkRange_starConnected 0 p t
+
+/-- For a fixed range size, an exponential count of possible ranges and
+the finite-set survival bound give a geometric probability estimate. -/
+theorem exists_rangeCard_eq_upper (hd : 1 ≤ d) : ∃ K : ℕ, ∀ m n t : ℕ, 1 ≤ n →
+    (m : ℝ) * (Real.sqrt 2 ^ d * greenConst d * (n : ℝ) ^ (-(d : ℝ) / 2)) ≤ 1 / 2 →
+    (walkLaw d).real {p | rangeCard (0 : Site d) p t = m} ≤
+      (K : ℝ) ^ m * (1 / 2 : ℝ) ^ (t / n) := by
+  classical
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  obtain ⟨K, hcover⟩ := exists_walkRange_cover (d := d)
+  refine ⟨K, fun m n t hn hsmall => ?_⟩
+  obtain ⟨T, hcard, hT⟩ := hcover m
+  let U := T.filter fun B => B.card = m
+  let E : Finset (Site d) → Set (ℕ → Fin d × Bool) :=
+    fun B => {p | ∀ i ≤ t, walkPath (0 : Site d) p i ∈ B}
+  have hsub : {p | rangeCard (0 : Site d) p t = m} ⊆ ⋃ B ∈ U, E B := by
+    intro p hp
+    refine Set.mem_iUnion.mpr ⟨walkRange 0 p t, Set.mem_iUnion.mpr ⟨?_, ?_⟩⟩
+    · exact Finset.mem_filter.mpr ⟨hT p t hp, hp⟩
+    · intro i hi
+      exact Finset.mem_image.mpr ⟨i, Finset.mem_range.mpr (Nat.lt_succ_of_le hi), rfl⟩
+  have htime : t % n + (t / n) * n = t := by
+    have h := Nat.div_add_mod t n
+    nlinarith
+  have heach : ∀ B ∈ U, (walkLaw d).real (E B) ≤ (1 / 2 : ℝ) ^ (t / n) := by
+    intro B hB
+    have hsize : B.card = m := (Finset.mem_filter.mp hB).2
+    have hBsmall : (B.card : ℝ) *
+        (Real.sqrt 2 ^ d * greenConst d * (n : ℝ) ^ (-(d : ℝ) / 2)) ≤ 1 / 2 := by
+      rw [hsize]
+      exact hsmall
+    have h := measureReal_walkLaw_stayIn_le_half_pow hd B n hn hBsmall (t / n) (t % n)
+    rw [htime] at h
+    exact h
+  calc (walkLaw d).real {p | rangeCard (0 : Site d) p t = m}
+      ≤ (walkLaw d).real (⋃ B ∈ U, E B) := measureReal_mono hsub (measure_ne_top _ _)
+    _ ≤ ∑ B ∈ U, (walkLaw d).real (E B) := measureReal_biUnion_finset_le U E
+    _ ≤ ∑ _B ∈ U, (1 / 2 : ℝ) ^ (t / n) := Finset.sum_le_sum heach
+    _ = (U.card : ℝ) * (1 / 2 : ℝ) ^ (t / n) := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ (K : ℝ) ^ m * (1 / 2 : ℝ) ^ (t / n) := by
+      apply mul_le_mul_of_nonneg_right _ (by positivity)
+      have hU : U.card ≤ T.card := Finset.card_filter_le _ _
+      exact_mod_cast hU.trans hcard
 
 end Parking
 
