@@ -92,6 +92,114 @@ theorem exp_mul_pow_le_rangeExp (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a)
   rw [hL'] at h
   simpa only [n, j, c] using h
 
+/-- The radius and block count can be chosen so that both costs have the
+stretched-exponential scale `t ^ (d / (d + 2))`. -/
+theorem range_moment_lower_bound : RangeMomentLowerBound := by
+  intro d hd a ha
+  let β : ℝ := 1 / ((d : ℝ) + 2)
+  let α : ℝ := (d : ℝ) / ((d : ℝ) + 2)
+  let c : ℝ := (2 * (2 : ℝ) ^ d)⁻¹
+  let b : ℝ := -Real.log c
+  have hdR : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  have hden : (0 : ℝ) < (d : ℝ) + 2 := by linarith
+  have hβ : 0 < β := by dsimp [β]; positivity
+  have hα : 0 ≤ α := by dsimp [α]; positivity
+  have hc : 0 < c := by dsimp [c]; positivity
+  have hc1 : c ≤ 1 := by
+    dsimp [c]
+    have hp : (1 : ℝ) ≤ (2 : ℝ) ^ d := one_le_pow₀ (by norm_num)
+    exact (inv_le_one₀ (by positivity)).2 (by linarith)
+  have hb : 0 ≤ b := by dsimp [b]; linarith [Real.log_nonpos hc.le hc1]
+  let K : ℝ := a * (16 * (d : ℝ) + 1) ^ d + 2 * b + 1
+  have hK : 0 < K := by dsimp [K]; positivity
+  refine ⟨K, 1, hK, le_rfl, fun t ht => ?_⟩
+  have hT : (1 : ℝ) ≤ t := by exact_mod_cast ht
+  have hTpos : (0 : ℝ) < t := by linarith
+  let x : ℝ := (t : ℝ) ^ β
+  let k : ℕ := ⌈x⌉₊
+  let j : ℕ := t / (2 * k ^ 2) + 1
+  have hx : 1 ≤ x := by dsimp [x]; exact Real.one_le_rpow hT hβ.le
+  have hxk : x ≤ (k : ℝ) := Nat.le_ceil x
+  have hk : 1 ≤ k := by
+    have : (1 : ℝ) ≤ k := hx.trans hxk
+    exact_mod_cast this
+  have hk2 : (k : ℝ) ≤ 2 * x := by
+    have h := Nat.ceil_lt_add_one (le_trans zero_le_one hx)
+    dsimp [k]
+    linarith
+  have hpow : x ^ d = (t : ℝ) ^ α := by
+    dsimp [x]
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hTpos.le]
+    congr 1
+    dsimp [α, β]
+    field_simp
+  have hscale : x ^ 2 * (t : ℝ) ^ α = (t : ℝ) := by
+    have hexp : β * 2 + α = 1 := by
+      dsimp [α, β]
+      field_simp; ring
+    calc x ^ 2 * (t : ℝ) ^ α = (t : ℝ) ^ (β * 2) * (t : ℝ) ^ α := by
+          dsimp [x]
+          rw [← Real.rpow_natCast, ← Real.rpow_mul hTpos.le]
+          norm_num
+      _ = (t : ℝ) ^ (β * 2 + α) := (Real.rpow_add hTpos _ _).symm
+      _ = (t : ℝ) := by rw [hexp, Real.rpow_one]
+  have hαone : 1 ≤ (t : ℝ) ^ α := Real.one_le_rpow hT hα
+  have hαnonneg : 0 ≤ (t : ℝ) ^ α := le_trans zero_le_one hαone
+  have hsq : x ^ 2 ≤ (k : ℝ) ^ 2 := pow_le_pow_left₀ (by linarith) hxk 2
+  have hTbound : (t : ℝ) ≤ (2 * (k : ℝ) ^ 2) * (t : ℝ) ^ α := by
+    have hm := mul_le_mul_of_nonneg_right hsq hαnonneg
+    have hs : 0 ≤ (k : ℝ) ^ 2 * (t : ℝ) ^ α := mul_nonneg (sq_nonneg _) hαnonneg
+    nlinarith [hscale, hm, hs]
+  have hdiv : (t : ℝ) / (2 * (k : ℝ) ^ 2) ≤ (t : ℝ) ^ α := by
+    have hkpos : (0 : ℝ) < k := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hk)
+    exact (div_le_iff₀ (by positivity)).2 (by simpa only [mul_comm] using hTbound)
+  have hj : (j : ℝ) ≤ 2 * (t : ℝ) ^ α := by
+    have hcast : ((t / (2 * k ^ 2) : ℕ) : ℝ) ≤
+        (t : ℝ) / (2 * (k : ℝ) ^ 2) := by
+      have h := Nat.cast_div_le (α := ℝ) (m := t) (n := 2 * k ^ 2)
+      push_cast at h
+      exact h
+    dsimp [j]
+    push_cast
+    linarith
+  have hbase : (0 : ℝ) ≤ 8 * (d : ℝ) * (k : ℝ) + 1 := by positivity
+  have hbase_le : 8 * (d : ℝ) * (k : ℝ) + 1 ≤ (16 * (d : ℝ) + 1) * x := by
+    have hm := mul_le_mul_of_nonneg_left hk2 (show (0 : ℝ) ≤ 8 * (d : ℝ) by positivity)
+    nlinarith
+  have hcard : (((8 * d * k + 1 : ℕ) ^ d : ℕ) : ℝ) ≤
+      (16 * (d : ℝ) + 1) ^ d * (t : ℝ) ^ α := by
+    have hp := pow_le_pow_left₀ hbase hbase_le d
+    rw [mul_pow, hpow] at hp
+    push_cast
+    exact hp
+  have hcost : a * (((8 * d * k + 1 : ℕ) ^ d : ℕ) : ℝ) + b * (j : ℝ) ≤
+      K * (t : ℝ) ^ α := by
+    have h₁ := mul_le_mul_of_nonneg_left hcard ha.le
+    have h₂ := mul_le_mul_of_nonneg_left hj hb
+    dsimp [K]
+    nlinarith
+  have hpowc : c ^ j = Real.exp (-(b * (j : ℝ))) := by
+    dsimp [b]
+    rw [neg_mul, neg_neg, mul_comm, Real.exp_nat_mul, Real.exp_log hc]
+  have hbound := exp_mul_pow_le_rangeExp hd ha.le k t hk
+  change Real.exp (-(a * (((8 * d * k + 1 : ℕ) ^ d : ℕ) : ℝ))) * c ^ j ≤ _ at hbound
+  rw [hpowc, ← Real.exp_add] at hbound
+  simp only [one_mul]
+  calc Real.exp (-(K * (t : ℝ) ^ α)) ≤
+      Real.exp (-(a * (((8 * d * k + 1 : ℕ) ^ d : ℕ) : ℝ)) + -(b * (j : ℝ))) := by
+        apply Real.exp_le_exp.mpr
+        linarith
+    _ ≤ rangeExp d a t := hbound
+
+/-- The lower subcritical tail bound follows from box confinement. -/
+theorem exists_lower_tail_of_confinement (hd : 1 ≤ d) {ν : Measure ℤ} [IsProbabilityMeasure ν]
+    (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν)
+    (hmean : ∫ k, (k : ℝ) ∂ν < 0) (hpos : 0 < ν (Set.Ioi (0 : ℤ)))
+    {θ : ℝ} (hθ : 0 < θ) (hexp : Integrable (fun k : ℤ => Real.exp (θ * k)) ν) :
+    ∃ K C : ℝ, 0 < K ∧ 0 < C ∧ ∀ t : ℕ, 1 ≤ t →
+      C⁻¹ * Real.exp (-(K * (t : ℝ) ^ ((d : ℝ) / ((d : ℝ) + 2)))) ≤ S (law d ν) t :=
+  exists_lower_tail_of_range_moment hd (range_moment_lower_bound d hd) hint hmean hpos hθ hexp
+
 end Parking
 
 end
