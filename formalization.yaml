@@ -361,11 +361,6 @@ alignment:
       module: "Parking.Frozen"
       status: "proved"
       note: "One node per statement; the table of CORRESPONDENCE.md gives each Lean name, paper location and state."
-    - source: "Cited inputs (listed in ASSUMPTIONS.md)"
-      lean: "Parking.External.*"
-      module: "Parking.External"
-      status: "assumed"
-      note: "Some have unconditional or conditional companion proofs; see ASSUMPTIONS.md."
 
 acknowledgements: >-
   The paper is joint work with Christoforos Panagiotis.  Built on Lean 4,

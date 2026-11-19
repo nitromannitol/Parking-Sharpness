@@ -274,7 +274,7 @@ parameter is bound before it.
   `propext`, `Classical.choice` and `Quot.sound`.
   [`Parking/Meta/AxiomsAudit.lean`](Parking/Meta/AxiomsAudit.lean) prints the reports, and
   `python3 tools/check_axioms.py` fails if the axiom closure of any registered statement
-  contains `sorryAx`. The cited results are hypotheses, not axioms.
+  contains `sorryAx`. When cited results are assumed, they appear as explicit hypotheses.
 - **Builds from a clean checkout.** In continuous integration, `lake build` of a fresh
   checkout completes 10,371 jobs without error, and the build fails on any warning or `sorry`
   warning.
