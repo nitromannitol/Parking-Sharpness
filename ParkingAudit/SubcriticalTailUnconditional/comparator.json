@@ -1,0 +1,14 @@
+{
+  "challenge_module": "ParkingAudit.SubcriticalTailUnconditional.Challenge",
+  "solution_module": "ParkingAudit.SubcriticalTailUnconditional.Solution",
+  "theorem_names": [
+    "ParkingAudit.subcritical_tail_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

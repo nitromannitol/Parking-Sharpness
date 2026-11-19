@@ -126,6 +126,19 @@ def render():
                         if len(withproof) > 1 else
                         (" That proof holds only under hypotheses of its own, shown with it; where "
                          "those fail, the result is still assumed."))
+    presentations = man.get("presentations", [])
+    if presentations:
+        out += ["## Alternative theorem presentations", "",
+                "These results discharge some or all cited inputs. The remaining explicit",
+                "literature hypotheses are listed for each declaration; ordinary model and",
+                "law hypotheses are unchanged.", "",
+                "| Declaration | Source node | Remaining literature inputs |",
+                "| --- | --- | --- |"]
+        for p in presentations:
+            inputs = p.get("remaining_inputs", [])
+            remaining = ", ".join(f"`{name}`" for name in inputs) if inputs else "None"
+            out.append(f"| `{p['export']}` | `{p['source_node']}` | {remaining} |")
+        out.append("")
     for n in sorted(assumed, key=lambda x: x["id"]):
         c = comp.get(pathlib.Path(n["file"]).stem)
         cond = conditional(c) if c else None

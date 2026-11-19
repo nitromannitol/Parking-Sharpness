@@ -19,6 +19,30 @@ version: 1
 source_pin:
   file: paper/parking.tex
   sha256: 4aa03aee7c30e24bffc9a4e8220f775b5c71706e694dcd9bcffc865c8135d3a0
+# Additional presentations do not replace the frozen source declarations.
+presentations:
+  - export: Parking.subcritical_tail_of_range_count
+    file: Parking/Support/RangeUpperScaling.lean
+    source_node: thm-subcritical-tail
+    remaining_inputs: []
+    comparator: ParkingAudit/SubcriticalTailUnconditional/comparator.json
+  - export: ParkingAudit.subcritical_tail_unconditional
+    file: ParkingAudit/SubcriticalTailUnconditional/Solution.lean
+    source_node: thm-subcritical-tail
+    remaining_inputs: []
+    comparator: ParkingAudit/SubcriticalTailUnconditional/comparator.json
+  - export: Parking.nearest_of_proved_berry
+    file: Parking/MainTheoremsBerryEsseenProved.lean
+    source_node: thm-nearest
+    remaining_inputs:
+      - Parking.External.SandpileGrowth
+      - Parking.External.SpatialOdometerScaling
+  - export: Parking.nearest_of_continuum_stopping
+    file: Parking/MainTheoremsBerryEsseenProved.lean
+    source_node: thm-nearest
+    remaining_inputs:
+      - Sandpile.External.ContinuumStoppingStability
+      - Sandpile.External.ContinuumOptimalStopping
 nodes:
   - id: ext-bernstein
     version: 2

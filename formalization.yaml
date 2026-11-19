@@ -103,6 +103,36 @@ status:
       literature_dependencies:
         - statement: "the range estimate (Parking.External.DonskerVaradhanRange), carried as an explicit hypothesis"
           source: "Donsker and Varadhan 1979, Theorem 1"
+    - declaration: "Parking.subcritical_tail_of_range_count"
+      file: "Parking/Support/RangeUpperScaling.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/SubcriticalTailUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.nearest_of_proved_berry"
+      file: "Parking/MainTheoremsBerryEsseenProved.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies:
+        - statement: "Parking.External.SandpileGrowth, carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
+        - statement: "Parking.External.SpatialOdometerScaling, carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, Theorem 1.3(i)(b)"
+    - declaration: "Parking.nearest_of_continuum_stopping"
+      file: "Parking/MainTheoremsBerryEsseenProved.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies:
+        - statement: "Sandpile.External.ContinuumStoppingStability, carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, parabolic scaling limit"
+        - statement: "Sandpile.External.ContinuumOptimalStopping, carried as an explicit hypothesis"
+          source: "continuum optimal stopping representation"
+    - declaration: "ParkingAudit.subcritical_tail_unconditional"
+      file: "ParkingAudit/SubcriticalTailUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/SubcriticalTailUnconditional/comparator.json"
+      literature_dependencies: []
     - declaration: "Parking.master"
       file: "Parking/MainTheorems.lean"
       sorry_count: 0

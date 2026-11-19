@@ -3,11 +3,13 @@
 This directory contains Mathlib-only comparator challenges for the eight main
 theorems of the formalization of *Sharpness and critical scaling of parking*
 (Bou-Rabee and Panagiotis, arXiv:2609.02820): Theorems 1.1, 1.2 and 1.4 to 1.8
-and Corollary 1.3.  Each comparator lives in its own subdirectory:
+and Corollary 1.3, with an additional hypothesis-free form of Theorem 1.1.
+Each comparator lives in its own subdirectory:
 
 | Directory | Paper statement | Checked theorem | Library theorem |
 | --- | --- | --- | --- |
 | `SubcriticalTail/` | Theorem 1.1, `thm:subcritical-tail` | `ParkingAudit.subcritical_tail` | `Parking.subcritical_tail` |
+| `SubcriticalTailUnconditional/` | Theorem 1.1, without the range limit | `ParkingAudit.subcritical_tail_unconditional` | `Parking.subcritical_tail_of_range_count` |
 | `Master/` | Theorem 1.2, `thm:master` | `ParkingAudit.master` | `Parking.master` |
 | `Growth/` | Corollary 1.3, `cor:growth` | `ParkingAudit.growth` | `Parking.growth` |
 | `Trichotomy/` | Theorem 1.4, `thm:trichotomy` | `ParkingAudit.trichotomy` | `Parking.trichotomy` |
@@ -20,7 +22,7 @@ Each `Challenge.lean` imports only `Mathlib`, rebuilds from scratch every
 definition needed to read the theorem, states the theorem, and ends with one
 `sorry`, the proof being checked.  The definitions form one vocabulary block,
 between `-- VOCABULARY-BEGIN` and `-- VOCABULARY-END`, byte-identical in all
-eight challenges: the lattice, i.i.d. fields and the particle–hole process with
+nine challenges: the lattice, i.i.d. fields and the particle–hole process with
 its state, its odometer, its active particles and its unfilled holes; the
 parking law, the two odometers `U` and `u` and their means; the walk, its range,
 lattice kernels and Green functions; the continuum objects of the scaling
@@ -31,13 +33,13 @@ eight cited results the eight theorems use.
 
 ## What Is Checked
 
-The theorems are conditional on results the paper cites without proof, and so
-are the challenges: each carries, as explicit hypotheses, the cited results
-its library theorem uses, restated in the vocabulary.
+Each challenge carries the explicit literature hypotheses of its library theorem,
+restated in the vocabulary. The additional Theorem 1.1 presentation needs none.
 
 | Directory | Cited results carried as hypotheses |
 | --- | --- |
 | `SubcriticalTail/` | `External.DonskerVaradhanRange` |
+| `SubcriticalTailUnconditional/` | none |
 | `Master/`, `Growth/`, `Trichotomy/` | `External.SandpileGrowth`, `External.Bernstein` |
 | `Nearest/` | the same two, `External.SpatialOdometerScaling`, `External.HeatInteriorRegularity`, `External.HeatCompactness`, `External.MultivariateBerryEsseen` |
 | `NearestCounterexample/` | `External.Bernstein` |
@@ -117,9 +119,11 @@ Each pair has four files: `Challenge.lean`, `SolutionBasic.lean`, `Solution.lean
 the pair's `Challenge.lean`, and imports only Mathlib.  `Solution.lean` imports the repository
 together with the pair's `SolutionBasic.lean` and its bridge
 `ParkingAudit/Support/<Pair>Bridge.lean`, and proves the byte-identical statement from the
-corresponding theorem of `Parking/MainTheorems.lean` (see [`DESIGN.md`](DESIGN.md)).  The
+corresponding repository theorem (see [`DESIGN.md`](DESIGN.md)).  The
 comparator checks each solution statement against its challenge, and the dependency closure
-against Mathlib.
+against Mathlib. `SubcriticalTailUnconditional/Solution.lean` reuses the original
+`SubcriticalTail` vocabulary and bridge, which are byte-identical to its own
+`SolutionBasic.lean` vocabulary.
 
 The audit modules live under the root `ParkingAudit`, and the library's own audit
 surface under `LatticeProbAudit`, so the two cannot collide.
@@ -157,8 +161,10 @@ COMPARATOR_LANDRUN=<landrun> COMPARATOR_LEAN4EXPORT=<lean4export> COMPARATOR_NAN
   lake env <comparator>/.lake/build/bin/comparator ParkingAudit/<Pair>/comparator.json
 ```
 
-**Status.**  All eight solutions build.  `leanprover/comparator` passes on every pair, with
-the Lean kernel and again with the independent nanoda kernel.
+**Status.** The original eight solutions build and pass `leanprover/comparator` with
+the Lean kernel and again with the independent nanoda kernel. The additional
+`SubcriticalTailUnconditional` solution builds; its comparator replay is included in
+the workflow.
 [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) records the pins, the results and the reproduction
 steps.  The workflow [`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml)
 runs it on request.
