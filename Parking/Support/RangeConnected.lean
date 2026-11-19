@@ -163,6 +163,30 @@ theorem exists_rangeCard_lt_upper (hd : 1 ≤ d) : ∃ K : ℕ, 1 ≤ K ∧
       rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
       ring
 
+/-- The range moment is bounded by the small-range probability plus the
+exponential penalty for a larger range. -/
+theorem exists_rangeExp_upper_of_smallRange (hd : 1 ≤ d) : ∃ K : ℕ, 1 ≤ K ∧
+    ∀ (a : ℝ), 0 < a → ∀ m n t : ℕ, 1 ≤ n →
+      (m : ℝ) * (Real.sqrt 2 ^ d * greenConst d * (n : ℝ) ^ (-(d : ℝ) / 2)) ≤ 1 / 2 →
+      rangeExp d a t ≤ (m : ℝ) * (K : ℝ) ^ m * (1 / 2 : ℝ) ^ (t / n) +
+        Real.exp (-(a * (m : ℝ))) := by
+  obtain ⟨K, hK, hbound⟩ := exists_rangeCard_lt_upper (d := d) hd
+  refine ⟨K, hK, fun a ha m n t hn hm => ?_⟩
+  have hpath : Measurable (walkPath (0 : Site d)) :=
+    Measurable.of_eval fun k => measurable_walkPath 0 k
+  have hS := measurableSet_rangeCard_lt (d := d) t m
+  have heq : (siteWalkLaw d 0).real {X | LatticeProb.rangeCard X t < m} =
+      (walkLaw d).real {p | rangeCard (0 : Site d) p t < m} := by
+    rw [← map_walkLaw_walkPath hd (0 : Site d)]
+    change (((walkLaw d).map (walkPath (0 : Site d)))
+      {X | LatticeProb.rangeCard X t < m}).toReal =
+        ((walkLaw d) {p | rangeCard (0 : Site d) p t < m}).toReal
+    rw [Measure.map_apply hpath hS]
+    rfl
+  have h := rangeExp_le_add hd ha m t
+  rw [heq] at h
+  exact h.trans (add_le_add (hbound m n t hn hm) le_rfl)
+
 end Parking
 
 end
