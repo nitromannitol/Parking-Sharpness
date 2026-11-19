@@ -13,8 +13,8 @@ project:
     comparison of the two odometers (Theorem 1.4), the nearest hole and
     particle (Theorems 1.5 and 1.6), near criticality (Theorem 1.7) and the
     oriented walk (Theorem 1.8), with every lemma and proposition behind them;
-    eleven results the paper quotes from the literature are carried as explicit
-    hypotheses of the theorems that use them.  The eight main theorems are
+    the main theorem declarations carry explicit hypotheses for cited inputs;
+    companion results discharge several of them. The eight main theorems are
     independently checked using the ParkingAudit/ comparator pairs.
   authors:
     - "Ahmed Bou-Rabee"
@@ -48,15 +48,15 @@ related_formalizations:
       The shared library Lattice-Probability (LatticeProb): the lattice, the
       simple random walk and its Green functions, the particle-hole process
       and the toolkits for results that do not depend on the parking model.
-      Pinned git dependency at commit 9d44b4d4670df393bb86ac5a4e042f215001cddf.
+      Pinned git dependency at commit 89de1230d02e1a737a9c7ecd776d34070be014ee.
   - id: "https://github.com/nitromannitol/Divisible-Sandpile-Percolation"
     relationship: "builds-on"
     note: >-
       The formalization (Sandpile) of the divisible sandpile paper that this
       paper quotes its growth estimate from.  Pinned git dependency at commit
-      cd8b15a32d00b1eec48f8747339e2d0cfaa73a21; the growth of the mean
+      58c21b8399823c3b5d1208608ceeac2ce5cefb5d; the growth of the mean
       divisible sandpile odometer is proved from it under that formalization's
-      own three continuum assumptions.
+      continuum stopping stability and continuum optimal stopping inputs.
 
 status:
   scope: >-
@@ -68,21 +68,18 @@ status:
     particle in dimensions at most three and the counterexample in dimensions
     at least five (Theorems 1.5 and 1.6), near criticality (Theorem 1.7), the
     oriented walk (Theorem 1.8), and the lemmas and propositions of Sections 2
-    to 9 behind them, 41 paper statements in all.  SCOPE BOUNDARY: eleven
-    results the paper quotes from the literature are stated as propositions in
-    Parking/External/ and are explicit hypotheses of every theorem whose proof
-    uses them; ASSUMPTIONS.md lists them with their Lean statements.  One of
-    them, the growth of the mean divisible sandpile odometer, is also proved
-    from the formalization of the divisible sandpile paper under that
-    formalization's own three continuum assumptions.  Nine further quoted
-    results, the optimal stopping representation of the divisible odometer,
-    the Green gradient bound, the variance-scale hypothesis, the binomial and
-    simple-random-walk local central limit theorems, the collected
-    Green-function norms, the U-concentration estimate, the critical-scale
-    lower-tail estimate, and the classical strong minimum principle for the
-    heat operator, are proved here (from the shared library, or, for the
-    last, from classical parabolic theory) and are not hypotheses of the
-    theorems that use them.
+    to 9 behind them, 41 paper statements in all. The manifest registers eleven
+    cited propositions. ASSUMPTIONS.md records their statements and companion
+    proofs. Bernstein, linear field scaling, spatial fixed-time tightness, and
+    the two heat inputs have unconditional proofs. Sandpile growth and spatial
+    odometer scaling have proofs conditional on continuum stopping inputs in
+    Divisible-Sandpile-Percolation. Spatial fixed-time tightness and spatial
+    stopping stability are hypotheses of no registered result. The unproved
+    leaves used by the main results are the range estimate, multivariate
+    Berry-Esseen, oriented stopping stability, continuum stopping stability,
+    and continuum optimal stopping. The Bernstein-supplied main theorem variants
+    are in Parking/MainTheoremsBernsteinProved.lean and
+    Parking/MainTheoremsBernsteinConsequences.lean.
     Not formalized: the proof-overview and related-work
     subsections, the five remarks, and the two figures.  The main theorems are
     stated in full in Parking/MainTheorems.lean; all eight are additionally
@@ -112,7 +109,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.growth"
       file: "Parking/MainTheorems.lean"
@@ -122,7 +119,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.trichotomy"
       file: "Parking/MainTheorems.lean"
@@ -132,7 +129,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.nearest"
       file: "Parking/MainTheorems.lean"
@@ -142,12 +139,12 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
         - statement: "the parabolic scaling limit of the divisible odometer with the scenery retained (Parking.External.SpatialOdometerScaling), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3(i)(b)"
-        - statement: "classical interior regularity for the heat operator (Parking.External.HeatInteriorRegularity), carried as an explicit hypothesis"
-        - statement: "classical parabolic compactness for the heat operator (Parking.External.HeatCompactness), carried as an explicit hypothesis"
+        - statement: "classical interior regularity for the heat operator (Parking.External.HeatInteriorRegularity), carried as an explicit hypothesis and proved by Parking.External.heatInteriorRegularity"
+        - statement: "classical parabolic compactness for the heat operator (Parking.External.HeatCompactness), carried as an explicit hypothesis and proved by Parking.External.heatCompactness"
         - statement: "the multivariate Berry-Esseen comparison (Parking.External.MultivariateBerryEsseen), carried as an explicit hypothesis"
           source: "Raic, Theorem 1.1"
     - declaration: "Parking.nearest_counterexample"
@@ -156,7 +153,7 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/NearestCounterexample/comparator.json"
       literature_dependencies:
-        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.near"
       file: "Parking/MainTheorems.lean"
@@ -166,7 +163,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (Parking.External.SandpileGrowth), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "Parking.oriented_walk"
       file: "Parking/MainTheorems.lean"
@@ -174,7 +171,7 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/OrientedWalk/comparator.json"
       literature_dependencies:
-        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (Parking.External.Bernstein), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
         - statement: "the cutoff and stability estimates of the parabolic scaling limit (Parking.External.OrientedStoppingStability), carried as an explicit hypothesis"
           source: "in the shape of Coquet and Toldo, Theorem 3 and Corollary 4"
@@ -194,7 +191,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.growth"
       file: "ParkingAudit/Growth/Solution.lean"
@@ -204,7 +201,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.trichotomy"
       file: "ParkingAudit/Trichotomy/Solution.lean"
@@ -214,7 +211,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.nearest"
       file: "ParkingAudit/Nearest/Solution.lean"
@@ -224,7 +221,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
         - statement: "the parabolic scaling limit of the divisible odometer with the scenery retained (ParkingAudit.External.SpatialOdometerScaling, the restatement of Parking.External.SpatialOdometerScaling over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3(i)(b)"
@@ -238,7 +235,7 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/NearestCounterexample/comparator.json"
       literature_dependencies:
-        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.near"
       file: "ParkingAudit/Near/Solution.lean"
@@ -248,7 +245,7 @@ status:
       literature_dependencies:
         - statement: "the growth of the mean divisible sandpile odometer (ParkingAudit.External.SandpileGrowth, the restatement of Parking.External.SandpileGrowth over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "Bou-Rabee and Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94)"
-        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
     - declaration: "ParkingAudit.oriented_walk"
       file: "ParkingAudit/OrientedWalk/Solution.lean"
@@ -256,7 +253,7 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/OrientedWalk/comparator.json"
       literature_dependencies:
-        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis"
+        - statement: "the martingale moment and Bernstein inequalities (ParkingAudit.External.Bernstein, the restatement of Parking.External.Bernstein over the Mathlib-only vocabulary), carried as an explicit hypothesis; proved by Parking.External.bernstein"
           source: "Pinelis, Theorems 4.1 and 3.3"
         - statement: "the cutoff and stability estimates of the parabolic scaling limit (ParkingAudit.External.OrientedStoppingStability, the restatement of Parking.External.OrientedStoppingStability over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "in the shape of Coquet and Toldo, Theorem 3 and Corollary 4"
@@ -301,9 +298,9 @@ fidelity:
     is expressed by three convergence clauses; the limit of
     prop:oriented-scaling is asserted to exist rather than characterized; and
     the Brownian optimal-stopping values range over rules with integrable
-    payoff.  The eleven cited results enter as hypotheses whose Lean
-    statements are in ASSUMPTIONS.md; that they render the cited theorems
-    faithfully is a reading, not a check.
+    payoff. The registered cited inputs and their companion proofs are listed
+    in ASSUMPTIONS.md; their fidelity to the cited theorems is a reading,
+    not a check.
 
 review:
   status: "author-verified"
@@ -364,11 +361,11 @@ alignment:
       module: "Parking.Frozen"
       status: "proved"
       note: "One node per statement; the table of CORRESPONDENCE.md gives each Lean name, paper location and state."
-    - source: "Cited results (eleven, listed in ASSUMPTIONS.md)"
+    - source: "Cited inputs (listed in ASSUMPTIONS.md)"
       lean: "Parking.External.*"
       module: "Parking.External"
       status: "assumed"
-      note: "Explicit hypotheses of the theorems that use them; listed in ASSUMPTIONS.md."
+      note: "Some have unconditional or conditional companion proofs; see ASSUMPTIONS.md."
 
 acknowledgements: >-
   The paper is joint work with Christoforos Panagiotis.  Built on Lean 4,

@@ -71,8 +71,8 @@ def status_block(nodes: list[dict]) -> str:
     if frozen:
         body += (
             f"  The {frozen} `FROZEN` nodes are cited results, stated in\n"
-            f"`Parking/External/` and carried as explicit hypotheses by the theorems\n"
-            f"that use them; they are assumed here, not proved.")
+            f"`Parking/External/`. Some have companion proofs, possibly conditional;\n"
+            f"see `ASSUMPTIONS.md` for their status and use.")
     if draft:
         which = ", ".join(f"`{i}`" for i in draft)
         body += (
@@ -81,7 +81,7 @@ def status_block(nodes: list[dict]) -> str:
     return (
         f"Status: **{len(nodes)} registered statements: {proved_theorems} `PROVED`, "
         f"{sealed_defs} `SEALED` (definition nodes proved by companion theorems), "
-        f"and {frozen} `FROZEN`, cited results that are assumed.**  "
+        f"and {frozen} `FROZEN`, registered cited inputs.**  "
         f"{body}  Run\n"
         f"`python3 tools/check_axioms.py` to confirm.  Counts here are generated\n"
         f"from `ledger/manifest.yaml` by `python3 tools/sync_docs.py`; do not\n"
