@@ -120,6 +120,49 @@ theorem exists_rangeCard_eq_upper (hd : 1 ≤ d) : ∃ K : ℕ, ∀ m n t : ℕ,
       have hU : U.card ≤ T.card := Finset.card_filter_le _ _
       exact_mod_cast hU.trans hcard
 
+/-- The probability of a range smaller than `m` is bounded by the sum of the
+fixed-size estimates. -/
+theorem exists_rangeCard_lt_upper (hd : 1 ≤ d) : ∃ K : ℕ, 1 ≤ K ∧
+    ∀ m n t : ℕ, 1 ≤ n →
+      (m : ℝ) * (Real.sqrt 2 ^ d * greenConst d * (n : ℝ) ^ (-(d : ℝ) / 2)) ≤ 1 / 2 →
+      (walkLaw d).real {p | rangeCard (0 : Site d) p t < m} ≤
+        (m : ℝ) * (K : ℝ) ^ m * (1 / 2 : ℝ) ^ (t / n) := by
+  have := stepLaw_isProbability hd
+  have : IsProbabilityMeasure (walkLaw d) := by unfold walkLaw; infer_instance
+  obtain ⟨K, hK⟩ := exists_rangeCard_eq_upper (d := d) hd
+  let K' := max K 1
+  have hK' : (1 : ℝ) ≤ K' := by exact_mod_cast (le_max_right K 1)
+  have hKK' : (K : ℝ) ≤ K' := by exact_mod_cast (le_max_left K 1)
+  refine ⟨K', le_max_right K 1, fun m n t hn hm => ?_⟩
+  let E : ℕ → Set (ℕ → Fin d × Bool) :=
+    fun j => {p | rangeCard (0 : Site d) p t = j}
+  have heq : {p | rangeCard (0 : Site d) p t < m} = ⋃ j ∈ Finset.range m, E j := by
+    ext p
+    simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Finset.mem_range, E]
+    exact ⟨fun h => ⟨_, h, rfl⟩, fun ⟨j, hj, he⟩ => he ▸ hj⟩
+  have hcoef : (0 : ℝ) ≤ Real.sqrt 2 ^ d * greenConst d *
+      (n : ℝ) ^ (-(d : ℝ) / 2) := by
+    exact mul_nonneg (mul_nonneg (by positivity) (greenConst_nonneg d)) (by positivity)
+  have heach : ∀ j ∈ Finset.range m, (walkLaw d).real (E j) ≤
+      (K' : ℝ) ^ m * (1 / 2 : ℝ) ^ (t / n) := by
+    intro j hj
+    have hjm : j ≤ m := Nat.le_of_lt (Finset.mem_range.mp hj)
+    have hsmall : (j : ℝ) * (Real.sqrt 2 ^ d * greenConst d *
+        (n : ℝ) ^ (-(d : ℝ) / 2)) ≤ 1 / 2 := by
+      exact (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hjm) hcoef).trans hm
+    have hbound := hK j n t hn hsmall
+    have hpow : (K : ℝ) ^ j ≤ (K' : ℝ) ^ m :=
+      (pow_le_pow_left₀ (by positivity) hKK' j).trans (pow_le_pow_right₀ hK' hjm)
+    exact hbound.trans (mul_le_mul_of_nonneg_right hpow (by positivity))
+  rw [heq]
+  calc (walkLaw d).real (⋃ j ∈ Finset.range m, E j)
+      ≤ ∑ j ∈ Finset.range m, (walkLaw d).real (E j) := measureReal_biUnion_finset_le _ _
+    _ ≤ ∑ _j ∈ Finset.range m, (K' : ℝ) ^ m * (1 / 2 : ℝ) ^ (t / n) :=
+      Finset.sum_le_sum heach
+    _ = (m : ℝ) * (K' : ℝ) ^ m * (1 / 2 : ℝ) ^ (t / n) := by
+      rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      ring
+
 end Parking
 
 end
