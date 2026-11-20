@@ -10,6 +10,7 @@ import Parking.MainTheoremsOrientedConsequences
 import Parking.MainTheoremsUnconditional
 import Parking.External.SpatialStoppingStabilityUnconditional
 import ParkingAudit.SubcriticalTailUnconditional.Solution
+import Parking.External.DonskerVaradhanProved
 
 /-!
 # Axioms audit
@@ -19,7 +20,8 @@ Building this module prints the axiom dependencies of the eight main theorems of
 hypotheses discharged, of `Parking.nearest''`, which also derives the spatial odometer
 scaling limit from the continuum stopping stability of the divisible sandpile, of the
 hypothesis-free forms of the main results in `Parking/MainTheoremsUnconditional.lean` with the
-three cited inputs they are proved from, and of the proof of the spatial stopping stability.
+three cited inputs they are proved from, of the proof of the spatial stopping stability, and of
+the proof of the Donsker-Varadhan estimate with Theorem 1.1 by the route of the paper.
 Each must report exactly the three standard foundational axioms of Mathlib: `propext`,
 `Classical.choice`, `Quot.sound`.
 
@@ -82,3 +84,5 @@ This file is not imported by the library root; the report runs when it is built 
 #print axioms Parking.oriented_walk_proved
 #print axioms Parking.External.spatialStoppingStability_of_continuumStoppingStability
 #print axioms Parking.External.spatialStoppingStability_holds
+#print axioms Parking.External.donskerVaradhanRange_holds
+#print axioms Parking.subcritical_tail_of_donskerVaradhan

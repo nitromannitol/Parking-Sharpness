@@ -1,4 +1,5 @@
 import Parking.External.DonskerVaradhan
+import Parking.Frozen.SubcriticalTail
 import Parking.Support.DVLimitLower
 import Parking.Support.RangeUpperScaling
 
@@ -24,6 +25,10 @@ the discrete Faber-Krahn function itself:
 
 That `k > 0` follows from the stretched-exponential upper bound
 `Parking.range_moment_upper_bound_of_range_count`.
+
+With the input proved, Theorem 1.1 also holds by the route of the paper
+(`Parking.subcritical_tail_of_donskerVaradhan`): the Donsker-Varadhan hypothesis of
+`Parking.Frozen.subcritical_tail` is discharged.
 -/
 
 open Filter Topology
@@ -101,3 +106,17 @@ theorem Parking.External.donskerVaradhanRange_holds : Parking.External.DonskerVa
   obtain ⟨c, hc, hlim⟩ := Parking.exists_tendsto_dirichletRate hd
   exact ⟨Parking.dvConst d a c, Parking.dvConst_pos_of_tendsto hd ha hc hlim,
     Parking.tendsto_log_rangeExp hd ha hc hlim⟩
+
+open MeasureTheory in
+/-- **Theorem 1.1** (`thm:subcritical-tail`) by the route of the paper, its Donsker-Varadhan
+hypothesis discharged by `Parking.External.donskerVaradhanRange_holds`. -/
+theorem Parking.subcritical_tail_of_donskerVaradhan
+    (d : ℕ) (hd : 1 ≤ d) (ν : Measure ℤ) (hprob : IsProbabilityMeasure ν)
+    (hint : Integrable (fun k : ℤ => |(k : ℝ)|) ν) (hmean : ∫ k, (k : ℝ) ∂ν < 0)
+    (hpos : 0 < ν (Set.Ioi 0))
+    (θ : ℝ) (hθ : 0 < θ) (hexp : Integrable (fun k : ℤ => Real.exp (θ * k)) ν) :
+    ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ t : ℕ, 1 ≤ t →
+      C⁻¹ * Real.exp (-(C * (t : ℝ) ^ ((d : ℝ) / (d + 2)))) ≤ Parking.S (Parking.law d ν) t ∧
+        Parking.S (Parking.law d ν) t ≤ C * Real.exp (-(c * (t : ℝ) ^ ((d : ℝ) / (d + 2)))) :=
+  Parking.Frozen.subcritical_tail Parking.External.donskerVaradhanRange_holds d hd ν hprob hint
+    hmean hpos θ hθ hexp
