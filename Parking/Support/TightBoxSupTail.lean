@@ -31,7 +31,6 @@ namespace Parking
 
 /-! ### The tail moment bound -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The geometric-tail moment bound**: for `p > 12`, the `p`-th moment of the partial sum of
 `levelInc` starting after a fixed level `n1` is bounded UNIFORMLY IN BOTH the scale `n ≥ 1` and
 the number of terms `N`, with the constant itself bounded by `K * (1 + A) ^ (p / 2)` for a
