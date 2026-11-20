@@ -15,13 +15,16 @@ theorems in `Divisible-Sandpile-Percolation`.
 
 The sandpile package proves the random-walk inputs `VarianceScale` and
 `GreenBoundsHigh` in its `*Proved.lean` files; this module uses those proofs
-directly.  The remaining inputs are carried explicitly because that package
-still states them as external hypotheses: `Sandpile.External.LocalCLT`,
-`Sandpile.External.ContinuumStoppingStability.{0}`, and the family of finite-
-horizon Brownian optimal-stopping hypotheses
+directly.  `Parking.External.sandpileGrowth_of_mean_growth_le_three` assembles the growth
+statement from the low-dimensional limit of the mean odometer alone.  The registered theorem
+`Parking.External.sandpileGrowth` obtains that limit from the sealed theorem
+`Sandpile.Frozen.mean_growth_le_three`, and so carries its inputs explicitly:
+`Sandpile.External.LocalCLT`, `Sandpile.External.ContinuumStoppingStability.{0}`, and the
+family of finite-horizon Brownian optimal-stopping hypotheses
 `∀ (ΩB : Type) [MeasurableSpace ΩB],
 Sandpile.External.ContinuumOptimalStopping ΩB`.  No proof of any of these
-three cited inputs is introduced here.
+three cited inputs is introduced here; `Parking.External.sandpileGrowth_holds` proves the
+growth statement with no hypothesis.
 
 The high-dimensional all-time upper bounds use the package's sealed crude
 and refined increment results.  The lower bounds supplied by
@@ -379,15 +382,18 @@ private theorem upper_power_of_bounded
     exact h
   exact hupper' n hn
 
-/-- Assembles `Parking.External.SandpileGrowth` from the sibling library's sealed growth
-theorems (`Sandpile.Frozen.mean_growth_le_three`, `mean_growth_four` and `high_first_order`)
-together with the helper lemmas above, given the three cited local-CLT and optimal-stopping
-hypotheses. -/
-private theorem sandpileGrowth_proof
-    (_hLocalCLT : Sandpile.External.LocalCLT)
-    (hStab : Sandpile.External.ContinuumStoppingStability.{0})
-    (hOS : ∀ (ΩB : Type) [MeasurableSpace ΩB],
-      Sandpile.External.ContinuumOptimalStopping ΩB) :
+/-- Assembles `Parking.External.SandpileGrowth` from the low-dimensional limit of the mean
+divisible sandpile odometer, `n ^ (-(4 - d) / 4) E u_n(0) → L > 0` for `1 ≤ d ≤ 3` (Theorem
+1.3(i)(a) of the divisible sandpile paper), together with the sibling library's sealed growth
+theorems `Sandpile.Frozen.mean_growth_four` and `Sandpile.Frozen.high_first_order` and the
+helper lemmas above. -/
+theorem Parking.External.sandpileGrowth_of_mean_growth_le_three
+    (hLow : ∀ (d : ℕ), 1 ≤ d → d ≤ 3 → ∀ (ν : Measure ℝ), IsProbabilityMeasure ν →
+      ∫ z, z ∂ν = 0 → 0 < evariance id ν → evariance id ν < ⊤ →
+      ∀ θ₀ : ℝ, 0 < θ₀ → Integrable (fun z => Real.exp (θ₀ * |z|)) ν →
+      ∃ L : ℝ, 0 < L ∧
+        Tendsto (fun t : ℕ => (t : ℝ) ^ (-((4 - (d : ℝ)) / 4)) *
+          Sandpile.meanOdometer (Sandpile.centeredMassLaw d ν) t) atTop (𝓝 L)) :
     Parking.External.SandpileGrowth := by
   intro d hd ν hprob hmean hvar hvar' hexp
   have := hprob
@@ -406,9 +412,7 @@ private theorem sandpileGrowth_proof
     meanOdometer_one_pos d ν hd hmean hvar hvar' θ hθ hexpint
   constructor
   · intro hd3
-    obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hStab
-      hOS d hd hd3 ν hprob hmean hvar hvar'
-      θ hθ hexpint
+    obtain ⟨L, hL, hlim⟩ := hLow d hd hd3 ν hprob hmean hvar hvar' θ hθ hexpint
     let p : ℝ := (4 - (d : ℝ)) / 4
     have hp : 0 < p := by
       dsimp [p]
@@ -469,11 +473,21 @@ private theorem sandpileGrowth_proof
           rw [Parking.meanSandpileReal_eq_sandpileMean d ν hd n]
           exact ⟨hlowall n hn, hupper n hn⟩
         · intro hd3
-          obtain ⟨L, hL, hlim⟩ := Sandpile.Frozen.mean_growth_le_three hStab
-            hOS d hd hd3 ν hprob hmean hvar hvar'
-            θ hθ hexpint
+          obtain ⟨L, hL, hlim⟩ := hLow d hd hd3 ν hprob hmean hvar hvar' θ hθ hexpint
           refine ⟨L, hL, ?_⟩
           simpa only [Parking.meanSandpileReal_eq_sandpileMean d ν hd] using hlim
+
+/-- Assembles `Parking.External.SandpileGrowth` from the sealed low-dimensional growth theorem
+`Sandpile.Frozen.mean_growth_le_three`, given the three cited local-CLT and optimal-stopping
+hypotheses. -/
+private theorem sandpileGrowth_proof
+    (_hLocalCLT : Sandpile.External.LocalCLT)
+    (hStab : Sandpile.External.ContinuumStoppingStability.{0})
+    (hOS : ∀ (ΩB : Type) [MeasurableSpace ΩB],
+      Sandpile.External.ContinuumOptimalStopping ΩB) :
+    Parking.External.SandpileGrowth :=
+  Parking.External.sandpileGrowth_of_mean_growth_le_three fun d hd hd3 ν hprob =>
+    Sandpile.Frozen.mean_growth_le_three hStab hOS d hd hd3 ν hprob
 
 -- FROZEN-STATEMENT-BEGIN
 theorem Parking.External.sandpileGrowth
