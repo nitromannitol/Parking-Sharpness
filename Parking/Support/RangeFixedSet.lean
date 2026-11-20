@@ -21,7 +21,7 @@ variable {d : ℕ}
 
 /-- The position-path law assigns the finite-set survival probability to the
 confinement event. -/
-private theorem measureReal_siteWalkLaw_stayIn (hd : 1 ≤ d) (B : Finset (Site d))
+theorem measureReal_siteWalkLaw_stayIn (hd : 1 ≤ d) (B : Finset (Site d))
     (n : ℕ) (x : Site d) :
     (siteWalkLaw d x).real (Graph.stayIn (B : Set (Site d)) n) =
       Network.survival (lattice d) B n x := by
