@@ -7,6 +7,8 @@ import Parking.Support.RangeConfinement
 import Parking.Support.RangeUpperScaling
 import Parking.MainTheoremsBerryEsseenProved
 import Parking.MainTheoremsOrientedConsequences
+import Parking.MainTheoremsUnconditional
+import Parking.External.SpatialStoppingStabilityUnconditional
 import ParkingAudit.SubcriticalTailUnconditional.Solution
 
 /-!
@@ -14,9 +16,11 @@ import ParkingAudit.SubcriticalTailUnconditional.Solution
 
 Building this module prints the axiom dependencies of the eight main theorems of
 `Parking/MainTheorems.lean`, of `Parking.nearest'`, Theorem 1.5 with its two heat equation
-hypotheses discharged, and of `Parking.nearest''`, which also derives the spatial odometer
-scaling limit from the continuum stopping stability of the divisible sandpile.  Each must
-report exactly the three standard foundational axioms of Mathlib: `propext`,
+hypotheses discharged, of `Parking.nearest''`, which also derives the spatial odometer
+scaling limit from the continuum stopping stability of the divisible sandpile, of the
+hypothesis-free forms of the main results in `Parking/MainTheoremsUnconditional.lean` with the
+three cited inputs they are proved from, and of the proof of the spatial stopping stability.
+Each must report exactly the three standard foundational axioms of Mathlib: `propext`,
 `Classical.choice`, `Quot.sound`.
 
 The results the paper cites without proof are not axioms here: each is a `Prop` in
@@ -63,3 +67,18 @@ This file is not imported by the library root; the report runs when it is built 
 #print axioms Parking.oriented_scaling_of_continuum_stopping
 #print axioms Parking.oriented_walk_of_continuum_stopping
 #print axioms Parking.oriented_walk_of_bernstein_and_continuum_stopping
+
+#print axioms Parking.External.sandpileGrowth_holds
+#print axioms Parking.External.orientedStoppingStability_holds
+#print axioms Parking.External.spatialOdometerScaling_holds
+#print axioms Parking.subcritical_tail_proved
+#print axioms Parking.master_proved
+#print axioms Parking.growth_proved
+#print axioms Parking.trichotomy_proved
+#print axioms Parking.nearest_proved
+#print axioms Parking.nearest_counterexample_proved
+#print axioms Parking.near_proved
+#print axioms Parking.oriented_scaling_proved
+#print axioms Parking.oriented_walk_proved
+#print axioms Parking.External.spatialStoppingStability_of_continuumStoppingStability
+#print axioms Parking.External.spatialStoppingStability_holds
