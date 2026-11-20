@@ -12,8 +12,11 @@ walk.  For a function `g` on `ℤ^d` vanishing off a finite set,
   `latEnergy g = ∑_x g(x)^2 - ∑_x g(x) (P g)(x)` (`latEnergy_eq_sqMass_sub`),
 
 and `dirichletRate d n` is the least ratio `latEnergy g / sqMass g` over the nonzero functions
-supported on at most `n` sites, the Dirichlet eigenvalue of the best set of `n` sites.  The
-energies decrease under every `1`-Lipschitz map fixing `0` applied pointwise, in particular
+vanishing off a set `V` whose cube hull `fatten V` (the sites `x` with a corner of the unit cube
+`x + [0,1]^d` in `V`) has at most `n` sites: the Dirichlet eigenvalue of the best region of
+volume `n`.  Measuring a set by its cube hull rather than by its number of sites makes the
+volume behave exactly under the blow-up of `Parking.Support.DVBlowup`, at no cost for the regions
+that matter, which are unions of large boxes.  The energies decrease under every `1`-Lipschitz map fixing `0` applied pointwise, in particular
 under `|·|` and under the truncations `(· - s)⁺`, and they are invariant under translations.
 -/
 
@@ -41,11 +44,44 @@ def dirEnergy (i : Fin d) (g : Site d → ℝ) : ℝ :=
 def latEnergy (g : Site d → ℝ) : ℝ :=
   (∑ i, dirEnergy i g) / (2 * d)
 
-/-- The least Dirichlet ratio `latEnergy g / sqMass g` over the nonzero functions supported on
-at most `n` sites. -/
+/-- The cube hull of `V`: the sites `x` such that `x + ∑_{j ∈ S} e_j ∈ V` for some set `S` of
+coordinates. -/
+def fatten (V : Finset (Site d)) : Finset (Site d) :=
+  V.biUnion fun a => (Finset.univ : Finset (Finset (Fin d))).image fun S => a - ∑ j ∈ S, unit j
+
+/-- The least Dirichlet ratio `latEnergy g / sqMass g` over the nonzero functions vanishing off
+a set whose cube hull has at most `n` sites. -/
 def dirichletRate (d n : ℕ) : ℝ :=
-  sInf {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), V.card ≤ n ∧ (∀ x ∉ V, g x = 0) ∧
-    0 < sqMass g ∧ q = latEnergy g / sqMass g}
+  sInf {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), (fatten V).card ≤ n ∧
+    (∀ x ∉ V, g x = 0) ∧ 0 < sqMass g ∧ q = latEnergy g / sqMass g}
+
+/-! ### The cube hull -/
+
+theorem mem_fatten {V : Finset (Site d)} {x : Site d} :
+    x ∈ fatten V ↔ ∃ S : Finset (Fin d), x + ∑ j ∈ S, unit j ∈ V := by
+  simp only [fatten, Finset.mem_biUnion, Finset.mem_image, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨a, ha, S, rfl⟩
+    exact ⟨S, by simpa using ha⟩
+  · rintro ⟨S, hS⟩
+    exact ⟨_, hS, S, by abel⟩
+
+theorem subset_fatten (V : Finset (Site d)) : V ⊆ fatten V := fun x hx =>
+  mem_fatten.mpr ⟨∅, by simpa using hx⟩
+
+theorem card_le_card_fatten (V : Finset (Site d)) : V.card ≤ (fatten V).card :=
+  Finset.card_le_card (subset_fatten V)
+
+theorem card_fatten_le (V : Finset (Site d)) : (fatten V).card ≤ 2 ^ d * V.card := by
+  classical
+  unfold fatten
+  refine Finset.card_biUnion_le.trans ?_
+  refine (Finset.sum_le_sum fun a _ => Finset.card_image_le).trans ?_
+  simp [Finset.card_univ, Fintype.card_finset, mul_comm]
+
+theorem fatten_mono {V W : Finset (Site d)} (h : V ⊆ W) : fatten V ⊆ fatten W := fun x hx => by
+  obtain ⟨S, hS⟩ := mem_fatten.mp hx
+  exact mem_fatten.mpr ⟨S, h hS⟩
 
 /-! ### Finite support -/
 
@@ -213,7 +249,7 @@ theorem latEnergy_eq_sqMass_sub (hd : 1 ≤ d) {g : Site d → ℝ} (hg : FinSup
 /-! ### The least Dirichlet ratio -/
 
 theorem dirichletRate_set_bddBelow (d n : ℕ) :
-    BddBelow {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), V.card ≤ n ∧
+    BddBelow {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), (fatten V).card ≤ n ∧
       (∀ x ∉ V, g x = 0) ∧ 0 < sqMass g ∧ q = latEnergy g / sqMass g} := by
   refine ⟨0, ?_⟩
   rintro q ⟨V, g, -, -, hm, rfl⟩
@@ -221,7 +257,7 @@ theorem dirichletRate_set_bddBelow (d n : ℕ) :
 
 theorem dirichletRate_nonneg (d n : ℕ) : 0 ≤ dirichletRate d n := by
   unfold dirichletRate
-  by_cases hne : {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), V.card ≤ n ∧
+  by_cases hne : {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), (fatten V).card ≤ n ∧
       (∀ x ∉ V, g x = 0) ∧ 0 < sqMass g ∧ q = latEnergy g / sqMass g}.Nonempty
   · refine le_csInf hne ?_
     rintro q ⟨V, g, -, -, hm, rfl⟩
@@ -229,21 +265,21 @@ theorem dirichletRate_nonneg (d n : ℕ) : 0 ≤ dirichletRate d n := by
   · rw [Set.not_nonempty_iff_eq_empty.mp hne, Real.sInf_empty]
 
 /-- Every admissible function bounds the rate from above. -/
-theorem dirichletRate_le {n : ℕ} {V : Finset (Site d)} {g : Site d → ℝ} (hVn : V.card ≤ n)
-    (hV : ∀ x ∉ V, g x = 0) (hm : 0 < sqMass g) :
+theorem dirichletRate_le {n : ℕ} {V : Finset (Site d)} {g : Site d → ℝ}
+    (hVn : (fatten V).card ≤ n) (hV : ∀ x ∉ V, g x = 0) (hm : 0 < sqMass g) :
     dirichletRate d n ≤ latEnergy g / sqMass g :=
   csInf_le (dirichletRate_set_bddBelow d n) ⟨V, g, hVn, hV, hm, rfl⟩
 
-/-- Above the rate there is an admissible function, once `n ≥ 1`. -/
-theorem exists_lt_of_dirichletRate_lt {n : ℕ} (hn : 1 ≤ n) {q : ℝ}
+/-- Above the rate there is an admissible function, once `n ≥ 2^d`. -/
+theorem exists_lt_of_dirichletRate_lt {n : ℕ} (hn : 2 ^ d ≤ n) {q : ℝ}
     (hq : dirichletRate d n < q) :
-    ∃ (V : Finset (Site d)) (g : Site d → ℝ), V.card ≤ n ∧ (∀ x ∉ V, g x = 0) ∧
+    ∃ (V : Finset (Site d)) (g : Site d → ℝ), (fatten V).card ≤ n ∧ (∀ x ∉ V, g x = 0) ∧
       0 < sqMass g ∧ latEnergy g / sqMass g < q := by
   classical
-  have hne : {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), V.card ≤ n ∧
+  have hne : {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), (fatten V).card ≤ n ∧
       (∀ x ∉ V, g x = 0) ∧ 0 < sqMass g ∧ q = latEnergy g / sqMass g}.Nonempty := by
     let g : Site d → ℝ := fun x => if x = 0 then 1 else 0
-    refine ⟨_, {0}, g, by simpa using hn, fun x hx => ?_, ?_, rfl⟩
+    refine ⟨_, {0}, g, (card_fatten_le _).trans (by simpa using hn), fun x hx => ?_, ?_, rfl⟩
     · simp only [Finset.mem_singleton] at hx
       simp [g, hx]
     · rw [sqMass_eq_sum (V := {0}) fun x hx => by
@@ -253,8 +289,8 @@ theorem exists_lt_of_dirichletRate_lt {n : ℕ} (hn : 1 ≤ n) {q : ℝ}
   obtain ⟨q', ⟨V, g, hVn, hV, hm, rfl⟩, hlt⟩ := exists_lt_of_csInf_lt hne hq
   exact ⟨V, g, hVn, hV, hm, hlt⟩
 
-/-- The rate is antitone in the number of sites. -/
-theorem dirichletRate_anti {m n : ℕ} (hmn : m ≤ n) (hm : 1 ≤ m) :
+/-- The rate is antitone in the volume. -/
+theorem dirichletRate_anti {m n : ℕ} (hmn : m ≤ n) (hm : 2 ^ d ≤ m) :
     dirichletRate d n ≤ dirichletRate d m := by
   refine le_of_forall_gt_imp_ge_of_dense fun q hq => ?_
   obtain ⟨V, g, hVm, hV, hpos, hlt⟩ := exists_lt_of_dirichletRate_lt hm hq

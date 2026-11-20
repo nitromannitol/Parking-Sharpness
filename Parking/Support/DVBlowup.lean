@@ -433,8 +433,8 @@ theorem exists_ne_zero_of_blowList_ne_zero (L : ℕ) [NeZero L] (h : Site d → 
         · subst hji
           simp [coarseIn, hl.1]
         · by_cases hjl : j ∈ l
-          · simp [coarseIn, hjl, hji, Function.update_of_ne hji]
-          · simp [coarseIn, hjl, hji, Function.update_of_ne hji]
+          · simp [coarseIn, hjl, hji]
+          · simp [coarseIn, hjl, hji]
       have hcoarse' : coarseIn L l (x + unit i) = coarseIn L (i :: l) y + unit i := by
         rw [← hcoarse]
         funext j
