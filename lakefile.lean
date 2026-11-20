@@ -9,7 +9,7 @@ require «lattice-probability» from git
 
 require «divisible_sandpile» from git
   "https://github.com/nitromannitol/Divisible-Sandpile-Percolation.git" @
-    "e14e9d87adb65456761d1939fb7cedc49e57f5c5"
+    "8470df06ae1c7847decf57f86b741bc7a4fc5d2e"
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "065356127b1dc0016f66b7283ce0ce2c4055aa55"
