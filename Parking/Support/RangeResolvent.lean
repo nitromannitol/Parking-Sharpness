@@ -1061,7 +1061,220 @@ theorem eq_exp_one_mul_exp_neg_log {a : ℝ} (ha : 0 < a) :
   field_simp
 
 
-set_option maxHeartbeats 1000000 in
+/-- Past the level `log (t + 2) > p L`, with `p = 2 + 6 κ` and `L = log (e / a)`, the time is so
+large that `4 κ² L² ≤ a √t`. -/
+theorem four_sq_le_mul_sqrt_of_lt_log {a κ L p t : ℝ} (ha : 0 < a) (hκ : 0 ≤ κ)
+    (hL : L = Real.log (Real.exp 1 / a)) (hL1 : 1 ≤ L) (hp : p = 2 + 6 * κ) (ht : 1 ≤ t)
+    (hcase : p * L < Real.log (t + 2)) :
+    4 * (κ ^ 2 * L ^ 2) ≤ a * Real.sqrt t := by
+  have hp2 : (2 : ℝ) ≤ p := by rw [hp]; linarith
+  have hexplt : Real.exp (p * L) < t + 2 := by
+    rw [← Real.lt_log_iff_exp_lt (by linarith : (0:ℝ) < t + 2)]
+    exact hcase
+  have hpL2 : (2 : ℝ) ≤ p * L := by
+    have := mul_le_mul hp2 hL1 zero_le_one (by linarith : (0 : ℝ) ≤ p)
+    linarith
+  have hexp4 : (4 : ℝ) ≤ Real.exp (p * L) := by
+    have h1 : Real.exp 2 ≤ Real.exp (p * L) := Real.exp_le_exp.mpr hpL2
+    have h2 : (4:ℝ) ≤ Real.exp 2 := by
+      have h9 := Real.exp_one_gt_d9
+      have h10 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
+        rw [← Real.exp_add]; norm_num
+      have h11 : (2 : ℝ) * 2 ≤ Real.exp 1 * Real.exp 1 :=
+        mul_le_mul (by linarith) (by linarith) (by norm_num) (Real.exp_pos 1).le
+      linarith
+    linarith
+  have ht2 : Real.exp (p * L) / 2 ≤ t := by linarith
+  have hsqrtt : Real.exp (p * L / 2) / Real.sqrt 2 ≤ Real.sqrt t := by
+    have h1 := Real.sqrt_le_sqrt ht2
+    rwa [Real.sqrt_div' (Real.exp (p * L)) (by norm_num : (0:ℝ) ≤ 2), sqrt_exp] at h1
+  have hs2 : Real.sqrt 2 ≤ 3 / 2 := by
+    have h1 : Real.sqrt 2 ≤ Real.sqrt ((3 / 2 : ℝ) ^ 2) := Real.sqrt_le_sqrt (by norm_num)
+    rwa [Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 3 / 2)] at h1
+  have hs2pos : (0:ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hstep : Real.exp (p * L / 2) / (3 / 2) ≤ Real.sqrt t := by
+    refine le_trans ?_ hsqrtt
+    exact div_le_div_of_nonneg_left (Real.exp_pos _).le hs2pos hs2
+  have haexp : a * Real.exp (p * L / 2) = Real.exp 1 * Real.exp (3 * κ * L) := by
+    nth_rewrite 1 [eq_exp_one_mul_exp_neg_log ha]
+    rw [← hL, mul_assoc, ← Real.exp_add]
+    congr 2
+    rw [hp]
+    ring
+  have h3κL : 0 ≤ 3 * κ * L := mul_nonneg (mul_nonneg (by norm_num) hκ) (by linarith)
+  have hq : (3 * κ * L) ^ 2 / 2 ≤ Real.exp (3 * κ * L) := exp_ge_sq_half h3κL
+  have h1 : a * (Real.exp (p * L / 2) / (3 / 2)) ≤ a * Real.sqrt t :=
+    mul_le_mul_of_nonneg_left hstep ha.le
+  have h2 : a * (Real.exp (p * L / 2) / (3 / 2))
+      = Real.exp 1 * Real.exp (3 * κ * L) / (3 / 2) := by
+    rw [← haexp]; ring
+  rw [h2] at h1
+  have h3 : (27 / 10 : ℝ) ≤ Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+  have h4 : (0:ℝ) ≤ (3 * κ * L) ^ 2 / 2 := by positivity
+  have hA : (27 / 10 : ℝ) * ((3 * κ * L) ^ 2 / 2)
+      ≤ Real.exp 1 * Real.exp (3 * κ * L) := by
+    have hc : (27 / 10 : ℝ) * ((3 * κ * L) ^ 2 / 2)
+        ≤ Real.exp 1 * ((3 * κ * L) ^ 2 / 2) :=
+      mul_le_mul_of_nonneg_right h3 h4
+    have hdd : Real.exp 1 * ((3 * κ * L) ^ 2 / 2)
+        ≤ Real.exp 1 * Real.exp (3 * κ * L) :=
+      mul_le_mul_of_nonneg_left hq (Real.exp_pos 1).le
+    linarith
+  have hx : (0:ℝ) ≤ κ ^ 2 * L ^ 2 := by positivity
+  have hB : 4 * (κ ^ 2 * L ^ 2) ≤ (27 / 10 : ℝ) * ((3 * κ * L) ^ 2 / 2) / (3 / 2) := by
+    linarith [hx]
+  linarith [h1, hA, hB]
+
+/-- Past the horizon `C L³ / a` the rate `a t / log (t + 2)` is at least `κ² L²`, where
+`L = log (e / a)`, `p = 2 + 6 κ` and `κ² p ≤ C`. -/
+theorem sq_mul_log_le_of_horizon_lt {a κ L p C t : ℝ} (ha : 0 < a) (hκ : 0 ≤ κ)
+    (hL : L = Real.log (Real.exp 1 / a)) (hL1 : 1 ≤ L) (hp : p = 2 + 6 * κ)
+    (hCκp : κ ^ 2 * p ≤ C) (ht : 1 ≤ t) (hat : C * L ^ 3 < a * t) :
+    κ ^ 2 * L ^ 2 * Real.log (t + 2) ≤ a * t := by
+  by_cases hcase : Real.log (t + 2) ≤ p * L
+  · have h1 : κ ^ 2 * L ^ 2 * Real.log (t + 2) ≤ κ ^ 2 * L ^ 2 * (p * L) :=
+      mul_le_mul_of_nonneg_left hcase (by positivity)
+    have h2 : κ ^ 2 * L ^ 2 * (p * L) = κ ^ 2 * p * L ^ 3 := by ring
+    have h3 : κ ^ 2 * p * L ^ 3 ≤ C * L ^ 3 :=
+      mul_le_mul_of_nonneg_right hCκp (pow_nonneg (by linarith) 3)
+    linarith
+  · rw [not_le] at hcase
+    have hasqrt := four_sq_le_mul_sqrt_of_lt_log ha hκ hL hL1 hp ht hcase
+    have hLt4 : Real.log (t + 2) ≤ 4 * Real.sqrt t := log_le_four_sqrt ht
+    have hsq : Real.sqrt t * Real.sqrt t = t := Real.mul_self_sqrt (by linarith)
+    have h5 : κ ^ 2 * L ^ 2 * Real.log (t + 2) ≤ κ ^ 2 * L ^ 2 * (4 * Real.sqrt t) :=
+      mul_le_mul_of_nonneg_left hLt4 (by positivity)
+    have h6 : (κ ^ 2 * L ^ 2 * 4) * Real.sqrt t ≤ (a * Real.sqrt t) * Real.sqrt t :=
+      mul_le_mul_of_nonneg_right (by linarith [hasqrt]) (Real.sqrt_nonneg _)
+    have h7 : (a * Real.sqrt t) * Real.sqrt t = a * t := by
+      rw [mul_assoc, hsq]
+    linarith
+
+/-- `√(a √t) / 2 ≤ √(a t / log (t + 2))` for `a > 0` and `t ≥ 1`. -/
+theorem sqrt_mul_sqrt_div_two_le {a t : ℝ} (ha : 0 < a) (ht : 1 ≤ t) :
+    Real.sqrt (a * Real.sqrt t) / 2 ≤ Real.sqrt (a * t / Real.log (t + 2)) := by
+  have htpos : (0 : ℝ) < t := by linarith
+  have hLtpos : (0 : ℝ) < Real.log (t + 2) := Real.log_pos (by linarith)
+  have hLt4 : Real.log (t + 2) ≤ 4 * Real.sqrt t := log_le_four_sqrt ht
+  have hsq : Real.sqrt t * Real.sqrt t = t := Real.mul_self_sqrt htpos.le
+  have h1 : a * Real.sqrt t / 4 ≤ a * t / Real.log (t + 2) := by
+    rw [div_le_div_iff₀ (by norm_num) hLtpos]
+    have h2 : a * Real.sqrt t * Real.log (t + 2) ≤ a * Real.sqrt t * (4 * Real.sqrt t) :=
+      mul_le_mul_of_nonneg_left hLt4 (mul_nonneg ha.le (Real.sqrt_nonneg _))
+    have h3 : a * Real.sqrt t * (4 * Real.sqrt t) = a * t * 4 := by
+      rw [show a * Real.sqrt t * (4 * Real.sqrt t) = 4 * a * (Real.sqrt t * Real.sqrt t) by ring,
+        hsq]
+      ring
+    linarith
+  have h4 := Real.sqrt_le_sqrt h1
+  rwa [Real.sqrt_div' (a * Real.sqrt t) (by norm_num : (0:ℝ) ≤ 4),
+    show (4:ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)] at h4
+
+/-- If `√(a √t) / 2 ≤ R` then `exp (-(c₀ R / 2)) ≤ 2642411520 / (c₀⁸ a⁴ t²)`. -/
+theorem exp_neg_half_le_of_sqrt_le {a t c₀ R : ℝ} (ha : 0 < a) (ht : 0 < t) (hc₀ : 0 < c₀)
+    (hR : Real.sqrt (a * Real.sqrt t) / 2 ≤ R) :
+    Real.exp (-(c₀ * R / 2)) ≤ 2642411520 / (c₀ ^ 8 * (a ^ 4 * t ^ 2)) := by
+  set w : ℝ := Real.sqrt (a * Real.sqrt t) with hwdef
+  have hwpos : (0 : ℝ) < w := Real.sqrt_pos.mpr (mul_pos ha (Real.sqrt_pos.mpr ht))
+  have hw8 : w ^ 8 = a ^ 4 * t ^ 2 := by
+    have hw2 : w ^ 2 = a * Real.sqrt t :=
+      Real.sq_sqrt (mul_nonneg ha.le (Real.sqrt_nonneg _))
+    have hs4 : Real.sqrt t ^ 4 = t ^ 2 := sqrt_pow_four ht.le
+    calc w ^ 8 = (w ^ 2) ^ 4 := by ring
+      _ = (a * Real.sqrt t) ^ 4 := by rw [hw2]
+      _ = a ^ 4 * Real.sqrt t ^ 4 := by ring
+      _ = a ^ 4 * t ^ 2 := by rw [hs4]
+  have hy : (0 : ℝ) < c₀ * w / 4 := div_pos (mul_pos hc₀ hwpos) (by norm_num)
+  have h5 := exp_neg_le_div_pow (y := c₀ * w / 4) hy 8
+  have h6 : (Nat.factorial 8 : ℝ) = 40320 := by norm_num [Nat.factorial]
+  have h7 : (c₀ * w / 4) ^ 8 = c₀ ^ 8 * (a ^ 4 * t ^ 2) / 65536 := by
+    calc (c₀ * w / 4) ^ 8 = c₀ ^ 8 * w ^ 8 / 65536 := by ring
+      _ = c₀ ^ 8 * (a ^ 4 * t ^ 2) / 65536 := by rw [hw8]
+  rw [h6, h7] at h5
+  have h8 : Real.exp (-(c₀ * R / 2)) ≤ Real.exp (-(c₀ * w / 4)) := by
+    refine Real.exp_le_exp.mpr ?_
+    have h9 := mul_le_mul_of_nonneg_left hR hc₀.le
+    have h10 : c₀ * (w / 2) = c₀ * w / 2 := by ring
+    linarith [h9, h10]
+  have heq2 : (40320:ℝ) / (c₀ ^ 8 * (a ^ 4 * t ^ 2) / 65536)
+      = 2642411520 / (c₀ ^ 8 * (a ^ 4 * t ^ 2)) := by
+    rw [div_div_eq_mul_div]
+    ring
+  exact h8.trans (h5.trans (le_of_eq heq2))
+
+/-- The pointwise bound past the horizon, put in the summable form `A / (t + 1)²`. -/
+theorem mul_div_le_mul_inv_sq {C₀ c₀ a E t : ℝ} (hC₀ : 0 < C₀) (hc₀ : 0 < c₀) (ha : 0 < a)
+    (hE : 0 < E) (ht : 1 ≤ t) :
+    C₀ * (E * (2642411520 / (c₀ ^ 8 * (a ^ 4 * t ^ 2))))
+      ≤ 10569646080 * C₀ * E / (c₀ ^ 8 * a ^ 4) * (1 / (t + 1) ^ 2) := by
+  have htpos : (0 : ℝ) < t := by linarith
+  have hsqq : (t + 1) ^ 2 ≤ 4 * t ^ 2 := by nlinarith [ht]
+  rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity : (0:ℝ) < c₀ ^ 8 * a ^ 4)]
+  have hexpand : C₀ * (E * (2642411520 / (c₀ ^ 8 * (a ^ 4 * t ^ 2)))) * (c₀ ^ 8 * a ^ 4)
+      = 2642411520 * C₀ * E / t ^ 2 := by
+    field_simp
+  rw [hexpand, div_le_iff₀ (by positivity : (0:ℝ) < t ^ 2)]
+  have hone : 10569646080 * C₀ * E * (1 / (t + 1) ^ 2) * t ^ 2
+      = 10569646080 * C₀ * E * (t ^ 2 / (t + 1) ^ 2) := by
+    ring
+  rw [hone]
+  have hfrac : (1 : ℝ) / 4 ≤ t ^ 2 / (t + 1) ^ 2 := by
+    rw [le_div_iff₀ (by positivity : (0:ℝ) < (t + 1) ^ 2)]
+    linarith [hsqq]
+  have hfin := mul_le_mul_of_nonneg_left hfrac
+    (by positivity : (0:ℝ) ≤ 10569646080 * C₀ * E)
+  linarith [hfin]
+
+/-- The constant of the summable majorant is at most `1 / C₁` once `β = 6 + |log M|`, with
+`M = 10569646080 C₀ C₁ / c₀⁸` and `L = log (e / a) ≥ 1`. -/
+theorem mul_le_one_of_eq_six_add_abs_log {C₀ C₁ c₀ a L M β : ℝ} (hC₀ : 0 < C₀) (hC₁ : 0 < C₁)
+    (hc₀ : 0 < c₀) (ha : 0 < a) (ha1 : a ≤ 1) (hL : L = Real.log (Real.exp 1 / a))
+    (hL1 : 1 ≤ L) (hM : M = 10569646080 * C₀ * C₁ / c₀ ^ 8) (hMpos : 0 < M)
+    (hβ : β = 6 + |Real.log M|) :
+    10569646080 * C₀ * Real.exp (-(β * L)) / (c₀ ^ 8 * a ^ 4) * C₁ ≤ 1 := by
+  have hβ5 : 5 ≤ β := by
+    have : 0 ≤ |Real.log M| := abs_nonneg _
+    rw [hβ]; linarith
+  have hexp3 : Real.exp (-(β * L)) ≤ a ^ 5 * Real.exp (-(β - 5)) := by
+    have hsp : -(β * L) = -((5 : ℝ) * L) + -((β - 5) * L) := by ring
+    rw [hsp, Real.exp_add]
+    have h1 : Real.exp (-((5 : ℝ) * L)) ≤ a ^ 5 := by
+      have h := exp_neg_nat_lambda_le ha 5
+      rw [hL]
+      simpa using h
+    have h2 : Real.exp (-((β - 5) * L)) ≤ Real.exp (-(β - 5)) := by
+      refine Real.exp_le_exp.mpr ?_
+      have := mul_le_mul_of_nonneg_left hL1 (by linarith : (0 : ℝ) ≤ β - 5)
+      linarith
+    exact mul_le_mul h1 h2 (Real.exp_pos _).le (pow_nonneg ha.le 5)
+  have hMexp : M * Real.exp (-(β - 5)) ≤ 1 := by
+    have hlog : Real.log M ≤ β - 5 := by
+      have : Real.log M ≤ |Real.log M| := le_abs_self _
+      rw [hβ]; linarith
+    have h1 : M ≤ Real.exp (β - 5) := by
+      rw [← Real.exp_log hMpos]
+      exact Real.exp_le_exp.mpr hlog
+    have h3 : (0 : ℝ) < Real.exp (-(β - 5)) := Real.exp_pos _
+    have h4 := mul_le_mul_of_nonneg_right h1 h3.le
+    have h5 : Real.exp (β - 5) * Real.exp (-(β - 5)) = 1 := by
+      rw [← Real.exp_add]
+      simp
+    linarith [h4, h5]
+  have hA3 : 10569646080 * C₀ * Real.exp (-(β * L)) / (c₀ ^ 8 * a ^ 4) * C₁
+      ≤ M * Real.exp (-(β - 5)) * a := by
+    have hkey : 10569646080 * C₀ * Real.exp (-(β * L)) / (c₀ ^ 8 * a ^ 4) * C₁
+        = (10569646080 * C₀ * C₁ / (c₀ ^ 8 * a ^ 4)) * Real.exp (-(β * L)) := by
+      ring
+    have hkey2 : M * Real.exp (-(β - 5)) * a
+        = (10569646080 * C₀ * C₁ / (c₀ ^ 8 * a ^ 4)) * (a ^ 5 * Real.exp (-(β - 5))) := by
+      rw [hM]; field_simp
+    rw [hkey, hkey2]
+    exact mul_le_mul_of_nonneg_left hexp3
+      (by positivity : (0:ℝ) ≤ 10569646080 * C₀ * C₁ / (c₀ ^ 8 * a ^ 4))
+  have hfin : M * Real.exp (-(β - 5)) * a ≤ M * Real.exp (-(β - 5)) * 1 :=
+    mul_le_mul_of_nonneg_left ha1 (mul_nonneg hMpos.le (Real.exp_pos _).le)
+  linarith [hA3, hfin, hMexp]
+
 /-- **Step 3 of `prop:resolvent` in dimension two** (`parking.tex:2730-2737`).
 The paper splits the tail into dyadic blocks; the same effect is obtained here by
 splitting on whether `log(t+2)` exceeds `p Λ`.  Below that threshold the horizon
@@ -1091,7 +1304,6 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
                          linarith
   have hκβ : 2 * β / c₀ ≤ κ := by rw [hκdef]; linarith
   set p : ℝ := 2 + 6 * κ with hpdef
-  have hp2 : (2 : ℝ) ≤ p := by rw [hpdef]; nlinarith [hκ1]
   set C : ℝ := max (max C₀ (Real.exp 1)) (κ ^ 2 * p) with hCdef
   have hCC₀ : C₀ ≤ C := le_trans (le_max_left _ _) (le_max_left _ _)
   have hCe : Real.exp 1 ≤ C := le_trans (le_max_right _ _) (le_max_left _ _)
@@ -1100,14 +1312,13 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
   refine ⟨c₀, C, hc₀, hCpos, ?_, ?_⟩
   · intro a ha ha1 t ht hte
     refine (hpt a ha ha1 t ht hte).trans ?_
-    have := Real.exp_pos (-(c₀ * Real.sqrt (a * (t : ℝ) / Real.log ((t : ℝ) + 2))))
-    nlinarith [hCC₀, this]
+    exact mul_le_mul_of_nonneg_right hCC₀ (Real.exp_pos _).le
   intro a ha ha1
   set L : ℝ := Real.log (Real.exp 1 / a) with hLdef
   have hea : (0 : ℝ) < Real.exp 1 / a := by positivity
   have hL1 : (1 : ℝ) ≤ L := by
     rw [hLdef, Real.le_log_iff_exp_le hea, le_div_iff₀ ha]
-    nlinarith [Real.exp_pos 1]
+    exact mul_le_of_le_one_right (Real.exp_pos 1).le ha1
   have hLpos : (0 : ℝ) < L := by linarith
   have hTeq : resolventThreshold d C a = C * (a⁻¹ * L ^ 3) := by
     simp only [resolventThreshold, ite_eq_right (by omega : d ≠ 1), ite_eq_left hd, hLdef]
@@ -1134,92 +1345,17 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
       -- the horizon exceeds `e/a`, so the pointwise bound applies
       have hte : Real.exp 1 / a ≤ (t : ℝ) := by
         have h1 : Real.exp 1 / a ≤ resolventThreshold d C a := by
-          rw [hTeq]
-          rw [div_le_iff₀ ha]
-          have h2 : Real.exp 1 ≤ C := hCe
-          have h3 : (1:ℝ) ≤ L ^ 3 := one_le_pow₀ hL1
+          rw [hTeq, div_le_iff₀ ha]
           have h4 : C * (a⁻¹ * L ^ 3) * a = C * L ^ 3 := by field_simp
           rw [h4]
-          nlinarith [h2, h3, hCpos]
+          exact hCe.trans (le_mul_of_one_le_right hCpos.le (one_le_pow₀ hL1))
         linarith
       -- the key lower bound on the rate
       have hat : C * L ^ 3 < a * (t : ℝ) := by
         have := mul_lt_mul_of_pos_left hT ha
         rwa [haT] at this
-      have hkey : κ ^ 2 * L ^ 2 * Real.log ((t : ℝ) + 2) ≤ a * (t : ℝ) := by
-        by_cases hcase : Real.log ((t : ℝ) + 2) ≤ p * L
-        · have h1 : κ ^ 2 * L ^ 2 * Real.log ((t : ℝ) + 2) ≤ κ ^ 2 * L ^ 2 * (p * L) :=
-            mul_le_mul_of_nonneg_left hcase (by positivity)
-          have h2 : κ ^ 2 * L ^ 2 * (p * L) = κ ^ 2 * p * L ^ 3 := by ring
-          have h3 : κ ^ 2 * p * L ^ 3 ≤ C * L ^ 3 :=
-            mul_le_mul_of_nonneg_right hCκp (by positivity)
-          linarith
-        · rw [not_le] at hcase
-          have hexplt : Real.exp (p * L) < (t : ℝ) + 2 := by
-            rw [← Real.lt_log_iff_exp_lt (by linarith : (0:ℝ) < (t : ℝ) + 2)]
-            exact hcase
-          have hpL2 : (2 : ℝ) ≤ p * L := by nlinarith [hp2, hL1]
-          have hexp4 : (4 : ℝ) ≤ Real.exp (p * L) := by
-            have h1 : Real.exp 2 ≤ Real.exp (p * L) := Real.exp_le_exp.mpr hpL2
-            have h2 : (4:ℝ) ≤ Real.exp 2 := by
-              have h9 := Real.exp_one_gt_d9
-              have h10 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
-                rw [← Real.exp_add]; norm_num
-              nlinarith [h9, h10, Real.exp_pos 1]
-            linarith
-          have ht2 : Real.exp (p * L) / 2 ≤ (t : ℝ) := by linarith
-          have hsqrtt : Real.exp (p * L / 2) / Real.sqrt 2 ≤ Real.sqrt (t : ℝ) := by
-            have h1 := Real.sqrt_le_sqrt ht2
-            rwa [Real.sqrt_div' (Real.exp (p * L)) (by norm_num : (0:ℝ) ≤ 2), sqrt_exp] at h1
-          have hs2 : Real.sqrt 2 ≤ 3 / 2 := by
-            have h1 : Real.sqrt 2 ≤ Real.sqrt ((3 / 2 : ℝ) ^ 2) := Real.sqrt_le_sqrt (by norm_num)
-            rwa [Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 3 / 2)] at h1
-          have hs2pos : (0:ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-          have hstep : Real.exp (p * L / 2) / (3 / 2) ≤ Real.sqrt (t : ℝ) := by
-            refine le_trans ?_ hsqrtt
-            exact div_le_div_of_nonneg_left (Real.exp_pos _).le hs2pos hs2
-          have haexp : a * Real.exp (p * L / 2) = Real.exp 1 * Real.exp (3 * κ * L) := by
-            nth_rewrite 1 [eq_exp_one_mul_exp_neg_log ha]
-            rw [← hLdef, mul_assoc, ← Real.exp_add]
-            congr 2
-            rw [hpdef]
-            ring
-          have hq : (3 * κ * L) ^ 2 / 2 ≤ Real.exp (3 * κ * L) :=
-            exp_ge_sq_half (by positivity)
-          have hasqrt : 4 * (κ ^ 2 * L ^ 2) ≤ a * Real.sqrt (t : ℝ) := by
-            have h1 : a * (Real.exp (p * L / 2) / (3 / 2)) ≤ a * Real.sqrt (t : ℝ) :=
-              mul_le_mul_of_nonneg_left hstep ha.le
-            have h2 : a * (Real.exp (p * L / 2) / (3 / 2))
-                = Real.exp 1 * Real.exp (3 * κ * L) / (3 / 2) := by
-              rw [← haexp]; ring
-            rw [h2] at h1
-            have h3 : (27 / 10 : ℝ) ≤ Real.exp 1 := by nlinarith [Real.exp_one_gt_d9]
-            have h4 : (0:ℝ) ≤ (3 * κ * L) ^ 2 / 2 := by positivity
-            have hA : (27 / 10 : ℝ) * ((3 * κ * L) ^ 2 / 2)
-                ≤ Real.exp 1 * Real.exp (3 * κ * L) := by
-              have hc : (27 / 10 : ℝ) * ((3 * κ * L) ^ 2 / 2)
-                  ≤ Real.exp 1 * ((3 * κ * L) ^ 2 / 2) :=
-                mul_le_mul_of_nonneg_right h3 h4
-              have hdd : Real.exp 1 * ((3 * κ * L) ^ 2 / 2)
-                  ≤ Real.exp 1 * Real.exp (3 * κ * L) :=
-                mul_le_mul_of_nonneg_left hq (Real.exp_pos 1).le
-              linarith
-            have hx : (0:ℝ) ≤ κ ^ 2 * L ^ 2 := by positivity
-            have hB : 4 * (κ ^ 2 * L ^ 2) ≤ (27 / 10 : ℝ) * ((3 * κ * L) ^ 2 / 2) / (3 / 2) := by
-              nlinarith [hx]
-            linarith [h1, hA, hB]
-          have hLt4 : Real.log ((t : ℝ) + 2) ≤ 4 * Real.sqrt (t : ℝ) := log_le_four_sqrt htR
-          have hsq : Real.sqrt (t : ℝ) * Real.sqrt (t : ℝ) = (t : ℝ) :=
-            Real.mul_self_sqrt htpos.le
-          have h5 : κ ^ 2 * L ^ 2 * Real.log ((t : ℝ) + 2)
-              ≤ κ ^ 2 * L ^ 2 * (4 * Real.sqrt (t : ℝ)) :=
-            mul_le_mul_of_nonneg_left hLt4 (by positivity)
-          have h6 : (κ ^ 2 * L ^ 2 * 4) * Real.sqrt (t : ℝ)
-              ≤ (a * Real.sqrt (t : ℝ)) * Real.sqrt (t : ℝ) :=
-            mul_le_mul_of_nonneg_right (by linarith [hasqrt]) (Real.sqrt_nonneg _)
-          have h7 : (a * Real.sqrt (t : ℝ)) * Real.sqrt (t : ℝ) = a * (t : ℝ) := by
-            rw [mul_assoc, hsq]
-          linarith
+      have hkey : κ ^ 2 * L ^ 2 * Real.log ((t : ℝ) + 2) ≤ a * (t : ℝ) :=
+        sq_mul_log_le_of_horizon_lt ha (by linarith) hLdef hL1 hpdef hCκp htR hat
       -- the rate is at least `κ L`
       have hratepos : (0 : ℝ) ≤ a * (t : ℝ) / Real.log ((t : ℝ) + 2) := by positivity
       have hrate1 : κ * L ≤ Real.sqrt (a * (t : ℝ) / Real.log ((t : ℝ) + 2)) := by
@@ -1231,41 +1367,8 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
         have h2 := Real.sqrt_le_sqrt h1
         rwa [Real.sqrt_sq (by positivity)] at h2
       -- the rate is at least `√(a √t)/2`
-      have hrate2 : Real.sqrt (a * Real.sqrt (t : ℝ)) / 2
-          ≤ Real.sqrt (a * (t : ℝ) / Real.log ((t : ℝ) + 2)) := by
-        have hLt4 : Real.log ((t : ℝ) + 2) ≤ 4 * Real.sqrt (t : ℝ) := log_le_four_sqrt htR
-        have hsq : Real.sqrt (t : ℝ) * Real.sqrt (t : ℝ) = (t : ℝ) :=
-          Real.mul_self_sqrt htpos.le
-        have hspos : (0 : ℝ) < Real.sqrt (t : ℝ) := Real.sqrt_pos.mpr htpos
-        have h1 : a * Real.sqrt (t : ℝ) / 4 ≤ a * (t : ℝ) / Real.log ((t : ℝ) + 2) := by
-          rw [div_le_div_iff₀ (by norm_num) hLtpos]
-          have h2 : a * Real.sqrt (t : ℝ) * Real.log ((t : ℝ) + 2)
-              ≤ a * Real.sqrt (t : ℝ) * (4 * Real.sqrt (t : ℝ)) :=
-            mul_le_mul_of_nonneg_left hLt4 (by positivity)
-          have h3 : a * Real.sqrt (t : ℝ) * (4 * Real.sqrt (t : ℝ)) = a * (t : ℝ) * 4 := by
-            rw [show a * Real.sqrt (t : ℝ) * (4 * Real.sqrt (t : ℝ))
-              = 4 * a * (Real.sqrt (t : ℝ) * Real.sqrt (t : ℝ)) by ring, hsq]
-            ring
-          linarith
-        have h4 := Real.sqrt_le_sqrt h1
-        rwa [Real.sqrt_div' (a * Real.sqrt (t : ℝ)) (by norm_num : (0:ℝ) ≤ 4),
-          show (4:ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)] at h4
+      have hrate2 := sqrt_mul_sqrt_div_two_le ha htR
       set R : ℝ := Real.sqrt (a * (t : ℝ) / Real.log ((t : ℝ) + 2)) with hRdef
-      set w : ℝ := Real.sqrt (a * Real.sqrt (t : ℝ)) with hwdef
-      have hwpos : (0 : ℝ) < w := by
-        rw [hwdef]
-        refine Real.sqrt_pos.mpr ?_
-        have : (0:ℝ) < Real.sqrt (t : ℝ) := Real.sqrt_pos.mpr htpos
-        positivity
-      have hw8 : w ^ 8 = a ^ 4 * (t : ℝ) ^ 2 := by
-        have hw2 : w ^ 2 = a * Real.sqrt (t : ℝ) := by
-          rw [hwdef]
-          exact Real.sq_sqrt (by positivity)
-        have hs4 : Real.sqrt (t : ℝ) ^ 4 = (t : ℝ) ^ 2 := sqrt_pow_four htpos.le
-        calc w ^ 8 = (w ^ 2) ^ 4 := by ring
-          _ = (a * Real.sqrt (t : ℝ)) ^ 4 := by rw [hw2]
-          _ = a ^ 4 * Real.sqrt (t : ℝ) ^ 4 := by ring
-          _ = a ^ 4 * (t : ℝ) ^ 2 := by rw [hs4]
       have hexp1 : Real.exp (-(c₀ * R / 2)) ≤ Real.exp (-(β * L)) := by
         refine Real.exp_le_exp.mpr ?_
         have h1 : 2 * β / c₀ * L ≤ κ * L := mul_le_mul_of_nonneg_right hκβ hLpos.le
@@ -1274,24 +1377,7 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
         have h4 := mul_le_mul_of_nonneg_left (le_trans h1 h2) (by positivity : (0:ℝ) ≤ c₀ / 2)
         rw [h3] at h4
         linarith
-      have hexp2 : Real.exp (-(c₀ * R / 2)) ≤ 2642411520 / (c₀ ^ 8 * (a ^ 4 * (t : ℝ) ^ 2)) := by
-        have hy : (0 : ℝ) < c₀ * w / 4 := by positivity
-        have h5 := exp_neg_le_div_pow (y := c₀ * w / 4) hy 8
-        have h6 : (Nat.factorial 8 : ℝ) = 40320 := by norm_num [Nat.factorial]
-        have h7 : (c₀ * w / 4) ^ 8 = c₀ ^ 8 * (a ^ 4 * (t : ℝ) ^ 2) / 65536 := by
-          calc (c₀ * w / 4) ^ 8 = c₀ ^ 8 * w ^ 8 / 65536 := by ring
-            _ = c₀ ^ 8 * (a ^ 4 * (t : ℝ) ^ 2) / 65536 := by rw [hw8]
-        rw [h6, h7] at h5
-        have h8 : Real.exp (-(c₀ * R / 2)) ≤ Real.exp (-(c₀ * w / 4)) := by
-          refine Real.exp_le_exp.mpr ?_
-          have h9 := mul_le_mul_of_nonneg_left hrate2 (by positivity : (0:ℝ) ≤ c₀)
-          have h10 : c₀ * (w / 2) = c₀ * w / 2 := by ring
-          linarith [h9, h10]
-        have heq2 : (40320:ℝ) / (c₀ ^ 8 * (a ^ 4 * (t : ℝ) ^ 2) / 65536)
-            = 2642411520 / (c₀ ^ 8 * (a ^ 4 * (t : ℝ) ^ 2)) := by
-          rw [div_div_eq_mul_div]
-          ring
-        exact h8.trans (h5.trans (le_of_eq heq2))
+      have hexp2 := exp_neg_half_le_of_sqrt_le ha htpos hc₀ hrate2
       have hsplit : Real.exp (-(c₀ * R)) = Real.exp (-(c₀ * R / 2)) * Real.exp (-(c₀ * R / 2)) := by
         rw [← Real.exp_add]
         congr 1
@@ -1305,24 +1391,7 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
         (hpt a ha ha1 t ht1 hte).trans (mul_le_mul_of_nonneg_left hprod hC₀.le)
       refine hstep.trans ?_
       rw [hAdef]
-      have hsqq : ((t : ℝ) + 1) ^ 2 ≤ 4 * (t : ℝ) ^ 2 := by nlinarith [htR]
-      rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity : (0:ℝ) < c₀ ^ 8 * a ^ 4)]
-      have hE : (0 : ℝ) < Real.exp (-(β * L)) := Real.exp_pos _
-      have hexpand : C₀ * (Real.exp (-(β * L)) * (2642411520 / (c₀ ^ 8 * (a ^ 4 * (t : ℝ) ^ 2))))
-          * (c₀ ^ 8 * a ^ 4)
-          = 2642411520 * C₀ * Real.exp (-(β * L)) / (t : ℝ) ^ 2 := by
-        field_simp
-      rw [hexpand, div_le_iff₀ (by positivity : (0:ℝ) < (t : ℝ) ^ 2)]
-      have hone : 10569646080 * C₀ * Real.exp (-(β * L)) * (1 / ((t : ℝ) + 1) ^ 2) * (t : ℝ) ^ 2
-          = 10569646080 * C₀ * Real.exp (-(β * L)) * ((t : ℝ) ^ 2 / ((t : ℝ) + 1) ^ 2) := by
-        ring
-      rw [hone]
-      have hfrac : (1 : ℝ) / 4 ≤ (t : ℝ) ^ 2 / ((t : ℝ) + 1) ^ 2 := by
-        rw [le_div_iff₀ (by positivity : (0:ℝ) < ((t : ℝ) + 1) ^ 2)]
-        linarith [hsqq]
-      have hfin := mul_le_mul_of_nonneg_left hfrac
-        (by positivity : (0:ℝ) ≤ 10569646080 * C₀ * Real.exp (-(β * L)))
-      linarith [hfin]
+      exact mul_div_le_mul_inv_sq hC₀ hc₀ ha (Real.exp_pos _) htR
     · rw [ite_eq_right hT]
       positivity
   have hmajsum : Summable (fun t : ℕ => A * (1 / ((t : ℝ) + 1) ^ 2)) := hsum1.mul_left A
@@ -1344,43 +1413,8 @@ theorem exists_resolvent_tail_two (hd : d = 2) :
       = A * ∑' t : ℕ, 1 / ((t : ℝ) + 1) ^ 2 := tsum_mul_left
   rw [heq] at hle1
   have hAC : A * C₁ ≤ 1 := by
-    have hexp3 : Real.exp (-(β * L)) ≤ a ^ 5 * Real.exp (-(β - 5)) := by
-      have hsp : -(β * L) = -((5 : ℝ) * L) + -((β - 5) * L) := by ring
-      rw [hsp, Real.exp_add]
-      have h1 : Real.exp (-((5 : ℝ) * L)) ≤ a ^ 5 := by
-        have h := exp_neg_nat_lambda_le ha 5
-        rw [hLdef]
-        simpa using h
-      have h2 : Real.exp (-((β - 5) * L)) ≤ Real.exp (-(β - 5)) := by
-        refine Real.exp_le_exp.mpr ?_
-        nlinarith [hβ5, hL1]
-      exact mul_le_mul h1 h2 (Real.exp_pos _).le (by positivity)
-    have hMexp : M * Real.exp (-(β - 5)) ≤ 1 := by
-      have hlog : Real.log M ≤ β - 5 := by
-        have : Real.log M ≤ |Real.log M| := le_abs_self _
-        rw [hβdef]; linarith
-      have h1 : M ≤ Real.exp (β - 5) := by
-        rw [← Real.exp_log hMpos]
-        exact Real.exp_le_exp.mpr hlog
-      have h3 : (0 : ℝ) < Real.exp (-(β - 5)) := Real.exp_pos _
-      have h4 := mul_le_mul_of_nonneg_right h1 h3.le
-      have h5 : Real.exp (β - 5) * Real.exp (-(β - 5)) = 1 := by
-        rw [← Real.exp_add]
-        simp
-      linarith [h4, h5]
-    have hA3 : A * C₁ ≤ M * Real.exp (-(β - 5)) * a := by
-      have hkey : A * C₁
-          = (10569646080 * C₀ * C₁ / (c₀ ^ 8 * a ^ 4)) * Real.exp (-(β * L)) := by
-        rw [hAdef]; ring
-      have hkey2 : M * Real.exp (-(β - 5)) * a
-          = (10569646080 * C₀ * C₁ / (c₀ ^ 8 * a ^ 4)) * (a ^ 5 * Real.exp (-(β - 5))) := by
-        rw [hM]; field_simp
-      rw [hkey, hkey2]
-      exact mul_le_mul_of_nonneg_left hexp3
-        (by positivity : (0:ℝ) ≤ 10569646080 * C₀ * C₁ / (c₀ ^ 8 * a ^ 4))
-    have hfin : M * Real.exp (-(β - 5)) * a ≤ M * Real.exp (-(β - 5)) * 1 :=
-      mul_le_mul_of_nonneg_left ha1 (by positivity)
-    linarith [hA3, hfin, hMexp]
+    rw [hAdef]
+    exact mul_le_one_of_eq_six_add_abs_log hC₀ hC₁ hc₀ ha ha1 hLdef hL1 hM hMpos hβdef
   calc ∑' t : ℕ, (if resolventThreshold d C a < (t : ℝ)
         then rangeExp d a t else 0)
       ≤ A * ∑' t : ℕ, 1 / ((t : ℝ) + 1) ^ 2 := hle1
