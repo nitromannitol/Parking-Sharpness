@@ -623,7 +623,15 @@ estimate. It is consumed by `lem-gamma-sum`.
 Donsker-Varadhan, *On the number of distinct sites visited by a random
 walk*: the large-deviation rate for the range of a symmetric random walk,
 specialized to the simple random walk. It is consumed by
-`thm-subcritical-tail`.
+`thm-subcritical-tail`. It is proved with no hypothesis
+(`Parking.External.donskerVaradhanRange_holds`,
+`Parking/External/DonskerVaradhanProved.lean`), with the constant expressed
+through the limit of `n^{2/d}` times the least Dirichlet eigenvalue of a
+region of `n` sites (`Parking/Support/DVRateLimit.lean`), a lower bound by
+confinement (`Parking/Support/DVConfine.lean`) and an upper bound by a
+coarse graining of the range into boxes (`DVTrials`, `DVTrialsMartingale`,
+`DVBadTime`, `DVFeynmanKac`, `DVSoftKilling`, `DVUpper`, `DVLimitLower` in
+`Parking/Support/`); see `CORRESPONDENCE.md` for the route.
 
 `Parking.External.OrientedStoppingStability` and
 `Parking.External.BinomialLocalCLT` are the two cited inputs of
@@ -650,8 +658,8 @@ shared library rather than assumed, so they are read internally by
 `thm-nearest`, which carries `MultivariateBerryEsseen` alone among these
 three as an explicit hypothesis.
 
-Every cited input carried as an explicit hypothesis except
-`Parking.External.DonskerVaradhanRange` is also proved with no hypothesis:
+Every cited input carried as an explicit hypothesis is also proved with no
+hypothesis: `Parking.External.donskerVaradhanRange_holds`,
 `Parking.External.bernstein`, `Parking.External.multivariateBerryEsseen`,
 `Parking.External.heatInteriorRegularity`, `Parking.External.heatCompactness`,
 `Parking.External.sandpileGrowth_holds` (from the hypothesis-free mean growth
@@ -665,7 +673,9 @@ stopping stability through the law of the simple random walk on path space
 (`Parking/Support/SpatialWalkProjection.lean`).  Supplying these proofs gives the
 hypothesis-free main results of `Parking/MainTheoremsUnconditional.lean`, one file
 per result in `Parking/Unconditional/`; Theorem 1.1 there uses the range bounds of
-`Parking.subcritical_tail_of_range_count` in place of `DonskerVaradhanRange`.
+`Parking.subcritical_tail_of_range_count` in place of `DonskerVaradhanRange`, and
+`Parking.subcritical_tail_of_donskerVaradhan` proves it by the route of the paper
+with the proved `DonskerVaradhanRange`.
 
 What is deliberately not assumed: the paper's own theorems are not
 hypotheses of one another beyond the citation chain the paper itself

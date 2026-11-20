@@ -33,6 +33,9 @@ def companions(nodes):
     out = {
         "Bernstein": {"id": "Parking.External.bernstein",
                       "file": "Parking/External/BernsteinProved.lean", "unconditional": True},
+        "DonskerVaradhan": {"id": "Parking.External.donskerVaradhanRange_holds",
+                            "file": "Parking/External/DonskerVaradhanProved.lean",
+                            "unconditional": True},
         "MultivariateBerryEsseen": {"id": "Parking.External.multivariateBerryEsseen",
                                      "file": "Parking/External/MultivariateBerryEsseenProved.lean",
                                      "unconditional": True},
@@ -145,7 +148,10 @@ def render():
             if b:
                 comp[stem] = b
     withproof = [n for n in assumed if pathlib.Path(n["file"]).stem in comp]
-    if withproof:
+    if withproof and len(withproof) == len(assumed):
+        out += [f"**All {len(assumed)} have companion proofs**; each is marked below with its "
+                "theorem.", ""]
+    elif withproof:
         out += [(f"Of these, **{len(withproof)} have companion proofs**; each is marked below with its theorem. "
                  if len(withproof) > 1 else
                  "Of these, **one is also proved in this repository** and so need not "

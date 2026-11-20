@@ -51,6 +51,7 @@ DISCHARGED = {
 # the companion theorem, whose closure is checked below, discharges it.
 PROVED_INPUTS = {
     "ext-bernstein": "Parking.External.bernstein",
+    "ext-donsker-varadhan": "Parking.External.donskerVaradhanRange_holds",
     "ext-heat-compactness": "Parking.External.heatCompactness",
     "ext-heat-interior-regularity": "Parking.External.heatInteriorRegularity",
     "ext-linear-field-scaling": "Parking.External.linearFieldScaling_holds",

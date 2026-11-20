@@ -234,6 +234,14 @@ REVIEWED: dict[str, str] = {
         "the low-dimensional limit supplied by the divisible sandpile formalization's "
         "hypothesis-free `Sandpile.mean_growth_le_three_proved` instead of the certified "
         "`Sandpile.Frozen.mean_growth_le_three`, so no optimal-stopping input enters.",
+    "ext-donsker-varadhan-holds":
+        "companion proof, not a paper statement: the frozen declaration "
+        "`Parking.External.donskerVaradhanRange_holds` has no binder and its conclusion IS "
+        "`Parking.External.DonskerVaradhanRange`, the cited Donsker-Varadhan estimate of "
+        "parking.tex:117-121, so it asserts exactly that proposition and adds no clause of its own; "
+        "the statement is read under `ext-donsker-varadhan`. The proof takes the constant k to be "
+        "`Parking.dvConst d a c`, with c the limit of n^{2/d} times the least Dirichlet ratio of a "
+        "region of n sites, and does not follow Donsker and Varadhan (see CORRESPONDENCE.md).",
     "ext-spatial-fixed-time-tightness":
         "cited input (BP Theorem 1.3(i)(b), via the paper's Step 1 of prop:spatial-scaling), "
         "assumed as a hypothesis; MISMATCH: the paper displays no such statement, and Lean states "

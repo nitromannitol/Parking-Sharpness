@@ -37,6 +37,7 @@ the "External inputs" table of [`CERTIFICATE.md`](CERTIFICATE.md) and in Part C 
 | `ext-multivariate-berry-esseen` | the source theorem's explicit `MultivariateBerryEsseen` hypothesis, Raič, Theorem 1.1, at `sandpile.tex:1770-1782` | proved here (`Parking.External.multivariateBerryEsseen`) |
 | `ext-oriented-stopping-stability` | the cutoff and stability estimates of the parabolic scaling limit in the companion paper, in the shape of Coquet-Toldo, Theorem 3 and Corollary 4 | proved here (`Parking.External.orientedStoppingStability_holds`, `ext-oriented-stopping-stability-holds`), from the divisible sandpile's proved continuum stopping stability |
 | `ext-green-gradient` | Lawler–Limic, Section 2.3, through the first-difference local central limit estimate and the Gaussian bound; the shared library proves the truncated bound uniformly in the horizon | proved here (`Parking.External.greenGradient`) |
+| `ext-donsker-varadhan` | Donsker–Varadhan (1979), Theorem 1 | proved here with no hypothesis (`Parking.External.donskerVaradhanRange_holds`, `ext-donsker-varadhan-holds`), by a route other than the cited one; see "The Donsker–Varadhan estimate" below |
 
 `ext-variance-scale` and `ext-multivariate-berry-esseen` are the two antecedents of
 `ext-critical-scale-lower-tail`, exactly as in the source theorem, which `Parking.ae_spatial_origin_pos`
@@ -295,7 +296,12 @@ states, up to the notation below.
   The lattice-animal counting argument is from Kesten, *Percolation Theory for
   Mathematicians*, p. 85; it is not in Varadhan's large-deviation lecture notes,
   whose upper-bound proof uses a torus occupation-measure argument.  This is a
-  deviation from the cited proof of the range limit.
+  deviation from the cited proof of the range limit.  The limit itself is now
+  proved as well, by a route described under "The Donsker–Varadhan estimate"
+  below, so the frozen statement also holds with its hypothesis discharged:
+  `Parking.subcritical_tail_of_donskerVaradhan` is
+  `Parking.Frozen.subcritical_tail` applied to
+  `Parking.External.donskerVaradhanRange_holds`.
 - `lem-near-tilt`: the proof does not use two of the hypotheses the family
   `Parking.NearFamily` carries, the nonconstancy of the law at `\delta = 0` and
   the coupling of expected absolute difference `K\delta`.  The paper's Step 1
@@ -470,6 +476,60 @@ two odometers, and joint space-time equicontinuity. The geometric endgame
 then proves `thm:nearest`. Both the spatial proposition and the nearest
 comparison are sealed under their registered external hypotheses.
 
+### The Donsker–Varadhan estimate
+
+`Parking.External.DonskerVaradhanRange` asks, for every `d ≥ 1` and `a > 0`, for some
+`k > 0` with `log E₀ exp(-a|R_t|) / t^{d/(d+2)} → -k`, the walk being the simple random walk
+on `ℤ^d` in discrete time and `|R_t|` the number of sites it visits at times `0, …, t`.
+Donsker and Varadhan (1979, Theorem 1) prove this with `k` explicit in terms of the principal
+Dirichlet eigenvalue of the Brownian motion on the ball of unit volume, through the large
+deviations of the occupation measure of the walk folded onto a torus and the Faber–Krahn
+inequality.  `Parking.External.donskerVaradhanRange_holds` proves the statement by a different
+route, written for this repository; nothing in it is a transcription of the cited proof.
+
+- **The constant.**  `Parking.dirichletRate d n` is the least Dirichlet ratio
+  `E(g)/‖g‖²`, `E(g) = (2d)⁻¹ ∑_i ∑_x (g(x+e_i) - g(x))²`, over the nonzero functions vanishing
+  off a set whose cube hull (the sites `x` with a corner of `x + [0,1]^d` in the set) has at
+  most `n` sites.  `Parking.exists_tendsto_dirichletRate` proves that `n^{2/d}` times it
+  converges to some `c ≥ 0`.  The proof uses only monotonicity in `n` and a blow-up: a function
+  interpolated linearly, one coordinate at a time, at scale `L` (`Parking.blowList`) has its
+  energy multiplied by at most `L^{d-2}`, its mass by at least `L^d (1 - 2d E/‖g‖²)`, and the
+  cube hull of its support by at most `L^d (1 + O(1/L))`.  The constant of the theorem is
+  `k = Parking.dvConst d a c = ((d+2)/2 · a)^{2/(d+2)} ((d+2)/d · c)^{d/(d+2)}`, the least value
+  of `a w + c w^{-2/d}` over `w > 0`.  The limit `c` is not identified with the Brownian
+  eigenvalue of the source (that identification is the content of the Faber–Krahn inequality,
+  not needed for the statement, which only asks for some `k > 0`); `k > 0` follows from the
+  stretched-exponential upper bound of `Parking.range_moment_upper_bound_of_range_count`.
+- **The lower bound on `E₀ exp(-a|R_t|)`** (`Parking.eventually_log_rangeExp_ge`) confines the
+  walk to the support `V` of a near optimal function `g ≥ 0` of `n ≈ w t^{d/(d+2)}` sites:
+  for the walk operator `Q` killed off `V`, `‖Q^k g‖²` is log-convex in `k`, which gives
+  `max_x P_x(X stays in V for t steps) ≥ (1 - E(g)/‖g‖²)^{t+1} / √|V|`
+  (`Parking.rangeExp_ge_of_ratio`).  No spectral theorem is used.
+- **The upper bound** (`Parking.eventually_log_rangeExp_le`) sums
+  `E₀ exp(-a|R_t|) ≤ ∑_{n ≤ t+1} e^{-an} P₀(|R_t| ≤ n)` and bounds each probability
+  (`Parking.measureReal_rangeCard_le`) by coarse-graining the range into boxes of side
+  `m ≈ ε t^{1/(d+2)}`.  A box is full if the range covers at least `(1 - δ) m^d` of its sites.
+  (i) The walk spends at most `θ t` units of time in boxes left porous at time `t`, outside an
+  event of probability `2 e^{n - q (θ t - 6m^2)/(4m^2)}` (`Parking.measureReal_endPorous_le`):
+  in each block of `2m^2` steps the first time at which the walk stands in a box with more than
+  `δ m^d` unvisited sites is a stopping time, from which the walk visits one of them within
+  `2m^2` steps with probability at least some `p₀ > 0` depending on `δ` and `d` only
+  (`Parking.exists_hit_prob_ge`, from the uniform local central limit theorem of the shared
+  library), each success uses up a new site of the range, and with `q = (1 - e^{-1}) p₀` the
+  strong Markov property (`LatticeProb.markov_stopping_family`) makes
+  `∏ exp(q 1{present} - 1{success})` a supermartingale.  (ii) Charging the time outside the union `U` of the full boxes as a killing
+  rate `κ = M t^{-2/(d+2)}` costs `e^{κθt}`, and the Feynman–Kac expectation of the softly
+  killed walk is at most `ρ^t √(e^κ (2t+1)^d)` for any `ρ` bounding the Rayleigh quotient of the
+  symmetrized operator `D P D`, `D = e^{-κ 1_{U^c}/2}` (`Parking.fkMean_le`, by polarization).
+  (iii) A Rayleigh quotient above `1 - dirichletRate d N (1 - err)` would give, after a
+  truncation `(g - s)⁺`, a function vanishing off `U` and a set of at most `λ/(κ s²)` sites
+  outside it with a smaller Dirichlet ratio (`Parking.dirichletRate_mul_le_of_soft`); this soft
+  killing step replaces the enlargement of obstacles of Sznitman and Antal and the occupation
+  measure of Donsker and Varadhan.  (iv) The sets of full boxes number at most
+  `(K₀ + 1)(2t + 1)^{d K₀}` with `K₀` bounded, which is `e^{o(t^{d/(d+2)})}`.  The inequality of
+  weighted means (`Parking.dvConst_le`) then bounds `a n + t dirichletRate d N` below by
+  `t^{d/(d+2)}` times a perturbation of `dvConst d a c`.
+
 ## Main results
 
 The main results are additionally exposed, stated in full, in
@@ -510,7 +570,9 @@ character, and are registered as `SEALED` nodes:
 Theorem 1.1 without hypotheses uses the two-sided range bounds of
 `Parking.subcritical_tail_of_range_count` in place of the Donsker–Varadhan limit, a
 departure from the cited proof recorded under `thm-subcritical-tail` above; the others
-take the proved inputs listed in the table of external inputs.
+take the proved inputs listed in the table of external inputs.  Since the Donsker–Varadhan
+limit is proved, Theorem 1.1 also holds by the route of the paper,
+`Parking.subcritical_tail_of_donskerVaradhan`.
 
 ## Frozen surface
 
@@ -588,6 +650,7 @@ take the proved inputs listed in the table of external inputs.
 | `ext-oriented-stopping-stability-holds` | `Parking.External.orientedStoppingStability_holds` | parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling); proved with no hypothesis from the one-dimensional case of Sandpile.External.continuumStoppingStability_holds | SEALED |
 | `ext-spatial-odometer-scaling-holds` | `Parking.External.spatialOdometerScaling_holds` | parking.tex:1756-1767 (prop:spatial-scaling, spatial odometer scaling limit); proved with no hypothesis from Sandpile.External.continuumStoppingStability_holds | SEALED |
 | `ext-spatial-stopping-stability-holds` | `Parking.External.spatialStoppingStability_holds` | parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling); proved with no hypothesis from Sandpile.External.continuumStoppingStability_holds, through the law of the simple random walk on path space | SEALED |
+| `ext-donsker-varadhan-holds` | `Parking.External.donskerVaradhanRange_holds` | parking.tex:117-121 (Theorem 1 of Donsker-Varadhan 1979, cited for eq:sharpness and used at parking.tex:2514-2517); proved with no hypothesis, the constant being dvConst d a c for the limit c of n^{2/d} times the least Dirichlet ratio of a region of n sites, through a coarse graining of the range into boxes and a soft-killing bound in place of the large deviations of the occupation measure | SEALED |
 | `thm-subcritical-tail-proved` | `Parking.subcritical_tail_proved` | `parking.tex:123-135`, `thm:subcritical-tail` | SEALED |
 | `thm-master-proved` | `Parking.master_proved` | `parking.tex:159-168`, `thm:master` | SEALED |
 | `cor-growth-proved` | `Parking.growth_proved` | `parking.tex:174-188`, `cor:growth` | SEALED |

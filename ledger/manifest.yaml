@@ -103,6 +103,10 @@ presentations:
     source_node: thm-oriented-walk
     remaining_inputs: []
     comparator: ParkingAudit/OrientedWalkUnconditional/comparator.json
+  - export: Parking.subcritical_tail_of_donskerVaradhan
+    file: Parking/External/DonskerVaradhanProved.lean
+    source_node: thm-subcritical-tail
+    remaining_inputs: []
 nodes:
   - id: ext-bernstein
     version: 2
@@ -868,6 +872,16 @@ nodes:
     state: SEALED
     frozen_sha256: cb80377518d828f72938070967ff9375fd94a3d1d1707ea3b9c885c7ea4651e2
     provider: Parking.External.spatialStoppingStability_holds
+
+  - id: ext-donsker-varadhan-holds
+    version: 1
+    kind: theorem
+    source: parking.tex:117-121 (Theorem 1 of Donsker-Varadhan 1979, cited for eq:sharpness and used at parking.tex:2514-2517); proved with no hypothesis, the constant being dvConst d a c for the limit c of n^{2/d} times the least Dirichlet ratio of a region of n sites, through a coarse graining of the range into boxes and a soft-killing bound in place of the large deviations of the occupation measure
+    file: Parking/External/DonskerVaradhanProved.lean
+    export: Parking.External.donskerVaradhanRange_holds
+    state: SEALED
+    frozen_sha256: b11809a21d35e2071de631dc376e8fd420992ae8cadf86ea536a9a15eee6a4fc
+    provider: Parking.External.donskerVaradhanRange_holds
 
   - id: thm-subcritical-tail-proved
     version: 1

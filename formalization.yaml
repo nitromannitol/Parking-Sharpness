@@ -74,14 +74,15 @@ status:
     oriented walk (Theorem 1.8), and the lemmas and propositions of Sections 2
     to 9 behind them, 41 paper statements in all. The manifest registers eleven
     cited propositions. ASSUMPTIONS.md records their statements and companion
-    proofs. Ten of them are proved with no hypothesis: Bernstein, multivariate
+    proofs. All eleven are proved with no hypothesis: Bernstein, multivariate
     Berry-Esseen, linear field scaling, spatial fixed-time tightness, the two
     heat inputs, sandpile growth, spatial odometer scaling, and the oriented and
     spatial stopping stabilities, the last four from the proved continuum
-    stopping stability of Divisible-Sandpile-Percolation. The remaining one, the
-    full range asymptotic of Donsker and Varadhan, is carried only by the
-    certified statement of Theorem 1.1; the two-sided subcritical tail estimate
-    is proved without it. Spatial fixed-time tightness and spatial stopping
+    stopping stability of Divisible-Sandpile-Percolation, and the full range
+    asymptotic of Donsker and Varadhan, carried only by the certified statement
+    of Theorem 1.1 and proved by a coarse-graining argument
+    (Parking/External/DonskerVaradhanProved.lean); the two-sided subcritical
+    tail estimate is also proved without it. Spatial fixed-time tightness and spatial stopping
     stability are hypotheses of no registered result. The hypothesis-free forms
     of the main theorems are in Parking/MainTheoremsUnconditional.lean, one per
     file in Parking/Unconditional/; the Bernstein-supplied main theorem
@@ -107,8 +108,13 @@ status:
       axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "ParkingAudit/SubcriticalTail/comparator.json"
       literature_dependencies:
-        - statement: "the range estimate (Parking.External.DonskerVaradhanRange), carried as an explicit hypothesis"
+        - statement: "the range estimate (Parking.External.DonskerVaradhanRange), carried as an explicit hypothesis and proved as Parking.External.donskerVaradhanRange_holds"
           source: "Donsker and Varadhan 1979, Theorem 1"
+    - declaration: "Parking.subcritical_tail_of_donskerVaradhan"
+      file: "Parking/External/DonskerVaradhanProved.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies: []
     - declaration: "Parking.subcritical_tail_of_range_count"
       file: "Parking/Support/RangeUpperScaling.lean"
       sorry_count: 0
@@ -439,7 +445,10 @@ fidelity:
     prop:oriented-scaling is asserted to exist rather than characterized; and
     the Brownian optimal-stopping values range over rules with integrable
     payoff. The hypothesis-free Theorem 1.1 uses range bounds in place of the
-    Donsker-Varadhan limit (a departure from the cited proof), and no
+    Donsker-Varadhan limit (a departure from the cited proof); the
+    Donsker-Varadhan limit itself is proved by a route other than the cited
+    large deviations of the occupation measure, with its constant expressed
+    through the discrete Faber-Krahn limit; and no
     hypothesis-free result uses an optimal-stopping input of
     Divisible-Sandpile-Percolation. The registered cited inputs and their companion proofs are listed
     in ASSUMPTIONS.md; their fidelity to the cited theorems is a reading,
