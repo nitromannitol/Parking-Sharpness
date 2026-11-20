@@ -250,7 +250,6 @@ theorem card_filter_nextPos (h : LabelOrder d) (D : Driver d) (S : State d) (t :
     · rw [instructionIndex_of_mem hp, hcnt]
       omega
 
-set_option maxHeartbeats 1000000 in
 /-- The arrivals at `x` in a round, split according to the neighbour of `x` the
 arriving particle came from. -/
 theorem arrivalsAt_eq_biUnion {D : Driver d}
@@ -274,7 +273,6 @@ theorem arrivalsAt_eq_biUnion {D : Driver d}
     rw [Finset.mem_filter] at hp
     exact ⟨(Finset.mem_filter.mp hp.1).2.1, hp.2⟩
 
-set_option maxHeartbeats 1000000 in
 /-- The number of arrivals at `x` in one round is the sum, over neighbours `y` of `x`, of
 the number of particles active at `y` whose next position is `x`, since
 `arrivalsAt_eq_biUnion` writes the arrivals as a union over disjoint neighbour classes. -/
