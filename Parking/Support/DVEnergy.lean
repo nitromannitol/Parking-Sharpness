@@ -246,6 +246,36 @@ theorem latEnergy_eq_sqMass_sub (hd : 1 ≤ d) {g : Site d → ℝ} (hg : FinSup
     nsmul_eq_mul]
   field_simp
 
+theorem dirEnergy_le_four_sqMass {g : Site d → ℝ} (hg : FinSupp g) (i : Fin d) :
+    dirEnergy i g ≤ 4 * sqMass g := by
+  have hs1 : Summable fun x => g (x + unit i) ^ 2 := (hg.comp_add (unit i)).summable_sq
+  have hs2 : Summable fun x => g x ^ 2 := hg.summable_sq
+  have hshift : ∑' x, g (x + unit i) ^ 2 = sqMass g := sqMass_comp_add g (unit i)
+  calc dirEnergy i g ≤ ∑' x, (2 * g (x + unit i) ^ 2 + 2 * g x ^ 2) :=
+        Summable.tsum_le_tsum (fun x => by nlinarith [sq_nonneg (g (x + unit i) + g x)])
+          (hg.summable_dir i) ((hs1.mul_left 2).add (hs2.mul_left 2))
+    _ = 4 * sqMass g := by
+        rw [Summable.tsum_add (hs1.mul_left 2) (hs2.mul_left 2), Summable.tsum_mul_left 2 hs1,
+          Summable.tsum_mul_left 2 hs2, hshift]
+        unfold sqMass
+        ring
+
+theorem latEnergy_le_two_sqMass {g : Site d → ℝ} (hg : FinSupp g) :
+    latEnergy g ≤ 2 * sqMass g := by
+  rcases Nat.eq_zero_or_pos d with hd | hd
+  · subst hd
+    simp [latEnergy, sqMass_nonneg]
+  have hd0 : (0 : ℝ) < 2 * d := by
+    have : (1 : ℝ) ≤ d := by exact_mod_cast hd
+    linarith
+  unfold latEnergy
+  rw [div_le_iff₀ hd0]
+  calc ∑ i, dirEnergy i g ≤ ∑ _i : Fin d, 4 * sqMass g :=
+        Finset.sum_le_sum fun i _ => dirEnergy_le_four_sqMass hg i
+    _ = 2 * sqMass g * (2 * d) := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        ring
+
 /-! ### The least Dirichlet ratio -/
 
 theorem dirichletRate_set_bddBelow (d n : ℕ) :
@@ -263,6 +293,17 @@ theorem dirichletRate_nonneg (d n : ℕ) : 0 ≤ dirichletRate d n := by
     rintro q ⟨V, g, -, -, hm, rfl⟩
     exact div_nonneg (latEnergy_nonneg g) hm.le
   · rw [Set.not_nonempty_iff_eq_empty.mp hne, Real.sInf_empty]
+
+theorem dirichletRate_le_two (d n : ℕ) : dirichletRate d n ≤ 2 := by
+  unfold dirichletRate
+  by_cases hne : {q : ℝ | ∃ (V : Finset (Site d)) (g : Site d → ℝ), (fatten V).card ≤ n ∧
+      (∀ x ∉ V, g x = 0) ∧ 0 < sqMass g ∧ q = latEnergy g / sqMass g}.Nonempty
+  · obtain ⟨q, V, g, hVn, hV, hm, rfl⟩ := hne
+    refine (csInf_le (dirichletRate_set_bddBelow d n) ⟨V, g, hVn, hV, hm, rfl⟩).trans ?_
+    rw [div_le_iff₀ hm]
+    exact latEnergy_le_two_sqMass ⟨V, hV⟩
+  · rw [Set.not_nonempty_iff_eq_empty.mp hne, Real.sInf_empty]
+    norm_num
 
 /-- Every admissible function bounds the rate from above. -/
 theorem dirichletRate_le {n : ℕ} {V : Finset (Site d)} {g : Site d → ℝ}

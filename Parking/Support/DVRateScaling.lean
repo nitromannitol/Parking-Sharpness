@@ -11,7 +11,7 @@ hull of `V`.  Its mass is at least `L^d (‖h‖² - 2d E(h))` and its energy at
 lies in a cell over `fatten V`, unless one of its residues is `L - 1`, which happens for
 `d L^{d-1}` residues per cell.  Hence (`dirichletRate_blowup`)
 
-  `L^2 · dirichletRate d (L^d |fatten V| + d L^{d-1} |fatten (fatten V)|) · (‖h‖² - 2d E(h)) ≤ E(h)`.
+  `L^2 · dirichletRate d n · (‖h‖² - 2d E(h)) ≤ E(h)`,  `n ≥ L^d |fatten V| + d L^{d-1} |fatten (fatten V)|`.
 -/
 
 noncomputable section
@@ -157,11 +157,12 @@ theorem card_fatten_cellsOver_le (L : ℕ) [NeZero L] (V : Finset (Site d)) :
 
 /-- **Scaling of the least Dirichlet ratio.**  A function `h` vanishing off `V` with
 `2d E(h) < ‖h‖²`, blown up at scale `L`, gives
-`L^2 · dirichletRate d (L^d |fatten V| + d L^{d-1} |fatten (fatten V)|) · (‖h‖² - 2d E(h)) ≤ E(h)`. -/
+`L^2 · dirichletRate d n · (‖h‖² - 2d E(h)) ≤ E(h)` for every `n` at least
+`L^d |fatten V| + d L^{d-1} |fatten (fatten V)|`. -/
 theorem dirichletRate_blowup (hd : 1 ≤ d) (L : ℕ) [NeZero L] {V : Finset (Site d)}
-    {h : Site d → ℝ} (hV : ∀ x ∉ V, h x = 0) (hsmall : 2 * d * latEnergy h < sqMass h) :
-    (L : ℝ) ^ 2 * dirichletRate d (L ^ d * (fatten V).card + d * L ^ (d - 1) *
-        (fatten (fatten V)).card) * (sqMass h - 2 * d * latEnergy h) ≤ latEnergy h := by
+    {h : Site d → ℝ} (hV : ∀ x ∉ V, h x = 0) (hsmall : 2 * d * latEnergy h < sqMass h) {n : ℕ}
+    (hn : L ^ d * (fatten V).card + d * L ^ (d - 1) * (fatten (fatten V)).card ≤ n) :
+    (L : ℝ) ^ 2 * dirichletRate d n * (sqMass h - 2 * d * latEnergy h) ≤ latEnergy h := by
   classical
   have hL : (0 : ℝ) < L := by exact_mod_cast Nat.pos_of_neZero L
   have hd0 : (0 : ℝ) < 2 * d := by
@@ -193,10 +194,9 @@ theorem dirichletRate_blowup (hd : 1 ≤ d) (L : ℕ) [NeZero L] {V : Finset (Si
     apply hy
     rw [mem_cellsOver, ← coarseIn_finRange]
     exact mem_fatten.mpr ⟨S, by_contra fun hn => hS (hV _ hn)⟩
-  have hrate := dirichletRate_le (card_fatten_cellsOver_le L V) hsupp hgpos
-  have hrate0 := dirichletRate_nonneg d (L ^ d * (fatten V).card + d * L ^ (d - 1) *
-    (fatten (fatten V)).card)
-  set ρ := dirichletRate d (L ^ d * (fatten V).card + d * L ^ (d - 1) * (fatten (fatten V)).card)
+  have hrate := dirichletRate_le ((card_fatten_cellsOver_le L V).trans hn) hsupp hgpos
+  have hrate0 := dirichletRate_nonneg d n
+  set ρ := dirichletRate d n
   rw [le_div_iff₀ hgpos] at hrate
   have hLd : (0 : ℝ) < (L : ℝ) ^ d := by positivity
   have h1 : (L : ℝ) ^ 2 * ρ * ((L : ℝ) ^ d * (sqMass h - 2 * d * latEnergy h))
