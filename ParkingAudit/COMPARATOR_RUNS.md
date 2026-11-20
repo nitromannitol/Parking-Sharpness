@@ -16,6 +16,9 @@ The pairs `GrowthUnconditional`, `MasterUnconditional`, `NearUnconditional`,
 Divisible-Sandpile-Percolation.  The solution modules of the other eleven pairs import no module
 that differs between this revision and `e14e9d87adb65456761d1939fb7cedc49e57f5c5`, at which they
 were run, so their compiled solutions and the comparator's inputs are the same at both.
+The proof of the Donsker–Varadhan estimate (`Parking/External/DonskerVaradhanProved.lean` and the
+`Parking/Support/DV*.lean` modules it rests on) was added later; no solution module imports it, and
+no module that a solution module imports was changed, so the sixteen runs stand as recorded.
 
 ## `Growth`
 
