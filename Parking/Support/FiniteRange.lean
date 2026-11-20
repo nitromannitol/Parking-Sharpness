@@ -71,7 +71,6 @@ theorem pArrivalsAt_congr_box (h : AgreesOnBox z ρ D E) {s r₀ r : ℕ}
     rw [hact, hpos, hmv]
   rw [hact, hnext]
 
-set_option maxHeartbeats 1000000 in
 /-- **The state after `s` rounds inside a box of radius `r` is determined by the
 data inside the box of radius `r + s(s+1)`.** -/
 theorem pState_agree_box (h : AgreesOnBox z ρ D E) :
