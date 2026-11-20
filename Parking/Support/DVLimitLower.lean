@@ -671,6 +671,232 @@ theorem exists_ratio_pow_le (d : ℕ) {δ : ℝ} (hδ : 0 < δ) :
   rw [this]
   exact (hM₀ m hm).le
 
+/-! ### The lower limit -/
+
+/-- **The upper bound on the range moment at the scale `t^{d/(d+2)}`.** -/
+theorem eventually_log_rangeExp_le (hd : 1 ≤ d) {a c : ℝ} (ha : 0 < a) (hc : 0 ≤ c)
+    (hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ ((2 : ℝ) / d) * dirichletRate d n) atTop (𝓝 c))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ t : ℕ in atTop,
+      Real.log (rangeExp d a t) ≤ -((dvConst d a c - ε) * (t : ℝ) ^ ((d : ℝ) / (d + 2))) := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  set K := dvConst d a c with hK
+  have hK0 : 0 ≤ K := dvConst_nonneg ha.le hc
+  obtain ⟨δ, e₀, ε₁, hδ0, hδ1, he₀0, he₀1, hε₁0, hKδ⟩ := exists_dvConst_params d ha hc hε
+  set cl := max (c - ε₁) 0 with hcldef
+  have hcl : 0 ≤ cl := le_max_right _ _
+  have hδ' : 0 < 1 - δ := by linarith only [hδ1]
+  -- the constants
+  set C₀ := (K + 1) / a + 1 with hC₀def
+  have hC₀ : 0 < C₀ := by positivity
+  have hC₀K : K + 1 ≤ a * C₀ := by
+    rw [hC₀def, mul_add, mul_div_cancel₀ _ ha.ne', mul_one]; linarith only [ha]
+  set η := min 1 (ε / (16 * a)) with hηdef
+  have hη : 0 < η := lt_min one_pos (by positivity)
+  have haη : a * η ≤ ε / 16 := by
+    have h := min_le_right 1 (ε / (16 * a))
+    rw [← hηdef] at h
+    calc a * η ≤ a * (ε / (16 * a)) := mul_le_mul_of_nonneg_left h ha.le
+      _ = ε / 16 := by field_simp
+  set A := C₀ / (1 - δ) + η with hA
+  set B := C₀ / (1 - δ) with hB
+  have hB0 : 0 ≤ B := by positivity
+  have hsqA : 0 ≤ Real.sqrt A := Real.sqrt_nonneg _
+  set σ := min 1 (e₀ / (2 * (2 * Real.sqrt A + B + 1))) with hσdef
+  have hσ : 0 < σ := lt_min one_pos (by positivity)
+  have hσ1 : σ ≤ 1 := min_le_left _ _
+  have hσerr : 2 * σ * Real.sqrt (C₀ / (1 - δ) + η) + σ ^ 2 * (C₀ / (1 - δ)) ≤ e₀ / 2 := by
+    rw [← hA, ← hB]
+    have h1 : σ ≤ e₀ / (2 * (2 * Real.sqrt A + B + 1)) := min_le_right _ _
+    have h2 : σ ^ 2 * B ≤ σ * B := by
+      have : σ ^ 2 ≤ σ := by nlinarith
+      exact mul_le_mul_of_nonneg_right this hB0
+    have h3 : σ * (2 * Real.sqrt A + B + 1) ≤ e₀ / 2 := by
+      rw [le_div_iff₀ (by positivity)] at h1
+      linarith only [h1]
+    nlinarith
+  set P1 := 4 * (c + 1) * η ^ (-(2 : ℝ) / d) / e₀ with hP1
+  set P2 := 2 ^ (d + 1) * (c + 1) * η ^ (-(2 : ℝ) / d) / (σ ^ 2 * η) with hP2
+  have hP1pos : 0 < P1 := by positivity
+  have hP2pos : 0 < P2 := by positivity
+  set M := max P1 P2 + 1 with hMdef
+  have hM : 0 < M := by positivity
+  have hMP1 : P1 ≤ M := by rw [hMdef]; linarith only [le_max_left P1 P2]
+  have hMP2 : P2 ≤ M := by rw [hMdef]; linarith only [le_max_right P1 P2]
+  have hMerr : 2 * (c + 1) * η ^ (-(2 : ℝ) / d) / M ≤ e₀ / 2 := by
+    rw [div_le_iff₀ hM]
+    have : e₀ / 2 * P1 = 2 * (c + 1) * η ^ (-(2 : ℝ) / d) := by rw [hP1]; field_simp; ring
+    nlinarith
+  have hMN : 2 ^ (d + 1) * (c + 1) * η ^ (-(2 : ℝ) / d) / (M * σ ^ 2) ≤ η := by
+    rw [div_le_iff₀ (by positivity)]
+    have : η * (P2 * σ ^ 2) = 2 ^ (d + 1) * (c + 1) * η ^ (-(2 : ℝ) / d) := by
+      rw [hP2]; field_simp
+    have h2 : η * (P2 * σ ^ 2) ≤ η * (M * σ ^ 2) :=
+      mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hMP2 (by positivity)) hη.le
+    linarith only [this, h2]
+  set θ := ε / (8 * M) with hθdef
+  have hθ : 0 < θ := by positivity
+  have hMθ : M * θ ≤ ε / 8 := by rw [hθdef]; field_simp; linarith only
+  obtain ⟨p₀, hp₀, m₀, hhit⟩ := exists_hit_prob_ge hd hδ0
+  set q := (1 - Real.exp (-1)) * p₀ with hqdef
+  have he1 : Real.exp (-1) < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
+  have hq : 0 < q := mul_pos (by linarith only [he1]) hp₀
+  set εb := min 1 (Real.sqrt (q * θ / (4 * (C₀ + K + 2)))) with hεbdef
+  have hεb : 0 < εb := lt_min one_pos (Real.sqrt_pos.mpr (by positivity))
+  have hεb1 : εb ≤ 1 := min_le_left _ _
+  have hqθ : C₀ + K + 2 ≤ (1 - Real.exp (-1)) * p₀ * θ / (4 * εb ^ 2) := by
+    rw [← hqdef, le_div_iff₀ (by positivity)]
+    have h1 : εb ≤ Real.sqrt (q * θ / (4 * (C₀ + K + 2))) := min_le_right _ _
+    have h2 : εb ^ 2 ≤ q * θ / (4 * (C₀ + K + 2)) := by
+      calc εb ^ 2 ≤ (Real.sqrt (q * θ / (4 * (C₀ + K + 2)))) ^ 2 :=
+            pow_le_pow_left₀ hεb.le h1 2
+        _ = q * θ / (4 * (C₀ + K + 2)) := Real.sq_sqrt (by positivity)
+    rw [le_div_iff₀ (by positivity)] at h2
+    linarith only [h2]
+  set Kmax := 2 ^ d * C₀ / ((1 - δ) * εb ^ d) with hKmaxdef
+  have hKmax0 : 0 ≤ Kmax := by positivity
+  obtain ⟨M₀, hM₀⟩ := exists_ratio_pow_le d hδ0
+  -- the thresholds in the volume
+  have hev1 : ∀ᶠ N : ℕ in atTop,
+      (N : ℝ) ^ ((2 : ℝ) / d) * dirichletRate d N ∈ Set.Ioo (c - ε₁) (c + 1) :=
+    hlim.eventually (Ioo_mem_nhds (by linarith only [hε₁0]) (by linarith only))
+  have hneg : Tendsto (fun n : ℕ => (n : ℝ) ^ (-(2 : ℝ) / d)) atTop (𝓝 0) := by
+    have h := (tendsto_rpow_neg_atTop (by positivity : (0 : ℝ) < 2 / d)).comp
+      tendsto_natCast_atTop_atTop
+    refine h.congr fun n => ?_
+    simp only [Function.comp, neg_div]
+  have hev2 : ∀ᶠ N : ℕ in atTop, (c + 1) * (N : ℝ) ^ (-(2 : ℝ) / d) < 1 / 2 :=
+    (hneg.const_mul (c + 1)).eventually (gt_mem_nhds (by rw [mul_zero]; norm_num))
+  obtain ⟨Nthr, hNthr⟩ := eventually_atTop.mp ((hev1.and hev2).and (eventually_ge_atTop 1))
+  have hNpq : ∀ N : ℕ, Nthr ≤ N →
+      (N : ℝ) ^ ((2 : ℝ) / d) * (N : ℝ) ^ (-(2 : ℝ) / d) = 1 := by
+    intro N hN
+    have hNpos : (0 : ℝ) < N := by exact_mod_cast (hNthr N hN).2
+    rw [← Real.rpow_add hNpos, neg_div, add_neg_cancel, Real.rpow_zero]
+  have hΛup : ∀ N : ℕ, Nthr ≤ N → dirichletRate d N ≤ (c + 1) * (N : ℝ) ^ (-(2 : ℝ) / d) := by
+    intro N hN
+    have h1 := ((hNthr N hN).1.1).2
+    have hq0 : 0 ≤ (N : ℝ) ^ (-(2 : ℝ) / d) := Real.rpow_nonneg (Nat.cast_nonneg N) _
+    calc dirichletRate d N = ((N : ℝ) ^ ((2 : ℝ) / d) * dirichletRate d N)
+          * (N : ℝ) ^ (-(2 : ℝ) / d) := by
+          rw [mul_comm ((N : ℝ) ^ ((2 : ℝ) / d)), mul_assoc, hNpq N hN, mul_one]
+      _ ≤ (c + 1) * (N : ℝ) ^ (-(2 : ℝ) / d) := mul_le_mul_of_nonneg_right h1.le hq0
+  have hΛlow : ∀ N : ℕ, Nthr ≤ N → cl * (N : ℝ) ^ (-(2 : ℝ) / d) ≤ dirichletRate d N := by
+    intro N hN
+    have h1 := ((hNthr N hN).1.1).1
+    have hq0 : 0 ≤ (N : ℝ) ^ (-(2 : ℝ) / d) := Real.rpow_nonneg (Nat.cast_nonneg N) _
+    rcases le_total (c - ε₁) 0 with hce | hce
+    · rw [hcldef, max_eq_right hce, zero_mul]; exact dirichletRate_nonneg d N
+    · rw [hcldef, max_eq_left hce]
+      calc (c - ε₁) * (N : ℝ) ^ (-(2 : ℝ) / d)
+          ≤ ((N : ℝ) ^ ((2 : ℝ) / d) * dirichletRate d N) * (N : ℝ) ^ (-(2 : ℝ) / d) :=
+            mul_le_mul_of_nonneg_right h1.le hq0
+        _ = dirichletRate d N := by
+            rw [mul_comm ((N : ℝ) ^ ((2 : ℝ) / d)), mul_assoc, hNpq N hN, mul_one]
+  have hΛhalf : ∀ N : ℕ, Nthr ≤ N → dirichletRate d N ≤ 1 / 2 := fun N hN =>
+    (hΛup N hN).trans (hNthr N hN).1.2.le
+  -- the thresholds in time
+  have hrt : Tendsto (fun t : ℕ => (t : ℝ) ^ ((1 : ℝ) / (d + 2))) atTop atTop :=
+    (tendsto_rpow_atTop (by positivity)).comp tendsto_natCast_atTop_atTop
+  have hst : Tendsto (fun t : ℕ => (t : ℝ) ^ ((d : ℝ) / (d + 2))) atTop atTop :=
+    (tendsto_rpow_atTop (by positivity)).comp tendsto_natCast_atTop_atTop
+  set R₁ : ℝ := max 1 ((2 * ((max m₀ M₀ : ℕ) + 1) + 2) / εb) with hR₁
+  set S₁ : ℝ := max (max 2 (Nthr / η)) (max (3 * q / 2) (max (16 * a / ε)
+    (16 * ((Kmax + 2) + M / 2) / ε))) with hS₁
+  set c₁ : ℝ := ε / (16 * ((Kmax + 2) * d + 1)) with hc₁
+  have hc₁0 : 0 < c₁ := by positivity
+  filter_upwards [hrt.eventually_ge_atTop R₁, hst.eventually_ge_atTop S₁,
+    eventually_log_le hd hc₁0, eventually_ge_atTop 1] with t hrR hsS hlogc ht1
+  have htpos : (0 : ℝ) < t := by exact_mod_cast ht1
+  set r := (t : ℝ) ^ ((1 : ℝ) / (d + 2)) with hrdef
+  set s := (t : ℝ) ^ ((d : ℝ) / (d + 2)) with hsdef
+  obtain ⟨hrs, hts, hsr⟩ := scale_facts hd htpos
+  rw [← hrdef, ← hsdef] at hrs hts hsr
+  have htss : (t : ℝ) * s ^ (-(2 : ℝ) / d) = s := mul_rpow_scale hd htpos
+  have hr1 : 1 ≤ r := le_trans (le_max_left _ _) hrR
+  have hr0 : 0 < r := by linarith only [hr1]
+  have hs2 : 2 ≤ s := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hsS
+  have hs0 : 0 < s := by linarith only [hs2]
+  have hsN : (Nthr : ℝ) / η ≤ s := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hsS
+  have hsq : 3 * q / 2 ≤ s := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hsS
+  have hsa : 16 * a / ε ≤ s :=
+    le_trans (le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) (le_max_right _ _)) hsS
+  have hsK : 16 * ((Kmax + 2) + M / 2) / ε ≤ s :=
+    le_trans (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) (le_max_right _ _)) hsS
+  -- the box side
+  have hεbr : 2 * ((max m₀ M₀ : ℕ) + 1) + 2 ≤ εb * r := by
+    have h := le_trans (le_max_right _ _) hrR
+    rw [div_le_iff₀ hεb] at h
+    linarith only [h]
+  set m : ℕ := ⌊εb * r⌋₊ with hmdef
+  have hm : (m : ℝ) ≤ εb * r := Nat.floor_le (by positivity)
+  have hmlb : εb * r - 1 < m := by
+    have := Nat.lt_floor_add_one (εb * r); rw [← hmdef] at this; linarith only [this]
+  have hm2 : εb * r / 2 ≤ m := by linarith only [hmlb, hεbr]
+  have hmax : ((max m₀ M₀ : ℕ) : ℝ) < m := by linarith only [hmlb, hεbr]
+  have hmax' : max m₀ M₀ < m := by exact_mod_cast hmax
+  have hmm₀ : m₀ ≤ m := le_trans (le_max_left _ _) hmax'.le
+  have hmM₀ : M₀ ≤ m := le_trans (le_max_right _ _) hmax'.le
+  have hmpos : 0 < m := lt_of_le_of_lt (Nat.zero_le _) hmax'
+  have : NeZero m := ⟨by omega⟩
+  have hmγ := hM₀ m hmM₀ hmpos
+  have h2m : 2 * m ^ 2 ≤ t := by
+    have h1 : (m : ℝ) ≤ r := hm.trans (mul_le_of_le_one_left hr0.le hεb1)
+    have h2 : (2 * m ^ 2 : ℝ) ≤ t := by
+      have h3 : (m : ℝ) ^ 2 ≤ r ^ 2 := pow_le_pow_left₀ (Nat.cast_nonneg _) h1 2
+      have h4 : 2 * r ^ 2 ≤ r ^ 2 * s := by
+        calc 2 * r ^ 2 = r ^ 2 * 2 := by ring
+          _ ≤ r ^ 2 * s := mul_le_mul_of_nonneg_left hs2 (by positivity)
+      rw [hts]; linarith only [h3, h4]
+    exact_mod_cast h2
+  have hNthr' : (Nthr : ℝ) ≤ η * s := by
+    rw [div_le_iff₀ hη] at hsN; linarith only [hsN]
+  have has : a / s ≤ ε / 16 := by
+    rw [div_le_iff₀ hs0]; rw [div_le_iff₀ hε] at hsa; linarith only [hsa]
+  have hlog2 : Real.log (2 * (t : ℝ) + 1) ≤ Real.log (3 * ((t : ℝ) + 2)) :=
+    Real.log_le_log (by positivity) (by linarith only [htpos])
+  have hlog : (Kmax + 2) * (1 + d * Real.log (2 * t + 1)) + M / 2 ≤ ε / 8 * s := by
+    have h1 : (Kmax + 2) + M / 2 ≤ ε / 16 * s := by
+      rw [div_le_iff₀ hε] at hsK; linarith only [hsK]
+    have hL0 : 0 ≤ Real.log (2 * (t : ℝ) + 1) := Real.log_nonneg (by linarith only [htpos])
+    have h2 : (Kmax + 2) * (d * Real.log (2 * t + 1)) ≤ (Kmax + 2) * (d * (c₁ * s)) :=
+      mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (hlog2.trans hlogc) hd0.le)
+        (by linarith only [hKmax0])
+    have h3 : (Kmax + 2) * (d * (c₁ * s)) ≤ ε / 16 * s := by
+      have : (Kmax + 2) * d * c₁ ≤ ε / 16 := by
+        have hX : 0 < (Kmax + 2) * d + 1 := by positivity
+        have hfrac : ((Kmax + 2) * d) / ((Kmax + 2) * d + 1) ≤ 1 :=
+          div_le_one_of_le₀ (by linarith only) hX.le
+        calc (Kmax + 2) * d * c₁ = ε / 16 * (((Kmax + 2) * d) / ((Kmax + 2) * d + 1)) := by
+              rw [hc₁]; field_simp
+          _ ≤ ε / 16 * 1 := mul_le_mul_of_nonneg_left hfrac (by positivity)
+          _ = ε / 16 := mul_one _
+      calc (Kmax + 2) * (d * (c₁ * s)) = ((Kmax + 2) * d * c₁) * s := by ring
+        _ ≤ ε / 16 * s := mul_le_mul_of_nonneg_right this hs0.le
+    have e : (Kmax + 2) * (1 + d * Real.log (2 * t + 1))
+        = (Kmax + 2) + (Kmax + 2) * (d * Real.log (2 * t + 1)) := by ring
+    linarith only [h1, h2, h3, e]
+  have hlogt : Real.log (3 * ((t : ℝ) + 2)) ≤ ε / 2 * s := by
+    have : c₁ ≤ ε / 2 := by
+      have hX : (1 : ℝ) ≤ (Kmax + 2) * d + 1 := by
+        have : 0 ≤ (Kmax + 2) * d := by positivity
+        linarith only [this]
+      rw [hc₁]
+      calc ε / (16 * ((Kmax + 2) * d + 1)) ≤ ε / (16 * 1) :=
+            div_le_div_of_nonneg_left hε.le (by norm_num) (by linarith only [hX])
+        _ ≤ ε / 2 := by linarith only [hε]
+    exact hlogc.trans (mul_le_mul_of_nonneg_right this hs0.le)
+  -- each range size
+  have hterm : ∀ n : ℕ, Real.exp (-(a * n)) * (siteWalkLaw d 0).real
+      {X | LatticeProb.rangeCard X t ≤ n} ≤ 3 * Real.exp (-((K - ε / 2) * s)) := by
+    intro n
+    by_cases hn : (n : ℝ) < C₀ * s
+    · exact small_n_bound hd ha hc hε hδ0 hδ1 hp₀.le (hhit m hmm₀) he₀1 hcl hη hσ hM hθ hεb hC₀
+        hKδ haη hσerr hMerr hMN hMθ hqθ hΛlow hΛup hΛhalf hr1 hs0 hrs hts htss hsr hm hm2 hmγ
+        h2m hNthr' hsq has le_rfl hlog n hn
+    · exact large_n_bound hd ha hs0.le hε hC₀K (le_of_not_gt hn)
+  exact log_rangeExp_le_of_terms hd ha.le hterm hlogt
+
 end Parking
 
 end
