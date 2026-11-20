@@ -130,6 +130,52 @@ theorem dv_main_lower (hd : 1 ≤ d) {a c e₀ γ η s t n N Λ err : ℝ} (ha :
     linarith
   linarith
 
+/-- **Perturbed constants.**  For `ε > 0` there are `δ, e₀ ∈ (0, 1/2]` and `ε₁ > 0` with
+`dvConst (a(1-δ)/(1+δ)) ((1-e₀) max(c - ε₁, 0)) ≥ dvConst a c - ε/8`. -/
+theorem exists_dvConst_params (d : ℕ) {a c : ℝ} (ha : 0 < a) (hc : 0 ≤ c) {ε : ℝ}
+    (hε : 0 < ε) :
+    ∃ δ e₀ ε₁ : ℝ, 0 < δ ∧ δ ≤ 1 / 2 ∧ 0 < e₀ ∧ e₀ ≤ 1 / 2 ∧ 0 < ε₁ ∧
+      dvConst d a c - ε / 8 ≤ dvConst d (a * (1 - δ) / (1 + δ)) ((1 - e₀) * max (c - ε₁) 0) := by
+  have hcont := (continuous_dvConst d).continuousAt (x := (a, c))
+  have hev := hcont.eventually (lt_mem_nhds (by linarith : dvConst d a c - ε / 8 < dvConst d a c))
+  obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.mp hev
+  set δ := min (1 / 2) (ρ / (4 * a)) with hδ
+  set e₀ := min (1 / 2) (ρ / (4 * (c + 1))) with he₀
+  set ε₁ := ρ / 4 with hε₁
+  have hδ0 : 0 < δ := lt_min (by norm_num) (by positivity)
+  have he₀0 : 0 < e₀ := lt_min (by norm_num) (by positivity)
+  refine ⟨δ, e₀, ε₁, hδ0, min_le_left _ _, he₀0, min_le_left _ _, by positivity, ?_⟩
+  refine (hball (y := (a * (1 - δ) / (1 + δ), (1 - e₀) * max (c - ε₁) 0)) ?_).le
+  rw [Prod.dist_eq, max_lt_iff]
+  constructor
+  · rw [Real.dist_eq]
+    have h1 : a - a * (1 - δ) / (1 + δ) = 2 * a * δ / (1 + δ) := by field_simp; ring
+    have h2 : 2 * a * δ / (1 + δ) ≤ 2 * a * δ := div_le_self (by positivity) (by linarith)
+    have h3 : 2 * a * δ ≤ ρ / 2 := by
+      have := min_le_right (1 / 2) (ρ / (4 * a))
+      rw [← hδ] at this
+      rw [le_div_iff₀ (by positivity)] at this
+      linarith
+    rw [abs_sub_comm, abs_of_nonneg (by rw [h1]; positivity)]
+    linarith
+  · rw [Real.dist_eq]
+    have he₀le : e₀ * (c + 1) ≤ ρ / 4 := by
+      have := min_le_right (1 / 2) (ρ / (4 * (c + 1)))
+      rw [← he₀] at this
+      rw [le_div_iff₀ (by positivity)] at this
+      linarith
+    have hm1 : c - ε₁ ≤ max (c - ε₁) 0 := le_max_left _ _
+    have hm2 : max (c - ε₁) 0 ≤ c := max_le (by linarith [show 0 < ε₁ by positivity]) hc
+    have hlow : c - ρ / 4 - ρ / 4 ≤ (1 - e₀) * max (c - ε₁) 0 := by
+      have : (1 - e₀) * max (c - ε₁) 0 ≥ (1 - e₀) * (c - ε₁) :=
+        mul_le_mul_of_nonneg_left hm1 (by linarith [min_le_left (1 / 2 : ℝ) (ρ / (4 * (c + 1)))])
+      nlinarith
+    have hup : (1 - e₀) * max (c - ε₁) 0 ≤ c := by
+      have h0 : 0 ≤ max (c - ε₁) 0 := le_max_right _ _
+      nlinarith
+    rw [abs_lt]
+    constructor <;> linarith
+
 end Parking
 
 end
