@@ -758,7 +758,6 @@ theorem orientedGrid_clampedDiff_eq {N : ℕ} {m m' : ℤ} (hm : 0 ≤ m) (hm' :
     ring
   · rw [max_eq_left h, min_eq_right h, abs_of_nonneg (sub_nonneg.mpr h)]
 
-set_option maxHeartbeats 1000000 in
 /-- **The far corner-to-corner moment**: for pairs at rescaled distance at
 least `1/n`, the increment of the grid reward between the two cell corners
 has `p`-th moment bounded by `M (dist u u')^{p/4}`, with `M` itself bounded by
@@ -1572,7 +1571,6 @@ theorem exists_orientedBoxReward_near_moment (ν : Measure ℤ) (hν : CriticalL
           _ = (24 ^ (p + 1) * ((C * 6) ^ (p / 2)) * (5 / 2) ^ p) * ρ ^ (p / 4) := by
               rw [one_mul]
 
-set_option maxHeartbeats 1000000 in
 /-- **The Kolmogorov moment package**: the box reward increments have `p`-th
 moment uniformly bounded by `M (dist u u')^{p/4}` for all pairs of the box and
 all scales `n ≥ 1`, with `M` itself bounded by `K * (1 + A) ^ (p / 2)` for a SINGLE
