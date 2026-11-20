@@ -91,6 +91,12 @@ EXPECTED_ABSENT: dict[str, dict[str, str]] = {
     "ext-spatial-stopping-stability": {
         "d+2": "context: R^{d+2} is the size of the space-time mesh in the paper's union-bound sentence (parking.tex 1745-1748), prose of the proof step and not part of this External, whose Lean statement contains no exponent at all; the External states only the stability of the discrete optimal-stopping value Parking.stoppingSup against Parking.spatialContValue under uniform convergence of rewards bounded by M on [0,T] x (Fin d -> R), with the walk's finite-dimensional convergence to Brownian motion as a hypothesis, which is the stability estimate the paper's sentence 'its estimates are uniform on compact time intervals' cites; the R^(d+2) mesh count is used in Parking/Support/SpatialVanishingDistance.lean (mesh_card_le) for the vanishing-distance clause of Parking.Frozen.spatial_scaling",
     },
+    "ext-spatial-odometer-scaling-holds": {
+        "d+2": "context: R^{d+2} is the size of the space-time mesh in the paper's union-bound sentence (parking.tex 1745-1748), prose of the proof step and not part of this node; the node is the theorem Parking.External.spatialOdometerScaling_holds, whose statement is the bare proposition Parking.External.SpatialOdometerScaling of the node ext-spatial-odometer-scaling, where the same superscript is explained",
+    },
+    "ext-spatial-stopping-stability-holds": {
+        "d+2": "context: R^{d+2} is the size of the space-time mesh in the paper's union-bound sentence (parking.tex 1745-1748), prose of the proof step and not part of this node; the node is the theorem Parking.External.spatialStoppingStability_holds, whose statement is the bare proposition Parking.External.SpatialStoppingStability of the node ext-spatial-stopping-stability, where the same superscript is explained",
+    },
     "ext-srw-local-clt": {
         "d+2": "context: R^{d+2} is the size of the space-time mesh in the paper's union-bound sentence (parking.tex 1745-1748), prose of the proof step and not part of this External; the External is BP equation (25), the uniform local CLT for srwHeat on delta R^2 <= l <= T R^2, |x-y| <= C0 R, with the factor 2 for parity and the kernel Parking.External.contHeatKernel (its exponent -d/2 is inside that definition, which I read: (4 pi t/(2d))^(-d/2) exp(-d|x-y|^2/(2t)), generator Laplacian/(2d)); the R^d appearing in it is the lattice-scaling factor R^d, unrelated to the mesh count; the mesh count itself is bounded in Parking/Support/SpatialVanishingDistance.lean (mesh_card_le)",
     },

@@ -225,6 +225,15 @@ REVIEWED: dict[str, str] = {
         "the sandpile paper's theorem by an assumption of what that paper assumes. "
         "`varianceScale` and `greenBoundsHigh` are discharged from the sandpile's own proofs and "
         "are not carried.",
+    "ext-sandpile-growth-holds":
+        "companion proof, not a paper statement: the frozen declaration "
+        "`Parking.External.sandpileGrowth_holds` has no binder and its conclusion IS "
+        "`Parking.External.SandpileGrowth`, the cited input of thm:BP, so it asserts exactly "
+        "that proposition and adds no clause of its own; the paper statement is read under "
+        "`ext-sandpile-growth`. The proof is the assembly of `ext-sandpile-growth-proved` with "
+        "the low-dimensional limit supplied by the divisible sandpile formalization's "
+        "hypothesis-free `Sandpile.mean_growth_le_three_proved` instead of the certified "
+        "`Sandpile.Frozen.mean_growth_le_three`, so no optimal-stopping input enters.",
     "ext-spatial-fixed-time-tightness":
         "cited input (BP Theorem 1.3(i)(b), via the paper's Step 1 of prop:spatial-scaling), "
         "assumed as a hypothesis; MISMATCH: the paper displays no such statement, and Lean states "
@@ -699,6 +708,24 @@ REVIEWED: dict[str, str] = {
         "equals the paper's 'for some r/theta' since the conclusion does not mention them; C may "
         "depend on d, nu (and r, theta); `E u_n(0)` is `meanuOriented (orientedLaw d nu) n` with "
         "`(P f)(x) = (1/d) sum_i f(x - e_i)`",
+    "thm-subcritical-tail-proved":
+        "the certified statement of `thm-subcritical-tail` with its cited-input binder `hDV` removed and nothing else changed (the frozen bytes are those of `thm-subcritical-tail` with the theorem name replaced and that binder deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `thm-subcritical-tail`; the Donsker-Varadhan limit is not proved but bypassed: the proof is `Parking.subcritical_tail_of_range_count`, whose stretched-exponential bounds for the range give the two displayed bounds directly",
+    "thm-master-proved":
+        "the certified statement of `thm-master` with its cited-input binders `hGrowth`, `hBernstein` removed and nothing else changed (the frozen bytes are those of `thm-master` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `thm-master`; every removed input is supplied by a proof in this repository",
+    "cor-growth-proved":
+        "the certified statement of `cor-growth` with its cited-input binders `hGrowth`, `hBernstein` removed and nothing else changed (the frozen bytes are those of `cor-growth` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `cor-growth`; every removed input is supplied by a proof in this repository",
+    "thm-trichotomy-proved":
+        "the certified statement of `thm-trichotomy` with its cited-input binders `hGrowth`, `hBernstein`, `hStopping` removed and nothing else changed (the frozen bytes are those of `thm-trichotomy` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `thm-trichotomy`; every removed input is supplied by a proof in this repository",
+    "thm-nearest-proved":
+        "the certified statement of `thm-nearest` with its cited-input binders `hGrowth`, `hBernstein`, `hOdometer`, `hInterior`, `hCompact`, `hBerry` removed and nothing else changed (the frozen bytes are those of `thm-nearest` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `thm-nearest`; every removed input is supplied by a proof in this repository",
+    "thm-nearest-counterexample-proved":
+        "the certified statement of `thm-nearest-counterexample` with its cited-input binders `hBernstein` removed and nothing else changed (the frozen bytes are those of `thm-nearest-counterexample` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `thm-nearest-counterexample`; every removed input is supplied by a proof in this repository",
+    "thm-near-proved":
+        "the certified statement of `thm-near` with its cited-input binders `hGrowth`, `hStopping`, `hBernstein` removed and nothing else changed (the frozen bytes are those of `thm-near` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `thm-near`; every removed input is supplied by a proof in this repository",
+    "prop-oriented-scaling-proved":
+        "the certified statement of `prop-oriented-scaling` with its cited-input binders `hStability` removed and nothing else changed (the frozen bytes are those of `prop-oriented-scaling` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `prop-oriented-scaling`; every removed input is supplied by a proof in this repository",
+    "thm-oriented-walk-proved":
+        "the certified statement of `thm-oriented-walk` with its cited-input binders `hBern`, `hStability` removed and nothing else changed (the frozen bytes are those of `thm-oriented-walk` with the theorem name replaced and those binders deleted), so the paper statement, the quantifier order and the conclusion are read exactly as under `thm-oriented-walk`; every removed input is supplied by a proof in this repository",
     "thm-oriented-walk":
         "five assertions: (a) E U_n(0) asymp n^{1/4} for d=2; (b) asymp log n for d>=3; (c) E "
         "U_n/E u_n -> 1 for d=2; (d) exists mu in (0,inf) with E U_n ~ mu n^{1/4}; (e) S_t ~ "

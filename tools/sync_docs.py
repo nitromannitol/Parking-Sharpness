@@ -56,7 +56,10 @@ def status_block(nodes: list[dict]) -> str:
     counts = Counter(n["state"] for n in nodes)
     proved = counts["PROVED"] + counts["SEALED"]
     proved_theorems = counts["PROVED"]
-    sealed_defs = counts["SEALED"]
+    sealed = counts["SEALED"]
+    sealed_defs = sum(1 for n in nodes
+                      if n["state"] == "SEALED" and n.get("kind") == "definition")
+    sealed_theorems = sealed - sealed_defs
     frozen = counts["FROZEN"]
     draft = [n["id"] for n in nodes if n["state"] == "DRAFT_SORRY"]
     # State what is actually true.  Claiming a clean axiom closure while a
@@ -64,9 +67,13 @@ def status_block(nodes: list[dict]) -> str:
     body = (
         f"The {proved} proved nodes are machine-checked and no proved node's\n"
         f"axiom closure contains `sorryAx`.")
+    if sealed_theorems:
+        body += (
+            f"  The {sealed_theorems} `SEALED` theorem nodes are proved with an axiom\n"
+            f"closure of exactly the three standard axioms.")
     if sealed_defs:
         body += (
-            f"  The {sealed_defs} `SEALED` nodes are proved `definition` nodes,\n"
+            f"  The {sealed_defs} `SEALED` definition nodes are proved `definition` nodes,\n"
             f"sealed by the companion theorem named in `CERTIFICATE.md`.")
     if frozen:
         body += (
@@ -80,7 +87,8 @@ def status_block(nodes: list[dict]) -> str:
             f"whose statement is frozen and whose proof is a registered `sorry`.")
     return (
         f"Status: **{len(nodes)} registered statements: {proved_theorems} `PROVED`, "
-        f"{sealed_defs} `SEALED` (definition nodes proved by companion theorems), "
+        f"{sealed} `SEALED` ({sealed_theorems} theorems and {sealed_defs} definition nodes "
+        f"proved by companion theorems), "
         f"and {frozen} `FROZEN`, registered cited inputs.**  "
         f"{body}  Run\n"
         f"`python3 tools/check_axioms.py` to confirm.  Counts here are generated\n"

@@ -46,6 +46,24 @@ DISCHARGED = {
     "ext-stopping": "Parking.External.stopping",
 }
 
+# The `FROZEN` cited inputs that a theorem of this repository proves with no hypothesis.  The
+# input stays `FROZEN` because the certified statements that use it carry it as a hypothesis;
+# the companion theorem, whose closure is checked below, discharges it.
+PROVED_INPUTS = {
+    "ext-bernstein": "Parking.External.bernstein",
+    "ext-heat-compactness": "Parking.External.heatCompactness",
+    "ext-heat-interior-regularity": "Parking.External.heatInteriorRegularity",
+    "ext-linear-field-scaling": "Parking.External.linearFieldScaling_holds",
+    "ext-multivariate-berry-esseen": "Parking.External.multivariateBerryEsseen",
+    "ext-oriented-stopping-stability": "Parking.External.orientedStoppingStability_holds",
+    "ext-sandpile-growth": "Parking.External.sandpileGrowth_holds",
+    "ext-spatial-fixed-time-tightness": "Parking.External.spatialFixedTimeTightness",
+    "ext-spatial-odometer-scaling": "Parking.External.spatialOdometerScaling_holds",
+    "ext-spatial-stopping-stability": "Parking.External.spatialStoppingStability_holds",
+}
+
+OWN_WARNING = ("warning: Parking/", "warning: ParkingAudit/", "warning: Parking.lean")
+
 
 def run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
     env = {**os.environ, "PATH": ELAN + ":" + os.environ.get("PATH", "")}
@@ -156,9 +174,10 @@ def build() -> str:
     # check_warnings.py, run above, is the authority on which build warnings
     # are authorized (one `declaration uses 'sorry'` per `DRAFT_SORRY` node);
     # this count is only for the report below.
-    warnings = [l for l in r.stdout.splitlines() if l.startswith("warning:")]
+    warnings = [l for l in r.stdout.splitlines() if l.startswith(OWN_WARNING)]
 
-    probe_exports = [n["export"] for n in nodes] + list(DISCHARGED.values())
+    probe_exports = ([n["export"] for n in nodes] + list(DISCHARGED.values())
+                     + list(PROVED_INPUTS.values()))
     ax = axiom_lines(probe_exports)
 
     def extra_axioms(export: str) -> set[str]:
@@ -170,6 +189,8 @@ def build() -> str:
     draft_theorems = [n for n in open_theorems if n["state"] == "DRAFT_SORRY"]
     conditional_theorems = [n for n in open_theorems if n["state"] == "CONDITIONAL"]
     frozen_only = sum(n["kind"] == "definition" and n["state"] == "FROZEN" for n in nodes)
+    proved_inputs = [n for n in externals if n["state"] == "FROZEN" and n["id"] in PROVED_INPUTS]
+    n_proved_externals = len(proved_inputs) + sum(n["id"] in DISCHARGED for n in externals)
     toolchain = (ROOT / "lean-toolchain").read_text().strip()
     packages = json.loads((ROOT / "lake-manifest.json").read_text(encoding="utf-8"))["packages"]
     ml_rev = next((p["rev"] for p in packages if p["name"] == "mathlib"), None)
@@ -192,8 +213,8 @@ def build() -> str:
     A("declarations, with no added axiom and no `sorry`, for every node in state")
     A("`SEALED` or `PROVED` below.  Cited inputs are proposition-valued predicates in")
     A("`Parking/External/`, carried as explicit hypotheses together with each")
-    A("theorem's own hypotheses; two of them are proved inside this repository and")
-    A("are marked accordingly.  `CORRESPONDENCE.md` records the correspondence with")
+    A(f"theorem's own hypotheses; {n_proved_externals} of the {len(externals)} are proved inside this")
+    A("repository and are marked accordingly.  `CORRESPONDENCE.md` records the correspondence with")
     A("the paper and `PROOF.md` describes the proof and the Lean tree.")
     A("")
     if open_theorems:
@@ -209,9 +230,14 @@ def build() -> str:
     A("|---|---|")
     A(f"| Lean toolchain | `{toolchain}` |")
     A(f"| Mathlib revision | `{ml_rev or 'unknown'}` |")
+    for pkg, label in (("«lattice-probability»", "Lattice-Probability"),
+                       ("divisible_sandpile", "Divisible-Sandpile-Percolation")):
+        rev = next((q["rev"] for q in packages if q["name"] == pkg), None)
+        if rev:
+            A(f"| {label} revision | `{rev}` |")
     A(f"| Paper (`paper/parking.tex`) SHA-256 | `{paper_sha}` |")
     A(f"| Build | succeeded{f', {jobs.group(1)} jobs' if jobs else ''} |")
-    A(f"| Build warnings | {len(warnings)} |")
+    A(f"| Build warnings in this repository's modules | {len(warnings)} |")
     A(f"| Generated | {date.today().isoformat()} |")
     A("")
     A("## Reproducing it")
@@ -249,6 +275,13 @@ def build() -> str:
                     raise RuntimeError(
                         f"{n['id']}: companion `{comp}` is not axiom-clean: {sorted(comp_extra)}")
                 verdict = f"proved (companion `{comp}`, classical only)"
+            elif n["id"] in PROVED_INPUTS:
+                comp = PROVED_INPUTS[n["id"]]
+                comp_extra = extra_axioms(comp)
+                if comp_extra:
+                    raise RuntimeError(
+                        f"{n['id']}: companion `{comp}` is not axiom-clean: {sorted(comp_extra)}")
+                verdict = f"carried as a hypothesis; proved by `{comp}` (classical only)"
             else:
                 verdict = "assumed (a cited theorem, stated as a proposition)"
         elif not extra:
@@ -267,9 +300,10 @@ def build() -> str:
     A(f"All {clean} theorem declarations with a clean closure have axiom closures")
     A(f"contained in the three classical axioms; the {sealed} theorem nodes in state")
     A(f"`SEALED` or `PROVED` are exactly these.  The {frozen_only} external definitions in")
-    A("state `FROZEN` are not proved here and supply no closure of their own; the")
-    A(f"{len(DISCHARGED)} in state `SEALED` are proved by the companion theorem named")
-    A("above. A clean closure for a `definition` node's own export reports only")
+    A("state `FROZEN` supply no closure of their own; the certified statements that")
+    A(f"use them carry them as hypotheses, and {len(proved_inputs)} of them are proved by the")
+    A(f"companion theorem named above.  The {len(DISCHARGED)} in state `SEALED` are proved by")
+    A("the companion theorem named above. A clean closure for a `definition` node's own export reports only")
     A("that stating the proposition needed no axiom, not that the proposition is")
     A("true; only the companion closure does that.")
     A("")
@@ -302,10 +336,10 @@ def build() -> str:
     A("")
     A("## What is not claimed")
     A("")
-    A("- The cited theorems in `Parking/External/` (the rows marked *assumed*")
-    A("  above) are not proved here; each statement that uses one carries it as an")
-    A(f"  explicit hypothesis. Two of the {len(externals)} are proved in this repository")
-    A("  or the shared library, and are marked *proved* instead.")
+    A("- The cited theorems in `Parking/External/` marked *assumed* above are not")
+    A("  proved here; each statement that uses one carries it as an explicit")
+    A(f"  hypothesis. {n_proved_externals} of the {len(externals)} are proved in this repository or the")
+    A("  shared library and are marked with the theorem that proves them.")
     A("- The proof ideas and the related work of the paper's introduction are")
     A("  outside the formalization.")
     A("")

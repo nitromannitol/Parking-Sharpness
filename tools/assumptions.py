@@ -37,16 +37,28 @@ def companions(nodes):
                                      "file": "Parking/External/MultivariateBerryEsseenProved.lean",
                                      "unconditional": True},
         "OrientedStoppingStability": {
-            "id": "Parking.External.orientedStoppingStability_of_continuumStoppingStability",
-            "file": "Parking/External/OrientedStoppingStabilityOfDSP.lean",
-            "conditional_theorem": True},
+            "id": "Parking.External.orientedStoppingStability_holds",
+            "file": "Parking/External/OrientedStoppingStabilityUnconditional.lean",
+            "unconditional": True},
+        "SandpileGrowth": {
+            "id": "Parking.External.sandpileGrowth_holds",
+            "file": "Parking/External/SandpileGrowthUnconditional.lean", "unconditional": True},
         "SpatialFixedTimeTightness": {
             "id": "Parking.External.spatialFixedTimeTightness",
             "file": "Parking/External/SpatialFixedTimeTightnessProved.lean", "unconditional": True},
+        "SpatialOdometerScaling": {
+            "id": "Parking.External.spatialOdometerScaling_holds",
+            "file": "Parking/External/SpatialOdometerScalingUnconditional.lean",
+            "unconditional": True},
+        "SpatialStoppingStability": {
+            "id": "Parking.External.spatialStoppingStability_holds",
+            "file": "Parking/External/SpatialStoppingStabilityUnconditional.lean",
+            "unconditional": True},
     }
+    # A proof with no hypothesis, listed above, takes precedence over a conditional companion.
     for n in nodes:
         if n.get("state") in ("SEALED", "PROVED") and n["file"].endswith("Proved.lean"):
-            out[pathlib.Path(n["file"]).name[: -len("Proved.lean")]] = n
+            out.setdefault(pathlib.Path(n["file"]).name[: -len("Proved.lean")], n)
     return out
 
 
@@ -128,7 +140,9 @@ def render():
                  if len(withproof) > 1 else
                  "Of these, **one is also proved in this repository** and so need not "
                  "be taken on trust; it is marked below with the theorem that proves it. ") +
-                f"The remaining **{len(assumed) - len(withproof)}** have no companion proof here.", ""]
+                (f"The remaining **{len(assumed) - len(withproof)}** have no companion proof here."
+                 if len(assumed) - len(withproof) != 1 else
+                 "The remaining **1** has no companion proof here."), ""]
         ncond = sum(1 for n in withproof if conditional(comp[pathlib.Path(n["file"]).stem]))
         if ncond:
             out[-2] += ((f" Of the {len(withproof)} proofs, **{ncond}** hold only under hypotheses "

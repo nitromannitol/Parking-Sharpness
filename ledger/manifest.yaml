@@ -59,6 +59,50 @@ presentations:
     source_node: thm-oriented-walk
     remaining_inputs:
       - Sandpile.External.ContinuumStoppingStability
+  - export: Parking.subcritical_tail_proved
+    file: Parking/Unconditional/SubcriticalTail.lean
+    source_node: thm-subcritical-tail
+    remaining_inputs: []
+    comparator: ParkingAudit/SubcriticalTailUnconditional/comparator.json
+  - export: Parking.master_proved
+    file: Parking/Unconditional/Master.lean
+    source_node: thm-master
+    remaining_inputs: []
+    comparator: ParkingAudit/MasterUnconditional/comparator.json
+  - export: Parking.growth_proved
+    file: Parking/Unconditional/Growth.lean
+    source_node: cor-growth
+    remaining_inputs: []
+    comparator: ParkingAudit/GrowthUnconditional/comparator.json
+  - export: Parking.trichotomy_proved
+    file: Parking/Unconditional/Trichotomy.lean
+    source_node: thm-trichotomy
+    remaining_inputs: []
+    comparator: ParkingAudit/TrichotomyUnconditional/comparator.json
+  - export: Parking.nearest_proved
+    file: Parking/Unconditional/Nearest.lean
+    source_node: thm-nearest
+    remaining_inputs: []
+    comparator: ParkingAudit/NearestUnconditional/comparator.json
+  - export: Parking.nearest_counterexample_proved
+    file: Parking/Unconditional/NearestCounterexample.lean
+    source_node: thm-nearest-counterexample
+    remaining_inputs: []
+    comparator: ParkingAudit/NearestCounterexampleUnconditional/comparator.json
+  - export: Parking.near_proved
+    file: Parking/Unconditional/Near.lean
+    source_node: thm-near
+    remaining_inputs: []
+    comparator: ParkingAudit/NearUnconditional/comparator.json
+  - export: Parking.oriented_scaling_proved
+    file: Parking/Unconditional/OrientedScaling.lean
+    source_node: prop-oriented-scaling
+    remaining_inputs: []
+  - export: Parking.oriented_walk_proved
+    file: Parking/Unconditional/OrientedWalk.lean
+    source_node: thm-oriented-walk
+    remaining_inputs: []
+    comparator: ParkingAudit/OrientedWalkUnconditional/comparator.json
 nodes:
   - id: ext-bernstein
     version: 2
@@ -785,3 +829,132 @@ nodes:
     provider: Parking.External.spatialOdometerScaling_of_dsp
     approved: "2026-11-14"
 
+  - id: ext-sandpile-growth-holds
+    version: 1
+    kind: theorem
+    source: parking.tex:929-943 (label thm:BP); proved with no hypothesis from the divisible sandpile formalization, whose low-dimensional mean odometer limit Sandpile.mean_growth_le_three_proved uses no optimal-stopping input and has its continuum stopping stability input proved
+    file: Parking/External/SandpileGrowthUnconditional.lean
+    export: Parking.External.sandpileGrowth_holds
+    state: SEALED
+    frozen_sha256: f91242c93cbd81f8d6103b2de2194510484a66f85177de6adc7ad1a41b5c33d5
+    provider: Parking.External.sandpileGrowth_holds
+
+  - id: ext-oriented-stopping-stability-holds
+    version: 1
+    kind: theorem
+    source: parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling); proved with no hypothesis from the one-dimensional case of Sandpile.External.continuumStoppingStability_holds
+    file: Parking/External/OrientedStoppingStabilityUnconditional.lean
+    export: Parking.External.orientedStoppingStability_holds
+    state: SEALED
+    frozen_sha256: 829eadb6c4c14c48b4356e74319d46b7a667977f2d5b802cc4cf694f415e4598
+    provider: Parking.External.orientedStoppingStability_holds
+
+  - id: ext-spatial-odometer-scaling-holds
+    version: 1
+    kind: theorem
+    source: parking.tex:1756-1767 (prop:spatial-scaling, spatial odometer scaling limit); proved with no hypothesis from Sandpile.External.continuumStoppingStability_holds
+    file: Parking/External/SpatialOdometerScalingUnconditional.lean
+    export: Parking.External.spatialOdometerScaling_holds
+    state: SEALED
+    frozen_sha256: 9440ef34c531d6cb9b9e596bfb51e7b5f1b088e0ca01b4a3a75ff966f9a78bdc
+    provider: Parking.External.spatialOdometerScaling_holds
+
+  - id: ext-spatial-stopping-stability-holds
+    version: 1
+    kind: theorem
+    source: parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling); proved with no hypothesis from Sandpile.External.continuumStoppingStability_holds, through the law of the simple random walk on path space
+    file: Parking/External/SpatialStoppingStabilityUnconditional.lean
+    export: Parking.External.spatialStoppingStability_holds
+    state: SEALED
+    frozen_sha256: cb80377518d828f72938070967ff9375fd94a3d1d1707ea3b9c885c7ea4651e2
+    provider: Parking.External.spatialStoppingStability_holds
+
+  - id: thm-subcritical-tail-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:123-135 (label thm:subcritical-tail); the DonskerVaradhanRange hypothesis is dropped, the two-sided range bounds of Parking.subcritical_tail_of_range_count taking the place of the Donsker-Varadhan limit
+    file: Parking/Unconditional/SubcriticalTail.lean
+    export: Parking.subcritical_tail_proved
+    state: SEALED
+    frozen_sha256: cfa79b532995302991a7cfd0ec1c0879015a38bd959f21d671df76a8f016b99e
+    provider: Parking.subcritical_tail_proved
+
+  - id: thm-master-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:159-168 (label thm:master); the SandpileGrowth and Bernstein hypotheses are dropped, discharged by Parking.External.sandpileGrowth_holds and Parking.External.bernstein
+    file: Parking/Unconditional/Master.lean
+    export: Parking.master_proved
+    state: SEALED
+    frozen_sha256: 48800420726e203762ba18fcb31a234a8bffeb81c707a3e1a4782f0c65ac7610
+    provider: Parking.master_proved
+
+  - id: cor-growth-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:174-188 (label cor:growth); the SandpileGrowth and Bernstein hypotheses are dropped, discharged by Parking.External.sandpileGrowth_holds and Parking.External.bernstein
+    file: Parking/Unconditional/Growth.lean
+    export: Parking.growth_proved
+    state: SEALED
+    frozen_sha256: d20229b11c3731776023eba35be3674e6f0bbbcf1023d13080f46225bf745ed2
+    provider: Parking.growth_proved
+
+  - id: thm-trichotomy-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:207-238 (label thm:trichotomy); the SandpileGrowth, Bernstein and Stopping hypotheses are dropped, discharged by Parking.External.sandpileGrowth_holds, Parking.External.bernstein and Parking.External.stopping
+    file: Parking/Unconditional/Trichotomy.lean
+    export: Parking.trichotomy_proved
+    state: SEALED
+    frozen_sha256: 637313525a86ef1fc4580331317f672f3779034ac157a138a03db4e4a81876c8
+    provider: Parking.trichotomy_proved
+
+  - id: thm-nearest-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:266-275 (label thm:nearest); the SandpileGrowth, Bernstein, SpatialOdometerScaling, HeatInteriorRegularity, HeatCompactness and MultivariateBerryEsseen hypotheses are dropped, discharged by Parking.External.sandpileGrowth_holds, Parking.External.bernstein, Parking.External.spatialOdometerScaling_holds, Parking.External.heatInteriorRegularity, Parking.External.heatCompactness and Parking.External.multivariateBerryEsseen
+    file: Parking/Unconditional/Nearest.lean
+    export: Parking.nearest_proved
+    state: SEALED
+    frozen_sha256: 759a5ad2f0558679546d5f05154ec976050e43535a413a779042c33cee85e161
+    provider: Parking.nearest_proved
+
+  - id: thm-nearest-counterexample-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:289-302 (label thm:nearest-counterexample); the Bernstein hypothesis is dropped, discharged by Parking.External.bernstein
+    file: Parking/Unconditional/NearestCounterexample.lean
+    export: Parking.nearest_counterexample_proved
+    state: SEALED
+    frozen_sha256: 871ec895957a41deb38fd8f49eb4361ced6797f5b9bafd36cd93176b11887adf
+    provider: Parking.nearest_counterexample_proved
+
+  - id: thm-near-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:314-335 (label thm:near); the SandpileGrowth, Stopping and Bernstein hypotheses are dropped, discharged by Parking.External.sandpileGrowth_holds, Parking.External.stopping and Parking.External.bernstein
+    file: Parking/Unconditional/Near.lean
+    export: Parking.near_proved
+    state: SEALED
+    frozen_sha256: 0acbd22f6dd35620f639b03dcd47a48018433a6a9b4653303abcf02d7c6e46f1
+    provider: Parking.near_proved
+
+  - id: prop-oriented-scaling-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:3166-3174 (label prop:oriented-scaling); the OrientedStoppingStability hypothesis is dropped, discharged by Parking.External.orientedStoppingStability_holds
+    file: Parking/Unconditional/OrientedScaling.lean
+    export: Parking.oriented_scaling_proved
+    state: SEALED
+    frozen_sha256: f509404b7b12af46927e3ad0a3b959c25c6d6a6a0d690a27bf82ddbb4a8f95e8
+    provider: Parking.oriented_scaling_proved
+
+  - id: thm-oriented-walk-proved
+    version: 1
+    kind: theorem
+    source: parking.tex:363-380 (label thm:oriented-walk); the Bernstein and OrientedStoppingStability hypotheses are dropped, discharged by Parking.External.bernstein and Parking.External.orientedStoppingStability_holds
+    file: Parking/Unconditional/OrientedWalk.lean
+    export: Parking.oriented_walk_proved
+    state: SEALED
+    frozen_sha256: b6e8296b96316311c92dc7c624b378e52be183bcfd01c5081791aafa2879b77e
+    provider: Parking.oriented_walk_proved
