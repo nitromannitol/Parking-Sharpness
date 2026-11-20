@@ -75,6 +75,61 @@ theorem rangeExp_le_sum (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a) (t : ℕ) :
         refine Finset.sum_congr rfl fun n _ => ?_
         rw [integral_const_mul, integral_indicator_const _ (hm n), smul_eq_mul, mul_one]
 
+/-- `dvConst` increases with `a`. -/
+theorem dvConst_mono {a a' c : ℝ} (ha : 0 ≤ a) (haa' : a ≤ a') (hc : 0 ≤ c) :
+    dvConst d a c ≤ dvConst d a' c := by
+  unfold dvConst
+  refine mul_le_mul_of_nonneg_right (Real.rpow_le_rpow (by positivity) ?_ (by positivity))
+    (by positivity)
+  exact mul_le_mul_of_nonneg_left haa' (by positivity)
+
+/-- **The main inequality**: `a n + t Λ (1 - err) ≥ s (dvConst (a/γ) ((1-e₀) c) - (a/γ)(η + 1/s))`
+when `Λ ≥ c N^{-2/d}`, `N ≤ γ n + η s + 1` and `t s^{-2/d} = s`. -/
+theorem dv_main_lower (hd : 1 ≤ d) {a c e₀ γ η s t n N Λ err : ℝ} (ha : 0 ≤ a) (hc : 0 ≤ c)
+    (he₀ : e₀ ≤ 1) (hγ : 1 ≤ γ) (hη : 0 ≤ η) (hs : 0 < s) (ht : 0 ≤ t)
+    (hts : t * s ^ (-(2 : ℝ) / d) = s) (hn : 0 ≤ n) (hN : 0 < N) (hNle : N ≤ γ * n + η * s + 1)
+    (hΛ : c * N ^ (-(2 : ℝ) / d) ≤ Λ) (herr : err ≤ e₀) :
+    s * (dvConst d (a / γ) ((1 - e₀) * c) - a / γ * (η + 1 / s)) ≤ a * n + t * Λ * (1 - err) := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have hγ0 : 0 < γ := by linarith
+  set w := (γ * n + η * s + 1) / s with hw
+  have hw0 : 0 < w := by positivity
+  have hsw : s * w = γ * n + η * s + 1 := by rw [hw]; field_simp
+  have hexp : -(2 : ℝ) / d ≤ 0 := by
+    have : (0 : ℝ) ≤ 2 / d := by positivity
+    rw [neg_div]; linarith
+  have hN1 : (s * w) ^ (-(2 : ℝ) / d) ≤ N ^ (-(2 : ℝ) / d) :=
+    Real.rpow_le_rpow_of_nonpos hN (by rw [hsw]; exact hNle) hexp
+  have hsw2 : (s * w) ^ (-(2 : ℝ) / d) = s ^ (-(2 : ℝ) / d) * w ^ (-(2 : ℝ) / d) :=
+    Real.mul_rpow hs.le hw0.le
+  have hΛ0 : 0 ≤ Λ := le_trans (mul_nonneg hc (Real.rpow_nonneg hN.le _)) hΛ
+  have h1 : t * Λ * (1 - e₀) ≤ t * Λ * (1 - err) :=
+    mul_le_mul_of_nonneg_left (by linarith) (mul_nonneg ht hΛ0)
+  have h2 : t * (c * (s ^ (-(2 : ℝ) / d) * w ^ (-(2 : ℝ) / d))) * (1 - e₀) ≤ t * Λ * (1 - e₀) := by
+    refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ ht) (by linarith)
+    rw [← hsw2]
+    exact le_trans (mul_le_mul_of_nonneg_left hN1 hc) hΛ
+  have h3 : t * (c * (s ^ (-(2 : ℝ) / d) * w ^ (-(2 : ℝ) / d))) * (1 - e₀)
+      = s * ((1 - e₀) * c * w ^ (-(2 : ℝ) / d)) := by
+    calc t * (c * (s ^ (-(2 : ℝ) / d) * w ^ (-(2 : ℝ) / d))) * (1 - e₀)
+        = (t * s ^ (-(2 : ℝ) / d)) * ((1 - e₀) * c * w ^ (-(2 : ℝ) / d)) := by ring
+      _ = s * ((1 - e₀) * c * w ^ (-(2 : ℝ) / d)) := by rw [hts]
+  have h4 : a * n = s * (a / γ * w - a / γ * (η + 1 / s)) := by
+    have : a / γ * w - a / γ * (η + 1 / s) = a / γ * (w - η - 1 / s) := by ring
+    rw [this]
+    have hwn : w - η - 1 / s = γ * n / s := by rw [hw]; field_simp; ring
+    rw [hwn]
+    field_simp
+  have h5 := dvConst_le hd (a := a / γ) (c := (1 - e₀) * c) (by positivity)
+    (mul_nonneg (by linarith) hc) hw0
+  have h6 : s * (dvConst d (a / γ) ((1 - e₀) * c) - a / γ * (η + 1 / s))
+      ≤ s * (a / γ * w - a / γ * (η + 1 / s)) + s * ((1 - e₀) * c * w ^ (-(2 : ℝ) / d)) := by
+    rw [← mul_add]
+    refine mul_le_mul_of_nonneg_left ?_ hs.le
+    have : (1 - e₀) * c * w ^ (-(2 : ℝ) / d) = ((1 - e₀) * c) * w ^ (-(2 : ℝ) / d) := rfl
+    linarith
+  linarith
+
 end Parking
 
 end
