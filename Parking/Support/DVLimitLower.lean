@@ -176,6 +176,82 @@ theorem exists_dvConst_params (d : ℕ) {a c : ℝ} (ha : 0 < a) (hc : 0 ≤ c) 
     rw [abs_lt]
     constructor <;> linarith
 
+/-! ### The two terms of the bound -/
+
+/-- **The first term**: the event of a long time in porous boxes. -/
+theorem first_term_le {n s t r ℓ q θ εb C₀ K : ℝ} (hn : n ≤ C₀ * s) (hs : 0 < s)
+    (hℓ : 0 < ℓ) (hℓr : ℓ ≤ 2 * εb ^ 2 * r ^ 2) (hεb : 0 < εb) (ht : t = r ^ 2 * s)
+    (hq : 0 ≤ q) (hθ : 0 ≤ θ) (hqθ : C₀ + K + 2 ≤ q * θ / (4 * εb ^ 2)) (hs3 : 3 * q / 2 ≤ s) :
+    2 * Real.exp (n - q * ((θ * t - 3 * ℓ) / (2 * ℓ))) ≤ 2 * Real.exp (-((K + 1) * s)) := by
+  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by norm_num)
+  have h1 : (θ * t - 3 * ℓ) / (2 * ℓ) = θ * t / (2 * ℓ) - 3 / 2 := by field_simp
+  have h2 : θ * s / (4 * εb ^ 2) ≤ θ * t / (2 * ℓ) := by
+    rw [ht, div_le_div_iff₀ (by positivity) (by positivity)]
+    have : θ * s * (2 * ℓ) ≤ θ * s * (2 * (2 * εb ^ 2 * r ^ 2)) :=
+      mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+    nlinarith
+  have h3 : (C₀ + K + 2) * s ≤ q * θ / (4 * εb ^ 2) * s := mul_le_mul_of_nonneg_right hqθ hs.le
+  have h4 : q * θ / (4 * εb ^ 2) * s = q * (θ * s / (4 * εb ^ 2)) := by ring
+  have h5 : q * (θ * s / (4 * εb ^ 2)) ≤ q * (θ * t / (2 * ℓ)) := mul_le_mul_of_nonneg_left h2 hq
+  rw [h1]
+  nlinarith
+
+/-- The second term in exponential form. -/
+theorem second_term_exp_le {a n t Λ err κ θ Cnt : ℝ} (tn : ℕ) (htn : (tn : ℝ) = t)
+    (hx1 : Λ * (1 - err) ≤ 1) (hCnt : 1 ≤ Cnt) (ht : 0 ≤ t) :
+    Real.exp (-(a * n)) * (Cnt * (Real.exp (κ * (θ * t)) * ((1 - Λ * (1 - err)) ^ tn
+        * Real.sqrt (Real.exp κ * (2 * t + 1) ^ d))))
+      ≤ Real.exp (-(a * n) - t * (Λ * (1 - err)) + κ * (θ * t) + Real.log Cnt + κ / 2
+          + d * Real.log (2 * t + 1) / 2) := by
+  set x := Λ * (1 - err)
+  have h1 : (1 - x) ^ tn ≤ Real.exp (-(t * x)) := by
+    have h := Real.add_one_le_exp (-x)
+    calc (1 - x) ^ tn ≤ Real.exp (-x) ^ tn := pow_le_pow_left₀ (by linarith) (by linarith) _
+      _ = Real.exp (-(t * x)) := by rw [← Real.exp_nat_mul, htn]; ring_nf
+  have h2 : Real.sqrt (Real.exp κ * (2 * t + 1) ^ d)
+      = Real.exp (κ / 2 + d * Real.log (2 * t + 1) / 2) := by
+    rw [Real.sqrt_eq_rpow, ← Real.exp_log (by positivity : (0 : ℝ) < Real.exp κ * (2 * t + 1) ^ d),
+      ← Real.exp_mul, Real.log_mul (Real.exp_pos _).ne' (by positivity), Real.log_exp,
+      Real.log_pow]
+    ring_nf
+  have h3 : Cnt = Real.exp (Real.log Cnt) := (Real.exp_log (by linarith)).symm
+  calc Real.exp (-(a * n)) * (Cnt * (Real.exp (κ * (θ * t)) * ((1 - x) ^ tn
+        * Real.sqrt (Real.exp κ * (2 * t + 1) ^ d))))
+      ≤ Real.exp (-(a * n)) * (Cnt * (Real.exp (κ * (θ * t)) * (Real.exp (-(t * x))
+        * Real.sqrt (Real.exp κ * (2 * t + 1) ^ d)))) := by
+        gcongr
+    _ = _ := by
+        rw [h2]
+        conv_lhs => rw [h3]
+        simp only [← Real.exp_add]
+        congr 1
+        ring
+
+/-! ### The scales -/
+
+/-- With `r = t^{1/(d+2)}` and `s = t^{d/(d+2)}`: `r^d = s`, `t = r^2 s`, `s^{-2/d} r^2 = 1`. -/
+theorem scale_facts (hd : 1 ≤ d) {t : ℝ} (ht : 0 < t) :
+    (t ^ ((1 : ℝ) / (d + 2))) ^ d = t ^ ((d : ℝ) / (d + 2)) ∧
+      t = (t ^ ((1 : ℝ) / (d + 2))) ^ 2 * t ^ ((d : ℝ) / (d + 2)) ∧
+      (t ^ ((d : ℝ) / (d + 2))) ^ (-(2 : ℝ) / d) * (t ^ ((1 : ℝ) / (d + 2))) ^ 2 = 1 := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have h1 : (t ^ ((1 : ℝ) / (d + 2))) ^ d = t ^ ((d : ℝ) / (d + 2)) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul ht.le]
+    congr 1
+    field_simp
+  have h2 : (t ^ ((1 : ℝ) / (d + 2))) ^ 2 = t ^ ((2 : ℝ) / (d + 2)) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul ht.le]
+    congr 1
+    push_cast
+    field_simp
+  refine ⟨h1, ?_, ?_⟩
+  · rw [h2, ← Real.rpow_add ht]
+    have : (2 : ℝ) / (d + 2) + d / (d + 2) = 1 := by field_simp; ring
+    rw [this, Real.rpow_one]
+  · rw [h2, ← Real.rpow_mul ht.le, ← Real.rpow_add ht]
+    have : (d : ℝ) / (d + 2) * (-(2 : ℝ) / d) + 2 / (d + 2) = 0 := by field_simp; ring
+    rw [this, Real.rpow_zero]
+
 end Parking
 
 end
