@@ -62,6 +62,16 @@ def companions(nodes):
     return out
 
 
+# Inputs of the divisible sandpile formalization that appear among the remaining inputs of a
+# presentation, with the theorem of the pinned formalization that proves each.
+UPSTREAM_PROOFS = {
+    "Sandpile.External.ContinuumStoppingStability":
+        "Sandpile.External.continuumStoppingStability_holds",
+    "Sandpile.External.ContinuumOptimalStopping":
+        "Sandpile.External.continuumOptimalStopping_holds",
+}
+
+
 def bridge_proof(n):
     """A theorem outside `External/` and `Frozen/` whose type is exactly the assumed proposition.
 
@@ -160,7 +170,9 @@ def render():
                 "| --- | --- | --- |"]
         for p in presentations:
             inputs = p.get("remaining_inputs", [])
-            remaining = ", ".join(f"`{name}`" for name in inputs) if inputs else "None"
+            remaining = ", ".join(
+                f"`{name}` (proved upstream by `{UPSTREAM_PROOFS[name]}`)"
+                if name in UPSTREAM_PROOFS else f"`{name}`" for name in inputs) if inputs else "None"
             out.append(f"| `{p['export']}` | `{p['source_node']}` | {remaining} |")
         out.append("")
     for n in sorted(assumed, key=lambda x: x["id"]):

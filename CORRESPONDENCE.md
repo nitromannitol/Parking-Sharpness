@@ -27,7 +27,7 @@ the "External inputs" table of [`CERTIFICATE.md`](CERTIFICATE.md) and in Part C 
 
 | node | cited result | state |
 |---|---|---|
-| `ext-sandpile-growth` | Bou-Rabee–Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94) | proved here with no hypothesis (`Parking.External.sandpileGrowth_holds`, `ext-sandpile-growth-holds`); also proved under the divisible sandpile's continuum inputs by `ext-sandpile-growth-proved` |
+| `ext-sandpile-growth` | Bou-Rabee–Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94) | proved here with no hypothesis (`Parking.External.sandpileGrowth_holds`, `ext-sandpile-growth-holds`); also proved by `ext-sandpile-growth-proved` from three hypotheses, each proved by the pinned divisible sandpile formalization |
 | `ext-stopping` | Bou-Rabee–Peres–Sava-Huss, Theorem 3.2 | proved here (`Parking.External.stopping`) |
 | `ext-bernstein` | Pinelis, Theorems 4.1 and 3.3 | proved here (`Parking.External.bernstein`) |
 | `ext-u-concentration` | Bou-Rabee–Panagiotis, Remark 3.4 | proved here (`Parking.External.uConcentration`) |
@@ -350,8 +350,10 @@ states, up to the notation below.
   `Sandpile.Frozen.mean_growth_le_three`, and so carries that statement's hypotheses:
   `Sandpile.External.LocalCLT`, `Sandpile.External.ContinuumStoppingStability` and the
   family `∀ ΩB, Sandpile.External.ContinuumOptimalStopping ΩB` (Peskir and Shiryaev,
-  Theorem 2.2).  The divisible sandpile formalization proves the continuum stopping
-  stability (`Sandpile.External.continuumStoppingStability_holds`), and its successor
+  Theorem 2.2).  The pinned divisible sandpile formalization proves all three:
+  `Sandpile.External.localCLT`, `Sandpile.External.continuumStoppingStability_holds`
+  and `Sandpile.External.continuumOptimalStopping_holds`, so every hypothesis of
+  `Parking.External.sandpileGrowth` is proved upstream.  Its successor
   `Sandpile.mean_growth_le_three_proved` is Theorem 1.3(i)(a) with no hypothesis; its
   proof uses no optimal-stopping input.  The hypothesis-free
   `Parking.External.sandpileGrowth_holds` assembles the growth statement from that

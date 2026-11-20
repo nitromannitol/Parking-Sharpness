@@ -23,10 +23,10 @@ law hypotheses are unchanged.
 | `Parking.subcritical_tail_of_range_count` | `thm-subcritical-tail` | None |
 | `ParkingAudit.subcritical_tail_unconditional` | `thm-subcritical-tail` | None |
 | `Parking.nearest_of_proved_berry` | `thm-nearest` | `Parking.External.SandpileGrowth`, `Parking.External.SpatialOdometerScaling` |
-| `Parking.nearest_of_continuum_stopping` | `thm-nearest` | `Sandpile.External.ContinuumStoppingStability`, `Sandpile.External.ContinuumOptimalStopping` |
-| `Parking.oriented_scaling_of_continuum_stopping` | `prop-oriented-scaling` | `Sandpile.External.ContinuumStoppingStability` |
-| `Parking.oriented_walk_of_continuum_stopping` | `thm-oriented-walk` | `Parking.External.Bernstein`, `Sandpile.External.ContinuumStoppingStability` |
-| `Parking.oriented_walk_of_bernstein_and_continuum_stopping` | `thm-oriented-walk` | `Sandpile.External.ContinuumStoppingStability` |
+| `Parking.nearest_of_continuum_stopping` | `thm-nearest` | `Sandpile.External.ContinuumStoppingStability` (proved upstream by `Sandpile.External.continuumStoppingStability_holds`), `Sandpile.External.ContinuumOptimalStopping` (proved upstream by `Sandpile.External.continuumOptimalStopping_holds`) |
+| `Parking.oriented_scaling_of_continuum_stopping` | `prop-oriented-scaling` | `Sandpile.External.ContinuumStoppingStability` (proved upstream by `Sandpile.External.continuumStoppingStability_holds`) |
+| `Parking.oriented_walk_of_continuum_stopping` | `thm-oriented-walk` | `Parking.External.Bernstein`, `Sandpile.External.ContinuumStoppingStability` (proved upstream by `Sandpile.External.continuumStoppingStability_holds`) |
+| `Parking.oriented_walk_of_bernstein_and_continuum_stopping` | `thm-oriented-walk` | `Sandpile.External.ContinuumStoppingStability` (proved upstream by `Sandpile.External.continuumStoppingStability_holds`) |
 | `Parking.subcritical_tail_proved` | `thm-subcritical-tail` | None |
 | `Parking.master_proved` | `thm-master` | None |
 | `Parking.growth_proved` | `cor-growth` | None |

@@ -243,11 +243,14 @@ via `Parking.External.orientedStoppingStability_of_continuumStoppingStability`.
 The registered companion `Parking.External.sandpileGrowth`, in
 `Parking/External/SandpileGrowthProved.lean`, proves the growth of the mean divisible sandpile
 odometer from the certified statements of that paper's formalization under three hypotheses:
-`Sandpile.External.LocalCLT` and `Sandpile.External.ContinuumStoppingStability`, which the
-pinned formalization proves, and the family `Sandpile.External.ContinuumOptimalStopping`. The
-hypothesis-free `Parking.External.sandpileGrowth_holds` instead uses that formalization's
-hypothesis-free Theorem 1.3(i)(a), `Sandpile.mean_growth_le_three_proved`, whose proof uses no
-optimal-stopping input; see [`CORRESPONDENCE.md`](CORRESPONDENCE.md). Nine further results the paper quotes are
+`Sandpile.External.LocalCLT`, `Sandpile.External.ContinuumStoppingStability` and the family
+`Sandpile.External.ContinuumOptimalStopping`. The pinned formalization proves all three
+(`Sandpile.External.localCLT`, `Sandpile.External.continuumStoppingStability_holds` and
+`Sandpile.External.continuumOptimalStopping_holds`), so every hypothesis of
+`Parking.External.sandpileGrowth` is proved upstream. The hypothesis-free
+`Parking.External.sandpileGrowth_holds` uses that formalization's hypothesis-free Theorem
+1.3(i)(a), `Sandpile.mean_growth_le_three_proved`, whose proof uses no optimal-stopping input;
+see [`CORRESPONDENCE.md`](CORRESPONDENCE.md). Nine further results the paper quotes are
 proved, mostly from the shared library, and so are not assumed: the optimal stopping
 representation of the divisible odometer (`Stopping`), the Green gradient bound
 (`GreenGradient`), the variance-scale hypothesis (`VarianceScale`), the binomial and
@@ -332,7 +335,7 @@ parameter is bound before it.
 - **Pinned toolchain and dependencies.** Lean `v4.35.0-rc2`; mathlib at revision
   `065356127b1dc0016f66b7283ce0ce2c4055aa55`, Lattice-Probability at commit
   `89de1230d02e1a737a9c7ecd776d34070be014ee` and Divisible-Sandpile-Percolation at commit
-  `e14e9d87adb65456761d1939fb7cedc49e57f5c5`, recorded in [`lean-toolchain`](lean-toolchain),
+  `8470df06ae1c7847decf57f86b741bc7a4fc5d2e`, recorded in [`lean-toolchain`](lean-toolchain),
   [`lakefile.lean`](lakefile.lean) and [`lake-manifest.json`](lake-manifest.json) (see
   [Building](#building)).
 - **The paper is part of the repository.** The statement map refers to the version in
@@ -369,7 +372,7 @@ The dependencies are public repositories, pinned to exact commits in
 - Lattice-Probability: `https://github.com/nitromannitol/Lattice-Probability` at
   `89de1230d02e1a737a9c7ecd776d34070be014ee`.
 - Divisible-Sandpile-Percolation: `https://github.com/nitromannitol/Divisible-Sandpile-Percolation`
-  at `e14e9d87adb65456761d1939fb7cedc49e57f5c5`.
+  at `8470df06ae1c7847decf57f86b741bc7a4fc5d2e`.
 
 To reproduce the axiom reports and build the comparator libraries:
 
@@ -530,7 +533,10 @@ Theorem 1.1 is proved without the Donsker–Varadhan limit `DonskerVaradhanRange
 range bounds of `Parking.subcritical_tail_of_range_count` replace it, a departure from the
 cited proof that [`CORRESPONDENCE.md`](CORRESPONDENCE.md) records. No hypothesis-free result
 uses an optimal-stopping input of the divisible sandpile formalization: the mean-growth result
-that the growth input rests on, `Sandpile.mean_growth_le_three_proved`, needs none.
+that the growth input rests on, `Sandpile.mean_growth_le_three_proved`, needs none. The
+divisible sandpile inputs carried by the registered companions are all proved upstream: the
+local central limit theorem, the continuum stopping stability and the continuum optimal stopping
+(`Sandpile.External.continuumOptimalStopping_holds`).
 
 Of the eleven cited inputs recorded in [`ASSUMPTIONS.md`](ASSUMPTIONS.md), ten are proved with
 no hypothesis; among them `SpatialStoppingStability`, which no registered result uses, follows

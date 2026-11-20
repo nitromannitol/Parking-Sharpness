@@ -56,10 +56,11 @@ related_formalizations:
     note: >-
       The formalization (Sandpile) of the divisible sandpile paper that this
       paper quotes its growth estimate from.  Pinned git dependency at commit
-      e14e9d87adb65456761d1939fb7cedc49e57f5c5; the growth of the mean
-      divisible sandpile odometer is proved from it with no hypothesis, and its
+      8470df06ae1c7847decf57f86b741bc7a4fc5d2e; the growth of the mean
+      divisible sandpile odometer is proved from it with no hypothesis, its
       continuum stopping stability supplies the oriented and spatial stopping
-      inputs and the spatial odometer scaling limit.
+      inputs and the spatial odometer scaling limit, and it proves every
+      divisible sandpile input that the registered companions carry.
 
 status:
   scope: >-

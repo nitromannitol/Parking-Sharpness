@@ -1,6 +1,6 @@
 # Comparator runs
 
-The official `leanprover/comparator` was run on all sixteen pairs in this directory, against the statements in this repository and the dependency revisions pinned in `lake-manifest.json` (Lattice-Probability `89de1230d02e1a737a9c7ecd776d34070be014ee`, Divisible-Sandpile-Percolation `e14e9d87adb65456761d1939fb7cedc49e57f5c5`), on a local machine (Linux 6.17), with the Lean kernel and the independent `nanoda` kernel both enabled (every committed `comparator.json` sets `"enable_nanoda": true`).
+The official `leanprover/comparator` was run on all sixteen pairs in this directory, against the statements in this repository and the dependency revisions pinned in `lake-manifest.json` (Lattice-Probability `89de1230d02e1a737a9c7ecd776d34070be014ee`, Divisible-Sandpile-Percolation `8470df06ae1c7847decf57f86b741bc7a4fc5d2e`), on a local machine (Linux 6.17), with the Lean kernel and the independent `nanoda` kernel both enabled (every committed `comparator.json` sets `"enable_nanoda": true`).
 
 | Tool | Revision |
 |---|---|
@@ -10,6 +10,12 @@ The official `leanprover/comparator` was run on all sixteen pairs in this direct
 | ammkrn/nanoda_lib | `6ae1f0cd962f081f6c423454c5da729d841236a7` |
 
 A pass means the comparator printed `nanoda kernel accepts the solution`, `Lean default kernel accepts the solution` and `Your solution is okay!`: the solution proves a theorem whose statement and full dependency closure match the challenge's, using only the permitted axioms.  The host kernel supports an older Landlock interface than the one `landrun` requests, so `landrun` ran in its best-effort mode and its filesystem restriction was not enforced in these runs; the statement, closure, axiom and kernel checks do not depend on it.  The times are wall-clock times, including the builds of the challenge and solution modules.
+
+The pairs `GrowthUnconditional`, `MasterUnconditional`, `NearUnconditional`,
+`NearestUnconditional` and `TrichotomyUnconditional` were run at this revision of
+Divisible-Sandpile-Percolation.  The solution modules of the other eleven pairs import no module
+that differs between this revision and `e14e9d87adb65456761d1939fb7cedc49e57f5c5`, at which they
+were run, so their compiled solutions and the comparator's inputs are the same at both.
 
 ## `Growth`
 
@@ -21,7 +27,7 @@ A pass means the comparator printed `nanoda kernel accepts the solution`, `Lean 
 
 | Check | Result |
 |---|---|
-| Lean and nanoda kernels | passed (433 s) |
+| Lean and nanoda kernels | passed (556 s) |
 
 ## `Master`
 
@@ -33,7 +39,7 @@ A pass means the comparator printed `nanoda kernel accepts the solution`, `Lean 
 
 | Check | Result |
 |---|---|
-| Lean and nanoda kernels | passed (445 s) |
+| Lean and nanoda kernels | passed (597 s) |
 
 ## `Near`
 
@@ -45,7 +51,7 @@ A pass means the comparator printed `nanoda kernel accepts the solution`, `Lean 
 
 | Check | Result |
 |---|---|
-| Lean and nanoda kernels | passed (559 s) |
+| Lean and nanoda kernels | passed (643 s) |
 
 ## `Nearest`
 
@@ -69,7 +75,7 @@ A pass means the comparator printed `nanoda kernel accepts the solution`, `Lean 
 
 | Check | Result |
 |---|---|
-| Lean and nanoda kernels | passed (649 s) |
+| Lean and nanoda kernels | passed (806 s) |
 
 ## `OrientedWalk`
 
@@ -105,7 +111,7 @@ A pass means the comparator printed `nanoda kernel accepts the solution`, `Lean 
 
 | Check | Result |
 |---|---|
-| Lean and nanoda kernels | passed (431 s) |
+| Lean and nanoda kernels | passed (607 s) |
 
 To reproduce one pair, from the repository root:
 

@@ -23,7 +23,7 @@ the paper and `PROOF.md` describes the proof and the Lean tree.
 | Lean toolchain | `leanprover/lean4:v4.35.0-rc2` |
 | Mathlib revision | `065356127b1dc0016f66b7283ce0ce2c4055aa55` |
 | Lattice-Probability revision | `89de1230d02e1a737a9c7ecd776d34070be014ee` |
-| Divisible-Sandpile-Percolation revision | `e14e9d87adb65456761d1939fb7cedc49e57f5c5` |
+| Divisible-Sandpile-Percolation revision | `8470df06ae1c7847decf57f86b741bc7a4fc5d2e` |
 | Paper (`paper/parking.tex`) SHA-256 | `4aa03aee7c30e24bffc9a4e8220f775b5c71706e694dcd9bcffc865c8135d3a0` |
 | Build | succeeded, 11818 jobs |
 | Build warnings in this repository's modules | 0 |
