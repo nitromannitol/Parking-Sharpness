@@ -450,7 +450,6 @@ theorem measurableSet_unreadSet_expFiltration (k : ℕ) (s : Finset (Site d × �
   exact @MeasurableSet.biInter _ _ (expFiltration d k) _ _ (Finset.countable_toSet s)
     fun q _ => measurableSet_U_le_expFiltration k q.1 q.2
 
-set_option maxHeartbeats 1000000 in
 /-- `lem:exposure`, second clause: conditionally on the exposure filtration,
 prescribing the destination of each of a family of unread instructions has the
 product of the transition probabilities as its conditional probability, on the
