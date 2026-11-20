@@ -361,10 +361,11 @@ theorem soft_err_le {n δ Λ κ sp s r C₀ η cU M σ e₀ : ℝ} (hn : n ≤ C
   linarith
 
 /-- The count of candidate sets in the exponent. -/
-theorem log_count_le {K₀ : ℕ} {t Kmax : ℝ} (hK : (K₀ : ℝ) ≤ Kmax) (ht : 0 ≤ t) :
-    Real.log (((K₀ + 1) * ((2 * t + 1) ^ d) ^ K₀ : ℝ))
+theorem log_count_le {K₀ t : ℕ} {Kmax : ℝ} (hK : (K₀ : ℝ) ≤ Kmax) :
+    Real.log ((((K₀ + 1) * ((2 * t + 1) ^ d) ^ K₀ : ℕ)) : ℝ)
       ≤ Kmax * (1 + d * Real.log (2 * t + 1)) := by
-  have h2t : (1 : ℝ) ≤ 2 * t + 1 := by linarith
+  push_cast
+  have h2t : (1 : ℝ) ≤ 2 * t + 1 := by have : (0 : ℝ) ≤ t := Nat.cast_nonneg t; linarith
   have hlog0 : 0 ≤ Real.log (2 * t + 1) := Real.log_nonneg h2t
   rw [Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow]
   have h1 : Real.log ((K₀ : ℝ) + 1) ≤ K₀ := by
@@ -374,6 +375,212 @@ theorem log_count_le {K₀ : ℕ} {t Kmax : ℝ} (hK : (K₀ : ℝ) ≤ Kmax) (h
   have h2 : (K₀ : ℝ) * (d * Real.log (2 * t + 1)) ≤ Kmax * (d * Real.log (2 * t + 1)) :=
     mul_le_mul_of_nonneg_right hK (by positivity)
   nlinarith
+
+/-! ### The bound for a fixed small range size -/
+
+theorem combine_two_terms {P T1 T2 E X Y : ℝ} (hP : P ≤ T1 + T2) (h1 : E * T1 ≤ 2 * X)
+    (h2 : E * T2 ≤ Y) (hXY : X ≤ Y) (hE : 0 ≤ E) : E * P ≤ 3 * Y := by
+  have := mul_le_mul_of_nonneg_left hP hE
+  nlinarith
+
+/-- **The bound for a range size below `C₀ s`.** -/
+theorem small_n_bound (hd : 1 ≤ d) {a c K ε : ℝ} (ha : 0 < a) (hc : 0 ≤ c) (hε : 0 < ε)
+    {m : ℕ} [NeZero m] {δ p₀ e₀ cl η σ M θ εb C₀ Kmax : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ ≤ 1 / 2) (hp₀ : 0 ≤ p₀)
+    (hhit : ∀ (z y : Site d), y ∈ boxCell m z → ∀ A : Finset (Site d), A ⊆ boxCell m z →
+      δ * (m : ℝ) ^ d ≤ A.card →
+        p₀ ≤ (siteWalkLaw d y).real {Y | ∃ j, 1 ≤ j ∧ j ≤ 2 * m ^ 2 ∧ Y j ∈ A})
+    (he₀1 : e₀ ≤ 1 / 2) (hcl : 0 ≤ cl) (hη : 0 < η) (hσ : 0 < σ) (hM : 0 < M) (hθ : 0 < θ)
+    (hεb : 0 < εb) (hC₀ : 0 < C₀)
+    (hK : K - ε / 8 ≤ dvConst d (a * (1 - δ) / (1 + δ)) ((1 - e₀) * cl))
+    (haη : a * η ≤ ε / 16)
+    (hσerr : 2 * σ * Real.sqrt (C₀ / (1 - δ) + η) + σ ^ 2 * (C₀ / (1 - δ)) ≤ e₀ / 2)
+    (hMerr : 2 * (c + 1) * η ^ (-(2 : ℝ) / d) / M ≤ e₀ / 2)
+    (hMN : 2 ^ (d + 1) * (c + 1) * η ^ (-(2 : ℝ) / d) / (M * σ ^ 2) ≤ η)
+    (hMθ : M * θ ≤ ε / 8)
+    (hqθ : C₀ + K + 2 ≤ (1 - Real.exp (-1)) * p₀ * θ / (4 * εb ^ 2))
+    {Nthr : ℕ}
+    (hΛlow : ∀ N : ℕ, Nthr ≤ N → cl * (N : ℝ) ^ (-(2 : ℝ) / d) ≤ dirichletRate d N)
+    (hΛup : ∀ N : ℕ, Nthr ≤ N → dirichletRate d N ≤ (c + 1) * (N : ℝ) ^ (-(2 : ℝ) / d))
+    (hΛhalf : ∀ N : ℕ, Nthr ≤ N → dirichletRate d N ≤ 1 / 2)
+    {t : ℕ} {r s : ℝ} (hr1 : 1 ≤ r) (hs0 : 0 < s) (hrs : r ^ d = s)
+    (hts : (t : ℝ) = r ^ 2 * s) (htss : (t : ℝ) * s ^ (-(2 : ℝ) / d) = s)
+    (hsr : s ^ (-(2 : ℝ) / d) * r ^ 2 = 1)
+    (hm : (m : ℝ) ≤ εb * r) (hm2 : εb * r / 2 ≤ m) (hmγ : (((m : ℝ) + 1) / m) ^ d ≤ 1 + δ)
+    (h2m : 2 * m ^ 2 ≤ t) (hNthr : (Nthr : ℝ) ≤ η * s)
+    (hs3 : 3 * ((1 - Real.exp (-1)) * p₀) / 2 ≤ s) (has : a / s ≤ ε / 16)
+    (hKmax : 2 ^ d * C₀ / ((1 - δ) * εb ^ d) ≤ Kmax)
+    (hlog : (Kmax + 2) * (1 + d * Real.log (2 * t + 1)) + M / 2 ≤ ε / 8 * s)
+    (n : ℕ) (hn : (n : ℝ) < C₀ * s) :
+    Real.exp (-(a * n)) * (siteWalkLaw d 0).real {X | LatticeProb.rangeCard X t ≤ n}
+      ≤ 3 * Real.exp (-((K - ε / 2) * s)) := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have hr0 : 0 < r := by linarith only [hr1]
+  have hmpos : (0 : ℝ) < m := by exact_mod_cast Nat.pos_of_neZero m
+  have hδ' : 0 < 1 - δ := by linarith only [hδ1]
+  have htpos : (0 : ℝ) < t := by rw [hts]; positivity
+  set κ := M / r ^ 2 with hκ
+  set sp := σ / Real.sqrt s with hsp
+  have hκ0 : 0 < κ := by positivity
+  have hsp0 : 0 < sp := by positivity
+  set K₀ := fullBound d n m δ with hK₀
+  have hK₀le : (K₀ : ℝ) ≤ n / ((1 - δ) * (m : ℝ) ^ d) := Nat.floor_le (by positivity)
+  set N : ℕ := ⌈((K₀ * (m + 1) ^ d : ℕ) : ℝ) + η * s⌉₊ with hN
+  have hKm0 : (0 : ℝ) ≤ ((K₀ * (m + 1) ^ d : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hNge : ((K₀ * (m + 1) ^ d : ℕ) : ℝ) + η * s ≤ N := Nat.le_ceil _
+  have hηs0 : 0 < η * s := by positivity
+  have hNle : (N : ℝ) ≤ ((K₀ * (m + 1) ^ d : ℕ) : ℝ) + η * s + 1 :=
+    (Nat.ceil_lt_add_one (by linarith only [hKm0, hηs0])).le
+  have hηsN : η * s ≤ N := by linarith only [hKm0, hNge]
+  have hNthrN : Nthr ≤ N := by
+    have : (Nthr : ℝ) ≤ N := hNthr.trans hηsN
+    exact_mod_cast this
+  set Λ := dirichletRate d N with hΛ
+  have hΛ0 : 0 ≤ Λ := dirichletRate_nonneg d N
+  have hΛhalf' := hΛhalf N hNthrN
+  have hNpos : (0 : ℝ) < N := lt_of_lt_of_le hηs0 hηsN
+  have hexp : -(2 : ℝ) / d ≤ 0 := by
+    have : (0 : ℝ) ≤ 2 / d := by positivity
+    rw [neg_div]; linarith only [this]
+  have hΛ' : Λ ≤ (c + 1) * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d) := by
+    have h1 := hΛup N hNthrN
+    have h2 : (N : ℝ) ^ (-(2 : ℝ) / d) ≤ (η * s) ^ (-(2 : ℝ) / d) :=
+      Real.rpow_le_rpow_of_nonpos hηs0 hηsN hexp
+    rw [Real.mul_rpow hη.le hs0.le] at h2
+    calc Λ ≤ (c + 1) * (N : ℝ) ^ (-(2 : ℝ) / d) := h1
+      _ ≤ (c + 1) * (η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d)) :=
+          mul_le_mul_of_nonneg_left h2 (by linarith only [hc])
+      _ = (c + 1) * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d) := by ring
+  have hκsp : κ * sp ^ 2 = M * σ ^ 2 / t := by
+    rw [hκ, hsp, div_pow, Real.sq_sqrt hs0.le, hts]
+    field_simp
+  have hvol := soft_vol_le hd (hΛup N hNthrN) hΛhalf' hηsN hη hs0 (by linarith only [hc]) hM
+    hσ htpos hκsp htss hMN
+  have h1Λ : 0 < 1 - Λ := by linarith only [hΛhalf']
+  have hX0 : 0 ≤ Λ / ((1 - Λ) * κ * sp ^ 2) := by positivity
+  have hvol' : Λ / ((1 - Λ) * κ * sp ^ 2) ≤ η * s := by
+    have h2d : (1 : ℝ) ≤ 2 ^ d := one_le_pow₀ (by norm_num)
+    calc Λ / ((1 - Λ) * κ * sp ^ 2) ≤ 2 ^ d * (Λ / ((1 - Λ) * κ * sp ^ 2)) :=
+          le_mul_of_one_le_left hX0 h2d
+      _ ≤ η * s := hvol
+  have hδlt : δ < 1 := by linarith only [hδ1]
+  have herr := soft_err_le hn.le hδlt hΛ0 hΛ' hΛhalf' hvol' hs0 hσ hM hr0 hη
+    hC₀.le hsp hκ hsr hσerr hMerr
+  have herr1 : softErr (n / (1 - δ)) Λ κ sp < 1 := by linarith only [herr, he₀1]
+  have hNcond : ((fullBound d n m δ * (m + 1) ^ d : ℕ) : ℝ)
+      + 2 ^ d * (Λ / ((1 - Λ) * κ * sp ^ 2)) ≤ N := by
+    rw [← hK₀]; linarith only [hvol, hNge]
+  have hΛ1 : Λ < 1 := by linarith only [hΛhalf']
+  have hP := measureReal_rangeCard_le hd hδ0 hδlt hp₀ hhit hκ0 hsp0 h2m n N (θ := θ)
+    hΛ1 hNcond herr1
+  rw [← hΛ] at hP
+  set err := softErr (n / (1 - δ)) Λ κ sp with herrdef
+  -- the first term
+  set q := (1 - Real.exp (-1)) * p₀ with hq
+  have he1 : Real.exp (-1) < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
+  have hq0 : 0 ≤ q := mul_nonneg (by linarith only [he1]) hp₀
+  have hℓ : (0 : ℝ) < ((2 * m ^ 2 : ℕ) : ℝ) := by
+    have : 0 < 2 * m ^ 2 := by have := Nat.pos_of_neZero m; positivity
+    exact_mod_cast this
+  have hℓr : ((2 * m ^ 2 : ℕ) : ℝ) ≤ 2 * εb ^ 2 * r ^ 2 := by
+    have h1 : (m : ℝ) ^ 2 ≤ (εb * r) ^ 2 := pow_le_pow_left₀ hmpos.le hm 2
+    calc ((2 * m ^ 2 : ℕ) : ℝ) = 2 * (m : ℝ) ^ 2 := by push_cast; ring
+      _ ≤ 2 * (εb * r) ^ 2 := by linarith only [h1]
+      _ = 2 * εb ^ 2 * r ^ 2 := by ring
+  have hT1 := first_term_le (n := (n : ℝ)) (K := K) hn.le hs0 hℓ hℓr hεb hts hq0 hθ.le hqθ hs3
+  -- the second term
+  have herr0 : 0 ≤ err := softErr_nonneg (by positivity) hΛ0 hΛ1 hκ0 hsp0
+  have hx1 : Λ * (1 - err) ≤ 1 := by
+    have : Λ * (1 - err) ≤ Λ := mul_le_of_le_one_right hΛ0 (by linarith only [herr0])
+    linarith only [this, hΛhalf']
+  have hCnt : (1 : ℝ) ≤ (((fullBound d n m δ + 1) * ((2 * t + 1) ^ d) ^ fullBound d n m δ : ℕ) : ℝ) := by
+    have : 1 ≤ (fullBound d n m δ + 1) * ((2 * t + 1) ^ d) ^ fullBound d n m δ :=
+      Nat.one_le_iff_ne_zero.mpr (by positivity)
+    exact_mod_cast this
+  have hT2 := second_term_exp_le (a := a) (n := (n : ℝ)) (κ := κ) (θ := θ) (d := d) t rfl hx1
+    hCnt htpos.le
+  -- the main inequality
+  set γ := (((m : ℝ) + 1) / m) ^ d / (1 - δ) with hγ
+  have hγ1 : 1 ≤ γ := by
+    rw [hγ, le_div_iff₀ hδ', one_mul]
+    have h1 : (1 : ℝ) ≤ ((m : ℝ) + 1) / m := by rw [le_div_iff₀ hmpos]; linarith only
+    have h2 := one_le_pow₀ (n := d) h1
+    linarith only [h2, hδ0]
+  have hγle : γ ≤ (1 + δ) / (1 - δ) := div_le_div_of_nonneg_right hmγ hδ'.le
+  have hK₀γ : ((K₀ * (m + 1) ^ d : ℕ) : ℝ) ≤ γ * n := by
+    push_cast
+    have hmd : (0 : ℝ) < (m : ℝ) ^ d := by positivity
+    calc (K₀ : ℝ) * ((m : ℝ) + 1) ^ d ≤ n / ((1 - δ) * (m : ℝ) ^ d) * ((m : ℝ) + 1) ^ d :=
+          mul_le_mul_of_nonneg_right hK₀le (by positivity)
+      _ = γ * n := by rw [hγ, div_pow]; field_simp
+  have hNγ : (N : ℝ) ≤ γ * n + η * s + 1 := by linarith only [hNle, hK₀γ]
+  have hmain := dv_main_lower hd ha.le hcl (by linarith only [he₀1]) hγ1 hη.le hs0 htpos.le htss
+    (Nat.cast_nonneg n) hNpos hNγ (hΛlow N hNthrN) herr
+  have hdv : dvConst d (a * (1 - δ) / (1 + δ)) ((1 - e₀) * cl)
+      ≤ dvConst d (a / γ) ((1 - e₀) * cl) := by
+    refine dvConst_mono (by positivity) ?_ (mul_nonneg (by linarith only [he₀1]) hcl)
+    have hγ0 : 0 < γ := by linarith only [hγ1]
+    have h1 : γ * (1 - δ) ≤ 1 + δ := by
+      rw [hγ, div_mul_cancel₀ _ hδ'.ne']; exact hmγ
+    rw [div_le_div_iff₀ (by linarith only [hδ0]) hγ0]
+    calc a * (1 - δ) * γ = a * (γ * (1 - δ)) := by ring
+      _ ≤ a * (1 + δ) := mul_le_mul_of_nonneg_left h1 ha.le
+  have hcorr : a / γ * (η + 1 / s) ≤ ε / 8 := by
+    have h1 : a / γ * (η + 1 / s) ≤ a * (η + 1 / s) :=
+      mul_le_mul_of_nonneg_right (div_le_self ha.le hγ1) (by positivity)
+    have h2 : a * (η + 1 / s) = a * η + a / s := by ring
+    linarith only [h1, h2, haη, has]
+  have hmain' : (K - ε / 4) * s ≤ a * n + t * Λ * (1 - err) := by
+    have h : K - ε / 4 ≤ dvConst d (a / γ) ((1 - e₀) * cl) - a / γ * (η + 1 / s) := by
+      linarith only [hK, hdv, hcorr]
+    calc (K - ε / 4) * s = s * (K - ε / 4) := by ring
+      _ ≤ s * (dvConst d (a / γ) ((1 - e₀) * cl) - a / γ * (η + 1 / s)) :=
+          mul_le_mul_of_nonneg_left h hs0.le
+      _ ≤ _ := hmain
+  -- the error terms
+  have hκθ : κ * (θ * t) = M * θ * s := by rw [hκ, hts]; field_simp
+  have hr2 : 1 ≤ r ^ 2 := one_le_pow₀ hr1
+  have hκM : κ ≤ M := by rw [hκ]; exact div_le_self hM.le hr2
+  have hK₀max : (K₀ : ℝ) ≤ Kmax := by
+    refine le_trans ?_ hKmax
+    have hmd : (εb * r / 2) ^ d ≤ (m : ℝ) ^ d := pow_le_pow_left₀ (by positivity) hm2 d
+    have hmd' : (εb * r / 2) ^ d = εb ^ d * s / 2 ^ d := by rw [div_pow, mul_pow, hrs]
+    rw [hmd'] at hmd
+    have hpos : 0 < (1 - δ) * (εb ^ d * s / 2 ^ d) := by positivity
+    calc (K₀ : ℝ) ≤ n / ((1 - δ) * (m : ℝ) ^ d) := hK₀le
+      _ ≤ C₀ * s / ((1 - δ) * (εb ^ d * s / 2 ^ d)) := by
+          refine div_le_div₀ (by positivity) hn.le hpos ?_
+          exact mul_le_mul_of_nonneg_left hmd hδ'.le
+      _ = 2 ^ d * C₀ / ((1 - δ) * εb ^ d) := by field_simp
+  have hlogC := log_count_le (d := d) (t := t) hK₀max
+  have hL0 : 0 ≤ Real.log (2 * (t : ℝ) + 1) := Real.log_nonneg (by
+    have : (0 : ℝ) ≤ t := Nat.cast_nonneg t; linarith only [this])
+  have hKmax0 : 0 ≤ Kmax := le_trans (Nat.cast_nonneg _) hK₀max
+  have hdL : 0 ≤ (d : ℝ) * Real.log (2 * t + 1) := mul_nonneg hd0.le hL0
+  have hErr : κ * (θ * t) + Real.log (((fullBound d n m δ + 1) * ((2 * t + 1) ^ d) ^
+      fullBound d n m δ : ℕ) : ℝ) + κ / 2 + d * Real.log (2 * t + 1) / 2 ≤ ε / 4 * s := by
+    rw [hκθ, ← hK₀]
+    have hMθs : M * θ * s ≤ ε / 8 * s := mul_le_mul_of_nonneg_right hMθ hs0.le
+    have hexpand : (Kmax + 2) * (1 + d * Real.log (2 * t + 1))
+        = Kmax * (1 + d * Real.log (2 * t + 1)) + 2 + 2 * (d * Real.log (2 * t + 1)) := by ring
+    linarith only [hMθs, hlogC, hκM, hlog, hexpand, hdL]
+  have hexpo : -(a * n) - t * (Λ * (1 - err)) + κ * (θ * t)
+      + Real.log (((fullBound d n m δ + 1) * ((2 * t + 1) ^ d) ^ fullBound d n m δ : ℕ) : ℝ)
+      + κ / 2 + d * Real.log (2 * t + 1) / 2 ≤ -((K - ε / 2) * s) := by
+    have e1 : t * (Λ * (1 - err)) = t * Λ * (1 - err) := by ring
+    linarith only [e1, hmain', hErr]
+  have hT2' := hT2.trans (Real.exp_le_exp.mpr hexpo)
+  have hea : Real.exp (-(a * n)) ≤ 1 := Real.exp_le_one_iff.mpr (by
+    have : 0 ≤ a * n := mul_nonneg ha.le (Nat.cast_nonneg n)
+    linarith only [this])
+  have hfirst : Real.exp (-(a * n)) * (2 * Real.exp ((n : ℝ) - (1 - Real.exp (-1)) * p₀ *
+      ((θ * t - 3 * ((2 * m ^ 2 : ℕ) : ℝ)) / (2 * ((2 * m ^ 2 : ℕ) : ℝ)))))
+      ≤ 2 * Real.exp (-((K + 1) * s)) :=
+    (mul_le_of_le_one_left (mul_nonneg zero_le_two (Real.exp_pos _).le) hea).trans hT1
+  have hKs : Real.exp (-((K + 1) * s)) ≤ Real.exp (-((K - ε / 2) * s)) := by
+    refine Real.exp_le_exp.mpr (neg_le_neg ?_)
+    exact mul_le_mul_of_nonneg_right (by linarith only [hε]) hs0.le
+  exact combine_two_terms hP hfirst hT2' hKs (Real.exp_pos _).le
 
 end Parking
 
