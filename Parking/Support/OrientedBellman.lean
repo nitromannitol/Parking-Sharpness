@@ -114,10 +114,10 @@ theorem orientedOptimalRule_bounded_and_congr :
     · constructor
       · intro p
         have hb := (ih (fun k => F (k + 1)) (x - unit (p 0).1)).1 (tailNat p)
-        simp only [orientedOptimalRule, if_neg h]
+        simp only [orientedOptimalRule, ite_eq_right h]
         omega
       · intro p q hpq
-        simp only [orientedOptimalRule, if_neg h] at hpq ⊢
+        simp only [orientedOptimalRule, ite_eq_right h] at hpq ⊢
         have h0 : (p 0).1 = (q 0).1 := hpq 0 (by omega)
         rw [← h0]
         congr 1
@@ -154,7 +154,7 @@ theorem orientedTerminalValue_orientedOptimalRule (hd : 1 ≤ d) :
       simp [orientedTerminalValue, orientedBellman, orientedPath, max_eq_left h]
     · have hpos : ∀ p, 1 ≤ orientedOptimalRule (n + 1) F x p := by
         intro p
-        simp only [orientedOptimalRule, if_neg h]
+        simp only [orientedOptimalRule, ite_eq_right h]
         omega
       rw [orientedTerminalValue_consNat hd (isStoppingTimeLE_orientedOptimalRule _ _ _) hpos]
       have hinner : ∀ u : Fin d × Bool,

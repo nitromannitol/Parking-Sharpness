@@ -35,7 +35,7 @@ theorem isBrownian_orientedBrownianFamily {Ω : Type*} [MeasurableSpace Ω]
   start := by
     filter_upwards [hB.eval_zero_ae_eq_zero] with ω h
     ext i
-    simp only [orientedBrownianFamily, WithLp.ofLp_toLp, Pi.sub_apply]
+    simp only [orientedBrownianFamily, WithLp.ofLp_toLp]
     linarith
   coord := fun i => by
     have heq : (fun t ω => Real.sqrt ((1 : ℕ) : ℝ) *
