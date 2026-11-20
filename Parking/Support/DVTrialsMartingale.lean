@@ -86,32 +86,38 @@ theorem trialProd_le (q : ℝ) (hq : 0 ≤ q) (π J : ℕ) (X : ℕ → Site d) 
           fun _ _ => trialWeight_le q hq _ X
     _ = Real.exp q ^ J := by rw [Finset.prod_const, Finset.card_range]
 
+theorem present_congr (k : ℕ) {X Y : ℕ → Site d} (h : ∀ i ≤ (k + 2) * ℓ, X i = Y i) :
+    Present m δ ℓ k X ↔ Present m δ ℓ k Y := by
+  have hτ : trialTime m δ ℓ k X = trialTime m δ ℓ k Y :=
+    trialTime_congr fun i hi => h i (le_trans hi (by nlinarith))
+  unfold Present; rw [hτ]
+
+theorem success_congr (k : ℕ) {X Y : ℕ → Site d} (h : ∀ i ≤ (k + 2) * ℓ, X i = Y i) :
+    Success m δ ℓ k X ↔ Success m δ ℓ k Y := by
+  have hτ : trialTime m δ ℓ k X = trialTime m δ ℓ k Y :=
+    trialTime_congr fun i hi => h i (le_trans hi (by nlinarith))
+  have hτle := trialTime_le (m := m) (δ := δ) (ℓ := ℓ) (k := k) X
+  unfold Success
+  rw [present_congr k h, ← hτ]
+  have hR : rangeSet X (trialTime m δ ℓ k X) = rangeSet Y (trialTime m δ ℓ k X) :=
+    rangeSet_congr fun i hi => h i (by nlinarith)
+  have hXτ : X (trialTime m δ ℓ k X) = Y (trialTime m δ ℓ k X) := h _ (by nlinarith)
+  rw [hR, hXτ]
+  constructor
+  · rintro ⟨hp, a, ha1, ha2, hmem⟩
+    refine ⟨hp, a, ha1, ha2, ?_⟩
+    rwa [← h (trialTime m δ ℓ k X + a) (by nlinarith)]
+  · rintro ⟨hp, a, ha1, ha2, hmem⟩
+    refine ⟨hp, a, ha1, ha2, ?_⟩
+    rwa [h (trialTime m δ ℓ k X + a) (by nlinarith)]
+
 /-- The trial of block `k` is decided by the first `(k + 2) ℓ + 1` positions. -/
 theorem trialWeight_congr (q : ℝ) (k : ℕ) {X Y : ℕ → Site d}
     (h : ∀ i ≤ (k + 2) * ℓ, X i = Y i) :
     trialWeight m δ ℓ q k X = trialWeight m δ ℓ q k Y := by
   classical
-  have hτ : trialTime m δ ℓ k X = trialTime m δ ℓ k Y :=
-    trialTime_congr fun i hi => h i (le_trans hi (by nlinarith))
-  have hτle := trialTime_le (m := m) (δ := δ) (ℓ := ℓ) (k := k) X
-  have hP : Present m δ ℓ k X ↔ Present m δ ℓ k Y := by
-    unfold Present; rw [hτ]
-  have hS : Success m δ ℓ k X ↔ Success m δ ℓ k Y := by
-    unfold Success
-    rw [hP, ← hτ]
-    have hR : rangeSet X (trialTime m δ ℓ k X) = rangeSet Y (trialTime m δ ℓ k X) :=
-      rangeSet_congr fun i hi => h i (by nlinarith)
-    have hXτ : X (trialTime m δ ℓ k X) = Y (trialTime m δ ℓ k X) := h _ (by nlinarith)
-    rw [hR, hXτ]
-    constructor
-    · rintro ⟨hp, a, ha1, ha2, hmem⟩
-      refine ⟨hp, a, ha1, ha2, ?_⟩
-      rwa [← h (trialTime m δ ℓ k X + a) (by nlinarith)]
-    · rintro ⟨hp, a, ha1, ha2, hmem⟩
-      refine ⟨hp, a, ha1, ha2, ?_⟩
-      rwa [h (trialTime m δ ℓ k X + a) (by nlinarith)]
   unfold trialWeight
-  simp only [hP, hS]
+  simp only [present_congr k h, success_congr k h]
 
 theorem trialProd_congr (q : ℝ) (π J : ℕ) {X Y : ℕ → Site d}
     (h : ∀ i ≤ (π + 2 * J) * ℓ, X i = Y i) :
@@ -342,6 +348,99 @@ theorem integral_trialProd_le_one (hd : 1 ≤ d) {p₀ : ℝ} (hp₀ : 0 ≤ p�
       refine le_trans (integral_mono_of_nonneg (Filter.Eventually.of_forall fun X =>
         integral_nonneg fun Y => trialStep_nonneg _ _ _ _ _ _) hintJ
         (Filter.Eventually.of_forall fun X => integral_trialStep_le hd hℓ hhit π J X)) ih
+
+/-! ### Markov's inequality -/
+
+/-- A set of paths decided by the first `n + 1` positions is measurable. -/
+theorem measurableSet_of_dependsUpTo {n : ℕ} {E : Set (ℕ → Site d)}
+    (h : ∀ X Y : ℕ → Site d, (∀ i ≤ n, X i = Y i) → (X ∈ E ↔ Y ∈ E)) : MeasurableSet E := by
+  classical
+  have hm : Measurable fun X : ℕ → Site d => E.indicator (fun _ => (1 : ℝ)) X := by
+    refine measurable_of_dependsUpTo (n := n) fun X Y hXY => ?_
+    by_cases hX : X ∈ E
+    · rw [Set.indicator_of_mem hX, Set.indicator_of_mem ((h X Y hXY).mp hX)]
+    · rw [Set.indicator_of_notMem hX, Set.indicator_of_notMem (fun hY => hX ((h X Y hXY).mpr hY))]
+  have h1 := hm (measurableSet_singleton (1 : ℝ))
+  convert h1 using 1
+  ext X
+  simp only [Set.mem_preimage, Set.mem_singleton_iff]
+  by_cases hX : X ∈ E
+  · simp [hX]
+  · simp [hX]
+
+open scoped Classical in
+/-- The product of the weights is `exp(q #present - #success)`. -/
+theorem trialProd_eq (q : ℝ) (π J : ℕ) (X : ℕ → Site d) :
+    trialProd m δ ℓ q π J X = Real.exp (q * ((Finset.range J).filter fun i =>
+        Present m δ ℓ (π + 2 * i) X).card
+      - ((Finset.range J).filter fun i => Success m δ ℓ (π + 2 * i) X).card) := by
+  unfold trialProd trialWeight
+  rw [← Real.exp_sum, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_boole,
+    Finset.sum_boole]
+
+open scoped Classical in
+/-- **Few successes among many present trials are unlikely**:
+`P(#present ≥ N, #success ≤ S) ≤ e^{S - q N}`, `q = (1 - e^{-1}) p₀`. -/
+theorem measureReal_present_success_le (hd : 1 ≤ d) {p₀ : ℝ} (hp₀ : 0 ≤ p₀)
+    (hℓ : ℓ = 2 * m ^ 2)
+    (hhit : ∀ (z y : Site d), y ∈ boxCell m z → ∀ A : Finset (Site d), A ⊆ boxCell m z →
+      δ * (m : ℝ) ^ d ≤ A.card →
+        p₀ ≤ (siteWalkLaw d y).real {Y | ∃ j, 1 ≤ j ∧ j ≤ 2 * m ^ 2 ∧ Y j ∈ A})
+    (π J : ℕ) (N S : ℝ) :
+    (siteWalkLaw d 0).real {X | N ≤ ((Finset.range J).filter fun i =>
+        Present m δ ℓ (π + 2 * i) X).card ∧
+      (((Finset.range J).filter fun i => Success m δ ℓ (π + 2 * i) X).card : ℝ) ≤ S}
+      ≤ Real.exp (S - (1 - Real.exp (-1)) * p₀ * N) := by
+  have : NeZero d := ⟨by omega⟩
+  set q := (1 - Real.exp (-1)) * p₀ with hq
+  have he : Real.exp (-1) < 1 := Real.exp_lt_one_iff.mpr (show (-1 : ℝ) < 0 by norm_num)
+  have hq0 : 0 ≤ q := mul_nonneg (by linarith) hp₀
+  set E : Set (ℕ → Site d) := {X | N ≤ ((Finset.range J).filter fun i =>
+        Present m δ ℓ (π + 2 * i) X).card ∧
+      (((Finset.range J).filter fun i => Success m δ ℓ (π + 2 * i) X).card : ℝ) ≤ S} with hE
+  -- the event is decided by the first `(π + 2J) ℓ + 1` positions
+  have hcongr : ∀ X Y : ℕ → Site d, (∀ i ≤ (π + 2 * J) * ℓ, X i = Y i) →
+      ∀ i < J, (Present m δ ℓ (π + 2 * i) X ↔ Present m δ ℓ (π + 2 * i) Y) ∧
+        (Success m δ ℓ (π + 2 * i) X ↔ Success m δ ℓ (π + 2 * i) Y) := by
+    intro X Y hXY i hi
+    have hle : (π + 2 * i + 2) * ℓ ≤ (π + 2 * J) * ℓ := Nat.mul_le_mul_right ℓ (by omega)
+    exact ⟨present_congr _ fun a ha => hXY a (le_trans ha hle),
+      success_congr _ fun a ha => hXY a (le_trans ha hle)⟩
+  have hEm : MeasurableSet E := by
+    refine measurableSet_of_dependsUpTo (n := (π + 2 * J) * ℓ) fun X Y hXY => ?_
+    have h1 : (Finset.range J).filter (fun i => Present m δ ℓ (π + 2 * i) X)
+        = (Finset.range J).filter (fun i => Present m δ ℓ (π + 2 * i) Y) :=
+      Finset.filter_congr fun i hi => (hcongr X Y hXY i (Finset.mem_range.mp hi)).1
+    have h2 : (Finset.range J).filter (fun i => Success m δ ℓ (π + 2 * i) X)
+        = (Finset.range J).filter (fun i => Success m δ ℓ (π + 2 * i) Y) :=
+      Finset.filter_congr fun i hi => (hcongr X Y hXY i (Finset.mem_range.mp hi)).2
+    simp only [hE, Set.mem_ofPred_eq, h1, h2]
+  have hint : Integrable (trialProd m δ ℓ q π J) (siteWalkLaw d 0) := by
+    refine Integrable.of_bound (measurable_trialProd q π J).aestronglyMeasurable
+      (Real.exp q ^ J) (Filter.Eventually.of_forall fun X => ?_)
+    rw [Real.norm_eq_abs, abs_of_pos (trialProd_pos q π J X)]
+    exact trialProd_le q hq0 π J X
+  have hind : Integrable (E.indicator fun _ => Real.exp (q * N - S)) (siteWalkLaw d 0) :=
+    (integrable_const _).indicator hEm
+  have hbound := integral_trialProd_le_one hd hp₀ hℓ hhit π J (δ := δ)
+  have hmono : ∫ X, E.indicator (fun _ => Real.exp (q * N - S)) X ∂(siteWalkLaw d 0)
+      ≤ ∫ X, trialProd m δ ℓ q π J X ∂(siteWalkLaw d 0) := by
+    refine integral_mono hind hint fun X => ?_
+    by_cases hX : X ∈ E
+    · rw [Set.indicator_of_mem hX, trialProd_eq]
+      refine Real.exp_le_exp.mpr ?_
+      obtain ⟨h1, h2⟩ := hX
+      nlinarith
+    · rw [Set.indicator_of_notMem hX]
+      exact (trialProd_pos q π J X).le
+  rw [integral_indicator_const _ hEm, smul_eq_mul] at hmono
+  have h1 := hmono.trans hbound
+  calc (siteWalkLaw d 0).real E
+      = (siteWalkLaw d 0).real E * Real.exp (q * N - S) * Real.exp (-(q * N - S)) := by
+        rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
+    _ ≤ 1 * Real.exp (-(q * N - S)) :=
+        mul_le_mul_of_nonneg_right (by linarith [h1]) (Real.exp_pos _).le
+    _ = Real.exp (S - q * N) := by rw [one_mul]; ring_nf
 
 end Parking
 
