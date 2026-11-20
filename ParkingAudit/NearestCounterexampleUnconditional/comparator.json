@@ -1,0 +1,14 @@
+{
+  "challenge_module": "ParkingAudit.NearestCounterexampleUnconditional.Challenge",
+  "solution_module": "ParkingAudit.NearestCounterexampleUnconditional.Solution",
+  "theorem_names": [
+    "ParkingAudit.nearest_counterexample_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

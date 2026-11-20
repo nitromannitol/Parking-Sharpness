@@ -1,6 +1,6 @@
 name: Comparator audit
 
-# Runs the official leanprover/comparator on the nine ParkingAudit/<X> pairs: for each
+# Runs the official leanprover/comparator on the sixteen ParkingAudit/<X> pairs: for each
 # pair it checks that Solution proves a statement whose full dependency closure
 # matches Challenge's, uses only the permitted axioms, and is accepted by BOTH
 # the Lean kernel (replay) and the independent nanoda kernel (every
@@ -114,7 +114,7 @@ jobs:
           git -C ~/tools/nanoda_lib checkout "$NANODA_REV"
           cd ~/tools/nanoda_lib && cargo +stable build --release
 
-      - name: Run the comparator on all nine pairs
+      - name: Run the comparator on all sixteen pairs
         env:
           COMPARATOR_LANDRUN: /home/runner/tools/bin/landrun
           COMPARATOR_LEAN4EXPORT: /home/runner/tools/lean4export/.lake/build/bin/lean4export
@@ -123,7 +123,9 @@ jobs:
           set -euo pipefail
           fail=0
           for X in SubcriticalTail SubcriticalTailUnconditional Master Growth Trichotomy Nearest NearestCounterexample \
-                   Near OrientedWalk; do
+                   Near OrientedWalk MasterUnconditional GrowthUnconditional TrichotomyUnconditional \
+                   NearestUnconditional NearestCounterexampleUnconditional NearUnconditional \
+                   OrientedWalkUnconditional; do
             echo "::group::$X"
             if lake env ~/tools/comparator/.lake/build/bin/comparator "ParkingAudit/$X/comparator.json" \
                  | tee "/tmp/comparator-$X.log" \

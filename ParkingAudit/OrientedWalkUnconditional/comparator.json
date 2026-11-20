@@ -1,0 +1,14 @@
+{
+  "challenge_module": "ParkingAudit.OrientedWalkUnconditional.Challenge",
+  "solution_module": "ParkingAudit.OrientedWalkUnconditional.Solution",
+  "theorem_names": [
+    "ParkingAudit.oriented_walk_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

@@ -1,0 +1,14 @@
+{
+  "challenge_module": "ParkingAudit.NearUnconditional.Challenge",
+  "solution_module": "ParkingAudit.NearUnconditional.Solution",
+  "theorem_names": [
+    "ParkingAudit.near_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

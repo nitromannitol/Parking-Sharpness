@@ -1,8 +1,11 @@
 # Comparator design memo: vocabulary, bridges, deltas
 
-This memo records how the eight comparator pairs are built, for whoever checks
+This memo records how the comparator pairs are built, for whoever checks
 or extends them.  Each pair `ParkingAudit/<Thm>/` has the same four files, and
-each pair has its own bridge under `ParkingAudit/Support/`.
+each of the eight pairs for the main theorems has its own bridge under
+`ParkingAudit/Support/`.  The pair `<Thm>Unconditional/` for the hypothesis-free
+form of a main theorem reuses the vocabulary module and the bridge of the pair
+`<Thm>/`; see the end of Section 0.
 
 - `Challenge.lean` imports `Mathlib` and nothing else.  It rebuilds from Mathlib
   primitives every object its theorem mentions, states the theorem, and ends in
@@ -31,9 +34,9 @@ that imports **only Mathlib** (`<Thm>/SolutionBasic.lean`), and `Solution.lean`
 imports the repository, that module, and the pair's bridge, and states the
 theorem with the challenge's bytes.
 
-The eight challenges share one vocabulary block, byte-identical in each
+The sixteen challenges share one vocabulary block, byte-identical in each
 (`bash ParkingAudit/check_standalone.sh --vocabulary` compares each challenge
-with its `SolutionBasic.lean`), so the eight `SolutionBasic.lean` files carry
+with its `SolutionBasic.lean`), so the sixteen `SolutionBasic.lean` files carry
 the same block.  The block contains definitions that a given challenge does not
 use (for instance the continuum objects in the challenges that do not mention
 the scaling limit); they do not enter that theorem's dependency closure.
@@ -43,6 +46,13 @@ eight theorems of `Parking/MainTheorems.lean`, every constant of the
 namespaces `Parking`, `LatticeProb` and `Sandpile` is followed through the
 values of definitions and the constructors of structures, and each constant
 reached is copied from its source file.  No `Sandpile` constant is reached.
+
+A hypothesis-free pair `<Thm>Unconditional/` states its theorem without the
+cited-input binders.  Its `Solution.lean` imports `<Thm>/SolutionBasic.lean`
+through the bridge of `<Thm>/` instead of its own `SolutionBasic.lean`; since the
+two vocabulary blocks are byte-identical, the constants elaborate identically,
+and the solution closes the statement with the hypothesis-free theorem of
+`Parking/MainTheoremsUnconditional.lean`.
 
 The Lean namespace of the audit surface is `ParkingAudit` and its modules live
 under `ParkingAudit.*`.  The shared library keeps its own audit surface under
@@ -146,7 +156,7 @@ constant by constant through the whole dependency closure, the closure against
 Mathlib, and the axioms of the solution against the permitted three.  Every pair
 passes with the Lean kernel and with the independent nanoda kernel; see
 [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) for the results and the reproduction
-steps.  There is no separate local regression: the eight solutions cannot be
+steps.  There is no separate local regression: the solutions cannot be
 imported into one module, because each pair has its own copy of the vocabulary.
 
 ## 8. Remaining points

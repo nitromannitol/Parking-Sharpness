@@ -1,0 +1,14 @@
+{
+  "challenge_module": "ParkingAudit.GrowthUnconditional.Challenge",
+  "solution_module": "ParkingAudit.GrowthUnconditional.Solution",
+  "theorem_names": [
+    "ParkingAudit.growth_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

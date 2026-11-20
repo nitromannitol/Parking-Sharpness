@@ -1,0 +1,14 @@
+{
+  "challenge_module": "ParkingAudit.TrichotomyUnconditional.Challenge",
+  "solution_module": "ParkingAudit.TrichotomyUnconditional.Solution",
+  "theorem_names": [
+    "ParkingAudit.trichotomy_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

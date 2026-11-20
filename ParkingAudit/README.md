@@ -3,7 +3,7 @@
 This directory contains Mathlib-only comparator challenges for the eight main
 theorems of the formalization of *Sharpness and critical scaling of parking*
 (Bou-Rabee and Panagiotis, arXiv:2609.02820): Theorems 1.1, 1.2 and 1.4 to 1.8
-and Corollary 1.3, with an additional hypothesis-free form of Theorem 1.1.
+and Corollary 1.3, and for the hypothesis-free form of each of them.
 Each comparator lives in its own subdirectory:
 
 | Directory | Paper statement | Checked theorem | Library theorem |
@@ -17,12 +17,19 @@ Each comparator lives in its own subdirectory:
 | `NearestCounterexample/` | Theorem 1.6, `thm:nearest-counterexample` | `ParkingAudit.nearest_counterexample` | `Parking.nearest_counterexample` |
 | `Near/` | Theorem 1.7, `thm:near` | `ParkingAudit.near` | `Parking.near` |
 | `OrientedWalk/` | Theorem 1.8, `thm:oriented-walk` | `ParkingAudit.oriented_walk` | `Parking.oriented_walk` |
+| `MasterUnconditional/` | Theorem 1.2, without hypotheses | `ParkingAudit.master_unconditional` | `Parking.master_proved` |
+| `GrowthUnconditional/` | Corollary 1.3, without hypotheses | `ParkingAudit.growth_unconditional` | `Parking.growth_proved` |
+| `TrichotomyUnconditional/` | Theorem 1.4, without hypotheses | `ParkingAudit.trichotomy_unconditional` | `Parking.trichotomy_proved` |
+| `NearestUnconditional/` | Theorem 1.5, without hypotheses | `ParkingAudit.nearest_unconditional` | `Parking.nearest_proved` |
+| `NearestCounterexampleUnconditional/` | Theorem 1.6, without hypotheses | `ParkingAudit.nearest_counterexample_unconditional` | `Parking.nearest_counterexample_proved` |
+| `NearUnconditional/` | Theorem 1.7, without hypotheses | `ParkingAudit.near_unconditional` | `Parking.near_proved` |
+| `OrientedWalkUnconditional/` | Theorem 1.8, without hypotheses | `ParkingAudit.oriented_walk_unconditional` | `Parking.oriented_walk_proved` |
 
 Each `Challenge.lean` imports only `Mathlib`, rebuilds from scratch every
 definition needed to read the theorem, states the theorem, and ends with one
 `sorry`, the proof being checked.  The definitions form one vocabulary block,
 between `-- VOCABULARY-BEGIN` and `-- VOCABULARY-END`, byte-identical in all
-nine challenges: the lattice, i.i.d. fields and the particle–hole process with
+sixteen challenges: the lattice, i.i.d. fields and the particle–hole process with
 its state, its odometer, its active particles and its unfilled holes; the
 parking law, the two odometers `U` and `u` and their means; the walk, its range,
 lattice kernels and Green functions; the continuum objects of the scaling
@@ -34,7 +41,7 @@ eight cited results the eight theorems use.
 ## What Is Checked
 
 Each challenge carries the explicit literature hypotheses of its library theorem,
-restated in the vocabulary. The additional Theorem 1.1 presentation needs none.
+restated in the vocabulary. The hypothesis-free forms (`*Unconditional/`) carry none.
 
 | Directory | Cited results carried as hypotheses |
 | --- | --- |
@@ -45,6 +52,7 @@ restated in the vocabulary. The additional Theorem 1.1 presentation needs none.
 | `NearestCounterexample/` | `External.Bernstein` |
 | `Near/` | `External.SandpileGrowth`, `External.Bernstein` |
 | `OrientedWalk/` | `External.Bernstein`, `External.OrientedStoppingStability` |
+| `MasterUnconditional/`, `GrowthUnconditional/`, `TrichotomyUnconditional/`, `NearestUnconditional/`, `NearestCounterexampleUnconditional/`, `NearUnconditional/`, `OrientedWalkUnconditional/` | none |
 
 The certified statements of Theorems 1.4 and 1.7 also carry the optimal
 stopping representation `Parking.External.Stopping`.  The repository proves it
@@ -121,9 +129,9 @@ together with the pair's `SolutionBasic.lean` and its bridge
 `ParkingAudit/Support/<Pair>Bridge.lean`, and proves the byte-identical statement from the
 corresponding repository theorem (see [`DESIGN.md`](DESIGN.md)).  The
 comparator checks each solution statement against its challenge, and the dependency closure
-against Mathlib. `SubcriticalTailUnconditional/Solution.lean` reuses the original
-`SubcriticalTail` vocabulary and bridge, which are byte-identical to its own
-`SolutionBasic.lean` vocabulary.
+against Mathlib. Each `<Pair>Unconditional/Solution.lean` reuses the vocabulary and
+bridge of the pair `<Pair>`, which are byte-identical to its own `SolutionBasic.lean`
+vocabulary, and closes the statement by the hypothesis-free library theorem.
 
 The audit modules live under the root `ParkingAudit`, and the library's own audit
 surface under `LatticeProbAudit`, so the two cannot collide.
@@ -161,10 +169,8 @@ COMPARATOR_LANDRUN=<landrun> COMPARATOR_LEAN4EXPORT=<lean4export> COMPARATOR_NAN
   lake env <comparator>/.lake/build/bin/comparator ParkingAudit/<Pair>/comparator.json
 ```
 
-**Status.** The original eight solutions build and pass `leanprover/comparator` with
-the Lean kernel and again with the independent nanoda kernel. The additional
-`SubcriticalTailUnconditional` solution builds; its comparator replay is included in
-the workflow.
+**Status.** All sixteen solutions build and pass `leanprover/comparator` with the Lean
+kernel and again with the independent nanoda kernel.
 [`COMPARATOR_RUNS.md`](COMPARATOR_RUNS.md) records the pins, the results and the reproduction
 steps.  The workflow [`.github/workflows/comparator.yml`](../.github/workflows/comparator.yml)
 runs it on request.

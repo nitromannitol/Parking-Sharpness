@@ -1,0 +1,14 @@
+{
+  "challenge_module": "ParkingAudit.MasterUnconditional.Challenge",
+  "solution_module": "ParkingAudit.MasterUnconditional.Solution",
+  "theorem_names": [
+    "ParkingAudit.master_unconditional"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
