@@ -252,6 +252,129 @@ theorem scale_facts (hd : 1 ≤ d) {t : ℝ} (ht : 0 < t) :
     have : (d : ℝ) / (d + 2) * (-(2 : ℝ) / d) + 2 / (d + 2) = 0 := by field_simp; ring
     rw [this, Real.rpow_zero]
 
+/-! ### The conditions of the soft-killing step -/
+
+/-- The volume condition: `2^d Λ/((1-Λ) κ s_p^2) ≤ η s`. -/
+theorem soft_vol_le (hd : 1 ≤ d) {Λ κ sp t s η cU M σ N : ℝ}
+    (hΛ : Λ ≤ cU * N ^ (-(2 : ℝ) / d)) (hΛ1 : Λ ≤ 1 / 2) (hηs : η * s ≤ N) (hη : 0 < η)
+    (hs : 0 < s) (hcU : 0 ≤ cU) (hM : 0 < M) (hσ : 0 < σ) (ht : 0 < t)
+    (hκsp : κ * sp ^ 2 = M * σ ^ 2 / t) (hts : t * s ^ (-(2 : ℝ) / d) = s)
+    (hMN : 2 ^ (d + 1) * cU * η ^ (-(2 : ℝ) / d) / (M * σ ^ 2) ≤ η) :
+    2 ^ d * (Λ / ((1 - Λ) * κ * sp ^ 2)) ≤ η * s := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have hexp : -(2 : ℝ) / d ≤ 0 := by
+    have : (0 : ℝ) ≤ 2 / d := by positivity
+    rw [neg_div]; linarith
+  have hκsp0 : 0 < κ * sp ^ 2 := by rw [hκsp]; positivity
+  have hN1 : N ^ (-(2 : ℝ) / d) ≤ (η * s) ^ (-(2 : ℝ) / d) :=
+    Real.rpow_le_rpow_of_nonpos (by positivity) hηs hexp
+  have hN2 : (η * s) ^ (-(2 : ℝ) / d) = η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d) :=
+    Real.mul_rpow hη.le hs.le
+  have hΛ2 : Λ ≤ cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d) := by
+    calc Λ ≤ cU * N ^ (-(2 : ℝ) / d) := hΛ
+      _ ≤ cU * (η * s) ^ (-(2 : ℝ) / d) := mul_le_mul_of_nonneg_left hN1 hcU
+      _ = cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d) := by rw [hN2]; ring
+  have hden : (1 - Λ) * κ * sp ^ 2 = (1 - Λ) * (M * σ ^ 2 / t) := by rw [mul_assoc, hκsp]
+  rw [hden]
+  have h1Λ : 1 / 2 ≤ 1 - Λ := by linarith
+  have hpos : 0 < (1 - Λ) * (M * σ ^ 2 / t) := by positivity
+  rw [mul_div_assoc', div_le_iff₀ hpos]
+  have hstep : 2 ^ d * Λ ≤ 2 ^ d * (cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d)) :=
+    mul_le_mul_of_nonneg_left hΛ2 (by positivity)
+  have hMN' : 2 ^ (d + 1) * cU * η ^ (-(2 : ℝ) / d) ≤ η * (M * σ ^ 2) := by
+    rwa [div_le_iff₀ (by positivity)] at hMN
+  have hfin : 2 ^ d * (cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d))
+      ≤ η * s * ((1 / 2) * (M * σ ^ 2 / t)) := by
+    have e1 : η * s * ((1 / 2) * (M * σ ^ 2 / t))
+        = (η * (M * σ ^ 2)) / 2 * (s / t) := by ring
+    have e2 : s / t = s ^ (-(2 : ℝ) / d) := by
+      rw [div_eq_iff ht.ne']; linarith [hts]
+    rw [e1, e2]
+    have e3 : 2 ^ d * (cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d))
+        = (2 ^ (d + 1) * cU * η ^ (-(2 : ℝ) / d)) / 2 * s ^ (-(2 : ℝ) / d) := by
+      rw [pow_succ]; ring
+    rw [e3]
+    have hsp : 0 ≤ s ^ (-(2 : ℝ) / d) := Real.rpow_nonneg hs.le _
+    exact mul_le_mul_of_nonneg_right (by linarith) hsp
+  calc 2 ^ d * Λ ≤ 2 ^ d * (cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d)) := hstep
+    _ ≤ η * s * ((1 / 2) * (M * σ ^ 2 / t)) := hfin
+    _ ≤ η * s * ((1 - Λ) * (M * σ ^ 2 / t)) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h1Λ (by positivity)) (by positivity)
+
+/-- The error condition: `softErr (n/(1-δ)) Λ κ s_p ≤ e₀`. -/
+theorem soft_err_le {n δ Λ κ sp s r C₀ η cU M σ e₀ : ℝ} (hn : n ≤ C₀ * s) (hδ : δ < 1) (hΛ0 : 0 ≤ Λ) (hΛ : Λ ≤ cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d))
+    (hΛ1 : Λ ≤ 1 / 2) (hvol : Λ / ((1 - Λ) * κ * sp ^ 2) ≤ η * s) (hs : 0 < s) (hσ : 0 < σ)
+    (hM : 0 < M) (hr : 0 < r) (hη : 0 < η) (hC₀ : 0 ≤ C₀) (hsp : sp = σ / Real.sqrt s)
+    (hκ : κ = M / r ^ 2) (hsr : s ^ (-(2 : ℝ) / d) * r ^ 2 = 1)
+    (hσerr : 2 * σ * Real.sqrt (C₀ / (1 - δ) + η) + σ ^ 2 * (C₀ / (1 - δ)) ≤ e₀ / 2)
+    (hMerr : 2 * cU * η ^ (-(2 : ℝ) / d) / M ≤ e₀ / 2) :
+    softErr (n / (1 - δ)) Λ κ sp ≤ e₀ := by
+  have hδ' : 0 < 1 - δ := by linarith
+  have hsqs : 0 < Real.sqrt s := Real.sqrt_pos.mpr hs
+  have hsp0 : 0 ≤ sp := by rw [hsp]; positivity
+  have hκ0 : 0 < κ := by rw [hκ]; positivity
+  unfold softErr
+  set X := Λ / ((1 - Λ) * κ * sp ^ 2) with hX
+  -- the first term
+  have hA1 : n / (1 - δ) + X ≤ (C₀ / (1 - δ) + η) * s := by
+    have : n / (1 - δ) ≤ C₀ / (1 - δ) * s := by
+      rw [div_mul_eq_mul_div, div_le_div_iff_of_pos_right hδ']; linarith
+    linarith
+  have hA2 : Real.sqrt (n / (1 - δ) + X)
+      ≤ Real.sqrt (C₀ / (1 - δ) + η) * Real.sqrt s := by
+    rw [← Real.sqrt_mul (by positivity)]
+    exact Real.sqrt_le_sqrt hA1
+  have hA : 2 * sp * Real.sqrt (n / (1 - δ) + X) ≤ 2 * σ * Real.sqrt (C₀ / (1 - δ) + η) := by
+    calc 2 * sp * Real.sqrt (n / (1 - δ) + X)
+        ≤ 2 * sp * (Real.sqrt (C₀ / (1 - δ) + η) * Real.sqrt s) :=
+          mul_le_mul_of_nonneg_left hA2 (by positivity)
+      _ = 2 * σ * Real.sqrt (C₀ / (1 - δ) + η) := by
+          rw [hsp]; field_simp
+  -- the second term
+  have hB : sp ^ 2 * (n / (1 - δ)) ≤ σ ^ 2 * (C₀ / (1 - δ)) := by
+    rw [hsp, div_pow, Real.sq_sqrt hs.le]
+    rw [div_mul_div_comm, div_le_iff₀ (by positivity)]
+    have : σ ^ 2 * n ≤ σ ^ 2 * (C₀ * s) := mul_le_mul_of_nonneg_left hn (by positivity)
+    calc σ ^ 2 * n ≤ σ ^ 2 * (C₀ * s) := this
+      _ = σ ^ 2 * (C₀ / (1 - δ)) * (s * (1 - δ)) := by field_simp
+  -- the third term
+  have hC : Λ / ((1 - Λ) * κ) ≤ 2 * cU * η ^ (-(2 : ℝ) / d) / M := by
+    have h1Λ : 1 / 2 ≤ 1 - Λ := by linarith
+    rw [div_le_div_iff₀ (by positivity) hM]
+    have h1 : Λ * M ≤ cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d) * M :=
+      mul_le_mul_of_nonneg_right hΛ hM.le
+    have h2 : cU * η ^ (-(2 : ℝ) / d) * s ^ (-(2 : ℝ) / d) * M
+        = cU * η ^ (-(2 : ℝ) / d) * κ * (s ^ (-(2 : ℝ) / d) * r ^ 2) := by
+      rw [hκ]; field_simp
+    rw [hsr, mul_one] at h2
+    have hcη : 0 ≤ cU * η ^ (-(2 : ℝ) / d) := by
+      by_contra hneg
+      push Not at hneg
+      have : Λ * M < 0 := by
+        calc Λ * M ≤ cU * η ^ (-(2 : ℝ) / d) * κ := h1.trans (le_of_eq h2)
+          _ < 0 := mul_neg_of_neg_of_pos hneg hκ0
+      nlinarith
+    have h3 : cU * η ^ (-(2 : ℝ) / d) * κ ≤ 2 * cU * η ^ (-(2 : ℝ) / d) * ((1 - Λ) * κ) := by
+      have : κ ≤ 2 * ((1 - Λ) * κ) := by nlinarith
+      nlinarith
+    linarith
+  linarith
+
+/-- The count of candidate sets in the exponent. -/
+theorem log_count_le {K₀ : ℕ} {t Kmax : ℝ} (hK : (K₀ : ℝ) ≤ Kmax) (ht : 0 ≤ t) :
+    Real.log (((K₀ + 1) * ((2 * t + 1) ^ d) ^ K₀ : ℝ))
+      ≤ Kmax * (1 + d * Real.log (2 * t + 1)) := by
+  have h2t : (1 : ℝ) ≤ 2 * t + 1 := by linarith
+  have hlog0 : 0 ≤ Real.log (2 * t + 1) := Real.log_nonneg h2t
+  rw [Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow]
+  have h1 : Real.log ((K₀ : ℝ) + 1) ≤ K₀ := by
+    have := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < K₀ + 1)
+    linarith
+  have hK0 : (0 : ℝ) ≤ K₀ := Nat.cast_nonneg _
+  have h2 : (K₀ : ℝ) * (d * Real.log (2 * t + 1)) ≤ Kmax * (d * Real.log (2 * t + 1)) :=
+    mul_le_mul_of_nonneg_right hK (by positivity)
+  nlinarith
+
 end Parking
 
 end
