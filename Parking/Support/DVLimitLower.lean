@@ -582,6 +582,95 @@ theorem small_n_bound (hd : 1 ≤ d) {a c K ε : ℝ} (ha : 0 < a) (hc : 0 ≤ c
     exact mul_le_mul_of_nonneg_right (by linarith only [hε]) hs0.le
   exact combine_two_terms hP hfirst hT2' hKs (Real.exp_pos _).le
 
+/-- **The bound at a fixed time**, from the bound for each range size. -/
+theorem log_rangeExp_le_of_terms (hd : 1 ≤ d) {a K ε s : ℝ} (ha : 0 ≤ a) {t : ℕ}
+    (hterm : ∀ n : ℕ, Real.exp (-(a * n)) * (siteWalkLaw d 0).real
+      {X | LatticeProb.rangeCard X t ≤ n} ≤ 3 * Real.exp (-((K - ε / 2) * s)))
+    (hlogt : Real.log (3 * ((t : ℝ) + 2)) ≤ ε / 2 * s) :
+    Real.log (rangeExp d a t) ≤ -((K - ε) * s) := by
+  have hZ := rangeExp_pos hd ha t
+  have hsum := rangeExp_le_sum hd ha t
+  have hle : rangeExp d a t ≤ ((t : ℝ) + 2) * (3 * Real.exp (-((K - ε / 2) * s))) := by
+    refine hsum.trans ?_
+    calc ∑ n ∈ Finset.range (t + 2), Real.exp (-(a * n)) *
+          (siteWalkLaw d 0).real {X | LatticeProb.rangeCard X t ≤ n}
+        ≤ ∑ _n ∈ Finset.range (t + 2), 3 * Real.exp (-((K - ε / 2) * s)) :=
+          Finset.sum_le_sum fun n _ => hterm n
+      _ = ((t : ℝ) + 2) * (3 * Real.exp (-((K - ε / 2) * s))) := by
+          rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; push_cast; ring
+  have hL := Real.log_le_log hZ hle
+  rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by norm_num) (by positivity),
+    Real.log_exp] at hL
+  have e : Real.log ((t : ℝ) + 2) + Real.log 3 = Real.log (3 * ((t : ℝ) + 2)) := by
+    rw [Real.log_mul (by norm_num) (by positivity)]; ring
+  linarith only [hL, e, hlogt]
+
+/-- The large range sizes: `e^{-an} ≤ e^{-(K+1)s}` when `a n ≥ (K+1) s`. -/
+theorem large_n_bound (hd : 1 ≤ d) {a K ε s C₀ : ℝ} (ha : 0 < a) (hs : 0 ≤ s) (hε : 0 < ε)
+    (hC₀ : K + 1 ≤ a * C₀) {t n : ℕ} (hn : C₀ * s ≤ n) :
+    Real.exp (-(a * n)) * (siteWalkLaw d 0).real {X | LatticeProb.rangeCard X t ≤ n}
+      ≤ 3 * Real.exp (-((K - ε / 2) * s)) := by
+  have : NeZero d := ⟨by omega⟩
+  have hP : (siteWalkLaw d 0).real {X | LatticeProb.rangeCard X t ≤ n} ≤ 1 := measureReal_le_one
+  have hP0 : 0 ≤ (siteWalkLaw d 0).real {X | LatticeProb.rangeCard X t ≤ n} := measureReal_nonneg
+  have h1 : Real.exp (-(a * n)) ≤ Real.exp (-((K - ε / 2) * s)) := by
+    refine Real.exp_le_exp.mpr (neg_le_neg ?_)
+    have h2 : (K + 1) * s ≤ a * C₀ * s := mul_le_mul_of_nonneg_right hC₀ hs
+    have h3 : a * C₀ * s ≤ a * n := by
+      calc a * C₀ * s = a * (C₀ * s) := by ring
+        _ ≤ a * n := mul_le_mul_of_nonneg_left hn ha.le
+    have h4 : (K - ε / 2) * s ≤ (K + 1) * s := mul_le_mul_of_nonneg_right (by linarith) hs
+    linarith
+  calc Real.exp (-(a * n)) * (siteWalkLaw d 0).real {X | LatticeProb.rangeCard X t ≤ n}
+      ≤ Real.exp (-(a * n)) * 1 := mul_le_mul_of_nonneg_left hP (Real.exp_pos _).le
+    _ ≤ 3 * Real.exp (-((K - ε / 2) * s)) := by
+        have := Real.exp_pos (-((K - ε / 2) * s))
+        linarith
+
+/-! ### Eventual facts -/
+
+/-- `log (3 (t + 2)) ≤ c' t^{d/(d+2)}` eventually. -/
+theorem eventually_log_le (hd : 1 ≤ d) {c' : ℝ} (hc' : 0 < c') :
+    ∀ᶠ t : ℕ in atTop, Real.log (3 * ((t : ℝ) + 2)) ≤ c' * (t : ℝ) ^ ((d : ℝ) / (d + 2)) := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  set ρ : ℝ := (d : ℝ) / (d + 2) with hρ
+  have hρ0 : 0 < ρ := by positivity
+  have ho := isLittleO_log_rpow_atTop hρ0
+  have htend : Tendsto (fun t : ℕ => 3 * ((t : ℝ) + 2)) atTop atTop :=
+    (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop).const_mul_atTop
+      (by norm_num)
+  have h9 : (0 : ℝ) < (9 : ℝ) ^ ρ := by positivity
+  have hb := (ho.comp_tendsto htend).bound (c := c' / (9 : ℝ) ^ ρ) (by positivity)
+  filter_upwards [hb, eventually_ge_atTop 1] with t ht ht1
+  have ht1' : (1 : ℝ) ≤ t := by exact_mod_cast ht1
+  simp only [Function.comp, Real.norm_eq_abs] at ht
+  have hx : 0 ≤ 3 * ((t : ℝ) + 2) := by positivity
+  rw [abs_of_nonneg (Real.rpow_nonneg hx _)] at ht
+  have h1 : (3 * ((t : ℝ) + 2)) ^ ρ ≤ (9 * (t : ℝ)) ^ ρ :=
+    Real.rpow_le_rpow hx (by linarith) hρ0.le
+  have h2 : (9 * (t : ℝ)) ^ ρ = (9 : ℝ) ^ ρ * (t : ℝ) ^ ρ :=
+    Real.mul_rpow (by norm_num) (by positivity)
+  calc Real.log (3 * ((t : ℝ) + 2)) ≤ |Real.log (3 * ((t : ℝ) + 2))| := le_abs_self _
+    _ ≤ c' / (9 : ℝ) ^ ρ * (3 * ((t : ℝ) + 2)) ^ ρ := ht
+    _ ≤ c' / (9 : ℝ) ^ ρ * ((9 : ℝ) ^ ρ * (t : ℝ) ^ ρ) := by
+        rw [← h2]; exact mul_le_mul_of_nonneg_left h1 (by positivity)
+    _ = c' * (t : ℝ) ^ ρ := by field_simp
+
+/-- `((m + 1)/m)^d ≤ 1 + δ` for large `m`. -/
+theorem exists_ratio_pow_le (d : ℕ) {δ : ℝ} (hδ : 0 < δ) :
+    ∃ M₀ : ℕ, ∀ m : ℕ, M₀ ≤ m → 0 < m → (((m : ℝ) + 1) / m) ^ d ≤ 1 + δ := by
+  have h0 := tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ)
+  have h1 : Tendsto (fun m : ℕ => (1 + 1 / (m : ℝ)) ^ d) atTop (𝓝 ((1 + 0) ^ d)) :=
+    (tendsto_const_nhds.add h0).pow d
+  simp only [add_zero, one_pow] at h1
+  obtain ⟨M₀, hM₀⟩ := eventually_atTop.mp (h1.eventually (gt_mem_nhds (by linarith :
+    (1 : ℝ) < 1 + δ)))
+  refine ⟨M₀, fun m hm hmpos => ?_⟩
+  have hmr : (0 : ℝ) < m := by exact_mod_cast hmpos
+  have : ((m : ℝ) + 1) / m = 1 + 1 / m := by field_simp
+  rw [this]
+  exact (hM₀ m hm).le
+
 end Parking
 
 end
