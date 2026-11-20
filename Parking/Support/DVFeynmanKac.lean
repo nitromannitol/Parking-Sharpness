@@ -457,6 +457,231 @@ theorem fkMean_le (hd : 1 ≤ d) (U : Finset (Site d)) {κ : ℝ} (hκ : 0 ≤ �
     _ = |y| := one_mul _
     _ ≤ _ := hyabs
 
+/-! ### The Rayleigh bound from soft killing -/
+
+theorem sqMass_const_mul (c : ℝ) (g : Site d → ℝ) :
+    sqMass (fun x => c * g x) = c ^ 2 * sqMass g := by
+  unfold sqMass
+  rw [← tsum_mul_left]
+  exact tsum_congr fun x => by ring
+
+theorem latEnergy_const_mul (c : ℝ) (g : Site d → ℝ) :
+    latEnergy (fun x => c * g x) = c ^ 2 * latEnergy g := by
+  unfold latEnergy dirEnergy
+  rw [mul_div_assoc', Finset.mul_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← tsum_mul_left]
+  exact tsum_congr fun x => by ring
+
+theorem massOff_const_mul (U : Finset (Site d)) (c : ℝ) (g : Site d → ℝ) :
+    massOff U (fun x => c * g x) = c ^ 2 * massOff U g := by
+  unfold massOff
+  rw [← tsum_mul_left]
+  exact tsum_congr fun x => by split_ifs <;> ring
+
+theorem tsum_mul_symOp_eq (hd : 1 ≤ d) (U : Finset (Site d)) (κ : ℝ) {w : Site d → ℝ}
+    (hw : FinSupp w) :
+    ∑' x, w x * symOp U κ w x = sqMass (fun x => halfWeight U κ x * w x)
+      - latEnergy (fun x => halfWeight U κ x * w x) := by
+  have hg₀fs : FinSupp fun x => halfWeight U κ x * w x := by
+    obtain ⟨V, hV⟩ := hw
+    exact ⟨V, fun x hx => by show halfWeight U κ x * w x = 0; rw [hV x hx, mul_zero]⟩
+  rw [latEnergy_eq_sqMass_sub hd hg₀fs]
+  ring_nf
+  refine tsum_congr fun x => ?_
+  simp only [symOp]
+  ring
+
+theorem sqMass_eq_halfWeight (U : Finset (Site d)) (κ : ℝ) {w : Site d → ℝ} (hw : FinSupp w) :
+    sqMass w = sqMass (fun x => halfWeight U κ x * w x)
+      + (Real.exp κ - 1) * massOff U (fun x => halfWeight U κ x * w x) := by
+  have hg₀fs : FinSupp fun x => halfWeight U κ x * w x := by
+    obtain ⟨V, hV⟩ := hw
+    exact ⟨V, fun x hx => by show halfWeight U κ x * w x = 0; rw [hV x hx, mul_zero]⟩
+  have hs1 : Summable fun x => (halfWeight U κ x * w x) ^ 2 := hg₀fs.summable_sq
+  have hs2 : Summable fun x => if x ∈ U then (0 : ℝ) else (halfWeight U κ x * w x) ^ 2 := by
+    obtain ⟨V, hV⟩ := hw
+    exact summable_of_ne_finset_zero (s := V) fun x hx => by
+      split_ifs <;> simp [hV x hx]
+  unfold sqMass massOff
+  rw [← tsum_mul_left, ← Summable.tsum_add hs1 (hs2.mul_left _)]
+  refine tsum_congr fun x => ?_
+  simp only [halfWeight]
+  split_ifs
+  · ring
+  · have : Real.exp κ * Real.exp (-κ / 2) ^ 2 = 1 := by
+      rw [← Real.exp_nat_mul, ← Real.exp_add]
+      rw [show κ + ((2 : ℕ) : ℝ) * (-κ / 2) = 0 by push_cast; ring, Real.exp_zero]
+    calc w x ^ 2 = (Real.exp κ * Real.exp (-κ / 2) ^ 2) * w x ^ 2 := by rw [this, one_mul]
+      _ = _ := by ring
+
+/-- **The Rayleigh bound**: with `Λ = dirichletRate d N < 1`, `κ₀ = (1 - Λ) κ` and
+`err = 2s √(|U| + Λ/(κ₀ s^2)) + s^2 |U| + Λ/κ₀ < 1`, every `w ≥ 0` has
+`⟨w, S w⟩ ≤ (1 - Λ (1 - err)) ‖w‖²` once `N ≥ |fatten U| + 2^d Λ/(κ₀ s^2)`. -/
+theorem rayleigh_symOp_le (hd : 1 ≤ d) (U : Finset (Site d)) {κ s : ℝ} (hκ : 0 < κ)
+    (hs : 0 < s) {N : ℕ} (hΛ1 : dirichletRate d N < 1)
+    (hN : ((fatten U).card : ℝ) + 2 ^ d * (dirichletRate d N
+      / ((1 - dirichletRate d N) * κ * s ^ 2)) ≤ N)
+    (herr : 2 * s * Real.sqrt (U.card + dirichletRate d N
+        / ((1 - dirichletRate d N) * κ * s ^ 2)) + s ^ 2 * U.card
+      + dirichletRate d N / ((1 - dirichletRate d N) * κ) < 1) :
+    ∀ w : Site d → ℝ, FinSupp w → (∀ x, 0 ≤ w x) →
+      ∑' x, w x * symOp U κ w x
+        ≤ (1 - dirichletRate d N * (1 - (2 * s * Real.sqrt (U.card + dirichletRate d N
+          / ((1 - dirichletRate d N) * κ * s ^ 2)) + s ^ 2 * U.card
+          + dirichletRate d N / ((1 - dirichletRate d N) * κ)))) * sqMass w := by
+  intro w hw hw0
+  set Λ := dirichletRate d N with hΛ
+  have hΛ0 : 0 ≤ Λ := dirichletRate_nonneg d N
+  set κ₀ := (1 - Λ) * κ with hκ₀
+  have hκ₀0 : 0 < κ₀ := mul_pos (by linarith) hκ
+  set err : ℝ → ℝ := fun lam => 2 * s * Real.sqrt (U.card + lam / (κ₀ * s ^ 2))
+    + s ^ 2 * U.card + lam / κ₀ with herrdef
+  have herr_mono : ∀ lam, lam ≤ Λ → err lam ≤ err Λ := by
+    intro lam hlam
+    simp only [herrdef]
+    have h1 : lam / (κ₀ * s ^ 2) ≤ Λ / (κ₀ * s ^ 2) :=
+      div_le_div_of_nonneg_right hlam (by positivity)
+    have h2 : lam / κ₀ ≤ Λ / κ₀ := div_le_div_of_nonneg_right hlam hκ₀0.le
+    have h3 := Real.sqrt_le_sqrt (by linarith : (U.card : ℝ) + lam / (κ₀ * s ^ 2)
+      ≤ U.card + Λ / (κ₀ * s ^ 2))
+    nlinarith
+  have herrΛ : err Λ < 1 := by
+    simp only [herrdef, hκ₀]
+    rw [show (1 - Λ) * κ * s ^ 2 = (1 - Λ) * κ * s ^ 2 from rfl]
+    exact herr
+  have herr0 : ∀ lam, 0 ≤ lam → 0 ≤ err lam := fun lam h => by simp only [herrdef]; positivity
+  set lstar := Λ * (1 - err Λ) with hlstar
+  have hlstar_le : lstar ≤ Λ := by
+    have := herr0 Λ hΛ0
+    nlinarith
+  have hlstar0 : 0 ≤ lstar := mul_nonneg hΛ0 (by linarith)
+  change ∑' x, w x * symOp U κ w x ≤ (1 - lstar) * sqMass w
+  by_contra hcon
+  push Not at hcon
+  -- the function `g₀ = D w`
+  set g₀ : Site d → ℝ := fun x => halfWeight U κ x * w x with hg₀
+  have hg₀fs : FinSupp g₀ := by
+    obtain ⟨V, hV⟩ := hw
+    exact ⟨V, fun x hx => by show halfWeight U κ x * w x = 0; rw [hV x hx, mul_zero]⟩
+  have hg₀0 : ∀ x, 0 ≤ g₀ x := fun x => mul_nonneg (halfWeight_pos U κ x).le (hw0 x)
+  have hquad : ∑' x, w x * symOp U κ w x = sqMass g₀ - latEnergy g₀ :=
+    tsum_mul_symOp_eq hd U κ hw
+  have hmassw : sqMass w = sqMass g₀ + (Real.exp κ - 1) * massOff U g₀ :=
+    sqMass_eq_halfWeight U κ hw
+  set M := sqMass g₀ with hM
+  set Mo := massOff U g₀ with hMo
+  have hMo0 : 0 ≤ Mo := massOff_nonneg U g₀
+  have hE0 : 0 ≤ latEnergy g₀ := latEnergy_nonneg g₀
+  have hexpκ : κ ≤ Real.exp κ - 1 := by linarith [Real.add_one_le_exp κ]
+  -- `E + (1 - λ*)(e^κ - 1) Mo < λ* M`
+  have hkey : latEnergy g₀ + (1 - lstar) * (Real.exp κ - 1) * Mo < lstar * M := by
+    rw [hquad, hmassw] at hcon
+    have hexp : (1 - lstar) * (M + (Real.exp κ - 1) * Mo)
+        = (1 - lstar) * M + (1 - lstar) * (Real.exp κ - 1) * Mo := by ring
+    rw [hexp] at hcon
+    have hexp2 : (1 - lstar) * M = M - lstar * M := by ring
+    linarith
+  have hMpos : 0 < M := by
+    by_contra hM0
+    push Not at hM0
+    have hM0' : M = 0 := le_antisymm hM0 (sqMass_nonneg _)
+    rw [hM0', mul_zero] at hkey
+    have h1 : 0 ≤ (1 - lstar) * (Real.exp κ - 1) * Mo :=
+      mul_nonneg (mul_nonneg (by linarith) (by linarith)) hMo0
+    linarith
+  -- normalize
+  set c : ℝ := 1 / Real.sqrt M with hc
+  have hc2 : c ^ 2 * M = 1 := by
+    rw [hc, div_pow, one_pow, Real.sq_sqrt hMpos.le]
+    field_simp
+  set g : Site d → ℝ := fun x => c * g₀ x with hg
+  have hgfs : FinSupp g := by
+    obtain ⟨V, hV⟩ := hg₀fs
+    exact ⟨V, fun x hx => by show c * g₀ x = 0; rw [hV x hx, mul_zero]⟩
+  have hg0 : ∀ x, 0 ≤ g x := fun x => mul_nonneg (by positivity) (hg₀0 x)
+  have hgM : sqMass g = 1 := by rw [hg, sqMass_const_mul, hc2]
+  set lam := latEnergy g + κ₀ * massOff U g with hlam
+  have hlamlt : lam < lstar := by
+    have h1 : κ₀ ≤ (1 - lstar) * (Real.exp κ - 1) := by
+      rw [hκ₀]
+      exact mul_le_mul (by linarith) hexpκ hκ.le (by linarith)
+    have h2 : lam = c ^ 2 * (latEnergy g₀ + κ₀ * Mo) := by
+      rw [hlam, hg, latEnergy_const_mul, massOff_const_mul]
+      ring
+    have h3 : latEnergy g₀ + κ₀ * Mo < lstar * M := by
+      have := mul_le_mul_of_nonneg_right h1 hMo0
+      linarith
+    rw [h2]
+    have hc0 : 0 < c ^ 2 := by positivity
+    calc c ^ 2 * (latEnergy g₀ + κ₀ * Mo) < c ^ 2 * (lstar * M) :=
+          mul_lt_mul_of_pos_left h3 hc0
+      _ = lstar * (c ^ 2 * M) := by ring
+      _ = lstar := by rw [hc2, mul_one]
+  have hlam0 : 0 ≤ lam := add_nonneg (latEnergy_nonneg g)
+    (mul_nonneg hκ₀0.le (massOff_nonneg U g))
+  have hlamΛ : lam ≤ Λ := hlamlt.le.trans hlstar_le
+  have hNlam : ((fatten U).card : ℝ) + 2 ^ d * (lam / (κ₀ * s ^ 2)) ≤ N := by
+    refine le_trans ?_ hN
+    have : lam / (κ₀ * s ^ 2) ≤ Λ / ((1 - Λ) * κ * s ^ 2) := by
+      rw [show (1 - Λ) * κ * s ^ 2 = κ₀ * s ^ 2 by rw [hκ₀]]
+      exact div_le_div_of_nonneg_right hlamΛ (by positivity)
+    have h2d : (0 : ℝ) ≤ 2 ^ d := by positivity
+    have := mul_le_mul_of_nonneg_left this h2d
+    linarith
+  have herrlam : err lam < 1 := lt_of_le_of_lt (herr_mono lam hlamΛ) herrΛ
+  have hsoft := dirichletRate_mul_le_of_soft hgfs hg0 hgM hκ₀0 hs le_rfl hNlam herrlam
+  have h1 : Λ * (1 - err Λ) ≤ Λ * (1 - err lam) :=
+    mul_le_mul_of_nonneg_left (by linarith [herr_mono lam hlamΛ]) hΛ0
+  have h2 : Λ * (1 - err lam) ≤ lam := hsoft
+  linarith
+
+/-! ### The probability of a short time outside `U` -/
+
+theorem measurable_outCount (U : Finset (Site d)) (t : ℕ) :
+    Measurable fun X : ℕ → Site d => outCount U X t :=
+  measurable_of_dependsUpTo (n := t) fun X Y hXY => by
+    unfold outCount
+    refine Finset.sum_congr rfl fun j hj => ?_
+    rw [hXY j (Finset.mem_range.mp hj).le]
+
+/-- **A short time outside `U` costs the soft-killing rate**:
+`P_0(T_t(U) ≤ θ) ≤ e^{κ θ} E_0 e^{-κ T_t(U)}`. -/
+theorem measureReal_outCount_le (hd : 1 ≤ d) (U : Finset (Site d)) {κ : ℝ} (hκ : 0 ≤ κ)
+    (θ : ℝ) (t : ℕ) :
+    (siteWalkLaw d 0).real {X | (outCount U X t : ℝ) ≤ θ}
+      ≤ Real.exp (κ * θ) * fkMean U κ t 0 := by
+  have : NeZero d := ⟨by omega⟩
+  have hm := measurable_outCount (d := d) U t
+  set S : Set (ℕ → Site d) := {X | (outCount U X t : ℝ) ≤ θ} with hS
+  have hSm : MeasurableSet S := measurableSet_le (Measurable.of_discrete.comp hm) measurable_const
+  have hfm : Measurable fun X : ℕ → Site d => Real.exp (-κ * outCount U X t) :=
+    (Measurable.of_discrete (f := fun k : ℕ => Real.exp (-κ * k))).comp hm
+  have hint : Integrable (fun X : ℕ → Site d => Real.exp (κ * θ) * Real.exp (-κ * outCount U X t))
+      (siteWalkLaw d 0) := by
+    refine Integrable.const_mul ?_ _
+    refine Integrable.of_bound hfm.aestronglyMeasurable 1 (Filter.Eventually.of_forall fun X => ?_)
+    rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    exact Real.exp_le_one_iff.mpr (by
+      have : (0 : ℝ) ≤ outCount U X t := Nat.cast_nonneg _
+      nlinarith)
+  have hind : Integrable (S.indicator fun _ => (1 : ℝ)) (siteWalkLaw d 0) :=
+    (integrable_const (1 : ℝ)).indicator hSm
+  calc (siteWalkLaw d 0).real S = ∫ X, S.indicator (fun _ => (1 : ℝ)) X ∂(siteWalkLaw d 0) := by
+        rw [integral_indicator_const _ hSm, smul_eq_mul, mul_one]
+    _ ≤ ∫ X, Real.exp (κ * θ) * Real.exp (-κ * outCount U X t) ∂(siteWalkLaw d 0) := by
+        refine integral_mono hind hint fun X => ?_
+        by_cases hX : X ∈ S
+        · rw [Set.indicator_of_mem hX, ← Real.exp_add]
+          refine Real.one_le_exp_iff.mpr ?_
+          have : (outCount U X t : ℝ) ≤ θ := hX
+          nlinarith
+        · rw [Set.indicator_of_notMem hX]
+          positivity
+    _ = Real.exp (κ * θ) * fkMean U κ t 0 := by
+        rw [integral_const_mul, integral_exp_outCount hd]
+
 end Parking
 
 end
