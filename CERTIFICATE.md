@@ -12,7 +12,7 @@ shared library `LatticeProb`, under the hypotheses displayed in their frozen
 declarations, with no added axiom and no `sorry`, for every node in state
 `SEALED` or `PROVED` below.  Cited inputs are proposition-valued predicates in
 `Parking/External/`, carried as explicit hypotheses together with each
-theorem's own hypotheses; 12 of the 13 are proved inside this
+theorem's own hypotheses; 13 of the 13 are proved inside this
 repository and are marked accordingly.  `CORRESPONDENCE.md` records the correspondence with
 the paper and `PROOF.md` describes the proof and the Lean tree.
 
@@ -25,7 +25,7 @@ the paper and `PROOF.md` describes the proof and the Lean tree.
 | Lattice-Probability revision | `89de1230d02e1a737a9c7ecd776d34070be014ee` |
 | Divisible-Sandpile-Percolation revision | `8470df06ae1c7847decf57f86b741bc7a4fc5d2e` |
 | Paper (`paper/parking.tex`) SHA-256 | `4aa03aee7c30e24bffc9a4e8220f775b5c71706e694dcd9bcffc865c8135d3a0` |
-| Build | succeeded, 11818 jobs |
+| Build | succeeded, 11849 jobs |
 | Build warnings in this repository's modules | 0 |
 | Generated | 2026-11-20 |
 
@@ -76,7 +76,7 @@ is expected exactly at the nodes whose state is not `SEALED` or `PROVED`.
 | 22 | `lem-nearest-one-point` | `Parking.Frozen.nearest_one_point` | `PROVED` | `lem:nearest-one-point` | classical only |
 | 23 | `prop-nearest-two-hole` | `Parking.Frozen.nearest_two_hole` | `PROVED` | `prop:nearest-two-hole` | classical only |
 | 24 | `thm-nearest-counterexample` | `Parking.Frozen.nearest_counterexample` | `PROVED` | `thm:nearest-counterexample` | classical only |
-| 25 | `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | `FROZEN` | lines 117-121 | assumed (a cited theorem, stated as a proposition) |
+| 25 | `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | `FROZEN` | lines 117-121 | carried as a hypothesis; proved by `Parking.External.donskerVaradhanRange_holds` (classical only) |
 | 26 | `prop-resolvent` | `Parking.Frozen.resolvent` | `PROVED` | `prop:resolvent` | classical only |
 | 27 | `lem-product` | `Parking.Frozen.product` | `PROVED` | `lem:product` | classical only |
 | 28 | `thm-subcritical` | `Parking.Frozen.subcritical` | `PROVED` | `thm:subcritical` | classical only |
@@ -122,21 +122,22 @@ is expected exactly at the nodes whose state is not `SEALED` or `PROVED`.
 | 68 | `ext-oriented-stopping-stability-holds` | `Parking.External.orientedStoppingStability_holds` | `SEALED` | lines 3214-3218 | classical only |
 | 69 | `ext-spatial-odometer-scaling-holds` | `Parking.External.spatialOdometerScaling_holds` | `SEALED` | lines 1756-1767 | classical only |
 | 70 | `ext-spatial-stopping-stability-holds` | `Parking.External.spatialStoppingStability_holds` | `SEALED` | lines 1756-1767 | classical only |
-| 71 | `thm-subcritical-tail-proved` | `Parking.subcritical_tail_proved` | `SEALED` | `thm:subcritical-tail` | classical only |
-| 72 | `thm-master-proved` | `Parking.master_proved` | `SEALED` | `thm:master` | classical only |
-| 73 | `cor-growth-proved` | `Parking.growth_proved` | `SEALED` | `cor:growth` | classical only |
-| 74 | `thm-trichotomy-proved` | `Parking.trichotomy_proved` | `SEALED` | `thm:trichotomy` | classical only |
-| 75 | `thm-nearest-proved` | `Parking.nearest_proved` | `SEALED` | `thm:nearest` | classical only |
-| 76 | `thm-nearest-counterexample-proved` | `Parking.nearest_counterexample_proved` | `SEALED` | `thm:nearest-counterexample` | classical only |
-| 77 | `thm-near-proved` | `Parking.near_proved` | `SEALED` | `thm:near` | classical only |
-| 78 | `prop-oriented-scaling-proved` | `Parking.oriented_scaling_proved` | `SEALED` | `prop:oriented-scaling` | classical only |
-| 79 | `thm-oriented-walk-proved` | `Parking.oriented_walk_proved` | `SEALED` | `thm:oriented-walk` | classical only |
+| 71 | `ext-donsker-varadhan-holds` | `Parking.External.donskerVaradhanRange_holds` | `SEALED` | lines 117-121 | classical only |
+| 72 | `thm-subcritical-tail-proved` | `Parking.subcritical_tail_proved` | `SEALED` | `thm:subcritical-tail` | classical only |
+| 73 | `thm-master-proved` | `Parking.master_proved` | `SEALED` | `thm:master` | classical only |
+| 74 | `cor-growth-proved` | `Parking.growth_proved` | `SEALED` | `cor:growth` | classical only |
+| 75 | `thm-trichotomy-proved` | `Parking.trichotomy_proved` | `SEALED` | `thm:trichotomy` | classical only |
+| 76 | `thm-nearest-proved` | `Parking.nearest_proved` | `SEALED` | `thm:nearest` | classical only |
+| 77 | `thm-nearest-counterexample-proved` | `Parking.nearest_counterexample_proved` | `SEALED` | `thm:nearest-counterexample` | classical only |
+| 78 | `thm-near-proved` | `Parking.near_proved` | `SEALED` | `thm:near` | classical only |
+| 79 | `prop-oriented-scaling-proved` | `Parking.oriented_scaling_proved` | `SEALED` | `prop:oriented-scaling` | classical only |
+| 80 | `thm-oriented-walk-proved` | `Parking.oriented_walk_proved` | `SEALED` | `thm:oriented-walk` | classical only |
 
-All 66 theorem declarations with a clean closure have axiom closures
-contained in the three classical axioms; the 66 theorem nodes in state
+All 67 theorem declarations with a clean closure have axiom closures
+contained in the three classical axioms; the 67 theorem nodes in state
 `SEALED` or `PROVED` are exactly these.  The 11 external definitions in
 state `FROZEN` supply no closure of their own; the certified statements that
-use them carry them as hypotheses, and 10 of them are proved by the
+use them carry them as hypotheses, and 11 of them are proved by the
 companion theorem named above.  The 2 in state `SEALED` are proved by
 the companion theorem named above. A clean closure for a `definition` node's own export reports only
 that stating the proposition needed no axiom, not that the proposition is
@@ -154,7 +155,7 @@ found by searching the frozen text itself, not by a maintained list.
 | `ext-bernstein` | `Parking.External.Bernstein` | `FROZEN` | `lem-nearest-one-point`, `prop-nearest-two-hole`, `thm-nearest-counterexample`, `prop-w-moment`, `thm-master`, `cor-growth`, `prop-discrepancy`, `thm-trichotomy`, `prop-everyone-settles`, `thm-near`, `thm-upper`, `thm-oriented-walk`, `prop-spatial-scaling`, `thm-nearest` |
 | `ext-stopping` | `Parking.External.Stopping` | `SEALED` | `thm-four-sparse`, `thm-trichotomy`, `lem-mean-horizon`, `prop-near-divisible`, `thm-near` |
 | `ext-green-gradient` | `Parking.External.GreenGradient` | `SEALED` | `lem-gamma-sum` |
-| `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | `FROZEN` | `thm-subcritical-tail` |
+| `ext-donsker-varadhan` | `Parking.External.DonskerVaradhanRange` | `FROZEN` | `thm-subcritical-tail`, `ext-donsker-varadhan-holds` |
 | `ext-multivariate-berry-esseen` | `Parking.External.MultivariateBerryEsseen` | `FROZEN` | `thm-nearest` |
 | `ext-spatial-fixed-time-tightness` | `Parking.External.SpatialFixedTimeTightness` | `FROZEN` | — |
 | `ext-heat-compactness` | `Parking.External.HeatCompactness` | `FROZEN` | `prop-spatial-scaling`, `thm-nearest`, `ext-heat-compactness-proved` |
@@ -243,6 +244,7 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 | `ext-oriented-stopping-stability-holds` | `829eadb6c4c14c48b4356e74319d46b7a667977f2d5b802cc4cf694f415e4598` |
 | `ext-spatial-odometer-scaling-holds` | `9440ef34c531d6cb9b9e596bfb51e7b5f1b088e0ca01b4a3a75ff966f9a78bdc` |
 | `ext-spatial-stopping-stability-holds` | `cb80377518d828f72938070967ff9375fd94a3d1d1707ea3b9c885c7ea4651e2` |
+| `ext-donsker-varadhan-holds` | `b11809a21d35e2071de631dc376e8fd420992ae8cadf86ea536a9a15eee6a4fc` |
 | `thm-subcritical-tail-proved` | `cfa79b532995302991a7cfd0ec1c0879015a38bd959f21d671df76a8f016b99e` |
 | `thm-master-proved` | `48800420726e203762ba18fcb31a234a8bffeb81c707a3e1a4782f0c65ac7610` |
 | `cor-growth-proved` | `d20229b11c3731776023eba35be3674e6f0bbbcf1023d13080f46225bf745ed2` |
@@ -257,7 +259,7 @@ verifies these; the recipe is in `CORRESPONDENCE.md`.
 
 - The cited theorems in `Parking/External/` marked *assumed* above are not
   proved here; each statement that uses one carries it as an explicit
-  hypothesis. 12 of the 13 are proved in this repository or the
+  hypothesis. 13 of the 13 are proved in this repository or the
   shared library and are marked with the theorem that proves them.
 - The proof ideas and the related work of the paper's introduction are
   outside the formalization.
