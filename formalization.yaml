@@ -76,10 +76,12 @@ status:
     range asymptotic. Sandpile growth and spatial
     odometer scaling have proofs conditional on continuum stopping inputs in
     Divisible-Sandpile-Percolation. Spatial fixed-time tightness and spatial
-    stopping stability are hypotheses of no registered result. The unproved
-    leaves used by the registered main results are the full range asymptotic,
-    oriented stopping stability, continuum stopping stability, and continuum
-    optimal stopping. The Bernstein-supplied main theorem variants
+    stopping stability are hypotheses of no registered result. The original
+    main theorem statements include the full range asymptotic, oriented stopping
+    stability, continuum stopping stability, and continuum optimal stopping as
+    inputs. Oriented stopping stability follows from continuum stopping stability,
+    and the oriented walk has a presentation using only that input. The
+    Bernstein-supplied main theorem variants
     are in Parking/MainTheoremsBernsteinProved.lean and
     Parking/MainTheoremsBernsteinConsequences.lean.
     Not formalized: the proof-overview and related-work
@@ -207,6 +209,13 @@ status:
           source: "Pinelis, Theorems 4.1 and 3.3"
         - statement: "the cutoff and stability estimates of the parabolic scaling limit (Parking.External.OrientedStoppingStability), carried as an explicit hypothesis"
           source: "in the shape of Coquet and Toldo, Theorem 3 and Corollary 4"
+    - declaration: "Parking.oriented_walk_of_bernstein_and_continuum_stopping"
+      file: "Parking/MainTheoremsOrientedConsequences.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies:
+        - statement: "Sandpile.External.ContinuumStoppingStability, carried as an explicit hypothesis"
+          source: "Bou-Rabee and Panagiotis, parabolic scaling limit"
     - declaration: "ParkingAudit.subcritical_tail"
       file: "ParkingAudit/SubcriticalTail/Solution.lean"
       sorry_count: 0

@@ -59,7 +59,8 @@ and `Parking/MainTheoremsBernsteinConsequences.lean` also supply the proved Bern
 `nearest_stability_of_bernstein` replaces spatial odometer scaling by continuum stopping stability.
 `nearest_of_proved_berry` also supplies the Berry–Esseen comparison, while
 `nearest_of_continuum_stopping` takes only the two continuum stopping inputs from the
-divisible sandpile as additional hypotheses.
+divisible sandpile as additional hypotheses. `oriented_walk_of_bernstein_and_continuum_stopping`
+takes continuum stopping stability as its only literature input.
 
 | Paper | Lean declaration | Content |
 | --- | --- | --- |
@@ -126,7 +127,8 @@ density, `E U_n(0) ≍ n^{1/4}` for `d = 2` and `E U_n(0) ≍ log n` for `d ≥ 
 the ratio to the oriented sandpile odometer tends to one, with a constant `μ > 0` such that
 `E U_n(0) ~ μ n^{1/4}` and `S_t ~ (μ/4) t^{-3/4}`. Hypotheses: `Bernstein`,
 `OrientedStoppingStability` (`UConcentration` is proved in the repository and is not a
-hypothesis here).
+hypothesis here). `Parking.oriented_walk_of_bernstein_and_continuum_stopping` derives the
+same conclusion assuming only `Sandpile.External.ContinuumStoppingStability`.
 
 In Lean, `Parking.law d ν` is the model, `Parking.meanU` and `Parking.meanu` are the means of
 the two odometers, `Parking.S` is the expected number of active particles, and
@@ -226,9 +228,10 @@ and lower bounds of stretched-exponential order `exp(-const · t^{d/(d+2)})` for
 assert the logarithmic limit or its constant. The upper bound uses lattice-animal counting
 (Kesten, *Percolation Theory for Mathematicians*, p. 85), an alternative to the argument
 in Varadhan's lecture notes; see [Correspondence](CORRESPONDENCE.md).
-The other unproved leaves used by the main results are `OrientedStoppingStability` and the
-two divisible-sandpile inputs `ContinuumStoppingStability` and `ContinuumOptimalStopping`
-described below.
+`OrientedStoppingStability` follows from `Sandpile.External.ContinuumStoppingStability`
+via `Parking.External.orientedStoppingStability_of_continuumStoppingStability`. The
+continuum stopping stability and continuum optimal stopping inputs remain as hypotheses
+in the corresponding divisible-sandpile consequences described below.
 
 The growth of the mean divisible sandpile odometer (`SandpileGrowth`) is also proved, in
 `Parking/External/SandpileGrowthProved.lean`, from the formalization of that paper; that theorem

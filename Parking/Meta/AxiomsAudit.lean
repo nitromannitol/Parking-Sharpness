@@ -6,6 +6,7 @@ import Parking.External.SpatialOdometerScalingProved
 import Parking.Support.RangeConfinement
 import Parking.Support.RangeUpperScaling
 import Parking.MainTheoremsBerryEsseenProved
+import Parking.MainTheoremsOrientedConsequences
 import ParkingAudit.SubcriticalTailUnconditional.Solution
 
 /-!
@@ -57,3 +58,8 @@ This file is not imported by the library root; the report runs when it is built 
 #print axioms Parking.nearest_of_proved_berry
 #print axioms Parking.nearest_of_continuum_stopping
 #print axioms ParkingAudit.subcritical_tail_unconditional
+
+#print axioms Parking.External.orientedStoppingStability_of_continuumStoppingStability
+#print axioms Parking.oriented_scaling_of_continuum_stopping
+#print axioms Parking.oriented_walk_of_continuum_stopping
+#print axioms Parking.oriented_walk_of_bernstein_and_continuum_stopping

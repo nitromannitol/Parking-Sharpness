@@ -36,6 +36,10 @@ def companions(nodes):
         "MultivariateBerryEsseen": {"id": "Parking.External.multivariateBerryEsseen",
                                      "file": "Parking/External/MultivariateBerryEsseenProved.lean",
                                      "unconditional": True},
+        "OrientedStoppingStability": {
+            "id": "Parking.External.orientedStoppingStability_of_continuumStoppingStability",
+            "file": "Parking/External/OrientedStoppingStabilityOfDSP.lean",
+            "conditional_theorem": True},
         "SpatialFixedTimeTightness": {
             "id": "Parking.External.spatialFixedTimeTightness",
             "file": "Parking/External/SpatialFixedTimeTightnessProved.lean", "unconditional": True},
@@ -74,6 +78,12 @@ def conditional(c):
     binders proves it only under them (for example only on transient graphs), and the reader
     must see which, so its statement is shown beside the assumed one.
     """
+    if c.get("conditional_theorem"):
+        source = (ROOT / c["file"]).read_text(encoding="utf-8")
+        start = re.search(r"(?m)^theorem\s+" + re.escape(c["id"]) + r"\b", source)
+        if not start:
+            raise ValueError(f"missing conditional theorem {c['id']}")
+        return source[start.start():].split(":=", 1)[0].rstrip()
     if c.get("unconditional") or "file" not in c or not c["file"].endswith("Proved.lean"):
         return None
     block = frozen_block(c["file"])

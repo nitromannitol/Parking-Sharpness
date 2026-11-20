@@ -43,6 +43,22 @@ presentations:
     remaining_inputs:
       - Sandpile.External.ContinuumStoppingStability
       - Sandpile.External.ContinuumOptimalStopping
+  - export: Parking.oriented_scaling_of_continuum_stopping
+    file: Parking/MainTheoremsOrientedConsequences.lean
+    source_node: prop-oriented-scaling
+    remaining_inputs:
+      - Sandpile.External.ContinuumStoppingStability
+  - export: Parking.oriented_walk_of_continuum_stopping
+    file: Parking/MainTheoremsOrientedConsequences.lean
+    source_node: thm-oriented-walk
+    remaining_inputs:
+      - Parking.External.Bernstein
+      - Sandpile.External.ContinuumStoppingStability
+  - export: Parking.oriented_walk_of_bernstein_and_continuum_stopping
+    file: Parking/MainTheoremsOrientedConsequences.lean
+    source_node: thm-oriented-walk
+    remaining_inputs:
+      - Sandpile.External.ContinuumStoppingStability
 nodes:
   - id: ext-bernstein
     version: 2

@@ -712,3 +712,5 @@ import Parking.Support.TailRangeBounds
 import Parking.Support.RangeConfinement
 import Parking.Support.RangeUpperScaling
 import Parking.MainTheoremsBerryEsseenProved
+
+import Parking.MainTheoremsOrientedConsequences
