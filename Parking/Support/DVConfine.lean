@@ -385,6 +385,43 @@ theorem exists_survival_ge (hd : 1 ≤ d) {V : Finset (Site d)} {g : Site d → 
   exact (pow_le_pow_iff_left₀ (pow_nonneg (by linarith) _)
     (mul_nonneg (Real.sqrt_nonneg _) hs0) (by norm_num : (2 : ℕ) ≠ 0)).mp hfin
 
+/-- The law of the walk from `x` gives the confinement event its survival probability. -/
+theorem measureReal_stayIn_eq_survival (hd : 1 ≤ d) (B : Finset (Site d)) (n : ℕ)
+    (x : Site d) :
+    (siteWalkLaw d x).real (Graph.stayIn (B : Set (Site d)) n) =
+      Network.survival (lattice d) B n x := by
+  have : NeZero d := ⟨by omega⟩
+  let S : Set (ℕ → Site d) := Graph.stayIn (B : Set (Site d)) n
+  let F : (ℕ → Site d) → ℝ := S.indicator 1
+  have hS : MeasurableSet S := Graph.measurableSet_stayIn _ n
+  have hFm : Measurable F := (measurable_const : Measurable (1 : (ℕ → Site d) → ℝ)).indicator hS
+  have hFb : ∀ X, ‖F X‖ ≤ 1 := by
+    intro X
+    by_cases hX : X ∈ S <;> simp [F, hX]
+  have hdep : ∀ X Y : ℕ → Site d, (∀ k ≤ n, X k = Y k) → F X = F Y := by
+    intro X Y hXY
+    have hiff : X ∈ S ↔ Y ∈ S := by
+      change (∀ k ≤ n, X k ∈ B) ↔ ∀ k ≤ n, Y k ∈ B
+      constructor <;> intro h k hk
+      · rw [← hXY k hk]; exact h k hk
+      · rw [hXY k hk]; exact h k hk
+    by_cases hX : X ∈ S
+    · simp [F, Set.indicator_of_mem hX, Set.indicator_of_mem (hiff.mp hX)]
+    · simp [F, Set.indicator_of_notMem hX,
+        Set.indicator_of_notMem (fun h => hX (hiff.mpr h))]
+  have hdeg : ∀ y : Site d, 0 < (lattice d).degree y := by
+    intro y
+    rw [Graph.Zd.degree_eq]
+    omega
+  have hint : (∫ X, F X ∂(siteWalkLaw d x)) =
+      ∫ X, F X ∂(Graph.walkLaw (lattice d) x) := by
+    calc ∫ X, F X ∂(siteWalkLaw d x) = Graph.walkExp (lattice d) n x F :=
+          (LatticeProb.walkExp_eq_integral n x F hdep).symm
+      _ = ∫ X, F X ∂(Graph.walkLaw (lattice d) x) :=
+          Graph.walkExp_eq_integral hdeg n x F hFm 1 hFb hdep
+  rw [← integral_indicator_one hS, hint, integral_indicator_one hS, measureReal_def,
+    Graph.walkLaw_stayIn hdeg, ENNReal.toReal_ofReal (Network.survival_nonneg B n x)]
+
 /-- **The lower bound on the range moment from a Dirichlet ratio**:
 `e^{-a|V|} (1 - μ)^{t+1} ≤ √|V| E_0 e^{-a|R_t|}` for any `h` vanishing off `V` with ratio
 `μ = latEnergy h / sqMass h ≤ 1`. -/
@@ -417,7 +454,7 @@ theorem rangeExp_ge_of_ratio (hd : 1 ≤ d) {a : ℝ} (ha : 0 ≤ a) {V : Finset
     rwa [add_neg_cancel] at this
   have hprob : (siteWalkLaw d 0).real {X : ℕ → Site d | ∀ j ≤ t, X j ∈ W}
       = Network.survival (lattice d) V t xs := by
-    rw [← hsurvW, ← measureReal_siteWalkLaw_stayIn hd W t 0]
+    rw [← hsurvW, ← measureReal_stayIn_eq_survival hd W t 0]
     rfl
   have hconf := rangeExp_ge_exp_mul_confinement_probability hd ha W t
   rw [hprob, hWcard] at hconf
