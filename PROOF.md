@@ -650,6 +650,23 @@ shared library rather than assumed, so they are read internally by
 `thm-nearest`, which carries `MultivariateBerryEsseen` alone among these
 three as an explicit hypothesis.
 
+Every cited input carried as an explicit hypothesis except
+`Parking.External.DonskerVaradhanRange` is also proved with no hypothesis:
+`Parking.External.bernstein`, `Parking.External.multivariateBerryEsseen`,
+`Parking.External.heatInteriorRegularity`, `Parking.External.heatCompactness`,
+`Parking.External.sandpileGrowth_holds` (from the hypothesis-free mean growth
+`Sandpile.mean_growth_le_three_proved` of the divisible sandpile formalization),
+`Parking.External.spatialOdometerScaling_holds` and
+`Parking.External.orientedStoppingStability_holds` (both from the proved continuum
+stopping stability `Sandpile.External.continuumStoppingStability_holds`).  The
+uncarried inputs `LinearFieldScaling`, `SpatialFixedTimeTightness` and
+`SpatialStoppingStability` are proved as well, the last from the same continuum
+stopping stability through the law of the simple random walk on path space
+(`Parking/Support/SpatialWalkProjection.lean`).  Supplying these proofs gives the
+hypothesis-free main results of `Parking/MainTheoremsUnconditional.lean`, one file
+per result in `Parking/Unconditional/`; Theorem 1.1 there uses the range bounds of
+`Parking.subcritical_tail_of_range_count` in place of `DonskerVaradhanRange`.
+
 What is deliberately not assumed: the paper's own theorems are not
 hypotheses of one another beyond the citation chain the paper itself
 states. `thm-master`'s upper bound is `thm-upper` and its lower bound is

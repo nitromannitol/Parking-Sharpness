@@ -13,9 +13,11 @@ project:
     comparison of the two odometers (Theorem 1.4), the nearest hole and
     particle (Theorems 1.5 and 1.6), near criticality (Theorem 1.7) and the
     oriented walk (Theorem 1.8), with every lemma and proposition behind them;
-    the main theorem declarations carry explicit hypotheses for cited inputs;
-    companion results discharge several of them. The eight main theorems are
-    independently checked using the ParkingAudit/ comparator pairs.
+    the main theorem declarations carry explicit hypotheses for cited inputs,
+    and every main theorem also holds with no cited hypothesis
+    (Parking/MainTheoremsUnconditional.lean). The eight main theorems and their
+    hypothesis-free forms are independently checked using the ParkingAudit/
+    comparator pairs.
   authors:
     - "Ahmed Bou-Rabee"
   responsible_maintainers:
@@ -54,9 +56,10 @@ related_formalizations:
     note: >-
       The formalization (Sandpile) of the divisible sandpile paper that this
       paper quotes its growth estimate from.  Pinned git dependency at commit
-      27e12336fefa22e6163aaa0f1f752538fcb97844; the growth of the mean
-      divisible sandpile odometer is proved from it under that formalization's
-      continuum stopping stability and continuum optimal stopping inputs.
+      e14e9d87adb65456761d1939fb7cedc49e57f5c5; the growth of the mean
+      divisible sandpile odometer is proved from it with no hypothesis, and its
+      continuum stopping stability supplies the oriented and spatial stopping
+      inputs and the spatial odometer scaling limit.
 
 status:
   scope: >-
@@ -70,27 +73,27 @@ status:
     oriented walk (Theorem 1.8), and the lemmas and propositions of Sections 2
     to 9 behind them, 41 paper statements in all. The manifest registers eleven
     cited propositions. ASSUMPTIONS.md records their statements and companion
-    proofs. Bernstein, multivariate Berry-Esseen, linear field scaling, spatial
-    fixed-time tightness, and the two heat inputs have unconditional proofs.
-    The two-sided subcritical tail estimate is also proved without the full
-    range asymptotic. Sandpile growth and spatial
-    odometer scaling have proofs conditional on continuum stopping inputs in
-    Divisible-Sandpile-Percolation. Spatial fixed-time tightness and spatial
-    stopping stability are hypotheses of no registered result. The original
-    main theorem statements include the full range asymptotic, oriented stopping
-    stability, continuum stopping stability, and continuum optimal stopping as
-    inputs. Oriented stopping stability follows from continuum stopping stability,
-    and the oriented walk has a presentation using only that input. The
-    Bernstein-supplied main theorem variants
-    are in Parking/MainTheoremsBernsteinProved.lean and
+    proofs. Ten of them are proved with no hypothesis: Bernstein, multivariate
+    Berry-Esseen, linear field scaling, spatial fixed-time tightness, the two
+    heat inputs, sandpile growth, spatial odometer scaling, and the oriented and
+    spatial stopping stabilities, the last four from the proved continuum
+    stopping stability of Divisible-Sandpile-Percolation. The remaining one, the
+    full range asymptotic of Donsker and Varadhan, is carried only by the
+    certified statement of Theorem 1.1; the two-sided subcritical tail estimate
+    is proved without it. Spatial fixed-time tightness and spatial stopping
+    stability are hypotheses of no registered result. The hypothesis-free forms
+    of the main theorems are in Parking/MainTheoremsUnconditional.lean, one per
+    file in Parking/Unconditional/; the Bernstein-supplied main theorem
+    variants are in Parking/MainTheoremsBernsteinProved.lean and
     Parking/MainTheoremsBernsteinConsequences.lean.
     Not formalized: the proof-overview and related-work
     subsections, the five remarks, and the two figures.  The main theorems are
-    stated in full in Parking/MainTheorems.lean; all eight are additionally
-    restated over a Mathlib-only vocabulary for the Lean comparator (ParkingAudit/).
+    stated in full in Parking/MainTheorems.lean; all eight and their
+    hypothesis-free forms are additionally restated over a Mathlib-only
+    vocabulary for the Lean comparator (ParkingAudit/).
   sorry_count: 0
   sorry_count_scope: "Parking production library only"
-  comparator_challenge_sorry_count: 8
+  comparator_challenge_sorry_count: 16
   sorry_in_definitions: 0
   axioms:
     - "propext"
@@ -298,6 +301,101 @@ status:
           source: "Pinelis, Theorems 4.1 and 3.3"
         - statement: "the cutoff and stability estimates of the parabolic scaling limit (ParkingAudit.External.OrientedStoppingStability, the restatement of Parking.External.OrientedStoppingStability over the Mathlib-only vocabulary), carried as an explicit hypothesis"
           source: "in the shape of Coquet and Toldo, Theorem 3 and Corollary 4"
+    - declaration: "Parking.subcritical_tail_proved"
+      file: "Parking/Unconditional/SubcriticalTail.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/SubcriticalTailUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.master_proved"
+      file: "Parking/Unconditional/Master.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/MasterUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.growth_proved"
+      file: "Parking/Unconditional/Growth.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/GrowthUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.trichotomy_proved"
+      file: "Parking/Unconditional/Trichotomy.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/TrichotomyUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.nearest_proved"
+      file: "Parking/Unconditional/Nearest.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/NearestUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.nearest_counterexample_proved"
+      file: "Parking/Unconditional/NearestCounterexample.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/NearestCounterexampleUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.near_proved"
+      file: "Parking/Unconditional/Near.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/NearUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.oriented_walk_proved"
+      file: "Parking/Unconditional/OrientedWalk.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/OrientedWalkUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "Parking.oriented_scaling_proved"
+      file: "Parking/Unconditional/OrientedScaling.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies: []
+    - declaration: "ParkingAudit.master_unconditional"
+      file: "ParkingAudit/MasterUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/MasterUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "ParkingAudit.growth_unconditional"
+      file: "ParkingAudit/GrowthUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/GrowthUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "ParkingAudit.trichotomy_unconditional"
+      file: "ParkingAudit/TrichotomyUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/TrichotomyUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "ParkingAudit.nearest_unconditional"
+      file: "ParkingAudit/NearestUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/NearestUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "ParkingAudit.nearest_counterexample_unconditional"
+      file: "ParkingAudit/NearestCounterexampleUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/NearestCounterexampleUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "ParkingAudit.near_unconditional"
+      file: "ParkingAudit/NearUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/NearUnconditional/comparator.json"
+      literature_dependencies: []
+    - declaration: "ParkingAudit.oriented_walk_unconditional"
+      file: "ParkingAudit/OrientedWalkUnconditional/Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "ParkingAudit/OrientedWalkUnconditional/comparator.json"
+      literature_dependencies: []
 
 automation:
   methods:
@@ -339,7 +437,10 @@ fidelity:
     is expressed by three convergence clauses; the limit of
     prop:oriented-scaling is asserted to exist rather than characterized; and
     the Brownian optimal-stopping values range over rules with integrable
-    payoff. The registered cited inputs and their companion proofs are listed
+    payoff. The hypothesis-free Theorem 1.1 uses range bounds in place of the
+    Donsker-Varadhan limit (a departure from the cited proof), and no
+    hypothesis-free result uses an optimal-stopping input of
+    Divisible-Sandpile-Percolation. The registered cited inputs and their companion proofs are listed
     in ASSUMPTIONS.md; their fidelity to the cited theorems is a reading,
     not a check.
 
@@ -397,6 +498,46 @@ alignment:
       module: "Parking.MainTheorems"
       status: "proved"
       note: "Certified statement Parking.Frozen.oriented_walk (thm-oriented-walk). Comparator challenge ParkingAudit/OrientedWalk/."
+    - source: "Theorem 1.1 (thm:subcritical-tail), without cited hypotheses"
+      lean: "Parking.subcritical_tail_proved"
+      module: "Parking.Unconditional.SubcriticalTail"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node thm-subcritical-tail-proved). Comparator challenge ParkingAudit/SubcriticalTailUnconditional/."
+    - source: "Theorem 1.2 (thm:master), without cited hypotheses"
+      lean: "Parking.master_proved"
+      module: "Parking.Unconditional.Master"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node thm-master-proved). Comparator challenge ParkingAudit/MasterUnconditional/."
+    - source: "Corollary 1.3 (cor:growth), without cited hypotheses"
+      lean: "Parking.growth_proved"
+      module: "Parking.Unconditional.Growth"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node cor-growth-proved). Comparator challenge ParkingAudit/GrowthUnconditional/."
+    - source: "Theorem 1.4 (thm:trichotomy), without cited hypotheses"
+      lean: "Parking.trichotomy_proved"
+      module: "Parking.Unconditional.Trichotomy"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node thm-trichotomy-proved). Comparator challenge ParkingAudit/TrichotomyUnconditional/."
+    - source: "Theorem 1.5 (thm:nearest), without cited hypotheses"
+      lean: "Parking.nearest_proved"
+      module: "Parking.Unconditional.Nearest"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node thm-nearest-proved). Comparator challenge ParkingAudit/NearestUnconditional/."
+    - source: "Theorem 1.6 (thm:nearest-counterexample), without cited hypotheses"
+      lean: "Parking.nearest_counterexample_proved"
+      module: "Parking.Unconditional.NearestCounterexample"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node thm-nearest-counterexample-proved). Comparator challenge ParkingAudit/NearestCounterexampleUnconditional/."
+    - source: "Theorem 1.7 (thm:near), without cited hypotheses"
+      lean: "Parking.near_proved"
+      module: "Parking.Unconditional.Near"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node thm-near-proved). Comparator challenge ParkingAudit/NearUnconditional/."
+    - source: "Theorem 1.8 (thm:oriented-walk), without cited hypotheses"
+      lean: "Parking.oriented_walk_proved"
+      module: "Parking.Unconditional.OrientedWalk"
+      status: "proved"
+      note: "The certified statement with its cited-input binders removed (node thm-oriented-walk-proved). Comparator challenge ParkingAudit/OrientedWalkUnconditional/."
     - source: "The lemmas, propositions and remaining theorems of Sections 2 to 9"
       lean: "Parking.Frozen.*"
       module: "Parking.Frozen"

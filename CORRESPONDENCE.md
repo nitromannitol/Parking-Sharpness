@@ -27,15 +27,15 @@ the "External inputs" table of [`CERTIFICATE.md`](CERTIFICATE.md) and in Part C 
 
 | node | cited result | state |
 |---|---|---|
-| `ext-sandpile-growth` | Bou-Rabee–Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94) | assumed; also proved under hypotheses by `ext-sandpile-growth-proved` |
+| `ext-sandpile-growth` | Bou-Rabee–Panagiotis, Theorem 1.3, Corollary 6.2, Theorem 6.6 and (94) | proved here with no hypothesis (`Parking.External.sandpileGrowth_holds`, `ext-sandpile-growth-holds`); also proved under the divisible sandpile's continuum inputs by `ext-sandpile-growth-proved` |
 | `ext-stopping` | Bou-Rabee–Peres–Sava-Huss, Theorem 3.2 | proved here (`Parking.External.stopping`) |
-| `ext-bernstein` | Pinelis, Theorems 4.1 and 3.3 | assumed |
+| `ext-bernstein` | Pinelis, Theorems 4.1 and 3.3 | proved here (`Parking.External.bernstein`) |
 | `ext-u-concentration` | Bou-Rabee–Panagiotis, Remark 3.4 | proved here (`Parking.External.uConcentration`) |
 | `ext-green-norms` | Bou-Rabee–Panagiotis, Section 3.1, the collected Green estimates | proved here (`Parking.External.greenNorms`) |
 | `ext-critical-scale-lower-tail` | Bou-Rabee–Panagiotis, the critical-scale lower tail estimate; `sandpile.tex:1696-1720`, cited at `parking.tex:1822-1848` | proved here (`Parking.External.criticalScaleLowerTail`) |
 | `ext-variance-scale` | the source theorem's explicit `VarianceScale` hypothesis, from Lawler–Limic's Green estimates at `sandpile.tex:1117-1240` | proved here (`Parking.External.varianceScale`) |
-| `ext-multivariate-berry-esseen` | the source theorem's explicit `MultivariateBerryEsseen` hypothesis, Raič, Theorem 1.1, at `sandpile.tex:1770-1782` | assumed |
-| `ext-oriented-stopping-stability` | the cutoff and stability estimates of the parabolic scaling limit in the companion paper, in the shape of Coquet-Toldo, Theorem 3 and Corollary 4 | assumed |
+| `ext-multivariate-berry-esseen` | the source theorem's explicit `MultivariateBerryEsseen` hypothesis, Raič, Theorem 1.1, at `sandpile.tex:1770-1782` | proved here (`Parking.External.multivariateBerryEsseen`) |
+| `ext-oriented-stopping-stability` | the cutoff and stability estimates of the parabolic scaling limit in the companion paper, in the shape of Coquet-Toldo, Theorem 3 and Corollary 4 | proved here (`Parking.External.orientedStoppingStability_holds`, `ext-oriented-stopping-stability-holds`), from the divisible sandpile's proved continuum stopping stability |
 | `ext-green-gradient` | Lawler–Limic, Section 2.3, through the first-difference local central limit estimate and the Gaussian bound; the shared library proves the truncated bound uniformly in the horizon | proved here (`Parking.External.greenGradient`) |
 
 `ext-variance-scale` and `ext-multivariate-berry-esseen` are the two antecedents of
@@ -344,6 +344,48 @@ states, up to the notation below.
   optimal-stopping value of the exhibited noise; `ext-spatial-odometer-scaling`
   specifies the Green field through the continuous linear L² extension of the
   test-function noise, with the variance-scaled isometry.
+- `ext-sandpile-growth-holds`, and the route that avoids the optimal-stopping input.
+  The companion `ext-sandpile-growth-proved` derives the growth statement from the
+  certified Theorem 1.3(i)(a) of the divisible sandpile formalization,
+  `Sandpile.Frozen.mean_growth_le_three`, and so carries that statement's hypotheses:
+  `Sandpile.External.LocalCLT`, `Sandpile.External.ContinuumStoppingStability` and the
+  family `∀ ΩB, Sandpile.External.ContinuumOptimalStopping ΩB` (Peskir and Shiryaev,
+  Theorem 2.2).  The divisible sandpile formalization proves the continuum stopping
+  stability (`Sandpile.External.continuumStoppingStability_holds`), and its successor
+  `Sandpile.mean_growth_le_three_proved` is Theorem 1.3(i)(a) with no hypothesis; its
+  proof uses no optimal-stopping input.  The hypothesis-free
+  `Parking.External.sandpileGrowth_holds` assembles the growth statement from that
+  successor through `Parking.External.sandpileGrowth_of_mean_growth_le_three`, which
+  takes only the low-dimensional limit of the mean odometer and supplies the parts in
+  dimensions four and higher from the sealed theorems used before.  So no
+  hypothesis-free result of this repository uses an optimal-stopping input; the paper
+  quotes the growth estimate and does not invoke optimal stopping itself.  The
+  conditional declarations `Parking.External.sandpileGrowth`,
+  `Parking.External.sandpileGrowth_of_dsp` and `Parking.nearest_of_continuum_stopping`
+  keep their hypotheses as stated; `Parking.External.sandpileGrowth_holds` and
+  `Parking.nearest_proved` give their conclusions with none.
+- `ext-oriented-stopping-stability-holds` and `ext-spatial-odometer-scaling-holds`:
+  the oriented stopping stability and the spatial odometer scaling limit follow from
+  the continuum stopping stability of the divisible sandpile
+  (`Parking.External.orientedStoppingStability_of_continuumStoppingStability`,
+  `Parking.External.spatialOdometerScaling_of_dsp`), which the pinned divisible
+  sandpile formalization proves; neither uses an optimal-stopping input.
+- `ext-spatial-stopping-stability-holds`: the spatial stopping stability, which no
+  registered result uses, is proved by
+  `Parking.External.spatialStoppingStability_of_continuumStoppingStability` from the
+  continuum stopping stability of the divisible sandpile, by the route the oriented
+  node takes.  The lattice path of the sequence of signed directions has the law of the
+  walk on path space of the sandpile stopping problem, and a direction is read off the
+  increment of the path, so the two families of stopping rules correspond and the two
+  finite-horizon stopping values agree (`Parking.stoppingSup_eq_sandpile_stoppingSup`).
+  The sandpile statement is applied at the scale `√n`, to the remaining-time reward
+  `(s, y) ↦ G(T - s, y)` and the translated motion `x + B`; its Brownian value is the
+  elapsed-time value `Parking.spatialContValue`.  It reads the reward at the elapsed
+  time shifted by `T - ⌊nT⌋/n ∈ [0, 1/n]`, and that shift is removed by uniform
+  continuity of `G` on a compact space-time box together with the maximal displacement
+  bound for the walk; the approximating rewards `G' n` are then compared with `G` on the
+  reachable times.  The finite-dimensional convergence hypothesis of the statement is
+  not used.
 - `prop-spatial-scaling` and `thm-nearest` carry the two classical parabolic
   inputs `HeatInteriorRegularity` and `HeatCompactness`.  Steps 3–4 of
   `parking.tex:1800-1820` also use backward propagation of a zero minimum,
@@ -446,6 +488,28 @@ the two main theorems discharge it.
 | Theorem 1.7, `thm:near` | `Parking.near` | `Parking.Frozen.near` | `ParkingAudit/Near/` |
 | Theorem 1.8, `thm:oriented-walk` | `Parking.oriented_walk` | `Parking.Frozen.oriented_walk` | `ParkingAudit/OrientedWalk/` |
 
+Each main result also holds with no cited hypothesis.  The declarations of
+[`Parking/MainTheoremsUnconditional.lean`](Parking/MainTheoremsUnconditional.lean) are
+the certified statements with their cited-input binders removed, character for
+character, and are registered as `SEALED` nodes:
+
+| Source | Hypothesis-free statement | Node | Comparator |
+|---|---|---|---|
+| Theorem 1.1, `thm:subcritical-tail` | `Parking.subcritical_tail_proved` | `thm-subcritical-tail-proved` | `ParkingAudit/SubcriticalTailUnconditional/` |
+| Theorem 1.2, `thm:master` | `Parking.master_proved` | `thm-master-proved` | `ParkingAudit/MasterUnconditional/` |
+| Corollary 1.3, `cor:growth` | `Parking.growth_proved` | `cor-growth-proved` | `ParkingAudit/GrowthUnconditional/` |
+| Theorem 1.4, `thm:trichotomy` | `Parking.trichotomy_proved` | `thm-trichotomy-proved` | `ParkingAudit/TrichotomyUnconditional/` |
+| Theorem 1.5, `thm:nearest` | `Parking.nearest_proved` | `thm-nearest-proved` | `ParkingAudit/NearestUnconditional/` |
+| Theorem 1.6, `thm:nearest-counterexample` | `Parking.nearest_counterexample_proved` | `thm-nearest-counterexample-proved` | `ParkingAudit/NearestCounterexampleUnconditional/` |
+| Theorem 1.7, `thm:near` | `Parking.near_proved` | `thm-near-proved` | `ParkingAudit/NearUnconditional/` |
+| Theorem 1.8, `thm:oriented-walk` | `Parking.oriented_walk_proved` | `thm-oriented-walk-proved` | `ParkingAudit/OrientedWalkUnconditional/` |
+| `prop:oriented-scaling` | `Parking.oriented_scaling_proved` | `prop-oriented-scaling-proved` | none |
+
+Theorem 1.1 without hypotheses uses the two-sided range bounds of
+`Parking.subcritical_tail_of_range_count` in place of the Donsker–Varadhan limit, a
+departure from the cited proof recorded under `thm-subcritical-tail` above; the others
+take the proved inputs listed in the table of external inputs.
+
 ## Frozen surface
 
 <!-- FROZEN-SURFACE-BEGIN (generated by tools/sync_docs.py) -->
@@ -518,5 +582,18 @@ the two main theorems discharge it.
 | `ext-heat-compactness-proved` | `Parking.External.heatCompactness` | parking.tex:1800-1820 (prop:spatial-scaling, Step 3, classical parabolic compactness); proved from the shared library compactness of nonnegative classical solutions of the heat equation | SEALED |
 | `ext-linear-field-scaling-proved` | `Parking.External.linearFieldScaling_holds` | parking.tex:1756-1767 (prop:spatial-scaling, linear field scaling limit) | SEALED |
 | `ext-spatial-odometer-scaling-proved` | `Parking.External.spatialOdometerScaling_of_dsp` | parking.tex:1756-1767 (prop:spatial-scaling, spatial odometer scaling limit) | SEALED |
+| `ext-sandpile-growth-holds` | `Parking.External.sandpileGrowth_holds` | `parking.tex:929-943`, `thm:BP` | SEALED |
+| `ext-oriented-stopping-stability-holds` | `Parking.External.orientedStoppingStability_holds` | parking.tex:3214-3218 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:oriented-scaling); proved with no hypothesis from the one-dimensional case of Sandpile.External.continuumStoppingStability_holds | SEALED |
+| `ext-spatial-odometer-scaling-holds` | `Parking.External.spatialOdometerScaling_holds` | parking.tex:1756-1767 (prop:spatial-scaling, spatial odometer scaling limit); proved with no hypothesis from Sandpile.External.continuumStoppingStability_holds | SEALED |
+| `ext-spatial-stopping-stability-holds` | `Parking.External.spatialStoppingStability_holds` | parking.tex:1756-1767 (the cutoff and stability estimates of the parabolic scaling limit, cited in the proof of prop:spatial-scaling); proved with no hypothesis from Sandpile.External.continuumStoppingStability_holds, through the law of the simple random walk on path space | SEALED |
+| `thm-subcritical-tail-proved` | `Parking.subcritical_tail_proved` | `parking.tex:123-135`, `thm:subcritical-tail` | SEALED |
+| `thm-master-proved` | `Parking.master_proved` | `parking.tex:159-168`, `thm:master` | SEALED |
+| `cor-growth-proved` | `Parking.growth_proved` | `parking.tex:174-188`, `cor:growth` | SEALED |
+| `thm-trichotomy-proved` | `Parking.trichotomy_proved` | `parking.tex:207-238`, `thm:trichotomy` | SEALED |
+| `thm-nearest-proved` | `Parking.nearest_proved` | `parking.tex:266-275`, `thm:nearest` | SEALED |
+| `thm-nearest-counterexample-proved` | `Parking.nearest_counterexample_proved` | `parking.tex:289-302`, `thm:nearest-counterexample` | SEALED |
+| `thm-near-proved` | `Parking.near_proved` | `parking.tex:314-335`, `thm:near` | SEALED |
+| `prop-oriented-scaling-proved` | `Parking.oriented_scaling_proved` | `parking.tex:3166-3174`, `prop:oriented-scaling` | SEALED |
+| `thm-oriented-walk-proved` | `Parking.oriented_walk_proved` | `parking.tex:363-380`, `thm:oriented-walk` | SEALED |
 
 <!-- FROZEN-SURFACE-END -->
