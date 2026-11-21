@@ -351,7 +351,7 @@ parameter is bound before it.
 
 ## Size
 
-The library contains 899 Lean files with 136,816 physical lines (`Parking.lean` and everything
+The library contains 915 Lean files with 142,609 physical lines (`Parking.lean` and everything
 under `Parking/`), on top of mathlib, Lattice-Probability and Divisible-Sandpile-Percolation.
 The comparator sources (56 files, 35,298 lines) are counted separately.
 
