@@ -19,6 +19,14 @@ were run, so their compiled solutions and the comparator's inputs are the same a
 The proof of the Donsker–Varadhan estimate (`Parking/External/DonskerVaradhanProved.lean` and the
 `Parking/Support/DV*.lean` modules it rests on) was added later; no solution module imports it, and
 no module that a solution module imports was changed, so the sixteen runs stand as recorded.
+Later, eight proofs were made to elaborate within Lean's default heartbeat limit.  In
+`Parallel`, `TightBoxSupTail`, `FiniteRange`, `ExposureProduct` and `TightKolmogorov` (under
+`Parking/Support/`) only the `set_option maxHeartbeats` lines were removed, and every declaration
+of these modules compiles to the same type and value as before, so the comparator's inputs are
+unchanged.  The proof of `Parking.exists_resolvent_tail_two` (`Parking/Support/RangeResolvent.lean`)
+was rewritten with six new lemmas; it lies in the dependency closure of `Near` and
+`NearUnconditional` only, and these two pairs were run again after the change (times below).  The
+other fourteen runs stand as recorded.
 
 ## `Growth`
 
@@ -48,13 +56,13 @@ no module that a solution module imports was changed, so the sixteen runs stand 
 
 | Check | Result |
 |---|---|
-| Lean and nanoda kernels | passed (290 s) |
+| Lean and nanoda kernels | passed (308 s) |
 
 ## `NearUnconditional`
 
 | Check | Result |
 |---|---|
-| Lean and nanoda kernels | passed (643 s) |
+| Lean and nanoda kernels | passed (517 s) |
 
 ## `Nearest`
 
