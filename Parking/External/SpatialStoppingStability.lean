@@ -29,15 +29,16 @@ transcribed for a
 External.OrientedStoppingStability`'s own docstring anticipates ("this is the boundary the
 design of this External was chosen to sit on").
 
-This result is assumed here, not proved.
+Proved as `Parking.External.spatialStoppingStability_holds` in
+`Parking/External/SpatialStoppingStabilityUnconditional.lean`.
 
-WHAT IS ASSUMED AND WHAT IS NOT, mirroring `Parking.External.OrientedStoppingStability`
+WHAT THE INPUT STATES AND WHAT IT DOES NOT, mirroring `Parking.External.OrientedStoppingStability`
 verbatim with `d` in place of the fixed oriented dimension `2` and `EuclideanSpace ℝ (Fin d)`
-in place of `ℝ`.  Only the STABILITY step is assumed: for a fixed bounded continuous limit
+in place of `ℝ`.  It states only the STABILITY step: for a fixed bounded continuous limit
 reward `G` and fixed uniformly bounded rewards `G' n` converging to `G` uniformly on `[0,T] ×
 (Fin d → ℝ)`, the discrete optimal-stopping values of the simple random walk converge to the
 Brownian optimal-stopping value.  Nothing about the scenery, the linear membrane field, or the
-joint law of `(V, B)` is assumed: the finite-dimensional convergence of the rescaled walk to
+joint law of `(V, B)` is part of it: the finite-dimensional convergence of the rescaled walk to
 `B` is a hypothesis, discharged elsewhere by the invariance principle for the simple random
 walk, not by this Prop.
 

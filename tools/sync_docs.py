@@ -78,8 +78,8 @@ def status_block(nodes: list[dict]) -> str:
     if frozen:
         body += (
             f"  The {frozen} `FROZEN` nodes are cited results, stated in\n"
-            f"`Parking/External/`. Some have companion proofs, possibly conditional;\n"
-            f"see `ASSUMPTIONS.md` for their status and use.")
+            f"`Parking/External/`, each proved with no hypothesis by the companion\n"
+            f"theorem named in `ASSUMPTIONS.md`.")
     if draft:
         which = ", ".join(f"`{i}`" for i in draft)
         body += (

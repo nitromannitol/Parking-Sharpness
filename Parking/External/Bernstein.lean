@@ -8,7 +8,8 @@ External input: the martingale Rosenthal-Burkholder inequalities the paper quote
 and the second follows by integrating the tail bound of Theorem 3.3 there
 (`parking.tex:1190-1193`).
 
-Assumed here. It enters only as an explicit hypothesis of the results whose proofs use it.
+Proved as `Parking.External.bernstein` in `Parking/External/BernsteinProved.lean`. The frozen
+results whose proofs use it take it as an explicit hypothesis.
 The constant is universal, so it is bound before every other datum of the statement.
 -/
 

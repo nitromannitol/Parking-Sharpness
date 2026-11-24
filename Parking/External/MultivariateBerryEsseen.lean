@@ -5,7 +5,8 @@ import Parking.Support.NearestCriticalModel
 
 The orthant form of Raic, Theorem 1.1, used at sandpile.tex:1770-1782. This is the explicit
 `MultivariateBerryEsseen` hypothesis of the sealed sibling `critical_toppling`, used at
-parking.tex:1822-1848. Assumed here.
+parking.tex:1822-1848. Proved as `Parking.External.multivariateBerryEsseen` in
+`Parking/External/MultivariateBerryEsseenProved.lean`.
 -/
 
 open MeasureTheory ProbabilityTheory

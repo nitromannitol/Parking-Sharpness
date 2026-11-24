@@ -28,6 +28,15 @@ was rewritten with six new lemmas; it lies in the dependency closure of `Near` a
 `NearUnconditional` only, and these two pairs were run again after the change (times below).  The
 other fourteen runs stand as recorded.
 
+## Continuous integration
+
+The workflow `.github/workflows/comparator.yml` runs the same comparator, lean4export, nanoda and
+landrun revisions on all sixteen pairs, with both kernels, on GitHub's hosted runners whenever a
+Lean source, the ledger, the paper or the dependency pins change on `main`, at the dependency
+revisions pinned in `lake-manifest.json`. A run passes only if every pair prints
+`Your solution is okay!`. The results of these runs are in the repository's Actions tab; the
+sections below record the local runs.
+
 ## `Growth`
 
 | Check | Result |

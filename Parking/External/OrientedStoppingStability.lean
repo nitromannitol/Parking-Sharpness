@@ -35,14 +35,15 @@ of Probability 12 (2007), 207-228, Theorem 3 and Corollary 4: if the driving
 processes converge in law and the rewards are uniformly bounded and converge
 uniformly, the values of the finite-horizon optimal-stopping problems converge.
 
-This result is assumed here, not proved.
+Proved as `Parking.External.orientedStoppingStability_holds` in
+`Parking/External/OrientedStoppingStabilityUnconditional.lean`.
 
-WHAT IS ASSUMED AND WHAT IS NOT.  Only the STABILITY step is assumed: for a
+WHAT THE INPUT STATES AND WHAT IT DOES NOT.  It states only the STABILITY step: for a
 fixed bounded continuous limit reward `G` and fixed uniformly bounded rewards
 `G' n` converging to `G` uniformly, the discrete optimal-stopping values of the
 oriented walk converge to the Brownian optimal-stopping value.  Nothing about
 the scenery, about the white noise, or about the joint law of `(W,B)` is
-assumed: the three inputs the paper lists (the rescaled scenery converges to
+part of it: the three inputs the paper lists (the rescaled scenery converges to
 white noise, the binomial local central limit theorem, the rescaled oriented
 walk converges to `B`) are statements the repository discharges about the
 particular rewards, not hypotheses of this Prop.  This is the boundary the

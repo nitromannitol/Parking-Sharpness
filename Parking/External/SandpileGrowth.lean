@@ -9,8 +9,9 @@ Panagiotis, *Quantitative explosion and percolation of the divisible sandpile*
 (Theorem 1.3, Corollary 6.2, Theorem 6.6 and equation (94) there), multiplied
 by `2d` to match the normalization used here.
 
-Assumed here.  It enters only as an explicit hypothesis of the theorems that
-use it; the companion formalization of that paper proves it.
+Proved as `Parking.External.sandpileGrowth_holds` in
+`Parking/External/SandpileGrowthUnconditional.lean`, from the companion formalization of
+that paper. The frozen theorems that use it take it as an explicit hypothesis.
 -/
 
 open MeasureTheory ProbabilityTheory Filter Topology
