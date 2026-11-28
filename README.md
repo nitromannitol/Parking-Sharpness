@@ -1,284 +1,212 @@
 # Sharpness and critical scaling of parking
 
-A machine-checked **Lean 4** formalization of the paper
-
-> Ahmed Bou-Rabee and Christoforos Panagiotis,
-> *Sharpness and critical scaling of parking*,
-> [arXiv:2609.02820](https://arxiv.org/abs/2609.02820).
-
-The paper's source and the list of its differences from the arXiv version are included under
-[`paper/`](paper/). The 8 main results of the paper are proved, in the form in which its
-introduction states them, from results cited from the literature that enter as explicit
-hypotheses of the theorems that use them; see
-[Cited literature inputs](#cited-literature-inputs). Each of them also holds with no cited
-hypothesis; see [Hypothesis-free results and remaining inputs](#hypothesis-free-results-and-remaining-inputs).
-Every other theorem, lemma, proposition and corollary of the paper is formalized as well.
-
-The development is built on [mathlib](https://github.com/leanprover-community/mathlib4) and on
-two public libraries:
-[Lattice-Probability](https://github.com/nitromannitol/Lattice-Probability) (`LatticeProb`), a
-library of lattice probability and potential theory, and
-[Divisible-Sandpile-Percolation](https://github.com/nitromannitol/Divisible-Sandpile-Percolation)
-(`Sandpile`), the formalization of *Quantitative explosion and percolation of the divisible
-sandpile* (Bou-Rabee and Panagiotis, [arXiv:2609.02829](https://arxiv.org/abs/2609.02829)),
-from which this paper quotes its growth estimate.
-
 [![CI](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/build.yml)
 [![Comparator audit](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/comparator.yml/badge.svg?branch=main)](https://github.com/nitromannitol/Parking-Sharpness/actions/workflows/comparator.yml)
 
-## What is proved
+A Lean 4 formalization of the paper
 
-At each site of the lattice `ℤ^d` an independent random integer `η(x)` is placed, the number
-of particles at `x` minus the number of holes there; in the parking model each site holds one
-car or one spot. In each round every unsettled particle takes one step of a simple random
-walk, and it settles when it reaches a hole that is still unfilled. The particle odometer
-`U_n(x)` is the number of steps taken from `x` in the first `n` rounds, and the divisible
-sandpile odometer `u_n(x)` is its deterministic analogue, `u_0 = 0` and
-`u_{n+1} = (η + P u_n)⁺`, where `P` is the transition matrix of simple random walk. The main
-theorem (Theorem 1.2) says that if `η(0)` is nonconstant with mean zero and
-`E e^{θ|η(0)|} < ∞` for some `θ > 0`, then there are constants `0 < c ≤ C < ∞` with
+> Ahmed Bou-Rabee and Christoforos Panagiotis,
+> [*Sharpness and critical scaling of parking*](https://arxiv.org/abs/2609.02820),
+> arXiv:2609.02820 (2026).
 
-    c (E u_n(0) + log n)  ≤  E U_n(0)  ≤  C (E u_n(0) + log n)      for every n ≥ 2.
+Every theorem, lemma, proposition and corollary of the paper is stated and proved in Lean, with no
+`sorry` and only the standard axioms. The results that the paper quotes from other works are proved
+as well. The eight main results therefore hold in Lean with no assumption beyond the hypotheses on
+the initial law that the paper states.
 
-With the growth of `E u_n(0)` that the paper quotes, this gives `E U_n(0) ≍ n^{(4−d)/4}` for
-`d ≤ 3` and `E U_n(0) ≍ log n` for `d ≥ 4` at the critical density (Corollary 1.3). The paper
-also proves a stretched-exponential bound with exponent `d/(d+2)` on the settling time below
-the critical density (Theorem 1.1), a quenched comparison of the two odometers in each
-dimension (Theorem 1.4), results on the nearest hole and particle (Theorems 1.5 and 1.6), the
-order of divergence of `E U_∞(0)` as the mean of `η(0)` rises to zero (Theorem 1.7), and the
-growth for the oriented walk (Theorem 1.8). The model is stated precisely in
-[Standing assumptions and scope](#standing-assumptions-and-scope).
+## The paper
 
-The 8 main results, formalized as stated in the introduction of the paper, are collected in
-[`Parking/MainTheorems.lean`](Parking/MainTheorems.lean). Each is proved by `exact` of its
-certified counterpart in `Parking/Frozen/`, so the statements displayed there are the
-certified ones. The certified statements of Theorems 1.4 and 1.7 also take `External.Stopping`
-as a hypothesis; it is proved (`Parking.External.stopping`), and the main theorems discharge
-it. The nine `*_of_bernstein` results in `Parking/MainTheoremsBernsteinProved.lean`
-and `Parking/MainTheoremsBernsteinConsequences.lean` also supply the proved Bernstein input.
-`nearest_heat_of_bernstein` supplies the heat inputs, and
-`nearest_stability_of_bernstein` replaces spatial odometer scaling by continuum stopping stability.
-`nearest_of_proved_berry` also supplies the Berry–Esseen comparison, while
-`nearest_of_continuum_stopping` takes only the two continuum stopping inputs from the
-divisible sandpile as additional hypotheses. `oriented_walk_of_bernstein_and_continuum_stopping`
-takes continuum stopping stability as its only literature input. The hypothesis-free forms in
-[`Parking/MainTheoremsUnconditional.lean`](Parking/MainTheoremsUnconditional.lean), listed in the
-last column, are the certified statements with every cited-input binder removed.
+At each site `x` of `ℤᵈ` place a random integer `η(x)`, independently from site to site: the number
+of particles at `x` minus the number of holes there. In each round, every particle that has not
+settled takes one step of simple random walk. A particle *settles* when it reaches a hole that is
+still unfilled. In the *parking model* of Damron, Gravner, Junge, Lyu and Sivakoff, each site holds
+one car or one parking spot.
 
-| Paper | Lean declaration | Content | Without hypotheses |
-| --- | --- | --- | --- |
-| Theorem 1.1 (label `thm:subcritical-tail`) | `Parking.subcritical_tail` | stretched-exponential bound on the settling time below the critical density | `Parking.subcritical_tail_proved` |
-| Theorem 1.2 (label `thm:master`) | `Parking.master` | the particle odometer is comparable to the divisible odometer plus `log n` | `Parking.master_proved` |
-| Corollary 1.3 (label `cor:growth`) | `Parking.growth` | growth of `E U_n(0)` and `S_t` at the critical density | `Parking.growth_proved` |
-| Theorem 1.4 (label `thm:trichotomy`) | `Parking.trichotomy` | quenched comparison of the two odometers in each dimension | `Parking.trichotomy_proved` |
-| Theorem 1.5 (label `thm:nearest`) | `Parking.nearest` | the nearest hole versus the nearest particle, `d ≤ 3` | `Parking.nearest_proved` |
-| Theorem 1.6 (label `thm:nearest-counterexample`) | `Parking.nearest_counterexample` | a counterexample for `d ≥ 5` | `Parking.nearest_counterexample_proved` |
-| Theorem 1.7 (label `thm:near`) | `Parking.near` | order of `E U_∞(0)` as the mean rises to zero | `Parking.near_proved` |
-| Theorem 1.8 (label `thm:oriented-walk`) | `Parking.oriented_walk` | growth for the oriented walk at the critical density | `Parking.oriented_walk_proved` |
+The *particle odometer* `U_n(x)` counts the steps taken from `x` in the first `n` rounds. Its
+deterministic analogue is the odometer of the *divisible sandpile* of Levine and Peres:
+`u_0 = 0` and `u_{n+1} = (η + P u_n)⁺`, where `P` is the transition matrix of simple random walk.
+Write `S_t` for the expected number of particles that start at the origin and have not settled by
+time `t`. The critical point is `E η(0) = 0`.
 
-**Theorem 1.1 (subcritical tail, `thm:subcritical-tail`).** For an integer one-site law with
-negative mean, a positive chance of a particle and an exponential moment,
-`C⁻¹ exp(-C t^{d/(d+2)}) ≤ S_t ≤ C exp(-c t^{d/(d+2)})` for `t ≥ 1`, where `S_t` is the
-expected number of particles started at the origin still active after round `t`. Hypothesis:
-`DonskerVaradhanRange`, which is proved (`Parking.External.donskerVaradhanRange_holds`), so the
-theorem also holds by the route of the paper with no hypothesis
-(`Parking.subcritical_tail_of_donskerVaradhan`). The two-sided bound is also proved without that
-input by `Parking.subcritical_tail_of_range_count`; its proof uses bounds on walk confinement and
-the number of connected ranges.
+- **Theorem 1.1.** Below the critical density, `S_t` is bounded above and below by stretched
+  exponentials `exp(−c t^{d/(d+2)})`.
+- **Theorem 1.2.** At the critical density, `E U_n(0)` is comparable to `E u_n(0) + log n`.
+- **Corollary 1.3.** At the critical density, `E U_n(0)` has order `n^{(4−d)/4}` for `d ≤ 3` and
+  `log n` for `d ≥ 4`.
+- **Theorem 1.4.** The two odometers agree to leading order for `d ≤ 3`, have bounded ratio for
+  `d = 4`, and have diverging ratio for `d ≥ 5`.
+- **Theorems 1.5 and 1.6.** For `d ≤ 3`, the probability that the origin is closer to an unfilled
+  hole than to an active particle tends to zero; for `d ≥ 5` it does not, for some laws.
+- **Theorem 1.7.** As the mean of `η(0)` rises to zero, `E U_∞(0)` diverges at a rate that depends
+  on the dimension.
+- **Theorem 1.8.** For the oriented walk on `ℤ²`, `E U_n(0)` is asymptotic to `μ n^{1/4}`.
 
-**Theorem 1.2 (master, `thm:master`).** The display above. Hypotheses: `SandpileGrowth`,
-`Bernstein` (the collected Green estimates and the U-concentration estimate, `GreenNorms` and
-`UConcentration`, are proved in the repository and are not hypotheses here).
+Precisely, let `η` have i.i.d. integer-valued coordinates.
 
-**Corollary 1.3 (growth, `cor:growth`).** At the critical density:
+**Theorem 1.1.** Suppose `E|η(0)| < ∞`, `E η(0) < 0`, `P(η(0) > 0) > 0` and `E e^{θη(0)} < ∞` for
+some `θ > 0`. Then there are `0 < c ≤ C < ∞` with
+`C⁻¹ exp(−C t^{d/(d+2)}) ≤ S_t ≤ C exp(−c t^{d/(d+2)})` for every `t ≥ 1`.
 
-1. *Low dimensions.* For `d ≤ 3`, `E U_n(0) ≍ n^{(4-d)/4}` and `S_t ≍ (t+1)^{-d/4}`.
-2. *High dimensions.* For `d ≥ 4`, `E U_n(0) ≍ log n` and `c/(t+1) ≤ S_t ≤ C log(t+2)/(t+1)`.
+**Theorem 1.2.** Suppose `η(0)` is nonconstant, `E η(0) = 0` and `E e^{θ|η(0)|} < ∞` for some
+`θ > 0`. Then there are `0 < c ≤ C < ∞` with
+`c (E u_n(0) + log n) ≤ E U_n(0) ≤ C (E u_n(0) + log n)` for every `n ≥ 2`.
 
-Hypotheses: the same two.
+**Corollary 1.3.** Under the assumptions of Theorem 1.2, `E U_n(0) ≍ n^{(4−d)/4}` and
+`S_t ≍ (t+1)^{−d/4}` for `d ≤ 3`, and `E U_n(0) ≍ log n` and
+`c/(t+1) ≤ S_t ≤ C log(t+2)/(t+1)` for `d ≥ 4`.
 
-**Theorem 1.4 (trichotomy, `thm:trichotomy`).**
+**Theorem 1.4.** Under the assumptions of Theorem 1.2:
+(i) for `d ≤ 3`, `(U_n(0) − u_n(0))/E u_n(0) → 0` almost surely and in every `Lʳ`, and
+`n^{−(4−d)/4} E U_n(0)` has a limit in `(0, ∞)`;
+(ii) for `d = 4`, `E U_n(0)/E u_n(0)` is at least one and bounded for each law, but for every `B`
+some law has `liminf E U_n(0)/E u_n(0) ≥ B`;
+(iii) for `d ≥ 5` and `η(0)` bounded below, `E U_n(0) ≍ log n`, `E|U_n(0) − u_n(0)| ≍ log n` and
+`E U_n(0)/E u_n(0) → ∞`.
 
-1. *`d ≤ 3`.* The normalized difference `(U_n(0) - u_n(0)) / E u_n(0)` tends to zero almost
-   surely and in every `L^r`, and `E U_n(0) / E u_n(0) → 1`.
-2. *`d = 4`.* The ratio is bounded for each law and can be made arbitrarily large by the choice
-   of law.
-3. *`d ≥ 5`.* For a law bounded below, `E U_n(0)` and `E |U_n(0) - u_n(0)|` are of order
-   `log n` and the ratio diverges.
+**Theorem 1.5.** Let `d ≤ 3`, under the assumptions of Theorem 1.2. The probability that the origin
+is closer to an unfilled hole than to an active particle at time `t` tends to zero.
 
-Hypotheses: the same two.
+**Theorem 1.6.** For every `d ≥ 5` there are `p ∈ (0, 1/2)` and `c > 0` such that, for the law
+`P(η(0) = ±1) = p`, `P(η(0) = 0) = 1 − 2p`, the probability in Theorem 1.5 has lower limit at
+least `c`.
 
-**Theorem 1.5 (nearest hole and particle, `thm:nearest`).** For `d ≤ 3` at the critical
-density, the probability that the origin is closer to an unfilled hole than to an active
-particle after round `t` tends to zero. Hypotheses: the same two, the scaling limit of the
-divisible odometer (`SpatialOdometerScaling`), two classical facts about the heat equation
-(`HeatInteriorRegularity`, `HeatCompactness`), and the multivariate Berry-Esseen comparison
-(`MultivariateBerryEsseen`). The strong minimum principle for the heat equation
-(`HeatStrongMinimum`) and the critical-scale lower tail estimate (`CriticalScaleLowerTail`,
-with its own `VarianceScale` input) are proved in the repository and are not hypotheses here.
+**Theorem 1.7.** Let `η_δ` have i.i.d. coordinates of mean `−δ`, for `0 ≤ δ ≤ δ₀`, with `η_0(0)`
+nonconstant, uniformly bounded exponential moments, and couplings with
+`E|η_δ(0) − η_0(0)| ≤ Kδ`. Then, as `δ ↓ 0`, `E U^δ_∞(0)` has order `δ⁻³`, `δ⁻¹`, `δ^{−1/3}` and
+`log(e/δ)` for `d = 1`, `2`, `3` and `d ≥ 4`.
 
-**Theorem 1.6 (nearest-hole counterexample, `thm:nearest-counterexample`).** For `d ≥ 5` there
-is `p ∈ (0, 1/2)` such that, for the law `P(±1) = p`, `P(0) = 1 - 2p`, that probability has a
-positive lower limit. Hypothesis: `Bernstein`.
+**Theorem 1.8.** Let the walk step from `x` to `x + eᵢ` with probability `1/d` for each `i`. Under
+the assumptions of Theorem 1.2, `E U_n(0) ≍ n^{1/4}` for `d = 2` and `E U_n(0) ≍ log n` for `d ≥ 3`.
+For `d = 2` there is `μ ∈ (0, ∞)` with `E U_n(0) ~ μ n^{1/4}` and `S_t ~ (μ/4) t^{−3/4}`.
 
-**Theorem 1.7 (near criticality, `thm:near`).** For a family of one-site laws of mean `-δ`
-with uniform exponential moments, coupled to the critical law at cost `K δ`, `E U_∞(0)` is of
-order `δ^{-3}`, `δ^{-1}`, `δ^{-1/3}` and `log(e/δ)` in dimensions one, two, three and four
-upward. Hypotheses: `SandpileGrowth`, `Bernstein` (`UConcentration` is proved in the
-repository and is not a hypothesis here).
+## The main theorems in Lean
 
-**Theorem 1.8 (oriented walk, `thm:oriented-walk`).** For the oriented walk at the critical
-density, `E U_n(0) ≍ n^{1/4}` for `d = 2` and `E U_n(0) ≍ log n` for `d ≥ 3`, and for `d = 2`
-the ratio to the oriented sandpile odometer tends to one, with a constant `μ > 0` such that
-`E U_n(0) ~ μ n^{1/4}` and `S_t ~ (μ/4) t^{-3/4}`. Hypotheses: `Bernstein`,
-`OrientedStoppingStability` (`UConcentration` is proved in the repository and is not a
-hypothesis here). `Parking.oriented_walk_of_bernstein_and_continuum_stopping` derives the
-same conclusion assuming only `Sandpile.External.ContinuumStoppingStability`.
+The main theorems are in [`Parking/MainTheoremsUnconditional.lean`](Parking/MainTheoremsUnconditional.lean),
+one file each in [`Parking/Unconditional/`](Parking/Unconditional/). Their only hypotheses are
+those of the paper on the dimension and on the law of `η(0)`.
 
-In Lean, `Parking.law d ν` is the model, `Parking.meanU` and `Parking.meanu` are the means of
-the two odometers, `Parking.S` is the expected number of active particles, and
-`U_∞(x)` is the supremum of `U_n(x)` in `ℕ∞`, with `E U_∞(0)` a lower integral in `ℝ≥0∞`.
+| Paper | Lean declaration |
+| --- | --- |
+| Theorem 1.1 | `Parking.subcritical_tail_proved` |
+| Theorem 1.2 | `Parking.master_proved` |
+| Corollary 1.3 | `Parking.growth_proved` |
+| Theorem 1.4 | `Parking.trichotomy_proved` |
+| Theorem 1.5 | `Parking.nearest_proved` |
+| Theorem 1.6 | `Parking.nearest_counterexample_proved` |
+| Theorem 1.7 | `Parking.near_proved` |
+| Theorem 1.8 | `Parking.oriented_walk_proved` |
 
-This repository formalizes every theorem, lemma, proposition and corollary of the paper
-(`tools/check_coverage.py`).
+How to read the statements: the model is defined in [`Parking/Basic.lean`](Parking/Basic.lean).
+`Parking.law d ν` is the law of the process with one-site law `ν`, a probability measure on `ℤ`,
+and `Parking.orientedLaw d ν` is its oriented version. `Parking.meanU` and `Parking.meanu` are the
+means `E U_n(0)` and `E u_n(0)`, and `Parking.S` is `S_t`. `Parking.CriticalLaw ν` collects the
+assumptions of Theorem 1.2. `Parking.meanUlimit` is `E U_∞(0)`, a lower integral in `ℝ≥0∞`, so an
+infinite odometer has the value `⊤`.
 
-## Corrections to the published version
+[`Parking/MainTheorems.lean`](Parking/MainTheorems.lean) states the same eight results with the
+results from other works that their proofs use as explicit hypotheses (for example
+`Parking.master`).
 
-The formalization follows `paper/parking.tex`, a corrected text of the paper: it is
-[arXiv:2609.02820v1](https://arxiv.org/abs/2609.02820v1) with five corrections.
-[`paper/CHANGES_FROM_ARXIV.md`](paper/CHANGES_FROM_ARXIV.md) lists every change against the
-arXiv version.
+## All numbered results
 
-## Standing assumptions and scope
+The paper has 45 numbered theorems, lemmas, propositions and corollaries. The table lists each with
+the Lean declaration that proves it. Three are quoted from other works: Lemma 3.1, Theorem 3.4 and
+Lemma 4.5. All three are proved here.
 
-1. **Every theorem is about every integer law that satisfies its hypotheses.** The statements
-   are for `Parking.law d ν` (`Parking/Basic.lean`) with `d ≥ 1` and an arbitrary probability
-   measure `ν` on `ℤ`, as in the paper; the parking model is the case where each site is a
-   car or a spot. Each theorem adds the hypotheses on `ν` that the paper states, for example a
-   negative mean, a positive chance of a particle and an exponential moment in Theorem 1.1,
-   and a nonconstant law of mean zero with an exponential moment in Theorem 1.2
-   (`Parking.CriticalLaw ν` in Corollary 1.3). The constants are bound after `d` and `ν`, so
-   they depend on them.
-2. **Axioms and incomplete proofs.** The library contains no `sorry`, no `admit`, no
-   `native_decide` and no new `axiom`. The axiom report of each main theorem consists of
-   exactly `propext`, `Classical.choice` and `Quot.sound`. The main theorems take cited
-   results as explicit hypotheses, listed under
-   [Cited literature inputs](#cited-literature-inputs); nothing else is assumed. Their
-   hypothesis-free forms take none
-   ([Hypothesis-free results and remaining inputs](#hypothesis-free-results-and-remaining-inputs)).
-3. **What is not formalized.** The proof-overview and related-work subsections, the five
-   remarks, and the two figures.
-4. **Model and conventions.**
-   - The model is `Parking.law d ν`: an i.i.d. integer configuration with one-site law `ν`,
-     independent instruction stacks for the walk, and independent uniform variables that
-     order arrivals at a hole. The particle–hole process itself is
-     `LatticeProb.ParticleHole` in the shared library.
-   - Distances on `ℤ^d` are graph distances (`parking.tex:588-601`), so the paper's `|x|` is
-     `Parking.graphNorm x`, the `ℓ¹` norm.
-   - The instruction stacks are indexed from zero here and from one in the paper.
-   - `U_∞(x)` is the supremum of `U_n(x)` in `ℕ∞`, and `E U_∞(0)` is a lower integral in
-     `ℝ≥0∞`, so an unbounded odometer is `⊤` and not a junk value.
-   - The process is built two ways: the paper's stack construction, and a particle-driven
-     construction in which every particle carries its own walk and uniform variables
-     (`Parking/Support/Particle.lean`). `lem:one-particle` and `lem:tagged-monotonicity` are
-     stated for the particle-driven construction, and `Parking.constructionsAgree`
-     (`Parking/Support/Agree.lean`) proves that the two have the same law, as the paper
-     states at `parking.tex:645-646`.
-5. **Explicit versus implicit.** The certified statements of Theorems 1.4 and 1.7 take
-   `External.Stopping` as a hypothesis, which is proved in the repository and discharged in
-   the main theorems. The nearest-hole-and-particle question is answered for `d ≤ 3` by
-   Theorem 1.5 and for `d ≥ 5` by Theorem 1.6; neither covers `d = 4`, where the paper says
-   only that simulations suggest the counterexample extends. The remaining formulation
-   choices, and the cited inputs each node carries, are recorded in the sections "How the Lean
-   statements read the paper" and "Cited inputs and formulation choices, node by node" of
-   [`CORRESPONDENCE.md`](CORRESPONDENCE.md).
-6. **Statements without a formal counterpart.** Every statement of the paper is registered:
-   one Lean declaration per theorem, lemma, proposition or corollary, and one proposition per
-   cited result. The paper-to-Lean map, node by node, is
-   [`CORRESPONDENCE.md`](CORRESPONDENCE.md), and [`PROOF.md`](PROOF.md) describes the proofs
-   section by section and the Lean tree that carries them.
+The declarations in `Parking.Frozen` take the results from other works that their proofs use as
+explicit hypotheses. Every one of these is proved in the repository with no hypothesis;
+[`ASSUMPTIONS.md`](ASSUMPTIONS.md) and [`CERTIFICATE.md`](CERTIFICATE.md) name each proof.
 
-## Cited literature inputs
+| Paper | Lean declaration | Content |
+| --- | --- | --- |
+| Theorem 1.1 | `Parking.subcritical_tail_proved` | Below the critical density, `S_t` has stretched-exponential bounds with exponent `d/(d+2)`. |
+| Theorem 1.2 | `Parking.master_proved` | At the critical density, `E U_n(0) ≍ E u_n(0) + log n`. |
+| Corollary 1.3 | `Parking.growth_proved` | `E U_n(0)` and `S_t` at the critical density, in every dimension. |
+| Theorem 1.4 | `Parking.trichotomy_proved` | The quenched comparison of `U_n(0)` and `u_n(0)` for `d ≤ 3`, `d = 4` and `d ≥ 5`. |
+| Theorem 1.5 | `Parking.nearest_proved` | `d ≤ 3`: the origin is eventually closer to an active particle than to an unfilled hole. |
+| Theorem 1.6 | `Parking.nearest_counterexample_proved` | `d ≥ 5`: a three-point law for which this fails with positive probability. |
+| Theorem 1.7 | `Parking.near_proved` | The order of `E U^δ_∞(0)` as the mean `−δ` rises to zero. |
+| Theorem 1.8 | `Parking.oriented_walk_proved` | The growth of `E U_n(0)` for the oriented walk. |
+| Lemma 2.1 | `Parking.Frozen.parallel` | The odometer satisfies `U_{n+1}(x) = (η(x) + Σ_y I_{y,x}(U_n(y)))⁺`. |
+| Lemma 2.2 | `Parking.Frozen.deferred` | `{U_n(y) ≥ j}` does not depend on the `j`-th instruction at `y`. |
+| Lemma 2.3 | `Parking.Frozen.one_particle` | Adding one particle changes the active particles or the unfilled holes at one site. |
+| Lemma 2.4 | `Parking.Frozen.tagged_monotonicity` | In that coupling, every shared particle stays active at least as long. |
+| Lemma 2.5 | `Parking.Frozen.transport` | `E A_t(0) = S_t`, `E U_n(0) = Σ_{s<n} S_s`, and the particles at the origin are exchangeable. |
+| Lemma 2.6 | `Parking.Frozen.activity_holes` | `E A_t(0) − E H_t(0) = E η(0)`. |
+| Lemma 2.7 | `Parking.Frozen.density_compare` | `0 ≤ S̃_t − S_t ≤ E η̃(0) − E η(0)` for coupled configurations `η ≤ η̃`. |
+| Lemma 3.1 | quoted; proved: `Parking.External.stopping` | `u_n(x)` is the value of an optimal stopping problem for the walk. |
+| Theorem 3.2 | `Parking.Frozen.comparison` | `u_n(x) ≤ E[U_n(x) \| η]`. |
+| Theorem 3.4 | quoted; proved: `Parking.External.sandpileGrowth_holds` | The growth of `E u_n(0)` for i.i.d. real mean-zero `η`. |
+| Lemma 4.1 | `Parking.Frozen.pathwise_comparison` | `\|U_n(x) − u_n(x)\| ≤ 2 w*_n(x)`. |
+| Lemma 4.2 | `Parking.Frozen.gamma_sum` | `Σ_y sup_{m≤n} Γ_m(y) ≤ C κ_d(n)`. |
+| Lemma 4.3 | `Parking.Frozen.exposure` | Unread instructions are independent given the exposed ones. |
+| Lemma 4.4 | `Parking.Frozen.w_martingale` | `w_n(0)` is a sum of martingale differences with bounded increments. |
+| Lemma 4.5 | quoted; proved: `Parking.External.bernstein` | Rosenthal–Burkholder and Bernstein moment bounds for martingale sums. |
+| Proposition 4.6 | `Parking.Frozen.w_moment` | `Lʳ` bounds on `w_m(0)` and `w*_n(0)`. |
+| Lemma 5.1 | `Parking.Frozen.critical_density` | At the critical density, `liminf t S_t ≥ c` and `E U_n(0) ≥ c log n − C`. |
+| Corollary 5.2 | `Parking.Frozen.cor_critical` | `E U_n(0) ≥ max{E u_n(0), c log n − C}`. |
+| Lemma 6.1 | `Parking.External.uConcentration` | Concentration of `v_n(0)` for a general finite-range kernel. |
+| Theorem 6.2 | `Parking.Frozen.upper` | `E U_n(0) ≤ C (E u_n(0) + log n)`, and its `Lʳ` form. |
+| Proposition 6.3 | `Parking.Frozen.everyone_settles` | Every particle settles and every hole is filled, but `U_∞(x) = ∞`. |
+| Proposition 7.1 | `Parking.Frozen.discrepancy` | `d ≤ 3`: `Lʳ` bounds on `U_n(0) − u_n(0)` and a tail bound. |
+| Theorem 7.2 | `Parking.Frozen.four_sparse` | `d = 4`: for sparse `±1` laws, `liminf E U_n(0)/E u_n(0) ≥ c log(e/ε)`. |
+| Proposition 8.1 | `Parking.Frozen.spatial_scaling` | `d ≤ 3`: the scaling limit of the rescaled particle odometer. |
+| Lemma 8.2 | `Parking.Frozen.nearest_one_point` | Moment bounds on `U_t(x)`, and `h_t ↓ 0`. |
+| Proposition 8.3 | `Parking.Frozen.nearest_two_hole` | A bound on the probability of two unfilled holes. |
+| Lemma 8.4 | `Parking.Frozen.nearest_close_pair` | `P(H_t(x) = H_t(z) = 1) ≤ 2p h_t`. |
+| Lemma 9.1 | `Parking.Frozen.range_lower` | `S_t ≥ E[η(0)⁺] E_0[P(η(0) ≥ 0)^{\|R_t\|−1}]`. |
+| Lemma 9.2 | `Parking.Frozen.product` | A covariance inequality under the tilted law. |
+| Theorem 9.3 | `Parking.Frozen.subcritical` | `S_t ≤ C E_0 e^{−a\|R_t\|}` below the critical density. |
+| Lemma 10.1 | `Parking.Frozen.near_tilt` | `S^δ_t ≤ C E_0 e^{−cδ²\|R_t\|}`. |
+| Proposition 10.2 | `Parking.Frozen.resolvent` | Bounds on `E_0 e^{−a\|R_t\|}` and on their tail sums. |
+| Lemma 10.3 | `Parking.Frozen.mean_horizon` | A bound on the scenery collected up to a stopping time of mean `M`. |
+| Proposition 10.4 | `Parking.Frozen.near_divisible` | The order of `E u^δ_∞(0)` as `δ ↓ 0`. |
+| Lemma 11.1 | `Parking.Frozen.shift` | `d = 2`: `Σ_ℓ ‖p⃗_ℓ(· − q) − p⃗_ℓ‖₂² = 4\|q\|`. |
+| Theorem 11.2 | `Parking.Frozen.oriented` | Bounds on the oriented divisible odometer. |
+| Proposition 11.3 | `Parking.oriented_scaling_proved` | `d = 2`: `n^{−1/4} u⃗_{⌊nT⌋}(0)` converges in law, and `n^{−1/4} E u⃗_n(0) → μ`. |
 
-Eleven results that the paper quotes from the literature are stated in Lean as propositions in
-`Parking/External/`, and every theorem whose proof uses one takes it as an explicit
-hypothesis, so the statement shows exactly which of them it rests on.
-[`ASSUMPTIONS.md`](ASSUMPTIONS.md) lists the eleven with their verbatim Lean statements and the
-theorems that prove them, each with no hypothesis. Eight occur as hypotheses of the
-main theorem declarations displayed above; the table describes those declarations:
+[`CORRESPONDENCE.md`](CORRESPONDENCE.md) gives the node of every result and the cited inputs it
+carries, and [`PROOF.md`](PROOF.md) describes the proofs section by section.
 
-| Hypothesis | Content | Source | Used by |
-| --- | --- | --- | --- |
-| `Parking.External.DonskerVaradhanRange` (`hDV`) | `log E_0 exp(-a\|R_t\|) ~ -k t^{d/(d+2)}` for the range `R_t` of simple random walk | Donsker and Varadhan (1979), Theorem 1 | Theorem 1.1 |
-| `Parking.External.SandpileGrowth` (`hGrowth`) | growth of the mean divisible sandpile odometer `E u_n(0)`: `n^{(4-d)/4}` for `d ≤ 3`, `log n` for `d ≥ 4`, with first-order terms | Bou-Rabee and Panagiotis, *Quantitative explosion and percolation of the divisible sandpile* (arXiv:2609.02829), quoted at label `thm:BP` | Theorems 1.2, 1.3, 1.4, 1.5, 1.7 |
-| `Parking.External.Bernstein` (`hBernstein`, `hBern`) | `L^r` moment bounds for martingale sums, in the bounded-increment (Rosenthal–Burkholder) form and the factorial-moment (Bernstein) form | Pinelis, Theorems 4.1 and 3.3 (label `lem:bernstein`) | Theorems 1.2 to 1.8 |
-| `Parking.External.SpatialOdometerScaling` (`hOdometer`) | parabolic scaling limit of the rescaled divisible odometer: a Brownian optimal-stopping value driven by spatial white noise, jointly with the scenery | Bou-Rabee and Panagiotis, *Quantitative explosion and percolation of the divisible sandpile* (arXiv:2609.02829), Theorem 1.3(i)(b) | Theorem 1.5 |
-| `Parking.External.HeatInteriorRegularity` (`hInterior`) | continuous distributional solutions of `∂_s u = (2d)⁻¹ Δu` are smooth classical solutions | classical parabolic theory (hypoelliptic interior regularity) | Theorem 1.5 |
-| `Parking.External.HeatCompactness` (`hCompact`) | nonnegative smooth heat solutions with bounded local `L¹` norms have a locally uniformly convergent subsequence whose limit is a smooth heat solution | classical parabolic interior estimates | Theorem 1.5 |
-| `Parking.External.MultivariateBerryEsseen` (`hBerry`) | orthant probabilities of linear forms of i.i.d. mean-zero variables compared with a centred Gaussian of the same covariance, with a Berry–Esseen error | Raič, Theorem 1.1 | Theorem 1.5 |
-| `Parking.External.OrientedStoppingStability` (`hStability`) | stability of optimal-stopping values under uniform convergence of bounded rewards, and an invariance principle for the stopped oriented walk | Coquet and Toldo (2007), Theorem 3 and Corollary 4 | Theorem 1.8 |
+## Corrections
 
-The other three, `LinearFieldScaling`, `SpatialFixedTimeTightness` and
-`SpatialStoppingStability`, are stated in `Parking/External/` and recorded in the manifest as
-cited results; none is a hypothesis of any registered result. All three have proofs with no
-hypothesis; `SpatialStoppingStability` follows from the continuum stopping stability of the
-divisible sandpile (`Parking.External.spatialStoppingStability_holds`).
+The Lean statements follow [`paper/parking.tex`](paper/parking.tex), a corrected text of
+[arXiv:2609.02820v1](https://arxiv.org/abs/2609.02820v1). It differs from the arXiv version by five
+corrections, listed with their reasons in
+[`paper/CHANGES_FROM_ARXIV.md`](paper/CHANGES_FROM_ARXIV.md). No correction changes the hypotheses
+or the conclusion of a statement.
 
-The Bernstein input is proved as `Parking.External.bernstein`, the multivariate Berry–Esseen
-input as `Parking.External.multivariateBerryEsseen`, and both heat inputs are proved. The
-pinned divisible sandpile formalization proves its continuum stopping stability
-(`Sandpile.External.continuumStoppingStability_holds`), so `SpatialOdometerScaling` and
-`OrientedStoppingStability`, which follow from it, are proved
-(`Parking.External.spatialOdometerScaling_holds`, `Parking.External.orientedStoppingStability_holds`),
-and `SandpileGrowth` is proved with no hypothesis (`Parking.External.sandpileGrowth_holds`).
-The full range asymptotic `DonskerVaradhanRange` is proved with no hypothesis
-(`Parking.External.donskerVaradhanRange_holds`, `Parking/External/DonskerVaradhanProved.lean`):
-for each `d ≥ 1` and `a > 0`, `log E₀ exp(-a|R_t|) / t^{d/(d+2)} → -k` with
-`k = ((d+2)/2 · a)^{2/(d+2)} ((d+2)/d · c)^{d/(d+2)} > 0`, where `c` is the limit of `n^{2/d}`
-times the least Dirichlet eigenvalue of a region of `n` sites for the walk. The proof does not
-follow Donsker and Varadhan: it confines the walk to near optimal regions for the lower bound,
-and for the upper bound coarse-grains the range into boxes, charges the time spent outside the
-boxes the range fills as a soft killing, and turns that killing into the Dirichlet eigenvalue of
-a slightly larger region; see [Correspondence](CORRESPONDENCE.md). Independently,
-`Parking.subcritical_tail_of_range_count` proves the two-sided tail estimate from upper and
-lower bounds of stretched-exponential order `exp(-const · t^{d/(d+2)})` for `E₀ exp(-a|R_t|)`.
-Its upper bound uses lattice-animal counting (Kesten, *Percolation Theory for Mathematicians*,
-p. 85), an alternative to the argument in Varadhan's lecture notes.
-`OrientedStoppingStability` follows from `Sandpile.External.ContinuumStoppingStability`
-via `Parking.External.orientedStoppingStability_of_continuumStoppingStability`.
+- One completes the argument that the two constructions of the process have the same law
+  (Section 2).
+- One names the construction in which Lemma 2.3, and so Lemma 2.4, is stated.
+- Two add missing steps to the proofs of Lemmas 2.5 and 2.7.
+- One explains how the second bound of Lemma 4.5 follows from the tail bound of Pinelis that it
+  cites.
 
-The registered companion `Parking.External.sandpileGrowth`, in
-`Parking/External/SandpileGrowthProved.lean`, proves the growth of the mean divisible sandpile
-odometer from the certified statements of that paper's formalization under three hypotheses:
-`Sandpile.External.LocalCLT`, `Sandpile.External.ContinuumStoppingStability` and the family
-`Sandpile.External.ContinuumOptimalStopping`. The pinned formalization proves all three
-(`Sandpile.External.localCLT`, `Sandpile.External.continuumStoppingStability_holds` and
-`Sandpile.External.continuumOptimalStopping_holds`), so every hypothesis of
-`Parking.External.sandpileGrowth` is proved upstream. The hypothesis-free
-`Parking.External.sandpileGrowth_holds` uses that formalization's hypothesis-free Theorem
-1.3(i)(a), `Sandpile.mean_growth_le_three_proved`, whose proof uses no optimal-stopping input;
-see [`CORRESPONDENCE.md`](CORRESPONDENCE.md). Nine further results the paper quotes are
-proved, mostly from the shared library, and so are not assumed: the optimal stopping
-representation of the divisible odometer (`Stopping`), the Green gradient bound
-(`GreenGradient`), the variance-scale hypothesis (`VarianceScale`), the binomial and
-simple-random-walk local central limit theorems (`BinomialLocalCLT`, `SRWLocalCLT`), the
-collected Green-function norms (`GreenNorms`), the U-concentration estimate
-(`UConcentration`), the critical-scale lower tail estimate (`CriticalScaleLowerTail`), and,
-from classical parabolic theory, the strong minimum principle for the heat equation
-(`HeatStrongMinimum`).
+The unmodified arXiv source is [`paper/parking-arxiv.tex`](paper/parking-arxiv.tex).
 
-## Registered statements
+## Scope
 
-Every statement of the paper is registered in [`ledger/manifest.yaml`](ledger/manifest.yaml).
-A registered statement's text between the lines `-- FROZEN-STATEMENT-BEGIN` and
-`-- FROZEN-STATEMENT-END` is pinned by the SHA-256 of those bytes in the manifest, together
-with the line range in `paper/parking.tex` and the `\label` it transcribes; the proof after
-the end marker may be rewritten freely. In the manifest, a registered statement is `PROVED`
-when it is proved with an axiom closure of exactly the three standard axioms, `SEALED` when it
-is a theorem proved with that axiom closure and registered after the independent audit that
-promoted the `PROVED` nodes, or a definition node proved by a companion theorem, and `FROZEN` when it is a registered cited
-input. Every `FROZEN` input is proved by a companion theorem,
-as recorded in `ASSUMPTIONS.md`. Every registered statement is pinned by hash.
+- **The model.** The statements are for `Parking.law d ν` with `d ≥ 1` and an arbitrary
+  probability measure `ν` on `ℤ`. The constants are chosen after `d` and `ν`, so they depend on
+  them.
+- **Two constructions.** The process is built from the instruction stacks of the paper and from a
+  construction in which every particle carries its own walk and uniform variables. Lemmas 2.3 and
+  2.4 are stated for the second, and `Parking.constructionsAgree` proves that the two have the same
+  law.
+- **Conventions.** Distances are graph distances, so the paper's `|x|` is the `ℓ¹` norm
+  `graphNorm x`. The instruction stacks are indexed from zero here and from one in the paper.
+- **Theorem 1.1.** The hypothesis-free form is proved from two-sided bounds of order
+  `exp(−c t^{d/(d+2)})` on `E_0 exp(−a|R_t|)`, in place of the Donsker–Varadhan limit that the paper
+  cites. That limit is also proved, as `Parking.External.donskerVaradhanRange_holds`.
+- **Dimension four.** Theorems 1.5 and 1.6 cover `d ≤ 3` and `d ≥ 5`. The paper says only that
+  simulations suggest that the counterexample extends to `d = 4`.
+- **Not formalized.** The proof overview and related-work subsections, the five remarks and the two
+  figures.
+
+[`CORRESPONDENCE.md`](CORRESPONDENCE.md) records every formulation choice, result by result.
+
+## Checking the proofs
 
 <!-- STATUS-BEGIN (generated by tools/sync_docs.py) -->
 
@@ -295,195 +223,103 @@ have not confirmed.
 
 <!-- STATUS-END -->
 
-Two checkers compare the Lean statements with the paper's rather than with their hashes.
-`tools/check_clauses.py` counts the assertions of a paper statement and the top-level
-conjuncts of its Lean conclusion, and requires a written reading of every node.
-`tools/check_exponents.py` extracts the exponents from both sides and matches them, following
-the definitions a Lean statement names. In each frozen statement whose conclusion has a real
-existential constant, `tools/check_constants.py` checks that no radius, time, density or point
-parameter is bound before it.
+- **No `sorry`.** The library has none, which `tools/check_manifest.py` checks. Each of the 16 comparator challenges under
+  [`ParkingAudit/`](ParkingAudit/) contains one intentional `sorry` at the statement, which the
+  matching solution proves.
+- **Standard axioms only.** [`Parking/Meta/AxiomsAudit.lean`](Parking/Meta/AxiomsAudit.lean) prints
+  the axioms of the main theorems in both forms: exactly `propext`, `Classical.choice` and
+  `Quot.sound`. `tools/check_axioms.py` fails if any registered statement depends on `sorryAx`, and
+  [`CERTIFICATE.md`](CERTIFICATE.md) records the axioms of every registered statement.
+- **Pinned statements.** The statement of every registered result is pinned by the SHA-256 of its
+  text in [`ledger/manifest.yaml`](ledger/manifest.yaml), and the paper source by the SHA-256 of
+  `paper/parking.tex`.
+- **Independent check of the statements.** Each main theorem has two comparator pairs in
+  [`ParkingAudit/`](ParkingAudit/): one restates it with the quoted results as hypotheses, and one,
+  named `<Pair>Unconditional`, restates it with none. Each `Challenge.lean` rebuilds the model from
+  mathlib alone and states the theorem; the `Solution.lean` proves it from the library.
+  [leanprover/comparator](https://github.com/leanprover/comparator) checks that the two statements
+  agree, that only the standard axioms are used, and replays the proof through an independent
+  implementation of the Lean kernel. See [`ParkingAudit/README.md`](ParkingAudit/README.md).
+- **Continuous integration.** The **CI** workflow builds the library with no warning, builds the
+  axiom audit and checks the pinned statements. The **Comparator audit** workflow runs the
+  comparator on the 16 pairs.
 
-## Guarantees
-
-- **No `sorry`.** The library has none, and `tools/check_manifest.py` rejects any `sorry`
-  outside a registered `DRAFT_SORRY` node, of which there is none. The 16 comparator
-  challenges under [`ParkingAudit/`](ParkingAudit/) each contain one intentional
-  statement-level `sorry`, which the corresponding solution file proves.
-- **Standard axioms only.** The axiom report of each of the 8 main theorems, and of each of
-  their hypothesis-free forms, lists exactly `propext`, `Classical.choice` and `Quot.sound`.
-  [`Parking/Meta/AxiomsAudit.lean`](Parking/Meta/AxiomsAudit.lean) prints the reports, and
-  `python3 tools/check_axioms.py` fails if the axiom closure of any registered statement
-  contains `sorryAx`. Cited results enter the certified main theorems as explicit hypotheses.
-- **Builds from a clean checkout.** In continuous integration, `lake build` of a fresh
-  checkout completes 10,371 jobs without error, and the build fails on any warning or `sorry`
-  warning.
-- **Independent check of the statements.** The 8 main theorems are restated in
-  [`ParkingAudit/`](ParkingAudit/) using mathlib alone, with no project or library
-  definitions, one challenge file per theorem
-  ([`SubcriticalTail`](ParkingAudit/SubcriticalTail/Challenge.lean),
-  [`Master`](ParkingAudit/Master/Challenge.lean),
-  [`Growth`](ParkingAudit/Growth/Challenge.lean),
-  [`Trichotomy`](ParkingAudit/Trichotomy/Challenge.lean),
-  [`Nearest`](ParkingAudit/Nearest/Challenge.lean),
-  [`NearestCounterexample`](ParkingAudit/NearestCounterexample/Challenge.lean),
-  [`Near`](ParkingAudit/Near/Challenge.lean) and
-  [`OrientedWalk`](ParkingAudit/OrientedWalk/Challenge.lean)), and their hypothesis-free forms
-  are restated the same way in the eight `*Unconditional` pairs, one per main theorem. Each
-  challenge rebuilds the
-  model from mathlib primitives (the lattice, i.i.d. fields and the particle–hole process as in
-  Lattice-Probability; the parking law, the two odometers and their means; the walk, lattice
-  kernels and Green functions; the continuum objects of the scaling limits; the critical-scale
-  model of the cited lower-tail estimate; and the cited results it assumes). The solution file
-  proves the statement from the library through its own bridge in `ParkingAudit/Support/`, and
-  [leanprover/comparator](https://github.com/leanprover/comparator) checks that the statement
-  is proved, with only the three standard axioms, through independent implementations of the
-  Lean kernel. See [`ParkingAudit/README.md`](ParkingAudit/README.md) and
-  [`ParkingAudit/COMPARATOR_RUNS.md`](ParkingAudit/COMPARATOR_RUNS.md).
-- **Pinned toolchain and dependencies.** Lean `v4.35.0-rc2`; mathlib at revision
-  `065356127b1dc0016f66b7283ce0ce2c4055aa55`, Lattice-Probability at commit
-  `89de1230d02e1a737a9c7ecd776d34070be014ee` and Divisible-Sandpile-Percolation at commit
-  `8470df06ae1c7847decf57f86b741bc7a4fc5d2e`, recorded in [`lean-toolchain`](lean-toolchain),
-  [`lakefile.lean`](lakefile.lean) and [`lake-manifest.json`](lake-manifest.json) (see
-  [Building](#building)).
-- **The paper is part of the repository.** The statement map refers to the version in
-  [`paper/`](paper/), pinned to the SHA-256
-  `4aa03aee7c30e24bffc9a4e8220f775b5c71706e694dcd9bcffc865c8135d3a0` of `paper/parking.tex`.
-
-## Size
-
-The library contains 915 Lean files with 142,609 physical lines (`Parking.lean` and everything
-under `Parking/`), on top of mathlib, Lattice-Probability and Divisible-Sandpile-Percolation.
-The comparator sources (56 files, 35,298 lines) are counted separately.
+`Parking.lean` and `Parking/` contain 915 Lean files with 142,617 lines, built on mathlib,
+Lattice-Probability and Divisible-Sandpile-Percolation.
 
 ## Building
 
-Install [elan](https://github.com/leanprover/elan). The toolchain is pinned in
+Install [elan](https://github.com/leanprover/elan). The toolchain (Lean `v4.35.0-rc2`) is pinned in
 [`lean-toolchain`](lean-toolchain), and Lake fetches the dependencies.
 
 ```bash
-lake exe cache get   # prebuilt mathlib
-lake build
-```
-
-The 2 source dependencies, Lattice-Probability and Divisible-Sandpile-Percolation, have no
-prebuilt cache, so the first build compiles them as well as the library. `import Parking`
-loads the main theorems and what they use, `import Parking.MainTheorems` loads the main
-theorems and what they use, and `import Parking.MainTheoremsUnconditional` loads their
-hypothesis-free forms.
-
-The dependencies are public repositories, pinned to exact commits in
-[`lake-manifest.json`](lake-manifest.json):
-
-- mathlib: `https://github.com/leanprover-community/mathlib4` at
-  `065356127b1dc0016f66b7283ce0ce2c4055aa55`.
-- Lattice-Probability: `https://github.com/nitromannitol/Lattice-Probability` at
-  `89de1230d02e1a737a9c7ecd776d34070be014ee`.
-- Divisible-Sandpile-Percolation: `https://github.com/nitromannitol/Divisible-Sandpile-Percolation`
-  at `8470df06ae1c7847decf57f86b741bc7a4fc5d2e`.
-
-To reproduce the axiom reports and build the comparator libraries:
-
-```bash
+lake exe cache get                    # prebuilt mathlib
+lake build                            # the library
 lake build Parking.Meta.AxiomsAudit   # print the axioms of the main theorems and their forms
 lake build ParkingAudit               # the comparator challenges and solutions
 ```
 
-The checkers in `tools/` need Python 3 and PyYAML (`pip install pyyaml`). `check_axioms.py` and
-`check_warnings.py` run Lean; the others read the manifest, the paper and the Lean sources.
+Lattice-Probability and Divisible-Sandpile-Percolation have no prebuilt cache, so the first build
+compiles them as well as the library. `import Parking.MainTheoremsUnconditional` loads the main
+theorems and what they use. The dependencies are public repositories, pinned in
+[`lake-manifest.json`](lake-manifest.json):
 
-| command | what it guarantees |
-|---|---|
-| `python3 tools/check_manifest.py` | every node's file holds exactly one frozen block whose SHA-256 equals `frozen_sha256` and which declares exactly the node's `export`; every file in `Parking/Frozen/` belongs to one node; `Parking/` and `Parking.lean` contain no `axiom`, `admit` or `sorryAx`, and `sorry` occurs only in files of `DRAFT_SORRY` nodes (none is) |
-| `python3 tools/check_axioms.py` | runs `#print axioms` on every manifest export, and fails if any axiom closure contains `sorryAx` |
-| `python3 tools/check_warnings.py` | `lake build Parking` emits no Lean warning other than one `declaration uses 'sorry'` for each `DRAFT_SORRY` node (none is registered) |
-| `python3 tools/check_constants.py` | in a frozen statement whose conclusion has a real-valued `∃`, none of `R n t m r s L x y u v e z ε η δ` is a theorem parameter, so the constant cannot depend on it |
-| `python3 tools/check_coverage.py` | every labelled theorem, lemma, proposition and corollary of `paper/parking.tex` is named in the `source` of some manifest node |
-| `python3 tools/check_clauses.py` | compares the assertion count of each paper statement with the conjunct count of its Lean statement, and requires a recorded reading of every node |
-| `python3 tools/check_exponents.py` | compares the exponents written in a paper statement with those in its Lean statement and the definitions it names |
+- mathlib: `https://github.com/leanprover-community/mathlib4` at
+  `065356127b1dc0016f66b7283ce0ce2c4055aa55`;
+- Lattice-Probability: `https://github.com/nitromannitol/Lattice-Probability` at
+  `89de1230d02e1a737a9c7ecd776d34070be014ee`;
+- Divisible-Sandpile-Percolation, the formalization of *Quantitative explosion and percolation of
+  the divisible sandpile* (Bou-Rabee and Panagiotis, [arXiv:2609.02829](https://arxiv.org/abs/2609.02829)),
+  from which the paper quotes Theorem 3.4:
+  `https://github.com/nitromannitol/Divisible-Sandpile-Percolation` at
+  `8470df06ae1c7847decf57f86b741bc7a4fc5d2e`.
 
-Also in `tools/`: `paper_anchors.py` and `paper_citations.py` check the `parking.tex:<lines>`
-ranges in the manifest and in the Lean docstrings against the paper's labels; `sync_docs.py`
-checks (`--write` regenerates) the status block of this file and the registered-statements
-table of `CORRESPONDENCE.md`; `assumptions.py` regenerates `ASSUMPTIONS.md` (`--check`
-verifies it is current); `certificate.py` regenerates `CERTIFICATE.md`; `freeze.py` registers
-or refreshes a node in the manifest. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for further
-building notes.
+The checkers in `tools/` need Python 3 and PyYAML (`pip install pyyaml`); for example,
+`python3 tools/check_manifest.py` checks the pinned statements and `python3 tools/check_axioms.py`
+the axioms. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for further building notes.
 
 ## Running the comparators
 
-Each comparator pair has a configuration `ParkingAudit/<Pair>/comparator.json`, for `<Pair>`
-one of `SubcriticalTail`, `Master`, `Growth`, `Trichotomy`, `Nearest`,
-`NearestCounterexample`, `Near` and `OrientedWalk`, or one of these names followed by
-`Unconditional` for the hypothesis-free forms, that permits exactly `propext`,
-`Classical.choice` and `Quot.sound` and enables the independent nanoda kernel. The comparator
-checks that the solution proves the challenge statement, compares their dependency closures,
-and replays the proof with the Lean and NanoDa kernels.
-
-To run one pair locally, build `leanprover/comparator`, `lean4export`, `landrun` and
-`nanoda_lib` at the revisions pinned in
-[`.github/workflows/comparator.yml`](.github/workflows/comparator.yml) (also recorded in
-[`ParkingAudit/COMPARATOR_RUNS.md`](ParkingAudit/COMPARATOR_RUNS.md)), and from the
-repository root run:
+Each pair has a configuration `ParkingAudit/<Pair>/comparator.json`, for `<Pair>` one of
+`SubcriticalTail`, `Master`, `Growth`, `Trichotomy`, `Nearest`, `NearestCounterexample`, `Near` and
+`OrientedWalk`, or one of these names followed by `Unconditional`. It permits exactly `propext`,
+`Classical.choice` and `Quot.sound` and enables the nanoda kernel. Build `leanprover/comparator`,
+`lean4export`, `landrun` and `nanoda_lib` at the revisions pinned in
+[`.github/workflows/comparator.yml`](.github/workflows/comparator.yml), then run from the repository
+root
 
 ```bash
 COMPARATOR_LANDRUN=<landrun> COMPARATOR_LEAN4EXPORT=<lean4export> COMPARATOR_NANODA=<nanoda_bin> \
   lake env <comparator>/.lake/build/bin/comparator ParkingAudit/<Pair>/comparator.json
 ```
 
-A pair passes when the comparator prints `Your solution is okay!`. The comparator workflow
-runs the sixteen pairs one after the other in a single job on GitHub-hosted runners.
-
-There are two continuous-integration workflows: **CI** builds the library, builds the axiom
-audit and checks the frozen statements; **Comparator audit** checks all 16 challenge/solution
-pairs. Both run on pushes to `main` that change Lean files, `tools/`, `paper/`, `ledger/`,
-`formalization.yaml` or the build configuration, and can be started manually from the
-[Actions page](https://github.com/nitromannitol/Parking-Sharpness/actions). See
-[`CONTRIBUTING.md`](CONTRIBUTING.md) for build conventions.
+A pair passes when the comparator prints `Your solution is okay!`.
+[`ParkingAudit/COMPARATOR_RUNS.md`](ParkingAudit/COMPARATOR_RUNS.md) records the pins and the results.
 
 ## Repository layout
 
 ```text
-Parking.lean              the root module, importing the main theorems and what they use
+Parking.lean                     the root module
 Parking/
-  MainTheorems.lean       the eight main theorems, stated in full
-  MainTheoremsUnconditional.lean   their hypothesis-free forms, one file each in Unconditional/
-  Frozen/                 the certified statement surface, one frozen statement per file
-  External/               the cited results, each a Prop, and the proofs of those that are
-                          proved here (Stopping, GreenGradient, SandpileGrowthProved, ...)
-  Support/                the definitions and lemmas the frozen statements are proved from
-  Meta/AxiomsAudit.lean   the axiom report, compiled by `lake build`, not imported by the root
-  Basic.lean              the model: the law, the odometers U and u, their means, graphNorm
-ParkingAudit/             the mathlib-only restatements and their solutions
-  README.md               what each comparator pair checks
-  DESIGN.md               how the pairs are built: vocabulary, bridges
-  COMPARATOR_RUNS.md      the comparator pins and results
-  <Pair>/                 Challenge.lean, SolutionBasic.lean, Solution.lean, comparator.json
-  Support/                one bridge per pair, identifying the vocabulary with the library
-ASSUMPTIONS.md            the cited inputs, with their Lean statements and proofs (generated)
-CORRESPONDENCE.md         paper to Lean: conventions, cited inputs, formulation choices, node table
-PROOF.md                  the proofs section by section and the Lean tree that carries them
-CERTIFICATE.md            generated record of the toolchain, the build, each node's axiom
-                          closure and the SHA-256 of each frozen statement
-ledger/manifest.yaml      one row per registered statement: hash, paper source, state
-paper/                    parking.tex, the paper pinned by the SHA-256 in ledger/manifest.yaml;
-                          CHANGES_FROM_ARXIV.md, the differences between it and the arXiv
-                          version; parking-arxiv.tex, the unmodified arXiv source, with arxiv/
-                          holding its figures and .bbl
-tools/                    the checkers and generators listed under Building
-.github/workflows/        the CI build and the comparator audit
-formalization.yaml        the mathlib-initiative disclosure of models, tooling, cost and review
-CITATION.cff              citation metadata
-CONTRIBUTING.md           building notes and the elaboration policy for new files
-lakefile.lean, lake-manifest.json, lean-toolchain   the pinned build
+  MainTheoremsUnconditional.lean the eight main theorems; one file each in Unconditional/
+  MainTheorems.lean              the same results, with the quoted results as hypotheses
+  Basic.lean                     the model: the law, the odometers U and u, their means
+  Frozen/                        the registered statements, one per file
+  External/                      the quoted results, each a Prop, and their proofs
+  Support/                       the lemmas the statements are proved from
+  Meta/AxiomsAudit.lean          the axiom report
+ParkingAudit/                    the 16 comparator pairs
+ledger/manifest.yaml             one row per registered statement: hash, paper source, state
+paper/                           parking.tex (corrected), parking-arxiv.tex, CHANGES_FROM_ARXIV.md
+tools/                           the checkers
+ASSUMPTIONS.md                   the quoted results, their Lean statements and their proofs
+CORRESPONDENCE.md                paper to Lean, result by result
+PROOF.md                         the proofs section by section
+CERTIFICATE.md                   the toolchain, the axioms and the hash of each registered statement
 ```
 
-Results that do not depend on the parking model come from the shared library
-Lattice-Probability, not from this repository: the scaling-limit toolkit (Chebyshev, Slutsky,
-Cramér–Wold, Kolmogorov tail bounds, space-time testing, ...) is `LatticeProb/Prob/Scaling/`;
-the convex-order toolkit is `LatticeProb/Prob/ConvexOrder.lean` and its companions; the
-binomial law, the lattice kernel and the lattice Riemann sum are under `LatticeProb/Walk/`.
-Where a frozen statement names one of these library definitions, `Parking` exports it under
-the name the statement uses.
+Results that do not depend on the parking model, such as the scaling-limit and convex-order
+toolkits, the binomial law and the lattice kernels, come from Lattice-Probability.
 
 ## How this was built
 
@@ -511,47 +347,3 @@ of the divisible sandpile paper; the comparator audit in [`ParkingAudit/`](Parki
 The Lean code in this repository is licensed under the **Apache License 2.0** (see
 [`LICENSE`](LICENSE)).  The paper source in `paper/` is included for reference and is not
 covered by the Apache license.
-
-## Hypothesis-free results and remaining inputs
-
-Every main theorem holds with no cited hypothesis. The forms without hypotheses are:
-
-| Paper | Lean declaration |
-| --- | --- |
-| Theorem 1.1 | `Parking.subcritical_tail_proved` |
-| Theorem 1.2 | `Parking.master_proved` |
-| Corollary 1.3 | `Parking.growth_proved` |
-| Theorem 1.4 | `Parking.trichotomy_proved` |
-| Theorem 1.5 | `Parking.nearest_proved` |
-| Theorem 1.6 | `Parking.nearest_counterexample_proved` |
-| Theorem 1.7 | `Parking.near_proved` |
-| Theorem 1.8 | `Parking.oriented_walk_proved` |
-
-Each is its certified statement with the cited inputs removed, and its axiom report is exactly
-`propext`, `Classical.choice` and `Quot.sound`. The oriented scaling limit `prop:oriented-scaling`
-has the same form, `Parking.oriented_scaling_proved`. All nine are registered in the manifest as
-`SEALED` nodes, together with the three proofs of cited inputs they use:
-`Parking.External.sandpileGrowth_holds`, `Parking.External.orientedStoppingStability_holds` and
-`Parking.External.spatialOdometerScaling_holds`; the spatial stopping stability is registered the
-same way (`Parking.External.spatialStoppingStability_holds`), and so is the proof of the
-Donsker–Varadhan estimate (`Parking.External.donskerVaradhanRange_holds`). Each main theorem has a Mathlib-only comparator
-pair for its hypothesis-free form (`ParkingAudit/*Unconditional/`).
-
-Theorem 1.1 is proved without the Donsker–Varadhan limit `DonskerVaradhanRange`: the two-sided
-range bounds of `Parking.subcritical_tail_of_range_count` replace it, a departure from the
-cited proof that [`CORRESPONDENCE.md`](CORRESPONDENCE.md) records. The limit itself is proved
-(`Parking.External.donskerVaradhanRange_holds`), so the route of the paper also goes through
-(`Parking.subcritical_tail_of_donskerVaradhan`). No hypothesis-free result
-uses an optimal-stopping input of the divisible sandpile formalization: the mean-growth result
-that the growth input rests on, `Sandpile.mean_growth_le_three_proved`, needs none. The
-divisible sandpile inputs carried by the registered companions are all proved upstream: the
-local central limit theorem, the continuum stopping stability and the continuum optimal stopping
-(`Sandpile.External.continuumOptimalStopping_holds`).
-
-All eleven cited inputs recorded in [`ASSUMPTIONS.md`](ASSUMPTIONS.md) are proved with no
-hypothesis. Among them `SpatialStoppingStability`, which no registered result uses, follows
-from the continuum stopping stability of the divisible sandpile through the law of the simple
-random walk on path space (`Parking.External.spatialStoppingStability_holds`), and the
-Donsker–Varadhan limit `DonskerVaradhanRange`, which only the certified statement of Theorem 1.1
-carries, is proved as `Parking.External.donskerVaradhanRange_holds`; with it the certified
-Theorem 1.1 holds by the route of the paper (`Parking.subcritical_tail_of_donskerVaradhan`).
