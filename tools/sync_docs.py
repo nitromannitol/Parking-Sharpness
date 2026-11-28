@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import re
 import sys
-from collections import Counter
 from pathlib import Path
 
 try:
@@ -52,49 +51,33 @@ def surface_table(nodes: list[dict]) -> str:
     return "\n".join(rows)
 
 
-def status_block(nodes: list[dict]) -> str:
-    counts = Counter(n["state"] for n in nodes)
-    proved = counts["PROVED"] + counts["SEALED"]
-    proved_theorems = counts["PROVED"]
-    sealed = counts["SEALED"]
-    sealed_defs = sum(1 for n in nodes
-                      if n["state"] == "SEALED" and n.get("kind") == "definition")
-    sealed_theorems = sealed - sealed_defs
-    frozen = counts["FROZEN"]
-    draft = [n["id"] for n in nodes if n["state"] == "DRAFT_SORRY"]
-    # State what is actually true.  Claiming a clean axiom closure while a
-    # `DRAFT_SORRY` node exists is exactly the drift these blocks exist to stop.
+def status_block(nodes: list[dict], paper: str) -> str:
+    """The paragraph of the README that states what the manifest records, in plain words."""
+    theorems = [n for n in nodes if n.get("kind") != "definition"]
+    cited = [n for n in nodes if n.get("kind") == "definition"]
+    proved = [n for n in theorems if n["state"] in ("PROVED", "SEALED")]
+    unproved = [n["id"] for n in theorems if n["state"] not in ("PROVED", "SEALED")]
+    if unproved:
+        which = ", ".join(f"`{i}`" for i in unproved)
+        thm = (f"{len(theorems)} theorems, of which {len(proved)} are proved and "
+               f"{len(unproved)} are not yet proved ({which})")
+    else:
+        thm = f"{len(theorems)} theorems, all proved"
+    # State what is actually true: the clean-closure sentence holds only when no
+    # theorem is left unproved.
     body = (
-        f"The {proved} proved nodes are machine-checked and no proved node's\n"
-        f"axiom closure contains `sorryAx`.")
-    if sealed_theorems:
+        f"[`ledger/manifest.yaml`](ledger/manifest.yaml) pins the text of {len(nodes)} Lean\n"
+        f"statements, and of the paper source `{paper}`, by their SHA-256.  The\n"
+        f"{len(nodes)} statements are {thm}, and {len(cited)} results of other works,\n"
+        f"stated as propositions in `Parking/External/` and each proved by a theorem named in\n"
+        f"[`CERTIFICATE.md`](CERTIFICATE.md).")
+    if not unproved:
         body += (
-            f"  The {sealed_theorems} `SEALED` theorem nodes are proved with an axiom\n"
-            f"closure of exactly the three standard axioms.")
-    if sealed_defs:
-        body += (
-            f"  The {sealed_defs} `SEALED` definition nodes are proved `definition` nodes,\n"
-            f"sealed by the companion theorem named in `CERTIFICATE.md`.")
-    if frozen:
-        body += (
-            f"  The {frozen} `FROZEN` nodes are cited results, stated in\n"
-            f"`Parking/External/`, each proved with no hypothesis by the companion\n"
-            f"theorem named in `ASSUMPTIONS.md`.")
-    if draft:
-        which = ", ".join(f"`{i}`" for i in draft)
-        body += (
-            f"  Still open: {which},\n"
-            f"whose statement is frozen and whose proof is a registered `sorry`.")
+            "  No proof depends on `sorryAx`, which\n"
+            "`python3 tools/check_axioms.py` confirms.")
     return (
-        f"Status: **{len(nodes)} registered statements: {proved_theorems} `PROVED`, "
-        f"{sealed} `SEALED` ({sealed_theorems} theorems and {sealed_defs} definition nodes "
-        f"proved by companion theorems), "
-        f"and {frozen} `FROZEN`, registered cited inputs.**  "
-        f"{body}  Run\n"
-        f"`python3 tools/check_axioms.py` to confirm.  Counts here are generated\n"
-        f"from `ledger/manifest.yaml` by `python3 tools/sync_docs.py`; do not\n"
-        f"edit them by hand and do not trust a count in prose that the checkers\n"
-        f"have not confirmed.")
+        body + "  This paragraph is generated from the manifest by\n"
+        "`python3 tools/sync_docs.py`.")
 
 
 def splice(text: str, begin: str, end: str, body: str) -> str:
@@ -106,11 +89,13 @@ def splice(text: str, begin: str, end: str, body: str) -> str:
 
 def main() -> int:
     write = "--write" in sys.argv[1:]
-    nodes = (yaml.safe_load(MANIFEST.read_text(encoding="utf-8")) or {}).get("nodes") or []
+    manifest = yaml.safe_load(MANIFEST.read_text(encoding="utf-8")) or {}
+    nodes = manifest.get("nodes") or []
+    paper = (manifest.get("source_pin") or {}).get("file", "paper/parking.tex")
 
     targets = [
         (ROOT / "CORRESPONDENCE.md", SURFACE_BEGIN, SURFACE_END, surface_table(nodes)),
-        (ROOT / "README.md", STATUS_BEGIN, STATUS_END, status_block(nodes)),
+        (ROOT / "README.md", STATUS_BEGIN, STATUS_END, status_block(nodes, paper)),
     ]
 
     stale = []
