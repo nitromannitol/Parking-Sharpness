@@ -314,7 +314,7 @@ tools/                           the checkers
 ASSUMPTIONS.md                   the quoted results, their Lean statements and their proofs
 CORRESPONDENCE.md                paper to Lean, result by result
 PROOF.md                         the proofs section by section
-CERTIFICATE.md                   the toolchain, the axioms and the hash of each registered statement
+CERTIFICATE.md                   the toolchain, the axioms and the hash of each pinned statement
 ```
 
 Results that do not depend on the parking model, such as the scaling-limit and convex-order
